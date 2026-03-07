@@ -1,0 +1,18 @@
+import Link from "next/link";
+import { Globe } from "lucide-react";
+
+export default function AuthLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="min-h-screen bg-background flex flex-col">
+      <nav className="border-b border-border/40 p-4">
+        <Link href="/" className="flex items-center gap-2 w-fit">
+          <Globe className="h-6 w-6 text-indigo-400" />
+          <span className="text-lg font-bold gradient-text">AP SmartPrep</span>
+        </Link>
+      </nav>
+      <div className="flex-1 flex items-center justify-center p-4">
+        {children}
+      </div>
+    </div>
+  );
+}

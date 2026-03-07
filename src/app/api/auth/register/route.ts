@@ -1,0 +1,83 @@
+import { NextRequest, NextResponse } from "next/server";
+import bcrypt from "bcryptjs";
+import crypto from "crypto";
+import { z } from "zod";
+import { prisma } from "@/lib/prisma";
+import { sendVerificationEmail } from "@/lib/email";
+
+const registerSchema = z.object({
+  firstName: z.string().min(2),
+  lastName: z.string().min(2),
+  email: z.string().email(),
+  password: z.string().min(8),
+  gradeLevel: z.string(),
+  school: z.string().optional(),
+});
+
+export async function POST(req: NextRequest) {
+  try {
+    const body = await req.json();
+    const data = registerSchema.parse(body);
+
+    const existingUser = await prisma.user.findUnique({
+      where: { email: data.email.toLowerCase() },
+    });
+
+    if (existingUser) {
+      return NextResponse.json(
+        { error: "An account with this email already exists" },
+        { status: 400 }
+      );
+    }
+
+    const passwordHash = await bcrypt.hash(data.password, 12);
+
+    const user = await prisma.user.create({
+      data: {
+        email: data.email.toLowerCase(),
+        passwordHash,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        gradeLevel: data.gradeLevel,
+        school: data.school || null,
+      },
+    });
+
+    // Create email verification token
+    const token = crypto.randomBytes(32).toString("hex");
+    await prisma.verificationToken.create({
+      data: {
+        userId: user.id,
+        token,
+        expires: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours
+      },
+    });
+
+    // In development without email configured, auto-verify
+    if (
+      !process.env.EMAIL_SERVER_USER ||
+      process.env.NODE_ENV === "development"
+    ) {
+      await prisma.user.update({
+        where: { id: user.id },
+        data: { emailVerified: new Date() },
+      });
+      console.log(`[DEV] Auto-verified email for ${user.email}. Token: ${token}`);
+    } else {
+      // Send verification email
+      try {
+        await sendVerificationEmail(user.email, user.firstName, token);
+      } catch (emailError) {
+        console.error("Failed to send verification email:", emailError);
+      }
+    }
+
+    return NextResponse.json({ success: true, message: "Account created. Please check your email." });
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return NextResponse.json({ error: error.errors[0].message }, { status: 400 });
+    }
+    console.error("Registration error:", error);
+    return NextResponse.json({ error: "Registration failed" }, { status: 500 });
+  }
+}

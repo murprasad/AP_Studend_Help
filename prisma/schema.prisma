@@ -1,0 +1,287 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                String    @id @default(cuid())
+  email             String    @unique
+  emailVerified     DateTime?
+  passwordHash      String
+  firstName         String
+  lastName          String
+  gradeLevel        String
+  school            String?
+  role              Role      @default(STUDENT)
+  subscriptionTier  SubTier   @default(FREE)
+  avatarUrl         String?
+  streakDays        Int       @default(0)
+  lastActiveDate    DateTime?
+  totalXp           Int       @default(0)
+  level             Int       @default(1)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  sessions          Session[]
+  accounts          Account[]
+  verificationTokens VerificationToken[]
+  passwordResets    PasswordResetToken[]
+  practiceSessions  PracticeSession[]
+  responses         StudentResponse[]
+  masteryScores     MasteryScore[]
+  studyPlans        StudyPlan[]
+  achievements      UserAchievement[]
+  tutorConversations TutorConversation[]
+
+  @@map("users")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model VerificationToken {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique
+  expires   DateTime
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("verification_tokens")
+}
+
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique
+  expires   DateTime
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("password_reset_tokens")
+}
+
+model Question {
+  id           String       @id @default(cuid())
+  unit         ApUnit
+  topic        String
+  subtopic     String?
+  difficulty   Difficulty
+  questionType QuestionType
+  questionText String       @db.Text
+  stimulus     String?      @db.Text
+  options      Json?
+  correctAnswer String
+  explanation  String       @db.Text
+  isAiGenerated Boolean     @default(false)
+  isApproved   Boolean      @default(true)
+  timesAnswered Int         @default(0)
+  timesCorrect  Int         @default(0)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  responses    StudentResponse[]
+  sessionQuestions SessionQuestion[]
+
+  @@map("questions")
+}
+
+model PracticeSession {
+  id           String      @id @default(cuid())
+  userId       String
+  sessionType  SessionType
+  status       SessionStatus @default(IN_PROGRESS)
+  totalQuestions Int        @default(0)
+  correctAnswers Int        @default(0)
+  timeSpentSecs Int         @default(0)
+  startedAt    DateTime     @default(now())
+  completedAt  DateTime?
+  score        Float?
+  apScoreEstimate Int?
+
+  user      User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  questions SessionQuestion[]
+  responses StudentResponse[]
+
+  @@map("practice_sessions")
+}
+
+model SessionQuestion {
+  id         String   @id @default(cuid())
+  sessionId  String
+  questionId String
+  order      Int
+
+  session  PracticeSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  question Question        @relation(fields: [questionId], references: [id])
+
+  @@unique([sessionId, questionId])
+  @@map("session_questions")
+}
+
+model StudentResponse {
+  id            String   @id @default(cuid())
+  userId        String
+  questionId    String
+  sessionId     String?
+  studentAnswer String
+  isCorrect     Boolean
+  timeSpentSecs Int      @default(0)
+  answeredAt    DateTime @default(now())
+
+  user     User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  question Question         @relation(fields: [questionId], references: [id])
+  session  PracticeSession? @relation(fields: [sessionId], references: [id])
+
+  @@map("student_responses")
+}
+
+model MasteryScore {
+  id             String   @id @default(cuid())
+  userId         String
+  unit           ApUnit
+  masteryScore   Float    @default(0)
+  accuracy       Float    @default(0)
+  totalAttempts  Int      @default(0)
+  correctAttempts Int     @default(0)
+  avgTimeSecs    Float    @default(0)
+  lastPracticed  DateTime?
+  updatedAt      DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, unit])
+  @@map("mastery_scores")
+}
+
+model StudyPlan {
+  id           String   @id @default(cuid())
+  userId       String
+  planData     Json
+  generatedAt  DateTime @default(now())
+  isActive     Boolean  @default(true)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("study_plans")
+}
+
+model Achievement {
+  id          String @id @default(cuid())
+  name        String @unique
+  description String
+  iconName    String
+  xpReward    Int    @default(0)
+  condition   Json
+
+  userAchievements UserAchievement[]
+
+  @@map("achievements")
+}
+
+model UserAchievement {
+  id            String   @id @default(cuid())
+  userId        String
+  achievementId String
+  earnedAt      DateTime @default(now())
+
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  achievement Achievement @relation(fields: [achievementId], references: [id])
+
+  @@unique([userId, achievementId])
+  @@map("user_achievements")
+}
+
+model TutorConversation {
+  id        String         @id @default(cuid())
+  userId    String
+  messages  Json
+  topic     String?
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("tutor_conversations")
+}
+
+enum Role {
+  STUDENT
+  ADMIN
+}
+
+enum SubTier {
+  FREE
+  PREMIUM
+}
+
+enum ApUnit {
+  UNIT_1_GLOBAL_TAPESTRY
+  UNIT_2_NETWORKS_OF_EXCHANGE
+  UNIT_3_LAND_BASED_EMPIRES
+  UNIT_4_TRANSOCEANIC_INTERCONNECTIONS
+  UNIT_5_REVOLUTIONS
+  UNIT_6_INDUSTRIALIZATION
+  UNIT_7_GLOBAL_CONFLICT
+  UNIT_8_COLD_WAR
+  UNIT_9_GLOBALIZATION
+}
+
+enum Difficulty {
+  EASY
+  MEDIUM
+  HARD
+}
+
+enum QuestionType {
+  MCQ
+  SAQ
+  DBQ
+  LEQ
+}
+
+enum SessionType {
+  QUICK_PRACTICE
+  FOCUSED_STUDY
+  MOCK_EXAM
+}
+
+enum SessionStatus {
+  IN_PROGRESS
+  COMPLETED
+  ABANDONED
+}
