@@ -6,7 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { AP_UNITS } from "@/lib/utils";
 import { ApUnit } from "@prisma/client";
-import { Users, BookOpen, BarChart3, CheckCircle, Clock } from "lucide-react";
+import { Users, BookOpen, BarChart3, Clock } from "lucide-react";
+import { AdminBulkGenerate } from "@/components/admin/bulk-generate";
 
 export default async function AdminPage() {
   const session = await getServerSession(authOptions);
@@ -70,6 +71,9 @@ export default async function AdminPage() {
         ))}
       </div>
 
+      {/* Bulk Question Generation */}
+      <AdminBulkGenerate />
+
       <div className="grid lg:grid-cols-2 gap-6">
         {/* Questions by unit */}
         <Card className="card-glow">
@@ -83,7 +87,7 @@ export default async function AdminPage() {
                 return (
                   <div key={unit} className="flex items-center justify-between py-1.5">
                     <span className="text-sm">{AP_UNITS[unit]}</span>
-                    <Badge variant="secondary">{count}</Badge>
+                    <Badge variant={count < 5 ? "destructive" : "secondary"}>{count}</Badge>
                   </div>
                 );
               })}
@@ -110,9 +114,7 @@ export default async function AdminPage() {
                     <Badge variant={user.subscriptionTier === "PREMIUM" ? "default" : "outline"} className="text-xs">
                       {user.subscriptionTier}
                     </Badge>
-                    <p className="text-xs text-muted-foreground mt-1">
-                      Grade {user.gradeLevel}
-                    </p>
+                    <p className="text-xs text-muted-foreground mt-1">Grade {user.gradeLevel}</p>
                   </div>
                 </div>
               ))}

@@ -14,6 +14,7 @@ import {
   LogOut,
   Shield,
   Trophy,
+  Library,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -23,6 +24,7 @@ const navItems = [
   { href: "/mock-exam", icon: Trophy, label: "Mock Exam" },
   { href: "/analytics", icon: BarChart3, label: "Analytics" },
   { href: "/study-plan", icon: BookOpen, label: "Study Plan" },
+  { href: "/resources", icon: Library, label: "Resources" },
   { href: "/ai-tutor", icon: MessageSquare, label: "AI Tutor" },
 ];
 
