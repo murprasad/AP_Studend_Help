@@ -142,7 +142,7 @@ export async function generateQuestion(
   const prompt = buildQuestionPrompt(inferredCourse, unit, unitName, difficulty, topic);
 
   const rawResponse = await callAI(prompt);
-  const rawText = rawResponse.trim().replace(/^```json\s*/i, "").replace(/```\s*$/i, "");
+  const rawText = rawResponse.trim().replace(/^```(?:json)?\s*/i, "").replace(/```\s*$/i, "");
   const parsed = JSON.parse(rawText);
 
   return {
@@ -266,7 +266,7 @@ Create a 1-week personalized study plan. Return ONLY a JSON object:
 }`;
 
   const rawResponse = await callAI(prompt);
-  const rawText = rawResponse.trim().replace(/^```json\s*/i, "").replace(/```\s*$/i, "");
+  const rawText = rawResponse.trim().replace(/^```(?:json)?\s*/i, "").replace(/```\s*$/i, "");
   return JSON.parse(rawText);
 }
 
