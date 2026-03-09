@@ -233,7 +233,7 @@ export default async function DashboardPage() {
                 </div>
                 <div className="flex-1">
                   <p className="font-medium">Quick Practice</p>
-                  <p className="text-xs text-muted-foreground">10 questions · ~10 min</p>
+                  <p className="text-xs text-muted-foreground">10 questions · untimed</p>
                 </div>
                 <ArrowRight className="h-4 w-4 text-muted-foreground" />
               </div>
@@ -257,7 +257,7 @@ export default async function DashboardPage() {
                 </div>
                 <div className="flex-1">
                   <p className="font-medium">Mock Exam</p>
-                  <p className="text-xs text-muted-foreground">Full AP simulation · 155 min</p>
+                  <p className="text-xs text-muted-foreground">10 questions · timed at AP pace</p>
                 </div>
                 <ArrowRight className="h-4 w-4 text-muted-foreground" />
               </div>

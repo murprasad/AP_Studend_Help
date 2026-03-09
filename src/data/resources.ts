@@ -20,19 +20,9 @@ export interface VideoResource {
   description: string;
 }
 
-export interface UnitResource {
-  unit: ApUnit;
-  unitName: string;
-  timePeriod: string;
-  keyThemes: string[];
-  heimlerVideoId: string; // Heimler's History YouTube video ID
-  khanPlaylistId: string; // Khan Academy playlist
-  oerUrl: string;
-  fiveableUrl: string;
-  zinnUrl: string;
-  worldHistoryUrl: string;
-  practiceQuizUrl: string;
-}
+// Per-unit resource metadata (fiveableUrl, heimlerVideoId, keyThemes, etc.) has
+// moved to src/lib/courses.ts → COURSE_REGISTRY[course].units[unit].
+// See UnitMeta interface in courses.ts.
 
 // ── Global resource directory ──────────────────────────────────────────────
 export const GLOBAL_RESOURCES: Resource[] = [
@@ -116,128 +106,55 @@ export const GLOBAL_RESOURCES: Resource[] = [
     color: "text-green-400",
     free: true,
   },
-];
-
-// ── Per-unit curated resources ─────────────────────────────────────────────
-// Heimler's History video IDs (YouTube) - AP World History unit reviews
-// Khan Academy AP World History playlist IDs per unit
-export const UNIT_RESOURCES: UnitResource[] = [
   {
-    unit: ApUnit.UNIT_1_GLOBAL_TAPESTRY,
-    unitName: "Unit 1: The Global Tapestry",
-    timePeriod: "1200–1450 CE",
-    keyThemes: ["Song Dynasty China", "Dar al-Islam", "South/Southeast Asia", "Americas & Africa", "Comparison of States"],
-    heimlerVideoId: "6YCZFQBFNok",
-    khanPlaylistId: "PLSQl0a2vh4HCLqA9FiKGSqzqHGwBFRFZu",
-    oerUrl: "https://www.oerproject.com/AP-World-History/Unit-1",
-    fiveableUrl: "https://library.fiveable.me/ap-world/unit-1",
-    zinnUrl: "https://www.zinnedproject.org/materials/?era=medieval-renaissance-1200-1500",
-    worldHistoryUrl: "https://worldhistoryforusall.sdsu.edu/eras/era5.htm",
-    practiceQuizUrl: "https://www.practicequiz.com/ap-world-history-practice-test",
+    id: "library-of-congress",
+    name: "Library of Congress Digital Collections",
+    description: "Millions of free primary source documents, photographs, maps, newspapers, and timelines from American and world history. Used by AP SmartPrep to enrich AI tutor answers.",
+    url: "https://www.loc.gov/collections/",
+    type: "primary_source",
+    icon: "Library",
+    color: "text-indigo-400",
+    free: true,
   },
   {
-    unit: ApUnit.UNIT_2_NETWORKS_OF_EXCHANGE,
-    unitName: "Unit 2: Networks of Exchange",
-    timePeriod: "1200–1450 CE",
-    keyThemes: ["Silk Roads", "Mongol Empire", "Indian Ocean Trade", "Trans-Saharan Trade", "Cultural Diffusion"],
-    heimlerVideoId: "0rFjzHevFtc",
-    khanPlaylistId: "PLSQl0a2vh4HCLqA9FiKGSqzqHGwBFRFZu",
-    oerUrl: "https://www.oerproject.com/AP-World-History/Unit-2",
-    fiveableUrl: "https://library.fiveable.me/ap-world/unit-2",
-    zinnUrl: "https://www.zinnedproject.org/materials/?era=medieval-renaissance-1200-1500",
-    worldHistoryUrl: "https://worldhistoryforusall.sdsu.edu/eras/era5.htm",
-    practiceQuizUrl: "https://www.practicequiz.com/ap-world-history-practice-test",
+    id: "wikipedia",
+    name: "Wikipedia / Wikimedia Foundation",
+    description: "Free encyclopedia with deep articles on every historical topic, person, and event. Wikipedia summaries are automatically pulled into AI tutor context to give accurate, sourced answers.",
+    url: "https://en.wikipedia.org/wiki/World_history",
+    type: "reading",
+    icon: "BookMarked",
+    color: "text-slate-300",
+    free: true,
   },
   {
-    unit: ApUnit.UNIT_3_LAND_BASED_EMPIRES,
-    unitName: "Unit 3: Land-Based Empires",
-    timePeriod: "1450–1750 CE",
-    keyThemes: ["Ottoman Empire", "Safavid Empire", "Mughal Empire", "Ming/Qing China", "Gunpowder Empires"],
-    heimlerVideoId: "t_l0BIKMdvs",
-    khanPlaylistId: "PLSQl0a2vh4HDnHWiAaOhwMJkSRLXxLrOK",
-    oerUrl: "https://www.oerproject.com/AP-World-History/Unit-3",
-    fiveableUrl: "https://library.fiveable.me/ap-world/unit-3",
-    zinnUrl: "https://www.zinnedproject.org/materials/?era=1400s-1600s",
-    worldHistoryUrl: "https://worldhistoryforusall.sdsu.edu/eras/era6.htm",
-    practiceQuizUrl: "https://www.practicequiz.com/ap-world-history-practice-test",
+    id: "wikidata",
+    name: "Wikidata",
+    description: "Structured historical facts database by the Wikimedia Foundation. Powers instant fact lookups (dates, people, events) in AI-generated content.",
+    url: "https://www.wikidata.org",
+    type: "reading",
+    icon: "Database",
+    color: "text-teal-400",
+    free: true,
   },
   {
-    unit: ApUnit.UNIT_4_TRANSOCEANIC_INTERCONNECTIONS,
-    unitName: "Unit 4: Transoceanic Interconnections",
-    timePeriod: "1450–1750 CE",
-    keyThemes: ["Columbian Exchange", "European Colonization", "Atlantic Slave Trade", "Maritime Empires", "Coercive Labor Systems"],
-    heimlerVideoId: "WMCgLxVFwqc",
-    khanPlaylistId: "PLSQl0a2vh4HDnHWiAaOhwMJkSRLXxLrOK",
-    oerUrl: "https://www.oerproject.com/AP-World-History/Unit-4",
-    fiveableUrl: "https://library.fiveable.me/ap-world/unit-4",
-    zinnUrl: "https://www.zinnedproject.org/materials/?era=1400s-1600s",
-    worldHistoryUrl: "https://worldhistoryforusall.sdsu.edu/eras/era6.htm",
-    practiceQuizUrl: "https://www.practicequiz.com/ap-world-history-practice-test",
+    id: "openstax",
+    name: "OpenStax World History",
+    description: "Peer-reviewed, openly licensed textbooks for World History Volumes 1 & 2 — completely free, covering ancient civilizations through the modern era.",
+    url: "https://openstax.org/subjects/humanities",
+    type: "reading",
+    icon: "BookOpen",
+    color: "text-amber-400",
+    free: true,
   },
   {
-    unit: ApUnit.UNIT_5_REVOLUTIONS,
-    unitName: "Unit 5: Revolutions",
-    timePeriod: "1750–1900 CE",
-    keyThemes: ["Enlightenment", "American Revolution", "French Revolution", "Haitian Revolution", "Latin American Independence"],
-    heimlerVideoId: "GcBmkPmAFkM",
-    khanPlaylistId: "PLSQl0a2vh4HA0wMGD5JpWDqTTjI7Lbj3L",
-    oerUrl: "https://www.oerproject.com/AP-World-History/Unit-5",
-    fiveableUrl: "https://library.fiveable.me/ap-world/unit-5",
-    zinnUrl: "https://www.zinnedproject.org/materials/?era=american-revolution-civil-war-reconstruction",
-    worldHistoryUrl: "https://worldhistoryforusall.sdsu.edu/eras/era7.htm",
-    practiceQuizUrl: "https://www.practicequiz.com/ap-world-history-practice-test",
-  },
-  {
-    unit: ApUnit.UNIT_6_INDUSTRIALIZATION,
-    unitName: "Unit 6: Industrialization & Imperialism",
-    timePeriod: "1750–1900 CE",
-    keyThemes: ["Industrial Revolution", "Social Effects of Industrialization", "Imperialism", "Resistance to Imperialism", "Economic Systems"],
-    heimlerVideoId: "UIF_W7g-glU",
-    khanPlaylistId: "PLSQl0a2vh4HA0wMGD5JpWDqTTjI7Lbj3L",
-    oerUrl: "https://www.oerproject.com/AP-World-History/Unit-6",
-    fiveableUrl: "https://library.fiveable.me/ap-world/unit-6",
-    zinnUrl: "https://www.zinnedproject.org/materials/?era=industrialization-imperialism",
-    worldHistoryUrl: "https://worldhistoryforusall.sdsu.edu/eras/era7.htm",
-    practiceQuizUrl: "https://www.practicequiz.com/ap-world-history-practice-test",
-  },
-  {
-    unit: ApUnit.UNIT_7_GLOBAL_CONFLICT,
-    unitName: "Unit 7: Global Conflict",
-    timePeriod: "1900–Present",
-    keyThemes: ["World War I", "World War II", "Causes of Global Conflict", "Nationalism", "Genocide & Atrocities"],
-    heimlerVideoId: "Xx6pBGiRAzE",
-    khanPlaylistId: "PLSQl0a2vh4HB43bYC5Ll3mKlalvC0mxEp",
-    oerUrl: "https://www.oerproject.com/AP-World-History/Unit-7",
-    fiveableUrl: "https://library.fiveable.me/ap-world/unit-7",
-    zinnUrl: "https://www.zinnedproject.org/materials/?era=world-war-ii-postwar",
-    worldHistoryUrl: "https://worldhistoryforusall.sdsu.edu/eras/era8.htm",
-    practiceQuizUrl: "https://www.practicequiz.com/ap-world-history-practice-test",
-  },
-  {
-    unit: ApUnit.UNIT_8_COLD_WAR,
-    unitName: "Unit 8: Cold War & Decolonization",
-    timePeriod: "1900–Present",
-    keyThemes: ["Cold War", "Decolonization", "Independence Movements", "Proxy Wars", "Non-Aligned Movement"],
-    heimlerVideoId: "1HOu-P5fvEY",
-    khanPlaylistId: "PLSQl0a2vh4HB43bYC5Ll3mKlalvC0mxEp",
-    oerUrl: "https://www.oerproject.com/AP-World-History/Unit-8",
-    fiveableUrl: "https://library.fiveable.me/ap-world/unit-8",
-    zinnUrl: "https://www.zinnedproject.org/materials/?era=world-war-ii-postwar",
-    worldHistoryUrl: "https://worldhistoryforusall.sdsu.edu/eras/era8.htm",
-    practiceQuizUrl: "https://www.practicequiz.com/ap-world-history-practice-test",
-  },
-  {
-    unit: ApUnit.UNIT_9_GLOBALIZATION,
-    unitName: "Unit 9: Globalization",
-    timePeriod: "1900–Present",
-    keyThemes: ["Economic Globalization", "Cultural Exchange", "Technology", "Environment", "Resistance to Globalization"],
-    heimlerVideoId: "QhR3RVFc0gk",
-    khanPlaylistId: "PLSQl0a2vh4HB43bYC5Ll3mKlalvC0mxEp",
-    oerUrl: "https://www.oerproject.com/AP-World-History/Unit-9",
-    fiveableUrl: "https://library.fiveable.me/ap-world/unit-9",
-    zinnUrl: "https://www.zinnedproject.org/materials/?era=globalization",
-    worldHistoryUrl: "https://worldhistoryforusall.sdsu.edu/eras/era9.htm",
-    practiceQuizUrl: "https://www.practicequiz.com/ap-world-history-practice-test",
+    id: "ck12",
+    name: "CK-12 Foundation",
+    description: "Free, customizable open-source textbooks and practice for history, science, and math. Includes interactive simulations and study guides.",
+    url: "https://www.ck12.org/browse/",
+    type: "reading",
+    icon: "Layers",
+    color: "text-lime-400",
+    free: true,
   },
 ];
 

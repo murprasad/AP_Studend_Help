@@ -15,7 +15,8 @@ import {
   Line,
   CartesianGrid,
 } from "recharts";
-import { getMasteryLabel, getMasteryColor, getMasteryBg, formatTime } from "@/lib/utils";
+import { getMasteryLabel, getMasteryColor, getMasteryBg, formatTime, AP_COURSES } from "@/lib/utils";
+import { useCourse } from "@/hooks/use-course";
 import {
   BarChart3,
   Target,
@@ -24,6 +25,7 @@ import {
   Star,
   TrendingUp,
   Loader2,
+  GraduationCap,
 } from "lucide-react";
 
 interface MasteryData {
@@ -53,21 +55,29 @@ interface Stats {
 }
 
 export default function AnalyticsPage() {
+  const [course] = useCourse();
   const [masteryData, setMasteryData] = useState<MasteryData[]>([]);
   const [accuracyTimeline, setAccuracyTimeline] = useState<AccuracyPoint[]>([]);
   const [stats, setStats] = useState<Stats | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch("/api/analytics")
-      .then((r) => r.json())
+    setLoading(true);
+    setError(null);
+    fetch(`/api/analytics?course=${course}`)
+      .then((r) => {
+        if (!r.ok) throw new Error("Failed to load analytics");
+        return r.json();
+      })
       .then((data) => {
-        setMasteryData(data.masteryData);
-        setAccuracyTimeline(data.accuracyTimeline);
+        setMasteryData(data.masteryData || []);
+        setAccuracyTimeline(data.accuracyTimeline || []);
         setStats(data.stats);
       })
+      .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
-  }, []);
+  }, [course]);
 
   if (loading) {
     return (
@@ -77,8 +87,19 @@ export default function AnalyticsPage() {
     );
   }
 
+  if (error) {
+    return (
+      <div className="flex items-center justify-center h-96">
+        <div className="text-center">
+          <p className="text-red-400 font-medium mb-2">Failed to load analytics</p>
+          <p className="text-muted-foreground text-sm">{error}</p>
+        </div>
+      </div>
+    );
+  }
+
   const chartData = masteryData.map((d) => ({
-    name: d.unitName.replace("Unit ", "U").split(":")[0],
+    name: d.unitName.replace(/Unit \d+: /, "").slice(0, 14),
     mastery: Math.round(d.masteryScore),
     accuracy: Math.round(d.accuracy),
   }));
@@ -89,6 +110,15 @@ export default function AnalyticsPage() {
         <h1 className="text-3xl font-bold">Analytics</h1>
         <p className="text-muted-foreground mt-1">Track your progress and identify growth areas</p>
       </div>
+
+      {/* Course indicator */}
+      <Card className="card-glow border-indigo-500/20 bg-indigo-500/5">
+        <CardContent className="p-4 flex items-center gap-3">
+          <GraduationCap className="h-5 w-5 text-indigo-400" />
+          <p className="text-sm font-medium">{AP_COURSES[course]}</p>
+          <p className="text-xs text-muted-foreground ml-2">— Switch course from the sidebar</p>
+        </CardContent>
+      </Card>
 
       {/* Key stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
@@ -177,21 +207,27 @@ export default function AnalyticsPage() {
           </CardHeader>
           <CardContent>
             <div className="h-64">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={chartData} layout="vertical" margin={{ left: 0 }}>
-                  <XAxis type="number" domain={[0, 100]} tick={{ fill: "#94a3b8", fontSize: 11 }} />
-                  <YAxis type="category" dataKey="name" tick={{ fill: "#94a3b8", fontSize: 11 }} width={30} />
-                  <Tooltip
-                    contentStyle={{
-                      backgroundColor: "#1e293b",
-                      border: "1px solid #334155",
-                      borderRadius: "8px",
-                    }}
-                    formatter={(v: number) => [`${v}%`, "Mastery"]}
-                  />
-                  <Bar dataKey="mastery" fill="#6366f1" radius={[0, 4, 4, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
+              {chartData.length > 0 ? (
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={chartData} layout="vertical" margin={{ left: 0 }}>
+                    <XAxis type="number" domain={[0, 100]} tick={{ fill: "#94a3b8", fontSize: 11 }} />
+                    <YAxis type="category" dataKey="name" tick={{ fill: "#94a3b8", fontSize: 10 }} width={80} />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: "#1e293b",
+                        border: "1px solid #334155",
+                        borderRadius: "8px",
+                      }}
+                      formatter={(v: number) => [`${v}%`, "Mastery"]}
+                    />
+                    <Bar dataKey="mastery" fill="#6366f1" radius={[0, 4, 4, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              ) : (
+                <div className="h-full flex items-center justify-center text-muted-foreground text-sm">
+                  No mastery data yet — start practicing!
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>

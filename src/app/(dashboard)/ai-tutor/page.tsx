@@ -4,33 +4,37 @@ import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { MessageSquare, Send, Loader2, Bot, User, Lightbulb } from "lucide-react";
+import { useCourse } from "@/hooks/use-course";
+import { AP_COURSES } from "@/lib/utils";
+import { COURSE_REGISTRY } from "@/lib/courses";
+import { MessageSquare, Send, Loader2, Bot, User, Lightbulb, GraduationCap } from "lucide-react";
 
 interface Message {
   role: "user" | "assistant";
   content: string;
 }
 
-const SUGGESTED_QUESTIONS = [
-  "Explain the causes of the French Revolution",
-  "What was the significance of the Silk Roads?",
-  "How did the Industrial Revolution change society?",
-  "What were the effects of the Mongol conquests?",
-  "Explain the differences between the Ottoman, Safavid, and Mughal empires",
-  "What caused World War I?",
-  "How did the Cold War shape global politics?",
-  "What is the Columbian Exchange and why does it matter?",
-];
+// Derived from COURSE_REGISTRY — update suggestedTutorQuestions there when adding a course.
+const SUGGESTED_QUESTIONS = Object.fromEntries(
+  Object.entries(COURSE_REGISTRY).map(([k, v]) => [k, v.suggestedTutorQuestions])
+) as Record<string, string[]>;
 
 export default function AiTutorPage() {
   const { toast } = useToast();
+  const [course] = useCourse();
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [conversationId, setConversationId] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Reset conversation when course changes
+  useEffect(() => {
+    setMessages([]);
+    setConversationId(null);
+    setInput("");
+  }, [course]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -52,13 +56,21 @@ export default function AiTutorPage() {
           message: content,
           conversationId,
           history: messages,
+          course,
         }),
       });
 
       const data = await response.json();
 
       if (!response.ok) {
-        toast({ title: "Error", description: data.error, variant: "destructive" });
+        const errMsg = data.setupGuide
+          ? "AI provider not configured. Check the setup guide in the console or contact your admin."
+          : data.error || "Failed to reach AI tutor";
+        toast({ title: "AI Unavailable", description: errMsg, variant: "destructive" });
+        if (data.setupGuide) {
+          console.info("AI Setup Guide:", JSON.stringify(data.setupGuide, null, 2));
+        }
+        setMessages((prev) => prev.slice(0, -1));
         return;
       }
 
@@ -71,7 +83,8 @@ export default function AiTutorPage() {
         setConversationId(data.conversationId);
       }
     } catch {
-      toast({ title: "Connection error", description: "Failed to reach AI tutor", variant: "destructive" });
+      toast({ title: "Connection error", description: "Failed to reach AI tutor. Check your connection.", variant: "destructive" });
+      setMessages((prev) => prev.slice(0, -1));
     } finally {
       setIsLoading(false);
     }
@@ -84,6 +97,9 @@ export default function AiTutorPage() {
     }
   }
 
+  const suggestedQuestions = SUGGESTED_QUESTIONS[course] || SUGGESTED_QUESTIONS.AP_WORLD_HISTORY;
+  const courseLabel = AP_COURSES[course];
+
   return (
     <div className="max-w-3xl mx-auto flex flex-col h-[calc(100vh-8rem)]">
       <div className="mb-4">
@@ -91,8 +107,9 @@ export default function AiTutorPage() {
           <MessageSquare className="h-8 w-8 text-indigo-400" />
           AI Tutor
         </h1>
-        <p className="text-muted-foreground mt-1">
-          Ask anything about AP World History
+        <p className="text-muted-foreground mt-1 flex items-center gap-2">
+          <GraduationCap className="h-4 w-4" />
+          {courseLabel} — Switch course from the sidebar
         </p>
       </div>
 
@@ -105,9 +122,10 @@ export default function AiTutorPage() {
               <div className="w-16 h-16 rounded-full bg-indigo-500/20 flex items-center justify-center mx-auto mb-4">
                 <Bot className="h-8 w-8 text-indigo-400" />
               </div>
-              <h2 className="text-xl font-bold mb-2">AP World History Tutor</h2>
+              <h2 className="text-xl font-bold mb-2">{courseLabel} Tutor</h2>
               <p className="text-muted-foreground max-w-md mx-auto text-sm">
-                I can explain any AP World History concept, help you understand primary sources, create study summaries, or answer exam prep questions.
+                I can explain any {courseLabel} concept, help you understand exam questions,
+                create study summaries, or answer exam prep questions.
               </p>
             </div>
 
@@ -118,7 +136,7 @@ export default function AiTutorPage() {
                 Try asking...
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                {SUGGESTED_QUESTIONS.map((q) => (
+                {suggestedQuestions.map((q) => (
                   <button
                     key={q}
                     onClick={() => sendMessage(q)}
@@ -182,7 +200,7 @@ export default function AiTutorPage() {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder="Ask about any AP World History topic..."
+          placeholder={`Ask about any ${courseLabel} topic...`}
           className="min-h-[52px] max-h-32 resize-none"
           rows={1}
         />

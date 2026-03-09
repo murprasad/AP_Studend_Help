@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
+import { useCourse } from "@/hooks/use-course";
+import { AP_COURSES } from "@/lib/utils";
 import {
   BookOpen,
   Target,
@@ -15,6 +17,7 @@ import {
   Trophy,
   ChevronRight,
   Zap,
+  GraduationCap,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -28,9 +31,11 @@ interface StudyPlan {
     mcqCount: number;
     saqCount: number;
     estimatedMinutes: number;
+    resources?: string[];
   }>;
   strengths: string[];
   tips: string[];
+  dailySchedule?: Record<string, string>;
 }
 
 const PRIORITY_COLORS = {
@@ -41,28 +46,40 @@ const PRIORITY_COLORS = {
 
 export default function StudyPlanPage() {
   const { toast } = useToast();
+  const [course] = useCourse();
   const [plan, setPlan] = useState<StudyPlan | null>(null);
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
 
   useEffect(() => {
-    fetch("/api/study-plan")
+    setLoading(true);
+    setPlan(null);
+    fetch(`/api/study-plan?course=${course}`)
       .then((r) => r.json())
       .then((data) => setPlan(data.plan))
+      .catch(() => toast({ title: "Failed to load study plan", variant: "destructive" }))
       .finally(() => setLoading(false));
-  }, []);
+  }, [course]);
 
   async function generatePlan() {
     setGenerating(true);
     try {
-      const response = await fetch("/api/study-plan", { method: "POST" });
+      const response = await fetch("/api/study-plan", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ course }),
+      });
       const data = await response.json();
+      if (!response.ok) {
+        toast({ title: "Error", description: data.error || "Failed to generate plan", variant: "destructive" });
+        return;
+      }
       if (data.plan) {
         setPlan(data.plan);
         toast({ title: "Study plan updated!", variant: "default" });
       }
     } catch {
-      toast({ title: "Failed to generate plan", variant: "destructive" });
+      toast({ title: "Failed to generate plan. Check your connection.", variant: "destructive" });
     } finally {
       setGenerating(false);
     }
@@ -94,13 +111,22 @@ export default function StudyPlanPage() {
         </Button>
       </div>
 
+      {/* Course indicator */}
+      <Card className="card-glow border-indigo-500/20 bg-indigo-500/5">
+        <CardContent className="p-4 flex items-center gap-3">
+          <GraduationCap className="h-5 w-5 text-indigo-400" />
+          <p className="text-sm font-medium">{AP_COURSES[course]}</p>
+          <p className="text-xs text-muted-foreground ml-2">— Switch course from the sidebar</p>
+        </CardContent>
+      </Card>
+
       {!plan ? (
         <Card className="card-glow">
           <CardContent className="p-10 text-center">
             <BookOpen className="h-12 w-12 text-indigo-400 mx-auto mb-4" />
             <h2 className="text-xl font-bold mb-2">No study plan yet</h2>
             <p className="text-muted-foreground mb-6">
-              Generate your personalized study plan based on your practice history.
+              Generate your personalized {AP_COURSES[course]} study plan based on your practice history.
             </p>
             <Button onClick={generatePlan} disabled={generating} className="gap-2">
               {generating ? (
@@ -149,7 +175,7 @@ export default function StudyPlanPage() {
                     </Badge>
                   </div>
                   <p className="text-sm text-muted-foreground mb-3">{area.reason}</p>
-                  <div className="flex flex-wrap gap-3">
+                  <div className="flex flex-wrap gap-3 mb-2">
                     <div className="flex items-center gap-1.5 text-sm">
                       <div className="w-2 h-2 rounded-full bg-indigo-400" />
                       {area.mcqCount} MCQ
@@ -165,6 +191,15 @@ export default function StudyPlanPage() {
                       ~{area.estimatedMinutes} min
                     </div>
                   </div>
+                  {area.resources && area.resources.length > 0 && (
+                    <div className="flex flex-wrap gap-1.5 mt-2">
+                      {area.resources.map((r, j) => (
+                        <span key={j} className="text-xs px-2 py-1 rounded-full bg-secondary text-muted-foreground">
+                          {r}
+                        </span>
+                      ))}
+                    </div>
+                  )}
                 </div>
               ))}
 
@@ -175,6 +210,28 @@ export default function StudyPlanPage() {
               </Link>
             </CardContent>
           </Card>
+
+          {/* Daily Schedule */}
+          {plan.dailySchedule && Object.keys(plan.dailySchedule).length > 0 && (
+            <Card className="card-glow">
+              <CardHeader>
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <Clock className="h-5 w-5 text-blue-400" />
+                  Weekly Schedule
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2">
+                  {Object.entries(plan.dailySchedule).map(([day, desc]) => (
+                    <div key={day} className="flex items-start gap-3 p-3 rounded-lg bg-secondary/50">
+                      <span className="text-sm font-semibold text-indigo-400 w-20 flex-shrink-0">{day}</span>
+                      <p className="text-sm text-muted-foreground">{desc}</p>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
 
           {/* Strengths */}
           {plan.strengths && plan.strengths.length > 0 && (

@@ -1,14 +1,14 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
-import { useSearchParams } from "next/navigation";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { AP_UNITS, formatTime } from "@/lib/utils";
+import { useCourse } from "@/hooks/use-course";
+import { COURSE_UNITS, AP_COURSES, formatTime } from "@/lib/utils";
 import { ApUnit } from "@prisma/client";
 import {
   Zap,
@@ -20,11 +20,13 @@ import {
   Trophy,
   RotateCcw,
   Loader2,
+  GraduationCap,
 } from "lucide-react";
 import Link from "next/link";
 
 interface Question {
   id: string;
+  course: string;
   unit: string;
   topic: string;
   subtopic?: string;
@@ -44,12 +46,11 @@ interface SessionSummary {
   apScoreEstimate: number;
 }
 
-type PracticeMode = "select" | "practicing" | "review" | "summary";
+type PracticeMode = "select" | "practicing" | "summary";
 
 export default function PracticePage() {
-  const searchParams = useSearchParams();
   const { toast } = useToast();
-  const initialMode = searchParams.get("mode");
+  const [course] = useCourse();
 
   const [mode, setMode] = useState<PracticeMode>("select");
   const [selectedUnit, setSelectedUnit] = useState<string>("ALL");
@@ -59,6 +60,7 @@ export default function PracticePage() {
 
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [questions, setQuestions] = useState<Question[]>([]);
+  const questionsRef = useRef<Question[]>([]);  // always up-to-date for async callbacks
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [feedback, setFeedback] = useState<{
@@ -73,10 +75,20 @@ export default function PracticePage() {
   const [sessionSummary, setSessionSummary] = useState<SessionSummary | null>(null);
   const [results, setResults] = useState<Array<{ correct: boolean; timeSecs: number }>>([]);
 
+  // Reset unit selection when course changes
+  useEffect(() => {
+    setSelectedUnit("ALL");
+  }, [course]);
+
   const currentQuestion = questions[currentIndex];
-  const parsedOptions: string[] = currentQuestion?.options
-    ? JSON.parse(currentQuestion.options as string)
-    : [];
+  const parsedOptions: string[] = (() => {
+    if (!currentQuestion?.options) return [];
+    const raw = currentQuestion.options;
+    if (Array.isArray(raw)) return raw as string[];
+    try { return JSON.parse(raw as string) as string[]; } catch { return []; }
+  })();
+
+  const courseUnits = COURSE_UNITS[course];
 
   async function startSession() {
     setIsStarting(true);
@@ -89,17 +101,20 @@ export default function PracticePage() {
           unit: selectedUnit,
           difficulty: selectedDifficulty,
           questionCount,
+          course,
         }),
       });
 
       const data = await response.json();
       if (!response.ok) {
-        toast({ title: "Error", description: data.error, variant: "destructive" });
+        toast({ title: "Error", description: data.error || "Failed to start session", variant: "destructive" });
         return;
       }
 
+      const qs: Question[] = data.questions ?? [];
+      questionsRef.current = qs;
       setSessionId(data.sessionId);
-      setQuestions(data.questions);
+      setQuestions(qs);
       setCurrentIndex(0);
       setResults([]);
       setFeedback(null);
@@ -108,7 +123,7 @@ export default function PracticePage() {
       setQuestionStartTime(new Date());
       setMode("practicing");
     } catch {
-      toast({ title: "Error", description: "Failed to start session", variant: "destructive" });
+      toast({ title: "Error", description: "Failed to start session. Check your connection.", variant: "destructive" });
     } finally {
       setIsStarting(false);
     }
@@ -135,37 +150,70 @@ export default function PracticePage() {
       });
 
       const data = await response.json();
+      if (!response.ok) {
+        toast({ title: "Error", description: data.error || "Failed to submit answer", variant: "destructive" });
+        setSelectedAnswer(null);
+        return;
+      }
       setFeedback(data);
       setResults((prev) => [...prev, { correct: data.isCorrect, timeSecs }]);
     } catch {
-      toast({ title: "Error", description: "Failed to submit answer", variant: "destructive" });
+      toast({ title: "Error", description: "Failed to submit answer. Check your connection.", variant: "destructive" });
+      setSelectedAnswer(null);
     } finally {
       setIsSubmitting(false);
     }
   }
 
   async function nextQuestion() {
-    if (currentIndex + 1 >= questions.length) {
-      // Complete the session
+    // Use ref so this always sees the live questions array, not a stale closure value
+    const total = questionsRef.current.length;
+    setCurrentIndex((prev) => {
+      const next = prev + 1;
+      if (next >= total) {
+        // trigger session completion
+        completeSession();
+        return prev;
+      }
+      setSelectedAnswer(null);
+      setFeedback(null);
+      setQuestionStartTime(new Date());
+      return next;
+    });
+  }
+
+  async function completeSession() {
+    try {
       const response = await fetch(`/api/practice/${sessionId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({}),
       });
       const data = await response.json();
+      if (!response.ok) {
+        toast({ title: "Error", description: data.error || "Failed to complete session", variant: "destructive" });
+        return;
+      }
       setSessionSummary(data.summary);
       setMode("summary");
-    } else {
-      setCurrentIndex((prev) => prev + 1);
-      setSelectedAnswer(null);
-      setFeedback(null);
-      setQuestionStartTime(new Date());
+    } catch {
+      toast({ title: "Error", description: "Failed to complete session. Check your connection.", variant: "destructive" });
     }
   }
 
-  const elapsed = startTime
-    ? Math.round((Date.now() - startTime.getTime()) / 1000)
-    : 0;
+  function resetSession() {
+    questionsRef.current = [];
+    setMode("select");
+    setSessionId(null);
+    setQuestions([]);
+    setCurrentIndex(0);
+    setSelectedAnswer(null);
+    setFeedback(null);
+    setSessionSummary(null);
+    setResults([]);
+    setStartTime(null);
+    setQuestionStartTime(null);
+  }
 
   if (mode === "summary" && sessionSummary) {
     return (
@@ -204,7 +252,6 @@ export default function PracticePage() {
               </div>
             )}
 
-            {/* Question by question */}
             <div className="space-y-2">
               {results.map((r, i) => (
                 <div key={i} className="flex items-center gap-3 p-2 rounded-lg bg-secondary/50">
@@ -222,7 +269,7 @@ export default function PracticePage() {
         </Card>
 
         <div className="flex gap-3">
-          <Button onClick={() => setMode("select")} variant="outline" className="flex-1 gap-2">
+          <Button onClick={resetSession} variant="outline" className="flex-1 gap-2">
             <RotateCcw className="h-4 w-4" />
             Practice Again
           </Button>
@@ -247,12 +294,12 @@ export default function PracticePage() {
           </div>
           <div className="flex items-center gap-2 text-muted-foreground text-sm">
             <Clock className="h-4 w-4" />
-            <span>{currentIndex + 1} / {questions.length}</span>
+            <span>Question {currentIndex + 1} of {questionsRef.current.length}</span>
           </div>
         </div>
 
         <Progress
-          value={((currentIndex) / questions.length) * 100}
+          value={(currentIndex / Math.max(questionsRef.current.length, 1)) * 100}
           className="h-2"
           indicatorClassName="bg-indigo-500"
         />
@@ -260,7 +307,6 @@ export default function PracticePage() {
         {/* Question card */}
         <Card className="card-glow">
           <CardContent className="p-6 space-y-4">
-            {/* Stimulus */}
             {currentQuestion.stimulus && (
               <div className="p-4 rounded-lg bg-secondary/50 border-l-4 border-indigo-500">
                 <p className="text-sm leading-relaxed italic text-muted-foreground">
@@ -269,12 +315,10 @@ export default function PracticePage() {
               </div>
             )}
 
-            {/* Question text */}
             <p className="text-base font-medium leading-relaxed">
               {currentQuestion.questionText}
             </p>
 
-            {/* Answer choices */}
             <div className="space-y-2">
               {parsedOptions.map((option, i) => {
                 const letter = option.charAt(0);
@@ -314,7 +358,6 @@ export default function PracticePage() {
           </CardContent>
         </Card>
 
-        {/* Feedback panel */}
         {feedback && (
           <Card className={`card-glow border ${feedback.isCorrect ? "border-emerald-500/30 bg-emerald-500/5" : "border-red-500/30 bg-red-500/5"}`}>
             <CardContent className="p-5">
@@ -334,7 +377,7 @@ export default function PracticePage() {
                 </div>
               </div>
               <Button onClick={nextQuestion} className="w-full mt-4 gap-2">
-                {currentIndex + 1 >= questions.length ? "See Results" : "Next Question"}
+                {currentIndex + 1 >= questionsRef.current.length ? "See Results" : `Next Question (${currentIndex + 2} of ${questionsRef.current.length})`}
                 <ChevronRight className="h-4 w-4" />
               </Button>
             </CardContent>
@@ -351,6 +394,17 @@ export default function PracticePage() {
         <h1 className="text-3xl font-bold mb-1">Practice</h1>
         <p className="text-muted-foreground">Choose your practice mode and settings</p>
       </div>
+
+      {/* Current course indicator */}
+      <Card className="card-glow border-indigo-500/20 bg-indigo-500/5">
+        <CardContent className="p-4 flex items-center gap-3">
+          <GraduationCap className="h-5 w-5 text-indigo-400 flex-shrink-0" />
+          <div className="flex-1">
+            <p className="text-sm font-medium">{AP_COURSES[course]}</p>
+            <p className="text-xs text-muted-foreground">Switch course from the sidebar</p>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Mode selection */}
       <div className="grid grid-cols-2 gap-4">
@@ -394,9 +448,9 @@ export default function PracticePage() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="ALL">All Units</SelectItem>
-                {(Object.keys(AP_UNITS) as ApUnit[]).map((unit) => (
+                {(Object.keys(courseUnits) as ApUnit[]).map((unit) => (
                   <SelectItem key={unit} value={unit}>
-                    {AP_UNITS[unit]}
+                    {courseUnits[unit]}
                   </SelectItem>
                 ))}
               </SelectContent>

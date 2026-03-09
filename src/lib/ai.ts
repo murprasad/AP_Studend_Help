@@ -1,36 +1,25 @@
-import Anthropic from "@anthropic-ai/sdk";
-import { ApUnit, Difficulty, QuestionType } from "@prisma/client";
-import { AP_UNITS } from "./utils";
-import { UNIT_RESOURCES, GLOBAL_RESOURCES } from "@/data/resources";
+import { ApUnit, ApCourse, Difficulty, QuestionType } from "@prisma/client";
+import { COURSE_UNITS } from "./utils";
+import { COURSE_REGISTRY, getCourseForUnit } from "./courses";
+import { callAIWithCascade } from "./ai-providers";
+import { getWikipediaSummary, getEduContextForQuery } from "./edu-apis";
 
-const anthropic = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY,
-});
+// ── Unified helpers (thin wrappers over the cascade engine) ────────────────
+async function callAI(prompt: string, systemPrompt?: string): Promise<string> {
+  return callAIWithCascade(prompt, systemPrompt);
+}
 
-// ── AP Curriculum context (drawn from College Board, OER Project, Fiveable) ──
-const AP_CURRICULUM_CONTEXT = `
-You are trained on the official AP World History: Modern curriculum as defined by the College Board.
-The course covers 1200 CE to present across 9 units:
-- Unit 1 (1200-1450): Empires in Asia, Africa, and Europe; Islam's spread; trade networks
-- Unit 2 (1200-1450): Silk Roads, Mongols, Indian Ocean, Trans-Saharan trade, cultural exchange
-- Unit 3 (1450-1750): Ottoman, Safavid, Mughal, Ming/Qing empires; gunpowder; administration
-- Unit 4 (1450-1750): European maritime exploration, Columbian Exchange, Atlantic slave trade, colonialism
-- Unit 5 (1750-1900): Enlightenment, Atlantic Revolutions (American, French, Haitian, Latin American)
-- Unit 6 (1750-1900): Industrial Revolution, imperialism, social effects, resistance movements
-- Unit 7 (1900-present): WWI, WWII, causes of global conflict, nationalism, propaganda
-- Unit 8 (1900-present): Cold War, decolonization, independence movements, proxy wars
-- Unit 9 (1900-present): Globalization, economic integration, technology, cultural exchange, environment
+async function callAIChat(
+  messages: Array<{ role: "user" | "assistant"; content: string }>,
+  systemPrompt: string
+): Promise<string> {
+  const history = messages.slice(0, -1);
+  const lastMsg = messages[messages.length - 1];
+  return callAIWithCascade(lastMsg.content, systemPrompt, history);
+}
 
-AP Historical Thinking Skills: Argumentation, Causation, Comparison, Continuity & Change Over Time, Contextualization
-AP Disciplinary Practices: Analyzing evidence, reasoning about historical context, making historical claims
-
-Key AP exam resources this tutor references:
-- College Board AP Central (official curriculum)
-- OER Project World History (open educational resources)
-- Fiveable AP World History study guides
-- Zinn Education Project (multiple perspectives)
-- World History For Us All (SDSU)
-`;
+// Course contexts and tutor resources live in src/lib/courses.ts (COURSE_REGISTRY).
+// Access them via: COURSE_REGISTRY[course].curriculumContext / .tutorResources
 
 export interface GeneratedQuestion {
   unit: ApUnit;
@@ -45,7 +34,7 @@ export interface GeneratedQuestion {
   explanation: string;
 }
 
-// ── Fetch web content from open educational resources ─────────────────────
+// ── Fetch web content from open educational resources ──────────────────────
 async function fetchResourceContent(url: string): Promise<string> {
   try {
     const response = await fetch(url, {
@@ -68,78 +57,93 @@ async function fetchResourceContent(url: string): Promise<string> {
 
 // Get unit-specific curriculum context from open resources
 async function getUnitContext(unit: ApUnit): Promise<string> {
-  const unitResource = UNIT_RESOURCES.find((r) => r.unit === unit);
-  if (!unitResource) return "";
+  const course = getCourseForUnit(unit);
+  const unitMeta = COURSE_REGISTRY[course]?.units[unit];
+  if (!unitMeta) return "";
 
-  const context = `
-Unit: ${unitResource.unitName} (${unitResource.timePeriod})
-Key Themes: ${unitResource.keyThemes.join(", ")}
-Study Resources: OER Project, Fiveable, College Board AP Central
-`;
+  const context = [
+    `Unit: ${unitMeta.name}${unitMeta.timePeriod ? ` (${unitMeta.timePeriod})` : ""}`,
+    unitMeta.keyThemes?.length ? `Key Themes: ${unitMeta.keyThemes.join(", ")}` : "",
+    "Study Resources: OER Project, Fiveable, College Board AP Central, Wikipedia, Library of Congress",
+  ].filter(Boolean).join("\n");
 
-  // Try to fetch Fiveable content for richer context
-  const fiveableContent = await fetchResourceContent(unitResource.fiveableUrl);
-  if (fiveableContent) {
-    return context + `\nCurriculum Content Preview:\n${fiveableContent.slice(0, 1000)}`;
+  // Fetch Fiveable and Wikipedia in parallel when available
+  const [fiveableContent, wikiResult] = await Promise.allSettled([
+    unitMeta.fiveableUrl ? fetchResourceContent(unitMeta.fiveableUrl) : Promise.resolve(""),
+    getWikipediaSummary(unitMeta.name.replace(/Unit \d+: /, "")),
+  ]);
+
+  let enriched = context;
+  if (fiveableContent.status === "fulfilled" && fiveableContent.value) {
+    enriched += `\nFiveable curriculum content:\n${fiveableContent.value.slice(0, 800)}`;
   }
-
-  return context;
+  if (wikiResult.status === "fulfilled" && wikiResult.value?.summary) {
+    enriched += `\nWikipedia overview:\n${wikiResult.value.summary.slice(0, 400)}`;
+  }
+  return enriched;
 }
 
-// ── Question Generation ───────────────────────────────────────────────────
-export async function generateQuestion(
+// ── Question generation prompt — data-driven via COURSE_REGISTRY ───────────
+// To customise for a new course, update examAlignmentNotes / stimulusRequirement
+// / stimulusDescription / explanationGuidance in that course's CourseConfig.
+
+function buildQuestionPrompt(
+  course: ApCourse,
   unit: ApUnit,
+  unitName: string,
   difficulty: Difficulty,
-  questionType: QuestionType = QuestionType.MCQ,
   topic?: string
-): Promise<GeneratedQuestion> {
-  const unitName = AP_UNITS[unit];
-  const unitResource = UNIT_RESOURCES.find((r) => r.unit === unit);
-  const topicContext = topic ? `specifically about: ${topic}` : "";
-  const keyThemes = unitResource?.keyThemes.join(", ") || "";
-  const timePeriod = unitResource?.timePeriod || "";
+): string {
+  const config = COURSE_REGISTRY[course];
+  const unitMeta = config.units[unit];
 
-  const prompt = `You are an AP World History exam question generator trained on College Board AP Central curriculum standards.
+  const unitHeader = [
+    `Unit: ${unitName}${unitMeta?.timePeriod ? ` (${unitMeta.timePeriod})` : ""}`,
+    unitMeta?.keyThemes?.length ? `Key Themes for this unit: ${unitMeta.keyThemes.join(", ")}` : "",
+    `Difficulty: ${difficulty}`,
+    `Topic: ${topic ? `specifically about: ${topic}` : "any major theme from this unit"}`,
+  ].filter(Boolean).join("\n");
 
-Unit: ${unitName} (${timePeriod})
-Key Themes for this unit: ${keyThemes}
-Difficulty: ${difficulty}
-Topic: ${topicContext || "any major theme from this unit"}
+  return `You are an ${config.name} exam question generator trained on College Board ${config.name} curriculum standards.
 
-AP Exam alignment:
-- Questions must align with College Board AP World History: Modern curriculum
-- Use AP Historical Thinking Skills (Causation, Comparison, CCOT, Contextualization)
-- MCQ questions often use a primary source stimulus (document, image, map, chart)
-- Difficulty EASY = straightforward recall; MEDIUM = analysis; HARD = synthesis across themes
+${unitHeader}
+
+${config.examAlignmentNotes}
 
 Requirements:
-- Create a historically accurate, College Board-style question
-- Include a primary source stimulus if appropriate (quote from historical document, description of map/image)
+- Create a College Board-style multiple choice question
+- ${config.stimulusRequirement}
 - Provide exactly 4 answer choices labeled A, B, C, D
 - Only one correct answer
-- Explanation should reference why each wrong answer is a "trap" (common misconception)
+- Explanation should ${config.explanationGuidance}
 
 Return ONLY a JSON object (no markdown, no extra text):
 {
   "topic": "specific topic name",
   "subtopic": "specific subtopic",
   "questionText": "the question text",
-  "stimulus": "primary source passage or description (null if not needed)",
+  "stimulus": "${config.stimulusDescription}",
   "options": ["A) option text", "B) option text", "C) option text", "D) option text"],
   "correctAnswer": "A",
-  "explanation": "detailed explanation referencing historical evidence"
+  "explanation": "detailed explanation ${config.explanationGuidance}"
 }`;
+}
 
-  const message = await anthropic.messages.create({
-    model: "claude-sonnet-4-6",
-    max_tokens: 1200,
-    messages: [{ role: "user", content: prompt }],
-  });
+// ── Question Generation ────────────────────────────────────────────────────
+export async function generateQuestion(
+  unit: ApUnit,
+  difficulty: Difficulty,
+  questionType: QuestionType = QuestionType.MCQ,
+  topic?: string,
+  course?: ApCourse
+): Promise<GeneratedQuestion> {
+  const inferredCourse = course || getCourseForUnit(unit);
+  const unitName = COURSE_REGISTRY[inferredCourse].units[unit]?.name || unit;
+  const prompt = buildQuestionPrompt(inferredCourse, unit, unitName, difficulty, topic);
 
-  const content = message.content[0];
-  if (content.type !== "text") throw new Error("Unexpected response type from AI");
-
-  const parsed = JSON.parse(content.text);
+  const rawResponse = await callAI(prompt);
+  const rawText = rawResponse.trim().replace(/^```json\s*/i, "").replace(/```\s*$/i, "");
+  const parsed = JSON.parse(rawText);
 
   return {
     unit,
@@ -161,9 +165,12 @@ Return ONLY a JSON object (no markdown, no extra text):
 export async function generateBulkQuestions(
   count: number = 5,
   unit?: ApUnit,
-  difficulty?: Difficulty
+  difficulty?: Difficulty,
+  course?: ApCourse
 ): Promise<GeneratedQuestion[]> {
-  const units = unit ? [unit] : (Object.keys(AP_UNITS) as ApUnit[]);
+  const targetCourse: ApCourse = course || "AP_WORLD_HISTORY";
+  const courseUnitKeys = Object.keys(COURSE_UNITS[targetCourse]) as ApUnit[];
+  const units = unit ? [unit] : courseUnitKeys;
   const difficulties: Difficulty[] = difficulty
     ? [difficulty]
     : [Difficulty.EASY, Difficulty.MEDIUM, Difficulty.HARD];
@@ -173,13 +180,12 @@ export async function generateBulkQuestions(
   for (let i = 0; i < count; i++) {
     const randomUnit = units[Math.floor(Math.random() * units.length)];
     const randomDiff = difficulties[Math.floor(Math.random() * difficulties.length)];
-    const unitResource = UNIT_RESOURCES.find((r) => r.unit === randomUnit);
-    const randomTopic = unitResource?.keyThemes[
-      Math.floor(Math.random() * (unitResource?.keyThemes.length || 1))
-    ];
+    const unitMeta = COURSE_REGISTRY[targetCourse].units[randomUnit];
+    const keyThemes = unitMeta?.keyThemes || [];
+    const randomTopic = keyThemes[Math.floor(Math.random() * keyThemes.length)];
 
     try {
-      const q = await generateQuestion(randomUnit, randomDiff, QuestionType.MCQ, randomTopic);
+      const q = await generateQuestion(randomUnit, randomDiff, QuestionType.MCQ, randomTopic, targetCourse);
       questions.push(q);
     } catch (error) {
       console.error(`Failed to generate question ${i + 1}:`, error);
@@ -189,38 +195,48 @@ export async function generateBulkQuestions(
   return questions;
 }
 
-// ── Study Plan Generation ─────────────────────────────────────────────────
+// ── Study Plan Generation ──────────────────────────────────────────────────
 export async function generateStudyPlan(
   masteryScores: Array<{ unit: ApUnit; masteryScore: number; accuracy: number }>,
-  recentPerformance: { accuracy: number; totalAnswered: number }
+  recentPerformance: { accuracy: number; totalAnswered: number },
+  course: ApCourse = "AP_WORLD_HISTORY"
 ): Promise<object> {
+  const courseUnits = COURSE_UNITS[course];
   const unitSummary = masteryScores
-    .map((m) => `${AP_UNITS[m.unit]}: ${m.masteryScore.toFixed(0)}% mastery, ${m.accuracy.toFixed(0)}% accuracy`)
+    .map((m) => `${courseUnits[m.unit] || m.unit}: ${m.masteryScore.toFixed(0)}% mastery, ${m.accuracy.toFixed(0)}% accuracy`)
     .join("\n");
 
-  // Build resource recommendations per weak unit
   const weakUnits = masteryScores
     .filter((m) => m.masteryScore < 70)
     .sort((a, b) => a.masteryScore - b.masteryScore)
     .slice(0, 3);
 
-  const resourceRecs = weakUnits.map((w) => {
-    const ur = UNIT_RESOURCES.find((r) => r.unit === w.unit);
-    return ur
-      ? `${AP_UNITS[w.unit]}: Watch Heimler's History (youtube.com/watch?v=${ur.heimlerVideoId}), Study at Fiveable (${ur.fiveableUrl}), Practice on OER Project (${ur.oerUrl})`
-      : "";
-  }).filter(Boolean).join("\n");
+  // Build resource recommendations for weak units using registry data
+  const config = COURSE_REGISTRY[course];
+  const resourceRecs = weakUnits
+    .map((w) => {
+      const unitMeta = config.units[w.unit as ApUnit];
+      if (!unitMeta) return "";
+      const links: string[] = [];
+      if (unitMeta.heimlerVideoId) links.push(`Heimler's History (youtube.com/watch?v=${unitMeta.heimlerVideoId})`);
+      if (unitMeta.fiveableUrl) links.push(`Fiveable (${unitMeta.fiveableUrl})`);
+      return links.length ? `${courseUnits[w.unit]}: ${links.join(", ")}` : "";
+    })
+    .filter(Boolean)
+    .join("\n");
 
-  const prompt = `You are an expert AP World History tutor creating a personalized study plan.
-You reference these proven resources: College Board AP Central, OER Project, Fiveable, Heimler's History (YouTube), Khan Academy, PracticeQuiz, Zinn Education Project.
+  const courseContext = config.curriculumContext;
+
+  const prompt = `You are an expert ${config.name} tutor creating a personalized study plan.
+
+${courseContext}
 
 Student's current mastery scores:
-${unitSummary}
+${unitSummary || "No practice data yet — student is just starting out."}
 
 Recent performance: ${recentPerformance.accuracy.toFixed(0)}% accuracy across ${recentPerformance.totalAnswered} questions
 
-Recommended resources for weak units:
-${resourceRecs || "Practice all units consistently"}
+${resourceRecs ? `Recommended resources for weak units:\n${resourceRecs}` : ""}
 
 Create a 1-week personalized study plan. Return ONLY a JSON object:
 {
@@ -234,7 +250,7 @@ Create a 1-week personalized study plan. Return ONLY a JSON object:
       "mcqCount": 10,
       "saqCount": 2,
       "estimatedMinutes": 25,
-      "resources": ["Heimler's History video", "Fiveable study guide", "OER Project reading"]
+      "resources": ["specific resource 1", "specific resource 2"]
     }
   ],
   "strengths": ["strong units/topics to maintain"],
@@ -249,105 +265,91 @@ Create a 1-week personalized study plan. Return ONLY a JSON object:
   }
 }`;
 
-  const message = await anthropic.messages.create({
-    model: "claude-sonnet-4-6",
-    max_tokens: 1500,
-    messages: [{ role: "user", content: prompt }],
-  });
-
-  const content = message.content[0];
-  if (content.type !== "text") throw new Error("Unexpected response type from AI");
-  return JSON.parse(content.text);
+  const rawResponse = await callAI(prompt);
+  const rawText = rawResponse.trim().replace(/^```json\s*/i, "").replace(/```\s*$/i, "");
+  return JSON.parse(rawText);
 }
 
-// ── AI Tutor (Enhanced with curriculum resources) ─────────────────────────
+// ── AI Tutor ───────────────────────────────────────────────────────────────
 export async function askTutor(
   question: string,
   conversationHistory: Array<{ role: "user" | "assistant"; content: string }>,
-  unitContext?: ApUnit
+  unitContext?: ApUnit,
+  course: ApCourse = "AP_WORLD_HISTORY"
 ): Promise<string> {
-  // Optionally fetch live content from open resources
+  const courseConfig = COURSE_REGISTRY[course];
   let liveContext = "";
-  if (unitContext) {
-    const ur = UNIT_RESOURCES.find((r) => r.unit === unitContext);
-    if (ur) {
-      const content = await fetchResourceContent(ur.fiveableUrl);
-      if (content) liveContext = `\n\nCurrent study material from Fiveable:\n${content.slice(0, 800)}`;
+
+  // Enrich with live content if enabled for this course (see enrichWithEduAPIs in courses.ts)
+  if (courseConfig.enrichWithEduAPIs) {
+    const [unitCtx, eduCtx] = await Promise.allSettled([
+      unitContext
+        ? (() => {
+            const fiveableUrl = courseConfig.units[unitContext]?.fiveableUrl;
+            return fiveableUrl ? fetchResourceContent(fiveableUrl) : Promise.resolve("");
+          })()
+        : Promise.resolve(""),
+      getEduContextForQuery(question.slice(0, 120)),
+    ]);
+
+    if (unitCtx.status === "fulfilled" && unitCtx.value) {
+      liveContext += `\n\nFiveable study material:\n${unitCtx.value.slice(0, 600)}`;
+    }
+    if (eduCtx.status === "fulfilled" && eduCtx.value) {
+      liveContext += `\n\nOpen educational sources (Wikipedia / Library of Congress):\n${eduCtx.value.slice(0, 800)}`;
     }
   }
 
-  const systemPrompt = `You are an expert AP World History tutor for high school students (ages 15-18).
+  const systemPrompt = `You are an expert ${courseConfig.name} tutor for high school students (ages 15-18).
 
-${AP_CURRICULUM_CONTEXT}
+${courseConfig.curriculumContext}
 ${liveContext}
 
 Your teaching approach:
-- Reference specific resources when helpful: "Check out Heimler's History on YouTube for a great video on this", "Fiveable has excellent study guides at library.fiveable.me/ap-world", "The OER Project has primary sources at oerproject.com/AP-World-History", "Khan Academy has free lessons at khanacademy.org/humanities/ap-world-history"
-- Connect every answer to AP exam skills (Causation, Comparison, CCOT, Contextualization, Argumentation)
-- Use specific dates, people, and examples from the AP curriculum
-- When explaining historical events, note how they connect to AP exam themes
-- Suggest practice questions or study strategies when relevant
+- Connect every answer to AP exam skills and big ideas for ${courseConfig.name}
+- Use specific, accurate examples from the curriculum
+- When explaining concepts, note how they connect to AP exam themes and question types
+- Suggest practice strategies and resources when relevant
 - Keep explanations clear and engaging for high schoolers
 - Format with headers and bullets when explaining complex topics
 - Always mention if a topic is HIGH PRIORITY for the AP exam
 
-When referencing resources:
-- Heimler's History (YouTube): Great for visual reviews of each unit
-- Khan Academy: Free videos and articles on all topics
-- Fiveable: Excellent study guides and key concept summaries
-- OER Project: Primary sources and in-depth readings
-- College Board AP Central: Official exam info and sample questions
-- Zinn Education Project: Alternative perspectives and primary sources
-- PracticeQuiz: Additional MCQ practice`;
+${courseConfig.tutorResources}`;
 
   const messages = [
     ...conversationHistory,
     { role: "user" as const, content: question },
   ];
 
-  const response = await anthropic.messages.create({
-    model: "claude-sonnet-4-6",
-    max_tokens: 1200,
-    system: systemPrompt,
-    messages,
-  });
-
-  const content = response.content[0];
-  if (content.type !== "text") throw new Error("Unexpected response type from AI");
-  return content.text;
+  return callAIChat(messages, systemPrompt);
 }
 
-// ── Explanation Generator ─────────────────────────────────────────────────
+// ── Explanation Generator ──────────────────────────────────────────────────
 export async function generateExplanation(
   questionText: string,
   correctAnswer: string,
   studentAnswer: string,
-  context: string
+  context: string,
+  course: ApCourse = "AP_WORLD_HISTORY"
 ): Promise<string> {
-  const prompt = `An AP World History student answered a question incorrectly.
+  const { name: courseName, curriculumContext } = COURSE_REGISTRY[course];
+
+  const prompt = `An ${courseName} student answered a question incorrectly.
 
 Question: ${questionText}
 Correct Answer: ${correctAnswer}
 Student's Answer: ${studentAnswer}
 Context: ${context}
 
-${AP_CURRICULUM_CONTEXT}
+${curriculumContext}
 
 Provide a brief, encouraging explanation (3-4 sentences) that:
-1. Explains why the correct answer is historically accurate
+1. Explains why the correct answer is accurate
 2. Clarifies the student's misconception
-3. Gives a memory tip or connects to broader AP themes
-4. Suggests a resource: Heimler's History, Khan Academy, Fiveable, or OER Project
+3. Gives a memory tip or connects to broader AP exam themes
+4. Suggests a relevant resource for further review
 
 Be supportive and educational.`;
 
-  const message = await anthropic.messages.create({
-    model: "claude-sonnet-4-6",
-    max_tokens: 512,
-    messages: [{ role: "user", content: prompt }],
-  });
-
-  const content = message.content[0];
-  if (content.type !== "text") throw new Error("Unexpected response type from AI");
-  return content.text;
+  return callAI(prompt);
 }

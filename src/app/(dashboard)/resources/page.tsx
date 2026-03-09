@@ -6,11 +6,16 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   GLOBAL_RESOURCES,
-  UNIT_RESOURCES,
   EXAM_SKILLS,
 } from "@/data/resources";
-import { AP_UNITS } from "@/lib/utils";
+import { COURSE_REGISTRY } from "@/lib/courses";
 import { ApUnit } from "@prisma/client";
+
+// Build unit resource list from the registry (currently World History only on this page).
+// To make this course-aware, wire up useCourse() and swap AP_WORLD_HISTORY below.
+const UNIT_ITEMS = (
+  Object.entries(COURSE_REGISTRY.AP_WORLD_HISTORY.units) as [ApUnit, NonNullable<(typeof COURSE_REGISTRY.AP_WORLD_HISTORY.units)[ApUnit]>][]
+).map(([unit, meta]) => ({ unit, ...meta }));
 import {
   ExternalLink,
   Play,
@@ -60,7 +65,7 @@ export default function ResourcesPage() {
   const [activeTab, setActiveTab] = useState<"resources" | "videos" | "skills">("resources");
 
   const unitResource = expandedUnit
-    ? UNIT_RESOURCES.find((r) => r.unit === expandedUnit)
+    ? UNIT_ITEMS.find((r) => r.unit === expandedUnit)
     : null;
 
   return (
@@ -142,7 +147,7 @@ export default function ResourcesPage() {
           <div>
             <h2 className="text-xl font-bold mb-4">Resources by Unit</h2>
             <div className="space-y-3">
-              {UNIT_RESOURCES.map((ur) => (
+              {UNIT_ITEMS.map((ur) => (
                 <Card key={ur.unit} className="card-glow">
                   <CardContent className="p-0">
                     <button
@@ -154,7 +159,7 @@ export default function ResourcesPage() {
                           {ur.unit.replace("UNIT_", "U").split("_")[0].replace("U", "")}
                         </div>
                         <div>
-                          <p className="font-medium text-sm">{ur.unitName}</p>
+                          <p className="font-medium text-sm">{ur.name}</p>
                           <p className="text-xs text-muted-foreground">{ur.timePeriod}</p>
                         </div>
                       </div>
@@ -171,7 +176,7 @@ export default function ResourcesPage() {
                         <div>
                           <p className="text-xs font-medium text-muted-foreground mb-2">KEY THEMES</p>
                           <div className="flex flex-wrap gap-2">
-                            {ur.keyThemes.map((theme) => (
+                            {(ur.keyThemes || []).map((theme) => (
                               <Badge key={theme} variant="secondary" className="text-xs">
                                 {theme}
                               </Badge>
@@ -188,7 +193,7 @@ export default function ResourcesPage() {
                           <div className="rounded-lg overflow-hidden aspect-video bg-black">
                             <iframe
                               src={`https://www.youtube.com/embed/${ur.heimlerVideoId}?rel=0&modestbranding=1`}
-                              title={`Heimler's History - ${ur.unitName}`}
+                              title={`Heimler's History - ${ur.name}`}
                               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                               allowFullScreen
                               className="w-full h-full"
@@ -200,14 +205,16 @@ export default function ResourcesPage() {
                         <div>
                           <p className="text-xs font-medium text-muted-foreground mb-2">STUDY LINKS</p>
                           <div className="grid grid-cols-2 gap-2">
-                            {[
-                              { label: "OER Project", url: ur.oerUrl, icon: BookOpen, color: "text-emerald-400" },
-                              { label: "Fiveable", url: ur.fiveableUrl, icon: Zap, color: "text-yellow-400" },
-                              { label: "Zinn Project", url: ur.zinnUrl, icon: FileText, color: "text-orange-400" },
-                              { label: "World History", url: ur.worldHistoryUrl, icon: Globe, color: "text-cyan-400" },
-                              { label: "PracticeQuiz", url: ur.practiceQuizUrl, icon: ClipboardCheck, color: "text-purple-400" },
-                              { label: "Khan Academy", url: `https://www.khanacademy.org/humanities/ap-world-history`, icon: Play, color: "text-green-400" },
-                            ].map((link) => (
+                            {(
+                              [
+                                ur.oerUrl ? { label: "OER Project", url: ur.oerUrl, icon: BookOpen, color: "text-emerald-400" } : null,
+                                ur.fiveableUrl ? { label: "Fiveable", url: ur.fiveableUrl, icon: Zap, color: "text-yellow-400" } : null,
+                                ur.zinnUrl ? { label: "Zinn Project", url: ur.zinnUrl, icon: FileText, color: "text-orange-400" } : null,
+                                ur.worldHistoryUrl ? { label: "World History", url: ur.worldHistoryUrl, icon: Globe, color: "text-cyan-400" } : null,
+                                { label: "PracticeQuiz", url: "https://www.practicequiz.com/ap-world-history-practice-test", icon: ClipboardCheck, color: "text-purple-400" },
+                                { label: "Khan Academy", url: "https://www.khanacademy.org/humanities/ap-world-history", icon: Play, color: "text-green-400" },
+                              ] as { label: string; url: string; icon: React.ElementType; color: string }[]
+                            ).filter((x): x is NonNullable<typeof x> => x !== null).map((link) => (
                               <a
                                 key={link.label}
                                 href={link.url}
@@ -264,14 +271,14 @@ export default function ResourcesPage() {
 
           <h2 className="text-xl font-bold">Unit Video Reviews</h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {UNIT_RESOURCES.map((ur) => (
+            {UNIT_ITEMS.filter((ur) => ur.heimlerVideoId).map((ur) => (
               <div key={ur.unit} className="space-y-2">
-                <p className="text-sm font-medium">{ur.unitName}</p>
+                <p className="text-sm font-medium">{ur.name}</p>
                 <p className="text-xs text-muted-foreground">{ur.timePeriod}</p>
                 <div className="rounded-lg overflow-hidden aspect-video bg-black border border-border/40">
                   <iframe
                     src={`https://www.youtube.com/embed/${ur.heimlerVideoId}?rel=0&modestbranding=1`}
-                    title={`Heimler's History - ${ur.unitName}`}
+                    title={`Heimler's History - ${ur.name}`}
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen
                     className="w-full h-full"

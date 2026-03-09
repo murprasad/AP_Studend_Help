@@ -4,67 +4,95 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { ApUnit } from "@prisma/client";
 import { estimateApScore } from "@/lib/utils";
+import { getCourseForUnit } from "@/lib/courses";
 
 // Submit an answer for a question in a session
 export async function POST(
   req: NextRequest,
   { params }: { params: { sessionId: string } }
 ) {
-  const session = await getServerSession(authOptions);
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { questionId, answer, timeSpentSecs } = await req.json();
-  const { sessionId } = params;
+    const body = await req.json();
+    const { questionId, answer, timeSpentSecs } = body;
+    const { sessionId } = params;
 
-  // Verify session belongs to user
-  const practiceSession = await prisma.practiceSession.findFirst({
-    where: { id: sessionId, userId: session.user.id },
-  });
+    if (!questionId || !answer) {
+      return NextResponse.json({ error: "questionId and answer are required" }, { status: 400 });
+    }
 
-  if (!practiceSession) {
-    return NextResponse.json({ error: "Session not found" }, { status: 404 });
-  }
+    // Verify session belongs to user
+    const practiceSession = await prisma.practiceSession.findFirst({
+      where: { id: sessionId, userId: session.user.id },
+    });
 
-  // Get the question to check answer
-  const question = await prisma.question.findUnique({
-    where: { id: questionId },
-  });
+    if (!practiceSession) {
+      return NextResponse.json({ error: "Session not found" }, { status: 404 });
+    }
 
-  if (!question) {
-    return NextResponse.json({ error: "Question not found" }, { status: 404 });
-  }
+    if (practiceSession.status === "COMPLETED") {
+      return NextResponse.json({ error: "Session already completed" }, { status: 400 });
+    }
 
-  const isCorrect = answer.toUpperCase() === question.correctAnswer.toUpperCase();
+    // Get the question to check answer
+    const question = await prisma.question.findUnique({
+      where: { id: questionId },
+    });
 
-  // Record the response
-  await prisma.studentResponse.create({
-    data: {
-      userId: session.user.id,
-      questionId,
-      sessionId,
-      studentAnswer: answer,
+    if (!question) {
+      return NextResponse.json({ error: "Question not found" }, { status: 404 });
+    }
+
+    const isCorrect = answer.toUpperCase() === question.correctAnswer.toUpperCase();
+
+    // Check if already answered in this session
+    const existingResponse = await prisma.studentResponse.findFirst({
+      where: { userId: session.user.id, questionId, sessionId },
+    });
+
+    if (existingResponse) {
+      return NextResponse.json({
+        isCorrect: existingResponse.isCorrect,
+        correctAnswer: question.correctAnswer,
+        explanation: question.explanation,
+      });
+    }
+
+    // Record the response
+    await prisma.studentResponse.create({
+      data: {
+        userId: session.user.id,
+        questionId,
+        sessionId,
+        studentAnswer: answer,
+        isCorrect,
+        timeSpentSecs: timeSpentSecs || 0,
+      },
+    });
+
+    // Update question stats
+    await prisma.question.update({
+      where: { id: questionId },
+      data: {
+        timesAnswered: { increment: 1 },
+        timesCorrect: { increment: isCorrect ? 1 : 0 },
+      },
+    });
+
+    // Update mastery score for this unit
+    await updateMasteryScore(session.user.id, question.unit);
+
+    return NextResponse.json({
       isCorrect,
-      timeSpentSecs: timeSpentSecs || 0,
-    },
-  });
-
-  // Update question stats
-  await prisma.question.update({
-    where: { id: questionId },
-    data: {
-      timesAnswered: { increment: 1 },
-      timesCorrect: { increment: isCorrect ? 1 : 0 },
-    },
-  });
-
-  // Update mastery score for this unit
-  await updateMasteryScore(session.user.id, question.unit);
-
-  return NextResponse.json({
-    isCorrect,
-    correctAnswer: question.correctAnswer,
-    explanation: question.explanation,
-  });
+      correctAnswer: question.correctAnswer,
+      explanation: question.explanation,
+    });
+  } catch (error) {
+    console.error("POST /api/practice/[sessionId] error:", error);
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+  }
 }
 
 // Complete a session
@@ -72,145 +100,178 @@ export async function PATCH(
   req: NextRequest,
   { params }: { params: { sessionId: string } }
 ) {
-  const session = await getServerSession(authOptions);
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { sessionId } = params;
+    const { sessionId } = params;
 
-  const practiceSession = await prisma.practiceSession.findFirst({
-    where: { id: sessionId, userId: session.user.id },
-  });
+    const practiceSession = await prisma.practiceSession.findFirst({
+      where: { id: sessionId, userId: session.user.id },
+    });
 
-  if (!practiceSession) {
-    return NextResponse.json({ error: "Session not found" }, { status: 404 });
+    if (!practiceSession) {
+      return NextResponse.json({ error: "Session not found" }, { status: 404 });
+    }
+
+    if (practiceSession.status === "COMPLETED") {
+      // Return existing summary
+      const responses = await prisma.studentResponse.findMany({ where: { sessionId } });
+      const correctCount = responses.filter((r) => r.isCorrect).length;
+      const totalTime = responses.reduce((sum, r) => sum + r.timeSpentSecs, 0);
+      const accuracy = responses.length > 0 ? (correctCount / responses.length) * 100 : 0;
+      return NextResponse.json({
+        session: practiceSession,
+        summary: {
+          totalQuestions: responses.length,
+          correctAnswers: correctCount,
+          accuracy: Math.round(accuracy),
+          timeSpentSecs: totalTime,
+          xpEarned: 0,
+          apScoreEstimate: practiceSession.apScoreEstimate || 0,
+        },
+      });
+    }
+
+    // Get all responses for this session
+    const responses = await prisma.studentResponse.findMany({
+      where: { sessionId },
+    });
+
+    const correctCount = responses.filter((r) => r.isCorrect).length;
+    const totalTime = responses.reduce((sum, r) => sum + r.timeSpentSecs, 0);
+    const accuracy = responses.length > 0 ? (correctCount / responses.length) * 100 : 0;
+    const apScore = estimateApScore(accuracy, responses.length);
+
+    const updatedSession = await prisma.practiceSession.update({
+      where: { id: sessionId },
+      data: {
+        status: "COMPLETED",
+        correctAnswers: correctCount,
+        timeSpentSecs: totalTime,
+        score: accuracy,
+        apScoreEstimate: apScore,
+        completedAt: new Date(),
+      },
+    });
+
+    // Update user XP and streak
+    const xpEarned = Math.round(correctCount * 10 + (accuracy >= 80 ? 50 : 0));
+    await updateUserProgress(session.user.id, xpEarned);
+
+    return NextResponse.json({
+      session: updatedSession,
+      summary: {
+        totalQuestions: responses.length,
+        correctAnswers: correctCount,
+        accuracy: Math.round(accuracy),
+        timeSpentSecs: totalTime,
+        xpEarned,
+        apScoreEstimate: apScore,
+      },
+    });
+  } catch (error) {
+    console.error("PATCH /api/practice/[sessionId] error:", error);
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
-
-  // Get all responses for this session
-  const responses = await prisma.studentResponse.findMany({
-    where: { sessionId },
-  });
-
-  const correctCount = responses.filter((r) => r.isCorrect).length;
-  const totalTime = responses.reduce((sum, r) => sum + r.timeSpentSecs, 0);
-  const accuracy = responses.length > 0 ? (correctCount / responses.length) * 100 : 0;
-  const apScore = estimateApScore(accuracy, responses.length);
-
-  const updatedSession = await prisma.practiceSession.update({
-    where: { id: sessionId },
-    data: {
-      status: "COMPLETED",
-      correctAnswers: correctCount,
-      timeSpentSecs: totalTime,
-      score: accuracy,
-      apScoreEstimate: apScore,
-      completedAt: new Date(),
-    },
-  });
-
-  // Update user XP and streak
-  const xpEarned = Math.round(correctCount * 10 + (accuracy >= 80 ? 50 : 0));
-  await updateUserProgress(session.user.id, xpEarned);
-
-  return NextResponse.json({
-    session: updatedSession,
-    summary: {
-      totalQuestions: responses.length,
-      correctAnswers: correctCount,
-      accuracy: Math.round(accuracy),
-      timeSpentSecs: totalTime,
-      xpEarned,
-      apScoreEstimate: apScore,
-    },
-  });
 }
 
 async function updateMasteryScore(userId: string, unit: ApUnit) {
-  const responses = await prisma.studentResponse.findMany({
-    where: {
-      userId,
-      question: { unit },
-    },
-    orderBy: { answeredAt: "desc" },
-    take: 50,
-  });
+  try {
+    const responses = await prisma.studentResponse.findMany({
+      where: {
+        userId,
+        question: { unit },
+      },
+      orderBy: { answeredAt: "desc" },
+      take: 50,
+    });
 
-  if (responses.length === 0) return;
+    if (responses.length === 0) return;
 
-  const totalAttempts = responses.length;
-  const correctAttempts = responses.filter((r) => r.isCorrect).length;
-  const accuracy = (correctAttempts / totalAttempts) * 100;
+    const totalAttempts = responses.length;
+    const correctAttempts = responses.filter((r) => r.isCorrect).length;
+    const accuracy = (correctAttempts / totalAttempts) * 100;
 
-  // Weighted mastery: recent performance matters more
-  const recentResponses = responses.slice(0, 10);
-  const recentAccuracy =
-    recentResponses.length > 0
-      ? (recentResponses.filter((r) => r.isCorrect).length / recentResponses.length) * 100
-      : 0;
+    const recentResponses = responses.slice(0, 10);
+    const recentAccuracy =
+      recentResponses.length > 0
+        ? (recentResponses.filter((r) => r.isCorrect).length / recentResponses.length) * 100
+        : 0;
 
-  const masteryScore = accuracy * 0.4 + recentAccuracy * 0.6;
-  const avgTimeSecs =
-    responses.reduce((sum, r) => sum + r.timeSpentSecs, 0) / totalAttempts;
+    const masteryScore = accuracy * 0.4 + recentAccuracy * 0.6;
+    const avgTimeSecs =
+      responses.reduce((sum, r) => sum + r.timeSpentSecs, 0) / totalAttempts;
 
-  await prisma.masteryScore.upsert({
-    where: { userId_unit: { userId, unit } },
-    create: {
-      userId,
-      unit,
-      masteryScore,
-      accuracy,
-      totalAttempts,
-      correctAttempts,
-      avgTimeSecs,
-      lastPracticed: new Date(),
-    },
-    update: {
-      masteryScore,
-      accuracy,
-      totalAttempts,
-      correctAttempts,
-      avgTimeSecs,
-      lastPracticed: new Date(),
-    },
-  });
+    // Determine course from unit via registry lookup
+    const course = getCourseForUnit(unit);
+
+    await prisma.masteryScore.upsert({
+      where: { userId_unit: { userId, unit } },
+      create: {
+        userId,
+        course,
+        unit,
+        masteryScore,
+        accuracy,
+        totalAttempts,
+        correctAttempts,
+        avgTimeSecs,
+        lastPracticed: new Date(),
+      },
+      update: {
+        course,
+        masteryScore,
+        accuracy,
+        totalAttempts,
+        correctAttempts,
+        avgTimeSecs,
+        lastPracticed: new Date(),
+      },
+    });
+  } catch (error) {
+    console.error("updateMasteryScore error:", error);
+  }
 }
 
 async function updateUserProgress(userId: string, xpEarned: number) {
-  const user = await prisma.user.findUnique({ where: { id: userId } });
-  if (!user) return;
+  try {
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (!user) return;
 
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
 
-  const lastActive = user.lastActiveDate
-    ? new Date(user.lastActiveDate)
-    : null;
+    const lastActive = user.lastActiveDate ? new Date(user.lastActiveDate) : null;
 
-  let newStreak = user.streakDays;
-  if (lastActive) {
-    const yesterday = new Date(today);
-    yesterday.setDate(yesterday.getDate() - 1);
-    lastActive.setHours(0, 0, 0, 0);
+    let newStreak = user.streakDays;
+    if (lastActive) {
+      const yesterday = new Date(today);
+      yesterday.setDate(yesterday.getDate() - 1);
+      lastActive.setHours(0, 0, 0, 0);
 
-    if (lastActive.getTime() === yesterday.getTime()) {
-      newStreak += 1; // continued streak
-    } else if (lastActive.getTime() < yesterday.getTime()) {
-      newStreak = 1; // reset streak
+      if (lastActive.getTime() === yesterday.getTime()) {
+        newStreak += 1;
+      } else if (lastActive.getTime() < yesterday.getTime()) {
+        newStreak = 1;
+      }
+    } else {
+      newStreak = 1;
     }
-    // if lastActive is today, streak stays the same
-  } else {
-    newStreak = 1;
+
+    const newXp = user.totalXp + xpEarned;
+    const newLevel = Math.floor(Math.sqrt(newXp / 100)) + 1;
+
+    await prisma.user.update({
+      where: { id: userId },
+      data: {
+        totalXp: newXp,
+        level: newLevel,
+        streakDays: newStreak,
+        lastActiveDate: new Date(),
+      },
+    });
+  } catch (error) {
+    console.error("updateUserProgress error:", error);
   }
-
-  const newXp = user.totalXp + xpEarned;
-  const newLevel = Math.floor(Math.sqrt(newXp / 100)) + 1;
-
-  await prisma.user.update({
-    where: { id: userId },
-    data: {
-      totalXp: newXp,
-      level: newLevel,
-      streakDays: newStreak,
-      lastActiveDate: new Date(),
-    },
-  });
 }

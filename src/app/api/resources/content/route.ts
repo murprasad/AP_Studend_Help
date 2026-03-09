@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { UNIT_RESOURCES } from "@/data/resources";
+import { COURSE_REGISTRY, getCourseForUnit } from "@/lib/courses";
 import { ApUnit } from "@prisma/client";
 
 // Fetches publicly accessible study content from open educational resources
@@ -14,11 +14,11 @@ export async function GET(req: NextRequest) {
   const unit = searchParams.get("unit") as ApUnit | null;
   const source = searchParams.get("source") || "fiveable";
 
-  const unitResource = unit
-    ? UNIT_RESOURCES.find((r) => r.unit === unit)
+  const unitMeta = unit
+    ? COURSE_REGISTRY[getCourseForUnit(unit)]?.units[unit]
     : null;
 
-  if (!unitResource) {
+  if (!unitMeta) {
     return NextResponse.json({ error: "Unit not found" }, { status: 404 });
   }
 
@@ -29,13 +29,13 @@ export async function GET(req: NextRequest) {
     // Try to fetch content from the requested source
     switch (source) {
       case "fiveable":
-        fetchUrl = unitResource.fiveableUrl;
+        fetchUrl = unitMeta.fiveableUrl || "";
         break;
       case "oer":
-        fetchUrl = unitResource.oerUrl;
+        fetchUrl = unitMeta.oerUrl || "";
         break;
       default:
-        fetchUrl = unitResource.fiveableUrl;
+        fetchUrl = unitMeta.fiveableUrl || "";
     }
 
     const response = await fetch(fetchUrl, {
@@ -64,9 +64,9 @@ export async function GET(req: NextRequest) {
       url: fetchUrl,
       content,
       unitResource: {
-        unitName: unitResource.unitName,
-        timePeriod: unitResource.timePeriod,
-        keyThemes: unitResource.keyThemes,
+        unitName: unitMeta.name,
+        timePeriod: unitMeta.timePeriod,
+        keyThemes: unitMeta.keyThemes,
       },
     });
   } catch (error) {
@@ -76,9 +76,9 @@ export async function GET(req: NextRequest) {
       source,
       content: null,
       unitResource: unit ? {
-        unitName: unitResource.unitName,
-        timePeriod: unitResource.timePeriod,
-        keyThemes: unitResource.keyThemes,
+        unitName: unitMeta.name,
+        timePeriod: unitMeta.timePeriod,
+        keyThemes: unitMeta.keyThemes,
       } : null,
     });
   }

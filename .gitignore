@@ -30,3 +30,6 @@ next-env.d.ts
 .DS_Store
 *.pem
 Thumbs.db
+
+# Local Netlify folder
+.netlify

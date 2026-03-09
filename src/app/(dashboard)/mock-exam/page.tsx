@@ -1,12 +1,15 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
-import { formatTime } from "@/lib/utils";
+import { useCourse } from "@/hooks/use-course";
+import { AP_COURSES, formatTime } from "@/lib/utils";
+import { ApCourse } from "@prisma/client";
+import { COURSE_REGISTRY } from "@/lib/courses";
 import {
   Trophy,
   Clock,
@@ -16,16 +19,17 @@ import {
   ChevronRight,
   Loader2,
   Play,
+  GraduationCap,
 } from "lucide-react";
 import Link from "next/link";
 
-type ExamPhase = "intro" | "section1" | "break" | "section2" | "complete";
+type ExamPhase = "intro" | "section1" | "complete";
 
 interface ExamQuestion {
   id: string;
   questionText: string;
   stimulus?: string;
-  options?: string;
+  options?: unknown;
   topic: string;
   unit: string;
 }
@@ -39,29 +43,41 @@ interface ExamResult {
   apScoreEstimate: number;
 }
 
-const SECTION1_TIME = 55 * 60; // 55 minutes in seconds
-const SECTION1_QUESTIONS = 10; // Using 10 for demo (real: 55)
+// Derived from COURSE_REGISTRY — update examSecsPerQuestion there when adding a course.
+const SECS_PER_QUESTION = Object.fromEntries(
+  Object.entries(COURSE_REGISTRY).map(([k, v]) => [k, v.examSecsPerQuestion])
+) as Record<ApCourse, number>;
+
+const EXAM_QUESTIONS = 10; // Representative sample (actual exams have 50-70)
+
+function getExamInfo(course: ApCourse) {
+  const secsPerQ = SECS_PER_QUESTION[course];
+  const totalSecs = secsPerQ * EXAM_QUESTIONS;
+  const mins = Math.round(totalSecs / 60);
+  return { totalSecs, mins, secsPerQ };
+}
 
 export default function MockExamPage() {
   const { toast } = useToast();
+  const [course] = useCourse();
   const [phase, setPhase] = useState<ExamPhase>("intro");
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [questions, setQuestions] = useState<ExamQuestion[]>([]);
+  const questionsRef = useRef<ExamQuestion[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [feedback, setFeedback] = useState<{ isCorrect: boolean; correctAnswer: string; explanation: string } | null>(null);
-  const [timeLeft, setTimeLeft] = useState(SECTION1_TIME);
+  const [timeLeft, setTimeLeft] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [result, setResult] = useState<ExamResult | null>(null);
 
+  const examInfo = getExamInfo(course);
+
   // Timer
   useEffect(() => {
-    if (phase !== "section1" && phase !== "section2") return;
-    if (timeLeft <= 0) {
-      completeExam();
-      return;
-    }
+    if (phase !== "section1") return;
+    if (timeLeft <= 0) { completeExam(); return; }
     const interval = setInterval(() => setTimeLeft((t) => t - 1), 1000);
     return () => clearInterval(interval);
   }, [phase, timeLeft]);
@@ -74,7 +90,10 @@ export default function MockExamPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           sessionType: "MOCK_EXAM",
-          questionCount: SECTION1_QUESTIONS,
+          questionCount: EXAM_QUESTIONS,
+          unit: "ALL",
+          difficulty: "ALL",
+          course,
         }),
       });
       const data = await response.json();
@@ -82,9 +101,13 @@ export default function MockExamPage() {
         toast({ title: "Error", description: data.error, variant: "destructive" });
         return;
       }
+      questionsRef.current = data.questions ?? [];
       setSessionId(data.sessionId);
-      setQuestions(data.questions);
-      setTimeLeft(SECTION1_TIME);
+      setQuestions(data.questions ?? []);
+      setTimeLeft(examInfo.totalSecs);
+      setCurrentIndex(0);
+      setAnswers({});
+      setFeedback(null);
       setPhase("section1");
     } catch {
       toast({ title: "Error", description: "Failed to start exam", variant: "destructive" });
@@ -96,21 +119,23 @@ export default function MockExamPage() {
   async function submitAnswer(answer: string) {
     if (!sessionId || !questions[currentIndex] || isSubmitting) return;
     setIsSubmitting(true);
-    setAnswers((prev) => ({ ...prev, [questions[currentIndex].id]: answer }));
+    const qId = questions[currentIndex].id;
+    setAnswers((prev) => ({ ...prev, [qId]: answer }));
 
-    const timeSecs = Math.round((SECTION1_TIME - timeLeft) / questions.length);
+    const elapsed = examInfo.totalSecs - timeLeft;
+    const timeSecs = Math.round(elapsed / Math.max(currentIndex + 1, 1));
 
     try {
       const response = await fetch(`/api/practice/${sessionId}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          questionId: questions[currentIndex].id,
-          answer,
-          timeSpentSecs: timeSecs,
-        }),
+        body: JSON.stringify({ questionId: qId, answer, timeSpentSecs: timeSecs }),
       });
       const data = await response.json();
+      if (!response.ok) {
+        toast({ title: "Error", description: data.error || "Failed to submit", variant: "destructive" });
+        return;
+      }
       setFeedback(data);
     } catch {
       toast({ title: "Error", variant: "destructive" });
@@ -119,7 +144,7 @@ export default function MockExamPage() {
     }
   }
 
-  async function completeExam() {
+  const completeExam = useCallback(async () => {
     if (!sessionId) return;
     try {
       const response = await fetch(`/api/practice/${sessionId}`, {
@@ -133,10 +158,11 @@ export default function MockExamPage() {
     } catch {
       toast({ title: "Error completing exam", variant: "destructive" });
     }
-  }
+  }, [sessionId]);
 
   function nextQuestion() {
-    if (currentIndex + 1 >= questions.length) {
+    const total = questionsRef.current.length;
+    if (currentIndex + 1 >= total) {
       completeExam();
     } else {
       setCurrentIndex((prev) => prev + 1);
@@ -145,46 +171,72 @@ export default function MockExamPage() {
   }
 
   const currentQ = questions[currentIndex];
-  const parsedOptions: string[] = currentQ?.options ? JSON.parse(currentQ.options as string) : [];
-  const timeWarning = timeLeft < 300; // less than 5 min
+  const parsedOptions: string[] = (() => {
+    if (!currentQ?.options) return [];
+    const raw = currentQ.options;
+    if (Array.isArray(raw)) return raw as string[];
+    try { return JSON.parse(raw as string) as string[]; } catch { return []; }
+  })();
 
-  // Intro screen
+  const timeWarning = timeLeft < 60 * 2; // less than 2 min
+
+  // ── Intro ────────────────────────────────────────────────────────────────
   if (phase === "intro") {
     return (
       <div className="max-w-2xl mx-auto space-y-6">
         <div>
           <h1 className="text-3xl font-bold">Mock AP Exam</h1>
-          <p className="text-muted-foreground mt-1">Simulate the real AP World History exam experience</p>
+          <p className="text-muted-foreground mt-1">Timed section simulation with official AP pacing</p>
         </div>
+
+        {/* Course indicator */}
+        <Card className="card-glow border-indigo-500/20 bg-indigo-500/5">
+          <CardContent className="p-4 flex items-center gap-3">
+            <GraduationCap className="h-5 w-5 text-indigo-400" />
+            <p className="text-sm font-medium">{AP_COURSES[course]}</p>
+            <p className="text-xs text-muted-foreground ml-2">— Switch course from the sidebar</p>
+          </CardContent>
+        </Card>
 
         <Card className="card-glow">
           <CardHeader>
-            <CardTitle>Exam Overview</CardTitle>
+            <CardTitle>Section Overview</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="p-4 rounded-lg bg-secondary/50">
-                <p className="font-medium mb-1">Section 1</p>
-                <p className="text-2xl font-bold text-indigo-400">{SECTION1_QUESTIONS} MCQ</p>
-                <p className="text-sm text-muted-foreground">55 minutes (demo: shortened)</p>
+            <div className="grid grid-cols-3 gap-4">
+              <div className="p-4 rounded-lg bg-secondary/50 text-center">
+                <p className="text-sm text-muted-foreground mb-1">Questions</p>
+                <p className="text-2xl font-bold text-indigo-400">{EXAM_QUESTIONS}</p>
+                <p className="text-xs text-muted-foreground">MCQ</p>
               </div>
-              <div className="p-4 rounded-lg bg-secondary/50">
-                <p className="font-medium mb-1">Result</p>
-                <p className="text-2xl font-bold text-emerald-400">AP Score</p>
-                <p className="text-sm text-muted-foreground">Estimated 1-5 score</p>
+              <div className="p-4 rounded-lg bg-secondary/50 text-center">
+                <p className="text-sm text-muted-foreground mb-1">Time Allowed</p>
+                <p className="text-2xl font-bold text-emerald-400">{examInfo.mins} min</p>
+                <p className="text-xs text-muted-foreground">{examInfo.secsPerQ}s per question</p>
+              </div>
+              <div className="p-4 rounded-lg bg-secondary/50 text-center">
+                <p className="text-sm text-muted-foreground mb-1">Result</p>
+                <p className="text-2xl font-bold text-yellow-400">1–5</p>
+                <p className="text-xs text-muted-foreground">AP Score</p>
+              </div>
+            </div>
+
+            {/* Pacing reference */}
+            <div className="p-4 rounded-lg bg-secondary/30 text-sm space-y-1">
+              <p className="font-medium text-muted-foreground mb-2">Official AP pacing reference:</p>
+              <div className="grid grid-cols-3 gap-2 text-xs text-muted-foreground">
+                <span>WH: 55 MCQ / 55 min</span>
+                <span>CSP: 70 MCQ / 120 min</span>
+                <span>PHY1: 50 MCQ / 90 min</span>
               </div>
             </div>
 
             <div className="p-4 rounded-lg border border-yellow-500/30 bg-yellow-500/10">
               <div className="flex items-start gap-3">
                 <AlertTriangle className="h-5 w-5 text-yellow-400 flex-shrink-0 mt-0.5" />
-                <div>
-                  <p className="font-medium text-yellow-400 text-sm">Important</p>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    This is a practice exam. Questions are AI-generated to match AP difficulty.
-                    The timer runs during Section 1. Do your best without using notes.
-                  </p>
-                </div>
+                <p className="text-sm text-muted-foreground">
+                  The timer runs from the moment you start. No notes allowed — simulate real exam conditions.
+                </p>
               </div>
             </div>
 
@@ -192,7 +244,7 @@ export default function MockExamPage() {
               {isLoading ? (
                 <><Loader2 className="h-4 w-4 animate-spin" /> Preparing Exam...</>
               ) : (
-                <><Play className="h-4 w-4" /> Start Mock Exam</>
+                <><Play className="h-4 w-4" /> Start Timed Exam</>
               )}
             </Button>
           </CardContent>
@@ -201,17 +253,13 @@ export default function MockExamPage() {
     );
   }
 
-  // Exam results
+  // ── Results ───────────────────────────────────────────────────────────────
   if (phase === "complete" && result) {
-    const scoreColors = {
-      5: "text-emerald-400",
-      4: "text-blue-400",
-      3: "text-yellow-400",
-      2: "text-orange-400",
-      1: "text-red-400",
+    const scoreColors: Record<number, string> = {
+      5: "text-emerald-400", 4: "text-blue-400", 3: "text-yellow-400",
+      2: "text-orange-400",  1: "text-red-400",
     };
-
-    const scoreMessages = {
+    const scoreMessages: Record<number, string> = {
       5: "Excellent! You're exam ready!",
       4: "Great work! A few more sessions and you'll hit 5!",
       3: "Good foundation. Focus on weak units to improve.",
@@ -229,22 +277,22 @@ export default function MockExamPage() {
         <Card className="card-glow">
           <CardContent className="p-6 text-center">
             <p className="text-sm text-muted-foreground mb-2">Estimated AP Score</p>
-            <p className={`text-8xl font-bold ${scoreColors[result.apScoreEstimate as keyof typeof scoreColors] || "text-foreground"}`}>
+            <p className={`text-8xl font-bold ${scoreColors[result.apScoreEstimate] || "text-foreground"}`}>
               {result.apScoreEstimate}
             </p>
             <p className="text-muted-foreground mt-2 mb-6">out of 5</p>
             <p className="text-base font-medium">
-              {scoreMessages[result.apScoreEstimate as keyof typeof scoreMessages]}
+              {scoreMessages[result.apScoreEstimate] || "Keep practicing!"}
             </p>
           </CardContent>
         </Card>
 
         <div className="grid grid-cols-2 gap-4">
           {[
-            { label: "Accuracy", value: `${result.accuracy}%`, color: "text-emerald-400" },
-            { label: "Correct", value: `${result.correctAnswers}/${result.totalQuestions}`, color: "text-blue-400" },
-            { label: "Time Spent", value: formatTime(result.timeSpentSecs), color: "text-purple-400" },
-            { label: "XP Earned", value: `+${result.xpEarned}`, color: "text-yellow-400" },
+            { label: "Accuracy",    value: `${result.accuracy}%`,                  color: "text-emerald-400" },
+            { label: "Correct",     value: `${result.correctAnswers}/${result.totalQuestions}`, color: "text-blue-400" },
+            { label: "Time Spent",  value: formatTime(result.timeSpentSecs),        color: "text-purple-400" },
+            { label: "XP Earned",   value: `+${result.xpEarned}`,                  color: "text-yellow-400" },
           ].map((stat) => (
             <Card key={stat.label} className="card-glow">
               <CardContent className="p-4 text-center">
@@ -256,7 +304,7 @@ export default function MockExamPage() {
         </div>
 
         <div className="flex gap-3">
-          <Button onClick={() => setPhase("intro")} variant="outline" className="flex-1">
+          <Button onClick={() => { setPhase("intro"); setResult(null); }} variant="outline" className="flex-1">
             Retake Exam
           </Button>
           <Link href="/study-plan" className="flex-1">
@@ -269,29 +317,29 @@ export default function MockExamPage() {
     );
   }
 
-  // Section 1 exam
+  // ── Section 1 ─────────────────────────────────────────────────────────────
   if (phase === "section1" && currentQ) {
+    const total = questionsRef.current.length;
+
     return (
       <div className="max-w-3xl mx-auto space-y-4">
         {/* Exam header */}
         <div className="flex items-center justify-between">
-          <div>
-            <Badge variant="secondary">Section 1 · MCQ</Badge>
-          </div>
-          <div className={`flex items-center gap-2 font-mono text-lg font-bold ${timeWarning ? "text-red-400" : "text-foreground"}`}>
+          <Badge variant="secondary">Section 1 · MCQ</Badge>
+          <div className={`flex items-center gap-2 font-mono text-lg font-bold ${timeWarning ? "text-red-400 animate-pulse" : "text-foreground"}`}>
             <Clock className="h-5 w-5" />
             {formatTime(timeLeft)}
           </div>
         </div>
 
         <Progress
-          value={((currentIndex) / questions.length) * 100}
+          value={(currentIndex / Math.max(total, 1)) * 100}
           className="h-2"
           indicatorClassName="bg-indigo-500"
         />
 
         <p className="text-sm text-muted-foreground text-center">
-          Question {currentIndex + 1} of {questions.length}
+          Question {currentIndex + 1} of {total}
         </p>
 
         <Card className="card-glow">
@@ -343,11 +391,10 @@ export default function MockExamPage() {
           <Card className={`card-glow border ${feedback.isCorrect ? "border-emerald-500/30 bg-emerald-500/5" : "border-red-500/30 bg-red-500/5"}`}>
             <CardContent className="p-5">
               <div className="flex items-start gap-3">
-                {feedback.isCorrect ? (
-                  <CheckCircle className="h-6 w-6 text-emerald-400 flex-shrink-0" />
-                ) : (
-                  <XCircle className="h-6 w-6 text-red-400 flex-shrink-0" />
-                )}
+                {feedback.isCorrect
+                  ? <CheckCircle className="h-6 w-6 text-emerald-400 flex-shrink-0 mt-0.5" />
+                  : <XCircle className="h-6 w-6 text-red-400 flex-shrink-0 mt-0.5" />
+                }
                 <div>
                   <p className="font-semibold mb-1">
                     {feedback.isCorrect ? "Correct!" : `Incorrect — Correct: ${feedback.correctAnswer}`}
@@ -356,7 +403,7 @@ export default function MockExamPage() {
                 </div>
               </div>
               <Button onClick={nextQuestion} className="w-full mt-4 gap-2">
-                {currentIndex + 1 >= questions.length ? "Finish Exam" : "Next Question"}
+                {currentIndex + 1 >= total ? "Finish Exam" : `Next Question (${currentIndex + 2} of ${total})`}
                 <ChevronRight className="h-4 w-4" />
               </Button>
             </CardContent>

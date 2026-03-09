@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "rhel-openssl-1.0.x", "rhel-openssl-3.0.x", "debian-openssl-1.1.x", "debian-openssl-3.0.x"]
 }
 
 datasource db {
@@ -97,6 +98,7 @@ model PasswordResetToken {
 
 model Question {
   id           String       @id @default(cuid())
+  course       ApCourse     @default(AP_WORLD_HISTORY)
   unit         ApUnit
   topic        String
   subtopic     String?
@@ -123,6 +125,7 @@ model Question {
 model PracticeSession {
   id           String      @id @default(cuid())
   userId       String
+  course       ApCourse    @default(AP_WORLD_HISTORY)
   sessionType  SessionType
   status       SessionStatus @default(IN_PROGRESS)
   totalQuestions Int        @default(0)
@@ -173,6 +176,7 @@ model StudentResponse {
 model MasteryScore {
   id             String   @id @default(cuid())
   userId         String
+  course         ApCourse @default(AP_WORLD_HISTORY)
   unit           ApUnit
   masteryScore   Float    @default(0)
   accuracy       Float    @default(0)
@@ -191,6 +195,7 @@ model MasteryScore {
 model StudyPlan {
   id           String   @id @default(cuid())
   userId       String
+  course       ApCourse @default(AP_WORLD_HISTORY)
   planData     Json
   generatedAt  DateTime @default(now())
   isActive     Boolean  @default(true)
@@ -229,6 +234,7 @@ model UserAchievement {
 model TutorConversation {
   id        String         @id @default(cuid())
   userId    String
+  course    ApCourse       @default(AP_WORLD_HISTORY)
   messages  Json
   topic     String?
   createdAt DateTime       @default(now())
@@ -249,7 +255,14 @@ enum SubTier {
   PREMIUM
 }
 
+enum ApCourse {
+  AP_WORLD_HISTORY
+  AP_COMPUTER_SCIENCE_PRINCIPLES
+  AP_PHYSICS_1
+}
+
 enum ApUnit {
+  // AP World History: Modern
   UNIT_1_GLOBAL_TAPESTRY
   UNIT_2_NETWORKS_OF_EXCHANGE
   UNIT_3_LAND_BASED_EMPIRES
@@ -259,6 +272,25 @@ enum ApUnit {
   UNIT_7_GLOBAL_CONFLICT
   UNIT_8_COLD_WAR
   UNIT_9_GLOBALIZATION
+
+  // AP Computer Science Principles
+  CSP_1_CREATIVE_DEVELOPMENT
+  CSP_2_DATA
+  CSP_3_ALGORITHMS_AND_PROGRAMMING
+  CSP_4_COMPUTER_SYSTEMS_NETWORKS
+  CSP_5_IMPACT_OF_COMPUTING
+
+  // AP Physics 1: Algebra-Based
+  PHY1_1_KINEMATICS
+  PHY1_2_FORCES_AND_NEWTONS_LAWS
+  PHY1_3_CIRCULAR_MOTION_GRAVITATION
+  PHY1_4_ENERGY
+  PHY1_5_MOMENTUM
+  PHY1_6_SIMPLE_HARMONIC_MOTION
+  PHY1_7_TORQUE_AND_ROTATION
+  PHY1_8_ELECTRIC_CHARGE_AND_FORCE
+  PHY1_9_DC_CIRCUITS
+  PHY1_10_WAVES_AND_SOUND
 }
 
 enum Difficulty {
