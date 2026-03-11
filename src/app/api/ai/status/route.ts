@@ -44,7 +44,7 @@ async function testOpenRouter(): Promise<string> {
   if (!process.env.OPENROUTER_API_KEY) return "NO_KEY";
   const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
     method: "POST",
-    headers: { "Content-Type": "application/json", Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`, "HTTP-Referer": "https://ap-smartprep.netlify.app", "X-Title": "AP SmartPrep" },
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`, "HTTP-Referer": "https://prepnova.netlify.app", "X-Title": "PrepNova" },
     body: JSON.stringify({ model: "google/gemini-flash-1.5", messages: [{ role: "user", content: TEST_PROMPT }], max_tokens: 10 }),
     signal: AbortSignal.timeout(10000),
   });

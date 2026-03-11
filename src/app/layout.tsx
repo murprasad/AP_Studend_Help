@@ -7,9 +7,9 @@ import { Toaster } from "@/components/ui/toaster";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "AP SmartPrep - AP World History Practice Platform",
+  title: "PrepNova - Your AI Study Partner",
   description:
-    "AI-powered AP World History exam preparation with adaptive learning, practice questions, and personalized study plans.",
+    "AI-powered AP exam preparation across multiple courses — adaptive practice questions, personalized study plans, and an AI tutor to help you score a 5.",
 };
 
 export default function RootLayout({

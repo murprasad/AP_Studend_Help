@@ -109,7 +109,7 @@ export const GLOBAL_RESOURCES: Resource[] = [
   {
     id: "library-of-congress",
     name: "Library of Congress Digital Collections",
-    description: "Millions of free primary source documents, photographs, maps, newspapers, and timelines from American and world history. Used by AP SmartPrep to enrich AI tutor answers.",
+    description: "Millions of free primary source documents, photographs, maps, newspapers, and timelines from American and world history. Used by PrepNova to enrich AI tutor answers.",
     url: "https://www.loc.gov/collections/",
     type: "primary_source",
     icon: "Library",

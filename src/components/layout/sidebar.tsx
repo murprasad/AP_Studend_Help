@@ -58,7 +58,7 @@ export function Sidebar({ userRole }: SidebarProps) {
       <div className="p-6 border-b border-border/40">
         <Link href="/dashboard" className="flex items-center gap-2">
           <Globe className="h-7 w-7 text-indigo-400" />
-          <span className="text-lg font-bold gradient-text">AP SmartPrep</span>
+          <span className="text-lg font-bold gradient-text">PrepNova</span>
         </Link>
       </div>
 

@@ -40,7 +40,7 @@ export async function GET(req: NextRequest) {
 
     const response = await fetch(fetchUrl, {
       headers: {
-        "User-Agent": "Mozilla/5.0 (compatible; AP-SmartPrep/1.0; Educational Tool)",
+        "User-Agent": "Mozilla/5.0 (compatible; PrepNova/1.0; Educational Tool)",
       },
       next: { revalidate: 3600 }, // cache for 1 hour
     });

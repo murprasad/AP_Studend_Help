@@ -38,7 +38,7 @@ export interface GeneratedQuestion {
 async function fetchResourceContent(url: string): Promise<string> {
   try {
     const response = await fetch(url, {
-      headers: { "User-Agent": "Mozilla/5.0 (compatible; AP-SmartPrep/1.0; Educational)" },
+      headers: { "User-Agent": "Mozilla/5.0 (compatible; PrepNova/1.0; Educational)" },
       signal: AbortSignal.timeout(5000),
     });
     if (!response.ok) return "";

@@ -156,8 +156,8 @@ async function callOpenRouter(
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
-      "HTTP-Referer": process.env.NEXT_PUBLIC_APP_URL || "https://ap-smartprep.netlify.app",
-      "X-Title": "AP SmartPrep",
+      "HTTP-Referer": process.env.NEXT_PUBLIC_APP_URL || "https://prepnova.netlify.app",
+      "X-Title": "PrepNova",
     },
     body: JSON.stringify({
       model: "google/gemini-flash-1.5",  // free model on OpenRouter
