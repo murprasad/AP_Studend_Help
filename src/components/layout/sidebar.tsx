@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { signOut } from "next-auth/react";
 import { cn } from "@/lib/utils";
 import { AP_COURSE_SHORT } from "@/lib/utils";
@@ -50,7 +50,13 @@ interface SidebarProps {
 
 export function Sidebar({ userRole }: SidebarProps) {
   const pathname = usePathname();
+  const router = useRouter();
   const [course, setCourse] = useCourse();
+
+  function handleCourseChange(newCourse: ApCourse) {
+    setCourse(newCourse);
+    router.refresh();
+  }
 
   return (
     <aside className="w-64 bg-card border-r border-border/40 flex flex-col h-full">
@@ -80,7 +86,7 @@ export function Sidebar({ userRole }: SidebarProps) {
             {COURSE_OPTIONS.map((opt) => (
               <DropdownMenuItem
                 key={opt.value}
-                onClick={() => setCourse(opt.value)}
+                onClick={() => handleCourseChange(opt.value)}
                 className={cn(
                   "cursor-pointer text-sm",
                   course === opt.value && "bg-primary/10 text-primary font-medium"

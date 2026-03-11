@@ -26,6 +26,8 @@ export function useCourse(): [ApCourse, (course: ApCourse) => void] {
     setCourseState(newCourse);
     try {
       localStorage.setItem(STORAGE_KEY, newCourse);
+      // Also write to cookie so server components can read the selected course
+      document.cookie = `${STORAGE_KEY}=${newCourse}; path=/; max-age=31536000; SameSite=Lax`;
     } catch {
       // localStorage not available
     }

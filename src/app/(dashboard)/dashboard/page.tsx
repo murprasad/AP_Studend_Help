@@ -2,14 +2,16 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { DashboardMasteryChart } from "@/components/dashboard/mastery-chart";
-import { AP_UNITS, getMasteryLabel, getMasteryColor, getMasteryBg, getXpProgressInLevel } from "@/lib/utils";
-import { ApUnit } from "@prisma/client";
+import { AP_UNITS, COURSE_UNITS, AP_COURSES, getMasteryLabel, getMasteryColor, getMasteryBg, getXpProgressInLevel } from "@/lib/utils";
+import { ApCourse, ApUnit } from "@prisma/client";
+import { VALID_AP_COURSES } from "@/lib/courses";
 import {
   Zap,
   Flame,
@@ -27,6 +29,14 @@ export default async function DashboardPage() {
   const session = await getServerSession(authOptions);
   if (!session) redirect("/login");
 
+  // Read selected course from cookie (written by useCourse hook client-side)
+  const cookieStore = cookies();
+  const courseCookie = cookieStore.get("ap_selected_course")?.value as ApCourse | undefined;
+  const selectedCourse: ApCourse =
+    courseCookie && VALID_AP_COURSES.includes(courseCookie)
+      ? courseCookie
+      : "AP_WORLD_HISTORY";
+
   const user = await prisma.user.findUnique({
     where: { id: session.user.id },
     select: {
@@ -43,30 +53,34 @@ export default async function DashboardPage() {
     orderBy: { masteryScore: "asc" },
   });
 
-  const allUnits = Object.keys(AP_UNITS) as ApUnit[];
+  // Filter units to only those belonging to the selected course
+  const courseUnitMap = COURSE_UNITS[selectedCourse] as Record<string, string>;
+  const courseUnitKeys = Object.keys(courseUnitMap) as ApUnit[];
   const masteryMap = new Map(masteryScores.map((m) => [m.unit, m]));
 
-  const fullMastery = allUnits.map((unit) => ({
+  const fullMastery = courseUnitKeys.map((unit) => ({
     unit,
-    unitName: AP_UNITS[unit],
+    unitName: courseUnitMap[unit],
     masteryScore: masteryMap.get(unit)?.masteryScore || 0,
     accuracy: masteryMap.get(unit)?.accuracy || 0,
   }));
 
   const weakUnits = fullMastery.filter((u) => u.masteryScore < 70).sort((a, b) => a.masteryScore - b.masteryScore).slice(0, 3);
-  const avgMastery = fullMastery.reduce((sum, u) => sum + u.masteryScore, 0) / fullMastery.length;
+  const avgMastery = fullMastery.length > 0
+    ? fullMastery.reduce((sum, u) => sum + u.masteryScore, 0) / fullMastery.length
+    : 0;
 
   const recentSessions = await prisma.practiceSession.findMany({
-    where: { userId: session.user.id, status: "COMPLETED" },
+    where: { userId: session.user.id, status: "COMPLETED", course: selectedCourse },
     orderBy: { completedAt: "desc" },
     take: 5,
   });
 
   const totalAnswered = await prisma.studentResponse.count({
-    where: { userId: session.user.id },
+    where: { userId: session.user.id, session: { course: selectedCourse } },
   });
   const totalCorrect = await prisma.studentResponse.count({
-    where: { userId: session.user.id, isCorrect: true },
+    where: { userId: session.user.id, isCorrect: true, session: { course: selectedCourse } },
   });
 
   const xpProgress = getXpProgressInLevel(user?.totalXp || 0);
@@ -79,9 +93,14 @@ export default async function DashboardPage() {
           <h1 className="text-3xl font-bold">
             Welcome back, {user?.firstName}! 👋
           </h1>
-          <p className="text-muted-foreground mt-1">
-            {new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })}
-          </p>
+          <div className="flex items-center gap-3 mt-1">
+            <p className="text-muted-foreground">
+              {new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })}
+            </p>
+            <Badge variant="outline" className="text-indigo-400 border-indigo-500/40 bg-indigo-500/10 text-xs">
+              {AP_COURSES[selectedCourse]}
+            </Badge>
+          </div>
         </div>
         <Link href="/practice">
           <Button size="lg" className="gap-2">
