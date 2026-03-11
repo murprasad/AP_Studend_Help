@@ -113,10 +113,10 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             {[
+              { value: "10,000+", label: "Practice Questions" },
               { value: "3+", label: "AP Courses" },
-              { value: "4", label: "Question Types" },
-              { value: "AI", label: "Powered Tutor" },
-              { value: "5", label: "Max AP Score Goal" },
+              { value: "5", label: "Free Content Sources" },
+              { value: "5", label: "Target AP Score" },
             ].map((stat) => (
               <div key={stat.label}>
                 <div className="text-4xl font-bold text-indigo-400 mb-1">{stat.value}</div>

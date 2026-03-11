@@ -2,7 +2,7 @@ import { ApUnit, ApCourse, Difficulty, QuestionType } from "@prisma/client";
 import { COURSE_UNITS } from "./utils";
 import { COURSE_REGISTRY, getCourseForUnit } from "./courses";
 import { callAIWithCascade } from "./ai-providers";
-import { getWikipediaSummary, getEduContextForQuery } from "./edu-apis";
+import { getWikipediaSummary, getEduContextForQuery, searchStackExchange, getEnrichedContext } from "./edu-apis";
 
 // ── Unified helpers (thin wrappers over the cascade engine) ────────────────
 async function callAI(prompt: string, systemPrompt?: string): Promise<string> {
@@ -61,16 +61,21 @@ async function getUnitContext(unit: ApUnit): Promise<string> {
   const unitMeta = COURSE_REGISTRY[course]?.units[unit];
   if (!unitMeta) return "";
 
+  const isSTEM = course === "AP_PHYSICS_1" || course === "AP_COMPUTER_SCIENCE_PRINCIPLES";
+  const seSite = course === "AP_PHYSICS_1" ? "physics" : "cs";
+  const searchQuery = unitMeta.keyThemes?.slice(0, 2).join(" ") || unitMeta.name;
+
   const context = [
     `Unit: ${unitMeta.name}${unitMeta.timePeriod ? ` (${unitMeta.timePeriod})` : ""}`,
     unitMeta.keyThemes?.length ? `Key Themes: ${unitMeta.keyThemes.join(", ")}` : "",
-    "Study Resources: OER Project, Fiveable, College Board AP Central, Wikipedia, Library of Congress",
+    "Sources: College Board AP Central, Wikipedia, Library of Congress, Stack Exchange (CC BY-SA), Reddit AP Communities",
   ].filter(Boolean).join("\n");
 
-  // Fetch Fiveable and Wikipedia in parallel when available
-  const [fiveableContent, wikiResult] = await Promise.allSettled([
+  // Fetch content in parallel from all available free sources
+  const [fiveableContent, wikiResult, seResults] = await Promise.allSettled([
     unitMeta.fiveableUrl ? fetchResourceContent(unitMeta.fiveableUrl) : Promise.resolve(""),
-    getWikipediaSummary(unitMeta.name.replace(/Unit \d+: /, "")),
+    isSTEM ? Promise.resolve(null) : getWikipediaSummary(unitMeta.name.replace(/Unit \d+: /, "")),
+    isSTEM ? searchStackExchange(searchQuery, seSite, 3) : Promise.resolve([]),
   ]);
 
   let enriched = context;
@@ -79,6 +84,11 @@ async function getUnitContext(unit: ApUnit): Promise<string> {
   }
   if (wikiResult.status === "fulfilled" && wikiResult.value?.summary) {
     enriched += `\nWikipedia overview:\n${wikiResult.value.summary.slice(0, 400)}`;
+  }
+  if (seResults.status === "fulfilled" && seResults.value.length > 0) {
+    enriched += `\nStack Exchange community Q&A (CC BY-SA):\n${seResults.value
+      .map((s) => `• ${s.title}: ${s.body}`)
+      .join("\n").slice(0, 600)}`;
   }
   return enriched;
 }
@@ -280,24 +290,28 @@ export async function askTutor(
   const courseConfig = COURSE_REGISTRY[course];
   let liveContext = "";
 
-  // Enrich with live content if enabled for this course (see enrichWithEduAPIs in courses.ts)
+  // Enrich with live content from free sources (Wikipedia, Stack Exchange, Reddit, LoC)
   if (courseConfig.enrichWithEduAPIs) {
-    const [unitCtx, eduCtx] = await Promise.allSettled([
+    const [unitCtx, enrichedCtx] = await Promise.allSettled([
       unitContext
         ? (() => {
             const fiveableUrl = courseConfig.units[unitContext]?.fiveableUrl;
             return fiveableUrl ? fetchResourceContent(fiveableUrl) : Promise.resolve("");
           })()
         : Promise.resolve(""),
-      getEduContextForQuery(question.slice(0, 120)),
+      getEnrichedContext(question.slice(0, 120), course),
     ]);
 
     if (unitCtx.status === "fulfilled" && unitCtx.value) {
       liveContext += `\n\nFiveable study material:\n${unitCtx.value.slice(0, 600)}`;
     }
-    if (eduCtx.status === "fulfilled" && eduCtx.value) {
-      liveContext += `\n\nOpen educational sources (Wikipedia / Library of Congress):\n${eduCtx.value.slice(0, 800)}`;
+    if (enrichedCtx.status === "fulfilled" && enrichedCtx.value) {
+      liveContext += `\n\nLive educational context (Wikipedia / Stack Exchange / Reddit AP):\n${enrichedCtx.value.slice(0, 800)}`;
     }
+  } else {
+    // For STEM courses: always pull Stack Exchange + Reddit even without enrichWithEduAPIs
+    const enriched = await getEnrichedContext(question.slice(0, 120), course).catch(() => "");
+    if (enriched) liveContext += `\n\nLive educational context (Stack Exchange / Reddit AP):\n${enriched.slice(0, 800)}`;
   }
 
   const systemPrompt = `You are an expert ${courseConfig.name} tutor for high school students (ages 15-18).

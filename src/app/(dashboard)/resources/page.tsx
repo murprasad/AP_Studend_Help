@@ -9,13 +9,9 @@ import {
   EXAM_SKILLS,
 } from "@/data/resources";
 import { COURSE_REGISTRY } from "@/lib/courses";
-import { ApUnit } from "@prisma/client";
-
-// Build unit resource list from the registry (currently World History only on this page).
-// To make this course-aware, wire up useCourse() and swap AP_WORLD_HISTORY below.
-const UNIT_ITEMS = (
-  Object.entries(COURSE_REGISTRY.AP_WORLD_HISTORY.units) as [ApUnit, NonNullable<(typeof COURSE_REGISTRY.AP_WORLD_HISTORY.units)[ApUnit]>][]
-).map(([unit, meta]) => ({ unit, ...meta }));
+import { useCourse } from "@/hooks/use-course";
+import { AP_COURSES } from "@/lib/utils";
+import { ApCourse, ApUnit } from "@prisma/client";
 import {
   ExternalLink,
   Play,
@@ -59,10 +55,20 @@ const TYPE_COLORS: Record<string, string> = {
   curriculum: "bg-blue-500/20 text-blue-400 border-blue-500/30",
 };
 
+function getCourseUnits(course: ApCourse) {
+  const registry = COURSE_REGISTRY[course];
+  if (!registry) return [];
+  return (Object.entries(registry.units) as [ApUnit, NonNullable<(typeof registry.units)[ApUnit]>][])
+    .map(([unit, meta]) => ({ unit, ...meta }));
+}
+
 export default function ResourcesPage() {
+  const [course] = useCourse();
   const [selectedUnit, setSelectedUnit] = useState<ApUnit | "ALL">("ALL");
   const [expandedUnit, setExpandedUnit] = useState<ApUnit | null>(null);
   const [activeTab, setActiveTab] = useState<"resources" | "videos" | "skills">("resources");
+
+  const UNIT_ITEMS = getCourseUnits(course);
 
   const unitResource = expandedUnit
     ? UNIT_ITEMS.find((r) => r.unit === expandedUnit)
@@ -74,7 +80,7 @@ export default function ResourcesPage() {
       <div>
         <h1 className="text-3xl font-bold">Study Resources</h1>
         <p className="text-muted-foreground mt-1">
-          Curated AP World History resources from the best educational platforms
+          Curated {AP_COURSES[course]} resources from the best educational platforms
         </p>
       </div>
 
@@ -249,7 +255,7 @@ export default function ResourcesPage() {
                   <Youtube className="h-10 w-10 text-red-400" />
                   <div>
                     <p className="font-bold">Heimler&apos;s History</p>
-                    <p className="text-xs text-muted-foreground">Best AP World History YouTube channel — unit reviews, exam skills, DBQ practice</p>
+                    <p className="text-xs text-muted-foreground">Best AP YouTube channel — unit reviews, exam skills, and essay practice</p>
                   </div>
                   <ExternalLink className="h-4 w-4 text-muted-foreground ml-auto" />
                 </CardContent>
@@ -261,7 +267,7 @@ export default function ResourcesPage() {
                   <Play className="h-10 w-10 text-green-400" />
                   <div>
                     <p className="font-bold">Khan Academy</p>
-                    <p className="text-xs text-muted-foreground">Free AP World History video lessons and articles for every unit</p>
+                    <p className="text-xs text-muted-foreground">Free AP video lessons and articles for every unit</p>
                   </div>
                   <ExternalLink className="h-4 w-4 text-muted-foreground ml-auto" />
                 </CardContent>
@@ -366,12 +372,9 @@ export default function ResourcesPage() {
             </CardHeader>
             <CardContent>
               <div className="grid sm:grid-cols-2 gap-3">
-                {[
-                  { label: "AP World History Course Overview", url: "https://apcentral.collegeboard.org/courses/ap-world-history" },
-                  { label: "Course & Exam Description (CED)", url: "https://apcentral.collegeboard.org/media/pdf/ap-world-history-modern-course-and-exam-description.pdf" },
-                  { label: "Sample Exam Questions", url: "https://apcentral.collegeboard.org/courses/ap-world-history/exam/past-exam-questions" },
-                  { label: "Scoring Guidelines", url: "https://apcentral.collegeboard.org/courses/ap-world-history/exam/past-exam-questions" },
-                ].map((link) => (
+                {(COURSE_REGISTRY[course]?.collegeBoardLinks ?? [
+                  { label: `${AP_COURSES[course]} Course Overview`, url: "https://apcentral.collegeboard.org" },
+                ]).map((link: { label: string; url: string }) => (
                   <a key={link.label} href={link.url} target="_blank" rel="noopener noreferrer"
                     className="flex items-center gap-2 p-3 rounded-lg border border-border/40 hover:bg-accent text-sm transition-colors">
                     <FileText className="h-4 w-4 text-blue-400 flex-shrink-0" />

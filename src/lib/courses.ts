@@ -77,6 +77,8 @@ export interface CourseConfig {
    * context for every question. Enable for humanities/history courses.
    */
   enrichWithEduAPIs: boolean;
+  /** Official College Board links shown on the Resources page */
+  collegeBoardLinks?: Array<{ label: string; url: string }>;
 }
 
 // ═════════════════════════════════════════════════════════════════════════════
@@ -244,6 +246,12 @@ When referencing resources:
     stimulusRequirement: "Include a primary source stimulus if appropriate (quote from historical document, description of map/image)",
     stimulusDescription: "primary source passage or description (null if not needed)",
     explanationGuidance: "referencing why each wrong answer is a 'trap' (common misconception) and citing historical evidence",
+    collegeBoardLinks: [
+      { label: "AP World History Course Overview", url: "https://apcentral.collegeboard.org/courses/ap-world-history" },
+      { label: "Course & Exam Description (CED)", url: "https://apcentral.collegeboard.org/media/pdf/ap-world-history-modern-course-and-exam-description.pdf" },
+      { label: "Past Exam Questions (FRQ)", url: "https://apcentral.collegeboard.org/courses/ap-world-history/exam/past-exam-questions" },
+      { label: "Scoring Guidelines", url: "https://apcentral.collegeboard.org/courses/ap-world-history/exam/past-exam-questions" },
+    ],
   },
 
   // ── AP Computer Science Principles ───────────────────────────────────────
@@ -323,6 +331,12 @@ When referencing resources:
     stimulusRequirement: "Include pseudocode, an algorithm trace, or a data scenario as stimulus where appropriate",
     stimulusDescription: "code block, pseudocode, or data scenario (null if not needed)",
     explanationGuidance: "referencing AP CSP concepts and addressing common misconceptions",
+    collegeBoardLinks: [
+      { label: "AP CSP Course Overview", url: "https://apcentral.collegeboard.org/courses/ap-computer-science-principles" },
+      { label: "Course & Exam Description (CED)", url: "https://apcentral.collegeboard.org/media/pdf/ap-computer-science-principles-course-and-exam-description.pdf" },
+      { label: "Past Exam Questions (FRQ)", url: "https://apcentral.collegeboard.org/courses/ap-computer-science-principles/exam/past-exam-questions" },
+      { label: "AP CSP Reference Sheet", url: "https://apcentral.collegeboard.org/media/pdf/ap-computer-science-principles-exam-reference-sheet.pdf" },
+    ],
   },
 
   // ── AP Physics 1: Algebra-Based ───────────────────────────────────────────
@@ -431,6 +445,12 @@ When referencing resources:
     stimulusRequirement: "Include a diagram description, data table, or experimental scenario as stimulus where appropriate",
     stimulusDescription: "diagram description, equation, or scenario (null if not needed)",
     explanationGuidance: "referencing the relevant physics law or principle and associated equations",
+    collegeBoardLinks: [
+      { label: "AP Physics 1 Course Overview", url: "https://apcentral.collegeboard.org/courses/ap-physics-1" },
+      { label: "Course & Exam Description (CED)", url: "https://apcentral.collegeboard.org/media/pdf/ap-physics-1-course-and-exam-description.pdf" },
+      { label: "Past Exam Questions (FRQ)", url: "https://apcentral.collegeboard.org/courses/ap-physics-1/exam/past-exam-questions" },
+      { label: "AP Physics 1 Formula Sheet", url: "https://apcentral.collegeboard.org/media/pdf/ap-physics-1-formulas-tables.pdf" },
+    ],
   },
 };
 

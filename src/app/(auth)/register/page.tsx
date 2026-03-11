@@ -96,7 +96,7 @@ export default function RegisterPage() {
     <Card className="w-full max-w-md">
       <CardHeader>
         <CardTitle className="text-2xl">Create your account</CardTitle>
-        <CardDescription>Start your AP World History journey today — free</CardDescription>
+        <CardDescription>Start your AP exam journey today — free</CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
