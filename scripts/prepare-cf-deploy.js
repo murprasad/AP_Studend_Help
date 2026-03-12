@@ -88,4 +88,7 @@ if (fs.existsSync(handlerPath)) {
   fs.writeFileSync(handlerPath, handler);
 }
 
+// 7. The universal wasm-node-loader.mjs handles both Node.js and CF Workers
+//    so no re-patching of wasm.js is needed for the CF Workers bundle.
+
 console.log("✓ .cf-deploy assembled");

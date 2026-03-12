@@ -1,5 +1,5 @@
-// Use the WASM-based Prisma client — no native binary engine needed.
-// Works on Cloudflare Workers (WASM + HTTP driver adapter) and Node.js.
+// Use the WASM-based Prisma client — works on Cloudflare Workers (WASM + HTTP adapter)
+// and Node.js (via the patched #wasm-engine-loader that uses fs.readFileSync).
 import { PrismaClient } from "@prisma/client/wasm";
 import { PrismaNeonHTTP } from "@prisma/adapter-neon";
 import { neon, neonConfig, types } from "@neondatabase/serverless";
@@ -21,8 +21,24 @@ function createPrismaClient(): PrismaClient {
   return new PrismaClient({ adapter } as never);
 }
 
+// Lazy singleton — defer creation until first property access.
+// This prevents the WASM engine from initializing during Next.js build-time
+// static page generation, which would fail because the WASM module isn't
+// available in the build environment.
 const globalForPrisma = globalThis as unknown as { prisma: PrismaClient };
 
-export const prisma = globalForPrisma.prisma ?? createPrismaClient();
+function getClient(): PrismaClient {
+  if (!globalForPrisma.prisma) {
+    globalForPrisma.prisma = createPrismaClient();
+  }
+  return globalForPrisma.prisma;
+}
 
-if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
+export const prisma: PrismaClient = new Proxy({} as PrismaClient, {
+  get(_, prop) {
+    return Reflect.get(getClient(), prop);
+  },
+  has(_, prop) {
+    return Reflect.has(getClient(), prop);
+  },
+});
