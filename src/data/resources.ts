@@ -138,8 +138,8 @@ export const GLOBAL_RESOURCES: Resource[] = [
   },
   {
     id: "openstax",
-    name: "OpenStax World History",
-    description: "Peer-reviewed, openly licensed textbooks for World History Volumes 1 & 2 — completely free, covering ancient civilizations through the modern era.",
+    name: "OpenStax Textbooks",
+    description: "Peer-reviewed, openly licensed free textbooks. World History Vol 1 & 2 cover all AP World History periods. College Physics 2e covers AP Physics 1 (algebra-based). Browse at openstax.org.",
     url: "https://openstax.org/subjects/humanities",
     type: "reading",
     icon: "BookOpen",
@@ -149,12 +149,221 @@ export const GLOBAL_RESOURCES: Resource[] = [
   {
     id: "ck12",
     name: "CK-12 Foundation",
-    description: "Free, customizable open-source textbooks and practice for history, science, and math. Includes interactive simulations and study guides.",
+    description: "Free, customizable open educational resources for science, math, and history. Includes Flexbooks, concept pages, and interactive exercises aligned to AP curriculum.",
     url: "https://www.ck12.org/browse/",
     type: "reading",
     icon: "Layers",
     color: "text-lime-400",
     free: true,
+  },
+  {
+    id: "mit-ocw",
+    name: "MIT OpenCourseWare",
+    description: "Free MIT course materials for AP Physics 1 topics. 8.01SC Classical Mechanics has lecture notes, worked examples, and problem sets for every mechanics unit. PrepNova fetches MIT OCW content to generate better Physics questions.",
+    url: "https://ocw.mit.edu/courses/8-01sc-classical-mechanics-fall-2016/",
+    type: "reading",
+    icon: "GraduationCap",
+    color: "text-blue-400",
+    free: true,
+  },
+  {
+    id: "phet",
+    name: "PhET Interactive Simulations",
+    description: "Free interactive physics, chemistry, and math simulations from the University of Colorado Boulder. Excellent for visualizing forces, energy, circuits, waves, and kinematics — all core AP Physics 1 topics.",
+    url: "https://phet.colorado.edu/en/simulations/filter?subjects=physics&type=html",
+    type: "reading",
+    icon: "Play",
+    color: "text-green-400",
+    free: true,
+  },
+  {
+    id: "dig-stanford",
+    name: "Digital Inquiry Group (Stanford)",
+    description: "Built on two decades as the Stanford History Education Group (SHEG). Provides 'Reading Like a Historian' lessons and primary-source assessments for AP World History. PrepNova fetches DIG content to craft higher-quality historical thinking questions.",
+    url: "https://www.inquirygroup.org/history-lessons",
+    type: "primary_source",
+    icon: "FileText",
+    color: "text-violet-400",
+    free: true,
+  },
+];
+
+// ── Recommended textbooks & study guides per course ───────────────────────
+
+export interface CourseTextbook {
+  course: "AP_WORLD_HISTORY" | "AP_COMPUTER_SCIENCE_PRINCIPLES" | "AP_PHYSICS_1";
+  name: string;
+  authors: string;
+  publisher: string;
+  description: string;
+  type: "textbook" | "study_guide" | "curriculum";
+  free: boolean;
+  url?: string;
+}
+
+export const COURSE_TEXTBOOKS: CourseTextbook[] = [
+  // ── AP World History ──
+  {
+    course: "AP_WORLD_HISTORY",
+    name: "Ways of the World: A Global History with Sources",
+    authors: "Robert W. Strayer",
+    publisher: "Macmillan / Bedford",
+    description: "The most widely adopted AP World History textbook. Covers all 9 units with primary sources and historical analysis prompts aligned to the CED.",
+    type: "textbook",
+    free: false,
+  },
+  {
+    course: "AP_WORLD_HISTORY",
+    name: "Worlds Together, Worlds Apart",
+    authors: "Robert Tignor et al.",
+    publisher: "W.W. Norton",
+    description: "Strong global history perspective covering trade networks, empires, and revolutions aligned with AP World History curriculum.",
+    type: "textbook",
+    free: false,
+  },
+  {
+    course: "AP_WORLD_HISTORY",
+    name: "Traditions & Encounters: A Global Perspective on the Past",
+    authors: "Jerry Bentley & Herbert Ziegler",
+    publisher: "McGraw-Hill",
+    description: "Emphasizes cross-cultural interactions and long-distance trade — perfect for AP World History's Networks of Exchange unit.",
+    type: "textbook",
+    free: false,
+  },
+  {
+    course: "AP_WORLD_HISTORY",
+    name: "The Earth and Its Peoples",
+    authors: "Richard Bulliet et al.",
+    publisher: "Cengage",
+    description: "Global history textbook with strong coverage of environmental, economic, and social themes central to the AP exam.",
+    type: "textbook",
+    free: false,
+  },
+  {
+    course: "AP_WORLD_HISTORY",
+    name: "OpenStax World History (Free)",
+    authors: "OpenStax Contributors",
+    publisher: "Rice University / OpenStax",
+    description: "Peer-reviewed, freely available world history textbook covering all AP modules. Zero-cost alternative to commercial texts.",
+    type: "textbook",
+    free: true,
+    url: "https://openstax.org/books/world-history-volume-1/pages/1-introduction",
+  },
+  {
+    course: "AP_WORLD_HISTORY",
+    name: "Barron's AP World History: Modern",
+    authors: "Barron's Editorial Team",
+    publisher: "Barron's Educational Series",
+    description: "Study guide with key terms, timelines, and AP-style practice questions with detailed answer explanations. Ideal for exam review.",
+    type: "study_guide",
+    free: false,
+  },
+  {
+    course: "AP_WORLD_HISTORY",
+    name: "Princeton Review AP World History Prep",
+    authors: "The Princeton Review",
+    publisher: "Princeton Review",
+    description: "Full-length practice exams, exam strategies, and unit-by-unit reviews written specifically for the AP World History exam.",
+    type: "study_guide",
+    free: false,
+  },
+
+  // ── AP Computer Science Principles ──
+  {
+    course: "AP_COMPUTER_SCIENCE_PRINCIPLES",
+    name: "Computer Science Principles: The Foundational Concepts of Computer Science",
+    authors: "Various",
+    publisher: "Pearson / College Board-endorsed",
+    description: "Official College Board-endorsed text covering all 5 AP CSP big ideas and computational thinking practices.",
+    type: "textbook",
+    free: false,
+  },
+  {
+    course: "AP_COMPUTER_SCIENCE_PRINCIPLES",
+    name: "Barron's AP Computer Science Principles",
+    authors: "Barron's Editorial Team",
+    publisher: "Barron's Educational Series",
+    description: "Comprehensive study guide with practice questions covering all CSP units: creative development, data, algorithms, networks, and impact.",
+    type: "study_guide",
+    free: false,
+  },
+  {
+    course: "AP_COMPUTER_SCIENCE_PRINCIPLES",
+    name: "Code.org AP CSP Curriculum",
+    authors: "Code.org",
+    publisher: "Code.org",
+    description: "Free interactive modules used in thousands of AP CSP classrooms. Covers all 5 units with built-in coding environments and lesson plans.",
+    type: "curriculum",
+    free: true,
+    url: "https://code.org/educate/csp",
+  },
+  {
+    course: "AP_COMPUTER_SCIENCE_PRINCIPLES",
+    name: "Unplugged Approaches to Computer Science",
+    authors: "Tim Bell, Ian H. Witten, Mike Fellows",
+    publisher: "CS Unplugged",
+    description: "Activity-based approach to CS fundamentals without a computer. Great for understanding core CSP concepts like binary, algorithms, and networks.",
+    type: "curriculum",
+    free: true,
+    url: "https://csunplugged.org",
+  },
+
+  // ── AP Physics 1 ──
+  {
+    course: "AP_PHYSICS_1",
+    name: "College Physics",
+    authors: "Raymond Serway & Chris Vuille",
+    publisher: "Cengage",
+    description: "Classic algebra-based physics text covering kinematics through waves — maps directly to AP Physics 1 units 1–10.",
+    type: "textbook",
+    free: false,
+  },
+  {
+    course: "AP_PHYSICS_1",
+    name: "Physics: Principles with Applications",
+    authors: "Douglas Giancoli",
+    publisher: "Pearson",
+    description: "Widely adopted for AP Physics 1. Strong conceptual explanations with worked examples and free-body diagram practice.",
+    type: "textbook",
+    free: false,
+  },
+  {
+    course: "AP_PHYSICS_1",
+    name: "AP Physics 1 Essentials",
+    authors: "Dan Fullerton",
+    publisher: "Silly Beagle Productions",
+    description: "Written specifically for AP Physics 1. Concise theory, solved examples, and practice problems for every AP unit.",
+    type: "textbook",
+    free: false,
+    url: "https://www.aplusphysics.com/ap1",
+  },
+  {
+    course: "AP_PHYSICS_1",
+    name: "OpenStax College Physics 2e (Free)",
+    authors: "OpenStax Contributors",
+    publisher: "Rice University / OpenStax",
+    description: "Peer-reviewed, freely available algebra-based physics textbook covering all AP Physics 1 units. No cost.",
+    type: "textbook",
+    free: true,
+    url: "https://openstax.org/books/college-physics-2e/pages/1-introduction-to-science-and-the-realm-of-physics-physical-quantities-and-units",
+  },
+  {
+    course: "AP_PHYSICS_1",
+    name: "5 Steps to a 5: AP Physics 1",
+    authors: "Greg Jacobs",
+    publisher: "McGraw-Hill",
+    description: "Top-rated exam prep guide with a 5-step plan, full practice tests, and unit-by-unit review tailored to the AP exam.",
+    type: "study_guide",
+    free: false,
+  },
+  {
+    course: "AP_PHYSICS_1",
+    name: "Barron's AP Physics 1: Algebra-Based",
+    authors: "Barron's Editorial Team",
+    publisher: "Barron's Educational Series",
+    description: "Exam prep with full-length practice questions, answer explanations, and scoring strategies for AP Physics 1.",
+    type: "study_guide",
+    free: false,
   },
 ];
 

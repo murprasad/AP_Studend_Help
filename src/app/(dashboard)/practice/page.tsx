@@ -111,6 +111,10 @@ export default function PracticePage() {
         return;
       }
 
+      if (data.lowBankWarning) {
+        toast({ title: "Limited questions available", description: data.lowBankWarning, variant: "default" });
+      }
+
       const qs: Question[] = data.questions ?? [];
       questionsRef.current = qs;
       setSessionId(data.sessionId);

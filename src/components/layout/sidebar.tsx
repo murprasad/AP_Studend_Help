@@ -20,6 +20,7 @@ import {
   Trophy,
   Library,
   ChevronDown,
+  Info,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -37,6 +38,7 @@ const navItems = [
   { href: "/study-plan", icon: BookOpen, label: "Study Plan" },
   { href: "/resources", icon: Library, label: "Resources" },
   { href: "/ai-tutor", icon: MessageSquare, label: "AI Tutor" },
+  { href: "/about", icon: Info, label: "About" },
 ];
 
 // Derived from COURSE_REGISTRY — no hardcoded course names here.

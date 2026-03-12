@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import {
   GLOBAL_RESOURCES,
   EXAM_SKILLS,
+  COURSE_TEXTBOOKS,
 } from "@/data/resources";
 import { COURSE_REGISTRY } from "@/lib/courses";
 import { useCourse } from "@/hooks/use-course";
@@ -26,6 +27,7 @@ import {
   ChevronUp,
   Video,
   Library,
+  BookMarked,
 } from "lucide-react";
 
 const ICON_MAP: Record<string, React.ElementType> = {
@@ -66,7 +68,7 @@ export default function ResourcesPage() {
   const [course] = useCourse();
   const [selectedUnit, setSelectedUnit] = useState<ApUnit | "ALL">("ALL");
   const [expandedUnit, setExpandedUnit] = useState<ApUnit | null>(null);
-  const [activeTab, setActiveTab] = useState<"resources" | "videos" | "skills">("resources");
+  const [activeTab, setActiveTab] = useState<"resources" | "videos" | "skills" | "textbooks">("resources");
 
   const UNIT_ITEMS = getCourseUnits(course);
 
@@ -88,6 +90,7 @@ export default function ResourcesPage() {
       <div className="flex gap-2 border-b border-border/40">
         {[
           { id: "resources", label: "All Resources", icon: Library },
+          { id: "textbooks", label: "Textbooks", icon: BookMarked },
           { id: "videos", label: "Video Library", icon: Video },
           { id: "skills", label: "Exam Skills", icon: GraduationCap },
         ].map((tab) => (
@@ -242,6 +245,117 @@ export default function ResourcesPage() {
               ))}
             </div>
           </div>
+        </div>
+      )}
+
+      {/* ── TEXTBOOKS TAB ── */}
+      {activeTab === "textbooks" && (
+        <div className="space-y-6">
+          <p className="text-muted-foreground">
+            Recommended textbooks and study guides for {AP_COURSES[course]}. Free resources are highlighted.
+          </p>
+
+          {/* Free resources first */}
+          {COURSE_TEXTBOOKS.filter((b) => b.course === course && b.free).length > 0 && (
+            <div className="space-y-3">
+              <h2 className="text-lg font-bold flex items-center gap-2 text-emerald-400">
+                <BookOpen className="h-5 w-5" />
+                Free Resources
+              </h2>
+              <div className="grid md:grid-cols-2 gap-4">
+                {COURSE_TEXTBOOKS.filter((b) => b.course === course && b.free).map((book) => (
+                  <Card key={book.name} className="card-glow border-emerald-500/20 hover:border-emerald-500/40 transition-colors">
+                    <CardContent className="p-5">
+                      <div className="flex items-start gap-3 mb-2">
+                        <div className="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center flex-shrink-0">
+                          <BookOpen className="h-5 w-5 text-emerald-400" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-semibold text-sm leading-tight">{book.name}</p>
+                          <p className="text-xs text-muted-foreground mt-0.5">{book.authors}</p>
+                        </div>
+                        <Badge className="text-xs text-emerald-400 border-emerald-500/30 bg-emerald-500/10 flex-shrink-0">
+                          Free
+                        </Badge>
+                      </div>
+                      <p className="text-xs text-muted-foreground leading-relaxed mb-4">{book.description}</p>
+                      {book.url ? (
+                        <a href={book.url} target="_blank" rel="noopener noreferrer">
+                          <Button size="sm" variant="outline" className="w-full gap-2 text-xs border-emerald-500/30 hover:border-emerald-500/60">
+                            <ExternalLink className="h-3.5 w-3.5" />
+                            Open Free Resource
+                          </Button>
+                        </a>
+                      ) : (
+                        <Button size="sm" variant="outline" className="w-full gap-2 text-xs" disabled>
+                          Search at your library
+                        </Button>
+                      )}
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Textbooks */}
+          {COURSE_TEXTBOOKS.filter((b) => b.course === course && !b.free && b.type === "textbook").length > 0 && (
+            <div className="space-y-3">
+              <h2 className="text-lg font-bold flex items-center gap-2">
+                <BookMarked className="h-5 w-5 text-indigo-400" />
+                Recommended Textbooks
+              </h2>
+              <div className="grid md:grid-cols-2 gap-4">
+                {COURSE_TEXTBOOKS.filter((b) => b.course === course && !b.free && b.type === "textbook").map((book) => (
+                  <Card key={book.name} className="card-glow hover:border-indigo-500/30 transition-colors">
+                    <CardContent className="p-5">
+                      <div className="flex items-start gap-3 mb-2">
+                        <div className="w-10 h-10 rounded-lg bg-indigo-500/10 flex items-center justify-center flex-shrink-0">
+                          <BookMarked className="h-5 w-5 text-indigo-400" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-semibold text-sm leading-tight">{book.name}</p>
+                          <p className="text-xs text-muted-foreground mt-0.5">{book.authors} · {book.publisher}</p>
+                        </div>
+                      </div>
+                      <p className="text-xs text-muted-foreground leading-relaxed">{book.description}</p>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Study Guides */}
+          {COURSE_TEXTBOOKS.filter((b) => b.course === course && b.type === "study_guide").length > 0 && (
+            <div className="space-y-3">
+              <h2 className="text-lg font-bold flex items-center gap-2">
+                <ClipboardCheck className="h-5 w-5 text-purple-400" />
+                Exam Prep & Study Guides
+              </h2>
+              <div className="grid md:grid-cols-2 gap-4">
+                {COURSE_TEXTBOOKS.filter((b) => b.course === course && b.type === "study_guide").map((book) => (
+                  <Card key={book.name} className="card-glow hover:border-purple-500/30 transition-colors">
+                    <CardContent className="p-5">
+                      <div className="flex items-start gap-3 mb-2">
+                        <div className="w-10 h-10 rounded-lg bg-purple-500/10 flex items-center justify-center flex-shrink-0">
+                          <ClipboardCheck className="h-5 w-5 text-purple-400" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-semibold text-sm leading-tight">{book.name}</p>
+                          <p className="text-xs text-muted-foreground mt-0.5">{book.authors} · {book.publisher}</p>
+                        </div>
+                        <Badge className="text-xs text-purple-400 border-purple-500/30 bg-purple-500/10 flex-shrink-0">
+                          Prep
+                        </Badge>
+                      </div>
+                      <p className="text-xs text-muted-foreground leading-relaxed">{book.description}</p>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       )}
 
