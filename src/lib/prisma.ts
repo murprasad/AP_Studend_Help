@@ -1,100 +1,28 @@
-import { PrismaClient, Prisma } from "@prisma/client";
+// Use the WASM-based Prisma client — no native binary engine needed.
+// Works on Cloudflare Workers (WASM + HTTP driver adapter) and Node.js.
+import { PrismaClient } from "@prisma/client/wasm";
+import { PrismaNeonHTTP } from "@prisma/adapter-neon";
+import { neon, neonConfig, types } from "@neondatabase/serverless";
 
-// ── Connection-failure detection ──────────────────────────────────────────────
-// Prisma error codes that indicate the primary DB is unreachable.
-const CONNECTION_ERROR_CODES = new Set([
-  "P1000", // Authentication failed
-  "P1001", // Can't reach database server
-  "P1002", // Database server timeout
-  "P1003", // Database does not exist
-  "P1008", // Operations timed out
-  "P1017", // Server closed the connection
-  "P2024", // Connection pool timeout
-]);
+// Use HTTP fetch transport — no WebSocket or native TCP needed.
+neonConfig.poolQueryViaFetch = true;
 
-function isConnectionError(err: unknown): boolean {
-  if (err instanceof Prisma.PrismaClientInitializationError) return true;
-  if (
-    err instanceof Prisma.PrismaClientKnownRequestError &&
-    CONNECTION_ERROR_CODES.has(err.code)
-  )
-    return true;
-  return false;
+// Return date/timestamp columns as raw strings so Prisma can parse them correctly.
+// Without this, the Neon HTTP transport returns PostgreSQL timestamps as empty objects {}.
+types.setTypeParser(types.builtins.DATE, (val: string) => val);
+types.setTypeParser(types.builtins.TIME, (val: string) => val);
+types.setTypeParser(types.builtins.TIMETZ, (val: string) => val);
+types.setTypeParser(types.builtins.TIMESTAMP, (val: string) => val);
+types.setTypeParser(types.builtins.TIMESTAMPTZ, (val: string) => val);
+
+function createPrismaClient(): PrismaClient {
+  const sql = neon(process.env.DATABASE_URL!);
+  const adapter = new PrismaNeonHTTP(sql);
+  return new PrismaClient({ adapter } as never);
 }
 
-// ── Client factory ────────────────────────────────────────────────────────────
+const globalForPrisma = globalThis as unknown as { prisma: PrismaClient };
 
-function createClient(url?: string): PrismaClient {
-  return new PrismaClient({
-    ...(url ? { datasources: { db: { url } } } : {}),
-    log:
-      process.env.NODE_ENV === "development" ? ["error", "warn"] : ["error"],
-  });
-}
+export const prisma = globalForPrisma.prisma ?? createPrismaClient();
 
-// ── Option 3: Automatic failover via Prisma extension ────────────────────────
-// If a query on the primary DB fails with a connection error AND
-// DATABASE_BACKUP_URL is configured, the same query is retried on the backup.
-// Zero changes required in API routes — `prisma` is a drop-in replacement.
-
-function buildResilientClient(): PrismaClient {
-  const primary = createClient(process.env.DATABASE_URL);
-  const backupUrl = process.env.DATABASE_BACKUP_URL;
-
-  if (!backupUrl) {
-    return primary; // No backup configured — plain client
-  }
-
-  const backup = createClient(backupUrl);
-
-  return primary.$extends({
-    query: {
-      $allOperations({ operation, model, args, query }) {
-        return (query(args) as Promise<unknown>).catch(async (err: unknown) => {
-          if (!isConnectionError(err)) throw err;
-
-          console.warn(
-            `[DB] Primary unavailable: ${
-              err instanceof Error ? err.message : String(err)
-            } — retrying ${model}.${operation} on backup`
-          );
-
-          // Prisma model names are PascalCase ("User") but client delegates
-          // are camelCase ("user") — convert here.
-          if (!model) throw err;
-          const delegateKey =
-            model.charAt(0).toLowerCase() + model.slice(1);
-
-          const delegate = (
-            backup as unknown as Record<
-              string,
-              Record<string, (...a: unknown[]) => Promise<unknown>>
-            >
-          )[delegateKey];
-
-          if (!delegate || typeof delegate[operation] !== "function") {
-            throw err; // Can't map — re-throw original
-          }
-
-          return delegate[operation](args);
-        });
-      },
-    },
-  }) as unknown as PrismaClient;
-}
-
-// ── Singleton (reused across hot reloads in dev) ──────────────────────────────
-
-const globalForPrisma = globalThis as unknown as {
-  prisma: PrismaClient | undefined;
-};
-
-export const prisma =
-  globalForPrisma.prisma ?? buildResilientClient();
-
-if (process.env.NODE_ENV !== "production") {
-  globalForPrisma.prisma = prisma;
-}
-
-/** True when a standby database URL is configured. */
-export const hasBackupDb = !!process.env.DATABASE_BACKUP_URL;
+if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;

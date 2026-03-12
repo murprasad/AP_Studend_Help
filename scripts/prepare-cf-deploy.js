@@ -53,4 +53,39 @@ fs.writeFileSync(
   JSON.stringify(routesJson, null, 2)
 );
 
+// 6. Patch Prisma's OpenSSL/libssl detector in the server handler bundle.
+//    Prisma calls `fs.promises.readdir()` to find libssl.so files; the catch
+//    block only ignores ENOENT, so the unenv "not implemented" error re-throws
+//    and breaks all database operations on Cloudflare Workers.
+//    We expand the catch to also swallow unenv "not implemented" errors.
+const handlerPath = path.join(dest, "server-functions/default/handler.mjs");
+if (fs.existsSync(handlerPath)) {
+  let handler = fs.readFileSync(handlerPath, "utf8");
+  // Original:  catch(t){if(t.code==="ENOENT")return;throw t}
+  // Patched:   also return for unenv "not implemented" errors
+  const original = `catch(t){if(t.code==="ENOENT")return;throw t}`;
+  const patched  = `catch(t){if(t.code==="ENOENT"||String(t.message).includes("not implemented"))return;throw t}`;
+  if (handler.includes(original)) {
+    handler = handler.split(original).join(patched);
+    console.log("✓ Patched Prisma fs.readdir catch block");
+  } else {
+    console.warn("⚠ Could not find Prisma readdir catch pattern — patch skipped");
+  }
+
+  // Patch 2: Prisma uses eval("__dirname") to locate binary engines.
+  // eval() is blocked on Cloudflare Workers by default. Replace with empty
+  // string — the engine path won't resolve, Prisma falls through to adapter.
+  const evalPattern = `eval("__dirname")`;
+  const evalReplacement = `""`;
+  const evalCount = (handler.match(new RegExp(evalPattern.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "g")) || []).length;
+  if (evalCount > 0) {
+    handler = handler.split(evalPattern).join(evalReplacement);
+    console.log(`✓ Patched ${evalCount} eval("__dirname") call(s)`);
+  } else {
+    console.warn("⚠ Could not find eval(\"__dirname\") — patch skipped");
+  }
+
+  fs.writeFileSync(handlerPath, handler);
+}
+
 console.log("✓ .cf-deploy assembled");

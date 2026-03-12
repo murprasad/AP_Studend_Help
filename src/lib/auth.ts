@@ -1,11 +1,11 @@
 import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { PrismaAdapter } from "@auth/prisma-adapter";
-import bcrypt from "bcryptjs";
+import { compareSync } from "bcrypt-ts";
 import { prisma } from "@/lib/prisma";
 
 export const authOptions: NextAuthOptions = {
-  adapter: PrismaAdapter(prisma) as never,
+  // No adapter needed: JWT strategy doesn't store sessions in the database.
+  // The Credentials provider handles auth entirely via prisma.user.findUnique.
   session: {
     strategy: "jwt",
     maxAge: 30 * 24 * 60 * 60, // 30 days
@@ -38,7 +38,7 @@ export const authOptions: NextAuthOptions = {
           throw new Error("Please verify your email before logging in");
         }
 
-        const isPasswordValid = await bcrypt.compare(
+        const isPasswordValid = compareSync(
           credentials.password,
           user.passwordHash
         );
