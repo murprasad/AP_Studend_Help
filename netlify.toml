@@ -5,7 +5,15 @@
 [functions]
   directory = "netlify/functions"
   node_bundler = "esbuild"
-  # Increase timeout for API routes that call LLMs (question generation, AI tutor)
+
+# Increase timeout for API routes that call LLMs (26s = free tier max)
+[functions."api/practice"]
+  timeout = 26
+
+[functions."api/ai/*"]
+  timeout = 26
+
+[functions."api/chat/*"]
   timeout = 26
 
 [[plugins]]
