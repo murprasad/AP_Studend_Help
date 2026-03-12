@@ -12,9 +12,9 @@
     "db:generate": "prisma generate",
     "db:seed": "tsx prisma/seed.ts",
     "db:studio": "prisma studio",
-    "pages:build": "vercel build && node node_modules/@cloudflare/next-on-pages/bin/index.js --skip-build",
-    "pages:deploy": "npm run pages:build && wrangler pages deploy",
-    "pages:preview": "npm run pages:build && wrangler pages dev"
+    "pages:build": "npx prisma generate && opennextjs-cloudflare build --dangerouslyUseUnsupportedNextVersion && cp .open-next/worker.js .open-next/_worker.js",
+    "pages:deploy": "npm run pages:build && wrangler pages deploy .open-next --project-name=novaprep --commit-dirty=true",
+    "pages:preview": "npm run pages:build && wrangler pages dev .open-next"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.30.0",
