@@ -1,17 +1,20 @@
 /**
  * Free Educational Data APIs — no API keys required.
  *
- * Integrated services:
+ * Actively fetched (live content used in AI context):
  *  - Wikipedia REST API      https://en.wikipedia.org/api/rest_v1/
  *  - Wikimedia / Wikidata    https://www.wikidata.org/w/api.php
  *  - Library of Congress     https://www.loc.gov/apis/json-and-yaml-apis/
  *  - Stack Exchange API      https://api.stackexchange.com/2.3/  (CC BY-SA 4.0)
  *  - Reddit JSON API         https://www.reddit.com/r/{sub}.json (public read)
+ *  - MIT OpenCourseWare      https://ocw.mit.edu  (static HTML, Physics only)
+ *  - Digital Inquiry Group   https://www.inquirygroup.org  (Stanford/SHEG, WH only)
  *  - College Board FRQ       https://apcentral.collegeboard.org  (public PDFs)
  *
- * Static resource references (no public API, linked only):
- *  - OpenStax                https://openstax.org
- *  - CK-12 Foundation        https://www.ck12.org
+ * Linked only (APIs blocked/CSR — shown on Resources page but not live-fetched):
+ *  - OpenStax                https://openstax.org  (client-side rendered)
+ *  - CK-12 Foundation        https://www.ck12.org  (403 on fetch)
+ *  - PhET Simulations        https://phet.colorado.edu  (SPA, no static API)
  *  - Khan Academy            https://www.khanacademy.org
  */
 
@@ -350,6 +353,163 @@ export const CB_FRQ_CATALOG: Record<string, Array<{ year: number; set: number; u
     { year: 2023, set: 1, url: "https://apcentral.collegeboard.org/media/pdf/ap23-frq-physics-1.pdf" },
   ],
 };
+
+// ── MIT OpenCourseWare (Physics only — confirmed 200 OK for static HTML) ──────
+
+/**
+ * Fetch MIT OCW week-page content for a Physics unit.
+ * Strips HTML and returns plain text of lesson titles + descriptions.
+ * URL must be a confirmed-working OCW week page (set in courses.ts UnitMeta.mitocwUrl).
+ */
+export async function fetchMITOCWContent(url: string): Promise<string> {
+  try {
+    const res = await fetch(url, {
+      headers: { "User-Agent": "PrepNova/1.0 (Educational AP Prep)" },
+      signal: AbortSignal.timeout(8000),
+    });
+    if (!res.ok) return "";
+    const html = await res.text();
+    // Strip scripts, styles, nav, footer — keep main content
+    const cleaned = html
+      .replace(/<script[\s\S]*?<\/script>/gi, "")
+      .replace(/<style[\s\S]*?<\/style>/gi, "")
+      .replace(/<nav[\s\S]*?<\/nav>/gi, "")
+      .replace(/<footer[\s\S]*?<\/footer>/gi, "")
+      .replace(/<header[\s\S]*?<\/header>/gi, "")
+      .replace(/<[^>]+>/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+    // Extract the most content-dense portion (after page boilerplate)
+    const start = cleaned.indexOf("Week");
+    const useful = start > 0 ? cleaned.slice(start) : cleaned;
+    return useful.slice(0, 1200);
+  } catch {
+    return "";
+  }
+}
+
+// ── Digital Inquiry Group / Stanford (World History — confirmed 200 OK) ────────
+
+/**
+ * Fetch Digital Inquiry Group content for a World History topic.
+ * Returns lesson titles and descriptions relevant to the query.
+ * Uses /history-lessons or /history-assessments (both confirmed working).
+ */
+export async function fetchDIGContent(url: string, topic: string): Promise<string> {
+  try {
+    const res = await fetch(url, {
+      headers: { "User-Agent": "PrepNova/1.0 (Educational AP Prep)" },
+      signal: AbortSignal.timeout(8000),
+    });
+    if (!res.ok) return "";
+    const html = await res.text();
+    const cleaned = html
+      .replace(/<script[\s\S]*?<\/script>/gi, "")
+      .replace(/<style[\s\S]*?<\/style>/gi, "")
+      .replace(/<nav[\s\S]*?<\/nav>/gi, "")
+      .replace(/<footer[\s\S]*?<\/footer>/gi, "")
+      .replace(/<[^>]+>/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+    // Find the section most relevant to the topic
+    const topicLower = topic.toLowerCase();
+    const words = topicLower.split(/\s+/).filter((w) => w.length > 3);
+    let best = "";
+    let bestScore = 0;
+    // Score 500-char windows by keyword density
+    for (let i = 0; i < cleaned.length - 500; i += 200) {
+      const chunk = cleaned.slice(i, i + 500);
+      const score = words.reduce((s, w) => s + (chunk.toLowerCase().includes(w) ? 1 : 0), 0);
+      if (score > bestScore) { bestScore = score; best = chunk; }
+    }
+    return bestScore > 0 ? best : cleaned.slice(0, 600);
+  } catch {
+    return "";
+  }
+}
+
+// ── OpenStax Archive API (archive.cnx.org — free JSON API, no key) ───────────
+
+/**
+ * Search OpenStax educational content via the CNX archive API.
+ * Returns concept descriptions and learning objectives relevant to a topic.
+ * Subject map: physics → College Physics 2e | world-history → World History | cs → CS Principles
+ */
+export async function fetchOpenStaxContent(
+  topic: string,
+  subject: "physics" | "world-history" | "cs"
+): Promise<string> {
+  const subjectQuery =
+    subject === "physics"
+      ? "college physics algebra-based"
+      : subject === "world-history"
+      ? "world history modern"
+      : "computer science principles";
+  try {
+    const url =
+      `https://archive.cnx.org/search?q=${encodeURIComponent(`${subjectQuery} ${topic}`)}` +
+      `&per_page=4&sort=pubDate%20desc`;
+    const res = await fetch(url, {
+      headers: {
+        Accept: "application/json",
+        "User-Agent": "PrepNova/1.0 (Educational AP Prep)",
+      },
+      signal: AbortSignal.timeout(7000),
+    });
+    if (!res.ok) return "";
+    const data = await res.json();
+    const items: Record<string, unknown>[] = (data.results?.items || []).slice(0, 3);
+    if (!items.length) return "";
+    return (
+      `OpenStax educational content (open license):\n` +
+      items
+        .map(
+          (r) =>
+            `• ${r.title}: ${((r.abstract as string) || "").replace(/<[^>]+>/g, "").slice(0, 220)}`
+        )
+        .join("\n")
+    );
+  } catch {
+    return "";
+  }
+}
+
+// ── Smithsonian Open Access API (free, DEMO_KEY = 30 req/hour) ───────────────
+
+/**
+ * Fetch Smithsonian museum collection items relevant to a historical query.
+ * Uses the Smithsonian Open Access API (CC0 and open license content).
+ * Great for primary source image descriptions in AP World History DBQ context.
+ */
+export async function fetchSmithsonianContent(query: string, limit = 3): Promise<string> {
+  try {
+    const url =
+      `https://api.si.edu/openaccess/api/v1.0/search` +
+      `?q=${encodeURIComponent(query)}&api_key=DEMO_KEY&rows=${limit}`;
+    const res = await fetch(url, { signal: AbortSignal.timeout(7000) });
+    if (!res.ok) return "";
+    const data = await res.json();
+    const rows: Record<string, unknown>[] = data.response?.rows || [];
+    if (!rows.length) return "";
+    const lines = rows
+      .slice(0, limit)
+      .map((item) => {
+        const content = item.content as Record<string, unknown> | undefined;
+        const dnr = content?.descriptiveNonRepeating as Record<string, unknown> | undefined;
+        const titleObj = dnr?.title as Record<string, unknown> | undefined;
+        const title = (titleObj?.content as string) || (item.id as string) || "Item";
+        const notesArr = (content?.freetext as Record<string, unknown>)?.notes;
+        const note = Array.isArray(notesArr)
+          ? ((notesArr[0] as Record<string, unknown>)?.content as string) || ""
+          : "";
+        return `• ${title}: ${note.slice(0, 200)}`;
+      })
+      .join("\n");
+    return `Smithsonian collections (open access):\n${lines}`;
+  } catch {
+    return "";
+  }
+}
 
 /**
  * Build enriched AI context for question generation, combining:

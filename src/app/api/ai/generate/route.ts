@@ -3,7 +3,8 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { generateQuestion } from "@/lib/ai";
-import { ApUnit, Difficulty, QuestionType } from "@prisma/client";
+import { ApUnit, ApCourse, Difficulty, QuestionType } from "@prisma/client";
+import { getCourseForUnit } from "@/lib/courses";
 
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions);
@@ -19,21 +20,34 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Premium subscription required" }, { status: 403 });
   }
 
-  const { unit, difficulty, questionType, topic } = await req.json();
+  const { unit, difficulty, questionType, topic, course } = await req.json();
 
   try {
     const generated = await generateQuestion(
       unit as ApUnit,
       difficulty as Difficulty,
       questionType as QuestionType,
-      topic
+      topic,
+      course as ApCourse | undefined
     );
+
+    const resolvedCourse = (course as ApCourse) || getCourseForUnit(unit as ApUnit);
 
     // Save to DB (pending approval for non-admins)
     const question = await prisma.question.create({
       data: {
-        ...generated,
+        course: resolvedCourse,
+        unit: generated.unit,
+        topic: generated.topic,
+        subtopic: generated.subtopic,
+        difficulty: generated.difficulty,
+        questionType: generated.questionType,
+        questionText: generated.questionText,
+        stimulus: generated.stimulus || null,
         options: generated.options ? JSON.stringify(generated.options) : undefined,
+        correctAnswer: generated.correctAnswer,
+        explanation: generated.explanation,
+        isAiGenerated: true,
         isApproved: user.role === "ADMIN",
       },
     });

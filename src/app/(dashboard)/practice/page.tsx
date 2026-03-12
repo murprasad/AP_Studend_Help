@@ -10,6 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useCourse } from "@/hooks/use-course";
 import { COURSE_UNITS, AP_COURSES, formatTime } from "@/lib/utils";
 import { ApUnit } from "@prisma/client";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Zap,
   BookOpen,
@@ -74,6 +75,7 @@ export default function PracticePage() {
   const [questionStartTime, setQuestionStartTime] = useState<Date | null>(null);
   const [sessionSummary, setSessionSummary] = useState<SessionSummary | null>(null);
   const [results, setResults] = useState<Array<{ correct: boolean; timeSecs: number }>>([]);
+  const [openEndedAnswer, setOpenEndedAnswer] = useState("");
 
   // Reset unit selection when course changes
   useEffect(() => {
@@ -183,6 +185,7 @@ export default function PracticePage() {
       }
       setSelectedAnswer(null);
       setFeedback(null);
+      setOpenEndedAnswer("");
       setQuestionStartTime(new Date());
       return next;
     });
@@ -324,6 +327,27 @@ export default function PracticePage() {
             <p className="text-base font-medium leading-relaxed">
               {currentQuestion.questionText}
             </p>
+
+            {/* Open-ended response for SAQ/DBQ/LEQ */}
+            {parsedOptions.length === 0 && !feedback && (
+              <div className="space-y-3">
+                <p className="text-sm text-muted-foreground">Write your response below, then submit to see the scoring rubric.</p>
+                <Textarea
+                  value={openEndedAnswer}
+                  onChange={(e) => setOpenEndedAnswer(e.target.value)}
+                  placeholder="Write your answer here..."
+                  className="min-h-[120px] text-sm"
+                  disabled={isSubmitting}
+                />
+                <Button
+                  onClick={() => submitAnswer(openEndedAnswer || "student_response")}
+                  disabled={!openEndedAnswer.trim() || isSubmitting}
+                  className="w-full"
+                >
+                  {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : "Submit & See Rubric"}
+                </Button>
+              </div>
+            )}
 
             <div className="space-y-2">
               {parsedOptions.map((option, i) => {

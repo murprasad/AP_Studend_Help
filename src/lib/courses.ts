@@ -33,6 +33,20 @@ export interface UnitMeta {
   oerUrl?: string;
   zinnUrl?: string;
   worldHistoryUrl?: string;
+  /** MIT OpenCourseWare week page URL (Physics only — confirmed working) */
+  mitocwUrl?: string;
+  /** Digital Inquiry Group (Stanford) lesson search URL (World History only) */
+  digUrl?: string;
+}
+
+/** Per-question-type generation specification */
+export interface QuestionTypeFormat {
+  /** Full generation instruction replacing stimulusRequirement for this type */
+  generationPrompt: string;
+  /** JSON response format hint (what fields to return) */
+  responseFormat: string;
+  /** Typical minutes a student takes to answer */
+  estimatedMinutes: number;
 }
 
 // ── Per-course configuration ──────────────────────────────────────────────────
@@ -77,6 +91,15 @@ export interface CourseConfig {
    * context for every question. Enable for humanities/history courses.
    */
   enrichWithEduAPIs: boolean;
+  /**
+   * Per-question-type generation specs. MCQ falls back to the existing
+   * stimulusRequirement / stimulusDescription fields if not listed here.
+   */
+  questionTypeFormats?: Partial<Record<string, QuestionTypeFormat>>;
+  /**
+   * Subject key for OpenStax content fetching.
+   */
+  openStaxSubject?: "physics" | "world-history" | "cs";
   /** Official College Board links shown on the Resources page */
   collegeBoardLinks?: Array<{ label: string; url: string }>;
 }
@@ -93,6 +116,59 @@ export const COURSE_REGISTRY: Record<ApCourse, CourseConfig> = {
     shortName: "AP World History",
     examSecsPerQuestion: 60, // 55 MCQ in 55 min
     enrichWithEduAPIs: true,
+    openStaxSubject: "world-history",
+    questionTypeFormats: {
+      SAQ: {
+        generationPrompt:
+          "Generate a College Board AP World History Short Answer Question (SAQ). " +
+          "The SAQ must have THREE labeled parts: (A), (B), and (C). " +
+          "Part A: Describe one historical development. " +
+          "Part B: Explain a cause or effect. " +
+          "Part C: Evaluate similarity, difference, or change over time. " +
+          "Each part should be answerable in 2-4 sentences. Total time: ~15 minutes.",
+        responseFormat:
+          '{"topic":"...", "subtopic":"...", "questionText":"Full 3-part SAQ prompt with (A)(B)(C)", ' +
+          '"stimulus":"primary source excerpt or null", "correctAnswer":"Complete sample response for all three parts", ' +
+          '"explanation":"Scoring rubric: 1 point each for A, B, C. Describe what earns each point."}',
+        estimatedMinutes: 15,
+      },
+      DBQ: {
+        generationPrompt:
+          "Generate a College Board AP World History Document-Based Question (DBQ) PROMPT ONLY (not the full 7-document set). " +
+          "Include: a historical context paragraph (2-3 sentences), the essay prompt asking students to " +
+          "evaluate the extent of a historical development using evidence and reasoning, " +
+          "and a description of 2-3 types of documents a student would analyze. " +
+          "Focus on themes from the AP World History curriculum.",
+        responseFormat:
+          '{"topic":"...", "subtopic":"...", "questionText":"Full DBQ prompt with context + question", ' +
+          '"stimulus":"Historical context paragraph", "correctAnswer":"Sample thesis and 2-3 sentence argument outline", ' +
+          '"explanation":"Rubric: thesis (1pt), contextualization (1pt), evidence (3pt), analysis/reasoning (2pt), complexity (1pt)"}',
+        estimatedMinutes: 45,
+      },
+      LEQ: {
+        generationPrompt:
+          "Generate a College Board AP World History Long Essay Question (LEQ). " +
+          "The LEQ must ask students to make and support an argument about a historical development " +
+          "using one of: causation, continuity and change over time, or comparison. " +
+          "Provide the time period and geographic scope. The question should be answerable in ~40 minutes.",
+        responseFormat:
+          '{"topic":"...", "subtopic":"...", "questionText":"Full LEQ prompt", ' +
+          '"stimulus":null, "correctAnswer":"Sample thesis statement and 3-sentence outline", ' +
+          '"explanation":"Rubric: thesis (1pt), contextualization (1pt), evidence (2pt), argument (2pt), complexity (1pt)"}',
+        estimatedMinutes: 40,
+      },
+      MCQ: {
+        generationPrompt:
+          "Generate a College Board AP World History MCQ with a primary source stimulus (document excerpt, map description, or image description). " +
+          "The question must test AP Historical Thinking Skills (Causation, Comparison, CCOT, or Contextualization). " +
+          "Three wrong answers must each represent a common student misconception.",
+        responseFormat:
+          '{"topic":"...", "subtopic":"...", "questionText":"question", "stimulus":"primary source stimulus", ' +
+          '"options":["A) ...","B) ...","C) ...","D) ..."], "correctAnswer":"A", ' +
+          '"explanation":"Why correct + why each trap answer is wrong, citing historical evidence"}',
+        estimatedMinutes: 2,
+      },
+    },
 
     units: {
       UNIT_1_GLOBAL_TAPESTRY: {
@@ -105,6 +181,7 @@ export const COURSE_REGISTRY: Record<ApCourse, CourseConfig> = {
         oerUrl: "https://www.oerproject.com/AP-World-History/Unit-1",
         zinnUrl: "https://www.zinnedproject.org/materials/?era=medieval-renaissance-1200-1500",
         worldHistoryUrl: "https://worldhistoryforusall.sdsu.edu/eras/era5.htm",
+        digUrl: "https://www.inquirygroup.org/history-lessons",
       },
       UNIT_2_NETWORKS_OF_EXCHANGE: {
         name: "Unit 2: Networks of Exchange",
@@ -116,6 +193,7 @@ export const COURSE_REGISTRY: Record<ApCourse, CourseConfig> = {
         oerUrl: "https://www.oerproject.com/AP-World-History/Unit-2",
         zinnUrl: "https://www.zinnedproject.org/materials/?era=medieval-renaissance-1200-1500",
         worldHistoryUrl: "https://worldhistoryforusall.sdsu.edu/eras/era5.htm",
+        digUrl: "https://www.inquirygroup.org/history-lessons",
       },
       UNIT_3_LAND_BASED_EMPIRES: {
         name: "Unit 3: Land-Based Empires",
@@ -127,6 +205,7 @@ export const COURSE_REGISTRY: Record<ApCourse, CourseConfig> = {
         oerUrl: "https://www.oerproject.com/AP-World-History/Unit-3",
         zinnUrl: "https://www.zinnedproject.org/materials/?era=1400s-1600s",
         worldHistoryUrl: "https://worldhistoryforusall.sdsu.edu/eras/era6.htm",
+        digUrl: "https://www.inquirygroup.org/history-lessons",
       },
       UNIT_4_TRANSOCEANIC_INTERCONNECTIONS: {
         name: "Unit 4: Transoceanic Interconnections",
@@ -138,6 +217,7 @@ export const COURSE_REGISTRY: Record<ApCourse, CourseConfig> = {
         oerUrl: "https://www.oerproject.com/AP-World-History/Unit-4",
         zinnUrl: "https://www.zinnedproject.org/materials/?era=1400s-1600s",
         worldHistoryUrl: "https://worldhistoryforusall.sdsu.edu/eras/era6.htm",
+        digUrl: "https://www.inquirygroup.org/history-lessons",
       },
       UNIT_5_REVOLUTIONS: {
         name: "Unit 5: Revolutions",
@@ -149,6 +229,7 @@ export const COURSE_REGISTRY: Record<ApCourse, CourseConfig> = {
         oerUrl: "https://www.oerproject.com/AP-World-History/Unit-5",
         zinnUrl: "https://www.zinnedproject.org/materials/?era=american-revolution-civil-war-reconstruction",
         worldHistoryUrl: "https://worldhistoryforusall.sdsu.edu/eras/era7.htm",
+        digUrl: "https://www.inquirygroup.org/history-assessments",
       },
       UNIT_6_INDUSTRIALIZATION: {
         name: "Unit 6: Industrialization & Imperialism",
@@ -160,6 +241,7 @@ export const COURSE_REGISTRY: Record<ApCourse, CourseConfig> = {
         oerUrl: "https://www.oerproject.com/AP-World-History/Unit-6",
         zinnUrl: "https://www.zinnedproject.org/materials/?era=industrialization-imperialism",
         worldHistoryUrl: "https://worldhistoryforusall.sdsu.edu/eras/era7.htm",
+        digUrl: "https://www.inquirygroup.org/history-assessments",
       },
       UNIT_7_GLOBAL_CONFLICT: {
         name: "Unit 7: Global Conflict",
@@ -171,6 +253,7 @@ export const COURSE_REGISTRY: Record<ApCourse, CourseConfig> = {
         oerUrl: "https://www.oerproject.com/AP-World-History/Unit-7",
         zinnUrl: "https://www.zinnedproject.org/materials/?era=world-war-ii-postwar",
         worldHistoryUrl: "https://worldhistoryforusall.sdsu.edu/eras/era8.htm",
+        digUrl: "https://www.inquirygroup.org/history-assessments",
       },
       UNIT_8_COLD_WAR: {
         name: "Unit 8: Cold War & Decolonization",
@@ -182,6 +265,7 @@ export const COURSE_REGISTRY: Record<ApCourse, CourseConfig> = {
         oerUrl: "https://www.oerproject.com/AP-World-History/Unit-8",
         zinnUrl: "https://www.zinnedproject.org/materials/?era=world-war-ii-postwar",
         worldHistoryUrl: "https://worldhistoryforusall.sdsu.edu/eras/era8.htm",
+        digUrl: "https://www.inquirygroup.org/history-assessments",
       },
       UNIT_9_GLOBALIZATION: {
         name: "Unit 9: Globalization",
@@ -193,6 +277,7 @@ export const COURSE_REGISTRY: Record<ApCourse, CourseConfig> = {
         oerUrl: "https://www.oerproject.com/AP-World-History/Unit-9",
         zinnUrl: "https://www.zinnedproject.org/materials/?era=globalization",
         worldHistoryUrl: "https://worldhistoryforusall.sdsu.edu/eras/era9.htm",
+        digUrl: "https://www.inquirygroup.org/history-assessments",
       },
     },
 
@@ -223,11 +308,12 @@ The course covers 1200 CE to present across 9 units:
 AP Historical Thinking Skills: Argumentation, Causation, Comparison, Continuity & Change Over Time, Contextualization
 AP Disciplinary Practices: Analyzing evidence, reasoning about historical context, making historical claims
 
-Key resources: College Board AP Central, OER Project World History, Fiveable AP World History, Heimler's History (YouTube), Zinn Education Project
+Key resources: College Board AP Central, OER Project World History, Fiveable AP World History, Heimler's History (YouTube), Zinn Education Project, Digital Inquiry Group (Stanford)
 `,
 
     tutorResources: `
 When referencing resources:
+- Digital Inquiry Group / Stanford (inquirygroup.org): Stanford-developed "Reading Like a Historian" lessons and primary-source assessments — the gold standard for historical thinking (actively fetched to enrich answers)
 - Heimler's History (YouTube): Great for visual reviews of each unit
 - Khan Academy: Free videos and articles on all topics
 - Fiveable: Excellent study guides and key concept summaries
@@ -235,7 +321,8 @@ When referencing resources:
 - College Board AP Central: Official exam info and sample questions
 - Zinn Education Project: Alternative perspectives and primary sources
 - Wikipedia: Quick facts and article overviews on any historical topic
-- Library of Congress (loc.gov): Free primary source documents, maps, and photographs`,
+- Library of Congress (loc.gov): Free primary source documents, maps, and photographs
+- OpenStax World History (openstax.org): Free peer-reviewed textbook covering all periods`,
 
     examAlignmentNotes: `AP Exam alignment:
 - Questions must align with College Board AP World History: Modern curriculum
@@ -260,6 +347,24 @@ When referencing resources:
     shortName: "AP CS Principles",
     examSecsPerQuestion: 103, // 70 MCQ in 120 min ≈ 1.7 min/q
     enrichWithEduAPIs: false,
+    openStaxSubject: "cs",
+    questionTypeFormats: {
+      MCQ: {
+        generationPrompt:
+          "Generate a College Board AP CSP MCQ. Alternate between these sub-types: " +
+          "(1) PSEUDOCODE TRACE — show AP pseudocode and ask what the output or variable value is; " +
+          "(2) ALGORITHM ANALYSIS — describe an algorithm scenario and ask about its behavior/efficiency; " +
+          "(3) CONCEPT APPLICATION — ask about binary, data compression, networks, cybersecurity, or ethics; " +
+          "(4) CODE READING — provide a code segment and ask what it does. " +
+          "Use the AP CSP pseudocode reference syntax (DISPLAY, INPUT, IF/ELSE, REPEAT, PROCEDURE).",
+        responseFormat:
+          '{"topic":"...", "subtopic":"...", "questionText":"question", ' +
+          '"stimulus":"pseudocode block or scenario description (use ``` fences for code)", ' +
+          '"options":["A) ...","B) ...","C) ...","D) ..."], "correctAnswer":"A", ' +
+          '"explanation":"Step-by-step trace or concept explanation referencing AP CSP big ideas"}',
+        estimatedMinutes: 3,
+      },
+    },
 
     units: {
       CSP_1_CREATIVE_DEVELOPMENT: {
@@ -345,47 +450,73 @@ When referencing resources:
     shortName: "AP Physics 1",
     examSecsPerQuestion: 108, // 50 MCQ in 90 min = 1.8 min/q
     enrichWithEduAPIs: false,
+    openStaxSubject: "physics",
+    questionTypeFormats: {
+      MCQ: {
+        generationPrompt:
+          "Generate a College Board AP Physics 1 MCQ. Alternate between these sub-types: " +
+          "(1) CONCEPTUAL — test understanding of a physics principle without numbers; " +
+          "(2) CALCULATION — provide given values and ask for an algebraic solution (no calculus); " +
+          "(3) GRAPH INTERPRETATION — describe a position-time, velocity-time, or force diagram and ask a question; " +
+          "(4) EXPERIMENTAL — describe a lab scenario and ask about variables, sources of error, or predictions. " +
+          "All math must be algebra-based. Include a diagram or data description in the stimulus when useful.",
+        responseFormat:
+          '{"topic":"...", "subtopic":"...", "questionText":"question", ' +
+          '"stimulus":"diagram description, given values table, or experimental setup (null if purely conceptual)", ' +
+          '"options":["A) ...","B) ...","C) ...","D) ..."], "correctAnswer":"A", ' +
+          '"explanation":"Physics law/principle, equation used, step-by-step solution if calculation"}',
+        estimatedMinutes: 3,
+      },
+    },
 
     units: {
       PHY1_1_KINEMATICS: {
         name: "Unit 1: Kinematics",
         keyThemes: ["Displacement", "Velocity", "Acceleration", "Motion Graphs", "Projectile Motion"],
         fiveableUrl: "https://library.fiveable.me/ap-physics-1/unit-1",
+        mitocwUrl: "https://ocw.mit.edu/courses/8-01sc-classical-mechanics-fall-2016/pages/week-1-kinematics/",
       },
       PHY1_2_FORCES_AND_NEWTONS_LAWS: {
         name: "Unit 2: Forces and Newton's Laws",
         keyThemes: ["Newton's Three Laws", "Free Body Diagrams", "Friction", "Tension", "Normal Force"],
         fiveableUrl: "https://library.fiveable.me/ap-physics-1/unit-2",
+        mitocwUrl: "https://ocw.mit.edu/courses/8-01sc-classical-mechanics-fall-2016/pages/week-2-newtons-laws/",
       },
       PHY1_3_CIRCULAR_MOTION_GRAVITATION: {
         name: "Unit 3: Circular Motion and Gravitation",
         keyThemes: ["Centripetal Acceleration", "Gravitational Force", "Orbital Motion"],
         fiveableUrl: "https://library.fiveable.me/ap-physics-1/unit-3",
+        mitocwUrl: "https://ocw.mit.edu/courses/8-01sc-classical-mechanics-fall-2016/pages/week-3-circular-motion/",
       },
       PHY1_4_ENERGY: {
         name: "Unit 4: Energy",
         keyThemes: ["Work", "Kinetic Energy", "Potential Energy", "Conservation of Energy", "Power"],
         fiveableUrl: "https://library.fiveable.me/ap-physics-1/unit-4",
+        mitocwUrl: "https://ocw.mit.edu/courses/8-01sc-classical-mechanics-fall-2016/pages/week-6-energy-and-work/",
       },
       PHY1_5_MOMENTUM: {
         name: "Unit 5: Momentum",
         keyThemes: ["Impulse", "Linear Momentum", "Conservation of Momentum", "Collisions"],
         fiveableUrl: "https://library.fiveable.me/ap-physics-1/unit-5",
+        mitocwUrl: "https://ocw.mit.edu/courses/8-01sc-classical-mechanics-fall-2016/pages/week-5-momentum-and-impulse/",
       },
       PHY1_6_SIMPLE_HARMONIC_MOTION: {
         name: "Unit 6: Simple Harmonic Motion",
         keyThemes: ["Springs", "Pendulums", "Period", "Frequency", "Amplitude"],
         fiveableUrl: "https://library.fiveable.me/ap-physics-1/unit-6",
+        mitocwUrl: "https://ocw.mit.edu/courses/8-01sc-classical-mechanics-fall-2016/pages/week-7-simple-harmonic-motion/",
       },
       PHY1_7_TORQUE_AND_ROTATION: {
         name: "Unit 7: Torque and Rotational Motion",
         keyThemes: ["Torque", "Rotational Inertia", "Angular Momentum"],
         fiveableUrl: "https://library.fiveable.me/ap-physics-1/unit-7",
+        mitocwUrl: "https://ocw.mit.edu/courses/8-01sc-classical-mechanics-fall-2016/pages/week-10-rotational-motion/",
       },
       PHY1_8_ELECTRIC_CHARGE_AND_FORCE: {
         name: "Unit 8: Electric Charge and Electric Force",
         keyThemes: ["Charge", "Coulomb's Law", "Electric Fields"],
         fiveableUrl: "https://library.fiveable.me/ap-physics-1/unit-8",
+        // MIT OCW 8.02 (E&M) — not 8.01SC, so no mitocwUrl here
       },
       PHY1_9_DC_CIRCUITS: {
         name: "Unit 9: DC Circuits",
@@ -396,6 +527,7 @@ When referencing resources:
         name: "Unit 10: Mechanical Waves and Sound",
         keyThemes: ["Wave Properties", "Interference", "Standing Waves", "Sound"],
         fiveableUrl: "https://library.fiveable.me/ap-physics-1/unit-10",
+        mitocwUrl: "https://ocw.mit.edu/courses/8-03sc-physics-iii-vibrations-and-waves-fall-2016/pages/part-i-mechanical-vibrations-and-waves/",
       },
     },
 
@@ -429,10 +561,12 @@ AP Physics Science Practices: Modeling, Mathematical Routines, Scientific Questi
 
     tutorResources: `
 When referencing resources:
+- MIT OpenCourseWare 8.01SC (ocw.mit.edu): Free MIT Classical Mechanics course — lecture notes, worked examples, and problem sets for kinematics through rotational motion (actively fetched to enrich answers)
 - Khan Academy AP Physics 1: Free videos, articles, and practice problems
 - Flipping Physics (YouTube): Excellent conceptual and worked example videos
 - Professor Leonard (YouTube): Comprehensive supplement
 - Fiveable AP Physics 1: Study guides and key concept summaries
+- PhET Simulations (phet.colorado.edu): Free interactive physics simulations for visualizing concepts
 - College Board AP Central: Official exam info, free-response questions, and scoring`,
 
     examAlignmentNotes: `AP Exam alignment:

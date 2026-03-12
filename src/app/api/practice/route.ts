@@ -3,7 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { SessionType, ApUnit, Difficulty, ApCourse, QuestionType } from "@prisma/client";
-import { VALID_AP_COURSES, getUnitsForCourse } from "@/lib/courses";
+import { VALID_AP_COURSES, getUnitsForCourse, COURSE_REGISTRY } from "@/lib/courses";
 import { generateQuestion } from "@/lib/ai";
 
 // Create a new practice session
@@ -34,6 +34,21 @@ export async function POST(req: NextRequest) {
 
     let allQuestions = await prisma.question.findMany({ where: whereClause });
 
+    // Fetch student's mastery scores for adaptive topic targeting
+    const masteryData = await prisma.masteryScore.findMany({
+      where: { userId: session.user.id, course: course as ApCourse },
+      orderBy: { masteryScore: "asc" },
+    });
+    // Build weak-topic map: unit → weakest keyTheme (for targeted generation)
+    const weakTopicMap = new Map<string, string>();
+    for (const m of masteryData) {
+      if (m.masteryScore < 70) {
+        const unitMeta = COURSE_REGISTRY[course as ApCourse]?.units[m.unit as ApUnit];
+        const themes = unitMeta?.keyThemes || [];
+        if (themes.length) weakTopicMap.set(m.unit, themes[0]);
+      }
+    }
+
     // Auto-generate AI questions when the DB bank is insufficient
     // Cap at 5 parallel generations per request to stay within Netlify's 26s timeout.
     // Groq (Llama 3.3) typically responds in 1–3s, so 5 parallel ≈ 5s total.
@@ -51,7 +66,8 @@ export async function POST(req: NextRequest) {
         const d: Difficulty = (difficulty && difficulty !== "ALL")
           ? (difficulty as Difficulty)
           : diffs[i % diffs.length];
-        return generateQuestion(u, d, QuestionType.MCQ, undefined, course as ApCourse)
+        const weakTopic = weakTopicMap.get(u) || undefined;
+        return generateQuestion(u, d, QuestionType.MCQ, weakTopic, course as ApCourse)
           .then((gen) =>
             prisma.question.create({
               data: {

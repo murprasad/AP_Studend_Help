@@ -2,7 +2,7 @@ import { ApUnit, ApCourse, Difficulty, QuestionType } from "@prisma/client";
 import { COURSE_UNITS } from "./utils";
 import { COURSE_REGISTRY, getCourseForUnit } from "./courses";
 import { callAIWithCascade } from "./ai-providers";
-import { getWikipediaSummary, getEduContextForQuery, searchStackExchange, getEnrichedContext } from "./edu-apis";
+import { getWikipediaSummary, getEduContextForQuery, searchStackExchange, getEnrichedContext, fetchMITOCWContent, fetchDIGContent, fetchOpenStaxContent, fetchSmithsonianContent } from "./edu-apis";
 
 // ── Unified helpers (thin wrappers over the cascade engine) ────────────────
 async function callAI(prompt: string, systemPrompt?: string): Promise<string> {
@@ -32,6 +32,7 @@ export interface GeneratedQuestion {
   options?: string[];
   correctAnswer: string;
   explanation: string;
+  estimatedMinutes: number;
 }
 
 // ── Fetch web content from open educational resources ──────────────────────
@@ -71,11 +72,22 @@ async function getUnitContext(unit: ApUnit): Promise<string> {
     "Sources: College Board AP Central, Wikipedia, Library of Congress, Stack Exchange (CC BY-SA), Reddit AP Communities",
   ].filter(Boolean).join("\n");
 
+  const openStaxSubject = COURSE_REGISTRY[course]?.openStaxSubject;
+  const useSmithsonian = course === "AP_WORLD_HISTORY";
+
   // Fetch content in parallel from all available free sources
-  const [fiveableContent, wikiResult, seResults] = await Promise.allSettled([
+  const [fiveableContent, wikiResult, seResults, mitocwContent, digContent, openStaxContent, smithsonianContent] = await Promise.allSettled([
     unitMeta.fiveableUrl ? fetchResourceContent(unitMeta.fiveableUrl) : Promise.resolve(""),
     isSTEM ? Promise.resolve(null) : getWikipediaSummary(unitMeta.name.replace(/Unit \d+: /, "")),
     isSTEM ? searchStackExchange(searchQuery, seSite, 3) : Promise.resolve([]),
+    // MIT OCW for Physics — live static HTML fetch
+    unitMeta.mitocwUrl ? fetchMITOCWContent(unitMeta.mitocwUrl) : Promise.resolve(""),
+    // Digital Inquiry Group for World History — live static HTML fetch
+    unitMeta.digUrl ? fetchDIGContent(unitMeta.digUrl, searchQuery) : Promise.resolve(""),
+    // OpenStax curriculum content
+    openStaxSubject ? fetchOpenStaxContent(searchQuery, openStaxSubject) : Promise.resolve(""),
+    // Smithsonian for World History primary source context
+    useSmithsonian ? fetchSmithsonianContent(searchQuery, 2) : Promise.resolve(""),
   ]);
 
   let enriched = context;
@@ -90,6 +102,18 @@ async function getUnitContext(unit: ApUnit): Promise<string> {
       .map((s) => `• ${s.title}: ${s.body}`)
       .join("\n").slice(0, 600)}`;
   }
+  if (mitocwContent.status === "fulfilled" && mitocwContent.value) {
+    enriched += `\nMIT OpenCourseWare 8.01SC lesson content:\n${mitocwContent.value.slice(0, 700)}`;
+  }
+  if (digContent.status === "fulfilled" && digContent.value) {
+    enriched += `\nDigital Inquiry Group (Stanford) historical thinking context:\n${digContent.value.slice(0, 600)}`;
+  }
+  if (openStaxContent.status === "fulfilled" && openStaxContent.value) {
+    enriched += `\nOpenStax curriculum content (open license):\n${openStaxContent.value.slice(0, 500)}`;
+  }
+  if (smithsonianContent.status === "fulfilled" && smithsonianContent.value) {
+    enriched += `\nSmithsonian collections (open access):\n${smithsonianContent.value.slice(0, 400)}`;
+  }
   return enriched;
 }
 
@@ -102,17 +126,27 @@ function buildQuestionPrompt(
   unit: ApUnit,
   unitName: string,
   difficulty: Difficulty,
+  questionType: QuestionType,
   topic?: string
 ): string {
   const config = COURSE_REGISTRY[course];
   const unitMeta = config.units[unit];
+  const typeFormat = config.questionTypeFormats?.[questionType];
 
   const unitHeader = [
     `Unit: ${unitName}${unitMeta?.timePeriod ? ` (${unitMeta.timePeriod})` : ""}`,
     unitMeta?.keyThemes?.length ? `Key Themes for this unit: ${unitMeta.keyThemes.join(", ")}` : "",
     `Difficulty: ${difficulty}`,
+    `Question Type: ${questionType}`,
     `Topic: ${topic ? `specifically about: ${topic}` : "any major theme from this unit"}`,
   ].filter(Boolean).join("\n");
+
+  // Use type-specific format if available, else fall back to MCQ defaults
+  const generationInstruction = typeFormat?.generationPrompt
+    ?? `Create a College Board-style multiple choice question. ${config.stimulusRequirement}. Provide exactly 4 answer choices labeled A, B, C, D. Only one correct answer. Explanation should ${config.explanationGuidance}`;
+
+  const responseFormat = typeFormat?.responseFormat
+    ?? `{"topic":"specific topic name","subtopic":"specific subtopic","questionText":"the question text","stimulus":"${config.stimulusDescription}","options":["A) option text","B) option text","C) option text","D) option text"],"correctAnswer":"A","explanation":"detailed explanation ${config.explanationGuidance}"}`;
 
   return `You are an ${config.name} exam question generator trained on College Board ${config.name} curriculum standards.
 
@@ -120,23 +154,11 @@ ${unitHeader}
 
 ${config.examAlignmentNotes}
 
-Requirements:
-- Create a College Board-style multiple choice question
-- ${config.stimulusRequirement}
-- Provide exactly 4 answer choices labeled A, B, C, D
-- Only one correct answer
-- Explanation should ${config.explanationGuidance}
+GENERATION TASK:
+${generationInstruction}
 
 Return ONLY a JSON object (no markdown, no extra text):
-{
-  "topic": "specific topic name",
-  "subtopic": "specific subtopic",
-  "questionText": "the question text",
-  "stimulus": "${config.stimulusDescription}",
-  "options": ["A) option text", "B) option text", "C) option text", "D) option text"],
-  "correctAnswer": "A",
-  "explanation": "detailed explanation ${config.explanationGuidance}"
-}`;
+${responseFormat}`;
 }
 
 // ── Question Generation ────────────────────────────────────────────────────
@@ -149,11 +171,16 @@ export async function generateQuestion(
 ): Promise<GeneratedQuestion> {
   const inferredCourse = course || getCourseForUnit(unit);
   const unitName = COURSE_REGISTRY[inferredCourse].units[unit]?.name || unit;
-  const prompt = buildQuestionPrompt(inferredCourse, unit, unitName, difficulty, topic);
+  const prompt = buildQuestionPrompt(inferredCourse, unit, unitName, difficulty, questionType, topic);
 
   const rawResponse = await callAI(prompt);
   const rawText = rawResponse.trim().replace(/^```(?:json)?\s*/i, "").replace(/```\s*$/i, "");
   const parsed = JSON.parse(rawText);
+
+  const inferredCourseForReturn = course || getCourseForUnit(unit);
+  const typeFormatForReturn = COURSE_REGISTRY[inferredCourseForReturn]?.questionTypeFormats?.[questionType];
+  const estimatedMinutes = typeFormatForReturn?.estimatedMinutes
+    ?? (difficulty === "EASY" ? 1 : difficulty === "MEDIUM" ? 2 : 3);
 
   return {
     unit,
@@ -166,6 +193,7 @@ export async function generateQuestion(
     options: parsed.options,
     correctAnswer: parsed.correctAnswer,
     explanation: parsed.explanation,
+    estimatedMinutes,
     isAiGenerated: true,
     isApproved: false,
   } as GeneratedQuestion & { isAiGenerated: boolean; isApproved: boolean };

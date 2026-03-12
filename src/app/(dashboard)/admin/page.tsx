@@ -4,8 +4,9 @@ import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { AP_UNITS } from "@/lib/utils";
-import { ApUnit } from "@prisma/client";
+import { AP_COURSES, COURSE_UNITS } from "@/lib/utils";
+import { ApUnit, ApCourse } from "@prisma/client";
+import { VALID_AP_COURSES } from "@/lib/courses";
 import { Users, BookOpen, BarChart3, Clock } from "lucide-react";
 import { AdminBulkGenerate } from "@/components/admin/bulk-generate";
 
@@ -32,7 +33,7 @@ export default async function AdminPage() {
         },
       }),
       prisma.question.groupBy({
-        by: ["unit"],
+        by: ["course", "unit"],
         where: { isApproved: true },
         _count: { id: true },
       }),
@@ -75,23 +76,46 @@ export default async function AdminPage() {
       <AdminBulkGenerate />
 
       <div className="grid lg:grid-cols-2 gap-6">
-        {/* Questions by unit */}
+        {/* Questions by course and unit */}
         <Card className="card-glow">
           <CardHeader>
-            <CardTitle className="text-lg">Questions by Unit</CardTitle>
+            <CardTitle className="text-lg">Question Coverage by Course</CardTitle>
+            <p className="text-xs text-muted-foreground">
+              Red &lt;10 (critical) · Yellow 10–19 (low) · Green ≥20 (good)
+            </p>
           </CardHeader>
-          <CardContent>
-            <div className="space-y-2">
-              {(Object.keys(AP_UNITS) as ApUnit[]).map((unit) => {
-                const count = questionsByUnit.find((q) => q.unit === unit)?._count.id || 0;
-                return (
-                  <div key={unit} className="flex items-center justify-between py-1.5">
-                    <span className="text-sm">{AP_UNITS[unit]}</span>
-                    <Badge variant={count < 5 ? "destructive" : "secondary"}>{count}</Badge>
+          <CardContent className="space-y-5">
+            {VALID_AP_COURSES.map((course) => {
+              const courseUnitMap = COURSE_UNITS[course as ApCourse];
+              const courseTotal = questionsByUnit
+                .filter((q) => q.course === course)
+                .reduce((s, q) => s + q._count.id, 0);
+              return (
+                <div key={course}>
+                  <div className="flex items-center justify-between mb-2">
+                    <p className="text-sm font-semibold text-indigo-300">{AP_COURSES[course as ApCourse]}</p>
+                    <Badge variant="outline" className="text-xs">{courseTotal} total</Badge>
                   </div>
-                );
-              })}
-            </div>
+                  <div className="space-y-1">
+                    {(Object.keys(courseUnitMap) as ApUnit[]).map((unit) => {
+                      const count = questionsByUnit.find((q) => q.unit === unit && q.course === course)?._count.id || 0;
+                      return (
+                        <div key={unit} className="flex items-center justify-between py-1">
+                          <span className="text-xs text-muted-foreground">{courseUnitMap[unit]}</span>
+                          <Badge
+                            variant={count < 10 ? "destructive" : "secondary"}
+                            className={count >= 20 ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/30" :
+                                       count >= 10 ? "bg-yellow-500/20 text-yellow-400 border-yellow-500/30" : ""}
+                          >
+                            {count}
+                          </Badge>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            })}
           </CardContent>
         </Card>
 

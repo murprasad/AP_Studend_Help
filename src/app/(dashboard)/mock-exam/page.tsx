@@ -80,7 +80,7 @@ export default function MockExamPage() {
     if (timeLeft <= 0) { completeExam(); return; }
     const interval = setInterval(() => setTimeLeft((t) => t - 1), 1000);
     return () => clearInterval(interval);
-  }, [phase, timeLeft]);
+  }, [phase, timeLeft]); // eslint-disable-line react-hooks/exhaustive-deps
 
   async function startExam() {
     setIsLoading(true);
