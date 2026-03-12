@@ -1,0 +1,11 @@
+{
+  "framework": "nextjs",
+  "buildCommand": "npx prisma generate && npm run build",
+  "installCommand": "npm install --legacy-peer-deps",
+  "functions": {
+    "src/app/api/practice/route.ts": { "maxDuration": 60 },
+    "src/app/api/ai/**": { "maxDuration": 60 },
+    "src/app/api/chat/**": { "maxDuration": 60 },
+    "src/app/api/study-plan/**": { "maxDuration": 60 }
+  }
+}
