@@ -111,8 +111,10 @@ export default function PracticePage() {
         return;
       }
 
-      if (data.lowBankWarning) {
-        toast({ title: "Limited questions available", description: data.lowBankWarning, variant: "default" });
+      if (data.aiGenerationWarning) {
+        toast({ title: "✨ AI questions generated", description: data.aiGenerationWarning });
+      } else if (data.lowBankWarning) {
+        toast({ title: "Limited questions available", description: data.lowBankWarning });
       }
 
       const qs: Question[] = data.questions ?? [];

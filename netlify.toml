@@ -5,6 +5,8 @@
 [functions]
   directory = "netlify/functions"
   node_bundler = "esbuild"
+  # Increase timeout for API routes that call LLMs (question generation, AI tutor)
+  timeout = 26
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
