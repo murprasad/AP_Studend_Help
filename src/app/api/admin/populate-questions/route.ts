@@ -15,6 +15,7 @@ import { prisma } from "@/lib/prisma";
 import { ApCourse, ApUnit, Difficulty, QuestionType } from "@prisma/client";
 import { VALID_AP_COURSES, COURSE_REGISTRY } from "@/lib/courses";
 import { COURSE_UNITS } from "@/lib/utils";
+import { buildQuestionPrompt } from "@/lib/ai";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 300; // 5 min – Vercel Pro / Netlify Functions timeout
@@ -39,24 +40,42 @@ export async function GET(req: NextRequest) {
     ? [courseParam]
     : VALID_AP_COURSES;
 
-  const coverage: Record<string, { unit: string; name: string; count: number; status: string }[]> = {};
+  const coverage: Record<string, { unit: string; name: string; count: number; status: string; difficulty: { EASY: number; MEDIUM: number; HARD: number } }[]> = {};
 
   for (const course of courses) {
     const unitKeys = Object.keys(COURSE_UNITS[course]) as ApUnit[];
-    const counts = await prisma.question.groupBy({
-      by: ["unit"],
-      where: { course, isApproved: true, unit: { in: unitKeys } },
-      _count: { id: true },
-    });
+    const [counts, difficultyCounts] = await Promise.all([
+      prisma.question.groupBy({
+        by: ["unit"],
+        where: { course, isApproved: true, unit: { in: unitKeys } },
+        _count: { id: true },
+      }),
+      prisma.question.groupBy({
+        by: ["unit", "difficulty"],
+        where: { course, isApproved: true, unit: { in: unitKeys } },
+        _count: { id: true },
+      }),
+    ]);
     const countMap = new Map(counts.map((c) => [c.unit, c._count.id]));
 
     coverage[course] = unitKeys.map((unit) => {
       const count = countMap.get(unit) ?? 0;
+      const diffBreakdown = { EASY: 0, MEDIUM: 0, HARD: 0 };
+      for (const d of difficultyCounts) {
+        if (d.unit === unit && d.difficulty in diffBreakdown) {
+          diffBreakdown[d.difficulty as keyof typeof diffBreakdown] = d._count.id;
+        }
+      }
+      const hasGoodDistribution = count >= 20 && diffBreakdown.HARD >= 3 && diffBreakdown.EASY >= 3 && diffBreakdown.MEDIUM >= 5;
+      const status = count >= 20
+        ? (hasGoodDistribution ? "good" : "unbalanced")
+        : count >= 10 ? "low" : "critical";
       return {
         unit,
         name: COURSE_REGISTRY[course].units[unit]?.name ?? unit,
         count,
-        status: count >= 20 ? "good" : count >= 10 ? "low" : "critical",
+        status,
+        difficulty: diffBreakdown,
       };
     });
   }
@@ -66,6 +85,7 @@ export async function GET(req: NextRequest) {
     total: units.reduce((s, u) => s + u.count, 0),
     critical: units.filter((u) => u.status === "critical").length,
     low: units.filter((u) => u.status === "low").length,
+    unbalanced: units.filter((u) => u.status === "unbalanced").length,
     good: units.filter((u) => u.status === "good").length,
   }));
 
@@ -100,7 +120,6 @@ export async function POST(req: NextRequest) {
   let skipped = 0;
   let failed = 0;
 
-  const difficulties: Difficulty[] = [Difficulty.EASY, Difficulty.MEDIUM, Difficulty.HARD];
   const courseConfig = COURSE_REGISTRY[course];
 
   for (const unit of unitKeys) {
@@ -121,11 +140,11 @@ export async function POST(req: NextRequest) {
 
     let generated = 0;
     const keyThemes = courseConfig.units[unit]?.keyThemes ?? [];
+    const queue = buildDifficultyQueue(needed, keyThemes);
 
     try {
-      for (let i = 0; i < needed; i++) {
-        const difficulty = difficulties[i % difficulties.length];
-        const topic = keyThemes.length > 0 ? keyThemes[i % keyThemes.length] : undefined;
+      for (let i = 0; i < queue.length; i++) {
+        const { difficulty, topic } = queue[i];
         try {
           const q = await generateOneQuestion(course, unit, difficulty, topic, courseConfig);
           if (q) {
@@ -169,7 +188,41 @@ export async function POST(req: NextRequest) {
   return NextResponse.json({ course, minPerUnit, dryRun, filled, skipped, failed, details });
 }
 
-// ── Internal question generator (no Next.js imports needed) ──────────────────
+// ── Difficulty queue builder — 30% EASY / 50% MEDIUM / 20% HARD ──────────────
+
+function buildDifficultyQueue(
+  totalCount: number,
+  keyThemes: string[]
+): Array<{ difficulty: Difficulty; topic: string | undefined }> {
+  const easyTarget = Math.round(totalCount * 0.3);
+  const hardTarget = Math.round(totalCount * 0.2);
+  const mediumTarget = totalCount - easyTarget - hardTarget;
+
+  // Interleave difficulties: E M H M E M M H M E ... for even spread
+  const slots: Difficulty[] = [];
+  const counts = { EASY: easyTarget, MEDIUM: mediumTarget, HARD: hardTarget };
+  const order: Difficulty[] = [Difficulty.EASY, Difficulty.MEDIUM, Difficulty.MEDIUM, Difficulty.HARD, Difficulty.MEDIUM];
+  let placed = 0;
+  while (placed < totalCount) {
+    for (const d of order) {
+      if (placed >= totalCount) break;
+      if (counts[d] > 0) {
+        slots.push(d);
+        counts[d]--;
+        placed++;
+      }
+    }
+    // Safety: if a difficulty ran out, fill from MEDIUM
+    if (placed < totalCount && counts.MEDIUM === 0 && counts.EASY === 0 && counts.HARD === 0) break;
+  }
+
+  return slots.map((difficulty, i) => ({
+    difficulty,
+    topic: keyThemes.length > 0 ? keyThemes[i % keyThemes.length] : undefined,
+  }));
+}
+
+// ── Internal question generator ───────────────────────────────────────────────
 
 interface SimpleQuestion {
   topic: string;
@@ -190,33 +243,8 @@ async function generateOneQuestion(
 ): Promise<SimpleQuestion | null> {
   const unitMeta = courseConfig.units[unit];
   const unitName = unitMeta?.name ?? unit;
-  const timePeriod = unitMeta?.timePeriod;
 
-  const prompt = `You are an ${courseConfig.name} exam question generator. Create ONE College Board AP-style MCQ.
-
-Unit: ${unitName}${timePeriod ? ` (${timePeriod})` : ""}
-${unitMeta?.keyThemes?.length ? `Key Themes: ${unitMeta.keyThemes.join(", ")}` : ""}
-Difficulty: ${difficulty}
-Focus topic: ${topic ?? "any major theme from this unit"}
-
-${courseConfig.examAlignmentNotes}
-
-Requirements:
-- ${courseConfig.stimulusRequirement}
-- Exactly 4 answer choices: A, B, C, D
-- Only one correct answer
-- Explanation must address why the correct answer is right and why the others are traps
-
-Return ONLY valid JSON (no markdown, no extra text):
-{
-  "topic": "specific topic",
-  "subtopic": "specific subtopic",
-  "questionText": "the question",
-  "stimulus": "${courseConfig.stimulusDescription} or null if not applicable",
-  "options": ["A) ...", "B) ...", "C) ...", "D) ..."],
-  "correctAnswer": "A",
-  "explanation": "why A is correct and why B/C/D are wrong traps"
-}`;
+  const prompt = buildQuestionPrompt(course, unit, unitName, difficulty, QuestionType.MCQ, topic);
 
   const { callAIWithCascade } = await import("@/lib/ai-providers");
   const raw = await callAIWithCascade(prompt);

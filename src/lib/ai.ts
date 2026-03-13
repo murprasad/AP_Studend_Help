@@ -121,7 +121,7 @@ async function getUnitContext(unit: ApUnit): Promise<string> {
 // To customise for a new course, update examAlignmentNotes / stimulusRequirement
 // / stimulusDescription / explanationGuidance in that course's CourseConfig.
 
-function buildQuestionPrompt(
+export function buildQuestionPrompt(
   course: ApCourse,
   unit: ApUnit,
   unitName: string,
@@ -148,11 +148,25 @@ function buildQuestionPrompt(
   const responseFormat = typeFormat?.responseFormat
     ?? `{"topic":"specific topic name","subtopic":"specific subtopic","questionText":"the question text","stimulus":"${config.stimulusDescription}","options":["A) option text","B) option text","C) option text","D) option text"],"correctAnswer":"A","explanation":"detailed explanation ${config.explanationGuidance}"}`;
 
+  const difficultySection = config.difficultyRubric?.[difficulty]
+    ? `\nDIFFICULTY DEFINITION (${difficulty}):\n${config.difficultyRubric[difficulty]}`
+    : "";
+
+  const skillsSection = config.skillCodes?.length
+    ? `\nAP SKILLS TO TEST (choose the most relevant one):\n${config.skillCodes.join(" | ")}`
+    : "";
+
+  const stimulusSection = `\nSTIMULUS QUALITY STANDARD:\n${config.stimulusQualityGuidance ?? config.stimulusRequirement}`;
+
+  const distractorSection = `\nDISTRACTOR CONSTRUCTION RULES:\n${config.distractorTaxonomy ?? "Each wrong answer should represent a distinct common misconception."}`;
+
+  const wordCountSection = `\nWORD COUNT TARGETS:\n- questionText: 15–40 words\n- stimulus: 40–120 words (or null if not applicable)\n- each option: 8–25 words\n- explanation: 80–150 words (name the correct answer + explain each distractor's trap)`;
+
   return `You are an ${config.name} exam question generator trained on College Board ${config.name} curriculum standards.
 
 ${unitHeader}
 
-${config.examAlignmentNotes}
+${config.examAlignmentNotes}${difficultySection}${skillsSection}${stimulusSection}${distractorSection}${wordCountSection}
 
 GENERATION TASK:
 ${generationInstruction}

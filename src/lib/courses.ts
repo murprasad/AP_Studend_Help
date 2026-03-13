@@ -102,6 +102,14 @@ export interface CourseConfig {
   openStaxSubject?: "physics" | "world-history" | "cs";
   /** Official College Board links shown on the Resources page */
   collegeBoardLinks?: Array<{ label: string; url: string }>;
+  /** Per-difficulty rubric used in question generation prompts */
+  difficultyRubric?: { EASY: string; MEDIUM: string; HARD: string };
+  /** Distractor taxonomy: 3 named trap types for wrong answers */
+  distractorTaxonomy?: string;
+  /** Guidance on what a high-quality stimulus looks like vs a generic one */
+  stimulusQualityGuidance?: string;
+  /** AP skill codes tested on this exam */
+  skillCodes?: string[];
 }
 
 // ═════════════════════════════════════════════════════════════════════════════
@@ -339,6 +347,14 @@ When referencing resources:
       { label: "Past Exam Questions (FRQ)", url: "https://apcentral.collegeboard.org/courses/ap-world-history/exam/past-exam-questions" },
       { label: "Scoring Guidelines", url: "https://apcentral.collegeboard.org/courses/ap-world-history/exam/past-exam-questions" },
     ],
+    difficultyRubric: {
+      EASY: "Direct recall of one concept, event, or person using a single skill step. ~60-65% of test-takers answer correctly.",
+      MEDIUM: "Applies one AP Historical Thinking Skill (Causation, Comparison, CCOT, or Contextualization) to analyzed evidence. ~40-55% correct.",
+      HARD: "Multi-skill synthesis connecting evidence across time periods, regions, or themes, or evaluating a historiographical argument. ~25-40% correct.",
+    },
+    distractorTaxonomy: "Create exactly 3 distractor types: (1) TEMPORAL TRAP — true fact from the wrong time period; (2) GEOGRAPHIC TRAP — true development from a different region; (3) CAUSAL INVERSION — reverses the cause-effect relationship or conflates correlation with causation.",
+    stimulusQualityGuidance: "GOOD: A verbatim primary source excerpt (Ibn Battuta, a colonial charter, a diplomatic letter) with date and attribution, or a specific map/image description. AVOID: Vague paraphrases ('A historian noted that…') or textbook summaries.",
+    skillCodes: ["Causation", "Comparison", "Continuity and Change Over Time (CCOT)", "Contextualization", "Argumentation"],
   },
 
   // ── AP Computer Science Principles ───────────────────────────────────────
@@ -442,6 +458,14 @@ When referencing resources:
       { label: "Past Exam Questions (FRQ)", url: "https://apcentral.collegeboard.org/courses/ap-computer-science-principles/exam/past-exam-questions" },
       { label: "AP CSP Reference Sheet", url: "https://apcentral.collegeboard.org/media/pdf/ap-computer-science-principles-exam-reference-sheet.pdf" },
     ],
+    difficultyRubric: {
+      EASY: "Direct recall of a term or rule (e.g., what DISPLAY outputs). 65%+ correct.",
+      MEDIUM: "Trace a 3-5 step pseudocode segment or apply a concept to a new scenario. 40-55% correct.",
+      HARD: "Analyze algorithm correctness/efficiency, evaluate ethical tradeoffs with multiple stakeholders, or debug a multi-procedure program. 25-40% correct.",
+    },
+    distractorTaxonomy: "(1) OFF-BY-ONE TRAP — plausible but wrong by one iteration; (2) SYNTAX CONFUSION — correct in Python/Java but wrong in AP pseudocode; (3) PARTIAL-TRACE TRAP — correct value at an intermediate step, not the final output.",
+    stimulusQualityGuidance: "GOOD: Complete AP pseudocode block using DISPLAY, INPUT, IF/ELSE, REPEAT UNTIL, PROCEDURE with clear variable names. AVOID: Natural-language code descriptions, incomplete fragments, or mixed Python/AP syntax.",
+    skillCodes: ["Computational Solution Design", "Algorithms and Program Development", "Abstraction in Program Development", "Code Analysis", "Computing Innovations", "Responsible Computing"],
   },
 
   // ── AP Physics 1: Algebra-Based ───────────────────────────────────────────
@@ -585,6 +609,14 @@ When referencing resources:
       { label: "Past Exam Questions (FRQ)", url: "https://apcentral.collegeboard.org/courses/ap-physics-1/exam/past-exam-questions" },
       { label: "AP Physics 1 Formula Sheet", url: "https://apcentral.collegeboard.org/media/pdf/ap-physics-1-formulas-tables.pdf" },
     ],
+    difficultyRubric: {
+      EASY: "Recall of one law, equation, or definition. No multi-step calculation. 65%+ correct.",
+      MEDIUM: "2-3 algebraic steps using one equation, or qualitative reasoning with one variable changing. 40-55% correct.",
+      HARD: "Multiple equations in sequence, graph interpretation where two variables co-vary, or experiment design/critique. 25-40% correct.",
+    },
+    distractorTaxonomy: "(1) MAGNITUDE TRAP — correct formula but forgot to square, root, or negate; (2) DIRECTION/SIGN TRAP — correct magnitude, wrong direction (force diagrams, momentum, work); (3) FORMULA SUBSTITUTION TRAP — plugged numbers into wrong equation for superficially similar scenario.",
+    stimulusQualityGuidance: "GOOD: Data table with values+units, or specific diagram description (e.g., '5 kg block on frictionless surface connected by string to 2 kg hanging mass'). AVOID: Generic 'an object moves' setups without numbers.",
+    skillCodes: ["Modeling", "Mathematical Routines", "Scientific Questioning", "Experimental Design", "Data Analysis", "Argumentation"],
   },
 };
 

@@ -24,7 +24,8 @@ interface UnitCoverage {
   unit: string;
   name: string;
   count: number;
-  status: "good" | "low" | "critical";
+  status: "good" | "low" | "critical" | "unbalanced";
+  difficulty?: { EASY: number; MEDIUM: number; HARD: number };
 }
 
 interface PopulateDetail {
@@ -191,21 +192,36 @@ export function AdminBulkGenerate() {
                   {units.map((u) => (
                     <div
                       key={u.unit}
-                      className={`text-xs p-2 rounded-lg flex items-center justify-between gap-1 ${
+                      className={`text-xs p-2 rounded-lg flex flex-col gap-1 ${
                         u.status === "good"
                           ? "bg-emerald-500/10 border border-emerald-500/20"
+                          : u.status === "unbalanced"
+                          ? "bg-orange-500/10 border border-orange-500/20"
                           : u.status === "low"
                           ? "bg-yellow-500/10 border border-yellow-500/20"
                           : "bg-red-500/10 border border-red-500/30"
                       }`}
                     >
-                      <span className="truncate text-muted-foreground" title={u.name}>
-                        {u.name.replace(/Unit \d+: /, "").slice(0, 18)}
-                      </span>
-                      <span className={`font-bold flex-shrink-0 ${
-                        u.status === "good" ? "text-emerald-400" :
-                        u.status === "low" ? "text-yellow-400" : "text-red-400"
-                      }`}>{u.count}</span>
+                      <div className="flex items-center justify-between gap-1">
+                        <span className="truncate text-muted-foreground" title={u.name}>
+                          {u.name.replace(/Unit \d+: /, "").slice(0, 18)}
+                        </span>
+                        <span className={`font-bold flex-shrink-0 ${
+                          u.status === "good" ? "text-emerald-400" :
+                          u.status === "unbalanced" ? "text-orange-400" :
+                          u.status === "low" ? "text-yellow-400" : "text-red-400"
+                        }`}>{u.count}</span>
+                      </div>
+                      {u.difficulty && (
+                        <div className="flex gap-1">
+                          <span className="px-1 rounded bg-blue-500/20 text-blue-300">E:{u.difficulty.EASY}</span>
+                          <span className="px-1 rounded bg-yellow-500/20 text-yellow-300">M:{u.difficulty.MEDIUM}</span>
+                          <span className="px-1 rounded bg-red-500/20 text-red-300">H:{u.difficulty.HARD}</span>
+                          {u.status === "unbalanced" && (
+                            <span className="px-1 rounded bg-orange-500/20 text-orange-300 text-[9px] leading-4">skewed</span>
+                          )}
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>

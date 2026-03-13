@@ -9,6 +9,7 @@ import { ApUnit, ApCourse } from "@prisma/client";
 import { VALID_AP_COURSES } from "@/lib/courses";
 import { Users, BookOpen, BarChart3, Clock } from "lucide-react";
 import { AdminBulkGenerate } from "@/components/admin/bulk-generate";
+import { AdminMegaPopulate } from "@/components/admin/mega-populate";
 import { AdminFeatureFlags } from "@/components/admin/feature-flags";
 import { AdminPaymentSetup } from "@/components/admin/payment-setup";
 
@@ -76,6 +77,9 @@ export default async function AdminPage() {
 
       {/* Bulk Question Generation */}
       <AdminBulkGenerate />
+
+      {/* Mega-Populate */}
+      <AdminMegaPopulate />
 
       {/* Payment Setup */}
       <AdminPaymentSetup />
