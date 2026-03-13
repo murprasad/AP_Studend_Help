@@ -28,7 +28,10 @@ export async function POST(req: NextRequest) {
       return NextResponse.redirect(new URL("/pricing?error=payment_unavailable", req.url));
     }
 
-    const stripe = new Stripe(stripeConfig.secretKey, { apiVersion: "2024-06-20" });
+    const stripe = new Stripe(stripeConfig.secretKey, {
+      apiVersion: "2024-06-20",
+      httpClient: Stripe.createFetchHttpClient(),
+    });
     const priceId = stripeConfig.priceId;
 
     const origin = req.headers.get("origin") || process.env.NEXTAUTH_URL || "http://localhost:3000";

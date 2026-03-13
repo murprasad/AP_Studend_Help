@@ -40,7 +40,10 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Not configured" }, { status: 500 });
   }
 
-  const stripe = new Stripe(stripeKey, { apiVersion: "2024-06-20" });
+  const stripe = new Stripe(stripeKey, {
+    apiVersion: "2024-06-20",
+    httpClient: Stripe.createFetchHttpClient(),
+  });
 
   const body = await req.text();
   const signature = req.headers.get("stripe-signature");

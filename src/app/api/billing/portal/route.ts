@@ -15,7 +15,10 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Payment not configured" }, { status: 503 });
     }
 
-    const stripe = new Stripe(stripeConfig.secretKey, { apiVersion: "2024-06-20" });
+    const stripe = new Stripe(stripeConfig.secretKey, {
+      apiVersion: "2024-06-20",
+      httpClient: Stripe.createFetchHttpClient(),
+    });
 
     // Find the user's Stripe customer via their email
     const user = await prisma.user.findUnique({
