@@ -2,6 +2,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import Link from "next/link";
 import {
   Zap,
   BookOpen,
@@ -18,6 +19,9 @@ import {
   ExternalLink,
   FileText,
   Star,
+  Crown,
+  CheckCircle,
+  XCircle,
 } from "lucide-react";
 
 const COURSES = [
@@ -283,6 +287,82 @@ export default function AboutPage() {
             </a>
           ))}
         </div>
+      </div>
+
+      {/* Free vs Premium comparison */}
+      <div className="space-y-4">
+        <div>
+          <h2 className="text-xl font-bold">Free vs Premium</h2>
+          <p className="text-sm text-muted-foreground mt-1">
+            Everything you need to ace your AP exam is free. Premium unlocks unlimited AI access and personalization.
+          </p>
+        </div>
+
+        <div className="rounded-xl border border-border/40 overflow-hidden">
+          {/* Header row */}
+          <div className="grid grid-cols-3 bg-secondary/60">
+            <div className="p-4 text-sm font-semibold text-muted-foreground">Feature</div>
+            <div className="p-4 text-sm font-semibold text-center border-l border-border/40 flex items-center justify-center gap-2">
+              <Zap className="h-4 w-4 text-muted-foreground" /> Free
+            </div>
+            <div className="p-4 text-sm font-semibold text-center border-l border-border/40 flex items-center justify-center gap-2 bg-indigo-500/10">
+              <Crown className="h-4 w-4 text-indigo-400" />
+              <span className="text-indigo-300">Premium</span>
+            </div>
+          </div>
+
+          {/* Feature rows */}
+          {[
+            { feature: "Practice Questions", free: "Unlimited", premium: "Unlimited", highlight: false },
+            { feature: "AP Courses Available", free: "All 3 courses", premium: "All 3 courses", highlight: false },
+            { feature: "Mock Exam Simulator", free: true, premium: true, highlight: false },
+            { feature: "Progress Analytics", free: "Basic", premium: "Advanced + weak-area insights", highlight: false },
+            { feature: "AI Tutor", free: "10 conversations/day", premium: "Unlimited", highlight: true },
+            { feature: "AI Streaming Responses", free: false, premium: true, highlight: true },
+            { feature: "Study Plan", free: "Static template", premium: "AI-personalized, updates weekly", highlight: true },
+            { feature: "Priority AI Model", free: false, premium: true, highlight: false },
+            { feature: "Achievements & XP", free: true, premium: true, highlight: false },
+            { feature: "Early Access to New Courses", free: false, premium: true, highlight: false },
+            { feature: "Email Support", free: false, premium: true, highlight: false },
+            { feature: "Price", free: "$0/month", premium: "$9.99/month", highlight: false },
+          ].map((row, i) => (
+            <div
+              key={row.feature}
+              className={`grid grid-cols-3 border-t border-border/40 ${i % 2 === 0 ? "" : "bg-secondary/20"} ${row.highlight ? "bg-indigo-500/5" : ""}`}
+            >
+              <div className="p-3.5 text-sm flex items-center gap-2">
+                {row.highlight && <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 flex-shrink-0" />}
+                {row.feature}
+              </div>
+              <div className="p-3.5 text-sm text-center border-l border-border/40 flex items-center justify-center">
+                {typeof row.free === "boolean" ? (
+                  row.free
+                    ? <CheckCircle className="h-4 w-4 text-emerald-400" />
+                    : <XCircle className="h-4 w-4 text-muted-foreground/40" />
+                ) : (
+                  <span className="text-muted-foreground text-xs">{row.free}</span>
+                )}
+              </div>
+              <div className="p-3.5 text-sm text-center border-l border-border/40 flex items-center justify-center bg-indigo-500/5">
+                {typeof row.premium === "boolean" ? (
+                  row.premium
+                    ? <CheckCircle className="h-4 w-4 text-indigo-400" />
+                    : <XCircle className="h-4 w-4 text-muted-foreground/40" />
+                ) : (
+                  <span className="text-indigo-300 text-xs font-medium">{row.premium}</span>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <Link
+          href="/pricing"
+          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium transition-colors"
+        >
+          <Crown className="h-4 w-4" />
+          Upgrade to Premium — $9.99/month
+        </Link>
       </div>
 
       {/* Contact */}

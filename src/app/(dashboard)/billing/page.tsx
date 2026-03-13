@@ -1,15 +1,37 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
+import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Crown, Zap, CheckCircle, ExternalLink, Loader2, ArrowUpRight } from "lucide-react";
+import { Crown, Zap, CheckCircle, ExternalLink, Loader2, ArrowUpRight, PartyPopper } from "lucide-react";
 import Link from "next/link";
 
 export default function BillingPage() {
-  const { data: session, status } = useSession();
+  const { data: session, status, update } = useSession();
+  const searchParams = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+
+  // After Stripe redirects back with ?success=1, refresh the session so
+  // the JWT picks up the new PREMIUM subscriptionTier from the DB.
+  useEffect(() => {
+    if (searchParams.get("success") === "1") {
+      setRefreshing(true);
+      // Poll until the webhook has updated the DB (usually < 2s)
+      const interval = setInterval(async () => {
+        await update();
+      }, 1500);
+      // Stop after 10s regardless
+      const timeout = setTimeout(() => {
+        clearInterval(interval);
+        setRefreshing(false);
+      }, 10000);
+      return () => { clearInterval(interval); clearTimeout(timeout); };
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const isPremium = session?.user?.subscriptionTier === "PREMIUM";
 
@@ -38,6 +60,8 @@ export default function BillingPage() {
     );
   }
 
+  const justUpgraded = searchParams.get("success") === "1";
+
   return (
     <div className="max-w-2xl mx-auto">
       <div className="mb-8">
@@ -47,6 +71,28 @@ export default function BillingPage() {
         </h1>
         <p className="text-muted-foreground mt-1">Manage your subscription and payment details.</p>
       </div>
+
+      {/* Payment success banner */}
+      {justUpgraded && (
+        <div className="mb-6 rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-4 flex items-start gap-3">
+          <div className="w-9 h-9 rounded-lg bg-emerald-500/20 flex items-center justify-center flex-shrink-0">
+            <PartyPopper className="h-5 w-5 text-emerald-400" />
+          </div>
+          <div className="flex-1">
+            <p className="font-semibold text-emerald-400">
+              {refreshing && !isPremium ? "Activating your Premium account…" : "Welcome to Premium!"}
+            </p>
+            <p className="text-sm text-muted-foreground mt-0.5">
+              {refreshing && !isPremium
+                ? "Your payment was successful. Activating Premium features — this takes a few seconds."
+                : "Your Premium subscription is active. Enjoy unlimited AI tutoring and all premium features!"}
+            </p>
+          </div>
+          {refreshing && !isPremium && (
+            <Loader2 className="h-4 w-4 animate-spin text-emerald-400 flex-shrink-0 mt-1" />
+          )}
+        </div>
+      )}
 
       {/* Current plan */}
       <Card className="mb-6 border-border/40">

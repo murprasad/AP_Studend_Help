@@ -8,8 +8,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { useCourse } from "@/hooks/use-course";
+import { useSession } from "next-auth/react";
 import { AP_COURSES } from "@/lib/utils";
 import { COURSE_REGISTRY } from "@/lib/courses";
+import Link from "next/link";
 import {
   MessageSquare,
   Send,
@@ -19,6 +21,8 @@ import {
   Lightbulb,
   GraduationCap,
   RefreshCw,
+  Crown,
+  ArrowRight,
 } from "lucide-react";
 
 interface Message {
@@ -33,11 +37,13 @@ const SUGGESTED_QUESTIONS = Object.fromEntries(
 
 export default function AiTutorPage() {
   const { toast } = useToast();
+  const { data: session } = useSession();
   const [course] = useCourse();
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [conversationId, setConversationId] = useState<string | null>(null);
+  const [limitReached, setLimitReached] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   // Keep a ref to conversationId so fire-and-forget callbacks read the latest value
   const conversationIdRef = useRef<string | null>(null);
@@ -47,6 +53,7 @@ export default function AiTutorPage() {
     setMessages([]);
     setConversationId(null);
     setInput("");
+    setLimitReached(false);
   }, [course]);
 
   useEffect(() => {
@@ -71,13 +78,8 @@ export default function AiTutorPage() {
         const data = await response.json();
 
         if (!response.ok) {
-          // Check if limit exceeded
           if (response.status === 429 && data.limitExceeded) {
-            toast({
-              title: "Daily limit reached",
-              description: data.error,
-              variant: "destructive",
-            });
+            setLimitReached(true);
           } else {
             toast({
               title: "AI Unavailable",
@@ -419,21 +421,47 @@ export default function AiTutorPage() {
         <div ref={messagesEndRef} />
       </div>
 
+      {/* Upgrade banner — shown when daily limit is hit */}
+      {limitReached && session?.user?.subscriptionTier !== "PREMIUM" && (
+        <div className="rounded-xl border border-indigo-500/30 bg-gradient-to-r from-indigo-500/10 to-purple-500/10 p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <div className="flex items-start gap-3">
+            <div className="w-9 h-9 rounded-lg bg-indigo-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <Crown className="h-5 w-5 text-indigo-400" />
+            </div>
+            <div>
+              <p className="font-semibold text-sm">Daily limit reached</p>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                Free accounts can start 10 new AI conversations per day.
+                Upgrade to Premium for unlimited access.
+              </p>
+            </div>
+          </div>
+          <Link href="/pricing" className="flex-shrink-0">
+            <Button size="sm" className="gap-1.5 bg-indigo-600 hover:bg-indigo-700 w-full sm:w-auto">
+              <Crown className="h-3.5 w-3.5" />
+              Upgrade to Premium
+              <ArrowRight className="h-3.5 w-3.5" />
+            </Button>
+          </Link>
+        </div>
+      )}
+
       {/* Input */}
-      <Card className="border-border/40">
+      <Card className={`border-border/40 ${limitReached ? "opacity-50 pointer-events-none" : ""}`}>
         <CardContent className="p-3">
           <div className="flex gap-2 items-end">
             <Textarea
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder={`Ask anything about ${courseLabel}…`}
+              placeholder={limitReached ? "Daily limit reached — upgrade to continue" : `Ask anything about ${courseLabel}…`}
               className="min-h-[44px] max-h-32 resize-none border-0 focus-visible:ring-0 p-0 text-sm bg-transparent"
               rows={1}
+              disabled={limitReached}
             />
             <Button
               onClick={() => sendMessage(input)}
-              disabled={!input.trim() || isLoading}
+              disabled={!input.trim() || isLoading || limitReached}
               size="icon"
               className="h-9 w-9 flex-shrink-0"
             >

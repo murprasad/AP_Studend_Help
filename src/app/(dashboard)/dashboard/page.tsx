@@ -22,6 +22,7 @@ import {
   Star,
   ArrowRight,
   Clock,
+  Crown,
 } from "lucide-react";
 import { format, subDays } from "date-fns";
 
@@ -109,6 +110,29 @@ export default async function DashboardPage() {
           </Button>
         </Link>
       </div>
+
+      {/* Free user upgrade nudge */}
+      {user?.subscriptionTier !== "PREMIUM" && (
+        <div className="rounded-xl border border-indigo-500/20 bg-gradient-to-r from-indigo-500/5 to-purple-500/5 p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-lg bg-indigo-500/20 flex items-center justify-center flex-shrink-0">
+              <Crown className="h-5 w-5 text-indigo-400" />
+            </div>
+            <div>
+              <p className="text-sm font-semibold">Unlock Premium</p>
+              <p className="text-xs text-muted-foreground">
+                Unlimited AI tutoring · Personalized study plan · Streaming AI · Advanced analytics
+              </p>
+            </div>
+          </div>
+          <Link href="/pricing" className="flex-shrink-0">
+            <Button size="sm" className="gap-1.5 bg-indigo-600 hover:bg-indigo-700 w-full sm:w-auto">
+              <Crown className="h-3.5 w-3.5" />
+              Upgrade — $9.99/mo
+            </Button>
+          </Link>
+        </div>
+      )}
 
       {/* Stats Row */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
