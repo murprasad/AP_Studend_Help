@@ -356,29 +356,35 @@ export async function askTutor(
 
   const liveContext = await Promise.race([enrichmentPromise, timeoutPromise]);
 
-  // ── Build system prompt ───────────────────────────────────────────────────
-  const systemPrompt = `You are an expert ${courseConfig.name} tutor for AP students (high school, ages 15–18).
+  // ── Build compact system prompt (~300 tokens) ────────────────────────────
+  // Truncate history to last 8 messages (4 turns) to reduce token usage
+  const truncatedHistory = conversationHistory.slice(-8);
 
-${courseConfig.curriculumContext}
-${liveContext ? `\n\nLive educational context:\n${liveContext}` : ""}
+  // Cap liveContext to 200 chars
+  const ctx = liveContext.slice(0, 200);
 
-Teaching guidelines:
-- Give well-structured answers using **bold**, headers (##), and bullet points
-- Connect every answer to AP exam skills and big ideas
-- Use specific examples and historical/scientific evidence
-- Flag HIGH PRIORITY exam topics clearly
-- Keep language clear and engaging for high schoolers
-- Suggest relevant practice strategies when appropriate
+  // Build compact unit list from registry
+  const unitList = Object.values(courseConfig.units)
+    .map((u) => u.name.replace(/^Unit \d+: /, ""))
+    .join(", ");
 
-${courseConfig.tutorResources}
+  // Pick key skills per course type
+  const skills = courseConfig.name.includes("World History")
+    ? "Causation, Comparison, CCOT, Contextualization, Argumentation"
+    : courseConfig.name.includes("Physics")
+    ? "Modeling, Math Routines, Experimental Design, Argumentation"
+    : "Computational Thinking, Algorithm Analysis, Abstraction, Responsible Computing";
 
-After your answer, on a new line output exactly:
-FOLLOW_UPS: ["question 1", "question 2", "question 3"]
-These should be 3 short, natural questions the student is likely to ask next.`;
+  const systemPrompt = `AP ${courseConfig.name} tutor. Audience: US high schoolers (gr 10-12) prepping for the AP exam.
+Units: ${unitList}
+AP Skills: ${skills}
+${ctx ? `Context: ${ctx}` : ""}
+Instructions: Markdown (bold, ## headers, bullets). Cite evidence/examples. Flag exam-critical topics. Be concise and engaging.
+End every response with exactly: FOLLOW_UPS: ["q1","q2","q3"]`;
 
   // ── AI call ───────────────────────────────────────────────────────────────
   const messages = [
-    ...conversationHistory,
+    ...truncatedHistory,
     { role: "user" as const, content: question },
   ];
 

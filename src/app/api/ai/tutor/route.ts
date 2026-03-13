@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
     if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
     const body = await req.json();
-    const { message, conversationId, history = [], course = "AP_WORLD_HISTORY" } = body;
+    const { message, conversationId, history = [], course = "AP_WORLD_HISTORY", skipAI, savedResponse } = body;
 
     if (!message?.trim()) {
       return NextResponse.json({ error: "Message is required" }, { status: 400 });
@@ -20,6 +20,49 @@ export async function POST(req: NextRequest) {
 
     if (!VALID_AP_COURSES.includes(course as ApCourse)) {
       return NextResponse.json({ error: "Invalid course" }, { status: 400 });
+    }
+
+    // Daily limit for free users (only for new conversations)
+    if (!conversationId && session.user.subscriptionTier === "FREE") {
+      const startOfDay = new Date();
+      startOfDay.setHours(0, 0, 0, 0);
+      const dailyCount = await prisma.tutorConversation.count({
+        where: { userId: session.user.id, createdAt: { gte: startOfDay } },
+      });
+      if (dailyCount >= 10) {
+        return NextResponse.json({
+          error: "Daily limit reached. Free accounts can start 10 new conversations per day. Upgrade to Premium for unlimited access.",
+          limitExceeded: true,
+          upgradeUrl: "/pricing",
+        }, { status: 429 });
+      }
+    }
+
+    // skipAI mode: save a pre-computed response without calling AI again
+    if (skipAI && savedResponse) {
+      const messages = [...history, { role: "user", content: message }, { role: "assistant", content: savedResponse }];
+      if (conversationId) {
+        const existing = await prisma.tutorConversation.findFirst({
+          where: { id: conversationId, userId: session.user.id },
+        });
+        if (existing) {
+          await prisma.tutorConversation.update({
+            where: { id: conversationId },
+            data: { messages, updatedAt: new Date() },
+          });
+        }
+        return NextResponse.json({ conversationId });
+      } else {
+        const conversation = await prisma.tutorConversation.create({
+          data: {
+            userId: session.user.id,
+            course: course as ApCourse,
+            messages,
+            topic: message.slice(0, 100),
+          },
+        });
+        return NextResponse.json({ conversationId: conversation.id });
+      }
     }
 
     const { answer, followUps } = await askTutor(message, history, undefined, course as ApCourse);

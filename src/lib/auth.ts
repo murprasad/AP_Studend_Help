@@ -61,6 +61,12 @@ export const authOptions: NextAuthOptions = {
       if (user) {
         token.id = user.id;
         token.role = (user as unknown as { role: string }).role;
+        // Fetch subscriptionTier from DB on login
+        const dbUser = await prisma.user.findUnique({
+          where: { id: user.id },
+          select: { subscriptionTier: true },
+        });
+        token.subscriptionTier = dbUser?.subscriptionTier ?? "FREE";
       }
       return token;
     },
@@ -68,6 +74,7 @@ export const authOptions: NextAuthOptions = {
       if (token && session.user) {
         session.user.id = token.id as string;
         session.user.role = token.role as string;
+        session.user.subscriptionTier = token.subscriptionTier as string;
       }
       return session;
     },
@@ -81,6 +88,7 @@ declare module "next-auth" {
       email: string;
       name: string;
       role: string;
+      subscriptionTier: string;
     };
   }
 }
@@ -89,5 +97,6 @@ declare module "next-auth/jwt" {
   interface JWT {
     id: string;
     role: string;
+    subscriptionTier: string;
   }
 }

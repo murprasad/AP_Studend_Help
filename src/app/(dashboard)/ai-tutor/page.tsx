@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Button } from "@/components/ui/button";
@@ -39,6 +39,9 @@ export default function AiTutorPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [conversationId, setConversationId] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  // Keep a ref to conversationId so fire-and-forget callbacks read the latest value
+  const conversationIdRef = useRef<string | null>(null);
+  conversationIdRef.current = conversationId;
 
   useEffect(() => {
     setMessages([]);
@@ -50,58 +53,186 @@ export default function AiTutorPage() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+  // Non-streaming fallback — captures content at call time to avoid stale closure
+  const sendMessageNonStreaming = useCallback(
+    async (content: string, historySnapshot: Message[]) => {
+      try {
+        const response = await fetch("/api/ai/tutor", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            message: content,
+            conversationId: conversationIdRef.current,
+            history: historySnapshot.map(({ role, content: c }) => ({ role, content: c })),
+            course,
+          }),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          // Check if limit exceeded
+          if (response.status === 429 && data.limitExceeded) {
+            toast({
+              title: "Daily limit reached",
+              description: data.error,
+              variant: "destructive",
+            });
+          } else {
+            toast({
+              title: "AI Unavailable",
+              description: data.error || "Could not reach the AI tutor. Please try again.",
+              variant: "destructive",
+            });
+          }
+          setMessages((prev) => prev.slice(0, -1));
+          return;
+        }
+
+        const assistantMessage: Message = {
+          role: "assistant",
+          content: data.response,
+          followUps: Array.isArray(data.followUps) ? data.followUps : [],
+        };
+        setMessages((prev) => [...prev, assistantMessage]);
+
+        if (data.conversationId && !conversationIdRef.current) {
+          setConversationId(data.conversationId);
+        }
+      } catch {
+        toast({
+          title: "Connection error",
+          description: "Failed to reach AI tutor. Check your connection.",
+          variant: "destructive",
+        });
+        setMessages((prev) => prev.slice(0, -1));
+      }
+    },
+    [course, toast]
+  );
+
   async function sendMessage(content: string) {
     if (!content.trim() || isLoading) return;
 
     const userMessage: Message = { role: "user", content };
-    setMessages((prev) => [...prev, userMessage]);
+    // Capture history before adding the new user message
+    setMessages((prev) => {
+      const historySnapshot = prev;
+
+      // Add placeholder for streaming
+      const assistantPlaceholder: Message = { role: "assistant", content: "" };
+
+      // Kick off async work — we have historySnapshot captured here
+      (async () => {
+        setIsLoading(true);
+        try {
+          const streamRes = await fetch("/api/ai/tutor/stream", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              message: content,
+              history: historySnapshot.map(({ role, content: c }) => ({ role, content: c })),
+              course,
+            }),
+          });
+
+          if (!streamRes.ok || !streamRes.body) {
+            // Remove user message + placeholder, fall back to non-streaming
+            setMessages((p) => p.slice(0, -2));
+            setMessages((p) => [...p, userMessage]);
+            await sendMessageNonStreaming(content, historySnapshot);
+            return;
+          }
+
+          const reader = streamRes.body.getReader();
+          const decoder = new TextDecoder();
+          let fullText = "";
+
+          // eslint-disable-next-line no-constant-condition
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+
+            const chunk = decoder.decode(value, { stream: true });
+            const lines = chunk.split("\n").filter((l) => l.startsWith("data: "));
+
+            for (const line of lines) {
+              const data = line.slice(6).trim();
+              if (data === "[DONE]") continue;
+              try {
+                const parsed = JSON.parse(data) as {
+                  choices?: Array<{ delta?: { content?: string } }>;
+                };
+                const delta = parsed.choices?.[0]?.delta?.content || "";
+                if (delta) {
+                  fullText += delta;
+                  setMessages((p) => {
+                    const updated = [...p];
+                    updated[updated.length - 1] = { role: "assistant", content: fullText };
+                    return updated;
+                  });
+                }
+              } catch {
+                /* skip malformed chunks */
+              }
+            }
+          }
+
+          // Parse FOLLOW_UPS from the complete response
+          const followUpMatch = fullText.match(/FOLLOW_UPS:\s*(\[[\s\S]*?\])/);
+          let followUps: string[] = [];
+          let answer = fullText;
+          if (followUpMatch) {
+            try {
+              followUps = JSON.parse(followUpMatch[1]) as string[];
+              answer = fullText.replace(/\n?FOLLOW_UPS:[\s\S]*$/, "").trim();
+            } catch {
+              /* keep full text */
+            }
+          }
+
+          setMessages((p) => {
+            const updated = [...p];
+            updated[updated.length - 1] = { role: "assistant", content: answer, followUps };
+            return updated;
+          });
+
+          // Fire-and-forget: save to DB via the regular tutor endpoint
+          fetch("/api/ai/tutor", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              message: content,
+              conversationId: conversationIdRef.current,
+              history: historySnapshot.map(({ role, content: c }) => ({ role, content: c })),
+              course,
+              skipAI: true,
+              savedResponse: answer,
+            }),
+          })
+            .then(async (r) => {
+              if (r.ok) {
+                const d = (await r.json()) as { conversationId?: string };
+                if (d.conversationId && !conversationIdRef.current) {
+                  setConversationId(d.conversationId);
+                }
+              }
+            })
+            .catch(() => {});
+        } catch {
+          // Remove user + placeholder on network error, fall back
+          setMessages((p) => p.slice(0, -2));
+          setMessages((p) => [...p, userMessage]);
+          await sendMessageNonStreaming(content, historySnapshot);
+        } finally {
+          setIsLoading(false);
+        }
+      })();
+
+      return [...prev, userMessage, assistantPlaceholder];
+    });
+
     setInput("");
-    setIsLoading(true);
-
-    try {
-      const response = await fetch("/api/ai/tutor", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          message: content,
-          conversationId,
-          history: messages.map(({ role, content }) => ({ role, content })),
-          course,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        toast({
-          title: "AI Unavailable",
-          description: data.error || "Could not reach the AI tutor. Please try again.",
-          variant: "destructive",
-        });
-        setMessages((prev) => prev.slice(0, -1));
-        return;
-      }
-
-      const assistantMessage: Message = {
-        role: "assistant",
-        content: data.response,
-        followUps: Array.isArray(data.followUps) ? data.followUps : [],
-      };
-      setMessages((prev) => [...prev, assistantMessage]);
-
-      if (data.conversationId && !conversationId) {
-        setConversationId(data.conversationId);
-      }
-    } catch {
-      toast({
-        title: "Connection error",
-        description: "Failed to reach AI tutor. Check your connection.",
-        variant: "destructive",
-      });
-      setMessages((prev) => prev.slice(0, -1));
-    } finally {
-      setIsLoading(false);
-    }
   }
 
   function handleKeyDown(e: React.KeyboardEvent) {
@@ -218,9 +349,16 @@ export default function AiTutorPage() {
                       prose-a:text-indigo-400 prose-a:no-underline hover:prose-a:underline
                       prose-hr:border-border/40"
                     >
-                      <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                        {msg.content}
-                      </ReactMarkdown>
+                      {msg.content ? (
+                        <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                          {msg.content}
+                        </ReactMarkdown>
+                      ) : (
+                        <div className="flex items-center gap-2 text-muted-foreground">
+                          <Loader2 className="h-3 w-3 animate-spin" />
+                          <span>Thinking…</span>
+                        </div>
+                      )}
                     </div>
                   ) : (
                     <div className="whitespace-pre-wrap">{msg.content}</div>
@@ -264,7 +402,7 @@ export default function AiTutorPage() {
           ))
         )}
 
-        {isLoading && (
+        {isLoading && messages.length === 0 && (
           <div className="flex gap-3 justify-start">
             <div className="w-8 h-8 rounded-full bg-indigo-500/20 flex items-center justify-center flex-shrink-0">
               <Bot className="h-4 w-4 text-indigo-400" />

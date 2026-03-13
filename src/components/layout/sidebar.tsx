@@ -21,6 +21,7 @@ import {
   Library,
   ChevronDown,
   Info,
+  Crown,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -38,6 +39,7 @@ const navItems = [
   { href: "/study-plan", icon: BookOpen, label: "Study Plan" },
   { href: "/resources", icon: Library, label: "Resources" },
   { href: "/ai-tutor", icon: MessageSquare, label: "AI Tutor" },
+  { href: "/billing", icon: Crown, label: "Billing" },
   { href: "/about", icon: Info, label: "About" },
 ];
 
