@@ -5,7 +5,7 @@ pages_build_output_dir = ".open-next"
 
 [vars]
 NEXT_PUBLIC_APP_URL = "https://novaprep.ai"
-NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY = ""
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY = "pk_live_51TAWKbFO9hO9aqlXT2lKTHPeD2B2CDQHc5lO250LN3OOvnpuNikuXNadJlleRrzMx5zKd8sD2ODimoAA98Ldn9Sg00JdTftuVv"
 
 # ─── Stripe Payment Secrets ───────────────────────────────────────────────────
 # Set these via the Cloudflare Pages dashboard or with:
