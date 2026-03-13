@@ -5,3 +5,4 @@ pages_build_output_dir = ".open-next"
 
 [vars]
 NEXT_PUBLIC_APP_URL = "https://novaprep.ai"
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY = ""

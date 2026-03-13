@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { askTutor } from "@/lib/ai";
 import { ApCourse } from "@prisma/client";
 import { VALID_AP_COURSES } from "@/lib/courses";
+import { isAiLimitEnabled, isPaymentsEnabled } from "@/lib/settings";
 
 export async function POST(req: NextRequest) {
   try {
@@ -24,17 +25,20 @@ export async function POST(req: NextRequest) {
 
     // Daily limit for free users (only for new conversations)
     if (!conversationId && session.user.subscriptionTier === "FREE") {
-      const startOfDay = new Date();
-      startOfDay.setHours(0, 0, 0, 0);
-      const dailyCount = await prisma.tutorConversation.count({
-        where: { userId: session.user.id, createdAt: { gte: startOfDay } },
-      });
-      if (dailyCount >= 10) {
-        return NextResponse.json({
-          error: "Daily limit reached. Free accounts can start 10 new conversations per day. Upgrade to Premium for unlimited access.",
-          limitExceeded: true,
-          upgradeUrl: "/pricing",
-        }, { status: 429 });
+      const [limitsOn, paymentsOn] = await Promise.all([isAiLimitEnabled(), isPaymentsEnabled()]);
+      if (limitsOn && paymentsOn) {
+        const startOfDay = new Date();
+        startOfDay.setHours(0, 0, 0, 0);
+        const dailyCount = await prisma.tutorConversation.count({
+          where: { userId: session.user.id, createdAt: { gte: startOfDay } },
+        });
+        if (dailyCount >= 10) {
+          return NextResponse.json({
+            error: "Daily limit reached. Free accounts can start 10 new conversations per day. Upgrade to Premium for unlimited access.",
+            limitExceeded: true,
+            upgradeUrl: "/pricing",
+          }, { status: 429 });
+        }
       }
     }
 

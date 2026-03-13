@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import Stripe from "stripe";
+import { isPaymentsEnabled } from "@/lib/settings";
 
 export async function POST(req: NextRequest) {
   try {
@@ -9,6 +10,10 @@ export async function POST(req: NextRequest) {
     if (!session) {
       // Not logged in — redirect to register with pricing intent
       return NextResponse.redirect(new URL("/register?next=/pricing", req.url));
+    }
+
+    if (!(await isPaymentsEnabled())) {
+      return NextResponse.redirect(new URL("/pricing?error=payments_disabled", req.url));
     }
 
     const stripeKey = process.env.STRIPE_SECRET_KEY;

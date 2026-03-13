@@ -245,6 +245,15 @@ model TutorConversation {
   @@map("tutor_conversations")
 }
 
+model SiteSetting {
+  key       String   @id
+  value     String
+  updatedBy String?
+  updatedAt DateTime @updatedAt
+
+  @@map("site_settings")
+}
+
 enum Role {
   STUDENT
   ADMIN

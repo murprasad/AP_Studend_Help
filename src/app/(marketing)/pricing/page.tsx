@@ -2,6 +2,7 @@ import Link from "next/link";
 import { CheckCircle, Zap, Crown } from "lucide-react";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+import { isPaymentsEnabled } from "@/lib/settings";
 
 const FREE_FEATURES = [
   "Access to all 3 AP courses",
@@ -27,6 +28,7 @@ const PREMIUM_FEATURES = [
 export default async function PricingPage() {
   const session = await getServerSession(authOptions);
   const isPremium = session?.user?.subscriptionTier === "PREMIUM";
+  const paymentsEnabled = await isPaymentsEnabled();
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-16">
@@ -117,7 +119,7 @@ export default async function PricingPage() {
             >
               Manage subscription
             </Link>
-          ) : (
+          ) : paymentsEnabled ? (
             <form action="/api/checkout" method="POST">
               <button
                 type="submit"
@@ -126,6 +128,10 @@ export default async function PricingPage() {
                 {session ? "Upgrade to Premium" : "Start free trial"}
               </button>
             </form>
+          ) : (
+            <div className="block text-center py-3 px-6 rounded-xl bg-secondary text-sm text-muted-foreground">
+              Payments temporarily unavailable
+            </div>
           )}
         </div>
       </div>

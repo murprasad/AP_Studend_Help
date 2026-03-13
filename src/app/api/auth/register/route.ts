@@ -4,6 +4,7 @@ import crypto from "crypto";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { sendVerificationEmail } from "@/lib/email";
+import { getSetting } from "@/lib/settings";
 
 const registerSchema = z.object({
   firstName: z.string().min(2),
@@ -16,6 +17,11 @@ const registerSchema = z.object({
 
 export async function POST(req: NextRequest) {
   try {
+    const regEnabled = await getSetting("registration_enabled", "true");
+    if (regEnabled !== "true") {
+      return NextResponse.json({ error: "Registration is currently disabled." }, { status: 403 });
+    }
+
     const body = await req.json();
     const data = registerSchema.parse(body);
 
