@@ -87,22 +87,36 @@ async function callGroq(
   systemPrompt?: string,
   history?: Array<{ role: "user" | "assistant"; content: string }>
 ): Promise<string> {
-  const client = getGroq();
-  if (!client) throw new Error("No GROQ_API_KEY");
+  const apiKey = process.env.GROQ_API_KEY;
+  if (!apiKey) throw new Error("No GROQ_API_KEY");
 
-  const messages: Array<{ role: "system" | "user" | "assistant"; content: string }> = [];
+  const messages: Array<{ role: string; content: string }> = [];
   if (systemPrompt) messages.push({ role: "system", content: systemPrompt });
-  if (history) messages.push(...history.map((m) => ({ role: m.role as "user" | "assistant", content: m.content })));
+  if (history) messages.push(...history.map((m) => ({ role: m.role, content: m.content })));
   messages.push({ role: "user", content: prompt });
 
-  const completion = await client.chat.completions.create({
-    model: "llama-3.3-70b-versatile",
-    messages,
-    max_tokens: 1500,
-    temperature: 0.7,
+  // Use plain fetch (works on both Node.js and Cloudflare Workers)
+  const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${apiKey}`,
+    },
+    body: JSON.stringify({
+      model: "llama-3.3-70b-versatile",
+      messages,
+      max_tokens: 1500,
+      temperature: 0.7,
+    }),
+    signal: AbortSignal.timeout(25000),
   });
 
-  const content = completion.choices[0]?.message?.content;
+  if (!res.ok) {
+    const err = await res.text().catch(() => res.statusText);
+    throw new Error(`Groq error ${res.status}: ${err.slice(0, 100)}`);
+  }
+  const data = await res.json() as { choices?: Array<{ message?: { content?: string } }> };
+  const content = data.choices?.[0]?.message?.content;
   if (!content) throw new Error("Groq: empty response");
   return content;
 }

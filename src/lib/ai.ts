@@ -309,61 +309,96 @@ Create a 1-week personalized study plan. Return ONLY a JSON object:
 }
 
 // ── AI Tutor ───────────────────────────────────────────────────────────────
+
+/**
+ * askTutor — fast, CF-Workers-safe tutor response.
+ *
+ * Enrichment (Wikipedia / Stack Exchange / Reddit) is capped at 2.5 s via
+ * Promise.race so it never blocks the AI call on slow edge nodes.
+ * Returns { answer, followUps } where followUps is an array of 3 suggested
+ * follow-on questions the student might want to ask next.
+ */
 export async function askTutor(
   question: string,
   conversationHistory: Array<{ role: "user" | "assistant"; content: string }>,
   unitContext?: ApUnit,
   course: ApCourse = "AP_WORLD_HISTORY"
-): Promise<string> {
+): Promise<{ answer: string; followUps: string[] }> {
   const courseConfig = COURSE_REGISTRY[course];
-  let liveContext = "";
 
-  // Enrich with live content from free sources (Wikipedia, Stack Exchange, Reddit, LoC)
-  if (courseConfig.enrichWithEduAPIs) {
-    const [unitCtx, enrichedCtx] = await Promise.allSettled([
-      unitContext
-        ? (() => {
-            const fiveableUrl = courseConfig.units[unitContext]?.fiveableUrl;
-            return fiveableUrl ? fetchResourceContent(fiveableUrl) : Promise.resolve("");
-          })()
-        : Promise.resolve(""),
-      getEnrichedContext(question.slice(0, 120), course),
-    ]);
-
-    if (unitCtx.status === "fulfilled" && unitCtx.value) {
-      liveContext += `\n\nFiveable study material:\n${unitCtx.value.slice(0, 600)}`;
+  // ── Enrichment: fire off external fetches but hard-cap at 2.5 s ──────────
+  // This keeps the total round-trip fast even when Wikipedia/Reddit are slow.
+  const enrichmentPromise = (async () => {
+    if (courseConfig.enrichWithEduAPIs) {
+      const [unitCtx, enrichedCtx] = await Promise.allSettled([
+        unitContext
+          ? (() => {
+              const fiveableUrl = courseConfig.units[unitContext]?.fiveableUrl;
+              return fiveableUrl ? fetchResourceContent(fiveableUrl) : Promise.resolve("");
+            })()
+          : Promise.resolve(""),
+        getEnrichedContext(question.slice(0, 120), course),
+      ]);
+      const parts: string[] = [];
+      if (unitCtx.status === "fulfilled" && unitCtx.value)
+        parts.push(`Study material:\n${unitCtx.value.slice(0, 400)}`);
+      if (enrichedCtx.status === "fulfilled" && enrichedCtx.value)
+        parts.push(enrichedCtx.value.slice(0, 500));
+      return parts.join("\n\n");
+    } else {
+      return getEnrichedContext(question.slice(0, 120), course).catch(() => "");
     }
-    if (enrichedCtx.status === "fulfilled" && enrichedCtx.value) {
-      liveContext += `\n\nLive educational context (Wikipedia / Stack Exchange / Reddit AP):\n${enrichedCtx.value.slice(0, 800)}`;
-    }
-  } else {
-    // For STEM courses: always pull Stack Exchange + Reddit even without enrichWithEduAPIs
-    const enriched = await getEnrichedContext(question.slice(0, 120), course).catch(() => "");
-    if (enriched) liveContext += `\n\nLive educational context (Stack Exchange / Reddit AP):\n${enriched.slice(0, 800)}`;
-  }
+  })();
 
-  const systemPrompt = `You are an expert ${courseConfig.name} tutor for high school students (ages 15-18).
+  const timeoutPromise = new Promise<string>((resolve) =>
+    setTimeout(() => resolve(""), 2500)
+  );
+
+  const liveContext = await Promise.race([enrichmentPromise, timeoutPromise]);
+
+  // ── Build system prompt ───────────────────────────────────────────────────
+  const systemPrompt = `You are an expert ${courseConfig.name} tutor for AP students (high school, ages 15–18).
 
 ${courseConfig.curriculumContext}
-${liveContext}
+${liveContext ? `\n\nLive educational context:\n${liveContext}` : ""}
 
-Your teaching approach:
-- Connect every answer to AP exam skills and big ideas for ${courseConfig.name}
-- Use specific, accurate examples from the curriculum
-- When explaining concepts, note how they connect to AP exam themes and question types
-- Suggest practice strategies and resources when relevant
-- Keep explanations clear and engaging for high schoolers
-- Format with headers and bullets when explaining complex topics
-- Always mention if a topic is HIGH PRIORITY for the AP exam
+Teaching guidelines:
+- Give well-structured answers using **bold**, headers (##), and bullet points
+- Connect every answer to AP exam skills and big ideas
+- Use specific examples and historical/scientific evidence
+- Flag HIGH PRIORITY exam topics clearly
+- Keep language clear and engaging for high schoolers
+- Suggest relevant practice strategies when appropriate
 
-${courseConfig.tutorResources}`;
+${courseConfig.tutorResources}
 
+After your answer, on a new line output exactly:
+FOLLOW_UPS: ["question 1", "question 2", "question 3"]
+These should be 3 short, natural questions the student is likely to ask next.`;
+
+  // ── AI call ───────────────────────────────────────────────────────────────
   const messages = [
     ...conversationHistory,
     { role: "user" as const, content: question },
   ];
 
-  return callAIChat(messages, systemPrompt);
+  const raw = await callAIChat(messages, systemPrompt);
+
+  // ── Parse follow-up questions out of the response ─────────────────────────
+  const followUpMatch = raw.match(/FOLLOW_UPS:\s*(\[[\s\S]*?\])/);
+  let followUps: string[] = [];
+  let answer = raw;
+
+  if (followUpMatch) {
+    try {
+      followUps = JSON.parse(followUpMatch[1]) as string[];
+      answer = raw.replace(/\n?FOLLOW_UPS:[\s\S]*$/, "").trim();
+    } catch {
+      // parse failed — keep the raw response as-is
+    }
+  }
+
+  return { answer, followUps };
 }
 
 // ── Explanation Generator ──────────────────────────────────────────────────

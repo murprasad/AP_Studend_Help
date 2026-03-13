@@ -22,13 +22,13 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Invalid course" }, { status: 400 });
     }
 
-    const response = await askTutor(message, history, undefined, course as ApCourse);
+    const { answer, followUps } = await askTutor(message, history, undefined, course as ApCourse);
 
     // Save or update conversation
     const messages = [
       ...history,
       { role: "user", content: message },
-      { role: "assistant", content: response },
+      { role: "assistant", content: answer },
     ];
 
     if (conversationId) {
@@ -46,7 +46,7 @@ export async function POST(req: NextRequest) {
         data: { messages, updatedAt: new Date() },
       });
 
-      return NextResponse.json({ response, conversationId });
+      return NextResponse.json({ response: answer, followUps, conversationId });
     } else {
       const conversation = await prisma.tutorConversation.create({
         data: {
@@ -56,7 +56,7 @@ export async function POST(req: NextRequest) {
           topic: message.slice(0, 100),
         },
       });
-      return NextResponse.json({ response, conversationId: conversation.id });
+      return NextResponse.json({ response: answer, followUps, conversationId: conversation.id });
     }
   } catch (error) {
     console.error("POST /api/ai/tutor error:", error);
