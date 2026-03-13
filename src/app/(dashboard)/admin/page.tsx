@@ -10,6 +10,7 @@ import { VALID_AP_COURSES } from "@/lib/courses";
 import { Users, BookOpen, BarChart3, Clock } from "lucide-react";
 import { AdminBulkGenerate } from "@/components/admin/bulk-generate";
 import { AdminFeatureFlags } from "@/components/admin/feature-flags";
+import { AdminPaymentSetup } from "@/components/admin/payment-setup";
 
 export default async function AdminPage() {
   const session = await getServerSession(authOptions);
@@ -75,6 +76,9 @@ export default async function AdminPage() {
 
       {/* Bulk Question Generation */}
       <AdminBulkGenerate />
+
+      {/* Payment Setup */}
+      <AdminPaymentSetup />
 
       {/* Feature Flags */}
       <AdminFeatureFlags />

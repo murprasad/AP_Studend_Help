@@ -6,3 +6,14 @@ pages_build_output_dir = ".open-next"
 [vars]
 NEXT_PUBLIC_APP_URL = "https://novaprep.ai"
 NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY = ""
+
+# ─── Stripe Payment Secrets ───────────────────────────────────────────────────
+# Set these via the Cloudflare Pages dashboard or with:
+#   wrangler pages secret put STRIPE_SECRET_KEY       --project-name=novaprep
+#   wrangler pages secret put STRIPE_WEBHOOK_SECRET   --project-name=novaprep
+#   wrangler pages secret put STRIPE_PREMIUM_PRICE_ID --project-name=novaprep
+#
+# STRIPE_SECRET_KEY         = "sk_live_..."   ← CF Pages Secret (not here)
+# STRIPE_WEBHOOK_SECRET     = "whsec_..."     ← CF Pages Secret (not here)
+# STRIPE_PREMIUM_PRICE_ID   = "price_..."     ← CF Pages Secret (not here)
+# ─────────────────────────────────────────────────────────────────────────────

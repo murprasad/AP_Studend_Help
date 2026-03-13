@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import Stripe from "stripe";
+import { getStripeConfig } from "@/lib/settings";
 
 // Disable body parsing so we can verify the raw webhook signature
 export const dynamic = "force-dynamic";
@@ -30,11 +31,12 @@ async function getUserIdFromSubscription(
 }
 
 export async function POST(req: NextRequest) {
-  const stripeKey = process.env.STRIPE_SECRET_KEY;
-  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+  const stripeConfig = await getStripeConfig();
+  const stripeKey = stripeConfig.secretKey;
+  const webhookSecret = stripeConfig.webhookSecret;
 
   if (!stripeKey || !webhookSecret) {
-    console.error("Stripe env vars not configured");
+    console.error("Stripe keys not configured — set via env vars or Admin → Payment Setup");
     return NextResponse.json({ error: "Not configured" }, { status: 500 });
   }
 

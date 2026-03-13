@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import Stripe from "stripe";
-import { isPaymentsEnabled } from "@/lib/settings";
+import { isPaymentsEnabled, getStripeConfig } from "@/lib/settings";
 
 export async function POST(req: NextRequest) {
   try {
@@ -16,19 +16,20 @@ export async function POST(req: NextRequest) {
       return NextResponse.redirect(new URL("/pricing?error=payments_disabled", req.url));
     }
 
-    const stripeKey = process.env.STRIPE_SECRET_KEY;
-    if (!stripeKey) {
-      console.error("STRIPE_SECRET_KEY not configured");
+    const stripeConfig = await getStripeConfig();
+
+    if (!stripeConfig.secretKey) {
+      console.error("Stripe secret key not configured (set STRIPE_SECRET_KEY env var or configure in Admin → Payment Setup)");
       return NextResponse.redirect(new URL("/pricing?error=payment_unavailable", req.url));
     }
 
-    const priceId = process.env.STRIPE_PREMIUM_PRICE_ID;
-    if (!priceId) {
-      console.error("STRIPE_PREMIUM_PRICE_ID not configured");
+    if (!stripeConfig.priceId) {
+      console.error("Stripe price ID not configured (set STRIPE_PREMIUM_PRICE_ID env var or configure in Admin → Payment Setup)");
       return NextResponse.redirect(new URL("/pricing?error=payment_unavailable", req.url));
     }
 
-    const stripe = new Stripe(stripeKey, { apiVersion: "2024-06-20" });
+    const stripe = new Stripe(stripeConfig.secretKey, { apiVersion: "2024-06-20" });
+    const priceId = stripeConfig.priceId;
 
     const origin = req.headers.get("origin") || process.env.NEXTAUTH_URL || "http://localhost:3000";
 

@@ -3,18 +3,19 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import Stripe from "stripe";
+import { getStripeConfig } from "@/lib/settings";
 
 export async function POST(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
     if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-    const stripeKey = process.env.STRIPE_SECRET_KEY;
-    if (!stripeKey) {
+    const stripeConfig = await getStripeConfig();
+    if (!stripeConfig.secretKey) {
       return NextResponse.json({ error: "Payment not configured" }, { status: 503 });
     }
 
-    const stripe = new Stripe(stripeKey, { apiVersion: "2024-06-20" });
+    const stripe = new Stripe(stripeConfig.secretKey, { apiVersion: "2024-06-20" });
 
     // Find the user's Stripe customer via their email
     const user = await prisma.user.findUnique({

@@ -2,7 +2,7 @@ import Link from "next/link";
 import { CheckCircle, Zap, Crown } from "lucide-react";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { isPaymentsEnabled } from "@/lib/settings";
+import { isPaymentsEnabled, getStripeConfig } from "@/lib/settings";
 
 const FREE_FEATURES = [
   "Access to all 3 AP courses",
@@ -28,7 +28,12 @@ const PREMIUM_FEATURES = [
 export default async function PricingPage() {
   const session = await getServerSession(authOptions);
   const isPremium = session?.user?.subscriptionTier === "PREMIUM";
-  const paymentsEnabled = await isPaymentsEnabled();
+  const [paymentsEnabled, stripeConfig] = await Promise.all([
+    isPaymentsEnabled(),
+    getStripeConfig(),
+  ]);
+  const premiumPrice = stripeConfig.premiumPriceDisplay || "9.99";
+  const premiumName = stripeConfig.premiumName || "Premium";
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-16">
@@ -94,10 +99,10 @@ export default async function PricingPage() {
           <div className="mb-6">
             <div className="flex items-center gap-2 mb-2">
               <Crown className="h-5 w-5 text-indigo-400" />
-              <h2 className="text-xl font-bold">Premium</h2>
+              <h2 className="text-xl font-bold">{premiumName}</h2>
             </div>
             <div className="flex items-end gap-1 mb-1">
-              <span className="text-4xl font-bold">$9.99</span>
+              <span className="text-4xl font-bold">${premiumPrice}</span>
               <span className="text-muted-foreground mb-1">/month</span>
             </div>
             <p className="text-sm text-muted-foreground">Cancel anytime</p>
@@ -151,7 +156,7 @@ export default async function PricingPage() {
             },
             {
               q: "Is there a student discount?",
-              a: "We keep the free tier generous so every student can prepare for their AP exams. Premium is designed to be affordable at $9.99/month.",
+              a: `We keep the free tier generous so every student can prepare for their AP exams. ${premiumName} is designed to be affordable at $${premiumPrice}/month.`,
             },
             {
               q: "Which payment methods are accepted?",
