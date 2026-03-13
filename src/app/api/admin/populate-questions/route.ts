@@ -16,6 +16,7 @@ import { ApCourse, ApUnit, Difficulty, QuestionType } from "@prisma/client";
 import { VALID_AP_COURSES, COURSE_REGISTRY } from "@/lib/courses";
 import { COURSE_UNITS } from "@/lib/utils";
 import { buildQuestionPrompt } from "@/lib/ai";
+import { buildDifficultyQueue } from "@/lib/auto-populate";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 300; // 5 min – Vercel Pro / Netlify Functions timeout
@@ -186,40 +187,6 @@ export async function POST(req: NextRequest) {
   }
 
   return NextResponse.json({ course, minPerUnit, dryRun, filled, skipped, failed, details });
-}
-
-// ── Difficulty queue builder — 30% EASY / 50% MEDIUM / 20% HARD ──────────────
-
-function buildDifficultyQueue(
-  totalCount: number,
-  keyThemes: string[]
-): Array<{ difficulty: Difficulty; topic: string | undefined }> {
-  const easyTarget = Math.round(totalCount * 0.3);
-  const hardTarget = Math.round(totalCount * 0.2);
-  const mediumTarget = totalCount - easyTarget - hardTarget;
-
-  // Interleave difficulties: E M H M E M M H M E ... for even spread
-  const slots: Difficulty[] = [];
-  const counts = { EASY: easyTarget, MEDIUM: mediumTarget, HARD: hardTarget };
-  const order: Difficulty[] = [Difficulty.EASY, Difficulty.MEDIUM, Difficulty.MEDIUM, Difficulty.HARD, Difficulty.MEDIUM];
-  let placed = 0;
-  while (placed < totalCount) {
-    for (const d of order) {
-      if (placed >= totalCount) break;
-      if (counts[d] > 0) {
-        slots.push(d);
-        counts[d]--;
-        placed++;
-      }
-    }
-    // Safety: if a difficulty ran out, fill from MEDIUM
-    if (placed < totalCount && counts.MEDIUM === 0 && counts.EASY === 0 && counts.HARD === 0) break;
-  }
-
-  return slots.map((difficulty, i) => ({
-    difficulty,
-    topic: keyThemes.length > 0 ? keyThemes[i % keyThemes.length] : undefined,
-  }));
 }
 
 // ── Internal question generator ───────────────────────────────────────────────
