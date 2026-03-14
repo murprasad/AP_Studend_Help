@@ -22,6 +22,9 @@ import {
   RotateCcw,
   Loader2,
   GraduationCap,
+  Lock,
+  Crown,
+  PenLine,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -47,17 +50,35 @@ interface SessionSummary {
   apScoreEstimate: number;
 }
 
+interface FrqScore {
+  pointsEarned: number;
+  totalPoints: number;
+  feedback: string;
+  modelAnswer: string;
+}
+
 type PracticeMode = "select" | "practicing" | "summary";
 
 export default function PracticePage() {
   const { toast } = useToast();
   const [course] = useCourse();
 
+  const [subscriptionTier, setSubscriptionTier] = useState<"FREE" | "PREMIUM" | null>(null);
+  const [sessionLimitReached, setSessionLimitReached] = useState(false);
+
   const [mode, setMode] = useState<PracticeMode>("select");
   const [selectedUnit, setSelectedUnit] = useState<string>("ALL");
   const [selectedDifficulty, setSelectedDifficulty] = useState<string>("ALL");
   const [questionCount, setQuestionCount] = useState(10);
   const [sessionType, setSessionType] = useState("QUICK_PRACTICE");
+  const [questionType, setQuestionType] = useState<"MCQ" | "SAQ" | "LEQ" | "DBQ">("MCQ");
+
+  useEffect(() => {
+    fetch("/api/user")
+      .then((r) => r.json())
+      .then((d) => setSubscriptionTier(d.user?.subscriptionTier ?? "FREE"))
+      .catch(() => setSubscriptionTier("FREE"));
+  }, []);
 
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [questions, setQuestions] = useState<Question[]>([]);
@@ -68,6 +89,7 @@ export default function PracticePage() {
     isCorrect: boolean;
     correctAnswer: string;
     explanation: string;
+    frqScore?: FrqScore;
   } | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isStarting, setIsStarting] = useState(false);
@@ -94,6 +116,7 @@ export default function PracticePage() {
 
   async function startSession() {
     setIsStarting(true);
+    setSessionLimitReached(false);
     try {
       const response = await fetch("/api/practice", {
         method: "POST",
@@ -104,11 +127,16 @@ export default function PracticePage() {
           difficulty: selectedDifficulty,
           questionCount,
           course,
+          questionType: questionType !== "MCQ" ? questionType : undefined,
         }),
       });
 
       const data = await response.json();
       if (!response.ok) {
+        if (data.limitExceeded) {
+          setSessionLimitReached(true);
+          return;
+        }
         toast({ title: "Error", description: data.error || "Failed to start session", variant: "destructive" });
         return;
       }
@@ -222,6 +250,8 @@ export default function PracticePage() {
     setResults([]);
     setStartTime(null);
     setQuestionStartTime(null);
+    setSessionLimitReached(false);
+    setOpenEndedAnswer("");
   }
 
   if (mode === "summary" && sessionSummary) {
@@ -390,23 +420,57 @@ export default function PracticePage() {
 
         {feedback && (
           <Card className={`card-glow border ${feedback.isCorrect ? "border-emerald-500/30 bg-emerald-500/5" : "border-red-500/30 bg-red-500/5"}`}>
-            <CardContent className="p-5">
-              <div className="flex items-start gap-3">
-                {feedback.isCorrect ? (
-                  <CheckCircle className="h-6 w-6 text-emerald-400 flex-shrink-0 mt-0.5" />
-                ) : (
-                  <XCircle className="h-6 w-6 text-red-400 flex-shrink-0 mt-0.5" />
-                )}
-                <div className="space-y-2">
-                  <p className="font-semibold">
-                    {feedback.isCorrect ? "Correct!" : `Incorrect — Answer: ${feedback.correctAnswer}`}
-                  </p>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
-                    {feedback.explanation}
-                  </p>
+            <CardContent className="p-5 space-y-4">
+              {feedback.frqScore ? (
+                // FRQ Score Card
+                <div className="space-y-3">
+                  <div className="flex items-center gap-3">
+                    <div className={`text-2xl font-bold ${feedback.isCorrect ? "text-emerald-400" : "text-yellow-400"}`}>
+                      {feedback.frqScore.pointsEarned}/{feedback.frqScore.totalPoints}
+                    </div>
+                    <div className="flex-1">
+                      <Progress
+                        value={(feedback.frqScore.pointsEarned / feedback.frqScore.totalPoints) * 100}
+                        className="h-2"
+                        indicatorClassName={feedback.isCorrect ? "bg-emerald-500" : "bg-yellow-500"}
+                      />
+                    </div>
+                    <span className="text-sm text-muted-foreground">
+                      {Math.round((feedback.frqScore.pointsEarned / feedback.frqScore.totalPoints) * 100)}%
+                    </span>
+                  </div>
+                  <div>
+                    <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1">Your Response</p>
+                    <p className="text-sm bg-secondary/50 rounded-lg p-3 leading-relaxed">{openEndedAnswer}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1">Feedback</p>
+                    <p className="text-sm leading-relaxed">{feedback.frqScore.feedback}</p>
+                  </div>
+                  <div className="border-t border-border/40 pt-3">
+                    <p className="text-xs font-semibold text-emerald-400 uppercase tracking-wide mb-1">Model Answer</p>
+                    <p className="text-sm text-muted-foreground leading-relaxed">{feedback.frqScore.modelAnswer}</p>
+                  </div>
                 </div>
-              </div>
-              <Button onClick={nextQuestion} className="w-full mt-4 gap-2">
+              ) : (
+                // MCQ feedback
+                <div className="flex items-start gap-3">
+                  {feedback.isCorrect ? (
+                    <CheckCircle className="h-6 w-6 text-emerald-400 flex-shrink-0 mt-0.5" />
+                  ) : (
+                    <XCircle className="h-6 w-6 text-red-400 flex-shrink-0 mt-0.5" />
+                  )}
+                  <div className="space-y-2">
+                    <p className="font-semibold">
+                      {feedback.isCorrect ? "Correct!" : `Incorrect — Answer: ${feedback.correctAnswer}`}
+                    </p>
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      {feedback.explanation}
+                    </p>
+                  </div>
+                </div>
+              )}
+              <Button onClick={nextQuestion} className="w-full gap-2">
                 {currentIndex + 1 >= questionsRef.current.length ? "See Results" : `Next Question (${currentIndex + 2} of ${questionsRef.current.length})`}
                 <ChevronRight className="h-4 w-4" />
               </Button>
@@ -439,30 +503,127 @@ export default function PracticePage() {
       {/* Mode selection */}
       <div className="grid grid-cols-2 gap-4">
         <button
-          onClick={() => { setSessionType("QUICK_PRACTICE"); setQuestionCount(10); }}
+          onClick={() => { setSessionType("QUICK_PRACTICE"); setQuestionCount(10); setQuestionType("MCQ"); }}
           className={`p-4 rounded-xl border text-left transition-all ${
-            sessionType === "QUICK_PRACTICE"
+            sessionType === "QUICK_PRACTICE" && questionType === "MCQ"
               ? "border-indigo-500 bg-indigo-500/10"
               : "border-border/40 hover:bg-accent"
           }`}
         >
           <Zap className="h-6 w-6 text-yellow-400 mb-2" />
           <p className="font-medium">Quick Practice</p>
-          <p className="text-xs text-muted-foreground">10 questions</p>
+          <p className="text-xs text-muted-foreground">10 MCQs · Free</p>
         </button>
         <button
-          onClick={() => { setSessionType("FOCUSED_STUDY"); setQuestionCount(20); }}
+          onClick={() => { setSessionType("FOCUSED_STUDY"); setQuestionCount(20); setQuestionType("MCQ"); }}
           className={`p-4 rounded-xl border text-left transition-all ${
-            sessionType === "FOCUSED_STUDY"
+            sessionType === "FOCUSED_STUDY" && questionType === "MCQ"
               ? "border-indigo-500 bg-indigo-500/10"
               : "border-border/40 hover:bg-accent"
           }`}
         >
           <BookOpen className="h-6 w-6 text-blue-400 mb-2" />
           <p className="font-medium">Focused Study</p>
-          <p className="text-xs text-muted-foreground">20 questions</p>
+          <p className="text-xs text-muted-foreground">20 MCQs · Free</p>
         </button>
+
+        {/* FRQ Practice — Premium only */}
+        {(course === "AP_WORLD_HISTORY" || course === "AP_PHYSICS_1") && (
+          <button
+            onClick={() => {
+              if (subscriptionTier !== "PREMIUM") return;
+              setSessionType("FOCUSED_STUDY");
+              setQuestionCount(5);
+              setQuestionType("SAQ");
+            }}
+            className={`p-4 rounded-xl border text-left transition-all col-span-2 ${
+              questionType !== "MCQ"
+                ? "border-indigo-500 bg-indigo-500/10"
+                : subscriptionTier !== "PREMIUM"
+                ? "border-border/40 opacity-70 cursor-not-allowed"
+                : "border-border/40 hover:bg-accent"
+            }`}
+          >
+            <div className="flex items-start justify-between">
+              <div>
+                <div className="flex items-center gap-2 mb-2">
+                  <PenLine className="h-5 w-5 text-purple-400" />
+                  {subscriptionTier !== "PREMIUM" && <Lock className="h-4 w-4 text-muted-foreground" />}
+                </div>
+                <p className="font-medium">FRQ Practice</p>
+                <p className="text-xs text-muted-foreground">
+                  {course === "AP_PHYSICS_1"
+                    ? "Free Response (FRQ) — AI-scored rubric feedback"
+                    : "SAQ · LEQ · DBQ — AI-scored rubric feedback"}
+                </p>
+              </div>
+              {subscriptionTier !== "PREMIUM" && (
+                <Badge className="bg-indigo-600 text-white text-xs">Premium</Badge>
+              )}
+            </div>
+            {questionType !== "MCQ" && (
+              <div className="flex gap-2 mt-3" onClick={(e) => e.stopPropagation()}>
+                {(course === "AP_PHYSICS_1"
+                  ? (["SAQ"] as const)
+                  : (["SAQ", "LEQ", "DBQ"] as const)
+                ).map((t) => (
+                  <button
+                    key={t}
+                    onClick={() => setQuestionType(t)}
+                    className={`px-3 py-1 rounded-lg text-xs font-medium border transition-all ${
+                      questionType === t
+                        ? "border-purple-500 bg-purple-500/20 text-purple-300"
+                        : "border-border/40 hover:bg-accent"
+                    }`}
+                  >
+                    {t}
+                  </button>
+                ))}
+              </div>
+            )}
+          </button>
+        )}
       </div>
+
+      {/* Session limit reached */}
+      {sessionLimitReached && (
+        <Card className="card-glow border-yellow-500/30 bg-yellow-500/5">
+          <CardContent className="p-5">
+            <div className="flex items-start gap-3">
+              <Crown className="h-5 w-5 text-yellow-400 flex-shrink-0 mt-0.5" />
+              <div className="space-y-2">
+                <p className="font-semibold text-yellow-300">Daily limit reached</p>
+                <p className="text-sm text-muted-foreground">
+                  Free accounts get 3 MCQ practice sessions per day. Upgrade to Premium for unlimited practice + FRQ with AI scoring.
+                </p>
+                <Link href="/pricing">
+                  <Button size="sm" className="gap-2 bg-indigo-600 hover:bg-indigo-700 mt-1">
+                    <Crown className="h-4 w-4" /> Upgrade to Premium
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Premium upsell for FRQ */}
+      {subscriptionTier === "FREE" && course === "AP_WORLD_HISTORY" && !sessionLimitReached && (
+        <Card className="card-glow border-purple-500/20 bg-purple-500/5">
+          <CardContent className="p-4 flex items-center gap-3">
+            <Crown className="h-5 w-5 text-purple-400 flex-shrink-0" />
+            <div className="flex-1">
+              <p className="text-sm font-medium">Unlock FRQ Practice</p>
+              <p className="text-xs text-muted-foreground">SAQ, LEQ & DBQ with AI rubric scoring — Premium only</p>
+            </div>
+            <Link href="/pricing">
+              <Button size="sm" variant="outline" className="border-purple-500/50 text-purple-300 hover:bg-purple-500/10 text-xs">
+                Upgrade
+              </Button>
+            </Link>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Filters */}
       <Card className="card-glow">
@@ -517,7 +678,7 @@ export default function PracticePage() {
             </Select>
           </div>
 
-          <Button onClick={startSession} disabled={isStarting} className="w-full gap-2">
+          <Button onClick={startSession} disabled={isStarting || sessionLimitReached} className="w-full gap-2">
             {isStarting ? (
               <><Loader2 className="h-4 w-4 animate-spin" /> Starting...</>
             ) : (

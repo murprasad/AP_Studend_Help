@@ -10,7 +10,7 @@
  *   - 600ms delay between AI calls to respect Groq rate limits.
  */
 
-import { ApCourse, ApUnit, Difficulty, QuestionType } from "@prisma/client";
+import { ApCourse, ApUnit, Difficulty, QuestionType, Prisma } from "@prisma/client";
 import { prisma } from "./prisma";
 import { COURSE_REGISTRY, VALID_AP_COURSES } from "./courses";
 import { buildQuestionPrompt } from "./ai";
@@ -110,10 +110,20 @@ export async function runAutoPopulate(): Promise<AutoPopulateResult> {
     const queue = buildDifficultyQueue(needed, keyThemes);
     let added = 0;
 
+    // For AP World History (30%) and AP Physics 1 (20%), mix in SAQ to build FRQ question bank
+    const frqRatio = course === "AP_WORLD_HISTORY" ? 0.3 : course === "AP_PHYSICS_1" ? 0.2 : 0;
+
     for (let i = 0; i < queue.length; i++) {
       const { difficulty, topic } = queue[i];
+      // Assign question type: every 3rd question is SAQ for World History, every 5th for Physics
+      const questionType =
+        frqRatio > 0 &&
+        ((course === "AP_WORLD_HISTORY" && i % 3 === 2) ||
+         (course === "AP_PHYSICS_1" && i % 5 === 4))
+          ? QuestionType.SAQ
+          : QuestionType.MCQ;
       try {
-        const q = await generateOneQuestion(course, unit, unitName, difficulty, topic);
+        const q = await generateOneQuestion(course, unit, unitName, difficulty, topic, questionType);
         if (q) {
           await prisma.question.create({
             data: {
@@ -122,10 +132,10 @@ export async function runAutoPopulate(): Promise<AutoPopulateResult> {
               topic: q.topic,
               subtopic: q.subtopic,
               difficulty,
-              questionType: QuestionType.MCQ,
+              questionType,
               questionText: q.questionText,
               stimulus: q.stimulus ?? null,
-              options: q.options ?? null,
+              options: questionType === QuestionType.MCQ ? (q.options ?? Prisma.JsonNull) : Prisma.JsonNull,
               correctAnswer: q.correctAnswer,
               explanation: q.explanation,
               isAiGenerated: true,
@@ -164,16 +174,18 @@ async function generateOneQuestion(
   unit: ApUnit,
   unitName: string,
   difficulty: Difficulty,
-  topic: string | undefined
+  topic: string | undefined,
+  questionType: QuestionType = QuestionType.MCQ
 ): Promise<{ topic: string; subtopic: string; questionText: string; stimulus: string | null; options: string[]; correctAnswer: string; explanation: string } | null> {
-  const prompt = buildQuestionPrompt(course, unit, unitName, difficulty, QuestionType.MCQ, topic);
+  const prompt = buildQuestionPrompt(course, unit, unitName, difficulty, questionType, topic);
   const raw = await callAIWithCascade(prompt);
   const cleaned = raw.trim().replace(/^```(?:json)?\s*/i, "").replace(/```\s*$/i, "").trim();
   const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
   if (!jsonMatch) return null;
 
   const parsed = JSON.parse(jsonMatch[0]);
-  if (!parsed.questionText || !parsed.correctAnswer || !Array.isArray(parsed.options)) return null;
+  if (!parsed.questionText || !parsed.correctAnswer) return null;
+  if (questionType === QuestionType.MCQ && !Array.isArray(parsed.options)) return null;
 
   return {
     topic: parsed.topic ?? topic ?? unitName,
@@ -181,7 +193,9 @@ async function generateOneQuestion(
     questionText: parsed.questionText,
     stimulus: parsed.stimulus && parsed.stimulus !== "null" ? parsed.stimulus : null,
     options: parsed.options,
-    correctAnswer: parsed.correctAnswer.trim().charAt(0).toUpperCase(),
+    correctAnswer: questionType === QuestionType.MCQ
+      ? parsed.correctAnswer.trim().charAt(0).toUpperCase()
+      : parsed.correctAnswer.trim(),
     explanation: parsed.explanation ?? "",
   };
 }

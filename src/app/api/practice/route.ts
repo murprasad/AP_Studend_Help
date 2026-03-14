@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
     if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
     const body = await req.json();
-    const { sessionType, unit, difficulty, questionCount = 10, course = "AP_WORLD_HISTORY" } = body;
+    const { sessionType, unit, difficulty, questionCount = 10, course = "AP_WORLD_HISTORY", questionType: requestedType } = body;
 
     if (!sessionType) {
       return NextResponse.json({ error: "sessionType is required" }, { status: 400 });
@@ -23,10 +23,45 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Invalid course" }, { status: 400 });
     }
 
+    const tier = session.user.subscriptionTier;
+
+    // Gate FRQ/SAQ/LEQ/DBQ behind Premium
+    const isFrqType = requestedType && requestedType !== "MCQ";
+    if (isFrqType && tier !== "PREMIUM") {
+      return NextResponse.json({
+        error: "FRQ practice (SAQ, LEQ, DBQ) requires a Premium subscription.",
+        limitExceeded: true,
+        upgradeUrl: "/pricing",
+      }, { status: 403 });
+    }
+
+    // Gate FREE users to 3 practice sessions/day (mock exams excluded)
+    if (sessionType === "PRACTICE" || sessionType === "QUICK_PRACTICE" || sessionType === "FOCUSED_STUDY") {
+      if (tier !== "PREMIUM") {
+        const startOfDay = new Date();
+        startOfDay.setHours(0, 0, 0, 0);
+        const todaySessions = await prisma.practiceSession.count({
+          where: {
+            userId: session.user.id,
+            startedAt: { gte: startOfDay },
+            status: { not: "ABANDONED" },
+          },
+        });
+        if (todaySessions >= 3) {
+          return NextResponse.json({
+            error: "Free accounts get 3 practice sessions per day. Upgrade to Premium for unlimited practice.",
+            limitExceeded: true,
+            upgradeUrl: "/pricing",
+          }, { status: 429 });
+        }
+      }
+    }
+
     // Determine which questions to include
+    const resolvedQuestionType = isFrqType ? (requestedType as QuestionType) : QuestionType.MCQ;
     const whereClause: Record<string, unknown> = {
       isApproved: true,
-      questionType: "MCQ",
+      questionType: resolvedQuestionType,
       course: course as ApCourse,
       ...(unit && unit !== "ALL" && { unit: unit as ApUnit }),
       ...(difficulty && difficulty !== "ALL" && { difficulty: difficulty as Difficulty }),

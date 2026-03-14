@@ -37,6 +37,14 @@ export interface UnitMeta {
   mitocwUrl?: string;
   /** Digital Inquiry Group (Stanford) lesson search URL (World History only) */
   digUrl?: string;
+  /** PhET Interactive Simulations URL (Physics only) */
+  phetUrl?: string;
+  /** Direct unit-level Khan Academy section URL */
+  khanUrl?: string;
+  /** CK-12 section URL for this unit */
+  ck12Url?: string;
+  /** OpenStax textbook chapter URL for this unit */
+  openStaxUrl?: string;
 }
 
 /** Per-question-type generation specification */
@@ -491,6 +499,22 @@ When referencing resources:
           '"explanation":"Physics law/principle, equation used, step-by-step solution if calculation"}',
         estimatedMinutes: 3,
       },
+      SAQ: {
+        generationPrompt:
+          "Generate an AP Physics 1 Free Response Question (FRQ) with THREE labeled parts: (a), (b), (c). " +
+          "Part (a): Derive or calculate a quantity — show the equation, substitution, and final answer with units. " +
+          "Part (b): Qualitative explanation, graph sketch description, or two-scenario comparison. " +
+          "Part (c): Experimental design or prediction — identify variables, describe a procedure, or predict " +
+          "how changing one quantity affects an outcome. " +
+          "Algebra-based only (no calculus). Ground in one AP Physics 1 unit. " +
+          "Return stimulus as a short scenario, data table, or diagram description when relevant.",
+        responseFormat:
+          '{"topic":"...","subtopic":"...","questionText":"Full 3-part FRQ with (a)(b)(c) clearly labeled",' +
+          '"stimulus":"scenario / data table / diagram description (null if not needed)",' +
+          '"correctAnswer":"(a) [full worked answer with equation+substitution+units] (b) [model qualitative response] (c) [model experimental design]",' +
+          '"explanation":"Scoring rubric: (a) 4 pts — equation 1, substitution 1, answer 1, units 1. (b) 3 pts — state what earns each. (c) 3 pts — state what earns each."}',
+        estimatedMinutes: 12,
+      },
     },
 
     units: {
@@ -499,71 +523,112 @@ When referencing resources:
         keyThemes: ["Displacement", "Velocity", "Acceleration", "Motion Graphs", "Projectile Motion"],
         fiveableUrl: "https://library.fiveable.me/ap-physics-1/unit-1",
         mitocwUrl: "https://ocw.mit.edu/courses/8-01sc-classical-mechanics-fall-2016/pages/week-1-kinematics/",
+        phetUrl: "https://phet.colorado.edu/en/simulations/moving-man",
+        khanUrl: "https://www.khanacademy.org/science/ap-physics-1/ap-one-dimensional-motion",
+        ck12Url: "https://www.ck12.org/section/kinematics",
+        openStaxUrl: "https://openstax.org/books/university-physics-vol-1/pages/3-introduction",
       },
       PHY1_2_FORCES_AND_NEWTONS_LAWS: {
         name: "Unit 2: Forces and Newton's Laws",
         keyThemes: ["Newton's Three Laws", "Free Body Diagrams", "Friction", "Tension", "Normal Force"],
         fiveableUrl: "https://library.fiveable.me/ap-physics-1/unit-2",
         mitocwUrl: "https://ocw.mit.edu/courses/8-01sc-classical-mechanics-fall-2016/pages/week-2-newtons-laws/",
+        phetUrl: "https://phet.colorado.edu/en/simulations/forces-and-motion-basics",
+        khanUrl: "https://www.khanacademy.org/science/ap-physics-1/ap-forces-newtons-laws",
+        ck12Url: "https://www.ck12.org/section/newtons-laws",
+        openStaxUrl: "https://openstax.org/books/university-physics-vol-1/pages/5-introduction",
       },
       PHY1_3_CIRCULAR_MOTION_GRAVITATION: {
         name: "Unit 3: Circular Motion and Gravitation",
         keyThemes: ["Centripetal Acceleration", "Gravitational Force", "Orbital Motion"],
         fiveableUrl: "https://library.fiveable.me/ap-physics-1/unit-3",
         mitocwUrl: "https://ocw.mit.edu/courses/8-01sc-classical-mechanics-fall-2016/pages/week-3-circular-motion/",
+        phetUrl: "https://phet.colorado.edu/en/simulations/gravity-and-orbits",
+        khanUrl: "https://www.khanacademy.org/science/ap-physics-1/ap-centripetal-force-and-gravitation",
+        ck12Url: "https://www.ck12.org/section/circular-motion",
+        openStaxUrl: "https://openstax.org/books/university-physics-vol-1/pages/6-introduction",
       },
       PHY1_4_ENERGY: {
         name: "Unit 4: Energy",
         keyThemes: ["Work", "Kinetic Energy", "Potential Energy", "Conservation of Energy", "Power"],
         fiveableUrl: "https://library.fiveable.me/ap-physics-1/unit-4",
         mitocwUrl: "https://ocw.mit.edu/courses/8-01sc-classical-mechanics-fall-2016/pages/week-6-energy-and-work/",
+        phetUrl: "https://phet.colorado.edu/en/simulations/energy-skate-park",
+        khanUrl: "https://www.khanacademy.org/science/ap-physics-1/ap-work-and-energy",
+        ck12Url: "https://www.ck12.org/section/work-energy-and-power",
+        openStaxUrl: "https://openstax.org/books/university-physics-vol-1/pages/7-introduction",
       },
       PHY1_5_MOMENTUM: {
         name: "Unit 5: Momentum",
         keyThemes: ["Impulse", "Linear Momentum", "Conservation of Momentum", "Collisions"],
         fiveableUrl: "https://library.fiveable.me/ap-physics-1/unit-5",
         mitocwUrl: "https://ocw.mit.edu/courses/8-01sc-classical-mechanics-fall-2016/pages/week-5-momentum-and-impulse/",
+        phetUrl: "https://phet.colorado.edu/en/simulations/collision-lab",
+        khanUrl: "https://www.khanacademy.org/science/ap-physics-1/ap-impulse-and-momentum",
+        ck12Url: "https://www.ck12.org/section/momentum",
+        openStaxUrl: "https://openstax.org/books/university-physics-vol-1/pages/9-introduction",
       },
       PHY1_6_SIMPLE_HARMONIC_MOTION: {
         name: "Unit 6: Simple Harmonic Motion",
         keyThemes: ["Springs", "Pendulums", "Period", "Frequency", "Amplitude"],
         fiveableUrl: "https://library.fiveable.me/ap-physics-1/unit-6",
         mitocwUrl: "https://ocw.mit.edu/courses/8-01sc-classical-mechanics-fall-2016/pages/week-7-simple-harmonic-motion/",
+        phetUrl: "https://phet.colorado.edu/en/simulations/masses-and-springs",
+        khanUrl: "https://www.khanacademy.org/science/ap-physics-1/ap-simple-harmonic-motion",
+        ck12Url: "https://www.ck12.org/section/simple-harmonic-motion",
+        openStaxUrl: "https://openstax.org/books/university-physics-vol-1/pages/15-introduction",
       },
       PHY1_7_TORQUE_AND_ROTATION: {
         name: "Unit 7: Torque and Rotational Motion",
         keyThemes: ["Torque", "Rotational Inertia", "Angular Momentum"],
         fiveableUrl: "https://library.fiveable.me/ap-physics-1/unit-7",
         mitocwUrl: "https://ocw.mit.edu/courses/8-01sc-classical-mechanics-fall-2016/pages/week-10-rotational-motion/",
+        phetUrl: "https://phet.colorado.edu/en/simulations/torque",
+        khanUrl: "https://www.khanacademy.org/science/ap-physics-1/ap-torque-and-angular-momentum",
+        ck12Url: "https://www.ck12.org/section/torque",
+        openStaxUrl: "https://openstax.org/books/university-physics-vol-1/pages/10-introduction",
       },
       PHY1_8_ELECTRIC_CHARGE_AND_FORCE: {
         name: "Unit 8: Electric Charge and Electric Force",
         keyThemes: ["Charge", "Coulomb's Law", "Electric Fields"],
         fiveableUrl: "https://library.fiveable.me/ap-physics-1/unit-8",
-        // MIT OCW 8.02 (E&M) — not 8.01SC, so no mitocwUrl here
+        phetUrl: "https://phet.colorado.edu/en/simulations/coulombs-law",
+        khanUrl: "https://www.khanacademy.org/science/ap-physics-1/ap-electric-charge-electric-force-and-voltage",
+        ck12Url: "https://www.ck12.org/section/electric-charge",
+        openStaxUrl: "https://openstax.org/books/university-physics-vol-2/pages/5-introduction",
       },
       PHY1_9_DC_CIRCUITS: {
         name: "Unit 9: DC Circuits",
         keyThemes: ["Current", "Voltage", "Resistance", "Ohm's Law", "Series/Parallel Circuits", "Power"],
         fiveableUrl: "https://library.fiveable.me/ap-physics-1/unit-9",
+        phetUrl: "https://phet.colorado.edu/en/simulations/circuit-construction-kit-dc",
+        khanUrl: "https://www.khanacademy.org/science/ap-physics-1/ap-circuits-topic",
+        ck12Url: "https://www.ck12.org/section/electric-circuits",
+        openStaxUrl: "https://openstax.org/books/university-physics-vol-2/pages/10-introduction",
       },
       PHY1_10_WAVES_AND_SOUND: {
         name: "Unit 10: Mechanical Waves and Sound",
         keyThemes: ["Wave Properties", "Interference", "Standing Waves", "Sound"],
         fiveableUrl: "https://library.fiveable.me/ap-physics-1/unit-10",
         mitocwUrl: "https://ocw.mit.edu/courses/8-03sc-physics-iii-vibrations-and-waves-fall-2016/pages/part-i-mechanical-vibrations-and-waves/",
+        phetUrl: "https://phet.colorado.edu/en/simulations/wave-on-a-string",
+        khanUrl: "https://www.khanacademy.org/science/ap-physics-1/ap-mechanical-waves-and-sound",
+        ck12Url: "https://www.ck12.org/section/waves",
+        openStaxUrl: "https://openstax.org/books/university-physics-vol-1/pages/16-introduction",
       },
     },
 
     suggestedTutorQuestions: [
       "Explain Newton's three laws of motion with examples",
-      "What is the difference between speed and velocity?",
-      "How does conservation of energy work?",
-      "Explain the difference between elastic and inelastic collisions",
-      "What is centripetal acceleration?",
-      "How do series and parallel circuits differ?",
-      "Explain simple harmonic motion for a spring-mass system",
-      "What is the relationship between frequency and wavelength for waves?",
+      "Walk me through a step-by-step solution for a projectile motion problem",
+      "How does conservation of energy work — show me the math step by step",
+      "Explain the difference between elastic and inelastic collisions with equations",
+      "Design an experiment to find the spring constant of an unknown spring",
+      "How do I interpret a velocity-time graph for constant acceleration?",
+      "Walk me through analyzing a DC circuit with series and parallel resistors",
+      "What happens to the period of a pendulum if you triple its length?",
+      "How does wave interference produce standing waves on a string?",
+      "What is centripetal acceleration and how is it derived algebraically?",
     ],
 
     curriculumContext: `
@@ -581,6 +646,8 @@ The course covers fundamental physics concepts across 10 units:
 - Unit 10: Mechanical Waves and Sound — wave properties, interference, standing waves, sound
 
 AP Physics Science Practices: Modeling, Mathematical Routines, Scientific Questioning, Experimental Design, Data Analysis, Argumentation
+
+AP Exam Format: Section I — 50 MCQs (90 min, 50% of score). Section II — 5 FRQs (90 min, 50% of score) including Experimental Design, Quantitative/Qualitative Translation, and Short Answer types.
 `,
 
     tutorResources: `

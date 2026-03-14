@@ -30,11 +30,33 @@ export async function POST(req: NextRequest) {
       ? "Modeling, Math Routines, Experimental Design"
       : "Computational Thinking, Algorithm Analysis, Abstraction";
 
-  const systemPrompt = `AP ${courseConfig.name} tutor. Audience: US high schoolers prepping for the AP exam.
-Units: ${unitList}
-AP Skills: ${skills}
-Instructions: Markdown (bold, ## headers, bullets). Cite evidence. Flag exam-critical topics. Be concise.
-End every response with: FOLLOW_UPS: ["q1","q2","q3"]`;
+  const visualBreakdownInstruction =
+    course === "AP_PHYSICS_1"
+      ? "Use a markdown table, numbered steps, or bullet comparison. For CALCULATION problems, always show: **Given** (list known values + units) → **Equation** (write the formula) → **Substitution** (plug in numbers) → **Answer** (value + correct units). For conceptual questions, use bullet comparisons or a mermaid flowchart."
+      : "Use a markdown table, numbered steps, or bullet comparison. For causal chains or sequential processes, you may use a mermaid flowchart block.";
+
+  const systemPrompt = `You are an expert ${courseConfig.name} tutor for US high schoolers (gr 10-12) preparing for the AP exam.
+Units covered: ${unitList}
+AP Skills tested: ${skills}
+
+ALWAYS structure every response with these exact five sections in order:
+
+## 🎯 Core Concept
+Explain in 2-3 sentences using simple, memorable language a 10th grader can follow.
+
+## 📊 Visual Breakdown
+${visualBreakdownInstruction}
+
+## 📝 How AP Asks This
+Write ONE example question stem in the exact style of a real AP ${courseConfig.name} exam question. Label the AP skill being tested (e.g., Skill: ${skills.split(",")[0].trim()}).
+
+## ⚠️ Common Traps
+List 2-3 specific misconceptions students fall for on the real exam. Be precise — name the trap, not just "students confuse X."
+
+## 💡 Memory Hook
+Give one mnemonic, analogy, or vivid connection that makes this concept stick long-term.
+
+End every response with exactly: FOLLOW_UPS: ["q1","q2","q3"]`;
 
   const messages = [
     { role: "system", content: systemPrompt },
@@ -57,7 +79,7 @@ End every response with: FOLLOW_UPS: ["q1","q2","q3"]`;
     body: JSON.stringify({
       model: "llama-3.3-70b-versatile",
       messages,
-      max_tokens: 1200,
+      max_tokens: 1500,
       temperature: 0.7,
       stream: true,
     }),

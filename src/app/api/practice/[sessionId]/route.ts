@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { ApUnit } from "@prisma/client";
 import { estimateApScore } from "@/lib/utils";
 import { getCourseForUnit } from "@/lib/courses";
+import { callAIWithCascade } from "@/lib/ai-providers";
 
 // Submit an answer for a question in a session
 export async function POST(
@@ -45,7 +46,54 @@ export async function POST(
       return NextResponse.json({ error: "Question not found" }, { status: 404 });
     }
 
-    const isCorrect = answer.toUpperCase() === question.correctAnswer.toUpperCase();
+    // Detect open-ended (FRQ) questions — options is null or empty array
+    const parsedOptions = question.options
+      ? (Array.isArray(question.options) ? question.options : (() => { try { return JSON.parse(question.options as string); } catch { return []; } })())
+      : [];
+    const isOpenEnded = parsedOptions.length === 0;
+
+    let isCorrect: boolean;
+    let frqScore: { pointsEarned: number; totalPoints: number; feedback: string; modelAnswer: string } | undefined;
+
+    if (isOpenEnded && answer.trim().length > 10) {
+      // AI rubric scoring for FRQ answers
+      try {
+        const scoringPrompt = `You are an AP exam grader. Score this student response using the official rubric criteria.
+
+Question: ${question.questionText}
+Model Answer / Rubric: ${question.correctAnswer}
+${question.explanation ? `Scoring Guidance: ${question.explanation}` : ""}
+Student Response: ${answer}
+
+Return ONLY valid JSON (no markdown, no extra text):
+{"pointsEarned": 2, "totalPoints": 3, "feedback": "specific feedback referencing what was correct and what was missing", "modelAnswer": "ideal 2-3 sentence response hitting all rubric points"}`;
+
+        const raw = await callAIWithCascade(scoringPrompt);
+        const jsonMatch = raw.match(/\{[\s\S]*\}/);
+        if (jsonMatch) {
+          const parsed = JSON.parse(jsonMatch[0]);
+          if (typeof parsed.pointsEarned === "number" && typeof parsed.totalPoints === "number") {
+            frqScore = {
+              pointsEarned: parsed.pointsEarned,
+              totalPoints: parsed.totalPoints,
+              feedback: parsed.feedback ?? "",
+              modelAnswer: parsed.modelAnswer ?? "",
+            };
+            isCorrect = frqScore.pointsEarned >= frqScore.totalPoints / 2;
+          } else {
+            isCorrect = false;
+          }
+        } else {
+          isCorrect = false;
+        }
+      } catch {
+        // AI scoring failed — mark as needs review
+        isCorrect = false;
+        frqScore = { pointsEarned: 0, totalPoints: 3, feedback: "AI scoring unavailable — your answer was recorded.", modelAnswer: question.correctAnswer };
+      }
+    } else {
+      isCorrect = answer.toUpperCase() === question.correctAnswer.toUpperCase();
+    }
 
     // Check if already answered in this session
     const existingResponse = await prisma.studentResponse.findFirst({
@@ -88,6 +136,7 @@ export async function POST(
       isCorrect,
       correctAnswer: question.correctAnswer,
       explanation: question.explanation,
+      ...(frqScore && { frqScore }),
     });
   } catch (error) {
     console.error("POST /api/practice/[sessionId] error:", error);

@@ -193,22 +193,51 @@ export default function ResourcesPage() {
                           </div>
                         </div>
 
-                        {/* Video embed - Heimler's History */}
-                        <div>
-                          <p className="text-xs font-medium text-muted-foreground mb-2 flex items-center gap-1">
-                            <Youtube className="h-3.5 w-3.5 text-red-400" />
-                            HEIMLER&apos;S HISTORY REVIEW
-                          </p>
-                          <div className="rounded-lg overflow-hidden aspect-video bg-black">
-                            <iframe
-                              src={`https://www.youtube.com/embed/${ur.heimlerVideoId}?rel=0&modestbranding=1`}
-                              title={`Heimler's History - ${ur.name}`}
-                              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                              allowFullScreen
-                              className="w-full h-full"
-                            />
+                        {/* Video embed - Heimler's History (World History only) */}
+                        {ur.heimlerVideoId && (
+                          <div>
+                            <p className="text-xs font-medium text-muted-foreground mb-2 flex items-center gap-1">
+                              <Youtube className="h-3.5 w-3.5 text-red-400" />
+                              HEIMLER&apos;S HISTORY REVIEW
+                            </p>
+                            <div className="rounded-lg overflow-hidden aspect-video bg-black">
+                              <iframe
+                                src={`https://www.youtube.com/embed/${ur.heimlerVideoId}?rel=0&modestbranding=1`}
+                                title={`Heimler's History - ${ur.name}`}
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowFullScreen
+                                className="w-full h-full"
+                              />
+                            </div>
                           </div>
-                        </div>
+                        )}
+
+                        {/* PhET simulation card (Physics only) */}
+                        {ur.phetUrl && (
+                          <div>
+                            <p className="text-xs font-medium text-muted-foreground mb-2 flex items-center gap-1">
+                              <Zap className="h-3.5 w-3.5 text-orange-400" />
+                              PHET INTERACTIVE SIMULATION
+                            </p>
+                            <a
+                              href={ur.phetUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex items-center gap-3 p-3 rounded-lg border border-orange-500/30 bg-orange-500/5 hover:bg-orange-500/10 transition-colors"
+                            >
+                              <div className="w-8 h-8 rounded-lg bg-orange-500/20 flex items-center justify-center flex-shrink-0">
+                                <Zap className="h-4 w-4 text-orange-400" />
+                              </div>
+                              <div className="flex-1">
+                                <p className="text-sm font-medium">Launch PhET Simulation</p>
+                                <p className="text-xs text-muted-foreground">
+                                  Interactive — explore {ur.name.replace(/^Unit \d+: /, "")} visually
+                                </p>
+                              </div>
+                              <ExternalLink className="h-4 w-4 text-muted-foreground" />
+                            </a>
+                          </div>
+                        )}
 
                         {/* Resource links */}
                         <div>
@@ -220,8 +249,13 @@ export default function ResourcesPage() {
                                 ur.fiveableUrl ? { label: "Fiveable", url: ur.fiveableUrl, icon: Zap, color: "text-yellow-400" } : null,
                                 ur.zinnUrl ? { label: "Zinn Project", url: ur.zinnUrl, icon: FileText, color: "text-orange-400" } : null,
                                 ur.worldHistoryUrl ? { label: "World History", url: ur.worldHistoryUrl, icon: Globe, color: "text-cyan-400" } : null,
-                                { label: "PracticeQuiz", url: "https://www.practicequiz.com/ap-world-history-practice-test", icon: ClipboardCheck, color: "text-purple-400" },
-                                { label: "Khan Academy", url: "https://www.khanacademy.org/humanities/ap-world-history", icon: Play, color: "text-green-400" },
+                                ur.mitocwUrl ? { label: "MIT OCW", url: ur.mitocwUrl, icon: GraduationCap, color: "text-blue-400" } : null,
+                                ur.khanUrl ? { label: "Khan Academy", url: ur.khanUrl, icon: Play, color: "text-green-400" } : null,
+                                ur.ck12Url ? { label: "CK-12", url: ur.ck12Url, icon: BookOpen, color: "text-cyan-400" } : null,
+                                ur.openStaxUrl ? { label: "OpenStax", url: ur.openStaxUrl, icon: FileText, color: "text-indigo-400" } : null,
+                                // World History fallback static links when unit-level links absent
+                                !ur.khanUrl ? { label: "Khan Academy", url: "https://www.khanacademy.org/humanities/ap-world-history", icon: Play, color: "text-green-400" } : null,
+                                !ur.oerUrl && !ur.ck12Url ? { label: "PracticeQuiz", url: "https://www.practicequiz.com/ap-world-history-practice-test", icon: ClipboardCheck, color: "text-purple-400" } : null,
                               ] as { label: string; url: string; icon: React.ElementType; color: string }[]
                             ).filter((x): x is NonNullable<typeof x> => x !== null).map((link) => (
                               <a
@@ -362,73 +396,133 @@ export default function ResourcesPage() {
       {/* ── VIDEO LIBRARY TAB ── */}
       {activeTab === "videos" && (
         <div className="space-y-6">
-          <div className="grid md:grid-cols-2 gap-4 mb-4">
-            <a href="https://www.youtube.com/@heimlershistory" target="_blank" rel="noopener noreferrer">
-              <Card className="card-glow border-red-500/20 hover:border-red-500/40 transition-colors cursor-pointer">
-                <CardContent className="p-4 flex items-center gap-4">
-                  <Youtube className="h-10 w-10 text-red-400" />
-                  <div>
-                    <p className="font-bold">Heimler&apos;s History</p>
-                    <p className="text-xs text-muted-foreground">Best AP YouTube channel — unit reviews, exam skills, and essay practice</p>
-                  </div>
-                  <ExternalLink className="h-4 w-4 text-muted-foreground ml-auto" />
-                </CardContent>
-              </Card>
-            </a>
-            <a href="https://www.youtube.com/c/khanacademy" target="_blank" rel="noopener noreferrer">
-              <Card className="card-glow border-green-500/20 hover:border-green-500/40 transition-colors cursor-pointer">
-                <CardContent className="p-4 flex items-center gap-4">
-                  <Play className="h-10 w-10 text-green-400" />
-                  <div>
-                    <p className="font-bold">Khan Academy</p>
-                    <p className="text-xs text-muted-foreground">Free AP video lessons and articles for every unit</p>
-                  </div>
-                  <ExternalLink className="h-4 w-4 text-muted-foreground ml-auto" />
-                </CardContent>
-              </Card>
-            </a>
-          </div>
-
-          <h2 className="text-xl font-bold">Unit Video Reviews</h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {UNIT_ITEMS.filter((ur) => ur.heimlerVideoId).map((ur) => (
-              <div key={ur.unit} className="space-y-2">
-                <p className="text-sm font-medium">{ur.name}</p>
-                <p className="text-xs text-muted-foreground">{ur.timePeriod}</p>
-                <div className="rounded-lg overflow-hidden aspect-video bg-black border border-border/40">
-                  <iframe
-                    src={`https://www.youtube.com/embed/${ur.heimlerVideoId}?rel=0&modestbranding=1`}
-                    title={`Heimler's History - ${ur.name}`}
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                    className="w-full h-full"
-                  />
-                </div>
-                <div className="flex gap-2">
-                  <a
-                    href={`https://www.youtube.com/watch?v=${ur.heimlerVideoId}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex-1"
-                  >
-                    <Button size="sm" variant="outline" className="w-full gap-1 text-xs">
-                      <Youtube className="h-3 w-3 text-red-400" /> Heimler
-                    </Button>
-                  </a>
-                  <a
-                    href={`https://www.khanacademy.org/humanities/ap-world-history`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex-1"
-                  >
-                    <Button size="sm" variant="outline" className="w-full gap-1 text-xs">
-                      <Play className="h-3 w-3 text-green-400" /> Khan
-                    </Button>
-                  </a>
-                </div>
+          {course === "AP_PHYSICS_1" ? (
+            <>
+              <div className="grid md:grid-cols-2 gap-4 mb-4">
+                <a href="https://www.youtube.com/@FlippingPhysics" target="_blank" rel="noopener noreferrer">
+                  <Card className="card-glow border-red-500/20 hover:border-red-500/40 transition-colors cursor-pointer">
+                    <CardContent className="p-4 flex items-center gap-4">
+                      <Youtube className="h-10 w-10 text-red-400" />
+                      <div>
+                        <p className="font-bold">Flipping Physics</p>
+                        <p className="text-xs text-muted-foreground">Conceptual and worked-example videos — top AP Physics 1 channel</p>
+                      </div>
+                      <ExternalLink className="h-4 w-4 text-muted-foreground ml-auto" />
+                    </CardContent>
+                  </Card>
+                </a>
+                <a href="https://www.khanacademy.org/science/ap-physics-1" target="_blank" rel="noopener noreferrer">
+                  <Card className="card-glow border-green-500/20 hover:border-green-500/40 transition-colors cursor-pointer">
+                    <CardContent className="p-4 flex items-center gap-4">
+                      <Play className="h-10 w-10 text-green-400" />
+                      <div>
+                        <p className="font-bold">Khan Academy AP Physics 1</p>
+                        <p className="text-xs text-muted-foreground">Free videos and articles for every unit</p>
+                      </div>
+                      <ExternalLink className="h-4 w-4 text-muted-foreground ml-auto" />
+                    </CardContent>
+                  </Card>
+                </a>
               </div>
-            ))}
-          </div>
+              <h2 className="text-xl font-bold">Unit Video Resources</h2>
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {UNIT_ITEMS.map((ur) => (
+                  <Card key={ur.unit} className="card-glow">
+                    <CardContent className="p-4 space-y-2">
+                      <p className="text-sm font-medium">{ur.name}</p>
+                      <div className="flex flex-col gap-2">
+                        {ur.mitocwUrl && (
+                          <a href={ur.mitocwUrl} target="_blank" rel="noopener noreferrer"
+                            className="flex items-center gap-2 p-2.5 rounded-lg border border-border/40 hover:bg-accent text-xs transition-colors">
+                            <GraduationCap className="h-3.5 w-3.5 text-blue-400" />
+                            MIT OCW Lecture
+                            <ExternalLink className="h-3 w-3 text-muted-foreground ml-auto" />
+                          </a>
+                        )}
+                        {ur.khanUrl && (
+                          <a href={ur.khanUrl} target="_blank" rel="noopener noreferrer"
+                            className="flex items-center gap-2 p-2.5 rounded-lg border border-border/40 hover:bg-accent text-xs transition-colors">
+                            <Play className="h-3.5 w-3.5 text-green-400" />
+                            Khan Academy Videos
+                            <ExternalLink className="h-3 w-3 text-muted-foreground ml-auto" />
+                          </a>
+                        )}
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="grid md:grid-cols-2 gap-4 mb-4">
+                <a href="https://www.youtube.com/@heimlershistory" target="_blank" rel="noopener noreferrer">
+                  <Card className="card-glow border-red-500/20 hover:border-red-500/40 transition-colors cursor-pointer">
+                    <CardContent className="p-4 flex items-center gap-4">
+                      <Youtube className="h-10 w-10 text-red-400" />
+                      <div>
+                        <p className="font-bold">Heimler&apos;s History</p>
+                        <p className="text-xs text-muted-foreground">Best AP YouTube channel — unit reviews, exam skills, and essay practice</p>
+                      </div>
+                      <ExternalLink className="h-4 w-4 text-muted-foreground ml-auto" />
+                    </CardContent>
+                  </Card>
+                </a>
+                <a href="https://www.youtube.com/c/khanacademy" target="_blank" rel="noopener noreferrer">
+                  <Card className="card-glow border-green-500/20 hover:border-green-500/40 transition-colors cursor-pointer">
+                    <CardContent className="p-4 flex items-center gap-4">
+                      <Play className="h-10 w-10 text-green-400" />
+                      <div>
+                        <p className="font-bold">Khan Academy</p>
+                        <p className="text-xs text-muted-foreground">Free AP video lessons and articles for every unit</p>
+                      </div>
+                      <ExternalLink className="h-4 w-4 text-muted-foreground ml-auto" />
+                    </CardContent>
+                  </Card>
+                </a>
+              </div>
+              <h2 className="text-xl font-bold">Unit Video Reviews</h2>
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {UNIT_ITEMS.filter((ur) => ur.heimlerVideoId).map((ur) => (
+                  <div key={ur.unit} className="space-y-2">
+                    <p className="text-sm font-medium">{ur.name}</p>
+                    <p className="text-xs text-muted-foreground">{ur.timePeriod}</p>
+                    <div className="rounded-lg overflow-hidden aspect-video bg-black border border-border/40">
+                      <iframe
+                        src={`https://www.youtube.com/embed/${ur.heimlerVideoId}?rel=0&modestbranding=1`}
+                        title={`Heimler's History - ${ur.name}`}
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                        className="w-full h-full"
+                      />
+                    </div>
+                    <div className="flex gap-2">
+                      <a
+                        href={`https://www.youtube.com/watch?v=${ur.heimlerVideoId}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex-1"
+                      >
+                        <Button size="sm" variant="outline" className="w-full gap-1 text-xs">
+                          <Youtube className="h-3 w-3 text-red-400" /> Heimler
+                        </Button>
+                      </a>
+                      <a
+                        href={`https://www.khanacademy.org/humanities/ap-world-history`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex-1"
+                      >
+                        <Button size="sm" variant="outline" className="w-full gap-1 text-xs">
+                          <Play className="h-3 w-3 text-green-400" /> Khan
+                        </Button>
+                      </a>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
         </div>
       )}
 
@@ -438,6 +532,34 @@ export default function ResourcesPage() {
           <p className="text-muted-foreground">
             Master AP exam writing skills with these targeted resources from Heimler&apos;s History, Fiveable, and College Board.
           </p>
+
+          {course === "AP_PHYSICS_1" && (
+            <Card className="card-glow border-orange-500/20">
+              <CardHeader>
+                <CardTitle className="text-base flex items-center gap-2">
+                  <Zap className="h-5 w-5 text-orange-400" />
+                  Physics Essentials
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid sm:grid-cols-2 gap-3">
+                  {[
+                    { label: "AP Physics 1 Formula Sheet", url: "https://apcentral.collegeboard.org/media/pdf/ap-physics-1-formulas-tables.pdf" },
+                    { label: "Past FRQ Exams (College Board)", url: "https://apcentral.collegeboard.org/courses/ap-physics-1/exam/past-exam-questions" },
+                    { label: "PhET Physics Simulations", url: "https://phet.colorado.edu/en/simulations/filter?subjects=physics" },
+                    { label: "OpenStax University Physics", url: "https://openstax.org/subjects/science" },
+                  ].map((link) => (
+                    <a key={link.label} href={link.url} target="_blank" rel="noopener noreferrer"
+                      className="flex items-center gap-2 p-3 rounded-lg border border-border/40 hover:bg-accent text-sm transition-colors">
+                      <FileText className="h-4 w-4 text-orange-400 flex-shrink-0" />
+                      {link.label}
+                      <ExternalLink className="h-3.5 w-3.5 text-muted-foreground ml-auto" />
+                    </a>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
 
           <div className="grid md:grid-cols-2 gap-6">
             {EXAM_SKILLS.map((skill) => (
