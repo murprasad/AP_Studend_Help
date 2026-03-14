@@ -118,7 +118,7 @@ const mermaidComponents = {
   },
 };
 
-function MarkdownContent({ content, useMermaid = false }: { content: string; useMermaid?: boolean }) {
+export function MarkdownContent({ content, useMermaid = false }: { content: string; useMermaid?: boolean }) {
   return (
     <div className="prose prose-invert prose-sm max-w-none
       prose-p:text-foreground prose-p:leading-relaxed prose-p:my-1

@@ -44,6 +44,7 @@ export async function POST(req: NextRequest) {
         questionType: generated.questionType,
         questionText: generated.questionText,
         stimulus: generated.stimulus || null,
+        stimulusImageUrl: generated.stimulusImageUrl || null,
         options: generated.options ? JSON.stringify(generated.options) : undefined,
         correctAnswer: generated.correctAnswer,
         explanation: generated.explanation,

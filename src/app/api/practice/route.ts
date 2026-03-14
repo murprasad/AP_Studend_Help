@@ -114,6 +114,7 @@ export async function POST(req: NextRequest) {
                 questionType: gen.questionType,
                 questionText: gen.questionText,
                 stimulus: gen.stimulus || null,
+                stimulusImageUrl: gen.stimulusImageUrl || null,
                 options: gen.options ? JSON.stringify(gen.options) : undefined,
                 correctAnswer: gen.correctAnswer,
                 explanation: gen.explanation,
@@ -214,6 +215,7 @@ export async function POST(req: NextRequest) {
         questionType: q.questionType,
         questionText: q.questionText,
         stimulus: q.stimulus,
+        stimulusImageUrl: q.stimulusImageUrl,
         options: q.options,
       })),
     });

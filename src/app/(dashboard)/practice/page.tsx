@@ -27,6 +27,7 @@ import {
   PenLine,
 } from "lucide-react";
 import Link from "next/link";
+import { MarkdownContent } from "@/components/tutor/section-cards";
 
 interface Question {
   id: string;
@@ -38,6 +39,7 @@ interface Question {
   questionType: string;
   questionText: string;
   stimulus?: string;
+  stimulusImageUrl?: string;
   options?: string;
 }
 
@@ -346,17 +348,29 @@ export default function PracticePage() {
         {/* Question card */}
         <Card className="card-glow">
           <CardContent className="p-6 space-y-4">
-            {currentQuestion.stimulus && (
-              <div className="p-4 rounded-lg bg-secondary/50 border-l-4 border-indigo-500">
-                <p className="text-sm leading-relaxed italic text-muted-foreground">
-                  {currentQuestion.stimulus}
-                </p>
+            {(currentQuestion.stimulus || currentQuestion.stimulusImageUrl) && (
+              <div className="p-4 rounded-lg bg-secondary/50 border-l-4 border-indigo-500 space-y-3">
+                <p className="text-xs font-semibold uppercase tracking-wide text-indigo-400">Source / Context</p>
+                {currentQuestion.stimulusImageUrl && (
+                  <div className="flex justify-center">
+                    <img
+                      src={currentQuestion.stimulusImageUrl}
+                      alt="Historical context"
+                      className="max-h-52 rounded-lg border border-border/40 object-contain"
+                    />
+                  </div>
+                )}
+                {currentQuestion.stimulus && (
+                  <div className="text-sm text-muted-foreground">
+                    <MarkdownContent content={currentQuestion.stimulus} useMermaid={true} />
+                  </div>
+                )}
               </div>
             )}
 
-            <p className="text-base font-medium leading-relaxed">
-              {currentQuestion.questionText}
-            </p>
+            <div className="text-base font-medium leading-relaxed">
+              <MarkdownContent content={currentQuestion.questionText} useMermaid={false} />
+            </div>
 
             {/* Open-ended response for SAQ/DBQ/LEQ */}
             {parsedOptions.length === 0 && !feedback && (

@@ -105,8 +105,9 @@ model Question {
   difficulty   Difficulty
   questionType QuestionType
   questionText String       @db.Text
-  stimulus     String?      @db.Text
-  options      Json?
+  stimulus          String?      @db.Text
+  stimulusImageUrl  String?      @db.Text
+  options           Json?
   correctAnswer String
   explanation  String       @db.Text
   isAiGenerated Boolean     @default(false)

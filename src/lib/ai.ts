@@ -29,6 +29,7 @@ export interface GeneratedQuestion {
   questionType: QuestionType;
   questionText: string;
   stimulus?: string;
+  stimulusImageUrl?: string;
   options?: string[];
   correctAnswer: string;
   explanation: string;
@@ -196,6 +197,20 @@ export async function generateQuestion(
   const estimatedMinutes = typeFormatForReturn?.estimatedMinutes
     ?? (difficulty === "EASY" ? 1 : difficulty === "MEDIUM" ? 2 : 3);
 
+  // Fetch Wikipedia image for World History questions with a wikiImageTopic hint
+  let stimulusImageUrl: string | undefined;
+  if (inferredCourseForReturn === "AP_WORLD_HISTORY" && parsed.wikiImageTopic && parsed.wikiImageTopic !== "null") {
+    try {
+      const wikiResult = await Promise.race([
+        getWikipediaSummary(parsed.wikiImageTopic),
+        new Promise<null>((resolve) => setTimeout(() => resolve(null), 3000)),
+      ]);
+      stimulusImageUrl = (wikiResult as Awaited<ReturnType<typeof getWikipediaSummary>>)?.imageUrl ?? undefined;
+    } catch {
+      stimulusImageUrl = undefined;
+    }
+  }
+
   return {
     unit,
     topic: parsed.topic,
@@ -204,6 +219,7 @@ export async function generateQuestion(
     questionType,
     questionText: parsed.questionText,
     stimulus: parsed.stimulus || undefined,
+    stimulusImageUrl,
     options: parsed.options,
     correctAnswer: parsed.correctAnswer,
     explanation: parsed.explanation,

@@ -15,6 +15,7 @@ import { prisma } from "./prisma";
 import { COURSE_REGISTRY, VALID_AP_COURSES } from "./courses";
 import { buildQuestionPrompt } from "./ai";
 import { callAIWithCascade } from "./ai-providers";
+import { getWikipediaSummary } from "./edu-apis";
 
 /** Minimum approved questions to maintain per unit. */
 export const AUTO_POPULATE_TARGET = 50;
@@ -135,6 +136,7 @@ export async function runAutoPopulate(): Promise<AutoPopulateResult> {
               questionType,
               questionText: q.questionText,
               stimulus: q.stimulus ?? null,
+              stimulusImageUrl: q.stimulusImageUrl ?? null,
               options: questionType === QuestionType.MCQ ? (q.options ?? Prisma.JsonNull) : Prisma.JsonNull,
               correctAnswer: q.correctAnswer,
               explanation: q.explanation,
@@ -176,7 +178,7 @@ async function generateOneQuestion(
   difficulty: Difficulty,
   topic: string | undefined,
   questionType: QuestionType = QuestionType.MCQ
-): Promise<{ topic: string; subtopic: string; questionText: string; stimulus: string | null; options: string[]; correctAnswer: string; explanation: string } | null> {
+): Promise<{ topic: string; subtopic: string; questionText: string; stimulus: string | null; stimulusImageUrl: string | null; options: string[]; correctAnswer: string; explanation: string } | null> {
   const prompt = buildQuestionPrompt(course, unit, unitName, difficulty, questionType, topic);
   const raw = await callAIWithCascade(prompt);
   const cleaned = raw.trim().replace(/^```(?:json)?\s*/i, "").replace(/```\s*$/i, "").trim();
@@ -187,11 +189,26 @@ async function generateOneQuestion(
   if (!parsed.questionText || !parsed.correctAnswer) return null;
   if (questionType === QuestionType.MCQ && !Array.isArray(parsed.options)) return null;
 
+  // Fetch Wikipedia image for World History questions that provide a topic hint
+  let stimulusImageUrl: string | null = null;
+  if (course === "AP_WORLD_HISTORY" && parsed.wikiImageTopic && parsed.wikiImageTopic !== "null") {
+    try {
+      const wikiResult = await Promise.race([
+        getWikipediaSummary(parsed.wikiImageTopic),
+        new Promise<null>((resolve) => setTimeout(() => resolve(null), 3000)),
+      ]);
+      stimulusImageUrl = (wikiResult as Awaited<ReturnType<typeof getWikipediaSummary>>)?.imageUrl ?? null;
+    } catch {
+      stimulusImageUrl = null;
+    }
+  }
+
   return {
     topic: parsed.topic ?? topic ?? unitName,
     subtopic: parsed.subtopic ?? "",
     questionText: parsed.questionText,
     stimulus: parsed.stimulus && parsed.stimulus !== "null" ? parsed.stimulus : null,
+    stimulusImageUrl,
     options: parsed.options,
     correctAnswer: questionType === QuestionType.MCQ
       ? parsed.correctAnswer.trim().charAt(0).toUpperCase()

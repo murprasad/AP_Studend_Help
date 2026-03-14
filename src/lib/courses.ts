@@ -177,9 +177,11 @@ export const COURSE_REGISTRY: Record<ApCourse, CourseConfig> = {
         generationPrompt:
           "Generate a College Board AP World History MCQ with a primary source stimulus (document excerpt, map description, or image description). " +
           "The question must test AP Historical Thinking Skills (Causation, Comparison, CCOT, or Contextualization). " +
-          "Three wrong answers must each represent a common student misconception.",
+          "Three wrong answers must each represent a common student misconception. " +
+          "Also include a 'wikiImageTopic' field with a specific Wikipedia article title that would provide a relevant contextual image (e.g., 'Silk Road', 'Atlantic slave trade', 'Ibn Battuta') — use null if no image is relevant.",
         responseFormat:
           '{"topic":"...", "subtopic":"...", "questionText":"question", "stimulus":"primary source stimulus", ' +
+          '"wikiImageTopic":"Specific Wikipedia article title for a contextual image, or null", ' +
           '"options":["A) ...","B) ...","C) ...","D) ..."], "correctAnswer":"A", ' +
           '"explanation":"Why correct + why each trap answer is wrong, citing historical evidence"}',
         estimatedMinutes: 2,
@@ -488,13 +490,13 @@ When referencing resources:
         generationPrompt:
           "Generate a College Board AP Physics 1 MCQ. Alternate between these sub-types: " +
           "(1) CONCEPTUAL — test understanding of a physics principle without numbers; " +
-          "(2) CALCULATION — provide given values and ask for an algebraic solution (no calculus); " +
-          "(3) GRAPH INTERPRETATION — describe a position-time, velocity-time, or force diagram and ask a question; " +
+          "(2) CALCULATION — provide given values and ask for an algebraic solution (no calculus). For the stimulus, use a markdown table with two columns 'Given' and 'Value (units)' listing all known quantities; " +
+          "(3) GRAPH INTERPRETATION — include a Mermaid xychart-beta diagram in the stimulus showing the graph (e.g., position vs time, velocity vs time, or force vs displacement). Use realistic data points. Example format: ```mermaid\\nxychart-beta\\n  title \\\"Velocity vs Time\\\"\\n  x-axis \\\"Time (s)\\\" [0, 1, 2, 3, 4]\\n  y-axis \\\"Velocity (m/s)\\\" 0 --> 20\\n  line [0, 5, 10, 15, 20]\\n```; " +
           "(4) EXPERIMENTAL — describe a lab scenario and ask about variables, sources of error, or predictions. " +
-          "All math must be algebra-based. Include a diagram or data description in the stimulus when useful.",
+          "All math must be algebra-based. No calculus.",
         responseFormat:
           '{"topic":"...", "subtopic":"...", "questionText":"question", ' +
-          '"stimulus":"diagram description, given values table, or experimental setup (null if purely conceptual)", ' +
+          '"stimulus":"null for conceptual | markdown table of given values for calculation | ```mermaid xychart-beta ... ``` block for graph | scenario text for experimental", ' +
           '"options":["A) ...","B) ...","C) ...","D) ..."], "correctAnswer":"A", ' +
           '"explanation":"Physics law/principle, equation used, step-by-step solution if calculation"}',
         estimatedMinutes: 3,
@@ -682,7 +684,7 @@ When referencing resources:
       HARD: "Multiple equations in sequence, graph interpretation where two variables co-vary, or experiment design/critique. 25-40% correct.",
     },
     distractorTaxonomy: "(1) MAGNITUDE TRAP — correct formula but forgot to square, root, or negate; (2) DIRECTION/SIGN TRAP — correct magnitude, wrong direction (force diagrams, momentum, work); (3) FORMULA SUBSTITUTION TRAP — plugged numbers into wrong equation for superficially similar scenario.",
-    stimulusQualityGuidance: "GOOD: Data table with values+units, or specific diagram description (e.g., '5 kg block on frictionless surface connected by string to 2 kg hanging mass'). AVOID: Generic 'an object moves' setups without numbers.",
+    stimulusQualityGuidance: "GOOD: (a) Markdown table of given values with units for calculation questions; (b) Mermaid xychart-beta block with realistic data for graph questions; (c) Specific scenario description with numbers (e.g., '5 kg block on frictionless surface connected by string to 2 kg hanging mass'). AVOID: Generic 'an object moves' setups without numbers or vague diagram descriptions.",
     skillCodes: ["Modeling", "Mathematical Routines", "Scientific Questioning", "Experimental Design", "Data Analysis", "Argumentation"],
   },
 };
