@@ -1,7 +1,7 @@
 # NovAP (AP SmartPrep) — High Level Requirements
 
 **Document ID:** HLR-001
-**Version:** 1.3
+**Version:** 1.4
 **Last Updated:** 2026-03-15
 **Status:** Active
 
@@ -29,9 +29,9 @@ study planning for the nine most popular AP courses.
 ## 3. High Level Functional Requirements
 
 ### HLR-F-01 · User Authentication
-The platform shall support secure user registration, login, and session management using
-JWT-based authentication. Email verification shall be required in production. The platform
-shall support role-based access (STUDENT, ADMIN).
+The platform shall support secure user registration, login, session management, and
+self-service password reset using JWT-based authentication. Email verification shall be
+required in production. The platform shall support role-based access (STUDENT, ADMIN).
 
 ### HLR-F-02 · Multi-Course AP Support
 The platform shall support at minimum nine AP courses simultaneously. Each course shall
@@ -175,3 +175,4 @@ access regardless of tier — intended for testing and open-access periods.*
 | 1.1 | 2026-02-14 | System | Added 7 new AP courses, Premium billing, Stripe |
 | 1.2 | 2026-03-01 | System | Added FRQ support all 9 courses, premium restriction flag |
 | 1.3 | 2026-03-15 | System | Added docs page (HLR-F-15), course switching fix, Nova chat fix |
+| 1.4 | 2026-03-15 | System | Password reset flow implemented (HLR-F-01 updated); TCR + RTM documents added |

@@ -1,7 +1,7 @@
 # NovAP (AP SmartPrep) — Architecture Document
 
 **Document ID:** ARCH-001
-**Version:** 1.3
+**Version:** 1.4
 **Last Updated:** 2026-03-15
 **Status:** Active
 
@@ -397,7 +397,6 @@ All external calls have explicit timeouts:
 | No DB transactions (Neon HTTP) | Can't atomically create session + questions | Use raw SQL bulk insert in single statement |
 | CF Workers memory limit (128 MB) | Large question batches may OOM | Cap parallel AI generation at 5 per request |
 | OpenNext Windows warning | Build may behave unexpectedly | Use WSL for production builds if hitting failures |
-| No password reset UI | Locked-out users can't recover | PasswordResetToken model exists; UI to be built |
 | JWT subscriptionTier stale until re-login | Tier change visible after next login | Stripe webhook updates DB; UI reads from DB via /api/user |
 
 ---
@@ -410,3 +409,4 @@ All external calls have explicit timeouts:
 | 1.1 | 2026-02-14 | Stripe, 7 new courses, WASM constraint details |
 | 1.2 | 2026-03-01 | Streaming architecture, FRQ scoring, plain fetch requirement |
 | 1.3 | 2026-03-15 | Docs page in structure, Nova fix (SDK→fetch), course event bus |
+| 1.4 | 2026-03-15 | Password reset flow implemented (DR-AUTH-06/07); TCR + RTM added to docs |

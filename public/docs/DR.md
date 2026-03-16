@@ -1,7 +1,7 @@
 # NovAP (AP SmartPrep) — Detailed Requirements
 
 **Document ID:** DR-001
-**Version:** 1.3
+**Version:** 1.4
 **Last Updated:** 2026-03-15
 **Status:** Active
 
@@ -38,6 +38,27 @@
 - STUDENT: access all dashboard pages
 - ADMIN: all STUDENT access + `/admin` dashboard
 - Admin check enforced at route level (redirect to /dashboard if not ADMIN)
+
+### DR-AUTH-06 — Forgot Password Request
+- `POST /api/auth/forgot-password` accepts `{ email: string }`
+- System shall look up user by email (case-insensitive)
+- If no user found, return success message regardless (never reveal account existence)
+- Delete any existing `PasswordResetToken` records for the user before creating a new one
+- Create `PasswordResetToken`: token = `crypto.randomUUID()`, expires = now + 1 hour
+- Call `sendPasswordResetEmail(email, user.firstName, token)` — SMTP failures shall be logged but not surfaced to the client
+- Always return `{ message: "If that email is registered, a reset link was sent." }`
+- Route is public (no auth required)
+
+### DR-AUTH-07 — Reset Password
+- `POST /api/auth/reset-password` accepts `{ token: string, password: string }`
+- Look up `PasswordResetToken` by token value
+- If not found or `expires < now`, return 400 `{ error: "Invalid or expired token." }`
+- Validate password: minimum 8 characters; return 400 if too short
+- Hash new password with bcrypt (12 rounds)
+- Update `User.passwordHash` for the matching user
+- Delete the used `PasswordResetToken` record
+- Return 200 `{ message: "Password updated. You can now sign in." }`
+- Route is public (no auth required)
 
 ---
 

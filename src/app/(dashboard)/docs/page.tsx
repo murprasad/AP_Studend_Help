@@ -6,7 +6,7 @@ import remarkGfm from "remark-gfm";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { FileText, Download, Printer, Loader2, BookOpen, Layers, Cpu, ClipboardList } from "lucide-react";
+import { FileText, Download, Printer, Loader2, BookOpen, Layers, Cpu, ClipboardList, CheckSquare, Link2 } from "lucide-react";
 
 const DOCS = [
   {
@@ -15,7 +15,7 @@ const DOCS = [
     description: "Stakeholders, functional & non-functional requirements, supported courses, subscription tiers.",
     icon: ClipboardList,
     color: "text-blue-400",
-    version: "1.3",
+    version: "1.4",
   },
   {
     slug: "DR",
@@ -23,7 +23,7 @@ const DOCS = [
     description: "Line-by-line requirements for every feature: auth, practice, AI tutor, billing, gamification, flags.",
     icon: FileText,
     color: "text-emerald-400",
-    version: "1.3",
+    version: "1.4",
   },
   {
     slug: "HLD",
@@ -31,7 +31,7 @@ const DOCS = [
     description: "System overview, component architecture, data flow diagrams, API route map, DB entity relationships.",
     icon: Layers,
     color: "text-purple-400",
-    version: "1.3",
+    version: "1.4",
   },
   {
     slug: "ARCH",
@@ -39,7 +39,23 @@ const DOCS = [
     description: "Full tech stack, infrastructure diagram, database schema, deployment pipeline, security model.",
     icon: Cpu,
     color: "text-amber-400",
-    version: "1.3",
+    version: "1.4",
+  },
+  {
+    slug: "TCR",
+    title: "Test Cases & Results",
+    description: "43 test cases across auth, practice, mock exam, AI tutor, billing, gamification, and docs.",
+    icon: CheckSquare,
+    color: "text-green-400",
+    version: "1.4",
+  },
+  {
+    slug: "RTM",
+    title: "Requirements Traceability Matrix",
+    description: "Maps every HLR and DR to implementation files and test cases. 100% requirement coverage.",
+    icon: Link2,
+    color: "text-rose-400",
+    version: "1.4",
   },
 ];
 
@@ -99,7 +115,7 @@ export default function DocsPage() {
             Platform Documentation
           </h1>
           <p className="text-muted-foreground mt-1">
-            Living documents — updated with every significant feature change. v1.3 · 2026-03-15
+            Living documents — updated with every significant feature change. v1.4 · 2026-03-15
           </p>
         </div>
 
