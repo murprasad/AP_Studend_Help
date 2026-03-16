@@ -1,8 +1,8 @@
 # NovAP (AP SmartPrep) — High Level Requirements
 
 **Document ID:** HLR-001
-**Version:** 1.4
-**Last Updated:** 2026-03-15
+**Version:** 1.5
+**Last Updated:** 2026-03-16
 **Status:** Active
 
 ---
@@ -119,7 +119,10 @@ stored as environment secrets, not in source code.
 
 ### HLR-NF-04 · Scalability
 The platform shall use serverless architecture (Cloudflare Workers + Neon serverless
-Postgres) to scale horizontally without configuration changes.
+Postgres) to scale horizontally without configuration changes. All high-frequency database
+queries shall be covered by compound indexes to prevent full-table scans under concurrent
+load. Per-user API rate limiting shall be enforced on high-cost routes to protect the
+database connection pool from exhaustion.
 
 ### HLR-NF-05 · Maintainability
 Each AP course shall be fully described by a single `CourseConfig` entry in
@@ -176,3 +179,4 @@ access regardless of tier — intended for testing and open-access periods.*
 | 1.2 | 2026-03-01 | System | Added FRQ support all 9 courses, premium restriction flag |
 | 1.3 | 2026-03-15 | System | Added docs page (HLR-F-15), course switching fix, Nova chat fix |
 | 1.4 | 2026-03-15 | System | Password reset flow implemented (HLR-F-01 updated); TCR + RTM documents added |
+| 1.5 | 2026-03-16 | System | Scalability hardening: HLR-NF-04 expanded to include DB indexes and rate limiting |

@@ -6,12 +6,18 @@ import { SessionType, ApUnit, Difficulty, ApCourse, QuestionType } from "@prisma
 import { VALID_AP_COURSES, getUnitsForCourse, COURSE_REGISTRY } from "@/lib/courses";
 import { generateQuestion } from "@/lib/ai";
 import { isPremiumRestrictionEnabled, getSetting } from "@/lib/settings";
+import { rateLimit } from "@/lib/rate-limit";
 
 // Create a new practice session
 export async function POST(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
     if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+    const { allowed } = rateLimit(session.user.id, "practice:create", 20);
+    if (!allowed) {
+      return NextResponse.json({ error: "Rate limit exceeded. Please slow down." }, { status: 429 });
+    }
 
     const body = await req.json();
     const { sessionType, unit, difficulty, questionCount = 10, course = "AP_WORLD_HISTORY", questionType: requestedType } = body;
@@ -72,7 +78,15 @@ export async function POST(req: NextRequest) {
       ...(difficulty && difficulty !== "ALL" && { difficulty: difficulty as Difficulty }),
     };
 
-    let allQuestions = await prisma.question.findMany({ where: whereClause });
+    let allQuestions = await prisma.question.findMany({
+      where: whereClause,
+      select: {
+        id: true, course: true, unit: true, topic: true, subtopic: true,
+        difficulty: true, questionType: true, questionText: true,
+        stimulus: true, stimulusImageUrl: true, options: true,
+        correctAnswer: true, explanation: true,
+      },
+    });
 
     // Fetch student's mastery scores for adaptive topic targeting
     const masteryData = await prisma.masteryScore.findMany({
@@ -125,6 +139,12 @@ export async function POST(req: NextRequest) {
                 explanation: gen.explanation,
                 isAiGenerated: true,
                 isApproved: true,
+              },
+              select: {
+                id: true, course: true, unit: true, topic: true, subtopic: true,
+                difficulty: true, questionType: true, questionText: true,
+                stimulus: true, stimulusImageUrl: true, options: true,
+                correctAnswer: true, explanation: true,
               },
             })
           );

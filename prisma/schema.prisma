@@ -123,6 +123,7 @@ model Question {
   responses    StudentResponse[]
   sessionQuestions SessionQuestion[]
 
+  @@index([course, unit, difficulty, questionType])
   @@map("questions")
 }
 
@@ -144,6 +145,9 @@ model PracticeSession {
   questions SessionQuestion[]
   responses StudentResponse[]
 
+  @@index([userId, course, completedAt])
+  @@index([userId, startedAt])
+  @@index([userId, course])
   @@map("practice_sessions")
 }
 
@@ -174,6 +178,8 @@ model StudentResponse {
   question Question         @relation(fields: [questionId], references: [id])
   session  PracticeSession? @relation(fields: [sessionId], references: [id])
 
+  @@index([userId, questionId, sessionId])
+  @@index([userId, sessionId])
   @@map("student_responses")
 }
 
@@ -246,6 +252,7 @@ model TutorConversation {
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  @@index([userId, createdAt])
   @@map("tutor_conversations")
 }
 

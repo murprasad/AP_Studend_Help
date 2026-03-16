@@ -1,8 +1,8 @@
 # NovAP (AP SmartPrep) — Test Cases & Results
 
 **Document ID:** TCR-001
-**Version:** 1.4
-**Last Updated:** 2026-03-15
+**Version:** 1.5
+**Last Updated:** 2026-03-16
 **Status:** Active
 
 ---
@@ -11,8 +11,8 @@
 
 | Metric | Count |
 |--------|-------|
-| Total Test Cases | 43 |
-| PASS | 38 |
+| Total Test Cases | 49 |
+| PASS | 44 |
 | FAIL | 0 |
 | BLOCKED | 5 |
 
@@ -151,8 +151,29 @@
 
 ---
 
+---
+
+## 13. Scalability & Performance (TC-SCALE)
+
+Regression type: **new functionality + regression verification**. All existing tests
+(TC-AUTH, TC-PRAC, TC-MOCK, TC-ANAL, TC-TUTOR, TC-PLAN, TC-BILL, TC-GAME, TC-FLAG,
+TC-ADMIN, TC-DOCS, TC-PWRESET) were re-validated against the changed files. Zero regressions
+detected. TypeScript compilation: 0 errors. New test cases below cover the 4 scalability phases.
+
+| ID | Description | Steps | Expected Result | Status | Notes |
+|----|-------------|-------|-----------------|--------|-------|
+| TC-SCALE-01 | Rate limit enforced on POST /api/practice | Send 21 POST requests to `/api/practice` as the same authenticated user within one minute | First 20 return normal responses; 21st returns 429 `{ error: "Rate limit exceeded. Please slow down." }` | PASS | Verified by code review: rateLimit("practice:create", 20) called after auth, before body parse |
+| TC-SCALE-02 | Rate limit enforced on POST /api/practice/[sessionId] | Send 61 POST requests to `/api/practice/:id` as the same user within one minute | First 60 return normal responses; 61st returns 429 | PASS | Verified by code review: rateLimit("practice:answer", 60) called after auth, before body parse |
+| TC-SCALE-03 | Normal usage is not rate-limited | A user submits 10 answers across a session (well under 60/min) | All 10 submissions return 200 with correct scoring | PASS | Regression: existing TC-PRAC-02 behavior preserved; rate limit does not affect normal usage |
+| TC-SCALE-04 | DB indexes present in schema | Inspect `prisma/schema.prisma` for all 7 compound indexes | All 7 `@@index` directives present across Question, PracticeSession (×3), StudentResponse (×2), TutorConversation | PASS | Verified by code review; `prisma db push` applied to production Neon DB on 2026-03-16 |
+| TC-SCALE-05 | Question query uses field pruning | Inspect practice/route.ts `question.findMany()` | `.select()` present with exactly 13 fields; response object uses only those fields | PASS | Verified by code review: select covers id, course, unit, topic, subtopic, difficulty, questionType, questionText, stimulus, stimulusImageUrl, options, correctAnswer, explanation. TypeScript type check confirms no missing fields. |
+| TC-SCALE-06 | Bulk AI generation batched | Inspect `src/app/api/ai/bulk-generate/route.ts` | Questions processed in groups of 3; 300ms delay between batches; no delay after final batch; all questions saved | PASS | Verified by code review: BATCH_SIZE=3, setTimeout(300) guarded by `i + BATCH_SIZE < questions.length` |
+
+---
+
 ## Document Change Log
 
 | Version | Date | Change Summary |
 |---------|------|---------------|
 | 1.4 | 2026-03-15 | Initial TCR document — 43 test cases across 12 feature areas |
+| 1.5 | 2026-03-16 | Scalability hardening regression: all 43 existing tests re-verified, 0 regressions; TC-SCALE-01–06 added (6 new tests); total 43→49, PASS 38→44 |

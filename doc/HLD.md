@@ -1,8 +1,8 @@
 # NovAP (AP SmartPrep) — High Level Design
 
 **Document ID:** HLD-001
-**Version:** 1.3
-**Last Updated:** 2026-03-15
+**Version:** 1.5
+**Last Updated:** 2026-03-16
 **Status:** Active
 
 ---
@@ -96,15 +96,17 @@ No global state manager. State is kept at component level + shared via:
 
 ### 3.1 API Route Map
 
+Routes marked **[RL]** have per-user rate limiting enforced via `src/lib/rate-limit.ts`.
+
 | Route | Method | Auth | Description |
 |-------|--------|------|-------------|
 | /api/auth/register | POST | None | Create account |
 | /api/auth/verify-email | POST | None | Verify email token |
 | /api/auth/[...nextauth] | * | — | NextAuth handler |
 | /api/user | GET | User | Current user profile |
-| /api/practice | POST | User | Create practice session |
+| /api/practice | POST | User | Create practice session **[RL: 20/min]** |
 | /api/practice | GET | User | List sessions |
-| /api/practice/[id] | POST | User | Submit answer |
+| /api/practice/[id] | POST | User | Submit answer **[RL: 60/min]** |
 | /api/practice/[id] | PATCH | User | Complete session |
 | /api/ai/tutor | POST | User | Non-streaming AI chat |
 | /api/ai/tutor | GET | User | List conversations |
@@ -211,7 +213,13 @@ User ─────────────────────────
 - **User ↔ TutorConversation**: one-to-many
 - **User ↔ UserAchievement ↔ Achievement**: many-to-many with earnedAt
 
-### 4.3 Critical Constraint — No Transactions
+### 4.3 Indexes
+
+Seven compound indexes are maintained across 4 models (Question, PracticeSession,
+StudentResponse, TutorConversation). See ARCH.md §4.4 for the full index list and
+the specific queries each index covers.
+
+### 4.4 Critical Constraint — No Transactions
 
 Neon HTTP adapter does **not** support transactions. All multi-row inserts use:
 ```sql
@@ -369,3 +377,5 @@ Feature Access Request
 | 1.1 | 2026-02-14 | Added Stripe flow, new courses, admin dashboard |
 | 1.2 | 2026-03-01 | FRQ scoring flow, streaming tutor flow, premium gating |
 | 1.3 | 2026-03-15 | Course switching design, docs page design, feature flag flow |
+| 1.4 | 2026-03-15 | Password reset flow; version aligned with other docs |
+| 1.5 | 2026-03-16 | Scalability hardening: rate-limit annotation on API route map (§3.1), DB indexes section added (§4.3), critical constraint renumbered to §4.4 |

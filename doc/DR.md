@@ -1,8 +1,8 @@
 # NovAP (AP SmartPrep) — Detailed Requirements
 
 **Document ID:** DR-001
-**Version:** 1.4
-**Last Updated:** 2026-03-15
+**Version:** 1.5
+**Last Updated:** 2026-03-16
 **Status:** Active
 
 ---
@@ -96,6 +96,7 @@
 - Required: sessionType (QUICK_PRACTICE | FOCUSED_STUDY | MOCK_EXAM)
 - Optional: unit (ApUnit | "ALL"), difficulty (EASY | MEDIUM | HARD | "ALL"),
   questionCount (default 10), course (default AP_WORLD_HISTORY), questionType
+- **Rate limit**: 20 requests/minute per user — returns 429 `{ error: "Rate limit exceeded." }` on breach
 - Validates course against VALID_AP_COURSES
 - **FRQ Gate**: If `premium_feature_restriction=true` AND questionType ≠ MCQ AND
   tier ≠ PREMIUM → 403 `{ error, limitExceeded: true, upgradeUrl: "/pricing" }`
@@ -116,6 +117,7 @@
 - Creates PracticeSession (IN_PROGRESS), inserts SessionQuestions via raw SQL
 
 ### DR-PRAC-02 — Answer Submission (`POST /api/practice/[sessionId]`)
+- **Rate limit**: 60 requests/minute per user — returns 429 `{ error: "Rate limit exceeded." }` on breach
 - Required: questionId, answer, timeSpentSecs
 - MCQ scoring: case-insensitive string comparison
 - FRQ/SAQ/LEQ/DBQ/CODING scoring: AI rubric via `callAIWithCascade`
@@ -303,6 +305,7 @@
 - Input: { course, minPerUnit, dryRun }
 - Fills units below minPerUnit threshold using AI cascade
 - dryRun=true: reports what would be generated without generating
+- AI calls are batched: max 3 concurrent, 300ms pause between batches (see DR-PERF-04)
 
 ### DR-ADMIN-03 — Feature Flag Management (`GET/POST /api/admin/settings`)
 - GET: returns all SiteSetting key-value pairs
@@ -373,7 +376,55 @@ The following four documents shall be maintained and kept current:
 
 ---
 
-## 15. Document Change Log
+## 15. Performance & Scalability
+
+### DR-PERF-01 — Database Indexes
+Seven compound indexes shall be maintained in `prisma/schema.prisma` to prevent full-table
+scans on the most frequently queried columns:
+
+| Model | Index Columns | Query It Covers |
+|-------|--------------|----------------|
+| `Question` | `(course, unit, difficulty, questionType)` | Practice session question lookup |
+| `PracticeSession` | `(userId, course, completedAt)` | Analytics mastery heatmap |
+| `PracticeSession` | `(userId, startedAt)` | Daily session count for FREE tier gate |
+| `PracticeSession` | `(userId, course)` | Study plan session fetch |
+| `StudentResponse` | `(userId, questionId, sessionId)` | Duplicate-answer check on every submission |
+| `StudentResponse` | `(userId, sessionId)` | Analytics and study-plan joins |
+| `TutorConversation` | `(userId, createdAt)` | Daily AI conversation limit check (runs on every message) |
+
+### DR-PERF-02 — API Rate Limiting
+An in-process sliding-window rate limiter (`src/lib/rate-limit.ts`) shall be applied to
+high-cost API routes:
+
+| Route | Method | Limit | Rationale |
+|-------|--------|-------|-----------|
+| `/api/practice` | POST | 20 req/min/user | Each call triggers 7–9 DB queries + optional AI |
+| `/api/practice/[sessionId]` | POST | 60 req/min/user | One answer per second is ample; prevents DB DoS |
+
+- Implementation: pure JavaScript `Map<string, number[]>` with timestamp purging — no external
+  dependency, compatible with Cloudflare Workers
+- On breach: 429 `{ error: "Rate limit exceeded. Please slow down." }`
+- State is in-process; resets on worker cold start (acceptable at current scale)
+
+### DR-PERF-03 — Question Query Field Pruning
+The `question.findMany()` call in `POST /api/practice` shall use a `.select()` clause that
+fetches only the 13 columns needed to build the session response:
+`id, course, unit, topic, subtopic, difficulty, questionType, questionText, stimulus,
+stimulusImageUrl, options, correctAnswer, explanation`
+
+The same `.select()` shall be applied to `question.create()` calls in the AI auto-generation
+path so that the Prisma return type matches and no redundant columns are transferred.
+
+### DR-PERF-04 — Bulk AI Generation Throttling
+The admin bulk question generation route (`POST /api/ai/bulk-generate`) shall process AI
+calls in batches of 3 with a 300ms inter-batch pause:
+- Prevents exhausting Groq free-tier soft limit (~30 req/min)
+- Delay is NOT added after the final batch
+- All generated questions are still saved to the database
+
+---
+
+## 16. Document Change Log
 
 | Version | Date | Change Summary |
 |---------|------|---------------|
@@ -381,3 +432,5 @@ The following four documents shall be maintained and kept current:
 | 1.1 | 2026-02-14 | Stripe billing, 7 new courses, cancellation/reactivation |
 | 1.2 | 2026-03-01 | FRQ all courses, premium restriction flag, streaming tutor |
 | 1.3 | 2026-03-15 | Docs page (DR-DOCS), course switching (DR-COURSE-02/03), ai_generation_enabled gate, achievement display |
+| 1.4 | 2026-03-15 | Password reset flow (DR-AUTH-06/07); renumbered change log section to 15 |
+| 1.5 | 2026-03-16 | Scalability hardening: DR-PERF-01–04 added (indexes, rate limiting, query pruning, bulk gen batching); rate limit note added to DR-PRAC-01/02; batch note added to DR-ADMIN-02 |

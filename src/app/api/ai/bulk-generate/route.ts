@@ -34,28 +34,39 @@ export async function POST(req: NextRequest) {
       (questionType as QuestionType) || QuestionType.MCQ
     );
 
-    // Save all generated questions to DB (auto-approved for admin)
-    const saved = await Promise.all(
-      questions.map((q) =>
-        prisma.question.create({
-          data: {
-            course: (course as ApCourse) || "AP_WORLD_HISTORY",
-            unit: q.unit,
-            topic: q.topic,
-            subtopic: q.subtopic || "",
-            difficulty: q.difficulty,
-            questionType: q.questionType,
-            questionText: q.questionText,
-            stimulus: q.stimulus || null,
-            options: q.options ? JSON.stringify(q.options) : undefined,
-            correctAnswer: q.correctAnswer,
-            explanation: q.explanation,
-            isAiGenerated: true,
-            isApproved: true, // admin-generated questions are auto-approved
-          },
-        })
-      )
-    );
+    // Save all generated questions to DB in batches of 3 to avoid
+    // overwhelming Groq's free-tier rate limit (~30 req/min).
+    const BATCH_SIZE = 3;
+    const saved = [];
+    for (let i = 0; i < questions.length; i += BATCH_SIZE) {
+      const batch = questions.slice(i, i + BATCH_SIZE);
+      const results = await Promise.all(
+        batch.map((q) =>
+          prisma.question.create({
+            data: {
+              course: (course as ApCourse) || "AP_WORLD_HISTORY",
+              unit: q.unit,
+              topic: q.topic,
+              subtopic: q.subtopic || "",
+              difficulty: q.difficulty,
+              questionType: q.questionType,
+              questionText: q.questionText,
+              stimulus: q.stimulus || null,
+              options: q.options ? JSON.stringify(q.options) : undefined,
+              correctAnswer: q.correctAnswer,
+              explanation: q.explanation,
+              isAiGenerated: true,
+              isApproved: true,
+            },
+          })
+        )
+      );
+      saved.push(...results);
+      // 300ms gap between batches to stay within Groq free-tier limits
+      if (i + BATCH_SIZE < questions.length) {
+        await new Promise((r) => setTimeout(r, 300));
+      }
+    }
 
     return NextResponse.json({
       success: true,

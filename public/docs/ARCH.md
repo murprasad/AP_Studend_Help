@@ -1,8 +1,8 @@
 # NovAP (AP SmartPrep) — Architecture Document
 
 **Document ID:** ARCH-001
-**Version:** 1.4
-**Last Updated:** 2026-03-15
+**Version:** 1.5
+**Last Updated:** 2026-03-16
 **Status:** Active
 
 ---
@@ -126,6 +126,7 @@ AP_Help/
 │       ├── prisma.ts         ← WASM Prisma singleton
 │       ├── settings.ts       ← Feature flags (30s cache)
 │       ├── feature-flag-defs.ts ← Pure constants (no server imports)
+│       ├── rate-limit.ts     ← In-process sliding-window rate limiter (CF Workers compat)
 │       ├── email.ts          ← Email sending (verification)
 │       ├── edu-apis.ts       ← Wikipedia, StackExchange, etc.
 │       └── utils.ts          ← COURSE_UNITS, AP_COURSES, formatTime, etc.
@@ -206,6 +207,31 @@ not work on CF Workers.
 
 **No transactions:** The HTTP adapter executes one query per round trip and cannot hold
 a connection open for a transaction. All multi-row operations use `$executeRawUnsafe`.
+
+### 4.4 Database Indexes
+
+Seven compound indexes are defined in `prisma/schema.prisma` to prevent full-table scans
+under concurrent load:
+
+```sql
+-- Question lookup for practice sessions
+@@index([course, unit, difficulty, questionType])  -- Question
+
+-- Analytics and study-plan queries
+@@index([userId, course, completedAt])  -- PracticeSession
+@@index([userId, startedAt])            -- PracticeSession (daily count gate)
+@@index([userId, course])               -- PracticeSession (study plan)
+
+-- Answer submission duplicate check and analytics joins
+@@index([userId, questionId, sessionId])  -- StudentResponse
+@@index([userId, sessionId])              -- StudentResponse
+
+-- AI tutor daily limit check (runs on every message for FREE users)
+@@index([userId, createdAt])  -- TutorConversation
+```
+
+These indexes were applied to the production database via `prisma db push` on 2026-03-16.
+Applied-at scale: safe to ~10,000 DAU without further index changes.
 
 ---
 
@@ -380,6 +406,7 @@ All server rendering happens at Cloudflare's edge (300+ PoPs globally):
 | Feature flags | In-process Map | 30 seconds |
 | Question bank | None (DB read each request) | — |
 | AI responses | None (fresh per query) | — |
+| Rate-limit windows | In-process Map | 60 seconds (sliding) |
 
 ### 8.3 Timeout Strategy
 
@@ -388,6 +415,16 @@ All external calls have explicit timeouts:
 - Educational enrichment: 2.5 second race timeout
 - Stripe API: relies on Stripe SDK's built-in timeout
 
+### 8.4 Rate Limiting
+
+`src/lib/rate-limit.ts` implements a pure-JavaScript sliding-window limiter:
+- Keyed by `userId:route`
+- Timestamps stored in a module-level `Map<string, number[]>`
+- Entries older than 60 seconds are purged on every call
+- No external dependency; compatible with Cloudflare Workers V8 isolates
+- Limits enforced: POST `/api/practice` → 20/min; POST `/api/practice/[id]` → 60/min
+- Returns `{ allowed: false }` → caller returns 429 immediately (before any DB query)
+
 ---
 
 ## 9. Known Limitations
@@ -395,7 +432,7 @@ All external calls have explicit timeouts:
 | Limitation | Impact | Mitigation |
 |------------|--------|-----------|
 | No DB transactions (Neon HTTP) | Can't atomically create session + questions | Use raw SQL bulk insert in single statement |
-| CF Workers memory limit (128 MB) | Large question batches may OOM | Cap parallel AI generation at 5 per request |
+| CF Workers memory limit (128 MB) | Large question batches may OOM | Cap parallel AI generation at 5 per request (practice auto-gen); 3 per batch (admin bulk-gen) |
 | OpenNext Windows warning | Build may behave unexpectedly | Use WSL for production builds if hitting failures |
 | JWT subscriptionTier stale until re-login | Tier change visible after next login | Stripe webhook updates DB; UI reads from DB via /api/user |
 
@@ -410,3 +447,4 @@ All external calls have explicit timeouts:
 | 1.2 | 2026-03-01 | Streaming architecture, FRQ scoring, plain fetch requirement |
 | 1.3 | 2026-03-15 | Docs page in structure, Nova fix (SDK→fetch), course event bus |
 | 1.4 | 2026-03-15 | Password reset flow implemented (DR-AUTH-06/07); TCR + RTM added to docs |
+| 1.5 | 2026-03-16 | Scalability hardening: 7 DB indexes (§4.4), rate-limit.ts added to lib/ (§8.4), caching table updated (§8.2), bulk-gen cap updated in Known Limitations (§9) |

@@ -1,8 +1,8 @@
 # NovAP (AP SmartPrep) — Requirements Traceability Matrix
 
 **Document ID:** RTM-001
-**Version:** 1.4
-**Last Updated:** 2026-03-15
+**Version:** 1.5
+**Last Updated:** 2026-03-16
 **Status:** Active
 
 ---
@@ -19,10 +19,10 @@ traceability from stakeholder needs through implementation to test evidence.
 
 | Metric | Count | Percentage |
 |--------|-------|-----------|
-| Total Requirements | 55 | 100% |
-| Implemented | 55 | 100% |
-| Tested | 50 | 91% |
-| Blocked (needs live credentials) | 5 | 9% |
+| Total Requirements | 59 | 100% |
+| Implemented | 59 | 100% |
+| Tested | 54 | 92% |
+| Blocked (needs live credentials) | 5 | 8% |
 
 ---
 
@@ -48,7 +48,7 @@ traceability from stakeholder needs through implementation to test evidence.
 | HLR-NF-01 | API responses < 5s; AI streaming < 3s | `src/lib/ai-providers.ts` (AbortSignal.timeout), streaming endpoint | TC-TUTOR-02 | Implemented / Tested |
 | HLR-NF-02 | 99.9% uptime; graceful AI degradation | `src/lib/ai-providers.ts` (10-provider cascade), Cloudflare edge | TC-TUTOR-01 | Implemented / Tested |
 | HLR-NF-03 | Auth on all routes; bcrypt passwords; JWT secrets | `src/lib/auth.ts`, all API route auth checks | TC-AUTH-02, TC-AUTH-05 | Implemented / Tested |
-| HLR-NF-04 | Serverless horizontal scale | Cloudflare Workers + Neon serverless Postgres | — | Implemented |
+| HLR-NF-04 | Serverless horizontal scale; DB indexes; per-user rate limiting | Cloudflare Workers + Neon serverless Postgres; `prisma/schema.prisma` (indexes); `src/lib/rate-limit.ts` | TC-SCALE-01–04 | Implemented / Tested |
 | HLR-NF-05 | Single CourseConfig block per course | `src/lib/courses.ts` (COURSE_REGISTRY) | TC-PRAC-01, TC-MOCK-01 | Implemented / Tested |
 | HLR-NF-06 | Node.js + CF Workers compat; plain fetch | `src/lib/ai-providers.ts`, `src/lib/prisma.ts` (WASM) | TC-TUTOR-01 | Implemented / Tested |
 
@@ -159,6 +159,15 @@ traceability from stakeholder needs through implementation to test evidence.
 | DR-DOCS-02 | Document download as .md | `public/docs/*.md`, docs page download links | TC-DOCS-02 | Implemented / Tested |
 | DR-DOCS-03 | Print / save PDF | `src/app/(dashboard)/docs/page.tsx` (print styles + button) | TC-DOCS-03 | Implemented / Tested |
 
+### Performance & Scalability
+
+| Req ID | Requirement Summary | Implementation File(s) | Test Case(s) | Status |
+|--------|--------------------|-----------------------|-------------|--------|
+| DR-PERF-01 | 7 compound DB indexes across 4 models | `prisma/schema.prisma` | TC-SCALE-04 | Implemented / Tested |
+| DR-PERF-02 | Per-user API rate limiting (sliding window) | `src/lib/rate-limit.ts`, `src/app/api/practice/route.ts`, `src/app/api/practice/[sessionId]/route.ts` | TC-SCALE-01, TC-SCALE-02, TC-SCALE-03 | Implemented / Tested |
+| DR-PERF-03 | Question query field pruning (.select) | `src/app/api/practice/route.ts` | TC-SCALE-05 | Implemented / Tested |
+| DR-PERF-04 | Admin bulk AI generation batched 3/300ms | `src/app/api/ai/bulk-generate/route.ts` | TC-SCALE-06 | Implemented / Tested |
+
 ---
 
 ## Document Change Log
@@ -166,3 +175,4 @@ traceability from stakeholder needs through implementation to test evidence.
 | Version | Date | Change Summary |
 |---------|------|---------------|
 | 1.4 | 2026-03-15 | Initial RTM — 55 requirements traced across HLR + DR; includes DR-AUTH-06/07 (password reset) |
+| 1.5 | 2026-03-16 | Scalability hardening: DR-PERF-01–04 added (4 new requirements); HLR-NF-04 updated; coverage total 55→59; TC-SCALE-01–06 added to TCR |

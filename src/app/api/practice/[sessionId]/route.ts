@@ -6,6 +6,7 @@ import { ApUnit } from "@prisma/client";
 import { estimateApScore } from "@/lib/utils";
 import { getCourseForUnit } from "@/lib/courses";
 import { callAIWithCascade } from "@/lib/ai-providers";
+import { rateLimit } from "@/lib/rate-limit";
 
 // Submit an answer for a question in a session
 export async function POST(
@@ -15,6 +16,11 @@ export async function POST(
   try {
     const session = await getServerSession(authOptions);
     if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+    const { allowed } = rateLimit(session.user.id, "practice:answer", 60);
+    if (!allowed) {
+      return NextResponse.json({ error: "Rate limit exceeded. Please slow down." }, { status: 429 });
+    }
 
     const body = await req.json();
     const { questionId, answer, timeSpentSecs } = body;
