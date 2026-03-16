@@ -86,6 +86,12 @@ export default async function DashboardPage() {
 
   const xpProgress = getXpProgressInLevel(user?.totalXp || 0);
 
+  const earnedAchievements = await prisma.userAchievement.findMany({
+    where: { userId: session.user.id },
+    include: { achievement: true },
+    orderBy: { earnedAt: "desc" },
+  });
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -358,6 +364,33 @@ export default async function DashboardPage() {
           </CardContent>
         </Card>
       </div>
+      {/* Achievements */}
+      {earnedAchievements.length > 0 && (
+        <Card className="card-glow">
+          <CardHeader>
+            <CardTitle className="text-lg flex items-center gap-2">
+              <Trophy className="h-5 w-5 text-yellow-400" />
+              Achievements
+              <Badge variant="outline" className="text-xs font-normal ml-1">{earnedAchievements.length}</Badge>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+              {earnedAchievements.map((ua) => (
+                <div key={ua.id} className="flex items-center gap-3 p-3 rounded-lg bg-secondary/50 border border-border/20">
+                  <div className="w-9 h-9 rounded-lg bg-yellow-500/20 flex items-center justify-center flex-shrink-0 text-lg">
+                    🏆
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-xs font-semibold truncate">{ua.achievement.name}</p>
+                    <p className="text-xs text-muted-foreground">+{ua.achievement.xpReward} XP</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }

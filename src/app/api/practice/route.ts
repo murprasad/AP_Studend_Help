@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { SessionType, ApUnit, Difficulty, ApCourse, QuestionType } from "@prisma/client";
 import { VALID_AP_COURSES, getUnitsForCourse, COURSE_REGISTRY } from "@/lib/courses";
 import { generateQuestion } from "@/lib/ai";
-import { isPremiumRestrictionEnabled } from "@/lib/settings";
+import { isPremiumRestrictionEnabled, getSetting } from "@/lib/settings";
 
 // Create a new practice session
 export async function POST(req: NextRequest) {
@@ -25,7 +25,10 @@ export async function POST(req: NextRequest) {
     }
 
     const tier = session.user.subscriptionTier;
-    const premiumRestricted = await isPremiumRestrictionEnabled();
+    const [premiumRestricted, aiGenEnabled] = await Promise.all([
+      isPremiumRestrictionEnabled(),
+      getSetting("ai_generation_enabled", "true").then((v) => v === "true"),
+    ]);
 
     // Gate FRQ/SAQ/LEQ/DBQ behind Premium (only when premium restriction is enabled)
     const isFrqType = requestedType && requestedType !== "MCQ";
@@ -86,12 +89,12 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // Auto-generate AI questions when the DB bank is insufficient
+    // Auto-generate AI questions when the DB bank is insufficient (if flag enabled)
     // Cap at 5 parallel generations per request to stay within Netlify's 26s timeout.
     // Groq (Llama 3.3) typically responds in 1–3s, so 5 parallel ≈ 5s total.
     const MAX_GEN_PER_REQUEST = 5;
     let aiGenerationWarning: string | null = null;
-    if (allQuestions.length < questionCount) {
+    if (aiGenEnabled && allQuestions.length < questionCount) {
       const needed = Math.min(questionCount - allQuestions.length, MAX_GEN_PER_REQUEST);
       const courseUnitKeys = getUnitsForCourse(course as ApCourse);
       const diffs: Difficulty[] = [Difficulty.EASY, Difficulty.MEDIUM, Difficulty.HARD];
