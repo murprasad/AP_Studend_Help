@@ -3,7 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { generateBulkQuestions } from "@/lib/ai";
-import { ApUnit, Difficulty, ApCourse } from "@prisma/client";
+import { ApUnit, Difficulty, ApCourse, QuestionType } from "@prisma/client";
 
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions);
@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Admin only" }, { status: 403 });
   }
 
-  const { count = 5, unit, difficulty, course } = await req.json();
+  const { count = 5, unit, difficulty, course, questionType } = await req.json();
 
   if (count > 20) {
     return NextResponse.json({ error: "Max 20 questions per request" }, { status: 400 });
@@ -30,7 +30,8 @@ export async function POST(req: NextRequest) {
       count,
       unit as ApUnit | undefined,
       difficulty as Difficulty | undefined,
-      course as ApCourse | undefined
+      course as ApCourse | undefined,
+      (questionType as QuestionType) || QuestionType.MCQ
     );
 
     // Save all generated questions to DB (auto-approved for admin)

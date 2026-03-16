@@ -114,11 +114,11 @@ export async function runAutoPopulate(): Promise<AutoPopulateResult> {
     // Mix in FRQ/SAQ at different rates depending on course type
     // History courses: SAQ (every 3rd = ~30%)
     // STEM calculation courses: FRQ (every 5th = ~20%)
-    // Psychology: FRQ (every 5th = ~20%)
-    // CSP: MCQ only (no FRQ format on AP CSP)
+    // CSP: CODING (every 5th = ~20%)
     const histCourses = new Set(["AP_WORLD_HISTORY", "AP_US_HISTORY"]);
     const frqStemCourses = new Set(["AP_PHYSICS_1", "AP_CALCULUS_AB", "AP_CALCULUS_BC",
                                     "AP_STATISTICS", "AP_CHEMISTRY", "AP_BIOLOGY", "AP_PSYCHOLOGY"]);
+    const codingCourses = new Set(["AP_COMPUTER_SCIENCE_PRINCIPLES"]);
 
     for (let i = 0; i < queue.length; i++) {
       const { difficulty, topic } = queue[i];
@@ -128,6 +128,8 @@ export async function runAutoPopulate(): Promise<AutoPopulateResult> {
         questionType = QuestionType.SAQ;
       } else if (frqStemCourses.has(course) && i % 5 === 4) {
         questionType = QuestionType.FRQ;
+      } else if (codingCourses.has(course) && i % 5 === 4) {
+        questionType = QuestionType.CODING;
       }
       try {
         const q = await generateOneQuestion(course, unit, unitName, difficulty, topic, questionType);

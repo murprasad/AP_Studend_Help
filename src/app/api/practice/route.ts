@@ -102,7 +102,7 @@ export async function POST(req: NextRequest) {
           ? (difficulty as Difficulty)
           : diffs[i % diffs.length];
         const weakTopic = weakTopicMap.get(u) || undefined;
-        return generateQuestion(u, d, QuestionType.MCQ, weakTopic, course as ApCourse)
+        return generateQuestion(u, d, resolvedQuestionType, weakTopic, course as ApCourse)
           .then((gen) =>
             prisma.question.create({
               data: {

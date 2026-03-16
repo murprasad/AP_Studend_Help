@@ -12,7 +12,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { ApCourse, ApUnit, Difficulty, QuestionType } from "@prisma/client";
+import { ApCourse, ApUnit, Difficulty, QuestionType, Prisma } from "@prisma/client";
 import { VALID_AP_COURSES, COURSE_REGISTRY } from "@/lib/courses";
 import { COURSE_UNITS } from "@/lib/utils";
 import { buildQuestionPrompt } from "@/lib/ai";
@@ -143,11 +143,21 @@ export async function POST(req: NextRequest) {
     const keyThemes = courseConfig.units[unit]?.keyThemes ?? [];
     const queue = buildDifficultyQueue(needed, keyThemes);
 
+    const histCourses = new Set(["AP_WORLD_HISTORY", "AP_US_HISTORY"]);
+    const frqStemCourses = new Set([
+      "AP_PHYSICS_1", "AP_CALCULUS_AB", "AP_CALCULUS_BC",
+      "AP_STATISTICS", "AP_CHEMISTRY", "AP_BIOLOGY", "AP_PSYCHOLOGY",
+    ]);
+
     try {
       for (let i = 0; i < queue.length; i++) {
         const { difficulty, topic } = queue[i];
+        let questionType: QuestionType = QuestionType.MCQ;
+        if (histCourses.has(course) && i % 3 === 2) questionType = QuestionType.SAQ;
+        else if (frqStemCourses.has(course) && i % 5 === 4) questionType = QuestionType.FRQ;
+
         try {
-          const q = await generateOneQuestion(course, unit, difficulty, topic, courseConfig);
+          const q = await generateOneQuestion(course, unit, difficulty, topic, courseConfig, questionType);
           if (q) {
             await prisma.question.create({
               data: {
@@ -156,10 +166,10 @@ export async function POST(req: NextRequest) {
                 topic: q.topic,
                 subtopic: q.subtopic ?? "",
                 difficulty,
-                questionType: QuestionType.MCQ,
+                questionType,
                 questionText: q.questionText,
                 stimulus: q.stimulus ?? null,
-                options: q.options ?? null,
+                options: questionType === QuestionType.MCQ ? (q.options ?? Prisma.JsonNull) : Prisma.JsonNull,
                 correctAnswer: q.correctAnswer,
                 explanation: q.explanation,
                 isAiGenerated: true,
@@ -196,7 +206,7 @@ interface SimpleQuestion {
   subtopic: string;
   questionText: string;
   stimulus?: string;
-  options: string[];
+  options: string[] | null;
   correctAnswer: string;
   explanation: string;
 }
@@ -206,12 +216,13 @@ async function generateOneQuestion(
   unit: ApUnit,
   difficulty: Difficulty,
   topic: string | undefined,
-  courseConfig: (typeof COURSE_REGISTRY)[ApCourse]
+  courseConfig: (typeof COURSE_REGISTRY)[ApCourse],
+  questionType: QuestionType = QuestionType.MCQ
 ): Promise<SimpleQuestion | null> {
   const unitMeta = courseConfig.units[unit];
   const unitName = unitMeta?.name ?? unit;
 
-  const prompt = buildQuestionPrompt(course, unit, unitName, difficulty, QuestionType.MCQ, topic);
+  const prompt = buildQuestionPrompt(course, unit, unitName, difficulty, questionType, topic);
 
   const { callAIWithCascade } = await import("@/lib/ai-providers");
   const raw = await callAIWithCascade(prompt);
@@ -223,8 +234,11 @@ async function generateOneQuestion(
 
   const parsed = JSON.parse(jsonMatch[0]);
 
-  if (!parsed.questionText || !parsed.correctAnswer || !Array.isArray(parsed.options)) {
+  if (!parsed.questionText || !parsed.correctAnswer) {
     throw new Error("Incomplete question from AI");
+  }
+  if (questionType === QuestionType.MCQ && !Array.isArray(parsed.options)) {
+    throw new Error("Incomplete MCQ question from AI — missing options");
   }
 
   return {
@@ -232,8 +246,10 @@ async function generateOneQuestion(
     subtopic: parsed.subtopic ?? "",
     questionText: parsed.questionText,
     stimulus: parsed.stimulus && parsed.stimulus !== "null" ? parsed.stimulus : undefined,
-    options: parsed.options,
-    correctAnswer: parsed.correctAnswer.trim().charAt(0).toUpperCase(),
+    options: questionType === QuestionType.MCQ ? parsed.options : null,
+    correctAnswer: questionType === QuestionType.MCQ
+      ? parsed.correctAnswer.trim().charAt(0).toUpperCase()
+      : parsed.correctAnswer.trim(),
     explanation: parsed.explanation ?? "",
   };
 }

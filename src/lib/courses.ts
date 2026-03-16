@@ -390,6 +390,25 @@ When referencing resources:
           '"explanation":"Step-by-step trace or concept explanation referencing AP CSP big ideas"}',
         estimatedMinutes: 3,
       },
+      CODING: {
+        generationPrompt:
+          "Generate an AP Computer Science Principles written response question. " +
+          "Alternate between these sub-types: " +
+          "(1) ALGORITHM EXPLANATION — provide an AP pseudocode procedure and ask the student to explain what it does, " +
+          "trace through it step-by-step, or describe its purpose and efficiency; " +
+          "(2) CODE REASONING — provide a pseudocode segment with a bug or design choice and ask the student " +
+          "to identify the error, correct it, or justify the design; " +
+          "(3) PROGRAM DESIGN — ask the student to write or describe an algorithm in AP pseudocode to solve a " +
+          "specific problem (e.g., search a list, compute a result, process user input). " +
+          "Use AP CSP pseudocode syntax: DISPLAY, INPUT, IF/ELSE IF/ELSE, REPEAT TIMES, REPEAT UNTIL, " +
+          "FOR EACH item IN list, PROCEDURE name(params), RETURN. Always include a pseudocode stimulus.",
+        responseFormat:
+          '{"topic":"...","subtopic":"...","questionText":"written response question with clear task description",' +
+          '"stimulus":"AP pseudocode block enclosed in ``` fences — required for all sub-types",' +
+          '"correctAnswer":"Model response: complete accurate explanation or pseudocode solution hitting all rubric points",' +
+          '"explanation":"Scoring rubric: 4 points total. Point 1: [criterion]. Point 2: [criterion]. Point 3: [criterion]. Point 4: [criterion]. Common errors: [list 2-3 mistakes students make]."}',
+        estimatedMinutes: 20,
+      },
     },
 
     units: {
@@ -501,6 +520,27 @@ When referencing resources:
           '"explanation":"Physics law/principle, equation used, step-by-step solution if calculation"}',
         estimatedMinutes: 3,
       },
+      FRQ: {
+        generationPrompt:
+          "Generate an AP Physics 1 Free Response Question (FRQ). " +
+          "Alternate between these official College Board FRQ types: " +
+          "(1) EXPERIMENTAL DESIGN — ask students to design an experiment: identify independent/dependent variables, " +
+          "describe a procedure, identify sources of uncertainty, and predict results; " +
+          "(2) QUANTITATIVE/QUALITATIVE TRANSLATION — provide a scenario with given values, ask students to " +
+          "derive or calculate a quantity (show equation, substitution, final answer with units), then explain " +
+          "qualitatively what would change if a variable were different; " +
+          "(3) CONCEPTUAL EXPLANATION — ask students to explain a physics principle or phenomenon in terms of " +
+          "fundamental concepts (no calculation required), predict how a system behaves, or compare two scenarios. " +
+          "Structure the question with clearly labeled parts: (a), (b), and optionally (c). " +
+          "Algebra-based only (no calculus). Use Mermaid xychart-beta or a markdown data table as stimulus when relevant.",
+        responseFormat:
+          '{"topic":"...","subtopic":"...","questionText":"Full multi-part FRQ with (a)(b)[(c)] clearly labeled",' +
+          '"stimulus":"scenario / ```mermaid xychart-beta...``` graph / markdown data table, or null",' +
+          '"correctAnswer":"(a) [complete model answer with equation+substitution+units where applicable] (b) [model response] (c) [model response if part c exists]",' +
+          '"explanation":"Scoring rubric: (a) X pts — [state what each point requires]. (b) X pts — [state what each point requires]. Total: 10 pts. Common errors: [2-3 typical student mistakes]."}',
+        estimatedMinutes: 15,
+      },
+      // SAQ kept for backward compatibility with questions already in the database
       SAQ: {
         generationPrompt:
           "Generate an AP Physics 1 Free Response Question (FRQ) with THREE labeled parts: (a), (b), (c). " +

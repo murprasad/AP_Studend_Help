@@ -9,7 +9,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 import { useCourse } from "@/hooks/use-course";
 import { COURSE_UNITS, AP_COURSES, formatTime } from "@/lib/utils";
-import { ApUnit } from "@prisma/client";
+import { ApCourse, ApUnit } from "@prisma/client";
+import { getCourseConfig } from "@/lib/courses";
 import { Textarea } from "@/components/ui/textarea";
 import {
   Zap,
@@ -73,7 +74,7 @@ export default function PracticePage() {
   const [selectedDifficulty, setSelectedDifficulty] = useState<string>("ALL");
   const [questionCount, setQuestionCount] = useState(10);
   const [sessionType, setSessionType] = useState("QUICK_PRACTICE");
-  const [questionType, setQuestionType] = useState<"MCQ" | "SAQ" | "LEQ" | "DBQ">("MCQ");
+  const [questionType, setQuestionType] = useState<"MCQ" | "FRQ" | "SAQ" | "LEQ" | "DBQ">("MCQ");
 
   useEffect(() => {
     fetch("/api/user")
@@ -372,15 +373,46 @@ export default function PracticePage() {
               <MarkdownContent content={currentQuestion.questionText} useMermaid={false} />
             </div>
 
-            {/* Open-ended response for SAQ/DBQ/LEQ */}
+            {/* Open-ended response for FRQ/SAQ/DBQ/LEQ/CODING */}
             {parsedOptions.length === 0 && !feedback && (
               <div className="space-y-3">
-                <p className="text-sm text-muted-foreground">Write your response below, then submit to see the scoring rubric.</p>
+                {currentQuestion.questionType === "CODING" ? (
+                  <div className="space-y-1">
+                    <p className="text-sm text-muted-foreground">Write your algorithm explanation or pseudocode solution below using AP CSP syntax.</p>
+                    <p className="text-xs text-indigo-400">Tip: Use AP pseudocode — DISPLAY, IF/ELSE, REPEAT TIMES, FOR EACH, PROCEDURE, RETURN</p>
+                  </div>
+                ) : currentQuestion.questionType === "DBQ" ? (
+                  <div className="space-y-1">
+                    <p className="text-sm text-muted-foreground">Write your Document-Based Question essay below. Include: thesis, contextualization, document analysis, and outside evidence.</p>
+                    <p className="text-xs text-indigo-400">Tip: Aim for ~5–7 paragraphs. Reference specific documents and explain their purpose (HAPP).</p>
+                  </div>
+                ) : currentQuestion.questionType === "LEQ" ? (
+                  <div className="space-y-1">
+                    <p className="text-sm text-muted-foreground">Write your Long Essay Question response below. Include: thesis, contextualization, evidence, and historical reasoning skill.</p>
+                    <p className="text-xs text-indigo-400">Tip: Aim for ~3–5 paragraphs. Use specific historical evidence to support your argument.</p>
+                  </div>
+                ) : currentQuestion.questionType === "SAQ" ? (
+                  <div className="space-y-1">
+                    <p className="text-sm text-muted-foreground">Write your Short Answer response below. Answer each labeled part (a), (b), (c) in 3–6 sentences each.</p>
+                    <p className="text-xs text-indigo-400">Tip: No thesis required. Be direct, use specific evidence, and address every part.</p>
+                  </div>
+                ) : (
+                  <div className="space-y-1">
+                    <p className="text-sm text-muted-foreground">Write your Free Response answer below. Show all work — equations, substitutions, units, and reasoning.</p>
+                    <p className="text-xs text-indigo-400">Tip: Label each part (a), (b), (c). Partial credit is awarded — show your reasoning even if unsure.</p>
+                  </div>
+                )}
                 <Textarea
                   value={openEndedAnswer}
                   onChange={(e) => setOpenEndedAnswer(e.target.value)}
-                  placeholder="Write your answer here..."
-                  className="min-h-[120px] text-sm"
+                  placeholder={
+                    currentQuestion.questionType === "CODING"
+                      ? "Write your explanation or pseudocode here...\n\nExample:\nPROCEDURE findMax(nums)\n  max ← nums[1]\n  FOR EACH n IN nums\n    IF n > max THEN max ← n\n  RETURN max"
+                      : currentQuestion.questionType === "DBQ" || currentQuestion.questionType === "LEQ"
+                      ? "Introduction / Thesis:\n\nBody Paragraph 1:\n\nBody Paragraph 2:\n\nConclusion:"
+                      : "Part (a):\n\nPart (b):\n\nPart (c) (if applicable):"
+                  }
+                  className="min-h-[160px] text-sm font-mono leading-relaxed"
                   disabled={isSubmitting}
                 />
                 <Button
@@ -541,62 +573,62 @@ export default function PracticePage() {
           <p className="text-xs text-muted-foreground">20 MCQs · Free</p>
         </button>
 
-        {/* FRQ Practice — Premium only */}
-        {(course === "AP_WORLD_HISTORY" || course === "AP_PHYSICS_1") && (
-          <button
-            onClick={() => {
-              if (subscriptionTier !== "PREMIUM") return;
-              setSessionType("FOCUSED_STUDY");
-              setQuestionCount(5);
-              setQuestionType("SAQ");
-            }}
-            className={`p-4 rounded-xl border text-left transition-all col-span-2 ${
-              questionType !== "MCQ"
-                ? "border-indigo-500 bg-indigo-500/10"
-                : subscriptionTier !== "PREMIUM"
-                ? "border-border/40 opacity-70 cursor-not-allowed"
-                : "border-border/40 hover:bg-accent"
-            }`}
-          >
-            <div className="flex items-start justify-between">
-              <div>
-                <div className="flex items-center gap-2 mb-2">
-                  <PenLine className="h-5 w-5 text-purple-400" />
-                  {subscriptionTier !== "PREMIUM" && <Lock className="h-4 w-4 text-muted-foreground" />}
+        {/* FRQ Practice — Premium only, shown for any course that has FRQ/SAQ/DBQ/LEQ */}
+        {(() => {
+          const courseConfig = getCourseConfig(course as ApCourse);
+          const availableFrqTypes = Object.keys(courseConfig?.questionTypeFormats ?? {}).filter((t) => t !== "MCQ");
+          if (availableFrqTypes.length === 0) return null;
+          const defaultFrqType = availableFrqTypes[0] as "FRQ" | "SAQ" | "LEQ" | "DBQ";
+          const typeLabel = availableFrqTypes.join(" · ");
+          return (
+            <button
+              onClick={() => {
+                if (subscriptionTier !== "PREMIUM") return;
+                setSessionType("FOCUSED_STUDY");
+                setQuestionCount(5);
+                setQuestionType(defaultFrqType);
+              }}
+              className={`p-4 rounded-xl border text-left transition-all col-span-2 ${
+                questionType !== "MCQ"
+                  ? "border-indigo-500 bg-indigo-500/10"
+                  : subscriptionTier !== "PREMIUM"
+                  ? "border-border/40 opacity-70 cursor-not-allowed"
+                  : "border-border/40 hover:bg-accent"
+              }`}
+            >
+              <div className="flex items-start justify-between">
+                <div>
+                  <div className="flex items-center gap-2 mb-2">
+                    <PenLine className="h-5 w-5 text-purple-400" />
+                    {subscriptionTier !== "PREMIUM" && <Lock className="h-4 w-4 text-muted-foreground" />}
+                  </div>
+                  <p className="font-medium">FRQ Practice</p>
+                  <p className="text-xs text-muted-foreground">{typeLabel} — AI-scored rubric feedback</p>
                 </div>
-                <p className="font-medium">FRQ Practice</p>
-                <p className="text-xs text-muted-foreground">
-                  {course === "AP_PHYSICS_1"
-                    ? "Free Response (FRQ) — AI-scored rubric feedback"
-                    : "SAQ · LEQ · DBQ — AI-scored rubric feedback"}
-                </p>
+                {subscriptionTier !== "PREMIUM" && (
+                  <Badge className="bg-indigo-600 text-white text-xs">Premium</Badge>
+                )}
               </div>
-              {subscriptionTier !== "PREMIUM" && (
-                <Badge className="bg-indigo-600 text-white text-xs">Premium</Badge>
+              {questionType !== "MCQ" && (
+                <div className="flex gap-2 mt-3" onClick={(e) => e.stopPropagation()}>
+                  {availableFrqTypes.map((t) => (
+                    <button
+                      key={t}
+                      onClick={() => setQuestionType(t as "FRQ" | "SAQ" | "LEQ" | "DBQ")}
+                      className={`px-3 py-1 rounded-lg text-xs font-medium border transition-all ${
+                        questionType === t
+                          ? "border-purple-500 bg-purple-500/20 text-purple-300"
+                          : "border-border/40 hover:bg-accent"
+                      }`}
+                    >
+                      {t}
+                    </button>
+                  ))}
+                </div>
               )}
-            </div>
-            {questionType !== "MCQ" && (
-              <div className="flex gap-2 mt-3" onClick={(e) => e.stopPropagation()}>
-                {(course === "AP_PHYSICS_1"
-                  ? (["SAQ"] as const)
-                  : (["SAQ", "LEQ", "DBQ"] as const)
-                ).map((t) => (
-                  <button
-                    key={t}
-                    onClick={() => setQuestionType(t)}
-                    className={`px-3 py-1 rounded-lg text-xs font-medium border transition-all ${
-                      questionType === t
-                        ? "border-purple-500 bg-purple-500/20 text-purple-300"
-                        : "border-border/40 hover:bg-accent"
-                    }`}
-                  >
-                    {t}
-                  </button>
-                ))}
-              </div>
-            )}
-          </button>
-        )}
+            </button>
+          );
+        })()}
       </div>
 
       {/* Session limit reached */}
@@ -622,7 +654,7 @@ export default function PracticePage() {
       )}
 
       {/* Premium upsell for FRQ */}
-      {subscriptionTier === "FREE" && course === "AP_WORLD_HISTORY" && !sessionLimitReached && (
+      {subscriptionTier === "FREE" && Object.keys(getCourseConfig(course as ApCourse)?.questionTypeFormats ?? {}).some((t) => t !== "MCQ") && !sessionLimitReached && (
         <Card className="card-glow border-purple-500/20 bg-purple-500/5">
           <CardContent className="p-4 flex items-center gap-3">
             <Crown className="h-5 w-5 text-purple-400 flex-shrink-0" />

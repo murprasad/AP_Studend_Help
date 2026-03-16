@@ -56,9 +56,18 @@ export async function POST(
     let frqScore: { pointsEarned: number; totalPoints: number; feedback: string; modelAnswer: string } | undefined;
 
     if (isOpenEnded && answer.trim().length > 10) {
-      // AI rubric scoring for FRQ answers
+      // AI rubric scoring for FRQ answers — prompt varies by question type
+      const qtypeLabel = question.questionType === "CODING"
+        ? "AP Computer Science Principles written response"
+        : question.questionType === "DBQ"
+        ? "AP Document-Based Question essay"
+        : question.questionType === "LEQ"
+        ? "AP Long Essay Question"
+        : question.questionType === "SAQ"
+        ? "AP Short Answer Question"
+        : "AP Free Response Question";
       try {
-        const scoringPrompt = `You are an AP exam grader. Score this student response using the official rubric criteria.
+        const scoringPrompt = `You are an AP exam grader scoring a ${qtypeLabel}. Score this student response using the official rubric criteria.
 
 Question: ${question.questionText}
 Model Answer / Rubric: ${question.correctAnswer}
@@ -66,7 +75,7 @@ ${question.explanation ? `Scoring Guidance: ${question.explanation}` : ""}
 Student Response: ${answer}
 
 Return ONLY valid JSON (no markdown, no extra text):
-{"pointsEarned": 2, "totalPoints": 3, "feedback": "specific feedback referencing what was correct and what was missing", "modelAnswer": "ideal 2-3 sentence response hitting all rubric points"}`;
+{"pointsEarned": 2, "totalPoints": 4, "feedback": "specific rubric-based feedback referencing exactly what was correct and what key points were missing", "modelAnswer": "complete model response earning full credit, following AP exam conventions for this question type"}`;
 
         const raw = await callAIWithCascade(scoringPrompt);
         const jsonMatch = raw.match(/\{[\s\S]*\}/);

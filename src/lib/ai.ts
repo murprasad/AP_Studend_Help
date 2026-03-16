@@ -234,7 +234,8 @@ export async function generateBulkQuestions(
   count: number = 5,
   unit?: ApUnit,
   difficulty?: Difficulty,
-  course?: ApCourse
+  course?: ApCourse,
+  questionType: QuestionType = QuestionType.MCQ
 ): Promise<GeneratedQuestion[]> {
   const targetCourse: ApCourse = course || "AP_WORLD_HISTORY";
   const courseUnitKeys = Object.keys(COURSE_UNITS[targetCourse]) as ApUnit[];
@@ -253,7 +254,7 @@ export async function generateBulkQuestions(
     const randomTopic = keyThemes[Math.floor(Math.random() * keyThemes.length)];
 
     try {
-      const q = await generateQuestion(randomUnit, randomDiff, QuestionType.MCQ, randomTopic, targetCourse);
+      const q = await generateQuestion(randomUnit, randomDiff, questionType, randomTopic, targetCourse);
       questions.push(q);
     } catch (error) {
       console.error(`Failed to generate question ${i + 1}:`, error);
