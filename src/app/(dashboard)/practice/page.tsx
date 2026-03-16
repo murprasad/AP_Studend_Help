@@ -68,7 +68,7 @@ export default function PracticePage() {
   const [course] = useCourse();
 
   const [subscriptionTier, setSubscriptionTier] = useState<"FREE" | "PREMIUM" | null>(null);
-  const [premiumRestricted, setPremiumRestricted] = useState(true);
+  const [premiumRestricted, setPremiumRestricted] = useState(false);
   const [sessionLimitReached, setSessionLimitReached] = useState(false);
 
   const [mode, setMode] = useState<PracticeMode>("select");
@@ -85,7 +85,7 @@ export default function PracticePage() {
     ])
       .then(([userData, flagsData]) => {
         setSubscriptionTier(userData.user?.subscriptionTier ?? "FREE");
-        setPremiumRestricted(flagsData.premiumRestrictionEnabled ?? true);
+        setPremiumRestricted(flagsData.premiumRestrictionEnabled ?? false);
       })
       .catch(() => setSubscriptionTier("FREE"));
   }, []);
