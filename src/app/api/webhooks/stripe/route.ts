@@ -78,11 +78,17 @@ export async function POST(req: NextRequest) {
       case "customer.subscription.updated": {
         const subscription = event.data.object as Stripe.Subscription;
         const isActive = subscription.status === "active" || subscription.status === "trialing";
+        const isCanceling = isActive && subscription.cancel_at_period_end;
         const userId = await getUserIdFromSubscription(stripe, subscription);
         if (userId) {
           await prisma.user.update({
             where: { id: userId },
-            data: { subscriptionTier: isActive ? "PREMIUM" : "FREE" },
+            data: {
+              subscriptionTier: isActive ? "PREMIUM" : "FREE",
+              stripeSubscriptionId: subscription.id,
+              stripeCurrentPeriodEnd: new Date(subscription.current_period_end * 1000),
+              stripeSubscriptionStatus: isCanceling ? "canceling" : subscription.status,
+            },
           });
         }
         break;
@@ -94,7 +100,11 @@ export async function POST(req: NextRequest) {
         if (userId) {
           await prisma.user.update({
             where: { id: userId },
-            data: { subscriptionTier: "FREE" },
+            data: {
+              subscriptionTier: "FREE",
+              stripeSubscriptionStatus: "canceled",
+              stripeCurrentPeriodEnd: null,
+            },
           });
         }
         break;

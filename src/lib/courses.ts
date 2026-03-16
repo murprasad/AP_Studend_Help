@@ -687,6 +687,897 @@ When referencing resources:
     stimulusQualityGuidance: "GOOD: (a) Markdown table of given values with units for calculation questions; (b) Mermaid xychart-beta block with realistic data for graph questions; (c) Specific scenario description with numbers (e.g., '5 kg block on frictionless surface connected by string to 2 kg hanging mass'). AVOID: Generic 'an object moves' setups without numbers or vague diagram descriptions.",
     skillCodes: ["Modeling", "Mathematical Routines", "Scientific Questioning", "Experimental Design", "Data Analysis", "Argumentation"],
   },
+
+  // ── AP Calculus AB ────────────────────────────────────────────────────────
+  AP_CALCULUS_AB: {
+    name: "AP Calculus AB",
+    shortName: "AP Calculus AB",
+    examSecsPerQuestion: 96, // 45 MCQ in 105 min (Section I), plus FRQ
+    enrichWithEduAPIs: false,
+    openStaxSubject: undefined,
+    units: {
+      CALC_AB_1_LIMITS: {
+        name: "Unit 1: Limits and Continuity",
+        keyThemes: ["limit definition", "one-sided limits", "continuity", "intermediate value theorem", "squeeze theorem"],
+        khanUrl: "https://www.khanacademy.org/math/ap-calculus-ab/ab-limits-new",
+        openStaxUrl: "https://openstax.org/books/calculus-volume-1/pages/2-introduction",
+        ck12Url: "https://www.ck12.org/calculus/",
+      },
+      CALC_AB_2_DIFFERENTIATION_BASICS: {
+        name: "Unit 2: Differentiation — Definition and Fundamental Properties",
+        keyThemes: ["derivative definition", "power rule", "product rule", "quotient rule", "chain rule basics"],
+        khanUrl: "https://www.khanacademy.org/math/ap-calculus-ab/ab-differentiation-1-new",
+        openStaxUrl: "https://openstax.org/books/calculus-volume-1/pages/3-introduction",
+      },
+      CALC_AB_3_DIFFERENTIATION_COMPOSITE: {
+        name: "Unit 3: Differentiation — Composite, Implicit, and Inverse Functions",
+        keyThemes: ["chain rule", "implicit differentiation", "inverse trig derivatives", "logarithmic differentiation"],
+        khanUrl: "https://www.khanacademy.org/math/ap-calculus-ab/ab-differentiation-2-new",
+        openStaxUrl: "https://openstax.org/books/calculus-volume-1/pages/3-6-the-chain-rule",
+      },
+      CALC_AB_4_CONTEXTUAL_APPLICATIONS: {
+        name: "Unit 4: Contextual Applications of Differentiation",
+        keyThemes: ["related rates", "linearization", "L'Hôpital's rule", "motion along a line"],
+        khanUrl: "https://www.khanacademy.org/math/ap-calculus-ab/ab-diff-contextual-applications-new",
+        openStaxUrl: "https://openstax.org/books/calculus-volume-1/pages/4-introduction",
+      },
+      CALC_AB_5_ANALYTICAL_APPLICATIONS: {
+        name: "Unit 5: Analytical Applications of Differentiation",
+        keyThemes: ["mean value theorem", "increasing/decreasing", "concavity", "optimization", "curve sketching"],
+        khanUrl: "https://www.khanacademy.org/math/ap-calculus-ab/ab-diff-analytical-applications-new",
+        openStaxUrl: "https://openstax.org/books/calculus-volume-1/pages/4-3-maxima-and-minima",
+      },
+      CALC_AB_6_INTEGRATION: {
+        name: "Unit 6: Integration and Accumulation of Change",
+        keyThemes: ["Riemann sums", "definite integral", "fundamental theorem of calculus", "u-substitution", "antiderivatives"],
+        khanUrl: "https://www.khanacademy.org/math/ap-calculus-ab/ab-integration-new",
+        openStaxUrl: "https://openstax.org/books/calculus-volume-1/pages/5-introduction",
+      },
+      CALC_AB_7_DIFFERENTIAL_EQUATIONS: {
+        name: "Unit 7: Differential Equations",
+        keyThemes: ["slope fields", "separation of variables", "exponential growth and decay", "logistic model"],
+        khanUrl: "https://www.khanacademy.org/math/ap-calculus-ab/ab-differential-equations-new",
+        openStaxUrl: "https://openstax.org/books/calculus-volume-2/pages/4-introduction",
+      },
+      CALC_AB_8_APPLICATIONS_INTEGRATION: {
+        name: "Unit 8: Applications of Integration",
+        keyThemes: ["area between curves", "volume of solids", "average value", "motion and accumulation"],
+        khanUrl: "https://www.khanacademy.org/math/ap-calculus-ab/ab-applications-of-integration-new",
+        openStaxUrl: "https://openstax.org/books/calculus-volume-1/pages/6-introduction",
+      },
+    },
+    suggestedTutorQuestions: [
+      "What is the formal definition of a derivative?",
+      "How do I use the chain rule for composite functions?",
+      "When can I apply L'Hôpital's rule?",
+      "How do I set up a related rates problem?",
+      "What does the fundamental theorem of calculus state?",
+      "How do I find the area between two curves?",
+    ],
+    curriculumContext: `AP Calculus AB covers:
+- Unit 1: Limits and Continuity — limit laws, one-sided limits, IVT, squeeze theorem
+- Unit 2: Differentiation Basics — power, product, quotient rules
+- Unit 3: Differentiation Advanced — chain rule, implicit, inverse trig
+- Unit 4: Contextual Applications — related rates, L'Hôpital, motion
+- Unit 5: Analytical Applications — MVT, optimization, curve sketching
+- Unit 6: Integration — Riemann sums, FTC, u-substitution
+- Unit 7: Differential Equations — slope fields, separation of variables
+- Unit 8: Applications of Integration — area, volume, average value
+
+AP Exam: Section I — 45 MCQ (105 min). Section II — 6 FRQ (90 min).
+Mathematical Practices: Implementing Mathematical Processes, Connecting Representations, Justification, Communication.`,
+    tutorResources: `
+- MIT OpenCourseWare 18.01SC (ocw.mit.edu): Single Variable Calculus — complete free course
+- Khan Academy AP Calculus AB: Free videos and practice for every topic
+- Paul's Online Math Notes (tutorial.math.lamar.edu): Excellent worked examples
+- OpenStax Calculus Volume 1 (openstax.org): Free peer-reviewed textbook
+- College Board AP Calculus AB: Official practice exams and FRQ scoring`,
+    examAlignmentNotes: `AP Exam alignment:
+- Algebra-only reasoning; no limit theorems beyond L'Hôpital
+- Difficulty EASY = single formula application; MEDIUM = multi-step problem; HARD = proof/justification or applied optimization
+- Include Riemann sum, graph-reading, and "justify your reasoning" questions`,
+    stimulusRequirement: "Include a graph description, equation, or data table as stimulus where appropriate for calculation or analysis questions",
+    stimulusDescription: "graph description, equation, or data table (null if not needed)",
+    explanationGuidance: "referencing the relevant calculus theorem or rule with step-by-step algebra",
+    collegeBoardLinks: [
+      { label: "AP Calculus AB Course Overview", url: "https://apcentral.collegeboard.org/courses/ap-calculus-ab" },
+      { label: "Course & Exam Description (CED)", url: "https://apcentral.collegeboard.org/media/pdf/ap-calculus-ab-and-bc-course-and-exam-description.pdf" },
+      { label: "Past FRQ Questions", url: "https://apcentral.collegeboard.org/courses/ap-calculus-ab/exam/past-exam-questions" },
+    ],
+    difficultyRubric: {
+      EASY: "Single-rule application or limit evaluation. Straightforward substitution. 65%+ correct.",
+      MEDIUM: "2–3 step problem: e.g., apply chain rule then integrate, or set up and solve related rates. 40–55% correct.",
+      HARD: "Requires justification, epsilon-delta reasoning, multi-part FRQ, or synthesis across two units. 25–40% correct.",
+    },
+    distractorTaxonomy: "(1) CHAIN RULE TRAP — differentiates outer function only, forgets inner derivative; (2) SIGN/CONSTANT TRAP — drops negative sign or constant of integration; (3) THEOREM MISAPPLICATION — applies FTC or MVT when conditions aren't met.",
+    stimulusQualityGuidance: "GOOD: (a) Graph of f(x) described with labeled intercepts and extrema; (b) Table of x and f(x) values for Riemann sum; (c) Equation like f(x)=3x²sin(x) for differentiation. AVOID: Vague 'a function' without specifics.",
+    skillCodes: ["Implementing Mathematical Processes", "Connecting Representations", "Justification", "Communication"],
+    questionTypeFormats: {
+      FRQ: {
+        generationPrompt:
+          "Generate a College Board AP Calculus AB Free Response Question (FRQ). " +
+          "The FRQ must have 2–4 labeled parts (a), (b), (c), (d). " +
+          "Include a graph, table, or equation as stimulus. " +
+          "Test skills: derivatives, integrals, analysis of functions, or applied problems. " +
+          "Each part should require 3–8 steps to solve.",
+        responseFormat:
+          '{"topic":"...", "subtopic":"...", "questionText":"Full FRQ with parts (a)-(d)", ' +
+          '"stimulus":"graph description or equation", "correctAnswer":"Complete solution for all parts with work shown", ' +
+          '"explanation":"Step-by-step solutions for each part with point breakdown (9 points total)"}',
+        estimatedMinutes: 15,
+      },
+    },
+  },
+
+  // ── AP Calculus BC ────────────────────────────────────────────────────────
+  AP_CALCULUS_BC: {
+    name: "AP Calculus BC",
+    shortName: "AP Calculus BC",
+    examSecsPerQuestion: 96,
+    enrichWithEduAPIs: false,
+    openStaxSubject: undefined,
+    units: {
+      CALC_BC_1_LIMITS: {
+        name: "Unit 1: Limits and Continuity",
+        keyThemes: ["limit definition", "continuity", "IVT", "squeeze theorem"],
+        khanUrl: "https://www.khanacademy.org/math/ap-calculus-bc/bc-limits-new",
+        openStaxUrl: "https://openstax.org/books/calculus-volume-1/pages/2-introduction",
+      },
+      CALC_BC_2_DIFFERENTIATION_BASICS: {
+        name: "Unit 2: Differentiation — Definition and Fundamental Properties",
+        keyThemes: ["power rule", "product rule", "quotient rule"],
+        khanUrl: "https://www.khanacademy.org/math/ap-calculus-bc/bc-differentiation-1-new",
+        openStaxUrl: "https://openstax.org/books/calculus-volume-1/pages/3-introduction",
+      },
+      CALC_BC_3_DIFFERENTIATION_COMPOSITE: {
+        name: "Unit 3: Differentiation — Composite, Implicit, and Inverse Functions",
+        keyThemes: ["chain rule", "implicit differentiation", "inverse trig"],
+        khanUrl: "https://www.khanacademy.org/math/ap-calculus-bc/bc-differentiation-2-new",
+        openStaxUrl: "https://openstax.org/books/calculus-volume-1/pages/3-6-the-chain-rule",
+      },
+      CALC_BC_4_CONTEXTUAL_APPLICATIONS: {
+        name: "Unit 4: Contextual Applications of Differentiation",
+        keyThemes: ["related rates", "linearization", "L'Hôpital's rule"],
+        khanUrl: "https://www.khanacademy.org/math/ap-calculus-bc/bc-diff-contextual-applications-new",
+        openStaxUrl: "https://openstax.org/books/calculus-volume-1/pages/4-introduction",
+      },
+      CALC_BC_5_ANALYTICAL_APPLICATIONS: {
+        name: "Unit 5: Analytical Applications of Differentiation",
+        keyThemes: ["MVT", "optimization", "curve sketching", "concavity"],
+        khanUrl: "https://www.khanacademy.org/math/ap-calculus-bc/bc-diff-analytical-applications-new",
+      },
+      CALC_BC_6_INTEGRATION: {
+        name: "Unit 6: Integration and Accumulation of Change",
+        keyThemes: ["FTC", "u-substitution", "Riemann sums", "integration by parts"],
+        khanUrl: "https://www.khanacademy.org/math/ap-calculus-bc/bc-integration-new",
+        openStaxUrl: "https://openstax.org/books/calculus-volume-1/pages/5-introduction",
+      },
+      CALC_BC_7_DIFFERENTIAL_EQUATIONS: {
+        name: "Unit 7: Differential Equations",
+        keyThemes: ["slope fields", "Euler's method", "separation of variables", "logistic model"],
+        khanUrl: "https://www.khanacademy.org/math/ap-calculus-bc/bc-differential-equations-new",
+      },
+      CALC_BC_8_APPLICATIONS_INTEGRATION: {
+        name: "Unit 8: Applications of Integration",
+        keyThemes: ["area", "volume", "arc length", "accumulation"],
+        khanUrl: "https://www.khanacademy.org/math/ap-calculus-bc/bc-applications-of-integration-new",
+      },
+      CALC_BC_9_PARAMETRIC_POLAR_VECTORS: {
+        name: "Unit 9: Parametric Equations, Polar Coordinates, and Vector-Valued Functions",
+        keyThemes: ["parametric derivatives", "polar area", "vectors", "arc length in parametric form"],
+        khanUrl: "https://www.khanacademy.org/math/ap-calculus-bc/bc-advanced-functions-new",
+        openStaxUrl: "https://openstax.org/books/calculus-volume-2/pages/7-introduction",
+      },
+      CALC_BC_10_INFINITE_SEQUENCES_SERIES: {
+        name: "Unit 10: Infinite Sequences and Series",
+        keyThemes: ["convergence tests", "Taylor series", "Maclaurin series", "radius of convergence", "power series"],
+        khanUrl: "https://www.khanacademy.org/math/ap-calculus-bc/bc-series-new",
+        openStaxUrl: "https://openstax.org/books/calculus-volume-2/pages/5-introduction",
+      },
+    },
+    suggestedTutorQuestions: [
+      "How do I test a series for convergence?",
+      "What is the difference between Maclaurin and Taylor series?",
+      "How do I find derivatives of parametric equations?",
+      "When should I use integration by parts?",
+      "How do I find the area enclosed by a polar curve?",
+      "What is Euler's method and when is it used?",
+    ],
+    curriculumContext: `AP Calculus BC covers all of Calculus AB plus:
+- Unit 9: Parametric, Polar, and Vector-Valued Functions
+- Unit 10: Infinite Sequences and Series (convergence, Taylor/Maclaurin series)
+Additional BC topics within Units 1–8: integration by parts, partial fractions, arc length, Euler's method, logistic growth.
+
+AP Exam: Section I — 45 MCQ (105 min). Section II — 6 FRQ (90 min).`,
+    tutorResources: `
+- MIT OpenCourseWare 18.01SC and 18.02 (ocw.mit.edu): Complete calculus sequences
+- Khan Academy AP Calculus BC: Free videos for all units including series
+- Paul's Online Math Notes: Comprehensive series convergence reference
+- OpenStax Calculus Volume 1 & 2 (openstax.org): Free textbooks`,
+    examAlignmentNotes: `AP Exam alignment:
+- Includes all AB topics plus series, parametric, polar
+- HARD questions often involve series convergence, error bounds, or Taylor polynomial approximations`,
+    stimulusRequirement: "Include a graph, equation, or table as stimulus for calculation questions",
+    stimulusDescription: "graph description, equation, or partial sums table (null if not needed)",
+    explanationGuidance: "referencing the calculus theorem, convergence test, or integration technique with full work",
+    collegeBoardLinks: [
+      { label: "AP Calculus BC Course Overview", url: "https://apcentral.collegeboard.org/courses/ap-calculus-bc" },
+      { label: "Past FRQ Questions", url: "https://apcentral.collegeboard.org/courses/ap-calculus-bc/exam/past-exam-questions" },
+    ],
+    difficultyRubric: {
+      EASY: "Single-concept recall from AB content or direct ratio/root test. 65%+ correct.",
+      MEDIUM: "Multi-step: parametric derivative, polar integration, or alternating series error bound. 40–55% correct.",
+      HARD: "Taylor polynomial error analysis, radius of convergence proof, or multi-concept FRQ. 25–40% correct.",
+    },
+    distractorTaxonomy: "(1) AB/BC CONFUSION TRAP — applies AB technique to BC-only scenario; (2) CONVERGENCE CONDITION TRAP — forgets to check absolute value or boundary; (3) NOTATION TRAP — confuses σ and Σ or misreads vector component.",
+    stimulusQualityGuidance: "GOOD: Partial sums table for series questions; graph of parametric curve with labeled t-values; explicit f(x) for Taylor series expansion. AVOID: Generic 'a series' without terms.",
+    skillCodes: ["Implementing Mathematical Processes", "Connecting Representations", "Justification", "Communication"],
+    questionTypeFormats: {
+      FRQ: {
+        generationPrompt:
+          "Generate a College Board AP Calculus BC Free Response Question (FRQ). " +
+          "Include a BC-specific topic (series, parametric, polar, or Euler's method). " +
+          "Provide 2–4 labeled parts (a)–(d) with stimulus (equation, table, or graph description). " +
+          "Test skills that go beyond AB: convergence, error bounds, or vector functions.",
+        responseFormat:
+          '{"topic":"...", "subtopic":"...", "questionText":"Full FRQ", ' +
+          '"stimulus":"equation or graph", "correctAnswer":"Complete solutions", ' +
+          '"explanation":"Step-by-step with point totals"}',
+        estimatedMinutes: 15,
+      },
+    },
+  },
+
+  // ── AP Statistics ─────────────────────────────────────────────────────────
+  AP_STATISTICS: {
+    name: "AP Statistics",
+    shortName: "AP Statistics",
+    examSecsPerQuestion: 90, // 40 MCQ in 90 min
+    enrichWithEduAPIs: false,
+    openStaxSubject: undefined,
+    units: {
+      STATS_1_EXPLORING_DATA: {
+        name: "Unit 1: Exploring One-Variable Data",
+        keyThemes: ["distributions", "center and spread", "boxplots", "histograms", "z-scores", "normal distribution"],
+        khanUrl: "https://www.khanacademy.org/math/ap-statistics/quantitative-data-ap",
+        openStaxUrl: "https://openstax.org/books/introductory-statistics/pages/1-introduction",
+      },
+      STATS_2_MODELING_DATA: {
+        name: "Unit 2: Exploring Two-Variable Data",
+        keyThemes: ["scatterplots", "correlation", "least-squares regression", "residuals", "influential points"],
+        khanUrl: "https://www.khanacademy.org/math/ap-statistics/bivariate-data-ap",
+        openStaxUrl: "https://openstax.org/books/introductory-statistics/pages/12-introduction",
+      },
+      STATS_3_COLLECTING_DATA: {
+        name: "Unit 3: Collecting Data",
+        keyThemes: ["sampling methods", "observational vs experimental", "randomization", "bias", "blocking"],
+        khanUrl: "https://www.khanacademy.org/math/ap-statistics/gathering-data-ap",
+        openStaxUrl: "https://openstax.org/books/introductory-statistics/pages/1-2-data-sampling-and-variation-in-data-and-sampling",
+      },
+      STATS_4_PROBABILITY: {
+        name: "Unit 4: Probability, Random Variables, and Probability Distributions",
+        keyThemes: ["addition/multiplication rules", "conditional probability", "discrete distributions", "geometric and binomial"],
+        khanUrl: "https://www.khanacademy.org/math/ap-statistics/probability-ap",
+        openStaxUrl: "https://openstax.org/books/introductory-statistics/pages/4-introduction",
+      },
+      STATS_5_SAMPLING_DISTRIBUTIONS: {
+        name: "Unit 5: Sampling Distributions",
+        keyThemes: ["central limit theorem", "sampling distribution of x̄", "sampling distribution of p̂", "standard error"],
+        khanUrl: "https://www.khanacademy.org/math/ap-statistics/sampling-distribution-ap",
+        openStaxUrl: "https://openstax.org/books/introductory-statistics/pages/7-introduction",
+      },
+      STATS_6_INFERENCE_PROPORTIONS: {
+        name: "Unit 6: Inference for Categorical Data — Proportions",
+        keyThemes: ["one-sample z-test", "two-sample z-test", "confidence intervals for proportions", "p-values"],
+        khanUrl: "https://www.khanacademy.org/math/ap-statistics/two-sample-inference",
+        openStaxUrl: "https://openstax.org/books/introductory-statistics/pages/8-introduction",
+      },
+      STATS_7_INFERENCE_MEANS: {
+        name: "Unit 7: Inference for Quantitative Data — Means",
+        keyThemes: ["t-distribution", "one-sample t-test", "two-sample t-test", "paired t-test", "confidence intervals"],
+        khanUrl: "https://www.khanacademy.org/math/ap-statistics/xfb5d8e68:inference-quantitative-univariate",
+        openStaxUrl: "https://openstax.org/books/introductory-statistics/pages/9-introduction",
+      },
+      STATS_8_CHI_SQUARE: {
+        name: "Unit 8: Inference for Categorical Data — Chi-Square",
+        keyThemes: ["goodness of fit", "test for homogeneity", "test for independence", "expected counts"],
+        khanUrl: "https://www.khanacademy.org/math/ap-statistics/chi-square-tests",
+        openStaxUrl: "https://openstax.org/books/introductory-statistics/pages/11-introduction",
+      },
+      STATS_9_INFERENCE_SLOPES: {
+        name: "Unit 9: Inference for Quantitative Data — Slopes",
+        keyThemes: ["t-test for slope", "confidence interval for slope", "conditions for inference in regression"],
+        khanUrl: "https://www.khanacademy.org/math/ap-statistics/inference-slope-ap",
+        openStaxUrl: "https://openstax.org/books/introductory-statistics/pages/12-4-testing-the-significance-of-the-correlation-coefficient",
+      },
+    },
+    suggestedTutorQuestions: [
+      "What is the difference between a parameter and a statistic?",
+      "How do I interpret a p-value?",
+      "When should I use a t-test vs z-test?",
+      "What conditions must be checked for a chi-square test?",
+      "How do I interpret residuals in a regression model?",
+      "What does the central limit theorem say?",
+    ],
+    curriculumContext: `AP Statistics covers:
+- Unit 1: One-Variable Data — distributions, normal, z-scores
+- Unit 2: Two-Variable Data — regression, correlation, residuals
+- Unit 3: Collecting Data — sampling, experiments, bias
+- Unit 4: Probability — rules, distributions, binomial, geometric
+- Unit 5: Sampling Distributions — CLT, standard error
+- Unit 6–9: Inference — proportions, means, chi-square, regression slopes
+
+AP Exam: Section I — 40 MCQ (90 min). Section II — 6 FRQ (90 min) including 1 investigative task.`,
+    tutorResources: `
+- Khan Academy AP Statistics: Complete free course with exercises
+- OpenStax Introductory Statistics (openstax.org): Free peer-reviewed textbook
+- College Board AP Statistics: Official practice exams and FRQ
+- StatTrek (stattrek.com): Statistical tables and worked examples`,
+    examAlignmentNotes: `AP Exam alignment:
+- Always state hypotheses formally (H₀ and Hₐ)
+- Check conditions before every inference procedure
+- HARD questions involve multi-step investigative tasks or choosing the correct procedure`,
+    stimulusRequirement: "Include a table of data, output from a statistical analysis, or a study description as stimulus",
+    stimulusDescription: "data table, computer output, or study description (null if not needed)",
+    explanationGuidance: "referencing the correct statistical procedure, conditions, and interpretation in context",
+    collegeBoardLinks: [
+      { label: "AP Statistics Course Overview", url: "https://apcentral.collegeboard.org/courses/ap-statistics" },
+      { label: "Past FRQ Questions", url: "https://apcentral.collegeboard.org/courses/ap-statistics/exam/past-exam-questions" },
+    ],
+    difficultyRubric: {
+      EASY: "Read a graph, identify a distribution, or recall a definition. 65%+ correct.",
+      MEDIUM: "Multi-step inference: state hypotheses, check conditions, calculate, conclude. 40–55% correct.",
+      HARD: "Choose the correct test, justify assumptions, or interpret simulation output. 25–40% correct.",
+    },
+    distractorTaxonomy: "(1) DIRECTION TRAP — one-tailed vs two-tailed confusion; (2) CONDITION SKIP TRAP — performs test without checking normality or independence; (3) INTERPRETATION TRAP — misinterprets confidence interval or p-value.",
+    stimulusQualityGuidance: "GOOD: Computer regression output with coefficients and SE; two-way table of counts; dotplot with labeled scale. AVOID: Generic 'a study found' without data.",
+    skillCodes: ["Selecting Statistical Methods", "Data Analysis", "Using Probability and Simulation", "Statistical Argumentation"],
+    questionTypeFormats: {
+      FRQ: {
+        generationPrompt:
+          "Generate a College Board AP Statistics Free Response Question. " +
+          "Include a study description, data table, or computer output as stimulus. " +
+          "Provide 2–4 labeled parts covering hypothesis testing, confidence intervals, or regression. " +
+          "Require students to check conditions, perform calculations, and interpret results in context.",
+        responseFormat:
+          '{"topic":"...", "subtopic":"...", "questionText":"Full FRQ with parts", ' +
+          '"stimulus":"data table or output", "correctAnswer":"Complete solution with H₀/Hₐ, conditions, work, conclusion", ' +
+          '"explanation":"Point-by-point scoring with correct statistical reasoning"}',
+        estimatedMinutes: 15,
+      },
+    },
+  },
+
+  // ── AP Chemistry ──────────────────────────────────────────────────────────
+  AP_CHEMISTRY: {
+    name: "AP Chemistry",
+    shortName: "AP Chemistry",
+    examSecsPerQuestion: 96, // 60 MCQ in 90 min
+    enrichWithEduAPIs: false,
+    openStaxSubject: undefined,
+    units: {
+      CHEM_1_ATOMIC_STRUCTURE: {
+        name: "Unit 1: Atomic Structure and Properties",
+        keyThemes: ["mole concept", "mass spectroscopy", "electron configuration", "periodic trends", "photoelectron spectroscopy"],
+        khanUrl: "https://www.khanacademy.org/science/ap-chemistry-beta/x2eef969c74e0d802:atomic-structure-and-properties",
+        openStaxUrl: "https://openstax.org/books/chemistry-2e/pages/2-introduction",
+        phetUrl: "https://phet.colorado.edu/en/simulation/build-an-atom",
+      },
+      CHEM_2_MOLECULAR_BONDING: {
+        name: "Unit 2: Molecular and Ionic Compound Structure and Properties",
+        keyThemes: ["Lewis structures", "VSEPR theory", "bond types", "hybridization", "resonance"],
+        khanUrl: "https://www.khanacademy.org/science/ap-chemistry-beta/x2eef969c74e0d802:molecular-and-ionic-compound-structure-and-properties",
+        openStaxUrl: "https://openstax.org/books/chemistry-2e/pages/7-introduction",
+      },
+      CHEM_3_INTERMOLECULAR_FORCES: {
+        name: "Unit 3: Intermolecular Forces and Properties",
+        keyThemes: ["IMFs", "London dispersion", "hydrogen bonding", "polarity", "solubility", "colligative properties"],
+        khanUrl: "https://www.khanacademy.org/science/ap-chemistry-beta/x2eef969c74e0d802:intermolecular-forces-and-properties",
+        openStaxUrl: "https://openstax.org/books/chemistry-2e/pages/10-introduction",
+      },
+      CHEM_4_CHEMICAL_REACTIONS: {
+        name: "Unit 4: Chemical Reactions",
+        keyThemes: ["stoichiometry", "reaction types", "net ionic equations", "precipitation", "acid-base neutralization", "redox"],
+        khanUrl: "https://www.khanacademy.org/science/ap-chemistry-beta/x2eef969c74e0d802:chemical-reactions",
+        openStaxUrl: "https://openstax.org/books/chemistry-2e/pages/4-introduction",
+      },
+      CHEM_5_KINETICS: {
+        name: "Unit 5: Kinetics",
+        keyThemes: ["rate law", "integrated rate laws", "activation energy", "Arrhenius equation", "reaction mechanisms", "catalysis"],
+        khanUrl: "https://www.khanacademy.org/science/ap-chemistry-beta/x2eef969c74e0d802:kinetics",
+        openStaxUrl: "https://openstax.org/books/chemistry-2e/pages/12-introduction",
+      },
+      CHEM_6_THERMODYNAMICS: {
+        name: "Unit 6: Thermodynamics",
+        keyThemes: ["enthalpy", "Hess's law", "bond enthalpies", "entropy", "Gibbs free energy", "spontaneity"],
+        khanUrl: "https://www.khanacademy.org/science/ap-chemistry-beta/x2eef969c74e0d802:thermodynamics",
+        openStaxUrl: "https://openstax.org/books/chemistry-2e/pages/5-introduction",
+      },
+      CHEM_7_EQUILIBRIUM: {
+        name: "Unit 7: Equilibrium",
+        keyThemes: ["K expression", "Q vs K", "Le Chatelier's principle", "Kp and Kc", "ICE tables"],
+        khanUrl: "https://www.khanacademy.org/science/ap-chemistry-beta/x2eef969c74e0d802:equilibrium",
+        openStaxUrl: "https://openstax.org/books/chemistry-2e/pages/13-introduction",
+      },
+      CHEM_8_ACIDS_BASES: {
+        name: "Unit 8: Acids and Bases",
+        keyThemes: ["Brønsted-Lowry", "Ka and Kb", "buffer solutions", "Henderson-Hasselbalch", "titration curves", "pKa"],
+        khanUrl: "https://www.khanacademy.org/science/ap-chemistry-beta/x2eef969c74e0d802:acids-and-bases",
+        openStaxUrl: "https://openstax.org/books/chemistry-2e/pages/14-introduction",
+      },
+      CHEM_9_ELECTROCHEMISTRY: {
+        name: "Unit 9: Applications of Thermodynamics",
+        keyThemes: ["electrochemical cells", "standard reduction potentials", "Nernst equation", "electrolysis", "cell potential"],
+        khanUrl: "https://www.khanacademy.org/science/ap-chemistry-beta/x2eef969c74e0d802:applications-of-thermodynamics",
+        openStaxUrl: "https://openstax.org/books/chemistry-2e/pages/17-introduction",
+        phetUrl: "https://phet.colorado.edu/en/simulation/circuit-construction-kit-dc",
+      },
+    },
+    suggestedTutorQuestions: [
+      "How do I draw a Lewis structure with formal charges?",
+      "What is Le Chatelier's principle and how do I apply it?",
+      "How do I determine reaction order from experimental data?",
+      "What is the difference between ΔH and ΔG?",
+      "How do I set up an ICE table for equilibrium?",
+      "How do I calculate the pH of a buffer solution?",
+    ],
+    curriculumContext: `AP Chemistry covers:
+- Unit 1: Atomic Structure — mole concept, electron config, periodic trends
+- Unit 2: Bonding — Lewis structures, VSEPR, hybridization
+- Unit 3: IMFs — polarity, solubility, colligative properties
+- Unit 4: Chemical Reactions — stoichiometry, redox, precipitation
+- Unit 5: Kinetics — rate laws, Arrhenius, mechanisms
+- Unit 6: Thermodynamics — enthalpy, entropy, Gibbs free energy
+- Unit 7: Equilibrium — K expressions, Le Chatelier, ICE tables
+- Unit 8: Acids & Bases — Ka/Kb, buffers, titrations
+- Unit 9: Electrochemistry — cell potential, Nernst, electrolysis
+
+AP Exam: Section I — 60 MCQ (90 min). Section II — 7 FRQ (105 min).
+Science Practices: Models, Math/Calculation, Experimental Design, Data Analysis, Argumentation.`,
+    tutorResources: `
+- Khan Academy AP Chemistry: Complete free course
+- OpenStax Chemistry 2e (openstax.org): Free peer-reviewed textbook
+- PhET Simulations (phet.colorado.edu): Acid-Base Solutions, Build an Atom, Reactions
+- College Board AP Chemistry: Official practice exams and FRQ scoring guidelines`,
+    examAlignmentNotes: `AP Exam alignment:
+- Include stoichiometry calculations, equilibrium expressions, and titration curve interpretation
+- HARD questions often require multi-step reasoning: combine thermodynamics + equilibrium, or kinetics + mechanism analysis`,
+    stimulusRequirement: "Include molecular diagrams, reaction equations, data tables, or experimental setup descriptions as stimulus",
+    stimulusDescription: "reaction equation, data table, molecular diagram, or experimental scenario",
+    explanationGuidance: "referencing the relevant chemistry principle with correct equations, units, and significant figures",
+    collegeBoardLinks: [
+      { label: "AP Chemistry Course Overview", url: "https://apcentral.collegeboard.org/courses/ap-chemistry" },
+      { label: "Past FRQ Questions", url: "https://apcentral.collegeboard.org/courses/ap-chemistry/exam/past-exam-questions" },
+    ],
+    difficultyRubric: {
+      EASY: "Recall definition, identify compound type, or balance equation. 65%+ correct.",
+      MEDIUM: "Multi-step: stoichiometry with limiting reagent, or ICE table calculation. 40–55% correct.",
+      HARD: "Synthesis across two units, experimental design critique, or mechanistic analysis. 25–40% correct.",
+    },
+    distractorTaxonomy: "(1) SIGNIFICANT FIGURES TRAP — correct setup but wrong rounding; (2) EQUILIBRIUM DIRECTION TRAP — Q vs K confusion or Le Chatelier opposite effect; (3) UNIT TRAP — uses g instead of mol or forgets to convert pressure units.",
+    stimulusQualityGuidance: "GOOD: Kinetics data table (concentration vs time); titration curve with labeled equivalence point; molecular diagram with partial charges. AVOID: Generic 'an experiment was done' without measurements.",
+    skillCodes: ["Models and Representations", "Question and Method", "Representing Data and Phenomena", "Model Analysis", "Mathematical Routines", "Argumentation"],
+    questionTypeFormats: {
+      FRQ: {
+        generationPrompt:
+          "Generate a College Board AP Chemistry Free Response Question. " +
+          "Include a reaction equation, data table, or molecular structure as stimulus. " +
+          "Provide 3–5 labeled parts testing stoichiometry, thermodynamics, kinetics, equilibrium, or electrochemistry. " +
+          "Require calculations, explanations, and predictions with justification.",
+        responseFormat:
+          '{"topic":"...", "subtopic":"...", "questionText":"Full FRQ with parts", ' +
+          '"stimulus":"equation or data table", "correctAnswer":"Complete solutions with units and sig figs", ' +
+          '"explanation":"Step-by-step with point allocation"}',
+        estimatedMinutes: 15,
+      },
+    },
+  },
+
+  // ── AP Biology ────────────────────────────────────────────────────────────
+  AP_BIOLOGY: {
+    name: "AP Biology",
+    shortName: "AP Biology",
+    examSecsPerQuestion: 90, // 60 MCQ in 90 min
+    enrichWithEduAPIs: false,
+    openStaxSubject: undefined,
+    units: {
+      BIO_1_CHEMISTRY_OF_LIFE: {
+        name: "Unit 1: Chemistry of Life",
+        keyThemes: ["water properties", "macromolecules", "functional groups", "enzymes", "activation energy"],
+        khanUrl: "https://www.khanacademy.org/science/ap-biology/chemistry-of-life",
+        openStaxUrl: "https://openstax.org/books/biology-2e/pages/2-introduction",
+      },
+      BIO_2_CELL_STRUCTURE_FUNCTION: {
+        name: "Unit 2: Cell Structure and Function",
+        keyThemes: ["prokaryotes vs eukaryotes", "cell organelles", "membrane transport", "osmosis", "endocytosis"],
+        khanUrl: "https://www.khanacademy.org/science/ap-biology/cell-structure-and-function",
+        openStaxUrl: "https://openstax.org/books/biology-2e/pages/4-introduction",
+        phetUrl: "https://phet.colorado.edu/en/simulation/membrane-channels",
+      },
+      BIO_3_CELLULAR_ENERGETICS: {
+        name: "Unit 3: Cellular Energetics",
+        keyThemes: ["photosynthesis", "cellular respiration", "ATP synthesis", "glycolysis", "Krebs cycle", "electron transport chain"],
+        khanUrl: "https://www.khanacademy.org/science/ap-biology/cellular-energetics",
+        openStaxUrl: "https://openstax.org/books/biology-2e/pages/7-introduction",
+        phetUrl: "https://phet.colorado.edu/en/simulation/photosynthesis",
+      },
+      BIO_4_CELL_COMMUNICATION: {
+        name: "Unit 4: Cell Communication and Cell Cycle",
+        keyThemes: ["signal transduction", "cell cycle", "mitosis", "apoptosis", "cancer", "feedback loops"],
+        khanUrl: "https://www.khanacademy.org/science/ap-biology/cell-communication-and-cell-cycle",
+        openStaxUrl: "https://openstax.org/books/biology-2e/pages/11-introduction",
+      },
+      BIO_5_HEREDITY: {
+        name: "Unit 5: Heredity",
+        keyThemes: ["Mendelian genetics", "meiosis", "chromosomal inheritance", "non-Mendelian genetics", "chi-square analysis"],
+        khanUrl: "https://www.khanacademy.org/science/ap-biology/heredity",
+        openStaxUrl: "https://openstax.org/books/biology-2e/pages/12-introduction",
+      },
+      BIO_6_GENE_EXPRESSION: {
+        name: "Unit 6: Gene Expression and Regulation",
+        keyThemes: ["DNA replication", "transcription", "translation", "mutations", "gene regulation", "biotechnology"],
+        khanUrl: "https://www.khanacademy.org/science/ap-biology/gene-expression-and-regulation",
+        openStaxUrl: "https://openstax.org/books/biology-2e/pages/16-introduction",
+      },
+      BIO_7_NATURAL_SELECTION: {
+        name: "Unit 7: Natural Selection",
+        keyThemes: ["natural selection", "Hardy-Weinberg", "speciation", "phylogenetics", "evidence of evolution"],
+        khanUrl: "https://www.khanacademy.org/science/ap-biology/natural-selection",
+        openStaxUrl: "https://openstax.org/books/biology-2e/pages/18-introduction",
+      },
+      BIO_8_ECOLOGY: {
+        name: "Unit 8: Ecology",
+        keyThemes: ["population growth", "carrying capacity", "community ecology", "energy flow", "biogeochemical cycles", "biomes"],
+        khanUrl: "https://www.khanacademy.org/science/ap-biology/ecology",
+        openStaxUrl: "https://openstax.org/books/biology-2e/pages/45-introduction",
+      },
+    },
+    suggestedTutorQuestions: [
+      "How does the electron transport chain produce ATP?",
+      "What is the difference between transcription and translation?",
+      "How does Hardy-Weinberg equilibrium work?",
+      "What is signal transduction and why does it matter?",
+      "How do I set up a chi-square test for genetic ratios?",
+      "What factors affect population growth?",
+    ],
+    curriculumContext: `AP Biology covers:
+- Unit 1: Chemistry of Life — macromolecules, enzymes, water
+- Unit 2: Cell Structure — organelles, membranes, transport
+- Unit 3: Cellular Energetics — photosynthesis, respiration, ATP
+- Unit 4: Cell Communication — signal transduction, cell cycle, mitosis
+- Unit 5: Heredity — Mendelian genetics, meiosis, chromosomes
+- Unit 6: Gene Expression — DNA → RNA → protein, regulation, biotech
+- Unit 7: Natural Selection — evolution, Hardy-Weinberg, phylogenetics
+- Unit 8: Ecology — populations, communities, energy flow, cycles
+
+AP Exam: Section I — 60 MCQ (90 min). Section II — 6 FRQ (90 min).
+Science Practices: Models, Quantitative Skills, Experimental Design, Data Analysis, Argumentation.`,
+    tutorResources: `
+- Khan Academy AP Biology: Complete free course with all units
+- OpenStax Biology 2e (openstax.org): Free peer-reviewed textbook
+- PhET Simulations: Natural Selection, Membrane Channels, Photosynthesis
+- Bozeman Science (YouTube): Outstanding AP Biology concept videos
+- College Board AP Biology: Official practice exams and FRQ scoring`,
+    examAlignmentNotes: `AP Exam alignment:
+- Include data interpretation, experimental design critique, and mathematical reasoning (Hardy-Weinberg, population growth equations)
+- HARD questions require multi-unit synthesis: combine evolution + genetics or energetics + ecology`,
+    stimulusRequirement: "Include graphs, diagrams, data tables, or experimental descriptions as stimulus",
+    stimulusDescription: "graph, molecular diagram, data table, or experimental scenario",
+    explanationGuidance: "referencing the relevant biological process, mechanism, or equation with full reasoning",
+    collegeBoardLinks: [
+      { label: "AP Biology Course Overview", url: "https://apcentral.collegeboard.org/courses/ap-biology" },
+      { label: "Past FRQ Questions", url: "https://apcentral.collegeboard.org/courses/ap-biology/exam/past-exam-questions" },
+    ],
+    difficultyRubric: {
+      EASY: "Identify organelle function, name a process, or recall a definition. 65%+ correct.",
+      MEDIUM: "Apply Mendelian ratios, read an energy diagram, or interpret a graph. 40–55% correct.",
+      HARD: "Design an experiment, calculate Hardy-Weinberg frequencies, or synthesize across units. 25–40% correct.",
+    },
+    distractorTaxonomy: "(1) PROCESS CONFUSION TRAP — transcription vs translation or mitosis vs meiosis; (2) DIRECTION TRAP — energy input vs output in metabolic pathways; (3) LEVEL TRAP — individual vs population vs community responses.",
+    stimulusQualityGuidance: "GOOD: ATP yield table for respiration; pedigree chart for inheritance; population growth curve with labeled K. AVOID: Generic 'a cell performs photosynthesis' without data.",
+    skillCodes: ["Concept Application", "Visual Representation", "Data Analysis", "Scientific Reasoning", "Mathematical Analysis"],
+    questionTypeFormats: {
+      FRQ: {
+        generationPrompt:
+          "Generate a College Board AP Biology Free Response Question. " +
+          "Include a graph, data table, or experimental design as stimulus. " +
+          "Provide 3–5 labeled parts requiring explanation of mechanisms, data analysis, prediction with justification, or experimental critique.",
+        responseFormat:
+          '{"topic":"...", "subtopic":"...", "questionText":"Full FRQ with parts", ' +
+          '"stimulus":"graph or table", "correctAnswer":"Complete answer with biological reasoning", ' +
+          '"explanation":"Point-by-point scoring rubric"}',
+        estimatedMinutes: 22,
+      },
+    },
+  },
+
+  // ── AP US History (APUSH) ─────────────────────────────────────────────────
+  AP_US_HISTORY: {
+    name: "AP US History",
+    shortName: "AP US History",
+    examSecsPerQuestion: 60, // 55 MCQ in 55 min
+    enrichWithEduAPIs: true,
+    openStaxSubject: undefined,
+    units: {
+      APUSH_1_PERIOD_1491_1607: {
+        name: "Unit 1: Period 1 — 1491–1607",
+        timePeriod: "1491–1607",
+        keyThemes: ["Native American societies", "European exploration", "Columbian Exchange", "early contact"],
+        khanUrl: "https://www.khanacademy.org/humanities/us-history/precontact-and-early-colonial-era",
+        digUrl: "https://sheg.stanford.edu/history-lessons/american-history",
+        worldHistoryUrl: "https://www.loc.gov/classroom-materials/united-states-history-primary-source-timeline/colonial-settlement-1600-1763/",
+      },
+      APUSH_2_PERIOD_1607_1754: {
+        name: "Unit 2: Period 2 — 1607–1754",
+        timePeriod: "1607–1754",
+        keyThemes: ["colonial economies", "slavery", "indentured servitude", "British mercantilism", "Great Awakening"],
+        khanUrl: "https://www.khanacademy.org/humanities/us-history/colonial-america",
+        digUrl: "https://sheg.stanford.edu/history-lessons",
+      },
+      APUSH_3_PERIOD_1754_1800: {
+        name: "Unit 3: Period 3 — 1754–1800",
+        timePeriod: "1754–1800",
+        keyThemes: ["American Revolution", "Articles of Confederation", "Constitution", "Federalism", "Early Republic"],
+        khanUrl: "https://www.khanacademy.org/humanities/us-history/road-to-revolution",
+        worldHistoryUrl: "https://www.loc.gov/classroom-materials/united-states-history-primary-source-timeline/the-american-revolution-1763-1783/",
+      },
+      APUSH_4_PERIOD_1800_1848: {
+        name: "Unit 4: Period 4 — 1800–1848",
+        timePeriod: "1800–1848",
+        keyThemes: ["Jacksonian democracy", "Market Revolution", "reform movements", "Manifest Destiny", "sectional tensions"],
+        khanUrl: "https://www.khanacademy.org/humanities/us-history/the-early-republic",
+        worldHistoryUrl: "https://www.loc.gov/classroom-materials/united-states-history-primary-source-timeline/national-expansion-and-reform-1815-1880/",
+      },
+      APUSH_5_PERIOD_1844_1877: {
+        name: "Unit 5: Period 5 — 1844–1877",
+        timePeriod: "1844–1877",
+        keyThemes: ["Civil War causes", "slavery and sectionalism", "Emancipation", "Reconstruction", "13th/14th/15th Amendments"],
+        khanUrl: "https://www.khanacademy.org/humanities/us-history/civil-war-era",
+        worldHistoryUrl: "https://www.loc.gov/classroom-materials/united-states-history-primary-source-timeline/civil-war-and-reconstruction-1861-1877/",
+      },
+      APUSH_6_PERIOD_1865_1898: {
+        name: "Unit 6: Period 6 — 1865–1898",
+        timePeriod: "1865–1898",
+        keyThemes: ["Gilded Age", "industrialization", "immigration", "Populism", "Jim Crow", "West settlement"],
+        khanUrl: "https://www.khanacademy.org/humanities/us-history/the-gilded-age",
+        worldHistoryUrl: "https://www.loc.gov/classroom-materials/united-states-history-primary-source-timeline/rise-of-industrial-america-1876-1900/",
+      },
+      APUSH_7_PERIOD_1890_1945: {
+        name: "Unit 7: Period 7 — 1890–1945",
+        timePeriod: "1890–1945",
+        keyThemes: ["Progressive Era", "World War I", "Great Depression", "New Deal", "World War II"],
+        khanUrl: "https://www.khanacademy.org/humanities/us-history/rise-to-world-power",
+        worldHistoryUrl: "https://www.loc.gov/classroom-materials/united-states-history-primary-source-timeline/progressive-era-to-new-era-1900-1929/",
+      },
+      APUSH_8_PERIOD_1945_1980: {
+        name: "Unit 8: Period 8 — 1945–1980",
+        timePeriod: "1945–1980",
+        keyThemes: ["Cold War", "Korean War", "Civil Rights Movement", "Vietnam", "Great Society", "counterculture"],
+        khanUrl: "https://www.khanacademy.org/humanities/us-history/postwar-era",
+        worldHistoryUrl: "https://www.loc.gov/classroom-materials/united-states-history-primary-source-timeline/post-world-war-ii-1945-1968/",
+      },
+      APUSH_9_PERIOD_1980_PRESENT: {
+        name: "Unit 9: Period 9 — 1980–Present",
+        timePeriod: "1980–Present",
+        keyThemes: ["Reagan Revolution", "end of Cold War", "globalization", "culture wars", "September 11", "digital age"],
+        khanUrl: "https://www.khanacademy.org/humanities/us-history/us-history-overview-2",
+        worldHistoryUrl: "https://www.loc.gov/classroom-materials/",
+      },
+    },
+    suggestedTutorQuestions: [
+      "What were the main causes of the Civil War?",
+      "How did Reconstruction succeed and fail?",
+      "What was the significance of the New Deal?",
+      "How did the Cold War shape domestic US policy?",
+      "What factors led to the Civil Rights Movement?",
+      "How do I write a strong APUSH LEQ thesis?",
+    ],
+    curriculumContext: `AP US History covers:
+- Unit 1: Native America and Early Contact (1491–1607)
+- Unit 2: Colonial America (1607–1754) — economies, slavery, religion
+- Unit 3: Revolution and Early Republic (1754–1800)
+- Unit 4: Expansion and Reform (1800–1848) — Jackson, Market Revolution, Manifest Destiny
+- Unit 5: Sectionalism and Civil War (1844–1877)
+- Unit 6: Gilded Age (1865–1898) — industrialization, immigration, Populism
+- Unit 7: Progressive Era through World War II (1890–1945)
+- Unit 8: Cold War America (1945–1980) — Civil Rights, Vietnam, Great Society
+- Unit 9: Recent US History (1980–Present) — Reagan, globalization, September 11
+
+AP Exam: Section I — 55 MCQ + 3 SAQ (95 min). Section II — 1 DBQ + 1 LEQ (100 min).
+Historical Thinking Skills: Argumentation, Causation, Comparison, CCOT, Contextualization.`,
+    tutorResources: `
+- Khan Academy AP US History: Free videos for all periods
+- Library of Congress Primary Sources (loc.gov): Documents, photographs, maps for DBQ practice
+- Digital Inquiry Group / Stanford History (sheg.stanford.edu): "Reading Like a Historian" lessons
+- Heimler's History (YouTube): Excellent review videos for all APUSH periods
+- College Board AP US History: Official practice exams and FRQ scoring guidelines`,
+    examAlignmentNotes: `AP Exam alignment:
+- MCQ questions always have a primary source stimulus (document, image, map, or chart)
+- SAQ requires 3-part responses referencing historical evidence
+- DBQ requires thesis, contextualization, 6 document analysis, and outside evidence
+- LEQ requires causation, comparison, or CCOT argument with specific evidence`,
+    stimulusRequirement: "Include a primary source excerpt, political cartoon description, map description, or data chart as stimulus",
+    stimulusDescription: "primary source excerpt, political cartoon, map, or data chart",
+    explanationGuidance: "referencing the historical context, causation, or significance with specific evidence",
+    collegeBoardLinks: [
+      { label: "AP US History Course Overview", url: "https://apcentral.collegeboard.org/courses/ap-united-states-history" },
+      { label: "Course & Exam Description", url: "https://apcentral.collegeboard.org/media/pdf/ap-us-history-course-and-exam-description.pdf" },
+      { label: "Past Exam Questions", url: "https://apcentral.collegeboard.org/courses/ap-united-states-history/exam/past-exam-questions" },
+    ],
+    difficultyRubric: {
+      EASY: "Identify a key event, person, or policy from a description. 65%+ correct.",
+      MEDIUM: "Analyze causation or context from a primary source; describe significance across periods. 40–55% correct.",
+      HARD: "Evaluate historical argument, compare perspectives, or construct essay outline with specific evidence. 25–40% correct.",
+    },
+    distractorTaxonomy: "(1) CHRONOLOGY TRAP — correct event but wrong time period; (2) CAUSATION REVERSAL TRAP — effect stated as cause; (3) SIMILAR EVENT TRAP — confuses analogous events from different periods (e.g., two reform movements).",
+    stimulusQualityGuidance: "GOOD: Actual speech excerpt or editorial cartoon description with date and author; data table of immigration statistics; map with labeled regions. AVOID: Generic 'a historian wrote' without attribution.",
+    skillCodes: ["Argumentation", "Causation", "Comparison", "Continuity and Change Over Time", "Contextualization"],
+    questionTypeFormats: {
+      SAQ: {
+        generationPrompt:
+          "Generate a College Board AP US History Short Answer Question (SAQ). " +
+          "Include a primary source, secondary source excerpt, or image description as stimulus. " +
+          "Provide THREE labeled parts (A), (B), (C): describe evidence, explain causation/effect, and connect to broader context. " +
+          "Each part requires 2–4 sentences of evidence-based writing.",
+        responseFormat:
+          '{"topic":"...", "subtopic":"...", "questionText":"Full 3-part SAQ with (A)(B)(C)", ' +
+          '"stimulus":"primary source excerpt or image description", ' +
+          '"correctAnswer":"Sample responses for all three parts with specific historical evidence", ' +
+          '"explanation":"Scoring rubric: 1 point each for A, B, C. Must use specific evidence."}',
+        estimatedMinutes: 15,
+      },
+      DBQ: {
+        generationPrompt:
+          "Generate a College Board AP US History Document-Based Question (DBQ) PROMPT (not full document set). " +
+          "Include historical context paragraph, the essay question asking students to evaluate extent of a development, " +
+          "and descriptions of 4–5 types of documents a student would analyze. " +
+          "Focus on turning points: Revolution, Civil War, Progressive Era, New Deal, or Cold War.",
+        responseFormat:
+          '{"topic":"...", "subtopic":"...", "questionText":"DBQ prompt with context + question", ' +
+          '"stimulus":"Historical context paragraph (2-3 sentences)", ' +
+          '"correctAnswer":"Sample thesis and 3-sentence argument outline referencing documents", ' +
+          '"explanation":"Rubric: thesis (1pt), context (1pt), evidence (3pt), analysis (3pt), complexity (1pt)"}',
+        estimatedMinutes: 60,
+      },
+      LEQ: {
+        generationPrompt:
+          "Generate a College Board AP US History Long Essay Question (LEQ). " +
+          "Use one of: causation, comparison, or continuity and change over time. " +
+          "Specify a clear time period and require argument supported by specific evidence. " +
+          "Choose a significant turning point or transformation in US history.",
+        responseFormat:
+          '{"topic":"...", "subtopic":"...", "questionText":"LEQ prompt with time period", ' +
+          '"stimulus":null, "correctAnswer":"Sample thesis with 3-sentence argument outline", ' +
+          '"explanation":"Rubric: thesis (1pt), context (1pt), evidence (2pt), argument (2pt), complexity (1pt)"}',
+        estimatedMinutes: 40,
+      },
+    },
+  },
+
+  // ── AP Psychology ─────────────────────────────────────────────────────────
+  AP_PSYCHOLOGY: {
+    name: "AP Psychology",
+    shortName: "AP Psychology",
+    examSecsPerQuestion: 66, // 100 MCQ in 70 min
+    enrichWithEduAPIs: false,
+    openStaxSubject: undefined,
+    units: {
+      PSYCH_1_SCIENTIFIC_FOUNDATIONS: {
+        name: "Unit 1: Scientific Foundations of Psychology",
+        keyThemes: ["history of psychology", "research methods", "statistics", "ethics", "major perspectives"],
+        khanUrl: "https://www.khanacademy.org/science/ap-psychology/history-and-approaches-to-psychology-ap",
+        openStaxUrl: "https://openstax.org/books/psychology-2e/pages/1-introduction",
+      },
+      PSYCH_2_BIOLOGICAL_BASES: {
+        name: "Unit 2: Biological Bases of Behavior",
+        keyThemes: ["neurons", "neurotransmitters", "brain structures", "hemispheres", "genetics and behavior", "nervous system"],
+        khanUrl: "https://www.khanacademy.org/science/ap-psychology/biological-bases-of-behavior-ap",
+        openStaxUrl: "https://openstax.org/books/psychology-2e/pages/3-introduction",
+      },
+      PSYCH_3_SENSATION_PERCEPTION: {
+        name: "Unit 3: Sensation and Perception",
+        keyThemes: ["signal detection", "sensory thresholds", "visual processing", "perceptual constancy", "Gestalt principles"],
+        khanUrl: "https://www.khanacademy.org/science/ap-psychology/sensation-perception-ap",
+        openStaxUrl: "https://openstax.org/books/psychology-2e/pages/5-introduction",
+      },
+      PSYCH_4_LEARNING: {
+        name: "Unit 4: Learning",
+        keyThemes: ["classical conditioning", "operant conditioning", "reinforcement schedules", "observational learning", "behavior modification"],
+        khanUrl: "https://www.khanacademy.org/science/ap-psychology/learning-ap",
+        openStaxUrl: "https://openstax.org/books/psychology-2e/pages/6-introduction",
+      },
+      PSYCH_5_COGNITION: {
+        name: "Unit 5: Cognitive Psychology",
+        keyThemes: ["memory types", "encoding and retrieval", "forgetting", "problem solving", "language", "heuristics and biases"],
+        khanUrl: "https://www.khanacademy.org/science/ap-psychology/memory-ap",
+        openStaxUrl: "https://openstax.org/books/psychology-2e/pages/8-introduction",
+      },
+      PSYCH_6_DEVELOPMENTAL: {
+        name: "Unit 6: Developmental Psychology",
+        keyThemes: ["Piaget's stages", "Erikson's stages", "attachment theory", "temperament", "adolescence", "aging"],
+        khanUrl: "https://www.khanacademy.org/science/ap-psychology/developmental-psychology-ap",
+        openStaxUrl: "https://openstax.org/books/psychology-2e/pages/9-introduction",
+      },
+      PSYCH_7_MOTIVATION_EMOTION: {
+        name: "Unit 7: Motivation, Emotion, and Personality",
+        keyThemes: ["Maslow's hierarchy", "drive reduction", "emotions", "stress", "personality theories", "trait theory"],
+        khanUrl: "https://www.khanacademy.org/science/ap-psychology/motivation-and-emotion-ap",
+        openStaxUrl: "https://openstax.org/books/psychology-2e/pages/10-introduction",
+      },
+      PSYCH_8_CLINICAL: {
+        name: "Unit 8: Clinical Psychology",
+        keyThemes: ["psychological disorders", "DSM-5", "anxiety", "mood disorders", "schizophrenia", "therapies", "biomedical treatments"],
+        khanUrl: "https://www.khanacademy.org/science/ap-psychology/psychological-disorders-ap",
+        openStaxUrl: "https://openstax.org/books/psychology-2e/pages/15-introduction",
+      },
+      PSYCH_9_SOCIAL: {
+        name: "Unit 9: Social Psychology",
+        keyThemes: ["attribution", "conformity", "obedience", "groupthink", "prejudice", "aggression", "altruism", "attitudes"],
+        khanUrl: "https://www.khanacademy.org/science/ap-psychology/social-psychology-ap",
+        openStaxUrl: "https://openstax.org/books/psychology-2e/pages/12-introduction",
+      },
+    },
+    suggestedTutorQuestions: [
+      "What is the difference between classical and operant conditioning?",
+      "How does Piaget's theory of cognitive development work?",
+      "What brain structures are associated with memory?",
+      "What is the difference between positive and negative reinforcement?",
+      "How do psychologists explain conformity?",
+      "What is the difference between the DSM-5 categories of anxiety disorders?",
+    ],
+    curriculumContext: `AP Psychology covers:
+- Unit 1: Scientific Foundations — research methods, history, statistics
+- Unit 2: Biological Bases — neurons, neurotransmitters, brain anatomy
+- Unit 3: Sensation & Perception — thresholds, visual/auditory processing
+- Unit 4: Learning — classical/operant conditioning, observational learning
+- Unit 5: Cognition — memory, problem solving, language, biases
+- Unit 6: Development — Piaget, Erikson, attachment, lifespan
+- Unit 7: Motivation & Personality — Maslow, emotions, trait theories
+- Unit 8: Clinical — DSM-5 disorders, therapies, medications
+- Unit 9: Social — attribution, conformity, obedience, prejudice
+
+AP Exam: Section I — 100 MCQ (70 min). Section II — 2 FRQ (50 min).`,
+    tutorResources: `
+- Khan Academy AP Psychology: Complete free course
+- OpenStax Psychology 2e (openstax.org): Free peer-reviewed textbook
+- Crash Course Psychology (YouTube): Engaging unit-by-unit videos
+- Simplypsychology.org: Concise summaries of studies and theories
+- College Board AP Psychology: Official practice exams and FRQ scoring`,
+    examAlignmentNotes: `AP Exam alignment:
+- MCQ tests vocabulary recall, application of theories, and research interpretation
+- FRQ requires defining terms in context AND applying concepts to a scenario
+- HARD questions apply multiple theories or analyze a described study's validity`,
+    stimulusRequirement: "Include a scenario, case study description, or experiment description as stimulus",
+    stimulusDescription: "scenario description, case study, or research study description (null for pure definition questions)",
+    explanationGuidance: "referencing the correct psychological theory, researcher, or mechanism with application to the scenario",
+    collegeBoardLinks: [
+      { label: "AP Psychology Course Overview", url: "https://apcentral.collegeboard.org/courses/ap-psychology" },
+      { label: "Past Exam Questions", url: "https://apcentral.collegeboard.org/courses/ap-psychology/exam/past-exam-questions" },
+    ],
+    difficultyRubric: {
+      EASY: "Recall a definition, identify a conditioning type, or match researcher to theory. 65%+ correct.",
+      MEDIUM: "Apply a theory to a scenario (e.g., 'which reinforcement schedule is this?'); identify disorder from symptoms. 40–55% correct.",
+      HARD: "Evaluate research design, apply multiple theories to a complex case, or design an ethical study. 25–40% correct.",
+    },
+    distractorTaxonomy: "(1) TERMINOLOGY TRAP — similar-sounding terms (negative reinforcement vs punishment); (2) RESEARCHER TRAP — correct concept but wrong theorist; (3) DIRECTION TRAP — confuses acquisition with extinction or encoding with retrieval.",
+    stimulusQualityGuidance: "GOOD: Scenario describing a specific behavior pattern needing diagnosis; experiment with IV/DV for methodology questions; case study for application of learning theories. AVOID: Abstract questions without behavioral context.",
+    skillCodes: ["Concept Understanding", "Research Methods", "Data Interpretation", "Concept Application", "Experimental Design"],
+    questionTypeFormats: {
+      FRQ: {
+        generationPrompt:
+          "Generate a College Board AP Psychology Free Response Question. " +
+          "Provide a scenario or case study as stimulus. " +
+          "Ask students to: (1) define 4–6 psychological terms in context, and (2) apply those terms to explain the scenario. " +
+          "Include concepts from 2–3 different AP Psychology units.",
+        responseFormat:
+          '{"topic":"...", "subtopic":"...", "questionText":"FRQ with scenario + required concepts", ' +
+          '"stimulus":"case study or scenario description", ' +
+          '"correctAnswer":"Definitions of all required terms + application to scenario", ' +
+          '"explanation":"1 point per correct definition in context + 1 point per correct application"}',
+        estimatedMinutes: 25,
+      },
+    },
+  },
 };
 
 // ═════════════════════════════════════════════════════════════════════════════

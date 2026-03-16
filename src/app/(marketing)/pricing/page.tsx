@@ -5,8 +5,9 @@ import { authOptions } from "@/lib/auth";
 import { isPaymentsEnabled, getStripeConfig } from "@/lib/settings";
 
 const FREE_FEATURES = [
-  "Access to all 3 AP courses",
-  "MCQ practice — 3 sessions/day",
+  "All 10 AP courses (Math, Science, Social Studies)",
+  "Unlimited MCQ practice questions",
+  "MCQ sessions — 3 sessions/day",
   "AI Tutor — 10 conversations/day",
   "Progress analytics & mastery tracking",
   "Mock exam simulator",
@@ -22,6 +23,7 @@ const PREMIUM_FEATURES = [
   "AI-personalized study plan (updates weekly)",
   "Streaming AI responses (faster answers)",
   "Advanced analytics & weak-area insights",
+  "Cancel anytime — keep access until period ends",
   "Early access to new AP courses",
   "Email support",
 ];

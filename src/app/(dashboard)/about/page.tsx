@@ -22,6 +22,11 @@ import {
   Crown,
   CheckCircle,
   XCircle,
+  FlaskConical,
+  Calculator,
+  Microscope,
+  TrendingUp,
+  Users,
 } from "lucide-react";
 
 const COURSES = [
@@ -33,6 +38,7 @@ const COURSES = [
     name: "AP World History: Modern",
     units: "9 units · 1200 CE – Present",
     desc: "Trade networks, empires, revolutions, industrialization, and globalization.",
+    category: "Social Studies",
   },
   {
     icon: Layers,
@@ -42,6 +48,7 @@ const COURSES = [
     name: "AP Computer Science Principles",
     units: "5 units · Creative Development to Impact",
     desc: "Data, algorithms, networks, and the societal impact of computing.",
+    category: "Computer Science",
   },
   {
     icon: Zap,
@@ -51,6 +58,77 @@ const COURSES = [
     name: "AP Physics 1: Algebra-Based",
     units: "10 units · Kinematics to Waves",
     desc: "Forces, energy, momentum, circuits, and mechanical waves.",
+    category: "Science",
+  },
+  {
+    icon: Calculator,
+    color: "text-violet-400",
+    bg: "bg-violet-500/10",
+    border: "border-violet-500/20",
+    name: "AP Calculus AB",
+    units: "8 units · Limits to Integration",
+    desc: "Limits, derivatives, integrals, and applications of calculus.",
+    category: "Mathematics",
+  },
+  {
+    icon: Calculator,
+    color: "text-purple-400",
+    bg: "bg-purple-500/10",
+    border: "border-purple-500/20",
+    name: "AP Calculus BC",
+    units: "10 units · Limits to Series",
+    desc: "All Calc AB topics plus parametric equations, polar coordinates, and infinite series.",
+    category: "Mathematics",
+  },
+  {
+    icon: TrendingUp,
+    color: "text-cyan-400",
+    bg: "bg-cyan-500/10",
+    border: "border-cyan-500/20",
+    name: "AP Statistics",
+    units: "9 units · Exploring Data to Inference",
+    desc: "Data collection, probability, distributions, and statistical inference.",
+    category: "Mathematics",
+  },
+  {
+    icon: FlaskConical,
+    color: "text-orange-400",
+    bg: "bg-orange-500/10",
+    border: "border-orange-500/20",
+    name: "AP Chemistry",
+    units: "9 units · Atomic Structure to Electrochemistry",
+    desc: "Atomic structure, bonding, reactions, thermodynamics, and equilibrium.",
+    category: "Science",
+  },
+  {
+    icon: Microscope,
+    color: "text-green-400",
+    bg: "bg-green-500/10",
+    border: "border-green-500/20",
+    name: "AP Biology",
+    units: "8 units · Chemistry of Life to Ecology",
+    desc: "Cell biology, heredity, gene expression, natural selection, and ecosystems.",
+    category: "Science",
+  },
+  {
+    icon: Library,
+    color: "text-red-400",
+    bg: "bg-red-500/10",
+    border: "border-red-500/20",
+    name: "AP US History (APUSH)",
+    units: "9 units · 1491 to Present",
+    desc: "Colonial America through modern US history — politics, society, economy, and culture.",
+    category: "Social Studies",
+  },
+  {
+    icon: Users,
+    color: "text-pink-400",
+    bg: "bg-pink-500/10",
+    border: "border-pink-500/20",
+    name: "AP Psychology",
+    units: "9 units · Scientific Foundations to Social Psychology",
+    desc: "Biological bases of behavior, learning, cognition, development, and mental health.",
+    category: "Social Studies",
   },
 ];
 
@@ -108,54 +186,70 @@ const EDU_SOURCES = [
     icon: Library,
     color: "text-indigo-400",
     name: "Library of Congress",
-    desc: "Primary source documents and photographs used to enrich World History answers.",
+    desc: "Primary source documents and photographs for History courses.",
     url: "https://www.loc.gov",
   },
   {
     icon: GraduationCap,
     color: "text-blue-400",
     name: "MIT OpenCourseWare",
-    desc: "Free MIT 8.01SC Classical Mechanics content for AP Physics 1 question enrichment.",
+    desc: "Free MIT course content for Physics and Calculus enrichment.",
     url: "https://ocw.mit.edu",
   },
   {
     icon: FileText,
     color: "text-violet-400",
     name: "Digital Inquiry Group (Stanford)",
-    desc: "\"Reading Like a Historian\" lessons and primary-source assessments for World History.",
+    desc: "\"Reading Like a Historian\" lessons for World History and APUSH.",
     url: "https://www.inquirygroup.org",
   },
   {
     icon: Play,
     color: "text-orange-400",
     name: "Code.org",
-    desc: "AP CSP curriculum modules and coding activities referenced in question context.",
+    desc: "AP CSP curriculum modules and coding activities.",
     url: "https://code.org/educate/csp",
   },
   {
     icon: BookOpen,
     color: "text-amber-400",
     name: "OpenStax",
-    desc: "Peer-reviewed free textbooks for World History and College Physics 2e.",
+    desc: "Peer-reviewed free textbooks: Calculus, Physics, Biology, Chemistry, Statistics, and more.",
     url: "https://openstax.org",
   },
   {
     icon: Database,
     color: "text-teal-400",
     name: "Stack Exchange (CC BY-SA)",
-    desc: "Physics and CS community Q&A used to enrich STEM question context.",
+    desc: "Physics, Chemistry, CS, and Statistics community Q&A for question enrichment.",
     url: "https://physics.stackexchange.com",
+  },
+  {
+    icon: FlaskConical,
+    color: "text-red-400",
+    name: "PhET Simulations (Colorado)",
+    desc: "Interactive simulations for Physics, Chemistry, and Biology concept visualization.",
+    url: "https://phet.colorado.edu",
+  },
+  {
+    icon: TrendingUp,
+    color: "text-cyan-400",
+    name: "Khan Academy",
+    desc: "Free video lessons and exercises for all 10 AP courses.",
+    url: "https://www.khanacademy.org",
   },
 ];
 
 const FEATURES = [
-  { icon: Zap, color: "text-yellow-400", label: "AI-Powered Practice", desc: "Unlimited MCQ questions generated on-demand by LLMs — never run out." },
+  { icon: Zap, color: "text-yellow-400", label: "AI-Powered Practice", desc: "Unlimited MCQ, FRQ, SAQ, DBQ, and LEQ questions generated on-demand — never run out." },
   { icon: BarChart3, color: "text-blue-400", label: "Mastery Tracking", desc: "Per-unit accuracy and mastery scores updated after every answer." },
-  { icon: GraduationCap, color: "text-purple-400", label: "Personalized Study Plans", desc: "AI-generated weekly plans based on your weakest units." },
-  { icon: Brain, color: "text-pink-400", label: "AI Tutor (Deep Dive)", desc: "Ask any AP question and get a detailed, curriculum-aligned explanation." },
-  { icon: Shield, color: "text-emerald-400", label: "Mock Exam Mode", desc: "Timed, full-length exam simulations matching real AP timing." },
-  { icon: Library, color: "text-indigo-400", label: "Resource Library", desc: "Curated textbooks, videos, and free tools per course and unit." },
+  { icon: GraduationCap, color: "text-purple-400", label: "Personalized Study Plans", desc: "AI-generated weekly plans based on your weakest units and exam date." },
+  { icon: Brain, color: "text-pink-400", label: "AI Tutor (Deep Dive)", desc: "Ask any AP question and get a detailed, curriculum-aligned explanation with follow-ups." },
+  { icon: Shield, color: "text-emerald-400", label: "Mock Exam Mode", desc: "Timed, full-length exam simulations matching real AP timing and format." },
+  { icon: Library, color: "text-indigo-400", label: "Resource Library", desc: "Curated textbooks, videos, and simulations per course and unit." },
 ];
+
+const COURSE_CATEGORIES = Array.from(new Set(COURSES.map((c) => c.category)));
 
 export default function AboutPage() {
   return (
@@ -167,14 +261,15 @@ export default function AboutPage() {
             <Globe className="h-6 w-6 text-indigo-400" />
           </div>
           <div>
-            <h1 className="text-3xl font-bold gradient-text">About PrepNova</h1>
+            <h1 className="text-3xl font-bold gradient-text">About NovAP</h1>
             <p className="text-muted-foreground text-sm">Free · AI-powered · Built for students</p>
           </div>
         </div>
         <p className="text-muted-foreground leading-relaxed max-w-2xl">
-          PrepNova is an AI-powered AP exam prep platform designed to give every student unlimited,
+          NovAP is an AI-powered AP exam prep platform designed to give every student unlimited,
           personalized practice — at zero cost. We combine free educational APIs, open textbooks,
           and cutting-edge language models so you never run out of quality questions or resources.
+          Now supporting <strong className="text-foreground">10 AP courses</strong> across Mathematics, Science, and Social Studies.
         </p>
       </div>
 
@@ -186,7 +281,7 @@ export default function AboutPage() {
             Our Goal
           </h2>
           <p className="text-muted-foreground leading-relaxed">
-            AP prep resources shouldn&apos;t cost hundreds of dollars. PrepNova exists to level the
+            AP prep resources shouldn&apos;t cost hundreds of dollars. NovAP exists to level the
             playing field — giving every student access to high-quality, personalized AP practice
             powered by the same AI technology used in professional educational tools, completely
             free. We believe a student&apos;s ZIP code or budget should never determine their AP score.
@@ -194,23 +289,28 @@ export default function AboutPage() {
         </CardContent>
       </Card>
 
-      {/* Courses */}
-      <div className="space-y-4">
-        <h2 className="text-xl font-bold">Supported AP Courses</h2>
-        <div className="grid md:grid-cols-3 gap-4">
-          {COURSES.map((c) => (
-            <Card key={c.name} className={`card-glow ${c.border}`}>
-              <CardContent className="p-5">
-                <div className={`w-10 h-10 rounded-lg ${c.bg} flex items-center justify-center mb-3`}>
-                  <c.icon className={`h-5 w-5 ${c.color}`} />
-                </div>
-                <p className="font-semibold text-sm leading-tight mb-1">{c.name}</p>
-                <p className={`text-xs font-medium mb-2 ${c.color}`}>{c.units}</p>
-                <p className="text-xs text-muted-foreground leading-relaxed">{c.desc}</p>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+      {/* Courses by category */}
+      <div className="space-y-6">
+        <h2 className="text-xl font-bold">Supported AP Courses ({COURSES.length} courses)</h2>
+        {COURSE_CATEGORIES.map((category) => (
+          <div key={category}>
+            <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-3">{category}</p>
+            <div className="grid md:grid-cols-3 gap-3">
+              {COURSES.filter((c) => c.category === category).map((c) => (
+                <Card key={c.name} className={`card-glow ${c.border}`}>
+                  <CardContent className="p-4">
+                    <div className={`w-9 h-9 rounded-lg ${c.bg} flex items-center justify-center mb-2.5`}>
+                      <c.icon className={`h-4 w-4 ${c.color}`} />
+                    </div>
+                    <p className="font-semibold text-sm leading-tight mb-1">{c.name}</p>
+                    <p className={`text-xs font-medium mb-1.5 ${c.color}`}>{c.units}</p>
+                    <p className="text-xs text-muted-foreground leading-relaxed">{c.desc}</p>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        ))}
       </div>
 
       {/* Features */}
@@ -234,7 +334,7 @@ export default function AboutPage() {
         <div>
           <h2 className="text-xl font-bold">How Questions Are Generated</h2>
           <p className="text-sm text-muted-foreground mt-1">
-            Full transparency — here&apos;s every AI model and data source PrepNova uses to create questions.
+            Full transparency — here&apos;s every AI model and data source NovAP uses.
           </p>
         </div>
 
@@ -254,7 +354,7 @@ export default function AboutPage() {
         </div>
 
         <p className="text-xs text-muted-foreground">
-          PrepNova uses a <strong className="text-foreground">cascade system</strong>: the first available API key is used, automatically falling back to the next provider if one fails. Pollinations.ai requires no key and is always available.
+          NovAP uses a <strong className="text-foreground">cascade system</strong>: the first available API key is used, automatically falling back to the next provider if one fails. Pollinations.ai requires no key and is always available.
         </p>
       </div>
 
@@ -263,7 +363,7 @@ export default function AboutPage() {
         <div>
           <h2 className="text-xl font-bold">Free Educational Data Sources</h2>
           <p className="text-sm text-muted-foreground mt-1">
-            These open resources are fetched in real-time to ground AI answers in accurate curriculum content.
+            These open resources ground AI answers in accurate curriculum content.
           </p>
         </div>
 
@@ -294,7 +394,7 @@ export default function AboutPage() {
         <div>
           <h2 className="text-xl font-bold">Free vs Premium</h2>
           <p className="text-sm text-muted-foreground mt-1">
-            Everything you need to ace your AP exam is free. Premium unlocks unlimited AI access and personalization.
+            Everything you need to ace your AP exam is free. Premium unlocks unlimited AI access, advanced analytics, and full question type support.
           </p>
         </div>
 
@@ -313,13 +413,16 @@ export default function AboutPage() {
 
           {/* Feature rows */}
           {[
-            { feature: "Practice Questions", free: "Unlimited", premium: "Unlimited", highlight: false },
-            { feature: "AP Courses Available", free: "All 3 courses", premium: "All 3 courses", highlight: false },
+            { feature: "AP Courses Available", free: "All 10 courses", premium: "All 10 courses", highlight: false },
+            { feature: "MCQ Practice Questions", free: "Unlimited", premium: "Unlimited", highlight: false },
+            { feature: "FRQ / SAQ Practice", free: false, premium: true, highlight: true },
+            { feature: "DBQ / LEQ (History)", free: false, premium: true, highlight: true },
+            { feature: "Practice Sessions / Day", free: "3 sessions", premium: "Unlimited", highlight: false },
             { feature: "Mock Exam Simulator", free: true, premium: true, highlight: false },
-            { feature: "Progress Analytics", free: "Basic", premium: "Advanced + weak-area insights", highlight: false },
-            { feature: "AI Tutor", free: "10 conversations/day", premium: "Unlimited", highlight: true },
+            { feature: "AI Tutor Conversations", free: "10 / day", premium: "Unlimited", highlight: true },
             { feature: "AI Streaming Responses", free: false, premium: true, highlight: true },
             { feature: "Study Plan", free: "Static template", premium: "AI-personalized, updates weekly", highlight: true },
+            { feature: "Progress Analytics", free: "Basic", premium: "Advanced + weak-area insights", highlight: false },
             { feature: "Priority AI Model", free: false, premium: true, highlight: false },
             { feature: "Achievements & XP", free: true, premium: true, highlight: false },
             { feature: "Early Access to New Courses", free: false, premium: true, highlight: false },
@@ -375,7 +478,7 @@ export default function AboutPage() {
         </CardHeader>
         <CardContent className="space-y-2">
           <p className="text-sm text-muted-foreground">
-            Have a question about PrepNova, found a bug, or want to suggest a new AP course? We&apos;d love to hear from you!
+            Have a question about NovAP, found a bug, or want to suggest a new AP course? We&apos;d love to hear from you!
           </p>
           <a
             href="mailto:murprasad@gmail.com"
@@ -392,7 +495,7 @@ export default function AboutPage() {
 
       {/* Footer note */}
       <p className="text-xs text-muted-foreground text-center pb-4">
-        PrepNova is an independent educational project. Not affiliated with College Board, AP®, or any textbook publisher.
+        NovAP is an independent educational project. Not affiliated with College Board, AP®, or any textbook publisher.
         AP® is a trademark registered by the College Board, which is not affiliated with, and does not endorse, this site.
       </p>
     </div>

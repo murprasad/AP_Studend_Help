@@ -253,9 +253,9 @@ export default function ResourcesPage() {
                                 ur.khanUrl ? { label: "Khan Academy", url: ur.khanUrl, icon: Play, color: "text-green-400" } : null,
                                 ur.ck12Url ? { label: "CK-12", url: ur.ck12Url, icon: BookOpen, color: "text-cyan-400" } : null,
                                 ur.openStaxUrl ? { label: "OpenStax", url: ur.openStaxUrl, icon: FileText, color: "text-indigo-400" } : null,
-                                // World History fallback static links when unit-level links absent
-                                !ur.khanUrl ? { label: "Khan Academy", url: "https://www.khanacademy.org/humanities/ap-world-history", icon: Play, color: "text-green-400" } : null,
-                                !ur.oerUrl && !ur.ck12Url ? { label: "PracticeQuiz", url: "https://www.practicequiz.com/ap-world-history-practice-test", icon: ClipboardCheck, color: "text-purple-400" } : null,
+                                // Generic fallback links when no unit-level links are present
+                                !ur.khanUrl ? { label: "Khan Academy", url: "https://www.khanacademy.org", icon: Play, color: "text-green-400" } : null,
+                                !ur.oerUrl && !ur.ck12Url ? { label: "PracticeQuiz", url: "https://www.practicequiz.com/ap", icon: ClipboardCheck, color: "text-purple-400" } : null,
                               ] as { label: string; url: string; icon: React.ElementType; color: string }[]
                             ).filter((x): x is NonNullable<typeof x> => x !== null).map((link) => (
                               <a

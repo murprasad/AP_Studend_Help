@@ -35,6 +35,14 @@ export const FEATURE_FLAG_DEFS = [
     default: "true",
     dangerous: false,
   },
+  {
+    key: "premium_feature_restriction",
+    label: "Premium Feature Restriction",
+    description:
+      "When ON, free users are restricted to Free-tier limits (AI conversations, sessions, etc.). When OFF (default), all users enjoy the full feature suite regardless of subscription tier — useful for testing.",
+    default: "false",
+    dangerous: false,
+  },
 ] as const;
 
 export type FeatureFlagKey = (typeof FEATURE_FLAG_DEFS)[number]["key"];

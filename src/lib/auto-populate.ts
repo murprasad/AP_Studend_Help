@@ -111,18 +111,24 @@ export async function runAutoPopulate(): Promise<AutoPopulateResult> {
     const queue = buildDifficultyQueue(needed, keyThemes);
     let added = 0;
 
-    // For AP World History (30%) and AP Physics 1 (20%), mix in SAQ to build FRQ question bank
-    const frqRatio = course === "AP_WORLD_HISTORY" ? 0.3 : course === "AP_PHYSICS_1" ? 0.2 : 0;
+    // Mix in FRQ/SAQ at different rates depending on course type
+    // History courses: SAQ (every 3rd = ~30%)
+    // STEM calculation courses: FRQ (every 5th = ~20%)
+    // Psychology: FRQ (every 5th = ~20%)
+    // CSP: MCQ only (no FRQ format on AP CSP)
+    const histCourses = new Set(["AP_WORLD_HISTORY", "AP_US_HISTORY"]);
+    const frqStemCourses = new Set(["AP_PHYSICS_1", "AP_CALCULUS_AB", "AP_CALCULUS_BC",
+                                    "AP_STATISTICS", "AP_CHEMISTRY", "AP_BIOLOGY", "AP_PSYCHOLOGY"]);
 
     for (let i = 0; i < queue.length; i++) {
       const { difficulty, topic } = queue[i];
-      // Assign question type: every 3rd question is SAQ for World History, every 5th for Physics
-      const questionType =
-        frqRatio > 0 &&
-        ((course === "AP_WORLD_HISTORY" && i % 3 === 2) ||
-         (course === "AP_PHYSICS_1" && i % 5 === 4))
-          ? QuestionType.SAQ
-          : QuestionType.MCQ;
+      // Assign question type based on course category
+      let questionType: QuestionType = QuestionType.MCQ;
+      if (histCourses.has(course) && i % 3 === 2) {
+        questionType = QuestionType.SAQ;
+      } else if (frqStemCourses.has(course) && i % 5 === 4) {
+        questionType = QuestionType.FRQ;
+      }
       try {
         const q = await generateOneQuestion(course, unit, unitName, difficulty, topic, questionType);
         if (q) {

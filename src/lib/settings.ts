@@ -51,6 +51,16 @@ export async function isAiLimitEnabled(): Promise<boolean> {
   return val === "true";
 }
 
+/**
+ * Returns true if premium feature restrictions are enforced.
+ * When false (default), all users have full access regardless of subscription tier.
+ * Use this flag to test premium features without requiring a paid subscription.
+ */
+export async function isPremiumRestrictionEnabled(): Promise<boolean> {
+  const val = await getSetting("premium_feature_restriction", "false");
+  return val === "true";
+}
+
 export interface StripeConfig {
   secretKey: string;
   webhookSecret: string;

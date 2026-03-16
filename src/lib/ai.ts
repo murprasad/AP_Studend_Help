@@ -398,16 +398,30 @@ export async function askTutor(
     .map((u) => u.name.replace(/^Unit \d+: /, ""))
     .join(", ");
 
-  // Pick key skills per course type
-  const skills = courseConfig.name.includes("World History")
-    ? "Causation, Comparison, CCOT, Contextualization, Argumentation"
-    : courseConfig.name.includes("Physics")
-    ? "Modeling, Math Routines, Experimental Design, Argumentation"
-    : "Computational Thinking, Algorithm Analysis, Abstraction, Responsible Computing";
+  // Use skillCodes from COURSE_REGISTRY if available; fallback to course-family defaults
+  const skills = courseConfig.skillCodes?.join(", ") ??
+    (courseConfig.name.includes("World History") || courseConfig.name.includes("US History")
+      ? "Argumentation, Causation, Comparison, Continuity and Change Over Time, Contextualization"
+      : courseConfig.name.includes("Physics")
+      ? "Modeling, Mathematical Routines, Experimental Design, Data Analysis, Argumentation"
+      : courseConfig.name.includes("Calculus") || courseConfig.name.includes("Statistics")
+      ? "Implementing Mathematical Processes, Connecting Representations, Justification, Communication"
+      : courseConfig.name.includes("Chemistry") || courseConfig.name.includes("Biology")
+      ? "Models and Representations, Mathematical Routines, Data Analysis, Scientific Argumentation"
+      : courseConfig.name.includes("Psychology")
+      ? "Concept Understanding, Research Methods, Data Interpretation, Concept Application"
+      : "Computational Thinking, Algorithm Analysis, Abstraction, Responsible Computing");
 
-  const visualBreakdownInstruction = courseConfig.name.includes("Physics")
-    ? "Use a markdown table, numbered steps, or bullet comparison. For CALCULATION problems, always show: **Given** (list known values + units) → **Equation** (write the formula) → **Substitution** (plug in numbers) → **Answer** (value + correct units)."
-    : "Use a markdown table, numbered steps, or bullet comparison. For causal chains or sequential processes, you may use a mermaid flowchart block.";
+  // STEM calculation courses get step-by-step format; humanities get flowchart/narrative format
+  const isCalcCourse = courseConfig.name.includes("Physics") ||
+    courseConfig.name.includes("Calculus") ||
+    courseConfig.name.includes("Statistics") ||
+    courseConfig.name.includes("Chemistry") ||
+    courseConfig.name.includes("Biology");
+
+  const visualBreakdownInstruction = isCalcCourse
+    ? "Use a markdown table, numbered steps, or bullet comparison. For CALCULATION or DERIVATION problems, always show: **Given** (list known values + units) → **Formula/Rule** (write the relevant equation or theorem) → **Work** (show algebraic steps) → **Answer** (value + correct units or interpretation)."
+    : "Use a markdown table, numbered steps, or bullet comparison. For causal chains, historical sequences, or psychological processes, you may use a mermaid flowchart block.";
 
   const systemPrompt = `You are an expert ${courseConfig.name} tutor for US high schoolers (gr 10-12) preparing for the AP exam.
 Units covered: ${unitList}
