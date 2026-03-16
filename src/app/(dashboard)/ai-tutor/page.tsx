@@ -9,6 +9,16 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { useCourse } from "@/hooks/use-course";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { cn } from "@/lib/utils";
+import { ApCourse } from "@prisma/client";
+import { ChevronDown } from "lucide-react";
 import { AP_COURSES } from "@/lib/utils";
 import { COURSE_REGISTRY } from "@/lib/courses";
 import { parseSections, type TutorSections } from "@/components/tutor/section-parser";
@@ -45,10 +55,20 @@ function stripMarkdown(md: string): string {
     .trim();
 }
 
+const TUTOR_COURSE_OPTIONS = (
+  Object.entries(COURSE_REGISTRY) as [ApCourse, { name: string }][]
+).map(([value, cfg]) => ({ value, label: cfg.name }));
+
 export default function AiTutorPage() {
   const { toast } = useToast();
   const { data: session } = useSession();
-  const [course] = useCourse();
+  const router = useRouter();
+  const [course, setCourse] = useCourse();
+
+  function handleCourseChange(newCourse: ApCourse) {
+    setCourse(newCourse);
+    router.refresh();
+  }
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -364,10 +384,29 @@ export default function AiTutorPage() {
                 <MessageSquare className="h-5 w-5 text-indigo-400" />
                 AI Tutor
               </h1>
-              <p className="text-muted-foreground mt-0.5 flex items-center gap-1.5 text-xs">
-                <GraduationCap className="h-3.5 w-3.5" />
-                {courseLabel}
-              </p>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button className="text-muted-foreground mt-0.5 flex items-center gap-1 text-xs hover:text-foreground transition-colors">
+                    <GraduationCap className="h-3.5 w-3.5" />
+                    <span>{courseLabel}</span>
+                    <ChevronDown className="h-3 w-3 opacity-60" />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start" className="w-64">
+                  {TUTOR_COURSE_OPTIONS.map((opt) => (
+                    <DropdownMenuItem
+                      key={opt.value}
+                      onClick={() => handleCourseChange(opt.value)}
+                      className={cn(
+                        "cursor-pointer text-sm",
+                        course === opt.value && "bg-primary/10 text-primary font-medium"
+                      )}
+                    >
+                      {opt.label}
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
             {messages.length > 0 && (
               <Button variant="outline" size="sm" onClick={startNewConversation} className="gap-1.5 text-xs h-8">
@@ -522,10 +561,29 @@ export default function AiTutorPage() {
               <MessageSquare className="h-8 w-8 text-indigo-400" />
               AI Tutor
             </h1>
-            <p className="text-muted-foreground mt-1 flex items-center gap-2 text-sm">
-              <GraduationCap className="h-4 w-4" />
-              {courseLabel} · Powered by Groq · Switch course from sidebar
-            </p>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="text-muted-foreground mt-1 flex items-center gap-2 text-sm hover:text-foreground transition-colors">
+                  <GraduationCap className="h-4 w-4" />
+                  <span>{courseLabel}</span>
+                  <ChevronDown className="h-3.5 w-3.5 opacity-60" />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="w-64">
+                {TUTOR_COURSE_OPTIONS.map((opt) => (
+                  <DropdownMenuItem
+                    key={opt.value}
+                    onClick={() => handleCourseChange(opt.value)}
+                    className={cn(
+                      "cursor-pointer text-sm",
+                      course === opt.value && "bg-primary/10 text-primary font-medium"
+                    )}
+                  >
+                    {opt.label}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
           {messages.length > 0 && (
             <Button variant="outline" size="sm" onClick={startNewConversation} className="gap-2 flex-shrink-0">

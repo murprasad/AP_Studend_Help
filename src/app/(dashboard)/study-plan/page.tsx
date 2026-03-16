@@ -19,6 +19,7 @@ import {
   Zap,
   GraduationCap,
 } from "lucide-react";
+import { CourseSelectorInline } from "@/components/layout/course-selector-inline";
 import Link from "next/link";
 
 interface StudyPlan {
@@ -111,14 +112,7 @@ export default function StudyPlanPage() {
         </Button>
       </div>
 
-      {/* Course indicator */}
-      <Card className="card-glow border-indigo-500/20 bg-indigo-500/5">
-        <CardContent className="p-4 flex items-center gap-3">
-          <GraduationCap className="h-5 w-5 text-indigo-400" />
-          <p className="text-sm font-medium">{AP_COURSES[course]}</p>
-          <p className="text-xs text-muted-foreground ml-2">— Switch course from the sidebar</p>
-        </CardContent>
-      </Card>
+      <CourseSelectorInline />
 
       {!plan ? (
         <Card className="card-glow">

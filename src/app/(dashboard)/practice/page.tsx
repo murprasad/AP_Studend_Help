@@ -12,6 +12,7 @@ import { COURSE_UNITS, AP_COURSES, formatTime } from "@/lib/utils";
 import { ApCourse, ApUnit } from "@prisma/client";
 import { getCourseConfig } from "@/lib/courses";
 import { Textarea } from "@/components/ui/textarea";
+import { CourseSelectorInline } from "@/components/layout/course-selector-inline";
 import {
   Zap,
   BookOpen,
@@ -67,6 +68,7 @@ export default function PracticePage() {
   const [course] = useCourse();
 
   const [subscriptionTier, setSubscriptionTier] = useState<"FREE" | "PREMIUM" | null>(null);
+  const [premiumRestricted, setPremiumRestricted] = useState(true);
   const [sessionLimitReached, setSessionLimitReached] = useState(false);
 
   const [mode, setMode] = useState<PracticeMode>("select");
@@ -77,9 +79,14 @@ export default function PracticePage() {
   const [questionType, setQuestionType] = useState<"MCQ" | "FRQ" | "SAQ" | "LEQ" | "DBQ">("MCQ");
 
   useEffect(() => {
-    fetch("/api/user")
-      .then((r) => r.json())
-      .then((d) => setSubscriptionTier(d.user?.subscriptionTier ?? "FREE"))
+    Promise.all([
+      fetch("/api/user").then((r) => r.json()),
+      fetch("/api/feature-flags").then((r) => r.json()),
+    ])
+      .then(([userData, flagsData]) => {
+        setSubscriptionTier(userData.user?.subscriptionTier ?? "FREE");
+        setPremiumRestricted(flagsData.premiumRestrictionEnabled ?? true);
+      })
       .catch(() => setSubscriptionTier("FREE"));
   }, []);
 
@@ -535,16 +542,7 @@ export default function PracticePage() {
         <p className="text-muted-foreground">Choose your practice mode and settings</p>
       </div>
 
-      {/* Current course indicator */}
-      <Card className="card-glow border-indigo-500/20 bg-indigo-500/5">
-        <CardContent className="p-4 flex items-center gap-3">
-          <GraduationCap className="h-5 w-5 text-indigo-400 flex-shrink-0" />
-          <div className="flex-1">
-            <p className="text-sm font-medium">{AP_COURSES[course]}</p>
-            <p className="text-xs text-muted-foreground">Switch course from the sidebar</p>
-          </div>
-        </CardContent>
-      </Card>
+      <CourseSelectorInline />
 
       {/* Mode selection */}
       <div className="grid grid-cols-2 gap-4">
@@ -580,10 +578,11 @@ export default function PracticePage() {
           if (availableFrqTypes.length === 0) return null;
           const defaultFrqType = availableFrqTypes[0] as "FRQ" | "SAQ" | "LEQ" | "DBQ";
           const typeLabel = availableFrqTypes.join(" · ");
+          const isLocked = premiumRestricted && subscriptionTier !== "PREMIUM";
           return (
             <button
               onClick={() => {
-                if (subscriptionTier !== "PREMIUM") return;
+                if (isLocked) return;
                 setSessionType("FOCUSED_STUDY");
                 setQuestionCount(5);
                 setQuestionType(defaultFrqType);
@@ -591,7 +590,7 @@ export default function PracticePage() {
               className={`p-4 rounded-xl border text-left transition-all col-span-2 ${
                 questionType !== "MCQ"
                   ? "border-indigo-500 bg-indigo-500/10"
-                  : subscriptionTier !== "PREMIUM"
+                  : isLocked
                   ? "border-border/40 opacity-70 cursor-not-allowed"
                   : "border-border/40 hover:bg-accent"
               }`}
@@ -600,13 +599,16 @@ export default function PracticePage() {
                 <div>
                   <div className="flex items-center gap-2 mb-2">
                     <PenLine className="h-5 w-5 text-purple-400" />
-                    {subscriptionTier !== "PREMIUM" && <Lock className="h-4 w-4 text-muted-foreground" />}
+                    {isLocked && <Lock className="h-4 w-4 text-muted-foreground" />}
                   </div>
                   <p className="font-medium">FRQ Practice</p>
                   <p className="text-xs text-muted-foreground">{typeLabel} — AI-scored rubric feedback</p>
                 </div>
-                {subscriptionTier !== "PREMIUM" && (
+                {isLocked && (
                   <Badge className="bg-indigo-600 text-white text-xs">Premium</Badge>
+                )}
+                {!premiumRestricted && subscriptionTier !== "PREMIUM" && (
+                  <Badge className="bg-amber-500/20 text-amber-300 text-xs border border-amber-500/30">Limited Time Access</Badge>
                 )}
               </div>
               {questionType !== "MCQ" && (
@@ -653,22 +655,30 @@ export default function PracticePage() {
         </Card>
       )}
 
-      {/* Premium upsell for FRQ */}
+      {/* Premium upsell / limited-time banner for FRQ */}
       {subscriptionTier === "FREE" && Object.keys(getCourseConfig(course as ApCourse)?.questionTypeFormats ?? {}).some((t) => t !== "MCQ") && !sessionLimitReached && (
-        <Card className="card-glow border-purple-500/20 bg-purple-500/5">
-          <CardContent className="p-4 flex items-center gap-3">
-            <Crown className="h-5 w-5 text-purple-400 flex-shrink-0" />
-            <div className="flex-1">
-              <p className="text-sm font-medium">Unlock FRQ Practice</p>
-              <p className="text-xs text-muted-foreground">SAQ, LEQ & DBQ with AI rubric scoring — Premium only</p>
-            </div>
-            <Link href="/pricing">
-              <Button size="sm" variant="outline" className="border-purple-500/50 text-purple-300 hover:bg-purple-500/10 text-xs">
-                Upgrade
-              </Button>
-            </Link>
-          </CardContent>
-        </Card>
+        premiumRestricted ? (
+          <Card className="card-glow border-purple-500/20 bg-purple-500/5">
+            <CardContent className="p-4 flex items-center gap-3">
+              <Crown className="h-5 w-5 text-purple-400 flex-shrink-0" />
+              <div className="flex-1">
+                <p className="text-sm font-medium">Unlock FRQ Practice</p>
+                <p className="text-xs text-muted-foreground">SAQ, LEQ & DBQ with AI rubric scoring — Premium only</p>
+              </div>
+              <Link href="/pricing">
+                <Button size="sm" variant="outline" className="border-purple-500/50 text-purple-300 hover:bg-purple-500/10 text-xs">
+                  Upgrade
+                </Button>
+              </Link>
+            </CardContent>
+          </Card>
+        ) : (
+          <Card className="card-glow border-indigo-500/20 bg-indigo-500/5">
+            <CardContent className="p-4">
+              <p className="text-sm">🎉 Premium access is available to all users for a limited time — enjoy FRQ practice free!</p>
+            </CardContent>
+          </Card>
+        )
       )}
 
       {/* Filters */}

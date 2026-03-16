@@ -12,6 +12,7 @@ import {
 import { COURSE_REGISTRY } from "@/lib/courses";
 import { useCourse } from "@/hooks/use-course";
 import { AP_COURSES } from "@/lib/utils";
+import { CourseSelectorInline } from "@/components/layout/course-selector-inline";
 import { ApCourse, ApUnit } from "@prisma/client";
 import {
   ExternalLink,
@@ -85,6 +86,8 @@ export default function ResourcesPage() {
           Curated {AP_COURSES[course]} resources from the best educational platforms
         </p>
       </div>
+
+      <CourseSelectorInline />
 
       {/* Tabs */}
       <div className="flex gap-2 border-b border-border/40">

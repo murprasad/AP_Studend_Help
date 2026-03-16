@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { SessionType, ApUnit, Difficulty, ApCourse, QuestionType } from "@prisma/client";
 import { VALID_AP_COURSES, getUnitsForCourse, COURSE_REGISTRY } from "@/lib/courses";
 import { generateQuestion } from "@/lib/ai";
+import { isPremiumRestrictionEnabled } from "@/lib/settings";
 
 // Create a new practice session
 export async function POST(req: NextRequest) {
@@ -24,10 +25,11 @@ export async function POST(req: NextRequest) {
     }
 
     const tier = session.user.subscriptionTier;
+    const premiumRestricted = await isPremiumRestrictionEnabled();
 
-    // Gate FRQ/SAQ/LEQ/DBQ behind Premium
+    // Gate FRQ/SAQ/LEQ/DBQ behind Premium (only when premium restriction is enabled)
     const isFrqType = requestedType && requestedType !== "MCQ";
-    if (isFrqType && tier !== "PREMIUM") {
+    if (premiumRestricted && isFrqType && tier !== "PREMIUM") {
       return NextResponse.json({
         error: "FRQ practice (SAQ, LEQ, DBQ) requires a Premium subscription.",
         limitExceeded: true,
@@ -35,8 +37,8 @@ export async function POST(req: NextRequest) {
       }, { status: 403 });
     }
 
-    // Gate FREE users to 3 practice sessions/day (mock exams excluded)
-    if (sessionType === "PRACTICE" || sessionType === "QUICK_PRACTICE" || sessionType === "FOCUSED_STUDY") {
+    // Gate FREE users to 3 practice sessions/day (mock exams excluded, only when restriction is enabled)
+    if (premiumRestricted && (sessionType === "PRACTICE" || sessionType === "QUICK_PRACTICE" || sessionType === "FOCUSED_STUDY")) {
       if (tier !== "PREMIUM") {
         const startOfDay = new Date();
         startOfDay.setHours(0, 0, 0, 0);

@@ -27,6 +27,7 @@ import {
   Loader2,
   GraduationCap,
 } from "lucide-react";
+import { CourseSelectorInline } from "@/components/layout/course-selector-inline";
 
 interface MasteryData {
   unit: string;
@@ -111,14 +112,7 @@ export default function AnalyticsPage() {
         <p className="text-muted-foreground mt-1">Track your progress and identify growth areas</p>
       </div>
 
-      {/* Course indicator */}
-      <Card className="card-glow border-indigo-500/20 bg-indigo-500/5">
-        <CardContent className="p-4 flex items-center gap-3">
-          <GraduationCap className="h-5 w-5 text-indigo-400" />
-          <p className="text-sm font-medium">{AP_COURSES[course]}</p>
-          <p className="text-xs text-muted-foreground ml-2">— Switch course from the sidebar</p>
-        </CardContent>
-      </Card>
+      <CourseSelectorInline />
 
       {/* Key stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
