@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import Groq from "groq-sdk";
 
 const NOVA_SYSTEM_PROMPT = `You are Nova ⭐, the super-smart and fun study companion for PrepNova — an AI-powered AP exam prep platform for high school students.
 
@@ -46,11 +45,10 @@ export async function POST(req: NextRequest) {
   const { message, history = [] } = await req.json();
   if (!message?.trim()) return NextResponse.json({ error: "Message required" }, { status: 400 });
 
-  // Try Groq first (fast Llama 3.3)
+  // Try Groq first via plain fetch (required for Cloudflare Workers compatibility)
   if (process.env.GROQ_API_KEY) {
     try {
-      const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
-      const messages: Array<{ role: "system" | "user" | "assistant"; content: string }> = [
+      const messages = [
         { role: "system", content: NOVA_SYSTEM_PROMPT },
         ...history.slice(-8).map((m: { role: string; content: string }) => ({
           role: m.role as "user" | "assistant",
@@ -59,16 +57,27 @@ export async function POST(req: NextRequest) {
         { role: "user", content: message },
       ];
 
-      const completion = await groq.chat.completions.create({
-        model: "llama-3.3-70b-versatile",
-        messages,
-        max_tokens: 400,
-        temperature: 0.8,
+      const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${process.env.GROQ_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model: "llama-3.3-70b-versatile",
+          messages,
+          max_tokens: 400,
+          temperature: 0.8,
+        }),
+        signal: AbortSignal.timeout(25000),
       });
 
-      const reply = completion.choices[0]?.message?.content;
-      if (reply?.trim()) {
-        return NextResponse.json({ reply: reply.trim(), provider: "Groq" });
+      if (res.ok) {
+        const data = await res.json() as { choices?: Array<{ message?: { content?: string } }> };
+        const reply = data.choices?.[0]?.message?.content;
+        if (reply?.trim()) {
+          return NextResponse.json({ reply: reply.trim(), provider: "Groq" });
+        }
       }
     } catch (err) {
       console.warn("[Nova] Groq failed:", err);
