@@ -59,23 +59,16 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    // In development without email configured, auto-verify
-    if (
-      !process.env.EMAIL_SERVER_USER ||
-      process.env.NODE_ENV === "development"
-    ) {
+    if (process.env.NODE_ENV === "development") {
+      // Local dev only: auto-verify so developers can log in immediately
       await prisma.user.update({
         where: { id: user.id },
         data: { emailVerified: new Date() },
       });
       console.log(`[DEV] Auto-verified email for ${user.email}. Token: ${token}`);
     } else {
-      // Send verification email
-      try {
-        await sendVerificationEmail(user.email, user.firstName, token);
-      } catch (emailError) {
-        console.error("Failed to send verification email:", emailError);
-      }
+      // Production: send real verification email via Resend
+      await sendVerificationEmail(user.email, user.firstName, token);
     }
 
     return NextResponse.json({ success: true, message: "Account created. Please check your email." });

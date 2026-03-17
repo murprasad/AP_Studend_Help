@@ -131,7 +131,9 @@ export default function AiTutorPage() {
         const assistantMessage: Message = {
           role: "assistant",
           content: data.response,
-          followUps: Array.isArray(data.followUps) ? data.followUps : [],
+          followUps: Array.isArray(data.followUps)
+            ? data.followUps.filter((q: string) => typeof q === "string" && q.length > 10 && !/^q\d+$/i.test(q.trim()))
+            : [],
         };
         setMessages((prev) => [...prev, assistantMessage]);
         setCurrentSections(parseSections(data.response));
@@ -228,7 +230,9 @@ export default function AiTutorPage() {
           let answer = fullText;
           if (followUpMatch) {
             try {
-              followUps = JSON.parse(followUpMatch[1]) as string[];
+              const parsed = JSON.parse(followUpMatch[1]) as string[];
+              // Filter out placeholder values (e.g. "q1", "q2") that some weaker AI models emit literally
+              followUps = parsed.filter((q) => typeof q === "string" && q.length > 10 && !/^q\d+$/i.test(q.trim()));
               answer = fullText.replace(/\n?FOLLOW_UPS:[\s\S]*$/, "").trim();
             } catch {
               /* keep full text */

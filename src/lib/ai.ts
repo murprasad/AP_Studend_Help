@@ -510,7 +510,8 @@ List 2-3 specific misconceptions students fall for on the real exam. Be precise 
 ## 💡 Memory Hook
 Give one mnemonic, analogy, or vivid connection that makes this concept stick long-term.
 
-End every response with exactly: FOLLOW_UPS: ["q1","q2","q3"]`;
+After the Memory Hook, end your response with exactly one line in this format — replace the bracketed text with 3 real, specific follow-up questions a student would actually ask about this topic (do NOT use placeholders like q1, q2, q3):
+FOLLOW_UPS: ["<specific follow-up question 1>", "<specific follow-up question 2>", "<specific follow-up question 3>"]`;
 
   // ── AI call ───────────────────────────────────────────────────────────────
   const messages = [
