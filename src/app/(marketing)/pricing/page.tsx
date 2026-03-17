@@ -8,7 +8,7 @@ const FREE_FEATURES = [
   "All 10 AP courses (Math, Science, Social Studies)",
   "Unlimited MCQ practice questions",
   "MCQ sessions — 3 sessions/day",
-  "AI Tutor — 10 conversations/day",
+  "AI Tutor — 5 conversations/day",
   "Progress analytics & mastery tracking",
   "Mock exam simulator",
   "Basic study plan",
@@ -155,7 +155,7 @@ export default async function PricingPage() {
             },
             {
               q: "What happens when I hit the free AI limit?",
-              a: "Free users can start 10 new AI Tutor conversations per day. Your existing conversations are never deleted.",
+              a: "Free users can start 5 new AI Tutor conversations per day. Your existing conversations are never deleted.",
             },
             {
               q: "Is there a student discount?",
