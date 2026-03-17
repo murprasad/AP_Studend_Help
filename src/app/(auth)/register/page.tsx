@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
@@ -34,6 +34,24 @@ export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [registeredEmail, setRegisteredEmail] = useState("");
+  const [verified, setVerified] = useState(false);
+  const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  useEffect(() => {
+    if (!success || !registeredEmail) return;
+    pollRef.current = setInterval(async () => {
+      try {
+        const res = await fetch(`/api/auth/check-verified?email=${encodeURIComponent(registeredEmail)}`);
+        const data = await res.json();
+        if (data.verified) {
+          clearInterval(pollRef.current!);
+          setVerified(true);
+        }
+      } catch { /* ignore */ }
+    }, 3000);
+    return () => clearInterval(pollRef.current!);
+  }, [success, registeredEmail]);
 
   const {
     register,
@@ -62,6 +80,7 @@ export default function RegisterPage() {
           variant: "destructive",
         });
       } else {
+        setRegisteredEmail(data.email);
         setSuccess(true);
       }
     } catch {
@@ -80,13 +99,26 @@ export default function RegisterPage() {
       <Card className="w-full max-w-md text-center">
         <CardContent className="pt-8 pb-6">
           <CheckCircle className="h-16 w-16 text-emerald-400 mx-auto mb-4" />
-          <h2 className="text-2xl font-bold mb-2">Check your email!</h2>
-          <p className="text-muted-foreground mb-6">
-            We sent a verification link to your email. Click the link to activate your account and start practicing.
-          </p>
-          <Button variant="outline" onClick={() => router.push("/login")} className="w-full">
-            Go to Login
-          </Button>
+          {verified ? (
+            <>
+              <h2 className="text-2xl font-bold mb-2">Email Verified!</h2>
+              <p className="text-muted-foreground mb-6">Your account is ready. Click below to log in.</p>
+              <Button onClick={() => router.push("/login")} className="w-full">
+                Continue to Login
+              </Button>
+            </>
+          ) : (
+            <>
+              <h2 className="text-2xl font-bold mb-2">Check your email!</h2>
+              <p className="text-muted-foreground mb-4">
+                We sent a verification link to <strong>{registeredEmail}</strong>. Click the link to activate your account.
+              </p>
+              <p className="text-xs text-muted-foreground mb-6">This page will update automatically once verified.</p>
+              <Button variant="outline" onClick={() => router.push("/login")} className="w-full">
+                Go to Login
+              </Button>
+            </>
+          )}
         </CardContent>
       </Card>
     );

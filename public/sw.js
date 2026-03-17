@@ -1,4 +1,4 @@
-const CACHE_NAME = "studentnest-v1";
+const CACHE_NAME = "studentnest-v2";
 const STATIC_PAGES = ["/dashboard", "/practice", "/ai-tutor"];
 
 self.addEventListener("install", (event) => {
