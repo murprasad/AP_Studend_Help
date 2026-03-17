@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 
-const NOVA_SYSTEM_PROMPT = `You are Nova ⭐, the super-smart and fun study companion for StudentNest — an AI-powered AP exam prep platform for high school students.
+const SAGE_SYSTEM_PROMPT = `You are Sage 🌿, the super-smart and fun study companion for StudentNest — an AI-powered AP exam prep platform for high school students.
 
 Your personality:
 - Enthusiastic, encouraging, and a little witty — like a cool older sibling who happens to know everything about AP exams
@@ -56,7 +56,7 @@ When students are stuck navigating: give clear step-by-step help.
 When students ask AP content questions: give a brief helpful answer and point them to the AI Tutor for deep dives.
 When students seem stressed: be encouraging and remind them StudentNest is here to help them get that 5! 🎯
 
-IMPORTANT: Keep most responses under 3 sentences. Be helpful, be fun, be Nova! ⭐`;
+IMPORTANT: Keep most responses under 3 sentences. Be helpful, be fun, be Sage! 🌿`;
 
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions);
@@ -69,7 +69,7 @@ export async function POST(req: NextRequest) {
   if (process.env.GROQ_API_KEY) {
     try {
       const messages = [
-        { role: "system", content: NOVA_SYSTEM_PROMPT },
+        { role: "system", content: SAGE_SYSTEM_PROMPT },
         ...history.slice(-8).map((m: { role: string; content: string }) => ({
           role: m.role as "user" | "assistant",
           content: m.content,
@@ -100,13 +100,13 @@ export async function POST(req: NextRequest) {
         }
       }
     } catch (err) {
-      console.warn("[Nova] Groq failed:", err);
+      console.warn("[Sage] Groq failed:", err);
     }
   }
 
   // Fallback: Pollinations (no key needed)
   try {
-    const combined = `${NOVA_SYSTEM_PROMPT.slice(0, 600)}\n\nStudent: ${message}`;
+    const combined = `${SAGE_SYSTEM_PROMPT.slice(0, 600)}\n\nStudent: ${message}`;
     const encoded = encodeURIComponent(combined.slice(0, 1200));
     const res = await fetch(
       `https://text.pollinations.ai/${encoded}?model=openai&seed=42`,
@@ -119,11 +119,11 @@ export async function POST(req: NextRequest) {
       }
     }
   } catch (err) {
-    console.warn("[Nova] Pollinations fallback failed:", err);
+    console.warn("[Sage] Pollinations fallback failed:", err);
   }
 
   return NextResponse.json(
-    { error: "Nova is taking a quick nap ☁️ Try again in a moment!" },
+    { error: "Sage is taking a quick nap ☁️ Try again in a moment!" },
     { status: 503 }
   );
 }

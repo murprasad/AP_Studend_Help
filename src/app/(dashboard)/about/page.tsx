@@ -199,7 +199,7 @@ const AI_SOURCES = [
     icon: Brain,
     color: "text-emerald-400",
     name: "Groq (Llama 3.3 70B)",
-    desc: "Primary engine for FREE users — ultra-fast inference for questions and Nova chat.",
+    desc: "Primary engine for FREE users — ultra-fast inference for questions and Sage chat.",
     badge: "Free Tier",
     badgeColor: "bg-emerald-500/20 text-emerald-400 border-emerald-500/30",
   },

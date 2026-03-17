@@ -18,9 +18,9 @@ interface Message {
 }
 
 const GREETINGS = [
-  "Hey there, future 5-scorer! ⭐ I'm Nova, your StudentNest guide. Ask me anything!",
-  "Yo! I'm Nova ⭐ — your study sidekick. Lost in the app? Need a pep talk? I got you!",
-  "What's up! Nova here ⭐ Ask me about features, courses, or just say hi!",
+  "Hey there, future 5-scorer! 🌿 I'm Sage, your StudentNest guide. Ask me anything!",
+  "Yo! I'm Sage 🌿 — your study sidekick. Lost in the app? Need a pep talk? I got you!",
+  "What's up! Sage here 🌿 Ask me about features, courses, or just say hi!",
 ];
 
 const QUICK_PROMPTS = [
@@ -30,7 +30,7 @@ const QUICK_PROMPTS = [
   "What's the Mock Exam?",
 ];
 
-export function NovaChat() {
+export function SageChat() {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
@@ -67,7 +67,7 @@ export function NovaChat() {
     setLoading(true);
 
     try {
-      const res = await fetch("/api/chat/nova", {
+      const res = await fetch("/api/chat/sage", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -103,7 +103,7 @@ export function NovaChat() {
         {/* Tooltip before first open */}
         {!open && pulse && (
           <div className="bg-indigo-600 text-white text-xs px-3 py-1.5 rounded-full shadow-lg animate-bounce whitespace-nowrap">
-            Hey! I&apos;m Nova ⭐ Ask me anything!
+            Hey! I&apos;m Sage 🌿 Ask me anything!
           </div>
         )}
 
@@ -112,7 +112,7 @@ export function NovaChat() {
           className={`relative w-14 h-14 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 shadow-lg hover:shadow-indigo-500/40 hover:scale-105 transition-all duration-200 flex items-center justify-center ${
             pulse ? "ring-2 ring-indigo-400 ring-offset-2 ring-offset-background" : ""
           }`}
-          aria-label="Open Nova chat"
+          aria-label="Open Sage chat"
         >
           {open ? (
             <ChevronDown className="h-6 w-6 text-white" />
@@ -137,7 +137,7 @@ export function NovaChat() {
                 <Sparkles className="h-4 w-4 text-white" />
               </div>
               <div>
-                <p className="text-white font-bold text-sm leading-none">Nova ⭐</p>
+                <p className="text-white font-bold text-sm leading-none">Sage 🌿</p>
                 <p className="text-indigo-200 text-xs mt-0.5">StudentNest Guide · Powered by Groq</p>
               </div>
             </div>
@@ -232,7 +232,7 @@ export function NovaChat() {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={handleKeyDown}
-                placeholder="Ask Nova anything..."
+                placeholder="Ask Sage anything..."
                 className="resize-none text-sm min-h-[40px] max-h-[100px] py-2.5 flex-1"
                 rows={1}
                 disabled={loading}

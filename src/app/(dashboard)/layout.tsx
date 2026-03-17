@@ -4,7 +4,7 @@ import { useSession } from "next-auth/react";
 import { useRouter, usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Sidebar } from "@/components/layout/sidebar";
-import { NovaChat } from "@/components/layout/nova-chat";
+import { SageChat } from "@/components/layout/sage-chat";
 import { Sparkles, Menu } from "lucide-react";
 
 const ONBOARDING_KEY = "onboarding_completed";
@@ -74,7 +74,7 @@ export default function DashboardLayout({
           {children}
         </div>
       </main>
-      <NovaChat />
+      <SageChat />
     </div>
   );
 }
