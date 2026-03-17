@@ -1,14 +1,16 @@
 import Link from "next/link";
-import { Globe } from "lucide-react";
+import { Sparkles } from "lucide-react";
 
 export default function MarketingLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <nav className="border-b border-border/40 p-4 flex items-center justify-between max-w-7xl mx-auto w-full">
         <Link href="/" className="flex items-center gap-2">
-          <Globe className="h-6 w-6 text-indigo-400" />
+          <Sparkles className="h-6 w-6 text-indigo-400" />
           <div>
-            <span className="text-lg font-bold gradient-text">PrepNova</span>
+            <span className="text-lg font-bold">
+              <span className="gradient-text">Student</span><span className="text-foreground/80 font-medium">Nest</span>
+            </span>
             <p className="text-xs text-muted-foreground leading-none">Your AI Study Partner</p>
           </div>
         </Link>
@@ -26,7 +28,7 @@ export default function MarketingLayout({ children }: { children: React.ReactNod
       </nav>
       <div className="flex-1">{children}</div>
       <footer className="border-t border-border/40 p-6 text-center text-sm text-muted-foreground">
-        © {new Date().getFullYear()} PrepNova. Built for AP students.
+        © {new Date().getFullYear()} StudentNest. Built for AP students.
       </footer>
     </div>
   );

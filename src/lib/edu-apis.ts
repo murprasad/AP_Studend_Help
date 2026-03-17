@@ -306,7 +306,7 @@ export async function searchRedditAP(
         `https://www.reddit.com/r/${sub}/search.json` +
         `?q=${encodeURIComponent(query)}&sort=top&t=year&limit=${limit}&restrict_sr=1`;
       const res = await fetch(url, {
-        headers: { "User-Agent": "PrepNova/1.0 (Educational AP Prep App)" },
+        headers: { "User-Agent": "StudentNest/1.0 (Educational AP Prep App)" },
         signal: AbortSignal.timeout(6000),
       });
       if (!res.ok) continue;
@@ -364,7 +364,7 @@ export const CB_FRQ_CATALOG: Record<string, Array<{ year: number; set: number; u
 export async function fetchMITOCWContent(url: string): Promise<string> {
   try {
     const res = await fetch(url, {
-      headers: { "User-Agent": "PrepNova/1.0 (Educational AP Prep)" },
+      headers: { "User-Agent": "StudentNest/1.0 (Educational AP Prep)" },
       signal: AbortSignal.timeout(8000),
     });
     if (!res.ok) return "";
@@ -398,7 +398,7 @@ export async function fetchMITOCWContent(url: string): Promise<string> {
 export async function fetchDIGContent(url: string, topic: string): Promise<string> {
   try {
     const res = await fetch(url, {
-      headers: { "User-Agent": "PrepNova/1.0 (Educational AP Prep)" },
+      headers: { "User-Agent": "StudentNest/1.0 (Educational AP Prep)" },
       signal: AbortSignal.timeout(8000),
     });
     if (!res.ok) return "";
@@ -452,7 +452,7 @@ export async function fetchOpenStaxContent(
     const res = await fetch(url, {
       headers: {
         Accept: "application/json",
-        "User-Agent": "PrepNova/1.0 (Educational AP Prep)",
+        "User-Agent": "StudentNest/1.0 (Educational AP Prep)",
       },
       signal: AbortSignal.timeout(7000),
     });
@@ -554,4 +554,227 @@ export async function getEnrichedContext(
   }
 
   return parts.join("\n\n");
+}
+
+// ── SAT Content: static topic summaries derived from College Board SAT Study Guide ──
+// No API call needed — authoritative topic data extracted from public College Board materials.
+const SAT_TOPIC_MAP: Record<string, string> = {
+  SAT_MATH_1_ALGEBRA: `SAT Algebra covers:
+• Linear equations in one variable (solving, interpreting solutions)
+• Linear equations in two variables (graphing, intercepts, slope)
+• Systems of two linear equations (substitution, elimination, graphical interpretation)
+• Linear inequalities in one or two variables
+• Linear functions: domain, range, rate of change
+• Interpreting linear models in context (slope = rate, y-intercept = initial value)
+Common traps: sign errors when dividing by negatives, confusing no-solution vs. infinite-solution systems.`,
+
+  SAT_MATH_2_ADVANCED_MATH: `SAT Advanced Math covers:
+• Quadratic functions and equations (factoring, completing the square, quadratic formula, discriminant)
+• Vertex form, standard form, and intercept form of parabolas
+• Polynomial functions (zeros, factors, remainder theorem, end behavior)
+• Rational expressions and equations (simplifying, solving, extraneous solutions)
+• Exponential functions: growth (b > 1) and decay (0 < b < 1), half-life, doubling time
+Common traps: forgetting to check for extraneous solutions, confusing exponential and linear growth.`,
+
+  SAT_MATH_3_PROBLEM_SOLVING: `SAT Problem-Solving & Data Analysis covers:
+• Ratios, rates, proportional relationships, unit conversion
+• Percentages: percent change, percent of a whole, markup/discount
+• Two-way tables: joint, marginal, conditional probability
+• Statistics: mean, median, mode, range, standard deviation, outliers
+• Probability: basic, conditional, independent events
+• Evaluating statistical claims: sample representativeness, correlation vs. causation
+Common traps: misidentifying the median in even-numbered sets, confusing correlation with causation.`,
+
+  SAT_MATH_4_GEOMETRY_TRIG: `SAT Geometry & Trigonometry covers:
+• Area and perimeter of common figures (triangles, rectangles, circles, composite shapes)
+• Volume of prisms, cylinders, pyramids, cones, spheres
+• Coordinate geometry: distance, midpoint, slope, equations of lines and circles
+• Properties of triangles (similar triangles, special right triangles: 30-60-90, 45-45-90)
+• Circle theorems: arc length, sector area, central and inscribed angles
+• Basic trigonometry: SOH-CAH-TOA in right triangles; radian measure basics
+Common traps: using diameter instead of radius, forgetting to square in the distance formula.`,
+
+  SAT_RW_1_CRAFT_STRUCTURE: `SAT Craft and Structure covers:
+• Words in context: selecting the most precise word (denotation + connotation)
+• Text structure and purpose: chronological, compare-contrast, problem-solution, cause-effect
+• Author's purpose: informing, persuading, narrating, analyzing
+• Cross-text connections: comparing two short passages (agreement, disagreement, extension)
+• Rhetorical devices: analogy, anecdote, repetition, rhetorical questions
+Common traps: choosing a word that fits loosely but not precisely, confusing tone with purpose.`,
+
+  SAT_RW_2_INFO_IDEAS: `SAT Information and Ideas covers:
+• Central ideas and details: distinguishing main idea from supporting details
+• Command of evidence: selecting the quote or data that best supports a claim
+• Inferences: drawing conclusions that are supported but not overstated by the text
+• Quantitative data: interpreting graphs, charts, tables embedded in passages
+• Strengthening and weakening arguments: identifying supporting or undermining evidence
+• Research methodology: sampling methods, confounding variables, correlation vs. causation
+Common traps: choosing inferences that are too broad or add information not in the text.`,
+
+  SAT_RW_3_STANDARD_ENGLISH: `SAT Standard English Conventions covers:
+• Sentence boundaries: run-ons, comma splices, fragments
+• Punctuation: commas, semicolons, colons, dashes, apostrophes
+• Subject-verb agreement: collective nouns, indefinite pronouns, intervening phrases
+• Verb tense and aspect: consistency, sequence of tenses
+• Pronoun agreement: number, person, case (who/whom)
+• Parallel structure: matching grammatical form in lists and comparisons
+• Modifier placement: dangling and misplaced modifiers
+Common traps: agreeing verb with nearest noun (not the actual subject), it's vs. its.`,
+
+  SAT_RW_4_EXPRESSION_IDEAS: `SAT Expression of Ideas covers:
+• Transitions: choosing words that correctly signal logical relationships (contrast, cause-effect, addition, exemplification)
+• Rhetorical synthesis: combining information from notes into a coherent sentence
+• Logical sequence: determining the best placement of a sentence within a paragraph
+• Precision: choosing the most accurate word for a specific meaning
+• Concision: eliminating redundancy and wordiness without losing meaning
+• Relevance: identifying which sentence best supports or concludes a paragraph
+Common traps: choosing a transition that sounds right but signals the wrong logical relationship.`,
+};
+
+/**
+ * Returns static SAT topic context derived from College Board SAT study materials.
+ * Covers all 8 SAT units. No API call needed — pure static data.
+ */
+export function fetchCollegeBoardSATTopics(unit: string): string {
+  return SAT_TOPIC_MAP[unit] ?? "";
+}
+
+// ── ACT Content: static topic summaries derived from official ACT test specifications ─
+// No API call needed — authoritative topic data extracted from public ACT materials.
+const ACT_TOPIC_MAP: Record<string, string> = {
+  // ── ACT Math ──
+  ACT_MATH_1_NUMBER: `ACT Number and Quantity covers:
+• Integers: divisibility, factors, multiples, primes, absolute value
+• Fractions and decimals: operations, converting between forms, ordering
+• Exponents: integer, fractional, negative exponents; scientific notation
+• Ratios, proportions, and percents: direct/inverse proportion, percent change
+• Number properties: odd/even, sets, sequences, number lines
+Common traps: confusing factors with multiples, forgetting order of operations (PEMDAS), sign errors with negatives.`,
+
+  ACT_MATH_2_ALGEBRA: `ACT Algebra covers:
+• Linear equations and inequalities in one variable
+• Systems of two linear equations (substitution and elimination)
+• Polynomial operations: factoring, FOIL, special products
+• Quadratic equations: factoring, quadratic formula, discriminant
+• Functions: domain/range, composition, inverse, function notation
+• Absolute value equations and inequalities
+Common traps: forgetting to flip inequality sign when dividing by a negative, extraneous solutions in rational equations.`,
+
+  ACT_MATH_3_GEOMETRY: `ACT Geometry covers:
+• Triangles: area, perimeter, similar triangles, Pythagorean theorem, 30-60-90, 45-45-90
+• Circles: area, circumference, arc length, sector area, inscribed angles
+• Coordinate geometry: slope, midpoint, distance formula, equations of lines and circles
+• Polygons: area and perimeter of rectangles, parallelograms, trapezoids
+• 3D shapes: volume and surface area of prisms, cylinders, cones, spheres
+• Basic trigonometry: SOH-CAH-TOA in right triangles, SOHCAHTOA
+Common traps: using diameter instead of radius in circle formulas, forgetting to halve base×height for triangles.`,
+
+  ACT_MATH_4_STATISTICS: `ACT Statistics and Probability covers:
+• Measures of center: mean, median, mode; effect of outliers
+• Measures of spread: range, standard deviation concepts
+• Data displays: reading and interpreting bar graphs, histograms, box plots, scatterplots
+• Counting: fundamental counting principle, permutations, combinations
+• Probability: basic probability, complementary events, conditional probability
+• Two-way frequency tables: joint and marginal frequencies
+Common traps: confusing mean and median when outliers are present, misreading scale on graphs.`,
+
+  ACT_MATH_5_INTEGRATING_SKILLS: `ACT Integrating Essential Skills covers:
+• Multi-step real-world problems requiring 3+ calculations
+• Rate, distance, and time: d = rt applied to complex scenarios
+• Mixture and work problems
+• Financial mathematics: simple interest, percent applications
+• Modeling with equations and inequalities
+• Interpreting mathematical results in context
+Common traps: setting up the equation incorrectly, misidentifying what the variable represents.`,
+
+  // ── ACT English ──
+  ACT_ENG_1_PRODUCTION_WRITING: `ACT Production of Writing covers:
+• Topic development: adding, deleting, or revising sentences to support the main idea
+• Organization: introductions, conclusions, transitions between paragraphs
+• Unity and cohesion: whether a sentence belongs in a paragraph
+• Relevance: whether a detail supports the author's purpose
+Common traps: choosing an answer that is grammatically correct but irrelevant to the passage's focus.`,
+
+  ACT_ENG_2_KNOWLEDGE_LANGUAGE: `ACT Knowledge of Language covers:
+• Word choice (diction): selecting the most precise or appropriate word in context
+• Style: matching tone (formal vs. informal) to the passage's audience
+• Concision: eliminating redundant or wordy phrases
+• Clarity: revising vague or ambiguous expressions
+Common traps: choosing a longer answer that "sounds better" but adds no meaning; avoiding the shortest answer when concision is the point.`,
+
+  ACT_ENG_3_CONVENTIONS: `ACT Conventions of Standard English covers:
+• Commas: with non-restrictive clauses, after introductory elements, in series
+• Semicolons and colons: joining independent clauses, introducing lists
+• Apostrophes: possession vs. contraction (its/it's, their/they're)
+• Subject-verb agreement: collective nouns, intervening prepositional phrases
+• Pronoun-antecedent agreement: number and person
+• Verb tense consistency: sequence of tenses in a passage
+• Parallel structure: matching grammatical form in lists and comparisons
+• Run-on sentences, comma splices, and fragments
+Common traps: agreeing verb with the nearest noun rather than the subject; its/it's confusion.`,
+
+  // ── ACT Science ──
+  ACT_SCI_1_DATA_REPRESENTATION: `ACT Data Representation covers:
+• Reading values directly from graphs, tables, diagrams, and scatter plots
+• Identifying trends (increasing, decreasing, constant, non-linear)
+• Interpolating between data points on a graph
+• Converting between units using given data
+• Identifying the independent and dependent variables from a figure
+Common traps: reading the wrong axis; confusing independent (x-axis) with dependent (y-axis) variable.`,
+
+  ACT_SCI_2_RESEARCH_SUMMARIES: `ACT Research Summaries covers:
+• Identifying the hypothesis of an experiment
+• Identifying controlled variables vs. manipulated variables
+• Evaluating whether experimental results support or contradict a hypothesis
+• Identifying flaws or improvements in experimental design
+• Predicting results of a new experiment based on observed trends
+Common traps: confusing correlation with causation; selecting an answer that requires knowledge not provided in the passage.`,
+
+  ACT_SCI_3_CONFLICTING_VIEWPOINTS: `ACT Conflicting Viewpoints covers:
+• Understanding two or more competing scientific explanations for the same phenomenon
+• Identifying which evidence supports each viewpoint
+• Identifying points of agreement and disagreement between scientists
+• Determining which new data would strengthen or weaken a given viewpoint
+Common traps: attributing an argument to the wrong scientist; choosing an answer that is true in general science but not supported by the specific passage.`,
+
+  // ── ACT Reading ──
+  ACT_READ_1_LITERARY: `ACT Literary Narrative passage strategy:
+• Passage type: prose fiction or personal narrative with a named narrator or characters
+• Question types: character motivation, tone/mood, figurative language, point of view, sequence of events
+• EASY: locate a specific detail stated directly (e.g., character's age, setting description)
+• MEDIUM: infer a character's motivation or emotional state from actions/dialogue
+• HARD: analyze how the author's narrative technique (irony, imagery, unreliable narrator) affects meaning
+Key skill: Pay attention to narrator's attitude and tone; figurative language (similes, metaphors, personification) signals themes.`,
+
+  ACT_READ_2_SOCIAL_SCIENCE: `ACT Social Science passage strategy:
+• Passage type: essay or article about economics, psychology, sociology, or anthropology
+• Question types: main idea, author's claim, specific detail, inference, vocabulary in context
+• EASY: identify the central argument stated in the first or last paragraph
+• MEDIUM: infer the author's implied conclusion from evidence presented
+• HARD: evaluate whether a new piece of evidence would support or undermine the author's argument
+Key skill: Identify the author's thesis early; social science passages often use hedging language ("may suggest," "appears to indicate").`,
+
+  ACT_READ_3_HUMANITIES: `ACT Humanities passage strategy:
+• Passage type: memoir, cultural criticism, art/music/literature analysis, philosophical essay
+• Question types: author's perspective, rhetorical devices, vocabulary in context, implied meaning
+• EASY: identify the author's stated opinion or the subject of the piece
+• MEDIUM: interpret the author's use of an analogy, metaphor, or historical reference
+• HARD: analyze how the author's background or cultural context shapes their argument
+Key skill: Humanities passages often have a first-person or opinionated voice; tone words (wistful, skeptical, reverent) are frequently tested.`,
+
+  ACT_READ_4_NATURAL_SCIENCE: `ACT Natural Science passage strategy:
+• Passage type: informational article about biology, chemistry, physics, earth science, or environmental science
+• Question types: main idea, specific detail, inference, vocabulary in context, author's purpose
+• EASY: locate a fact stated explicitly in the passage
+• MEDIUM: infer a cause-and-effect relationship described implicitly
+• HARD: evaluate the strength of a scientific argument or identify a limitation in the author's reasoning
+Key skill: No outside science knowledge required — all answers are in the passage. Focus on logical reasoning, not memorized facts.`,
+};
+
+/**
+ * Returns static ACT topic context derived from official ACT test specifications.
+ * Covers all 15 ACT units. No API call needed — pure static data.
+ */
+export function fetchACTTopics(unit: string): string {
+  return ACT_TOPIC_MAP[unit] ?? "";
 }

@@ -1,14 +1,16 @@
 import Link from "next/link";
-import { Globe } from "lucide-react";
+import { Sparkles } from "lucide-react";
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <nav className="border-b border-border/40 p-4">
         <Link href="/" className="flex items-center gap-2 w-fit">
-          <Globe className="h-6 w-6 text-indigo-400" />
+          <Sparkles className="h-6 w-6 text-indigo-400" />
           <div>
-            <span className="text-lg font-bold gradient-text">PrepNova</span>
+            <span className="text-lg font-bold">
+              <span className="gradient-text">Student</span><span className="text-foreground/80 font-medium">Nest</span>
+            </span>
             <p className="text-xs text-muted-foreground leading-none">Your AI Study Partner</p>
           </div>
         </Link>

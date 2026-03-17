@@ -21,6 +21,16 @@ import { HfInference } from "@huggingface/inference";
 import { CohereClient } from "cohere-ai";
 import Anthropic from "@anthropic-ai/sdk";
 
+export interface AICallResult {
+  response: string;
+  modelUsed: string;
+}
+
+export interface ValidationResult {
+  approved: boolean;
+  reason?: string;
+}
+
 // ── Provider instances (lazy-created only when the key exists) ─────────────
 
 function getGemini() {
@@ -170,8 +180,8 @@ async function callOpenRouter(
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
-      "HTTP-Referer": process.env.NEXT_PUBLIC_APP_URL || "https://prepnova.netlify.app",
-      "X-Title": "PrepNova",
+      "HTTP-Referer": process.env.NEXT_PUBLIC_APP_URL || "https://studentnest.ai",
+      "X-Title": "StudentNest",
     },
     body: JSON.stringify({
       model: "google/gemini-flash-1.5",  // free model on OpenRouter
@@ -182,6 +192,39 @@ async function callOpenRouter(
   });
 
   if (!res.ok) throw new Error(`OpenRouter error: ${res.status}`);
+  const data = await res.json();
+  return data.choices?.[0]?.message?.content || "";
+}
+
+async function callOpenRouterPremium(
+  prompt: string,
+  systemPrompt?: string,
+  history?: Array<{ role: "user" | "assistant"; content: string }>
+): Promise<string> {
+  if (!process.env.OPENROUTER_API_KEY) throw new Error("No OPENROUTER_API_KEY");
+
+  const messages: Array<{ role: string; content: string }> = [];
+  if (systemPrompt) messages.push({ role: "system", content: systemPrompt });
+  if (history) messages.push(...history);
+  messages.push({ role: "user", content: prompt });
+
+  const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
+      "HTTP-Referer": process.env.NEXT_PUBLIC_APP_URL || "https://studentnest.ai",
+      "X-Title": "StudentNest",
+    },
+    body: JSON.stringify({
+      model: "openai/gpt-4o",
+      messages,
+      max_tokens: 1500,
+    }),
+    signal: AbortSignal.timeout(30000),
+  });
+
+  if (!res.ok) throw new Error(`OpenRouter-Premium error: ${res.status}`);
   const data = await res.json();
   return data.choices?.[0]?.message?.content || "";
 }
@@ -371,6 +414,7 @@ type ProviderFn = (
 interface Provider {
   name: string;
   envKey: string;
+  modelId: string;
   call: ProviderFn;
 }
 
@@ -415,18 +459,24 @@ async function callPollinationsFree(
 }
 
 const PROVIDERS: Provider[] = [
-  { name: "Gemini",             envKey: "GOOGLE_AI_API_KEY",       call: callGemini },
-  { name: "Groq",               envKey: "GROQ_API_KEY",            call: callGroq },
-  { name: "Together.ai",        envKey: "TOGETHER_AI_API_KEY",     call: callTogetherAI },
-  { name: "OpenRouter",         envKey: "OPENROUTER_API_KEY",      call: callOpenRouter },
-  { name: "HuggingFace",        envKey: "HUGGINGFACE_API_KEY",     call: callHuggingFace },
-  { name: "Cohere",             envKey: "COHERE_API_KEY",          call: callCohere },
-  { name: "Vertex AI",          envKey: "VERTEX_AI_PROJECT_ID",    call: callVertexAI },
-  { name: "Ollama",             envKey: "OLLAMA_BASE_URL",         call: callOllama },
-  { name: "Anthropic",          envKey: "ANTHROPIC_API_KEY",       call: callAnthropic },
+  { name: "Gemini",             envKey: "GOOGLE_AI_API_KEY",       modelId: "google/gemini-1.5-flash",              call: callGemini },
+  { name: "Groq",               envKey: "GROQ_API_KEY",            modelId: "groq/llama-3.3-70b-versatile",         call: callGroq },
+  { name: "Together.ai",        envKey: "TOGETHER_AI_API_KEY",     modelId: "together/llama-3-70b",                 call: callTogetherAI },
+  { name: "OpenRouter",         envKey: "OPENROUTER_API_KEY",      modelId: "openrouter/gemini-flash-1.5",          call: callOpenRouter },
+  { name: "OpenRouter-Premium", envKey: "OPENROUTER_API_KEY",      modelId: "openrouter/gpt-4o",                    call: callOpenRouterPremium },
+  { name: "HuggingFace",        envKey: "HUGGINGFACE_API_KEY",     modelId: "huggingface/mistral-7b",               call: callHuggingFace },
+  { name: "Cohere",             envKey: "COHERE_API_KEY",          modelId: "cohere/command-r",                     call: callCohere },
+  { name: "Vertex AI",          envKey: "VERTEX_AI_PROJECT_ID",    modelId: "vertex/gemini-1.5-flash",              call: callVertexAI },
+  { name: "Ollama",             envKey: "OLLAMA_BASE_URL",         modelId: "ollama/local",                         call: callOllama },
+  { name: "Anthropic",          envKey: "ANTHROPIC_API_KEY",       modelId: "anthropic/claude-sonnet-4-6",          call: callAnthropic },
   // Always-available fallback — Pollinations.ai (no key, free, GPT-4o-mini quality)
-  { name: "Pollinations-Free",  envKey: "ALWAYS_AVAILABLE",        call: callPollinationsFree },
+  { name: "Pollinations-Free",  envKey: "ALWAYS_AVAILABLE",        modelId: "pollinations/openai",                  call: callPollinationsFree },
 ];
+
+// ── Tier-based provider lists ───────────────────────────────────────────────
+
+const FREE_TIER_PROVIDER_NAMES = ["Groq", "Together.ai", "HuggingFace", "Pollinations-Free"];
+const PREMIUM_TIER_PROVIDER_NAMES = ["Gemini", "OpenRouter-Premium", "Anthropic", "Groq", "Together.ai", "Pollinations-Free"];
 
 /**
  * Call the first available provider.
@@ -480,4 +530,106 @@ export function getConfiguredProviders(): string[] {
   return PROVIDERS.filter(
     (p) => p.envKey === "ALWAYS_AVAILABLE" || !!process.env[p.envKey]
   ).map((p) => p.name);
+}
+
+/**
+ * Call AI providers filtered by subscription tier.
+ * FREE → open/fast models; PREMIUM → top-tier models.
+ * Returns { response, modelUsed } so callers can record which model was used.
+ */
+export async function callAIForTier(
+  tier: "FREE" | "PREMIUM",
+  prompt: string,
+  systemPrompt?: string,
+  history?: Array<{ role: "user" | "assistant"; content: string }>
+): Promise<AICallResult> {
+  const tierNames = tier === "PREMIUM" ? PREMIUM_TIER_PROVIDER_NAMES : FREE_TIER_PROVIDER_NAMES;
+  const available = PROVIDERS.filter(
+    (p) =>
+      tierNames.includes(p.name) &&
+      (p.envKey === "ALWAYS_AVAILABLE" || !!process.env[p.envKey])
+  );
+
+  if (available.length === 0) {
+    throw new Error(`No AI providers available for tier: ${tier}`);
+  }
+
+  for (const provider of available) {
+    try {
+      const text = await provider.call(prompt, systemPrompt, history);
+      if (text?.trim()) {
+        console.log(`[AI][${tier}] Used provider: ${provider.name} (${provider.modelId})`);
+        return { response: text.trim(), modelUsed: provider.modelId };
+      }
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      console.warn(`[AI][${tier}] ${provider.name} failed: ${msg}`);
+      if (msg.includes("401") || msg.includes("403") || msg.includes("invalid") || msg.includes("API key")) {
+        continue;
+      }
+    }
+  }
+
+  throw new Error(`All AI providers failed for tier: ${tier}. Tried: ${available.map((p) => p.name).join(", ")}`);
+}
+
+/**
+ * Validate a generated question for AP style and correctness.
+ * Uses Groq (fast, free) with a 10s timeout, falls back to Pollinations-Free.
+ */
+export async function validateQuestion(questionJson: string): Promise<ValidationResult> {
+  const validatorPrompt = `You are an AP exam question quality reviewer. Evaluate this question JSON strictly.
+
+Criteria:
+1. Single unambiguous correct answer
+2. Distractors are plausible but clearly wrong
+3. AP exam style (no trivial or trick questions)
+4. No factual errors in explanation
+
+Question JSON:
+${questionJson}
+
+Reply with ONLY valid JSON (no markdown): {"approved": true} or {"approved": false, "reason": "brief reason"}`;
+
+  const groqKey = process.env.GROQ_API_KEY;
+  if (groqKey) {
+    try {
+      const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${groqKey}`,
+        },
+        body: JSON.stringify({
+          model: "llama-3.3-70b-versatile",
+          messages: [{ role: "user", content: validatorPrompt }],
+          max_tokens: 100,
+          temperature: 0.1,
+        }),
+        signal: AbortSignal.timeout(10000),
+      });
+
+      if (res.ok) {
+        const data = await res.json() as { choices?: Array<{ message?: { content?: string } }> };
+        const content = data.choices?.[0]?.message?.content?.trim();
+        if (content) {
+          const clean = content.replace(/^```(?:json)?\s*/i, "").replace(/```\s*$/i, "");
+          return JSON.parse(clean) as ValidationResult;
+        }
+      }
+    } catch {
+      // fall through to Pollinations
+    }
+  }
+
+  // Fallback: Pollinations-Free
+  try {
+    const text = await callPollinationsFree(validatorPrompt);
+    const clean = text.trim().replace(/^```(?:json)?\s*/i, "").replace(/```\s*$/i, "");
+    return JSON.parse(clean) as ValidationResult;
+  } catch {
+    // If validation itself fails, approve the question to avoid blocking generation
+    console.warn("[validateQuestion] Validation failed — approving by default");
+    return { approved: true };
+  }
 }

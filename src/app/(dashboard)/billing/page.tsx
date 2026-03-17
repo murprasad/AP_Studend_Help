@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Badge } from "@/components/ui/badge";
 import {
   Crown, Zap, CheckCircle, ExternalLink, Loader2, ArrowUpRight,
-  PartyPopper, AlertTriangle, Calendar, RefreshCw,
+  PartyPopper, AlertTriangle, Calendar, RefreshCw, Sparkles,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -78,6 +78,7 @@ export default function BillingPage() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const [billingCycle, setBillingCycle] = useState<"monthly" | "annual">("monthly");
   const isPremium = session?.user?.subscriptionTier === "PREMIUM";
   const isCanceling = billingStatus?.subscriptionStatus === "canceling";
   const periodEnd = billingStatus?.currentPeriodEnd;
@@ -207,7 +208,7 @@ export default function BillingPage() {
               </Badge>
             )}
           </CardTitle>
-          <CardDescription>Your active NovAP subscription</CardDescription>
+          <CardDescription>Your active StudentNest subscription</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex items-center justify-between">
@@ -226,7 +227,7 @@ export default function BillingPage() {
                     ? isCanceling
                       ? "Access until end of billing period"
                       : "$9.99 / month · Cancel anytime"
-                    : "10 AI conversations / day"}
+                    : "5 AI conversations / day"}
                 </p>
               </div>
             </div>
@@ -385,15 +386,58 @@ export default function BillingPage() {
           </CardContent>
         </Card>
       ) : (
-        <Card className="border-border/40">
+        <Card className="border-indigo-500/30">
           <CardHeader>
-            <CardTitle className="text-lg">Unlock Premium</CardTitle>
-            <CardDescription>Get unlimited access to every NovAP feature.</CardDescription>
+            <CardTitle className="text-lg flex items-center gap-2">
+              <Sparkles className="h-5 w-5 text-indigo-400" />
+              Unlock Premium
+            </CardTitle>
+            <CardDescription>Get unlimited access to every StudentNest feature.</CardDescription>
           </CardHeader>
-          <CardContent>
-            <ul className="space-y-2 mb-6">
+          <CardContent className="space-y-5">
+            {/* Billing cycle toggle */}
+            <div className="flex items-center gap-1 p-1 bg-secondary/50 rounded-lg w-fit">
+              <button
+                onClick={() => setBillingCycle("monthly")}
+                className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${
+                  billingCycle === "monthly"
+                    ? "bg-background text-foreground shadow-sm"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                Monthly
+              </button>
+              <button
+                onClick={() => setBillingCycle("annual")}
+                className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors flex items-center gap-1.5 ${
+                  billingCycle === "annual"
+                    ? "bg-background text-foreground shadow-sm"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                Annual
+                <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30 text-[10px] px-1.5 py-0">
+                  Save 33%
+                </Badge>
+              </button>
+            </div>
+
+            {/* Price display */}
+            <div className="flex items-baseline gap-1">
+              <span className="text-3xl font-bold">
+                {billingCycle === "annual" ? "$79.99" : "$9.99"}
+              </span>
+              <span className="text-muted-foreground text-sm">
+                {billingCycle === "annual" ? "/ year" : "/ month"}
+              </span>
+              {billingCycle === "annual" && (
+                <span className="text-xs text-muted-foreground ml-1">(≈ $6.67/mo)</span>
+              )}
+            </div>
+
+            <ul className="space-y-2">
               {[
-                "Unlimited AI Tutor conversations (vs 10/day on Free)",
+                "Unlimited AI Tutor conversations (vs 5/day on Free)",
                 "Personalized study plan that adapts to your progress",
                 "Faster streaming AI responses",
                 "Advanced weak-area analytics",
@@ -406,11 +450,17 @@ export default function BillingPage() {
                 </li>
               ))}
             </ul>
-            <Link href="/pricing">
-              <Button className="w-full bg-indigo-600 hover:bg-indigo-700">
-                View pricing — from $9.99/month
+
+            <form action={`/api/checkout${billingCycle === "annual" ? "?plan=annual" : ""}`} method="POST">
+              <Button type="submit" className="w-full bg-indigo-600 hover:bg-indigo-700 gap-2">
+                <Crown className="h-4 w-4" />
+                Upgrade to Premium — {billingCycle === "annual" ? "$79.99/yr" : "$9.99/mo"}
               </Button>
-            </Link>
+            </form>
+
+            <p className="text-xs text-center text-muted-foreground">
+              Cancel anytime · Secure payment via Stripe
+            </p>
           </CardContent>
         </Card>
       )}

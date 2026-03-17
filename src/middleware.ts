@@ -28,5 +28,11 @@ export const config = {
     "/mock-exam/:path*",
     "/ai-tutor/:path*",
     "/admin/:path*",
+    "/community/:path*",
+    "/community",
+    "/resources/:path*",
+    "/resources",
+    "/diagnostic/:path*",
+    "/diagnostic",
   ],
 };

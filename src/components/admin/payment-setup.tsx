@@ -17,18 +17,20 @@ import {
 
 interface PaymentConfigResponse {
   paymentsEnabled: boolean;
-  stripeConfig: { secretKey: boolean; webhookSecret: boolean; priceId: boolean; publishableKey: boolean };
-  masked: { secretKey: string; webhookSecret: string; priceId: string; publishableKey: string };
-  pricing: { premiumPriceDisplay: string; premiumName: string };
-  fromEnv: { secretKey: boolean; webhookSecret: boolean; priceId: boolean; publishableKey: boolean };
+  stripeConfig: { secretKey: boolean; webhookSecret: boolean; priceId: boolean; annualPriceId: boolean; publishableKey: boolean };
+  masked: { secretKey: string; webhookSecret: string; priceId: string; annualPriceId: string; publishableKey: string };
+  pricing: { premiumPriceDisplay: string; premiumAnnualPriceDisplay: string; premiumName: string };
+  fromEnv: { secretKey: boolean; webhookSecret: boolean; priceId: boolean; annualPriceId: boolean; publishableKey: boolean };
 }
 
 interface FormState {
   secretKey: string;
   webhookSecret: string;
   priceId: string;
+  annualPriceId: string;
   publishableKey: string;
   premiumPriceDisplay: string;
+  premiumAnnualPriceDisplay: string;
   premiumName: string;
 }
 
@@ -42,8 +44,10 @@ export function AdminPaymentSetup() {
     secretKey: "",
     webhookSecret: "",
     priceId: "",
+    annualPriceId: "",
     publishableKey: "",
     premiumPriceDisplay: "9.99",
+    premiumAnnualPriceDisplay: "79.99",
     premiumName: "Premium",
   });
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
@@ -56,6 +60,7 @@ export function AdminPaymentSetup() {
         setForm((prev) => ({
           ...prev,
           premiumPriceDisplay: d.pricing.premiumPriceDisplay,
+          premiumAnnualPriceDisplay: d.pricing.premiumAnnualPriceDisplay,
           premiumName: d.pricing.premiumName,
         }));
       })
@@ -106,8 +111,10 @@ export function AdminPaymentSetup() {
         secretKey: "",
         webhookSecret: "",
         priceId: "",
+        annualPriceId: "",
         publishableKey: "",
         premiumPriceDisplay: updated.pricing.premiumPriceDisplay,
+        premiumAnnualPriceDisplay: updated.pricing.premiumAnnualPriceDisplay,
         premiumName: updated.pricing.premiumName,
       }));
       setMessage({ type: "success", text: "Payment configuration saved successfully." });
@@ -149,10 +156,18 @@ export function AdminPaymentSetup() {
     {
       key: "priceId",
       configKey: "priceId",
-      label: "Premium Price ID",
+      label: "Monthly Price ID ($9.99/mo)",
       placeholder: "price_...",
-      hint: "Stripe Dashboard → Products → Premium plan → Price ID",
+      hint: "Stripe Dashboard → Products → Premium → monthly price ID",
       envKey: "STRIPE_PREMIUM_PRICE_ID",
+    },
+    {
+      key: "annualPriceId",
+      configKey: "annualPriceId",
+      label: "Annual Price ID ($79.99/yr)",
+      placeholder: "price_...",
+      hint: "Stripe Dashboard → Products → Premium → yearly price ID (create if missing)",
+      envKey: "STRIPE_ANNUAL_PRICE_ID",
     },
     {
       key: "publishableKey",
@@ -340,7 +355,7 @@ export function AdminPaymentSetup() {
                   />
                 </div>
                 <div className="space-y-1.5">
-                  <label className="text-xs font-medium text-muted-foreground">Price per Month ($)</label>
+                  <label className="text-xs font-medium text-muted-foreground">Monthly Price ($)</label>
                   <input
                     type="text"
                     value={form.premiumPriceDisplay}
@@ -349,9 +364,19 @@ export function AdminPaymentSetup() {
                     className="w-full px-3 py-2 text-sm rounded-lg border border-border/40 bg-secondary/30 placeholder:text-muted-foreground/50 focus:outline-none focus:ring-1 focus:ring-indigo-500"
                   />
                 </div>
+                <div className="space-y-1.5 col-span-2">
+                  <label className="text-xs font-medium text-muted-foreground">Annual Price ($) — shown as /yr on billing page</label>
+                  <input
+                    type="text"
+                    value={form.premiumAnnualPriceDisplay}
+                    onChange={(e) => setForm((prev) => ({ ...prev, premiumAnnualPriceDisplay: e.target.value }))}
+                    placeholder="79.99"
+                    className="w-full px-3 py-2 text-sm rounded-lg border border-border/40 bg-secondary/30 placeholder:text-muted-foreground/50 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                  />
+                </div>
               </div>
               <p className="text-xs text-muted-foreground">
-                These values appear on the public <code className="font-mono">/pricing</code> page.
+                These values appear on the public <code className="font-mono">/pricing</code> page and billing page.
               </p>
             </div>
 

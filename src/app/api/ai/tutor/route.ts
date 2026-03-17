@@ -32,9 +32,9 @@ export async function POST(req: NextRequest) {
         const dailyCount = await prisma.tutorConversation.count({
           where: { userId: session.user.id, createdAt: { gte: startOfDay } },
         });
-        if (dailyCount >= 10) {
+        if (dailyCount >= 5) {
           return NextResponse.json({
-            error: "Daily limit reached. Free accounts can start 10 new conversations per day. Upgrade to Premium for unlimited access.",
+            error: "Daily limit reached. Free accounts can start 5 new conversations per day. Upgrade to Premium for unlimited access.",
             limitExceeded: true,
             upgradeUrl: "/pricing",
           }, { status: 429 });

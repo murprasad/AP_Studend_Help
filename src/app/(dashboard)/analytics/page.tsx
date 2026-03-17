@@ -26,8 +26,12 @@ import {
   TrendingUp,
   Loader2,
   GraduationCap,
+  Crown,
+  Sparkles,
 } from "lucide-react";
 import { CourseSelectorInline } from "@/components/layout/course-selector-inline";
+import { useSession } from "next-auth/react";
+import Link from "next/link";
 
 interface MasteryData {
   unit: string;
@@ -57,6 +61,7 @@ interface Stats {
 
 export default function AnalyticsPage() {
   const [course] = useCourse();
+  const { data: session } = useSession();
   const [masteryData, setMasteryData] = useState<MasteryData[]>([]);
   const [accuracyTimeline, setAccuracyTimeline] = useState<AccuracyPoint[]>([]);
   const [stats, setStats] = useState<Stats | null>(null);
@@ -319,6 +324,29 @@ export default function AnalyticsPage() {
               <p className="text-sm text-muted-foreground">Total sessions (last 14 days)</p>
               <p className="text-2xl font-bold">{stats.totalSessions}</p>
             </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Premium upgrade CTA — shown to free users */}
+      {session?.user?.subscriptionTier !== "PREMIUM" && (
+        <Card className="border-indigo-500/30 bg-gradient-to-br from-indigo-500/10 to-purple-500/5">
+          <CardContent className="p-5 flex items-start gap-4">
+            <div className="w-10 h-10 rounded-lg bg-indigo-500/20 flex items-center justify-center flex-shrink-0">
+              <Sparkles className="h-5 w-5 text-indigo-400" />
+            </div>
+            <div className="flex-1">
+              <p className="font-semibold text-sm">Unlock advanced analytics with Premium</p>
+              <p className="text-xs text-muted-foreground mt-1">
+                See detailed weak-area breakdowns, time-per-question trends, and an AI-generated action plan to push your estimated score from {stats?.estimatedApScore || "?"} to a 5.
+              </p>
+            </div>
+            <Link href="/billing">
+              <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-medium transition-colors whitespace-nowrap">
+                <Crown className="h-3.5 w-3.5" />
+                Upgrade
+              </button>
+            </Link>
           </CardContent>
         </Card>
       )}

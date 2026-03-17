@@ -130,40 +130,126 @@ const COURSES = [
     desc: "Biological bases of behavior, learning, cognition, development, and mental health.",
     category: "Social Studies",
   },
+  // SAT Prep
+  {
+    icon: Calculator,
+    color: "text-blue-400",
+    bg: "bg-blue-500/10",
+    border: "border-blue-500/20",
+    name: "SAT Math",
+    units: "4 domains",
+    desc: "Algebra, advanced math, data analysis, geometry & trigonometry.",
+    category: "SAT Prep",
+  },
+  {
+    icon: BookOpen,
+    color: "text-sky-400",
+    bg: "bg-sky-500/10",
+    border: "border-sky-500/20",
+    name: "SAT Reading & Writing",
+    units: "4 domains",
+    desc: "Vocabulary, text structure, grammar, and rhetorical skills.",
+    category: "SAT Prep",
+  },
+  // ACT Prep
+  {
+    icon: Calculator,
+    color: "text-orange-400",
+    bg: "bg-orange-500/10",
+    border: "border-orange-500/20",
+    name: "ACT Math",
+    units: "5 domains",
+    desc: "Arithmetic, algebra, geometry, statistics, and real-world math. 5-choice format.",
+    category: "ACT Prep",
+  },
+  {
+    icon: BookOpen,
+    color: "text-amber-400",
+    bg: "bg-amber-500/10",
+    border: "border-amber-500/20",
+    name: "ACT English",
+    units: "3 domains",
+    desc: "Passage-embedded grammar, punctuation, style, and rhetoric.",
+    category: "ACT Prep",
+  },
+  {
+    icon: FlaskConical,
+    color: "text-green-400",
+    bg: "bg-green-500/10",
+    border: "border-green-500/20",
+    name: "ACT Science",
+    units: "3 types",
+    desc: "Data interpretation, experimental reasoning, and competing scientific theories.",
+    category: "ACT Prep",
+  },
+  {
+    icon: Library,
+    color: "text-teal-400",
+    bg: "bg-teal-500/10",
+    border: "border-teal-500/20",
+    name: "ACT Reading",
+    units: "4 passage types",
+    desc: "Main idea, inference, and detail questions across literary, social science, humanities, and natural science passages.",
+    category: "ACT Prep",
+  },
 ];
 
 const AI_SOURCES = [
   {
     icon: Brain,
-    color: "text-purple-400",
+    color: "text-emerald-400",
     name: "Groq (Llama 3.3 70B)",
-    desc: "Primary AI engine — ultra-fast inference. Used for Nova chatbot and question generation.",
-    badge: "Primary",
-    badgeColor: "bg-purple-500/20 text-purple-400 border-purple-500/30",
+    desc: "Primary engine for FREE users — ultra-fast inference for questions and Nova chat.",
+    badge: "Free Tier",
+    badgeColor: "bg-emerald-500/20 text-emerald-400 border-emerald-500/30",
+  },
+  {
+    icon: Zap,
+    color: "text-emerald-300",
+    name: "Together.ai",
+    desc: "Open-source model inference for Free tier users.",
+    badge: "Free Tier",
+    badgeColor: "bg-emerald-500/20 text-emerald-400 border-emerald-500/30",
+  },
+  {
+    icon: Database,
+    color: "text-emerald-200",
+    name: "HuggingFace",
+    desc: "Open-source model inference — always available at no cost.",
+    badge: "Free Tier",
+    badgeColor: "bg-emerald-500/20 text-emerald-400 border-emerald-500/30",
   },
   {
     icon: Star,
-    color: "text-blue-400",
+    color: "text-indigo-400",
     name: "Google Gemini 1.5 Flash",
-    desc: "High-quality question generation and tutoring. First in the cascade when key is configured.",
-    badge: "Fast",
-    badgeColor: "bg-blue-500/20 text-blue-400 border-blue-500/30",
+    desc: "Priority model for PREMIUM users — highest quality question generation and tutoring.",
+    badge: "Premium",
+    badgeColor: "bg-indigo-500/20 text-indigo-400 border-indigo-500/30",
+  },
+  {
+    icon: Crown,
+    color: "text-indigo-300",
+    name: "OpenRouter / GPT-4o",
+    desc: "Premium OpenAI GPT-4o via OpenRouter — advanced reasoning for complex AP questions.",
+    badge: "Premium",
+    badgeColor: "bg-indigo-500/20 text-indigo-400 border-indigo-500/30",
   },
   {
     icon: Brain,
-    color: "text-indigo-400",
+    color: "text-indigo-200",
     name: "Anthropic Claude",
-    desc: "Advanced reasoning for complex AP questions and study plans.",
-    badge: "Powerful",
+    desc: "Premium Claude — used for complex study plans and high-difficulty AP questions.",
+    badge: "Premium",
     badgeColor: "bg-indigo-500/20 text-indigo-400 border-indigo-500/30",
   },
   {
     icon: Globe,
-    color: "text-green-400",
+    color: "text-slate-400",
     name: "Pollinations.ai",
-    desc: "Free fallback provider — no API key required. Always available as a last resort.",
-    badge: "Free",
-    badgeColor: "bg-green-500/20 text-green-400 border-green-500/30",
+    desc: "Always-available free fallback for all tiers — no API key required.",
+    badge: "All Tiers",
+    badgeColor: "bg-slate-500/20 text-slate-400 border-slate-500/30",
   },
 ];
 
@@ -235,7 +321,7 @@ const EDU_SOURCES = [
     icon: TrendingUp,
     color: "text-cyan-400",
     name: "Khan Academy",
-    desc: "Free video lessons and exercises for all 10 AP courses.",
+    desc: "Free video lessons and exercises for all AP courses plus official SAT and ACT prep.",
     url: "https://www.khanacademy.org",
   },
 ];
@@ -261,15 +347,13 @@ export default function AboutPage() {
             <Globe className="h-6 w-6 text-indigo-400" />
           </div>
           <div>
-            <h1 className="text-3xl font-bold gradient-text">About NovAP</h1>
-            <p className="text-muted-foreground text-sm">Free · AI-powered · Built for students</p>
+            <h1 className="text-3xl font-bold gradient-text">About StudentNest</h1>
+            <p className="text-muted-foreground text-sm">AI-powered · Free core · Premium AI models</p>
           </div>
         </div>
         <p className="text-muted-foreground leading-relaxed max-w-2xl">
-          NovAP is an AI-powered AP exam prep platform designed to give every student unlimited,
-          personalized practice — at zero cost. We combine free educational APIs, open textbooks,
-          and cutting-edge language models so you never run out of quality questions or resources.
-          Now supporting <strong className="text-foreground">10 AP courses</strong> across Mathematics, Science, and Social Studies.
+          StudentNest gives every student unlimited, AI-powered AP practice. Core features are free — Premium unlocks the most powerful AI models.
+          Now supporting <strong className="text-foreground">10 AP courses</strong> plus <strong className="text-foreground">SAT and ACT prep</strong> — 16 courses total across Mathematics, Science, Social Studies, and standardized test preparation.
         </p>
       </div>
 
@@ -281,17 +365,16 @@ export default function AboutPage() {
             Our Goal
           </h2>
           <p className="text-muted-foreground leading-relaxed">
-            AP prep resources shouldn&apos;t cost hundreds of dollars. NovAP exists to level the
-            playing field — giving every student access to high-quality, personalized AP practice
-            powered by the same AI technology used in professional educational tools, completely
-            free. We believe a student&apos;s ZIP code or budget should never determine their AP score.
+            AP prep resources shouldn&apos;t cost hundreds of dollars. StudentNest exists to level the
+            playing field — core features are free for every student, and Premium unlocks better AI models for those who want more.
+            Your ZIP code or budget should never determine your AP score.
           </p>
         </CardContent>
       </Card>
 
       {/* Courses by category */}
       <div className="space-y-6">
-        <h2 className="text-xl font-bold">Supported AP Courses ({COURSES.length} courses)</h2>
+        <h2 className="text-xl font-bold">Supported Courses ({COURSES.length} courses)</h2>
         {COURSE_CATEGORIES.map((category) => (
           <div key={category}>
             <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-3">{category}</p>
@@ -334,7 +417,7 @@ export default function AboutPage() {
         <div>
           <h2 className="text-xl font-bold">How Questions Are Generated</h2>
           <p className="text-sm text-muted-foreground mt-1">
-            Full transparency — here&apos;s every AI model and data source NovAP uses.
+            Full transparency — here&apos;s every AI model and data source StudentNest uses.
           </p>
         </div>
 
@@ -354,7 +437,7 @@ export default function AboutPage() {
         </div>
 
         <p className="text-xs text-muted-foreground">
-          NovAP uses a <strong className="text-foreground">cascade system</strong>: the first available API key is used, automatically falling back to the next provider if one fails. Pollinations.ai requires no key and is always available.
+          StudentNest uses a <strong className="text-foreground">two-tier provider system</strong>. FREE and PREMIUM users are served from separate AI model pools. Premium users get priority access to the most powerful models. All questions are reviewed for quality before being added to the question bank.
         </p>
       </div>
 
@@ -394,7 +477,7 @@ export default function AboutPage() {
         <div>
           <h2 className="text-xl font-bold">Free vs Premium</h2>
           <p className="text-sm text-muted-foreground mt-1">
-            Everything you need to ace your AP exam is free. Premium unlocks unlimited AI access, advanced analytics, and full question type support.
+            Core practice is free. Premium gives you better AI and no daily limits.
           </p>
         </div>
 
@@ -413,20 +496,14 @@ export default function AboutPage() {
 
           {/* Feature rows */}
           {[
-            { feature: "AP Courses Available", free: "All 10 courses", premium: "All 10 courses", highlight: false },
+            { feature: "Courses Available", free: "All 16 courses (AP + SAT + ACT)", premium: "All 16 courses (AP + SAT + ACT)", highlight: false },
             { feature: "MCQ Practice Questions", free: "Unlimited", premium: "Unlimited", highlight: false },
-            { feature: "FRQ / SAQ Practice", free: false, premium: true, highlight: true },
-            { feature: "DBQ / LEQ (History)", free: false, premium: true, highlight: true },
-            { feature: "Practice Sessions / Day", free: "3 sessions", premium: "Unlimited", highlight: false },
             { feature: "Mock Exam Simulator", free: true, premium: true, highlight: false },
             { feature: "AI Tutor Conversations", free: "10 / day", premium: "Unlimited", highlight: true },
-            { feature: "AI Streaming Responses", free: false, premium: true, highlight: true },
             { feature: "Study Plan", free: "Static template", premium: "AI-personalized, updates weekly", highlight: true },
             { feature: "Progress Analytics", free: "Basic", premium: "Advanced + weak-area insights", highlight: false },
-            { feature: "Priority AI Model", free: false, premium: true, highlight: false },
+            { feature: "AI Model Pool", free: "Groq + fallbacks", premium: "Gemini + GPT-4o + Claude", highlight: true },
             { feature: "Achievements & XP", free: true, premium: true, highlight: false },
-            { feature: "Early Access to New Courses", free: false, premium: true, highlight: false },
-            { feature: "Email Support", free: false, premium: true, highlight: false },
             { feature: "Price", free: "$0/month", premium: "$9.99/month", highlight: false },
           ].map((row, i) => (
             <div
@@ -478,24 +555,21 @@ export default function AboutPage() {
         </CardHeader>
         <CardContent className="space-y-2">
           <p className="text-sm text-muted-foreground">
-            Have a question about NovAP, found a bug, or want to suggest a new AP course? We&apos;d love to hear from you!
+            Found a bug or want to suggest a new AP course? Reach out — we read everything.
           </p>
           <a
-            href="mailto:murprasad@gmail.com"
+            href="mailto:contact@studentnest.ai"
             className="inline-flex items-center gap-2 text-emerald-400 hover:text-emerald-300 font-medium transition-colors"
           >
             <Mail className="h-4 w-4" />
-            murprasad@gmail.com
+            contact@studentnest.ai
           </a>
-          <p className="text-xs text-muted-foreground">
-            Response time: usually within 24–48 hours. All feedback is read and appreciated!
-          </p>
         </CardContent>
       </Card>
 
       {/* Footer note */}
       <p className="text-xs text-muted-foreground text-center pb-4">
-        NovAP is an independent educational project. Not affiliated with College Board, AP®, or any textbook publisher.
+        StudentNest is an independent educational project. Not affiliated with College Board, AP®, or any textbook publisher.
         AP® is a trademark registered by the College Board, which is not affiliated with, and does not endorse, this site.
       </p>
     </div>

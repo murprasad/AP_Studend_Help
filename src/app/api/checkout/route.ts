@@ -32,7 +32,11 @@ export async function POST(req: NextRequest) {
       apiVersion: "2024-06-20",
       httpClient: Stripe.createFetchHttpClient(),
     });
-    const priceId = stripeConfig.priceId;
+    const { searchParams } = new URL(req.url);
+    const plan = searchParams.get("plan") || "monthly";
+    const priceId = plan === "annual" && stripeConfig.annualPriceId
+      ? stripeConfig.annualPriceId
+      : stripeConfig.priceId;
 
     const origin = req.headers.get("origin") || process.env.NEXTAUTH_URL || "http://localhost:3000";
 

@@ -14,7 +14,7 @@ import {
   BarChart3,
   BookOpen,
   MessageSquare,
-  Globe,
+  Sparkles,
   LogOut,
   Shield,
   Trophy,
@@ -22,13 +22,19 @@ import {
   ChevronDown,
   Info,
   Crown,
-  FileText,
+  ClipboardList,
+  Users,
+  Sun,
+  Moon,
 } from "lucide-react";
+import { useTheme } from "@/hooks/use-theme";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
@@ -36,12 +42,13 @@ const navItems = [
   { href: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
   { href: "/practice", icon: Zap, label: "Practice" },
   { href: "/mock-exam", icon: Trophy, label: "Mock Exam" },
+  { href: "/diagnostic", icon: ClipboardList, label: "Diagnostic" },
   { href: "/analytics", icon: BarChart3, label: "Analytics" },
   { href: "/study-plan", icon: BookOpen, label: "Study Plan" },
   { href: "/resources", icon: Library, label: "Resources" },
   { href: "/ai-tutor", icon: MessageSquare, label: "AI Tutor" },
+  { href: "/community", icon: Users, label: "Community" },
   { href: "/billing", icon: Crown, label: "Billing" },
-  { href: "/docs", icon: FileText, label: "Docs" },
   { href: "/about", icon: Info, label: "About" },
 ];
 
@@ -50,109 +57,175 @@ const COURSE_OPTIONS = (Object.entries(COURSE_REGISTRY) as [ApCourse, { name: st
   ([value, cfg]) => ({ value, label: cfg.name, short: cfg.shortName })
 );
 
+const COURSE_GROUPS: { label: string; keys: ApCourse[] }[] = [
+  {
+    label: "AP Courses",
+    keys: [
+      "AP_WORLD_HISTORY", "AP_COMPUTER_SCIENCE_PRINCIPLES", "AP_PHYSICS_1",
+      "AP_CALCULUS_AB", "AP_CALCULUS_BC", "AP_STATISTICS",
+      "AP_CHEMISTRY", "AP_BIOLOGY", "AP_US_HISTORY", "AP_PSYCHOLOGY",
+    ] as ApCourse[],
+  },
+  {
+    label: "SAT Prep",
+    keys: ["SAT_MATH", "SAT_READING_WRITING"] as ApCourse[],
+  },
+  {
+    label: "ACT Prep",
+    keys: ["ACT_MATH", "ACT_ENGLISH", "ACT_SCIENCE", "ACT_READING"] as ApCourse[],
+  },
+];
+
 interface SidebarProps {
   userRole?: string;
+  isOpen?: boolean;
+  onClose?: () => void;
 }
 
-export function Sidebar({ userRole }: SidebarProps) {
+export function Sidebar({ userRole, isOpen = false, onClose = () => {} }: SidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
   const [course, setCourse] = useCourse();
+  const { theme, toggleTheme } = useTheme();
 
   function handleCourseChange(newCourse: ApCourse) {
     setCourse(newCourse);
     router.refresh();
   }
 
-  return (
-    <aside className="w-64 bg-card border-r border-border/40 flex flex-col h-full">
-      {/* Logo */}
-      <div className="p-6 border-b border-border/40">
-        <Link href="/dashboard" className="flex items-center gap-2">
-          <Globe className="h-7 w-7 text-indigo-400" />
-          <span className="text-lg font-bold gradient-text">PrepNova</span>
-        </Link>
-      </div>
+  function handleNavClick() {
+    onClose();
+  }
 
-      {/* Course Switcher */}
-      <div className="px-4 py-3 border-b border-border/40">
-        <p className="text-xs text-muted-foreground mb-1.5 font-medium uppercase tracking-wider">Current Course</p>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="outline"
-              size="sm"
-              className="w-full justify-between text-left font-normal text-xs h-auto py-2 px-3"
-            >
-              <span className="truncate">{AP_COURSE_SHORT[course]}</span>
-              <ChevronDown className="h-3.5 w-3.5 ml-1 flex-shrink-0 opacity-60" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="start" className="w-60">
-            {COURSE_OPTIONS.map((opt) => (
-              <DropdownMenuItem
-                key={opt.value}
-                onClick={() => handleCourseChange(opt.value)}
+  return (
+    <>
+      {/* Mobile backdrop */}
+      {isOpen && (
+        <div
+          className="lg:hidden fixed inset-0 bg-black/50 z-40"
+          onClick={onClose}
+        />
+      )}
+
+      <aside className={cn(
+        "fixed inset-y-0 left-0 z-50 w-64 bg-card border-r border-border/40 flex flex-col",
+        "lg:relative lg:inset-auto lg:z-auto lg:translate-x-0",
+        "transform transition-transform duration-200 ease-in-out",
+        isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+      )}>
+        {/* Logo */}
+        <div className="p-6 border-b border-border/40 pt-14 lg:pt-6">
+          <Link href="/dashboard" className="flex items-center gap-2" onClick={handleNavClick}>
+            <Sparkles className="h-7 w-7 text-indigo-400" />
+            <span className="text-lg font-bold">
+              <span className="gradient-text">Student</span><span className="text-foreground/80 font-medium">Nest</span>
+            </span>
+          </Link>
+        </div>
+
+        {/* Course Switcher */}
+        <div className="px-4 py-3 border-b border-border/40">
+          <p className="text-xs text-muted-foreground mb-1.5 font-medium uppercase tracking-wider">Current Course</p>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="outline"
+                size="sm"
+                className="w-full justify-between text-left font-normal text-xs h-auto py-2 px-3"
+              >
+                <span className="truncate">{AP_COURSE_SHORT[course]}</span>
+                <ChevronDown className="h-3.5 w-3.5 ml-1 flex-shrink-0 opacity-60" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start" className="w-60">
+              {COURSE_GROUPS.map((group, gi) => (
+                <div key={group.label}>
+                  {gi > 0 && <DropdownMenuSeparator />}
+                  <DropdownMenuLabel className="text-xs text-muted-foreground px-2 py-1.5">
+                    {group.label}
+                  </DropdownMenuLabel>
+                  {group.keys.map((key) => {
+                    const opt = COURSE_OPTIONS.find((o) => o.value === key);
+                    if (!opt) return null;
+                    return (
+                      <DropdownMenuItem
+                        key={opt.value}
+                        onClick={() => handleCourseChange(opt.value)}
+                        className={cn(
+                          "cursor-pointer text-sm",
+                          course === opt.value && "bg-primary/10 text-primary font-medium"
+                        )}
+                      >
+                        {opt.label}
+                      </DropdownMenuItem>
+                    );
+                  })}
+                </div>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+
+        {/* Navigation */}
+        <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
+          {navItems.map((item) => {
+            const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                onClick={handleNavClick}
                 className={cn(
-                  "cursor-pointer text-sm",
-                  course === opt.value && "bg-primary/10 text-primary font-medium"
+                  "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors",
+                  isActive
+                    ? "bg-primary/20 text-primary border border-primary/30"
+                    : "text-muted-foreground hover:text-foreground hover:bg-accent"
                 )}
               >
-                {opt.label}
-              </DropdownMenuItem>
-            ))}
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
+                <item.icon className="h-5 w-5" />
+                {item.label}
+              </Link>
+            );
+          })}
 
-      {/* Navigation */}
-      <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
-        {navItems.map((item) => {
-          const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
-          return (
+          {userRole === "ADMIN" && (
             <Link
-              key={item.href}
-              href={item.href}
+              href="/admin"
+              onClick={handleNavClick}
               className={cn(
                 "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors",
-                isActive
+                pathname.startsWith("/admin")
                   ? "bg-primary/20 text-primary border border-primary/30"
                   : "text-muted-foreground hover:text-foreground hover:bg-accent"
               )}
             >
-              <item.icon className="h-5 w-5" />
-              {item.label}
+              <Shield className="h-5 w-5" />
+              Admin
             </Link>
-          );
-        })}
+          )}
+        </nav>
 
-        {userRole === "ADMIN" && (
-          <Link
-            href="/admin"
-            className={cn(
-              "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors",
-              pathname.startsWith("/admin")
-                ? "bg-primary/20 text-primary border border-primary/30"
-                : "text-muted-foreground hover:text-foreground hover:bg-accent"
-            )}
+        {/* Sign out + theme toggle */}
+        <div className="p-4 border-t border-border/40 space-y-1">
+          <Button
+            variant="ghost"
+            className="w-full justify-start gap-3 text-muted-foreground hover:text-foreground"
+            onClick={toggleTheme}
+            title={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
           >
-            <Shield className="h-5 w-5" />
-            Admin
-          </Link>
-        )}
-      </nav>
-
-      {/* Sign out */}
-      <div className="p-4 border-t border-border/40">
-        <Button
-          variant="ghost"
-          className="w-full justify-start gap-3 text-muted-foreground hover:text-foreground"
-          onClick={() => signOut({ callbackUrl: "/" })}
-        >
-          <LogOut className="h-5 w-5" />
-          Sign Out
-        </Button>
-      </div>
-    </aside>
+            {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+            {theme === "dark" ? "Light Mode" : "Dark Mode"}
+          </Button>
+          <Button
+            variant="ghost"
+            className="w-full justify-start gap-3 text-muted-foreground hover:text-foreground"
+            onClick={() => signOut({ callbackUrl: "/" })}
+          >
+            <LogOut className="h-5 w-5" />
+            Sign Out
+          </Button>
+        </div>
+      </aside>
+    </>
   );
 }

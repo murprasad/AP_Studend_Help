@@ -1,8 +1,8 @@
 import { ApUnit, ApCourse, Difficulty, QuestionType } from "@prisma/client";
 import { COURSE_UNITS } from "./utils";
 import { COURSE_REGISTRY, getCourseForUnit } from "./courses";
-import { callAIWithCascade } from "./ai-providers";
-import { getWikipediaSummary, getEduContextForQuery, searchStackExchange, getEnrichedContext, fetchMITOCWContent, fetchDIGContent, fetchOpenStaxContent, fetchSmithsonianContent } from "./edu-apis";
+import { callAIWithCascade, callAIForTier, validateQuestion, AICallResult } from "./ai-providers";
+import { getWikipediaSummary, getEduContextForQuery, searchStackExchange, getEnrichedContext, fetchMITOCWContent, fetchDIGContent, fetchOpenStaxContent, fetchSmithsonianContent, fetchCollegeBoardSATTopics, fetchACTTopics } from "./edu-apis";
 
 // ── Unified helpers (thin wrappers over the cascade engine) ────────────────
 async function callAI(prompt: string, systemPrompt?: string): Promise<string> {
@@ -34,13 +34,15 @@ export interface GeneratedQuestion {
   correctAnswer: string;
   explanation: string;
   estimatedMinutes: number;
+  modelUsed?: string;
+  generatedForTier?: "FREE" | "PREMIUM";
 }
 
 // ── Fetch web content from open educational resources ──────────────────────
 async function fetchResourceContent(url: string): Promise<string> {
   try {
     const response = await fetch(url, {
-      headers: { "User-Agent": "Mozilla/5.0 (compatible; PrepNova/1.0; Educational)" },
+      headers: { "User-Agent": "Mozilla/5.0 (compatible; StudentNest/1.0; Educational)" },
       signal: AbortSignal.timeout(5000),
     });
     if (!response.ok) return "";
@@ -115,6 +117,17 @@ async function getUnitContext(unit: ApUnit): Promise<string> {
   if (smithsonianContent.status === "fulfilled" && smithsonianContent.value) {
     enriched += `\nSmithsonian collections (open access):\n${smithsonianContent.value.slice(0, 400)}`;
   }
+  // SAT courses: inject static College Board topic context
+  if (course === "SAT_MATH" || course === "SAT_READING_WRITING") {
+    const satContext = fetchCollegeBoardSATTopics(unit);
+    if (satContext) enriched += `\nCollege Board SAT Curriculum Guide:\n${satContext}`;
+  }
+  // ACT courses: inject static ACT topic context
+  if (course === "ACT_MATH" || course === "ACT_ENGLISH" ||
+      course === "ACT_SCIENCE" || course === "ACT_READING") {
+    const actContext = fetchACTTopics(unit);
+    if (actContext) enriched += `\nACT Curriculum Guide:\n${actContext}`;
+  }
   return enriched;
 }
 
@@ -163,11 +176,34 @@ export function buildQuestionPrompt(
 
   const wordCountSection = `\nWORD COUNT TARGETS:\n- questionText: 15–40 words\n- stimulus: 40–120 words (or null if not applicable)\n- each option: 8–25 words\n- explanation: 80–150 words (name the correct answer + explain each distractor's trap)`;
 
+  // SAT-specific format rules injected after the standard sections
+  const satFormatSection = (course === "SAT_MATH" || course === "SAT_READING_WRITING")
+    ? `\nSAT FORMAT RULES:
+- Exactly 4 answer choices labeled A, B, C, D (no E, no "All of the above", no "None of the above")
+- SAT Math: describe figures numerically or with coordinates — no diagrams in text
+- SAT Reading/Writing: ALWAYS start the "stimulus" field with a 2-4 sentence passage excerpt
+- Distractors must reflect common student errors (sign errors, misread transitions, wrong word meanings)
+- Difficulty mapping: EASY = score range 800–900, MEDIUM = 900–1100, HARD = 1200+
+- Vary question stems — do not use "Which of the following" as the only phrasing`
+    : "";
+
+  // ACT-specific format rules
+  const actFormatSection = (course === "ACT_MATH" || course === "ACT_ENGLISH" ||
+    course === "ACT_SCIENCE" || course === "ACT_READING")
+    ? `\nACT FORMAT RULES:
+- ACT Math: EXACTLY 5 answer choices labeled A, B, C, D, E — never 4
+- ACT English: ALWAYS include 1-3 passage sentences as "stimulus"; question is embedded in editorial context
+- ACT Science: ALWAYS include a data table (pipe-delimited) or experimental summary as "stimulus"
+- ACT Reading: ALWAYS include a 5-8 sentence passage excerpt as "stimulus"; no outside knowledge tested
+- Difficulty: EASY = ACT score 1-16, MEDIUM = 17-24, HARD = 25-36
+- Vary question stems — not just "Which of the following"`
+    : "";
+
   return `You are an ${config.name} exam question generator trained on College Board ${config.name} curriculum standards.
 
 ${unitHeader}
 
-${config.examAlignmentNotes}${difficultySection}${skillsSection}${stimulusSection}${distractorSection}${wordCountSection}
+${config.examAlignmentNotes}${difficultySection}${skillsSection}${stimulusSection}${distractorSection}${wordCountSection}${satFormatSection}${actFormatSection}
 
 GENERATION TASK:
 ${generationInstruction}
@@ -182,15 +218,40 @@ export async function generateQuestion(
   difficulty: Difficulty,
   questionType: QuestionType = QuestionType.MCQ,
   topic?: string,
-  course?: ApCourse
+  course?: ApCourse,
+  userTier: "FREE" | "PREMIUM" = "FREE"
 ): Promise<GeneratedQuestion> {
   const inferredCourse = course || getCourseForUnit(unit);
   const unitName = COURSE_REGISTRY[inferredCourse].units[unit]?.name || unit;
   const prompt = buildQuestionPrompt(inferredCourse, unit, unitName, difficulty, questionType, topic);
 
-  const rawResponse = await callAI(prompt);
-  const rawText = rawResponse.trim().replace(/^```(?:json)?\s*/i, "").replace(/```\s*$/i, "");
-  const parsed = JSON.parse(rawText);
+  const MAX_GEN_ATTEMPTS = 3;
+  let aiResult: AICallResult | null = null;
+  let parsed: Record<string, unknown> | null = null;
+  let lastError = "";
+
+  for (let attempt = 1; attempt <= MAX_GEN_ATTEMPTS; attempt++) {
+    try {
+      const raw = await callAIForTier(userTier, prompt);
+      const rawText = raw.response.trim().replace(/^```(?:json)?\s*/i, "").replace(/```\s*$/i, "");
+      const candidate = JSON.parse(rawText) as Record<string, unknown>;
+      const validation = await validateQuestion(JSON.stringify(candidate));
+      if (validation.approved) {
+        aiResult = raw;
+        parsed = candidate;
+        break;
+      }
+      console.warn(`[generateQuestion] Attempt ${attempt} rejected: ${validation.reason}`);
+      lastError = validation.reason ?? "validation failed";
+    } catch (err) {
+      lastError = err instanceof Error ? err.message : String(err);
+      console.warn(`[generateQuestion] Attempt ${attempt} error: ${lastError}`);
+    }
+  }
+
+  if (!aiResult || !parsed) {
+    throw new Error(`generateQuestion: all ${MAX_GEN_ATTEMPTS} attempts failed. Last: ${lastError}`);
+  }
 
   const inferredCourseForReturn = course || getCourseForUnit(unit);
   const typeFormatForReturn = COURSE_REGISTRY[inferredCourseForReturn]?.questionTypeFormats?.[questionType];
@@ -202,7 +263,7 @@ export async function generateQuestion(
   if (inferredCourseForReturn === "AP_WORLD_HISTORY" && parsed.wikiImageTopic && parsed.wikiImageTopic !== "null") {
     try {
       const wikiResult = await Promise.race([
-        getWikipediaSummary(parsed.wikiImageTopic),
+        getWikipediaSummary(parsed.wikiImageTopic as string),
         new Promise<null>((resolve) => setTimeout(() => resolve(null), 3000)),
       ]);
       stimulusImageUrl = (wikiResult as Awaited<ReturnType<typeof getWikipediaSummary>>)?.imageUrl ?? undefined;
@@ -213,17 +274,19 @@ export async function generateQuestion(
 
   return {
     unit,
-    topic: parsed.topic,
-    subtopic: parsed.subtopic,
+    topic: parsed.topic as string,
+    subtopic: parsed.subtopic as string,
     difficulty,
     questionType,
-    questionText: parsed.questionText,
-    stimulus: parsed.stimulus || undefined,
+    questionText: parsed.questionText as string,
+    stimulus: (parsed.stimulus as string) || undefined,
     stimulusImageUrl,
-    options: parsed.options,
-    correctAnswer: parsed.correctAnswer,
-    explanation: parsed.explanation,
+    options: parsed.options as string[] | undefined,
+    correctAnswer: parsed.correctAnswer as string,
+    explanation: parsed.explanation as string,
     estimatedMinutes,
+    modelUsed: aiResult.modelUsed,
+    generatedForTier: userTier,
     isAiGenerated: true,
     isApproved: false,
   } as GeneratedQuestion & { isAiGenerated: boolean; isApproved: boolean };
@@ -235,7 +298,8 @@ export async function generateBulkQuestions(
   unit?: ApUnit,
   difficulty?: Difficulty,
   course?: ApCourse,
-  questionType: QuestionType = QuestionType.MCQ
+  questionType: QuestionType = QuestionType.MCQ,
+  userTier: "FREE" | "PREMIUM" = "PREMIUM"
 ): Promise<GeneratedQuestion[]> {
   const targetCourse: ApCourse = course || "AP_WORLD_HISTORY";
   const courseUnitKeys = Object.keys(COURSE_UNITS[targetCourse]) as ApUnit[];
@@ -254,7 +318,7 @@ export async function generateBulkQuestions(
     const randomTopic = keyThemes[Math.floor(Math.random() * keyThemes.length)];
 
     try {
-      const q = await generateQuestion(randomUnit, randomDiff, questionType, randomTopic, targetCourse);
+      const q = await generateQuestion(randomUnit, randomDiff, questionType, randomTopic, targetCourse, userTier);
       questions.push(q);
     } catch (error) {
       console.error(`Failed to generate question ${i + 1}:`, error);
@@ -471,6 +535,26 @@ End every response with exactly: FOLLOW_UPS: ["q1","q2","q3"]`;
   }
 
   return { answer, followUps };
+}
+
+// ── Hint Generator ────────────────────────────────────────────────────────
+export async function generateHint(
+  questionText: string,
+  options: string[],
+  attempt?: string
+): Promise<string> {
+  const optionsText = options.map((o, i) => `${String.fromCharCode(65+i)}) ${o}`).join("\n")
+  const attemptText = attempt ? `\nStudent attempted: ${attempt}` : ""
+  const prompt = `Give a one-sentence hint for this AP exam question without revealing the answer. Be helpful but don't give it away.
+
+Question: ${questionText}
+Options:
+${optionsText}${attemptText}
+
+Hint:`
+
+  const result = await callAIWithCascade(prompt, undefined, undefined)
+  return result.trim()
 }
 
 // ── Explanation Generator ──────────────────────────────────────────────────

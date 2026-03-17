@@ -12,7 +12,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { ApCourse, ApUnit, Difficulty, QuestionType } from "@prisma/client";
+import { ApCourse, ApUnit, Difficulty, QuestionType, SubTier } from "@prisma/client";
 import { VALID_AP_COURSES, COURSE_REGISTRY } from "@/lib/courses";
 import { buildQuestionPrompt } from "@/lib/ai";
 import { callAIWithCascade } from "@/lib/ai-providers";
@@ -93,6 +93,8 @@ export async function POST(req: NextRequest) {
             explanation: q.explanation,
             isAiGenerated: true,
             isApproved: true,
+            modelUsed: null,
+            generatedForTier: "PREMIUM" as SubTier,
           },
         });
       } catch (err) {

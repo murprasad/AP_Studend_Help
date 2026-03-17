@@ -65,8 +65,10 @@ export interface StripeConfig {
   secretKey: string;
   webhookSecret: string;
   priceId: string;
+  annualPriceId: string;
   publishableKey: string;
   premiumPriceDisplay: string;
+  premiumAnnualPriceDisplay: string;
   premiumName: string;
 }
 
@@ -75,13 +77,15 @@ export interface StripeConfig {
  * Env vars take precedence over DB settings so CF Pages secrets override admin UI values.
  */
 export async function getStripeConfig(): Promise<StripeConfig> {
-  const [secretKey, webhookSecret, priceId, publishableKey, premiumPriceDisplay, premiumName] =
+  const [secretKey, webhookSecret, priceId, annualPriceId, publishableKey, premiumPriceDisplay, premiumAnnualPriceDisplay, premiumName] =
     await Promise.all([
       getSetting("stripe_secret_key", ""),
       getSetting("stripe_webhook_secret", ""),
       getSetting("stripe_premium_price_id", ""),
+      getSetting("stripe_annual_price_id", ""),
       getSetting("stripe_publishable_key", ""),
       getSetting("stripe_premium_price_display", "9.99"),
+      getSetting("stripe_annual_price_display", "79.99"),
       getSetting("stripe_premium_name", "Premium"),
     ]);
 
@@ -89,8 +93,10 @@ export async function getStripeConfig(): Promise<StripeConfig> {
     secretKey: process.env.STRIPE_SECRET_KEY || secretKey,
     webhookSecret: process.env.STRIPE_WEBHOOK_SECRET || webhookSecret,
     priceId: process.env.STRIPE_PREMIUM_PRICE_ID || priceId,
+    annualPriceId: process.env.STRIPE_ANNUAL_PRICE_ID || annualPriceId,
     publishableKey: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || publishableKey,
     premiumPriceDisplay,
+    premiumAnnualPriceDisplay,
     premiumName,
   };
 }

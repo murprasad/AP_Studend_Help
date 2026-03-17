@@ -18,7 +18,7 @@ interface Message {
 }
 
 const GREETINGS = [
-  "Hey there, future 5-scorer! ⭐ I'm Nova, your PrepNova guide. Ask me anything!",
+  "Hey there, future 5-scorer! ⭐ I'm Nova, your StudentNest guide. Ask me anything!",
   "Yo! I'm Nova ⭐ — your study sidekick. Lost in the app? Need a pep talk? I got you!",
   "What's up! Nova here ⭐ Ask me about features, courses, or just say hi!",
 ];
@@ -138,7 +138,7 @@ export function NovaChat() {
               </div>
               <div>
                 <p className="text-white font-bold text-sm leading-none">Nova ⭐</p>
-                <p className="text-indigo-200 text-xs mt-0.5">PrepNova Guide · Powered by Groq</p>
+                <p className="text-indigo-200 text-xs mt-0.5">StudentNest Guide · Powered by Groq</p>
               </div>
             </div>
             <div className="flex items-center gap-1">

@@ -1,8 +1,8 @@
-# NovAP (AP SmartPrep) — Detailed Requirements
+# StudentNest — Detailed Requirements
 
 **Document ID:** DR-001
-**Version:** 1.5
-**Last Updated:** 2026-03-16
+**Version:** 1.8
+**Last Updated:** 2026-03-17
 **Status:** Active
 
 ---
@@ -147,7 +147,7 @@
 - Input: { message, conversationId?, history[], course, skipAI?, savedResponse? }
 - Daily limit (if `ai_limit_enabled=true` and tier = FREE):
   - Count conversations created today for this user
-  - If count ≥ 10 → 429 `{ limitReached: true }`
+  - If count ≥ **5** → 429 `{ limitReached: true }` (reduced from 10 in v1.8)
 - Educational enrichment: parallel fetch Wikipedia + StackExchange + edu APIs
   - 2.5 second hard timeout via Promise.race
   - Result injected into system prompt as "Live Context" (max 200 chars)
@@ -244,7 +244,11 @@
 - Creates Stripe Checkout Session (subscription mode)
 - Requires authentication; uses user email for Stripe customer
 - allow_promotion_codes=true (discount support)
-- On success → redirect to /billing?success=true
+- Accepts optional `?plan=annual` query parameter:
+  - `?plan=annual` → uses `STRIPE_ANNUAL_PRICE_ID` (or `stripe_annual_price_id` SiteSetting)
+  - No param / `?plan=monthly` → uses `STRIPE_PREMIUM_PRICE_ID` (monthly, $9.99)
+  - Falls back to monthly price if annual price ID is not configured
+- On success → redirect to /billing?success=1
 
 ### DR-BILL-02 — Webhook (`POST /api/webhooks/stripe`)
 - Verified with Stripe webhook signature
@@ -265,6 +269,15 @@
 ### DR-BILL-05 — Customer Portal (`POST /api/billing/portal`)
 - Creates Stripe customer portal session
 - Allows: update payment method, view invoices, manage subscription
+
+### DR-BILL-06 — Billing Page Plan Toggle
+- The `/billing` page shall present a **Monthly / Annual** toggle for free users
+- Monthly: $9.99/mo — submits form to `POST /api/checkout`
+- Annual: $79.99/yr — submits form to `POST /api/checkout?plan=annual`
+- "Save 33%" badge displayed on Annual tab
+- Annual price displays "≈ $6.67/mo" sub-label for clarity
+- `stripe_annual_price_id` and `stripe_annual_price_display` are configurable via
+  Admin → Payment Setup or `STRIPE_ANNUAL_PRICE_ID` environment variable
 
 ---
 
@@ -355,6 +368,62 @@
 
 ---
 
+## DR-TIER: Two-Tier AI Question Generation (v1.6)
+
+| ID | Requirement | Impl File |
+|----|-------------|-----------|
+| DR-TIER-01 | `callAIForTier(tier, prompt)` filters PROVIDERS by tier-specific name list | `src/lib/ai-providers.ts` |
+| DR-TIER-02 | FREE tier providers: Groq, Together.ai, HuggingFace, Pollinations-Free | `src/lib/ai-providers.ts` |
+| DR-TIER-03 | PREMIUM tier providers: Gemini, OpenRouter-Premium, Anthropic, Groq, Together.ai, Pollinations-Free | `src/lib/ai-providers.ts` |
+| DR-TIER-04 | `OpenRouter-Premium` is a separate PROVIDERS entry using model `openai/gpt-4o` | `src/lib/ai-providers.ts` |
+| DR-TIER-05 | `validateQuestion(json)` calls Groq (10 s timeout) then Pollinations; returns `{approved, reason?}`; approves by default on validator failure | `src/lib/ai-providers.ts` |
+| DR-TIER-06 | `generateQuestion()` retries up to `MAX_GEN_ATTEMPTS = 3` times if validation fails; throws after all attempts exhausted | `src/lib/ai.ts` |
+| DR-TIER-07 | `Question` model adds `modelUsed: String?` and `generatedForTier: SubTier @default(FREE)` | `prisma/schema.prisma` |
+| DR-TIER-08 | `POST /api/practice` passes `session.user.subscriptionTier` as `userTier` to `generateQuestion()` | `src/app/api/practice/route.ts` |
+| DR-TIER-09 | `POST /api/ai/bulk-generate` reads `tier` from request body (default PREMIUM for admin use) | `src/app/api/ai/bulk-generate/route.ts` |
+| DR-TIER-10 | `premium_feature_restriction` feature flag defaults to `"false"` — all users receive full platform access in open mode | `src/lib/settings.ts` |
+
+---
+
+## 16. Theme System
+
+### DR-THEME-01 — Light/Dark Mode
+- `src/app/globals.css`: `:root` defines light-mode CSS variables; `.dark` class overrides to dark-mode variables
+- `src/hooks/use-theme.ts`: `useTheme()` hook reads `localStorage['theme']` on mount (defaults to `"dark"`); exposes `{ theme, toggleTheme }`; writes to localStorage and toggles `.dark` class on `document.documentElement`
+- `src/app/layout.tsx`: `<html>` has `suppressHydrationWarning`; inline script runs before React hydration: `(function(){var t=localStorage.getItem('theme')||'dark'; document.documentElement.classList.toggle('dark',t==='dark')})()`
+- `src/components/layout/sidebar.tsx`: Sun/Moon icon button at bottom calls `toggleTheme()`; label reads "Light Mode" or "Dark Mode" based on current state
+
+---
+
+## 17. User Onboarding
+
+### DR-ONBOARD-01 — First-Time Onboarding Wizard
+- `src/app/(dashboard)/onboarding/page.tsx`: 3-step wizard rendered within the dashboard layout
+  - **Step 1** — Course picker: grouped by AP / SAT / ACT; calls `setCourse()` on selection
+  - **Step 2** — How It Works: explains the Diagnose → Practice → Track loop
+  - **Step 3** — First Action: two cards — "Take Diagnostic" (recommended) or "Start Practicing"
+- Completion writes `localStorage['onboarding_completed'] = 'true'`
+- `src/app/(dashboard)/layout.tsx`: on mount, if `localStorage['onboarding_completed']` is absent AND current path ≠ `/onboarding`, redirect to `/onboarding`
+- Returning users (flag present) never see the wizard again; they navigate directly to their intended page
+
+---
+
+## 18. Contextual Upgrade CTAs
+
+### DR-UX-01 — Post-Diagnostic Upgrade CTA
+- Displayed in `src/app/(dashboard)/diagnostic/page.tsx` results view
+- Shown only when `session.user.subscriptionTier !== "PREMIUM"` AND `result.weakUnits.length > 0`
+- Card names the top weak unit explicitly to personalise the message
+- Buttons: "Upgrade to Premium" → `/billing`; "View Study Plan" → `/study-plan`
+
+### DR-UX-02 — Analytics Upgrade CTA
+- Displayed at the bottom of `src/app/(dashboard)/analytics/page.tsx`
+- Shown only when `session.user.subscriptionTier !== "PREMIUM"`
+- References the user's estimated AP score to make the upgrade case concrete
+- Button: "Upgrade" → `/billing`
+
+---
+
 ## 14. Platform Documentation
 
 ### DR-DOCS-01 — Document Set
@@ -434,3 +503,6 @@ calls in batches of 3 with a 300ms inter-batch pause:
 | 1.3 | 2026-03-15 | Docs page (DR-DOCS), course switching (DR-COURSE-02/03), ai_generation_enabled gate, achievement display |
 | 1.4 | 2026-03-15 | Password reset flow (DR-AUTH-06/07); renumbered change log section to 15 |
 | 1.5 | 2026-03-16 | Scalability hardening: DR-PERF-01–04 added (indexes, rate limiting, query pruning, bulk gen batching); rate limit note added to DR-PRAC-01/02; batch note added to DR-ADMIN-02 |
+| 1.6 | 2026-03-16 | Two-tier AI generation: DR-TIER-01–10 added; callAIForTier, validateQuestion, 3-attempt retry, modelUsed/generatedForTier schema fields, premium_feature_restriction default |
+| 1.7 | 2026-03-17 | Rebranded to StudentNest — updated all document titles, headers, and references |
+| 1.8 | 2026-03-17 | Monetisation & UX v2.1: DR-BILL-01 updated (annual plan `?plan=annual`); DR-BILL-06 added (billing page toggle); DR-THEME-01 added (light/dark mode); DR-ONBOARD-01 added (onboarding wizard); DR-UX-01/02 added (upgrade CTAs); DR-TUTOR-01 limit updated 10→5; sections 16–18 added |

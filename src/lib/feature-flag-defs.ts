@@ -15,7 +15,7 @@ export const FEATURE_FLAG_DEFS = [
     key: "ai_limit_enabled",
     label: "AI Daily Limits",
     description:
-      "Enforce 10 conversations/day for free users. Disable to give all users unlimited access.",
+      "Enforce 5 conversations/day for free users. Disable to give all users unlimited access.",
     default: "true",
     dangerous: false,
   },

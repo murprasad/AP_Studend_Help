@@ -1,5 +1,5 @@
 {
-  "name": "prepnova",
+  "name": "studentnest",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -13,7 +13,7 @@
     "db:seed": "tsx prisma/seed.ts",
     "db:studio": "prisma studio",
     "pages:build": "npx prisma generate && node scripts/patch-prisma-wasm.js && opennextjs-cloudflare build --dangerouslyUseUnsupportedNextVersion && node scripts/prepare-cf-deploy.js",
-    "pages:deploy": "npm run pages:build && wrangler pages deploy .cf-deploy --project-name=novaprep --commit-dirty=true",
+    "pages:deploy": "npm run pages:build && wrangler pages deploy .cf-deploy --project-name=studentnest --commit-dirty=true",
     "pages:preview": "npm run pages:build && wrangler pages dev .cf-deploy"
   },
   "dependencies": {

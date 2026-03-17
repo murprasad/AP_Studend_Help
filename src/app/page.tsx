@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import {
   BookOpen,
   Brain,
@@ -10,7 +9,7 @@ import {
   Zap,
   CheckCircle,
   ArrowRight,
-  Globe,
+  Sparkles,
   Clock,
   Target,
 } from "lucide-react";
@@ -49,9 +48,22 @@ const features = [
 ];
 
 const courses = [
-  { name: "AP World History: Modern", units: 9 },
-  { name: "AP Computer Science Principles", units: 5 },
-  { name: "AP Physics 1", units: 10 },
+  { name: "AP World History: Modern",       units: 9  },
+  { name: "AP Computer Science Principles", units: 5  },
+  { name: "AP Physics 1: Algebra-Based",    units: 10 },
+  { name: "AP Calculus AB",                 units: 8  },
+  { name: "AP Calculus BC",                 units: 10 },
+  { name: "AP Statistics",                  units: 9  },
+  { name: "AP Chemistry",                   units: 9  },
+  { name: "AP Biology",                     units: 8  },
+  { name: "AP US History",                  units: 9  },
+  { name: "AP Psychology",                  units: 9  },
+  { name: "SAT Math",                       units: 4  },
+  { name: "SAT Reading & Writing",          units: 4  },
+  { name: "ACT Math",                       units: 5  },
+  { name: "ACT English",                    units: 3  },
+  { name: "ACT Science",                    units: 3  },
+  { name: "ACT Reading",                    units: 4  },
 ];
 
 export default function LandingPage() {
@@ -61,8 +73,10 @@ export default function LandingPage() {
       <nav className="border-b border-border/40 backdrop-blur-sm sticky top-0 z-50 bg-background/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Globe className="h-7 w-7 text-indigo-400" />
-            <span className="text-xl font-bold gradient-text">PrepNova</span>
+            <Sparkles className="h-7 w-7 text-indigo-400" />
+            <span className="text-xl font-bold">
+              <span className="gradient-text">Student</span><span className="text-foreground/80 font-medium">Nest</span>
+            </span>
           </div>
           <div className="flex items-center gap-4">
             <Link href="/login">
@@ -79,16 +93,14 @@ export default function LandingPage() {
       <section className="relative pt-20 pb-32 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-indigo-950/30 to-transparent pointer-events-none" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <Badge className="mb-6 bg-indigo-500/20 text-indigo-300 border-indigo-500/30">
-            AI-Powered AP Exam Prep — Multiple Courses
-          </Badge>
-          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight mb-6">
-            AI-powered practice
-            <br />
-            <span className="gradient-text">for AP students</span>
+          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight mb-4">
+            <span className="gradient-text">Student</span><span className="text-foreground/80 font-medium">Nest</span>
           </h1>
+          <p className="text-2xl sm:text-3xl font-semibold text-foreground/90 mb-6">
+            Study Smarter. Score Higher.
+          </p>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-10">
-            Adaptive questions, mock exams, and smart study plans for AP World, AP Physics, and AP Computer Science.
+            AI-powered exam preparation for AP, SAT, and ACT with personalized practice, adaptive quizzes, and performance insights.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/register">
@@ -114,7 +126,7 @@ export default function LandingPage() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             {[
               { value: "10,000+", label: "Practice Questions" },
-              { value: "3+", label: "AP Courses" },
+              { value: "16", label: "AP + SAT + ACT Courses" },
               { value: "5", label: "Free Content Sources" },
               { value: "5", label: "Target AP Score" },
             ].map((stat) => (
@@ -160,7 +172,7 @@ export default function LandingPage() {
             <div>
               <h2 className="text-4xl font-bold mb-4">Complete Curriculum Coverage</h2>
               <p className="text-muted-foreground text-lg mb-8">
-                We cover every unit in each supported AP course with hundreds of College Board-aligned questions per unit.
+                We cover every unit across 10 AP courses, SAT, and ACT with hundreds of exam-aligned questions per unit.
               </p>
               <Link href="/register">
                 <Button size="lg" className="gap-2">
@@ -233,7 +245,7 @@ export default function LandingPage() {
         <div className="max-w-3xl mx-auto px-4 text-center">
           <h2 className="text-4xl font-bold mb-4">Ready to Score a 5?</h2>
           <p className="text-muted-foreground text-lg mb-8">
-            Join students who are using PrepNova to master their AP courses and crush the exam.
+            Join students who are using StudentNest to master their AP courses and crush the exam.
           </p>
           <Link href="/register">
             <Button size="lg" className="gap-2 text-base px-10">
@@ -247,11 +259,11 @@ export default function LandingPage() {
       <footer className="border-t border-border/40 py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
-            <Globe className="h-5 w-5 text-indigo-400" />
-            <span className="font-semibold">PrepNova</span>
+            <Sparkles className="h-5 w-5 text-indigo-400" />
+            <span className="font-semibold"><span className="gradient-text">Student</span><span className="text-foreground/80 font-medium">Nest</span></span>
           </div>
           <p className="text-sm text-muted-foreground">
-            © 2025 PrepNova. Your AI Study Partner.
+            © 2025 StudentNest. Your AI Study Partner.
           </p>
         </div>
       </footer>

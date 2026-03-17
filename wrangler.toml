@@ -1,19 +1,21 @@
-name = "novaprep"
+name = "studentnest"
 compatibility_date = "2024-09-23"
 compatibility_flags = ["nodejs_compat_v2"]
 pages_build_output_dir = ".open-next"
 
 [vars]
-NEXT_PUBLIC_APP_URL = "https://novaprep.ai"
+NEXT_PUBLIC_APP_URL = "https://studentnest.ai"
 NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY = "pk_live_51TAWKbFO9hO9aqlXT2lKTHPeD2B2CDQHc5lO250LN3OOvnpuNikuXNadJlleRrzMx5zKd8sD2ODimoAA98Ldn9Sg00JdTftuVv"
 
 # ─── Stripe Payment Secrets ───────────────────────────────────────────────────
 # Set these via the Cloudflare Pages dashboard or with:
-#   wrangler pages secret put STRIPE_SECRET_KEY       --project-name=novaprep
-#   wrangler pages secret put STRIPE_WEBHOOK_SECRET   --project-name=novaprep
-#   wrangler pages secret put STRIPE_PREMIUM_PRICE_ID --project-name=novaprep
+#   wrangler pages secret put STRIPE_SECRET_KEY       --project-name=studentnest
+#   wrangler pages secret put STRIPE_WEBHOOK_SECRET   --project-name=studentnest
+#   wrangler pages secret put STRIPE_PREMIUM_PRICE_ID --project-name=studentnest
+#   wrangler pages secret put STRIPE_ANNUAL_PRICE_ID  --project-name=studentnest
 #
 # STRIPE_SECRET_KEY         = "sk_live_..."   ← CF Pages Secret (not here)
 # STRIPE_WEBHOOK_SECRET     = "whsec_..."     ← CF Pages Secret (not here)
-# STRIPE_PREMIUM_PRICE_ID   = "price_..."     ← CF Pages Secret (not here)
+# STRIPE_PREMIUM_PRICE_ID   = "price_..."     ← CF Pages Secret (not here)  (monthly $9.99)
+# STRIPE_ANNUAL_PRICE_ID    = "price_..."     ← CF Pages Secret (not here)  (annual  $79.99)
 # ─────────────────────────────────────────────────────────────────────────────

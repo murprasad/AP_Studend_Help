@@ -1,4 +1,4 @@
-# CLAUDE.md — AP SmartPrep (NovAP) Project Guide
+# CLAUDE.md — StudentNest Project Guide
 
 This file is the single source of truth for AI-assisted development on this codebase.
 Read it before making any changes.
@@ -7,11 +7,11 @@ Read it before making any changes.
 
 ## Project Overview
 
-**AP SmartPrep** (branded **NovAP**) is a full-stack AP exam preparation platform.
+**StudentNest** is a full-stack AP exam preparation platform.
 Students practice MCQs, take timed mock exams, track mastery by unit, get AI tutoring,
 and receive personalized study plans.
 
-- **Production URL**: https://novaprep.ai (Cloudflare Pages)
+- **Production URL**: https://studentnest.ai (Cloudflare Pages)
 - **Dev URL**: http://localhost:3000
 
 ---
@@ -154,6 +154,50 @@ Selected course is stored in `localStorage` and a cookie (`ap_selected_course`).
 The cookie is read by server components; `localStorage` by client components.
 Hook: `src/hooks/use-course.ts`.
 
+### 7. Practice Session — Avoid-Repeats + On-Demand AI Generation
+
+`POST /api/practice` (`src/app/api/practice/route.ts`) uses a two-stage pool system
+to avoid showing students questions they have already answered correctly:
+
+**Stage 1 — Build fresh pool:**
+1. Fetch all approved questions matching the requested `course`, `unit`, `difficulty`, and `questionType`.
+2. Query `StudentResponse` to get the set of `questionId`s this user has already answered **correctly** (`correctlyAnsweredIds`).
+3. Split into `freshQuestions` (not yet answered correctly) and `seenCorrectQuestions`.
+
+**Stage 2 — On-demand AI generation (when `ai_generation_enabled = true`):**
+- Triggers only when `freshQuestions.length < questionCount` (not total bank size).
+- Generates at most `MAX_GEN_PER_REQUEST = 5` questions in parallel per request.
+- Uses `Promise.allSettled` so partial failures are tolerated — any generated questions are saved to the DB and added to `freshQuestions`.
+- Uses weak-topic targeting: mastery scores < 70% → pick the weakest `keyTheme` from `COURSE_REGISTRY` for that unit to guide generation.
+- Returns `aiGenerationWarning` to the client describing how many questions were generated.
+
+**Stage 3 — Scoring + fallback:**
+- `freshQuestions` get a random priority score + 3 (high priority).
+- `seenCorrectQuestions` get a random priority score + 1 (fallback only — used only if `freshQuestions.length < questionCount` after generation).
+- The top `questionCount` items from the sorted pool are selected.
+- A `lowBankWarning` is returned if the fresh pool is less than `2 × questionCount` (after AI gen).
+
+**Important:** If the bank is completely empty **and** AI generation fails, the route returns
+`400 "No questions available"` rather than an empty session.
+
+### 8. Two-Tier AI Question Generation (v1.6)
+
+`generateQuestion()` in `src/lib/ai.ts` accepts a `userTier: "FREE" | "PREMIUM"` param
+(default "FREE") and uses `callAIForTier()` from `src/lib/ai-providers.ts` instead of the
+generic cascade.
+
+**FREE pool:** Groq → Together.ai → HuggingFace → Pollinations-Free
+**PREMIUM pool:** Gemini → OpenRouter-Premium (GPT-4o) → Anthropic → Groq → Together.ai → Pollinations-Free
+
+Every generated question passes `validateQuestion()` (Groq, 10 s, Pollinations fallback).
+If validation fails, retries up to 3 times (`MAX_GEN_ATTEMPTS = 3`). Validator fails open
+(returns `approved: true`) if the validator itself errors, to prevent blocking question generation.
+
+New Question columns: `modelUsed String?`, `generatedForTier SubTier @default(FREE)`.
+
+**Note:** `premium_feature_restriction` feature flag defaults to `"false"` — all users
+receive full platform access unless explicitly enabled by admin.
+
 ---
 
 ## Commands
@@ -187,7 +231,7 @@ npm install --legacy-peer-deps  # Use this flag — some deps have peer conflict
 |----------|----------|-------------|
 | `DATABASE_URL` | ✅ | Neon PostgreSQL connection string (pooled) |
 | `NEXTAUTH_SECRET` | ✅ | Random secret for JWT signing |
-| `NEXTAUTH_URL` | ✅ | App base URL (http://localhost:3000 dev, https://novaprep.ai prod) |
+| `NEXTAUTH_URL` | ✅ | App base URL (http://localhost:3000 dev, https://studentnest.ai prod) |
 | `GROQ_API_KEY` | ✅ | Primary AI provider (free at console.groq.com) |
 | `ANTHROPIC_API_KEY` | Optional | Fallback AI (has billing issues — use Groq) |
 | `GOOGLE_AI_API_KEY` | Optional | Gemini free tier (faster than Groq on cold start) |
@@ -210,7 +254,7 @@ This runs:
 5. `wrangler pages deploy .cf-deploy --project-name=novaprep` — uploads to CF
 
 Cloudflare Pages project: `novaprep`
-Custom domain: `https://novaprep.ai`
+Custom domain: `https://studentnest.ai`
 Wrangler config: `wrangler.toml`
 
 **After code changes**: always run `npm run pages:deploy` to push to production.

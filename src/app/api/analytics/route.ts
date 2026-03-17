@@ -103,6 +103,57 @@ export async function GET(req: NextRequest) {
       select: { apScoreEstimate: true },
     });
 
+    // Predicted AP Score calculation
+    const allMastery = await prisma.masteryScore.findMany({
+      where: { userId, course },
+      select: { masteryScore: true }
+    })
+    const avgMastery = allMastery.length > 0
+      ? allMastery.reduce((s, m) => s + m.masteryScore, 0) / allMastery.length
+      : 0
+
+    const fourteenDaysAgo = new Date(Date.now() - 14 * 24 * 60 * 60 * 1000)
+    const recentSessionsForPrediction = await prisma.practiceSession.findMany({
+      where: { userId, course, completedAt: { gte: fourteenDaysAgo } },
+      select: { correctAnswers: true, totalQuestions: true }
+    })
+    const recentAccuracy = recentSessionsForPrediction.length > 0
+      ? recentSessionsForPrediction.reduce((s, sess) => s + (sess.correctAnswers / Math.max(sess.totalQuestions, 1)) * 100, 0) / recentSessionsForPrediction.length
+      : 0
+
+    const mockExamSessions = await prisma.practiceSession.findMany({
+      where: { userId, course, sessionType: "MOCK_EXAM", completedAt: { not: null } },
+      orderBy: { completedAt: "desc" },
+      take: 1,
+      select: { apScoreEstimate: true }
+    })
+    const mockScore = mockExamSessions[0]?.apScoreEstimate ?? null
+
+    const weightedScore = (avgMastery * 0.50) + (recentAccuracy * 0.30) + (mockScore ? mockScore * 20 * 0.20 : 0)
+    const predictedScore = Math.min(5, Math.max(1, Math.ceil(weightedScore / 20))) as 1|2|3|4|5
+    const totalSessionsCount = await prisma.practiceSession.count({ where: { userId, course } })
+    const confidence: "low"|"medium"|"high" = totalSessionsCount > 20 ? "high" : totalSessionsCount > 5 ? "medium" : "low"
+
+    // Trend data
+    const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+    const fourteenToSevenDaysAgo = new Date(Date.now() - 14 * 24 * 60 * 60 * 1000)
+    const recentWeekSessions = await prisma.practiceSession.findMany({
+      where: { userId, course, completedAt: { gte: sevenDaysAgo } },
+      select: { correctAnswers: true, totalQuestions: true }
+    })
+    const prevWeekSessions = await prisma.practiceSession.findMany({
+      where: { userId, course, completedAt: { gte: fourteenToSevenDaysAgo, lt: sevenDaysAgo } },
+      select: { correctAnswers: true, totalQuestions: true }
+    })
+    const recentWeekAccuracy = recentWeekSessions.length > 0
+      ? recentWeekSessions.reduce((s, sess) => s + (sess.correctAnswers / Math.max(sess.totalQuestions, 1)), 0) / recentWeekSessions.length
+      : 0
+    const prevWeekAccuracy = prevWeekSessions.length > 0
+      ? prevWeekSessions.reduce((s, sess) => s + (sess.correctAnswers / Math.max(sess.totalQuestions, 1)), 0) / prevWeekSessions.length
+      : 0
+    const weeklyGrowth = Math.round((recentWeekAccuracy - prevWeekAccuracy) * 100)
+    const improving = weeklyGrowth > 0
+
     return NextResponse.json({
       masteryData,
       accuracyTimeline,
@@ -116,6 +167,12 @@ export async function GET(req: NextRequest) {
         totalXp: user?.totalXp || 0,
         level: user?.level || 1,
         estimatedApScore: bestMockScore?.apScoreEstimate || null,
+      },
+      predictedScore: {
+        score: predictedScore,
+        confidence,
+        weeklyGrowth,
+        improving,
       },
     });
   } catch (error) {

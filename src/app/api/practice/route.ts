@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { SessionType, ApUnit, Difficulty, ApCourse, QuestionType } from "@prisma/client";
+import { SessionType, ApUnit, Difficulty, ApCourse, QuestionType, SubTier } from "@prisma/client";
 import { VALID_AP_COURSES, getUnitsForCourse, COURSE_REGISTRY } from "@/lib/courses";
 import { generateQuestion } from "@/lib/ai";
 import { isPremiumRestrictionEnabled, getSetting } from "@/lib/settings";
@@ -88,6 +88,29 @@ export async function POST(req: NextRequest) {
       },
     });
 
+    // Fetch questions this user has already answered (correctly, and recently seen in last 48h)
+    const fortyEightHoursAgo = new Date(Date.now() - 48 * 60 * 60 * 1000);
+    const allQuestionIds = allQuestions.map((q) => q.id);
+    const [correctResponses, recentResponses] = await Promise.all([
+      prisma.studentResponse.findMany({
+        where: { userId: session.user.id, isCorrect: true, questionId: { in: allQuestionIds } },
+        select: { questionId: true },
+      }),
+      prisma.studentResponse.findMany({
+        where: { userId: session.user.id, questionId: { in: allQuestionIds }, answeredAt: { gte: fortyEightHoursAgo } },
+        select: { questionId: true },
+      }),
+    ]);
+
+    const correctlyAnsweredIds = new Set(correctResponses.map((r) => r.questionId));
+    const recentlySeenIds = new Set(recentResponses.map((r) => r.questionId));
+
+    // Three-tier priority pool: never seen > recently seen (not mastered) > seen correct
+    let freshQuestions = allQuestions.filter((q) =>
+      !correctlyAnsweredIds.has(q.id) && !recentlySeenIds.has(q.id)
+    );
+    const seenCorrectQuestions = allQuestions.filter((q) => correctlyAnsweredIds.has(q.id));
+
     // Fetch student's mastery scores for adaptive topic targeting
     const masteryData = await prisma.masteryScore.findMany({
       where: { userId: session.user.id, course: course as ApCourse },
@@ -104,12 +127,11 @@ export async function POST(req: NextRequest) {
     }
 
     // Auto-generate AI questions when the DB bank is insufficient (if flag enabled)
-    // Cap at 5 parallel generations per request to stay within Netlify's 26s timeout.
-    // Groq (Llama 3.3) typically responds in 1–3s, so 5 parallel ≈ 5s total.
-    const MAX_GEN_PER_REQUEST = 5;
+    // Raise cap to 10 for thin banks (< 30 questions total) to help SAT/new courses bootstrap faster.
+    const MAX_GEN_PER_REQUEST = allQuestions.length < 30 ? 10 : 5;
     let aiGenerationWarning: string | null = null;
-    if (aiGenEnabled && allQuestions.length < questionCount) {
-      const needed = Math.min(questionCount - allQuestions.length, MAX_GEN_PER_REQUEST);
+    if (aiGenEnabled && freshQuestions.length < questionCount) {
+      const needed = Math.min(questionCount - freshQuestions.length, MAX_GEN_PER_REQUEST);
       const courseUnitKeys = getUnitsForCourse(course as ApCourse);
       const diffs: Difficulty[] = [Difficulty.EASY, Difficulty.MEDIUM, Difficulty.HARD];
 
@@ -121,7 +143,7 @@ export async function POST(req: NextRequest) {
           ? (difficulty as Difficulty)
           : diffs[i % diffs.length];
         const weakTopic = weakTopicMap.get(u) || undefined;
-        return generateQuestion(u, d, resolvedQuestionType, weakTopic, course as ApCourse)
+        return generateQuestion(u, d, resolvedQuestionType, weakTopic, course as ApCourse, tier as "FREE" | "PREMIUM")
           .then((gen) =>
             prisma.question.create({
               data: {
@@ -139,6 +161,8 @@ export async function POST(req: NextRequest) {
                 explanation: gen.explanation,
                 isAiGenerated: true,
                 isApproved: true,
+                modelUsed: gen.modelUsed ?? null,
+                generatedForTier: (tier === "PREMIUM" ? "PREMIUM" : "FREE") as SubTier,
               },
               select: {
                 id: true, course: true, unit: true, topic: true, subtopic: true,
@@ -156,8 +180,8 @@ export async function POST(req: NextRequest) {
         .map((r) => r.value);
 
       if (generated.length > 0) {
-        allQuestions = [...allQuestions, ...generated];
-        const stillNeeded = questionCount - allQuestions.length;
+        freshQuestions = [...freshQuestions, ...generated];
+        const stillNeeded = questionCount - freshQuestions.length;
         aiGenerationWarning = stillNeeded > 0
           ? `${generated.length} AI question${generated.length === 1 ? "" : "s"} generated. Start another session to get ${stillNeeded} more — they'll be ready instantly!`
           : `${generated.length} AI question${generated.length === 1 ? "" : "s"} generated and saved for future sessions too.`;
@@ -170,26 +194,23 @@ export async function POST(req: NextRequest) {
     }
 
     // Warn only if still below target after AI generation
-    const lowBankWarning = !aiGenerationWarning && allQuestions.length < questionCount * 2
-      ? `Only ${allQuestions.length} questions in the bank — you may see repeats soon.`
+    const lowBankWarning = !aiGenerationWarning && freshQuestions.length < questionCount * 2
+      ? `Only ${freshQuestions.length} questions in the bank — you may see repeats soon.`
       : null;
 
-    // Get student's recent responses to prioritize unseen/wrong questions
-    const recentResponses = await prisma.studentResponse.findMany({
-      where: {
-        userId: session.user.id,
-        questionId: { in: allQuestions.map((q) => q.id) },
-      },
-    });
+    // Build scoring pool: never-seen first, then recently-seen-not-mastered, then mastered
+    const recentlySeenNotMastered = allQuestions.filter(
+      (q) => recentlySeenIds.has(q.id) && !correctlyAnsweredIds.has(q.id)
+    );
+    const pool = freshQuestions.length >= questionCount
+      ? freshQuestions
+      : [...freshQuestions, ...recentlySeenNotMastered, ...seenCorrectQuestions];
 
-    const responseMap = new Map(recentResponses.map((r) => [r.questionId, r]));
-
-    const scored = allQuestions.map((q) => {
-      const response = responseMap.get(q.id);
+    const scored = pool.map((q) => {
       let priority = Math.random();
-      if (!response) priority += 3;
-      else if (!response.isCorrect) priority += 2;
-      else priority += 1;
+      if (!correctlyAnsweredIds.has(q.id) && !recentlySeenIds.has(q.id)) priority += 4; // never seen: highest
+      else if (recentlySeenIds.has(q.id) && !correctlyAnsweredIds.has(q.id)) priority += 2; // recently seen, not mastered
+      else priority += 1;  // already mastered: lowest (fallback only)
       return { ...q, priority };
     });
 

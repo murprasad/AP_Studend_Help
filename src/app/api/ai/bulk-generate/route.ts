@@ -3,7 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { generateBulkQuestions } from "@/lib/ai";
-import { ApUnit, Difficulty, ApCourse, QuestionType } from "@prisma/client";
+import { ApUnit, Difficulty, ApCourse, QuestionType, SubTier } from "@prisma/client";
 
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions);
@@ -19,7 +19,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Admin only" }, { status: 403 });
   }
 
-  const { count = 5, unit, difficulty, course, questionType } = await req.json();
+  const { count = 5, unit, difficulty, course, questionType, tier: bodyTier } = await req.json();
+  const tier: "FREE" | "PREMIUM" = bodyTier === "FREE" ? "FREE" : "PREMIUM";
 
   if (count > 20) {
     return NextResponse.json({ error: "Max 20 questions per request" }, { status: 400 });
@@ -31,7 +32,8 @@ export async function POST(req: NextRequest) {
       unit as ApUnit | undefined,
       difficulty as Difficulty | undefined,
       course as ApCourse | undefined,
-      (questionType as QuestionType) || QuestionType.MCQ
+      (questionType as QuestionType) || QuestionType.MCQ,
+      tier
     );
 
     // Save all generated questions to DB in batches of 3 to avoid
@@ -57,6 +59,8 @@ export async function POST(req: NextRequest) {
               explanation: q.explanation,
               isAiGenerated: true,
               isApproved: true,
+              modelUsed: q.modelUsed ?? null,
+              generatedForTier: tier as SubTier,
             },
           })
         )

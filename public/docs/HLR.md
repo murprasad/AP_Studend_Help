@@ -1,18 +1,18 @@
-# NovAP (AP SmartPrep) — High Level Requirements
+# StudentNest — High Level Requirements
 
 **Document ID:** HLR-001
-**Version:** 1.5
-**Last Updated:** 2026-03-16
+**Version:** 1.9
+**Last Updated:** 2026-03-17
 **Status:** Active
 
 ---
 
 ## 1. Purpose
 
-AP SmartPrep (branded **NovAP**, deployed as **PrepNova** at novaprep.ai) is a full-stack,
+AP SmartPrep (branded **StudentNest**, deployed as **StudentNest** at studentnest.ai) is a full-stack,
 AI-powered AP exam preparation platform for high school students. It provides adaptive
 practice questions, timed mock exams, AI tutoring, mastery-based analytics, and personalized
-study planning for the nine most popular AP courses.
+study planning for ten AP courses, plus SAT and ACT preparation (16 courses total).
 
 ---
 
@@ -33,11 +33,13 @@ The platform shall support secure user registration, login, session management, 
 self-service password reset using JWT-based authentication. Email verification shall be
 required in production. The platform shall support role-based access (STUDENT, ADMIN).
 
-### HLR-F-02 · Multi-Course AP Support
-The platform shall support at minimum nine AP courses simultaneously. Each course shall
-have its own set of units, question types, resource links, exam timing, and AI guidance.
-Adding a new course shall require changes only to the course registry and database schema —
-no other code changes shall be needed.
+### HLR-F-02 · Multi-Course Support (AP, SAT, ACT)
+The platform shall support at minimum 16 courses simultaneously: 10 AP courses, 2 SAT courses,
+and 4 ACT courses. Each course shall have its own set of units, question types, resource links,
+exam timing, and AI guidance. ACT Math shall use a unique 5-choice (A–E) MCQ format. ACT English,
+Science, and Reading shall require stimulus/passage content in all questions. Adding a new course
+shall require changes only to the course registry and database schema — no other code changes
+shall be needed.
 
 ### HLR-F-03 · Adaptive MCQ Practice
 The platform shall provide unlimited multiple-choice practice sessions. Questions shall be
@@ -74,8 +76,10 @@ The platform shall provide curated free resources (video channels, textbooks, pr
 sites, primary sources) for each AP course and unit.
 
 ### HLR-F-10 · Subscription Billing
-The platform shall support a Freemium model with a paid Premium tier ($9.99/month via
-Stripe). Subscription status shall be enforced in real time via webhook events.
+The platform shall support a Freemium model with a paid Premium tier available at
+**$9.99/month** or **$79.99/year** (save 33%) via Stripe. The billing page shall present
+a monthly/annual toggle so students can choose their plan before checkout. Subscription
+status shall be enforced in real time via webhook events.
 
 ### HLR-F-11 · Gamification
 The platform shall award XP for correct answers, maintain daily practice streaks, assign
@@ -97,6 +101,40 @@ flag and a parallel generation cap.
 ### HLR-F-15 · Platform Documentation
 The platform shall maintain and publish living documentation (High Level Requirements,
 Detailed Requirements, High Level Design, Architecture) accessible to all users.
+
+### HLR-F-17 · Light/Dark Mode Theme Toggle
+The platform shall support light and dark display themes, selectable from the sidebar.
+The selected theme shall persist across sessions via localStorage. A flash-prevention
+inline script shall apply the correct class before React hydrates to eliminate the
+white-flash-on-dark-reload issue.
+
+### HLR-F-18 · Guided First-Time User Onboarding
+New users shall be automatically redirected to a 3-step onboarding wizard upon first
+login: (1) select their exam course, (2) learn how the platform works, (3) choose their
+first action (Diagnostic or Practice). Completion is stored in localStorage. Returning
+users bypass the wizard entirely.
+
+### HLR-F-19 · Contextual Upgrade CTAs
+The platform shall surface in-context upgrade prompts at the highest-intent moments for
+free users: (a) after completing a Diagnostic assessment showing weak units, and (b) on
+the Analytics page. CTAs shall name the specific weak unit or score gap to increase
+conversion relevance.
+
+### HLR-F-16: Two-Tier AI Question Generation
+
+| Attribute | Value |
+|-----------|-------|
+| Priority | Medium |
+| Status | Implemented (v1.6) |
+
+**Description:** The system SHALL route AI question generation through provider pools
+selected by the user's subscription tier:
+- **FREE tier** — Groq (llama-3.3-70b), Together.ai, HuggingFace, Pollinations-Free
+- **PREMIUM tier** — Gemini 1.5 Flash, OpenRouter/GPT-4o, Anthropic Claude, + FREE fallbacks
+
+Every AI-generated question SHALL pass through a validation pipeline (up to 3 retry
+attempts) before being stored. The Question record SHALL track `modelUsed` (string) and
+`generatedForTier` (FREE|PREMIUM) for analytics and auditability.
 
 ---
 
@@ -136,7 +174,9 @@ API routes — plain `fetch` with `AbortSignal.timeout()` is the standard patter
 
 ---
 
-## 5. Supported AP Courses (v1.3)
+## 5. Supported Courses (v1.8)
+
+### 5.1 AP Courses (10)
 
 | # | Course | Units | FRQ Types |
 |---|--------|-------|-----------|
@@ -151,19 +191,38 @@ API routes — plain `fetch` with `AbortSignal.timeout()` is the standard patter
 | 9 | AP United States History | 9 | SAQ, LEQ, DBQ |
 | 10 | AP Psychology | 9 | FRQ |
 
+### 5.2 SAT Prep (2)
+
+| # | Course | Domains | Notes |
+|---|--------|---------|-------|
+| 11 | SAT Math | 4 | Standard 4-choice MCQ |
+| 12 | SAT Reading & Writing | 4 | Passage-based; stimulus required |
+
+### 5.3 ACT Prep (4)
+
+| # | Course | Domains | Notes |
+|---|--------|---------|-------|
+| 13 | ACT Math | 5 | **5-choice MCQ (A–E)** — unique format |
+| 14 | ACT English | 3 | Passage-embedded; stimulus required |
+| 15 | ACT Science | 3 | Data table/experiment as stimulus |
+| 16 | ACT Reading | 4 | Passage excerpt (5–8 sentences) as stimulus |
+
 ---
 
 ## 6. Subscription Tiers
 
-| Feature | FREE | PREMIUM ($9.99/mo) |
-|---------|------|---------------------|
+| Feature | FREE | PREMIUM |
+|---------|------|---------|
+| Price | $0 | $9.99/mo or $79.99/yr |
 | MCQ Practice sessions/day | 3 (if restriction on) | Unlimited |
 | FRQ/SAQ/LEQ/DBQ Practice | Blocked (if restriction on) | Unlimited |
-| AI Tutor conversations/day | 10 (if limit on) | Unlimited |
+| AI Tutor conversations/day | **5** (if limit on) | Unlimited |
 | Streaming AI responses | No | Yes |
 | Personalized study plan | Static template (<20 Q) | AI-generated |
-| Analytics | Full | Full |
+| Analytics | Full | Full + upgrade CTA removed |
 | Mock Exams | Included | Included |
+| Diagnostic | Included | Included + personalized CTA |
+| Annual billing discount | — | 33% off ($79.99/yr) |
 
 *Note: When `premium_feature_restriction` flag is OFF (default), all users have full
 access regardless of tier — intended for testing and open-access periods.*
@@ -180,3 +239,7 @@ access regardless of tier — intended for testing and open-access periods.*
 | 1.3 | 2026-03-15 | System | Added docs page (HLR-F-15), course switching fix, Nova chat fix |
 | 1.4 | 2026-03-15 | System | Password reset flow implemented (HLR-F-01 updated); TCR + RTM documents added |
 | 1.5 | 2026-03-16 | System | Scalability hardening: HLR-NF-04 expanded to include DB indexes and rate limiting |
+| 1.6 | 2026-03-16 | System | Two-tier AI question generation (HLR-F-16): tier-routed provider pools, validation pipeline, modelUsed/generatedForTier schema fields |
+| 1.7 | 2026-03-17 | Rebranded to StudentNest — updated all document titles, headers, and references |
+| 1.8 | 2026-03-17 | SAT & ACT full integration: 16 courses total; ACT_READING added; 5-choice ACT Math; passage-based formats for ACT English/Science/Reading |
+| 1.9 | 2026-03-17 | Monetisation & UX v2.1: annual plan (HLR-F-10 updated); light/dark mode (HLR-F-17); onboarding wizard (HLR-F-18); contextual upgrade CTAs (HLR-F-19); AI free limit 10→5/day; subscription tier table updated |

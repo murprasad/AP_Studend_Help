@@ -1618,6 +1618,229 @@ AP Exam: Section I — 100 MCQ (70 min). Section II — 2 FRQ (50 min).`,
       },
     },
   },
+
+  // ── SAT Math ──────────────────────────────────────────────────────────────
+  SAT_MATH: {
+    name: "SAT Math",
+    shortName: "SAT Math",
+    examSecsPerQuestion: 90,
+    enrichWithEduAPIs: true,
+    units: {
+      SAT_MATH_1_ALGEBRA: { name: "Algebra", keyThemes: ["linear equations", "systems of equations", "inequalities", "linear functions"] },
+      SAT_MATH_2_ADVANCED_MATH: { name: "Advanced Math", keyThemes: ["quadratics", "polynomials", "exponential functions", "rational equations"] },
+      SAT_MATH_3_PROBLEM_SOLVING: { name: "Problem-Solving and Data Analysis", keyThemes: ["ratios", "proportions", "percentages", "statistics", "probability"] },
+      SAT_MATH_4_GEOMETRY_TRIG: { name: "Geometry and Trigonometry", keyThemes: ["area", "volume", "coordinate geometry", "trigonometry", "circles"] },
+    },
+    suggestedTutorQuestions: [
+      "How do I solve a system of linear equations?",
+      "What is the quadratic formula and when do I use it?",
+      "How do I interpret a scatterplot on the SAT?",
+    ],
+    curriculumContext: "SAT Math covers algebra, advanced math, problem-solving/data analysis, and geometry/trigonometry. Questions range from multiple-choice to student-produced responses.",
+    tutorResources: "• Khan Academy SAT Math (khanacademy.org/sat)\n• College Board SAT Practice (bluebook.collegeboard.org)",
+    examAlignmentNotes: "SAT Math tests real-world application of math skills. Calculators are permitted on most sections.",
+    stimulusRequirement: "Include a relevant word problem or data table when appropriate.",
+    stimulusDescription: "word problem context, table, or graph description, or null",
+    explanationGuidance: "show step-by-step solution and identify the math concept tested",
+    skillCodes: ["Algebra", "Advanced Math", "Problem-Solving & Data Analysis", "Geometry & Trigonometry"],
+  },
+
+  // ── SAT Reading & Writing ─────────────────────────────────────────────────
+  SAT_READING_WRITING: {
+    name: "SAT Reading & Writing",
+    shortName: "SAT Reading",
+    examSecsPerQuestion: 75,
+    enrichWithEduAPIs: true,
+    units: {
+      SAT_RW_1_CRAFT_STRUCTURE: { name: "Craft and Structure", keyThemes: ["vocabulary in context", "text structure", "cross-text connections", "purpose"] },
+      SAT_RW_2_INFO_IDEAS: { name: "Information and Ideas", keyThemes: ["central ideas", "evidence", "inferences", "quantitative data"] },
+      SAT_RW_3_STANDARD_ENGLISH: { name: "Standard English Conventions", keyThemes: ["punctuation", "sentence boundaries", "subject-verb agreement", "modifiers"] },
+      SAT_RW_4_EXPRESSION_IDEAS: { name: "Expression of Ideas", keyThemes: ["rhetorical synthesis", "transitions", "organization", "precise language"] },
+    },
+    suggestedTutorQuestions: [
+      "How do I identify the main idea of a passage?",
+      "What are common SAT grammar rules I should know?",
+      "How do I answer vocabulary-in-context questions?",
+    ],
+    curriculumContext: "SAT Reading & Writing tests comprehension, vocabulary, grammar, and writing skills through short passages across literature, history, science, and social science.",
+    tutorResources: "• Khan Academy SAT Reading (khanacademy.org/sat)\n• College Board SAT Practice Tests",
+    examAlignmentNotes: "Each question is paired with a short passage (1-2 paragraphs). Focus on evidence-based reasoning.",
+    stimulusRequirement: "Always include a short passage excerpt as stimulus.",
+    stimulusDescription: "short passage excerpt (1-3 sentences to 2 paragraphs)",
+    explanationGuidance: "cite evidence from the passage and explain the reasoning",
+    skillCodes: ["Craft & Structure", "Information & Ideas", "Standard English Conventions", "Expression of Ideas"],
+  },
+
+  // ── ACT Math ──────────────────────────────────────────────────────────────
+  ACT_MATH: {
+    name: "ACT Math",
+    shortName: "ACT Math",
+    examSecsPerQuestion: 60,
+    enrichWithEduAPIs: false,
+    units: {
+      ACT_MATH_1_NUMBER: { name: "Number and Quantity", keyThemes: ["arithmetic", "integers", "fractions", "exponents", "number properties"] },
+      ACT_MATH_2_ALGEBRA: { name: "Algebra", keyThemes: ["linear equations", "inequalities", "systems", "polynomials", "functions"] },
+      ACT_MATH_3_GEOMETRY: { name: "Geometry", keyThemes: ["triangles", "circles", "coordinate geometry", "3D shapes", "angles"] },
+      ACT_MATH_4_STATISTICS: { name: "Statistics and Probability", keyThemes: ["mean", "median", "probability", "data interpretation", "counting"] },
+      ACT_MATH_5_INTEGRATING_SKILLS: { name: "Integrating Essential Skills", keyThemes: ["multi-step problems", "real-world applications", "modeling"] },
+    },
+    suggestedTutorQuestions: [
+      "What math topics are covered on the ACT Math section?",
+      "How is ACT Math different from SAT Math?",
+      "What trigonometry do I need to know for the ACT?",
+    ],
+    curriculumContext: "ACT Math has 60 questions in 60 minutes covering algebra, geometry, statistics, and trigonometry. All questions are multiple choice with 5 options (A–E).",
+    tutorResources: "• Khan Academy ACT Math prep\n• ACT official practice (act.org)",
+    examAlignmentNotes: "ACT Math is 60 minutes for 60 questions (1 minute each). Calculator always permitted. EVERY question has EXACTLY 5 choices (A, B, C, D, E).",
+    stimulusRequirement: "Include a word problem, diagram description, or data context when relevant.",
+    stimulusDescription: "word problem context or diagram description, or null",
+    explanationGuidance: "show all calculation steps and identify the concept tested",
+    skillCodes: ["Number & Quantity", "Algebra", "Geometry", "Statistics & Probability"],
+    difficultyRubric: {
+      EASY: "Single-step arithmetic, percent, or geometry recall. ACT score range 1–16. 65%+ correct.",
+      MEDIUM: "Two-step algebraic manipulation, coordinate geometry, or basic statistics. ACT score range 17–24. 40–55% correct.",
+      HARD: "Multi-step reasoning, trigonometry, systems of equations, or real-world modeling. ACT score range 25–36. 25–40% correct.",
+    },
+    distractorTaxonomy: "(1) ARITHMETIC ERROR TRAP — off-by-one or sign error in calculation; (2) FORMULA CONFUSION TRAP — uses perimeter formula instead of area; (3) UNIT TRAP — forgets to convert units; (4) E-OPTION TRAP — E should represent a plausible calculator-entry mistake.",
+    stimulusQualityGuidance: "GOOD: A concrete word problem with named variables (e.g., 'A train travels...'), a coordinate grid description, or a table of values. AVOID: Abstract symbol manipulation without any context.",
+    questionTypeFormats: {
+      MCQ: {
+        generationPrompt:
+          "Generate an ACT Math question with EXACTLY 5 answer choices labeled A, B, C, D, E. " +
+          "Never use 4 choices. The 5th option (E) should represent a common arithmetic or calculator error. " +
+          "Include a word problem, equation, or diagram description as context.",
+        responseFormat:
+          '{"topic":"...","subtopic":"...","questionText":"question","stimulus":"context or null",' +
+          '"options":["A) ...","B) ...","C) ...","D) ...","E) ..."],' +
+          '"correctAnswer":"A","explanation":"step-by-step solution identifying concept and distractors"}',
+        estimatedMinutes: 1,
+      },
+    },
+  },
+
+  // ── ACT English ───────────────────────────────────────────────────────────
+  ACT_ENGLISH: {
+    name: "ACT English",
+    shortName: "ACT English",
+    examSecsPerQuestion: 36,
+    enrichWithEduAPIs: false,
+    units: {
+      ACT_ENG_1_PRODUCTION_WRITING: { name: "Production of Writing", keyThemes: ["topic development", "organization", "unity", "cohesion"] },
+      ACT_ENG_2_KNOWLEDGE_LANGUAGE: { name: "Knowledge of Language", keyThemes: ["word choice", "style", "tone", "clarity", "concision"] },
+      ACT_ENG_3_CONVENTIONS: { name: "Conventions of Standard English", keyThemes: ["punctuation", "grammar", "sentence structure", "usage"] },
+    },
+    suggestedTutorQuestions: [
+      "What grammar rules are tested most on the ACT English section?",
+      "How do I improve my ACT English score quickly?",
+      "What is the difference between ACT English and SAT Writing?",
+    ],
+    curriculumContext: "ACT English has 75 questions in 45 minutes. Questions test grammar, punctuation, sentence structure, and rhetorical skills using full passage contexts.",
+    tutorResources: "• Khan Academy ACT English practice\n• ACT official practice tests (act.org)",
+    examAlignmentNotes: "75 questions in 45 minutes. Questions are embedded in 5 passages. Focus on error identification and improvement.",
+    stimulusRequirement: "Always include a passage sentence/paragraph as stimulus.",
+    stimulusDescription: "sentence or paragraph from the passage being edited",
+    explanationGuidance: "explain the grammar rule and why the correct answer follows it",
+    skillCodes: ["Production of Writing", "Knowledge of Language", "Conventions of Standard English"],
+    difficultyRubric: {
+      EASY: "Identify a clear punctuation or grammar error with one obvious fix. 65%+ correct.",
+      MEDIUM: "Choose the best revision for style, concision, or sentence structure in context. 40–55% correct.",
+      HARD: "Evaluate the rhetorical effect of adding, deleting, or relocating a sentence within the passage. 25–40% correct.",
+    },
+    distractorTaxonomy: "(1) COMMA-SPLICE TRAP — adds a comma where a semicolon or period is needed; (2) WORDINESS TRAP — technically correct but redundant; (3) MEANING-SHIFT TRAP — grammatically fine but changes the intended meaning.",
+    stimulusQualityGuidance: "GOOD: 1-3 sentence excerpt from a coherent passage with an underlined portion to revise. AVOID: Isolated sentences with no surrounding context.",
+  },
+
+  // ── ACT Science ───────────────────────────────────────────────────────────
+  ACT_SCIENCE: {
+    name: "ACT Science",
+    shortName: "ACT Science",
+    examSecsPerQuestion: 52,
+    enrichWithEduAPIs: false,
+    units: {
+      ACT_SCI_1_DATA_REPRESENTATION: { name: "Data Representation", keyThemes: ["graphs", "tables", "figures", "scientific notation", "data reading"] },
+      ACT_SCI_2_RESEARCH_SUMMARIES: { name: "Research Summaries", keyThemes: ["experimental design", "hypotheses", "conclusions", "variables", "controls"] },
+      ACT_SCI_3_CONFLICTING_VIEWPOINTS: { name: "Conflicting Viewpoints", keyThemes: ["scientific debate", "comparing theories", "evidence evaluation", "strengths and weaknesses"] },
+    },
+    suggestedTutorQuestions: [
+      "How do I read graphs and tables quickly on the ACT Science section?",
+      "What science knowledge do I actually need for the ACT Science section?",
+      "How do I approach conflicting viewpoints passages?",
+    ],
+    curriculumContext: "ACT Science has 40 questions in 35 minutes. It primarily tests data interpretation, scientific reasoning, and reading comprehension — not specific science facts.",
+    tutorResources: "• Khan Academy ACT Science practice\n• ACT official practice (act.org)",
+    examAlignmentNotes: "Focus on reading graphs, tables, and experimental descriptions. Prior science knowledge is minimal — reasoning is key.",
+    stimulusRequirement: "Always include a data table, graph description, or experimental summary as stimulus.",
+    stimulusDescription: "data table, graph description, or experimental passage excerpt",
+    explanationGuidance: "explain what the data shows and how to read the figures to find the answer",
+    skillCodes: ["Data Representation", "Research Summaries", "Conflicting Viewpoints"],
+    difficultyRubric: {
+      EASY: "Read a single value directly from a graph or table. 65%+ correct.",
+      MEDIUM: "Identify a trend across multiple data points or compare experimental results. 40–55% correct.",
+      HARD: "Synthesize data from two or more figures, or evaluate competing scientific explanations using evidence. 25–40% correct.",
+    },
+    distractorTaxonomy: "(1) ADJACENT-ROW TRAP — reads the wrong row or column in the table; (2) DIRECTION TRAP — reverses the trend (increasing vs decreasing); (3) OUTSIDE-KNOWLEDGE TRAP — answer requires information not given in the passage.",
+    stimulusQualityGuidance: "GOOD: A pipe-delimited data table with labeled columns (e.g., Trial | Temperature (°C) | Rate (mol/s)) or a 4-6 sentence experiment description with named variables. AVOID: Vague 'scientists studied X' without actual data.",
+  },
+
+  // ── ACT Reading ───────────────────────────────────────────────────────────
+  ACT_READING: {
+    name: "ACT Reading",
+    shortName: "ACT Reading",
+    examSecsPerQuestion: 52,
+    enrichWithEduAPIs: false,
+    units: {
+      ACT_READ_1_LITERARY: {
+        name: "Literary Narrative",
+        keyThemes: ["prose fiction", "literary narrative", "character motivation", "tone", "narrator perspective", "figurative language"],
+      },
+      ACT_READ_2_SOCIAL_SCIENCE: {
+        name: "Social Science",
+        keyThemes: ["economics", "psychology", "sociology", "anthropology", "main idea", "inference", "author's purpose"],
+      },
+      ACT_READ_3_HUMANITIES: {
+        name: "Humanities",
+        keyThemes: ["arts", "language", "philosophy", "cultural commentary", "rhetorical devices", "point of view"],
+      },
+      ACT_READ_4_NATURAL_SCIENCE: {
+        name: "Natural Science",
+        keyThemes: ["biology", "chemistry", "physics", "earth science", "scientific reasoning", "evidence evaluation"],
+      },
+    },
+    suggestedTutorQuestions: [
+      "How do I find the main idea of an ACT Reading passage quickly?",
+      "How do I answer inference questions on the ACT?",
+      "What is the best strategy for the Literary Narrative passage?",
+      "How do I approach vocabulary-in-context questions on the ACT?",
+    ],
+    curriculumContext: "ACT Reading has 40 questions in 35 minutes across 4 passage types: Literary Narrative, Social Science, Humanities, and Natural Science. Questions test main idea, detail recall, inference, vocabulary in context, and author technique.",
+    tutorResources: "• Khan Academy ACT Reading practice\n• ACT official practice tests (act.org)",
+    examAlignmentNotes: "4 passages, 10 questions each. All answers are based strictly on the passage — no outside knowledge required. Reading strategy (skimming, annotating) is critical.",
+    stimulusRequirement: "Always include a 5-8 sentence passage excerpt as stimulus. Answers must be derivable from the passage alone.",
+    stimulusDescription: "5-8 sentence passage excerpt matching the unit's genre (fiction, social science, humanities, or natural science)",
+    explanationGuidance: "cite specific evidence from the passage excerpt and explain why other options are not supported",
+    skillCodes: ["Main Idea", "Detail", "Inference", "Vocabulary in Context", "Author Technique"],
+    difficultyRubric: {
+      EASY: "Locate a specific detail stated directly in the passage. 65%+ correct.",
+      MEDIUM: "Infer a character's motivation, the author's purpose, or the meaning of a word from context. 40–55% correct.",
+      HARD: "Analyze a literary technique, evaluate the author's argument structure, or synthesize information across multiple paragraphs. 25–40% correct.",
+    },
+    distractorTaxonomy: "(1) OUTSIDE-KNOWLEDGE TRAP — true in general but not stated/implied in the passage; (2) TOO-EXTREME TRAP — overstates what the passage says (always, never, must); (3) ADJACENT-DETAIL TRAP — true of a nearby sentence but not the one referenced.",
+    stimulusQualityGuidance: "GOOD: A self-contained 5-8 sentence excerpt with a named narrator or author, specific nouns, and a clear situation or argument. AVOID: Generic paraphrases without actual quoted text or passages that require background knowledge.",
+    questionTypeFormats: {
+      MCQ: {
+        generationPrompt:
+          "Generate an ACT Reading question. ALWAYS include a 5-8 sentence passage excerpt as the 'stimulus' field. " +
+          "The question must be answerable using only the passage — no outside knowledge. " +
+          "Use question types from this list: main idea, specific detail, vocabulary in context, inference, author's purpose, or literary technique. " +
+          "Provide exactly 4 answer choices labeled A, B, C, D.",
+        responseFormat:
+          '{"topic":"...","subtopic":"...","questionText":"question about the passage","stimulus":"5-8 sentence passage excerpt",' +
+          '"options":["A) ...","B) ...","C) ...","D) ..."],' +
+          '"correctAnswer":"A","explanation":"cite the specific passage evidence that supports the correct answer and explain why each distractor is wrong"}',
+        estimatedMinutes: 1,
+      },
+    },
+  },
 };
 
 // ═════════════════════════════════════════════════════════════════════════════

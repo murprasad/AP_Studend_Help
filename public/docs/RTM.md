@@ -1,8 +1,8 @@
-# NovAP (AP SmartPrep) — Requirements Traceability Matrix
+# StudentNest — Requirements Traceability Matrix
 
 **Document ID:** RTM-001
-**Version:** 1.5
-**Last Updated:** 2026-03-16
+**Version:** 1.9
+**Last Updated:** 2026-03-17
 **Status:** Active
 
 ---
@@ -19,10 +19,10 @@ traceability from stakeholder needs through implementation to test evidence.
 
 | Metric | Count | Percentage |
 |--------|-------|-----------|
-| Total Requirements | 59 | 100% |
-| Implemented | 59 | 100% |
-| Tested | 54 | 92% |
-| Blocked (needs live credentials) | 5 | 8% |
+| Total Requirements | 78 | 100% |
+| Implemented | 78 | 100% |
+| Tested | 72 | 92% |
+| Blocked (needs live credentials) | 6 | 8% |
 
 ---
 
@@ -51,6 +51,10 @@ traceability from stakeholder needs through implementation to test evidence.
 | HLR-NF-04 | Serverless horizontal scale; DB indexes; per-user rate limiting | Cloudflare Workers + Neon serverless Postgres; `prisma/schema.prisma` (indexes); `src/lib/rate-limit.ts` | TC-SCALE-01–04 | Implemented / Tested |
 | HLR-NF-05 | Single CourseConfig block per course | `src/lib/courses.ts` (COURSE_REGISTRY) | TC-PRAC-01, TC-MOCK-01 | Implemented / Tested |
 | HLR-NF-06 | Node.js + CF Workers compat; plain fetch | `src/lib/ai-providers.ts`, `src/lib/prisma.ts` (WASM) | TC-TUTOR-01 | Implemented / Tested |
+| HLR-F-16 | Two-Tier AI Generation | `src/lib/ai-providers.ts`, `src/lib/ai.ts`, `prisma/schema.prisma`, `src/app/api/practice/route.ts`, `src/app/api/ai/bulk-generate/route.ts` | TC-TIER-01 to TC-TIER-06 | Implemented |
+| HLR-F-17 | Light/Dark Mode Theme Toggle | `src/app/globals.css`, `src/hooks/use-theme.ts`, `src/app/layout.tsx`, `src/components/layout/sidebar.tsx` | TC-THEME-01–04 | Implemented / Tested |
+| HLR-F-18 | Guided First-Time User Onboarding | `src/app/(dashboard)/onboarding/page.tsx`, `src/app/(dashboard)/layout.tsx` | TC-ONBOARD-01–05 | Implemented / Tested |
+| HLR-F-19 | Contextual Upgrade CTAs | `src/app/(dashboard)/diagnostic/page.tsx`, `src/app/(dashboard)/analytics/page.tsx` | TC-UX-01–04 | Implemented / Tested |
 
 ---
 
@@ -122,9 +126,12 @@ traceability from stakeholder needs through implementation to test evidence.
 
 | Req ID | Requirement Summary | Implementation File(s) | Test Case(s) | Status |
 |--------|--------------------|-----------------------|-------------|--------|
-| DR-BILL-01 | Stripe checkout session | `src/app/api/checkout/route.ts` | TC-BILL-01 | Implemented / Blocked |
-| DR-BILL-02 | Customer portal session | `src/app/api/billing/portal/route.ts` | TC-BILL-02 | Implemented / Blocked |
-| DR-BILL-03 | Webhook: subscription created/updated/deleted | `src/app/api/webhooks/stripe/route.ts` | TC-BILL-03–04 | Implemented / Blocked |
+| DR-BILL-01 | Stripe checkout (monthly + annual `?plan=annual`) | `src/app/api/checkout/route.ts`, `src/lib/settings.ts` | TC-BILL-01, TC-BILL-06, TC-BILL-08 | Implemented / Partial (live keys) |
+| DR-BILL-02 | Webhook: subscription created/updated/deleted | `src/app/api/webhooks/stripe/route.ts` | TC-BILL-03–04 | Implemented / Blocked |
+| DR-BILL-03 | Cancellation at period end | `src/app/api/billing/cancel/route.ts` | — | Implemented / Blocked |
+| DR-BILL-04 | Reactivation | `src/app/api/billing/cancel/route.ts` (DELETE) | — | Implemented / Blocked |
+| DR-BILL-05 | Customer portal session | `src/app/api/billing/portal/route.ts` | TC-BILL-02 | Implemented / Blocked |
+| DR-BILL-06 | Billing page monthly/annual toggle | `src/app/(dashboard)/billing/page.tsx` | TC-BILL-05, TC-BILL-07 | Implemented / Tested |
 
 ### Gamification
 
@@ -159,6 +166,25 @@ traceability from stakeholder needs through implementation to test evidence.
 | DR-DOCS-02 | Document download as .md | `public/docs/*.md`, docs page download links | TC-DOCS-02 | Implemented / Tested |
 | DR-DOCS-03 | Print / save PDF | `src/app/(dashboard)/docs/page.tsx` (print styles + button) | TC-DOCS-03 | Implemented / Tested |
 
+### Theme System
+
+| Req ID | Requirement Summary | Implementation File(s) | Test Case(s) | Status |
+|--------|--------------------|-----------------------|-------------|--------|
+| DR-THEME-01 | Light/dark CSS vars, useTheme hook, flash prevention, sidebar toggle | `src/app/globals.css`, `src/hooks/use-theme.ts`, `src/app/layout.tsx`, `src/components/layout/sidebar.tsx` | TC-THEME-01–04 | Implemented / Tested |
+
+### Onboarding
+
+| Req ID | Requirement Summary | Implementation File(s) | Test Case(s) | Status |
+|--------|--------------------|-----------------------|-------------|--------|
+| DR-ONBOARD-01 | 3-step onboarding wizard; localStorage gate; dashboard redirect | `src/app/(dashboard)/onboarding/page.tsx`, `src/app/(dashboard)/layout.tsx` | TC-ONBOARD-01–05 | Implemented / Tested |
+
+### Upgrade CTAs
+
+| Req ID | Requirement Summary | Implementation File(s) | Test Case(s) | Status |
+|--------|--------------------|-----------------------|-------------|--------|
+| DR-UX-01 | Post-diagnostic upgrade CTA with weak unit name | `src/app/(dashboard)/diagnostic/page.tsx` | TC-UX-01–02 | Implemented / Tested |
+| DR-UX-02 | Analytics upgrade CTA with AP score reference | `src/app/(dashboard)/analytics/page.tsx` | TC-UX-03–04 | Implemented / Tested |
+
 ### Performance & Scalability
 
 | Req ID | Requirement Summary | Implementation File(s) | Test Case(s) | Status |
@@ -168,6 +194,21 @@ traceability from stakeholder needs through implementation to test evidence.
 | DR-PERF-03 | Question query field pruning (.select) | `src/app/api/practice/route.ts` | TC-SCALE-05 | Implemented / Tested |
 | DR-PERF-04 | Admin bulk AI generation batched 3/300ms | `src/app/api/ai/bulk-generate/route.ts` | TC-SCALE-06 | Implemented / Tested |
 
+### Two-Tier AI Generation
+
+| Req ID | Requirement Summary | Implementation File(s) | Test Case(s) | Status |
+|--------|--------------------|-----------------------|-------------|--------|
+| DR-TIER-01 | callAIForTier tier filtering | `src/lib/ai-providers.ts` (callAIForTier) | TC-TIER-01, TC-TIER-02 | Implemented |
+| DR-TIER-02 | FREE tier providers | `src/lib/ai-providers.ts` (FREE_TIER_PROVIDER_NAMES) | TC-TIER-01, TC-TIER-05 | Implemented |
+| DR-TIER-03 | PREMIUM tier providers | `src/lib/ai-providers.ts` (PREMIUM_TIER_PROVIDER_NAMES) | TC-TIER-02 | Implemented |
+| DR-TIER-04 | OpenRouter-Premium GPT-4o entry | `src/lib/ai-providers.ts` (callOpenRouterPremium) | TC-TIER-02 | Implemented |
+| DR-TIER-05 | validateQuestion fail-open | `src/lib/ai-providers.ts` (validateQuestion) | TC-TIER-03, TC-TIER-06 | Implemented |
+| DR-TIER-06 | 3-attempt retry loop | `src/lib/ai.ts` (generateQuestion MAX_GEN_ATTEMPTS=3) | TC-TIER-04 | Implemented |
+| DR-TIER-07 | Question schema fields | `prisma/schema.prisma` (modelUsed, generatedForTier) | TC-TIER-01, TC-TIER-02 | Implemented |
+| DR-TIER-08 | Practice route tier pass-through | `src/app/api/practice/route.ts` | TC-TIER-01, TC-TIER-02 | Implemented |
+| DR-TIER-09 | Bulk-generate tier param | `src/app/api/ai/bulk-generate/route.ts` | — | Implemented |
+| DR-TIER-10 | premium_feature_restriction default false | `src/lib/settings.ts` (isPremiumRestrictionEnabled) | TC-FLAG-01 | Implemented |
+
 ---
 
 ## Document Change Log
@@ -176,3 +217,7 @@ traceability from stakeholder needs through implementation to test evidence.
 |---------|------|---------------|
 | 1.4 | 2026-03-15 | Initial RTM — 55 requirements traced across HLR + DR; includes DR-AUTH-06/07 (password reset) |
 | 1.5 | 2026-03-16 | Scalability hardening: DR-PERF-01–04 added (4 new requirements); HLR-NF-04 updated; coverage total 55→59; TC-SCALE-01–06 added to TCR |
+| 1.6 | 2026-03-16 | Two-tier AI generation: HLR-F-16 + DR-TIER-01–10 added (11 new requirements); coverage total 59→70; TC-TIER-01–06 added to TCR |
+| 1.7 | 2026-03-17 | Rebranded to StudentNest — updated all document titles, headers, and references |
+| 1.8 | 2026-03-17 | SAT & ACT full integration: ACT_READING added to schema; 16 courses total; 5-choice ACT Math; passage-based ACT English/Science/Reading; 120 ACT seed questions; sidebar grouping; Nova updated |
+| 1.9 | 2026-03-17 | Monetisation & UX v2.1: HLR-F-17/18/19 added; DR-BILL-06 added; DR-THEME-01/ONBOARD-01/UX-01/UX-02 added; total requirements 70→78; total tested 65→72; TC-THEME/ONBOARD/BILL-ANNUAL/UX sections added to TCR |

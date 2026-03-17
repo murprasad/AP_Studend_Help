@@ -40,6 +40,10 @@ model User {
   studyPlans        StudyPlan[]
   achievements      UserAchievement[]
   tutorConversations TutorConversation[]
+  questionReports     QuestionReport[]
+  diagnosticResults   DiagnosticResult[]
+  discussionThreads   DiscussionThread[]
+  discussionReplies   DiscussionReply[]
 
   @@map("users")
 }
@@ -115,13 +119,17 @@ model Question {
   explanation  String       @db.Text
   isAiGenerated Boolean     @default(false)
   isApproved   Boolean      @default(true)
+  modelUsed          String?
+  generatedForTier   SubTier   @default(FREE)
   timesAnswered Int         @default(0)
   timesCorrect  Int         @default(0)
+  reportedCount Int         @default(0)
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
 
   responses    StudentResponse[]
   sessionQuestions SessionQuestion[]
+  reports      QuestionReport[]
 
   @@index([course, unit, difficulty, questionType])
   @@map("questions")
@@ -286,6 +294,12 @@ enum ApCourse {
   AP_BIOLOGY
   AP_US_HISTORY
   AP_PSYCHOLOGY
+  SAT_MATH
+  SAT_READING_WRITING
+  ACT_MATH
+  ACT_ENGLISH
+  ACT_SCIENCE
+  ACT_READING
 }
 
 enum ApUnit {
@@ -394,6 +408,41 @@ enum ApUnit {
   PSYCH_7_MOTIVATION_EMOTION
   PSYCH_8_CLINICAL
   PSYCH_9_SOCIAL
+
+  // SAT Math
+  SAT_MATH_1_ALGEBRA
+  SAT_MATH_2_ADVANCED_MATH
+  SAT_MATH_3_PROBLEM_SOLVING
+  SAT_MATH_4_GEOMETRY_TRIG
+
+  // SAT Reading & Writing
+  SAT_RW_1_CRAFT_STRUCTURE
+  SAT_RW_2_INFO_IDEAS
+  SAT_RW_3_STANDARD_ENGLISH
+  SAT_RW_4_EXPRESSION_IDEAS
+
+  // ACT Math
+  ACT_MATH_1_NUMBER
+  ACT_MATH_2_ALGEBRA
+  ACT_MATH_3_GEOMETRY
+  ACT_MATH_4_STATISTICS
+  ACT_MATH_5_INTEGRATING_SKILLS
+
+  // ACT English
+  ACT_ENG_1_PRODUCTION_WRITING
+  ACT_ENG_2_KNOWLEDGE_LANGUAGE
+  ACT_ENG_3_CONVENTIONS
+
+  // ACT Science
+  ACT_SCI_1_DATA_REPRESENTATION
+  ACT_SCI_2_RESEARCH_SUMMARIES
+  ACT_SCI_3_CONFLICTING_VIEWPOINTS
+
+  // ACT Reading
+  ACT_READ_1_LITERARY
+  ACT_READ_2_SOCIAL_SCIENCE
+  ACT_READ_3_HUMANITIES
+  ACT_READ_4_NATURAL_SCIENCE
 }
 
 enum Difficulty {
@@ -417,6 +466,7 @@ enum SessionType {
   QUICK_PRACTICE
   FOCUSED_STUDY
   MOCK_EXAM
+  DIAGNOSTIC
 }
 
 enum SessionStatus {
@@ -424,3 +474,74 @@ enum SessionStatus {
   COMPLETED
   ABANDONED
 }
+
+model QuestionReport {
+  id         String   @id @default(cuid())
+  questionId String
+  userId     String
+  reason     String
+  details    String?  @db.Text
+  status     String   @default("pending")
+  createdAt  DateTime @default(now())
+  question   Question @relation(fields: [questionId], references: [id])
+  user       User     @relation(fields: [userId], references: [id])
+
+  @@unique([questionId, userId])
+  @@index([status, createdAt])
+  @@map("question_reports")
+}
+
+model DiscussionThread {
+  id               String   @id @default(cuid())
+  userId           String
+  course           ApCourse @default(AP_WORLD_HISTORY)
+  title            String
+  body             String   @db.Text
+  isPinned         Boolean  @default(false)
+  isRemoved        Boolean  @default(false)
+  moderationReason String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  user    User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  replies DiscussionReply[]
+
+  @@index([course, createdAt])
+  @@index([course, isRemoved, createdAt])
+  @@map("discussion_threads")
+}
+
+model DiscussionReply {
+  id               String   @id @default(cuid())
+  threadId         String
+  userId           String
+  body             String   @db.Text
+  isAiTutor        Boolean  @default(false)
+  isRemoved        Boolean  @default(false)
+  moderationReason String?
+  createdAt        DateTime @default(now())
+
+  thread DiscussionThread @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  user   User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([threadId, createdAt])
+  @@map("discussion_replies")
+}
+
+model DiagnosticResult {
+  id           String   @id @default(cuid())
+  userId       String
+  course       ApCourse @default(AP_WORLD_HISTORY)
+  sessionId    String?
+  unitScores   Json
+  weakUnits    Json
+  strongUnits  Json
+  recommendation String? @db.Text
+  createdAt    DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, course, createdAt])
+  @@map("diagnostic_results")
+}
+

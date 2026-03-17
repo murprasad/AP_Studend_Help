@@ -1,8 +1,8 @@
-# NovAP (AP SmartPrep) — Architecture Document
+# StudentNest — Architecture Document
 
 **Document ID:** ARCH-001
-**Version:** 1.5
-**Last Updated:** 2026-03-16
+**Version:** 1.9
+**Last Updated:** 2026-03-17
 **Status:** Active
 
 ---
@@ -19,13 +19,13 @@
 | AI (primary) | Groq | — | llama-3.3-70b-versatile; plain fetch |
 | AI (fallback) | Pollinations-Free | — | No key; GPT-4o-mini quality |
 | AI (optional) | Google Gemini, Together.ai, OpenRouter, HuggingFace, Cohere, Ollama, Anthropic | — | Configured via env vars |
-| Styling | Tailwind CSS | 3.x | Dark theme; utility-first |
+| Styling | Tailwind CSS | 3.x | Light/dark theme via CSS variables + `.dark` class; `darkMode: ["class"]` |
 | UI Components | Radix UI + shadcn/ui | — | Accessible, headless |
 | Charts | Recharts | — | Bar chart, line chart |
 | Markdown | react-markdown + remark-gfm | — | Renders AI responses + docs |
 | Diagrams | Mermaid.js | — | In AI tutor responses and docs |
 | Payments | Stripe | — | Subscriptions + webhooks |
-| Deployment | Cloudflare Pages | — | Global CDN; custom domain novaprep.ai |
+| Deployment | Cloudflare Pages | — | Global CDN; custom domain studentnest.ai |
 | Build | OpenNext CF | 1.17.1 | Converts Next.js build for CF Pages |
 | Package Manager | npm | — | `--legacy-peer-deps` required |
 
@@ -100,8 +100,9 @@ AP_Help/
 │   │   │   ├── ai-tutor/
 │   │   │   ├── study-plan/
 │   │   │   ├── resources/
-│   │   │   ├── billing/
-│   │   │   ├── docs/         ← NEW: living documentation browser
+│   │   │   ├── billing/      ← monthly/annual plan toggle
+│   │   │   ├── onboarding/   ← first-time user wizard (3 steps)
+│   │   │   ├── docs/         ← living documentation browser
 │   │   │   ├── admin/
 │   │   │   └── dashboard/
 │   │   ├── api/              ← All API routes
@@ -116,6 +117,7 @@ AP_Help/
 │   │
 │   ├── hooks/
 │   │   ├── use-course.ts     ← Course selection (localStorage + CustomEvent)
+│   │   ├── use-theme.ts      ← Light/dark theme (localStorage + classList toggle)
 │   │   └── use-toast.ts      ← Toast notifications
 │   │
 │   └── lib/
@@ -172,7 +174,9 @@ SiteSetting     (key PK, value, updatedBy, updatedAt)
 ```
 ApCourse: AP_WORLD_HISTORY | AP_COMPUTER_SCIENCE_PRINCIPLES | AP_PHYSICS_1 |
           AP_CALCULUS_AB | AP_CALCULUS_BC | AP_STATISTICS | AP_CHEMISTRY |
-          AP_BIOLOGY | AP_US_HISTORY | AP_PSYCHOLOGY
+          AP_BIOLOGY | AP_US_HISTORY | AP_PSYCHOLOGY |
+          SAT_MATH | SAT_READING_WRITING |
+          ACT_MATH | ACT_ENGLISH | ACT_SCIENCE | ACT_READING
 
 QuestionType: MCQ | FRQ | SAQ | DBQ | LEQ | NUMERICAL | CODING | DATA_ANALYSIS
 
@@ -304,6 +308,22 @@ Client → POST /api/ai/tutor (skipAI=true, savedResponse=fullText)
     │ Returns { followUps }
 ```
 
+### 5.5 Two-Tier AI Question Generation (v1.6)
+
+| Function | Purpose |
+|----------|---------|
+| `callAIForTier(tier, prompt)` | Routes to FREE or PREMIUM provider pool |
+| `validateQuestion(json)` | Groq-first validator; 10 s timeout; Pollinations fallback |
+| `generateQuestion(..., userTier)` | 3-attempt retry+validation loop |
+
+**FREE provider pool:** Groq → Together.ai → HuggingFace → Pollinations-Free
+**PREMIUM provider pool:** Gemini → OpenRouter-Premium (GPT-4o) → Anthropic → Groq → Together.ai → Pollinations-Free
+
+New `Question` columns: `modelUsed String?`, `generatedForTier SubTier @default(FREE)`
+
+Admin populate routes (`populate-questions`, `mega-populate`) use `callAIWithCascade()`
+(full cascade) and tag questions as `generatedForTier = PREMIUM`.
+
 ---
 
 ## 6. Deployment Architecture
@@ -328,12 +348,13 @@ npm run pages:deploy
 |----------|-----------|----------|-------------|
 | DATABASE_URL | CF Pages secret | ✅ | Neon pooled connection string |
 | NEXTAUTH_SECRET | CF Pages secret | ✅ | JWT signing key |
-| NEXTAUTH_URL | CF Pages env | ✅ | https://novaprep.ai (prod) |
+| NEXTAUTH_URL | CF Pages env | ✅ | https://studentnest.ai (prod) |
 | GROQ_API_KEY | CF Pages secret | ✅ | Primary AI provider |
 | GOOGLE_AI_API_KEY | CF Pages secret | Optional | Gemini (faster on cold start) |
 | STRIPE_SECRET_KEY | CF Pages secret | Optional | Subscription billing |
 | STRIPE_WEBHOOK_SECRET | CF Pages secret | Optional | Webhook verification |
-| STRIPE_PREMIUM_PRICE_ID | CF Pages secret | Optional | Monthly price ID |
+| STRIPE_PREMIUM_PRICE_ID | CF Pages secret | Optional | Monthly price ID ($9.99/mo) |
+| STRIPE_ANNUAL_PRICE_ID | CF Pages secret | Optional | Annual price ID ($79.99/yr) |
 | NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY | CF Pages env | Optional | Client-side Stripe |
 | EMAIL_SERVER_* | CF Pages secret | Optional | SMTP (auto-bypassed in dev) |
 | ANTHROPIC_API_KEY | CF Pages secret | Optional | Last-resort AI fallback |
@@ -347,12 +368,12 @@ compatibility_flags = ["nodejs_compat_v2"]
 pages_build_output_dir = ".open-next"
 
 [vars]
-NEXT_PUBLIC_APP_URL = "https://novaprep.ai"
+NEXT_PUBLIC_APP_URL = "https://studentnest.ai"
 ```
 
 - **nodejs_compat_v2**: Enables Node.js-compatible globals (Buffer, process, crypto)
   in the CF Workers runtime. Required for bcrypt and other crypto operations.
-- **Custom domain**: novaprep.ai via Cloudflare DNS (CNAME to Pages deployment)
+- **Custom domain**: studentnest.ai via Cloudflare DNS (CNAME to Pages deployment)
 - **Wrangler version**: 4.x (auto-updated on deploy)
 
 ---
@@ -448,3 +469,7 @@ All external calls have explicit timeouts:
 | 1.3 | 2026-03-15 | Docs page in structure, Nova fix (SDK→fetch), course event bus |
 | 1.4 | 2026-03-15 | Password reset flow implemented (DR-AUTH-06/07); TCR + RTM added to docs |
 | 1.5 | 2026-03-16 | Scalability hardening: 7 DB indexes (§4.4), rate-limit.ts added to lib/ (§8.4), caching table updated (§8.2), bulk-gen cap updated in Known Limitations (§9) |
+| 1.6 | 2026-03-16 | Two-tier AI generation: §5.5 added (callAIForTier, validateQuestion, provider pools, new Question columns) |
+| 1.7 | 2026-03-17 | Rebranded from NovAP / PrepNova Smart to StudentNest across all pages, docs, emails, and API headers |
+| 1.8 | 2026-03-17 | SAT & ACT full integration: 16 courses in schema, sidebar groups, Nova SAT/ACT awareness |
+| 1.9 | 2026-03-17 | Monetisation & UX v2.1: light/dark CSS vars in globals.css; use-theme.ts hook; flash-prevention inline script; STRIPE_ANNUAL_PRICE_ID env var; /onboarding route; post-diagnostic + analytics upgrade CTAs; AI free limit 10→5 |

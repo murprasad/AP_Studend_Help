@@ -1,8 +1,8 @@
-# NovAP (AP SmartPrep) — High Level Design
+# StudentNest — High Level Design
 
 **Document ID:** HLD-001
-**Version:** 1.5
-**Last Updated:** 2026-03-16
+**Version:** 1.9
+**Last Updated:** 2026-03-17
 **Status:** Active
 
 ---
@@ -58,7 +58,8 @@ src/app/
     ├── /study-plan           AI weekly plan with focus areas + daily schedule
     ├── /resources            Curated links: resources, textbooks, videos, exam skills
     ├── /ai-tutor             Split-panel chat: messages + 5-section response cards
-    ├── /billing              Subscription management
+    ├── /billing              Subscription management (monthly/annual toggle)
+    ├── /onboarding           First-time user wizard: course pick → how-it-works → first action
     ├── /docs                 Living documentation browser (all 4 documents)
     ├── /about                Platform info
     └── /admin                Admin-only: questions, users, flags, bulk gen
@@ -69,7 +70,7 @@ src/app/
 ```
 src/components/
 ├── layout/
-│   ├── sidebar.tsx           Navigation, course switcher dropdown, Nova link
+│   ├── sidebar.tsx           Navigation, course switcher, theme toggle (Sun/Moon), Nova link
 │   └── course-selector-inline.tsx  Reusable course dropdown card for all pages
 ├── ui/                       shadcn/ui primitives (Button, Card, Badge, etc.)
 └── tutor/
@@ -85,8 +86,10 @@ No global state manager. State is kept at component level + shared via:
 | Mechanism | What It Carries |
 |-----------|----------------|
 | `useCourse()` hook + localStorage | Selected AP course (synced via CustomEvent) |
+| `useTheme()` hook + localStorage | Light/dark theme (`'light'` or `'dark'`) |
 | NextAuth `useSession()` | User identity, role, subscriptionTier |
 | Cookie `ap_selected_course` | Course for server components |
+| `localStorage['onboarding_completed']` | Whether user has completed the onboarding wizard |
 | URL search params | Filters (unit, difficulty) on practice page |
 | React `useState` | Per-page ephemeral state |
 
@@ -116,7 +119,7 @@ Routes marked **[RL]** have per-user rate limiting enforced via `src/lib/rate-li
 | /api/study-plan | GET | User | Fetch study plan |
 | /api/study-plan | POST | User | Generate study plan |
 | /api/feature-flags | GET | None | Public feature flag state |
-| /api/checkout | POST | User | Create Stripe checkout |
+| /api/checkout | POST | User | Create Stripe checkout (`?plan=annual` for $79.99/yr) |
 | /api/billing/status | GET | User | Subscription status |
 | /api/billing/cancel | POST | User | Cancel subscription |
 | /api/billing/cancel | DELETE | User | Reactivate subscription |
@@ -263,10 +266,13 @@ Every tutor response is structured into exactly 5 sections:
 
 Plus a trailing `FOLLOW_UPS: [...]` JSON block with 3 suggested next questions.
 
-### 5.3 Question Generation Pipeline
+### 5.3 Question Generation Pipeline (v1.6 — Two-Tier)
 
 ```
-Request ──► buildQuestionPrompt(course, unit, difficulty, type)
+Practice request → check tier (FREE|PREMIUM)
+              │
+              ▼
+        buildQuestionPrompt(course, unit, difficulty, type)
               │
               ├── Unit metadata from COURSE_REGISTRY
               ├── Difficulty rubric
@@ -275,16 +281,22 @@ Request ──► buildQuestionPrompt(course, unit, difficulty, type)
               └── Type-specific format template
                   │
                   ▼
-            callAIWithCascade(prompt)
+            callAIForTier(tier, prompt)
+              │
+              ├── FREE pool:    Groq → Together.ai → HuggingFace → Pollinations-Free
+              └── PREMIUM pool: Gemini → OpenRouter-Premium (GPT-4o) → Anthropic →
+                                Groq → Together.ai → Pollinations-Free
                   │
                   ▼
             Parse JSON response
                   │
-              (World History MCQ only)
-            Fetch Wikipedia image (3s timeout)
+                  ▼
+            validateQuestion(json)  [Groq, 10s timeout; Pollinations fallback]
+                  │  if rejected: retry up to 3 times (MAX_GEN_ATTEMPTS)
                   │
                   ▼
-            Store in Question table (isApproved=true)
+            Store in Question table
+              (isApproved=true, modelUsed=<provider>, generatedForTier=FREE|PREMIUM)
 ```
 
 ---
@@ -351,7 +363,65 @@ Feature Access Request
 
 ---
 
-## 9. Docs Page Design
+## 9. Theme System Design
+
+```
+User clicks Sun/Moon icon (sidebar bottom)
+       │
+       ▼
+useTheme().toggleTheme()
+       │
+       ├── setThemeState('light' | 'dark')
+       ├── localStorage.setItem('theme', ...)
+       └── document.documentElement.classList.toggle('dark', ...)
+                 │
+       CSS variables flip:
+         :root    ──► light palette (white bg, dark text)
+         .dark    ──► dark palette  (navy bg, light text)
+```
+
+Flash prevention (cold load):
+```html
+<script>
+  (function(){
+    var t = localStorage.getItem('theme') || 'dark';
+    document.documentElement.classList.toggle('dark', t === 'dark');
+  })()
+</script>
+```
+This inline script in `<head>` runs synchronously before React hydrates,
+eliminating the white-flash-on-dark-theme reload that would otherwise occur.
+
+---
+
+## 10. Onboarding Flow Design
+
+```
+New user logs in
+       │
+DashboardLayout useEffect:
+  localStorage['onboarding_completed'] absent?
+       │
+       Yes ──► router.replace('/onboarding')
+       │
+       No  ──► proceed normally
+                    │
+                    ▼
+            /onboarding page
+            Step 1: Course picker (grouped: AP / SAT / ACT)
+                 │  setCourse() called on selection
+            Step 2: How It Works (3-step loop explainer)
+            Step 3: Recommended action
+                 │  "Take Diagnostic" or "Start Practicing"
+                 │
+            completeOnboarding():
+              localStorage['onboarding_completed'] = 'true'
+              router.push('/diagnostic' or '/practice')
+```
+
+---
+
+## 11. Docs Page Design
 
 ```
 /docs page
@@ -369,7 +439,7 @@ Feature Access Request
 
 ---
 
-## 10. Document Change Log
+## 12. Document Change Log
 
 | Version | Date | Change Summary |
 |---------|------|---------------|
@@ -379,3 +449,7 @@ Feature Access Request
 | 1.3 | 2026-03-15 | Course switching design, docs page design, feature flag flow |
 | 1.4 | 2026-03-15 | Password reset flow; version aligned with other docs |
 | 1.5 | 2026-03-16 | Scalability hardening: rate-limit annotation on API route map (§3.1), DB indexes section added (§4.3), critical constraint renumbered to §4.4 |
+| 1.6 | 2026-03-16 | Two-tier AI generation: §5.3 Question Generation Pipeline updated to show tier routing, validateQuestion, retry loop, modelUsed/generatedForTier storage |
+| 1.7 | 2026-03-17 | Rebranded to StudentNest — updated all document titles, headers, and references |
+| 1.8 | 2026-03-17 | SAT & ACT full integration: 16 courses total; ACT_READING added; 5-choice ACT Math format; sidebar grouped dropdown design; Nova system prompt updated |
+| 1.9 | 2026-03-17 | Monetisation & UX v2.1: /onboarding added to page hierarchy; theme toggle added to sidebar desc; useTheme + onboarding_completed added to state management table; checkout route updated in API map; §9 Theme System added; §10 Onboarding Flow added; sections renumbered |

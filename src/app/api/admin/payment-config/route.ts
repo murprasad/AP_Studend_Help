@@ -32,6 +32,7 @@ export async function GET() {
       secretKey: !!config.secretKey,
       webhookSecret: !!config.webhookSecret,
       priceId: !!config.priceId,
+      annualPriceId: !!config.annualPriceId,
       publishableKey: !!config.publishableKey,
     },
     // Masked previews for the form placeholders
@@ -39,10 +40,12 @@ export async function GET() {
       secretKey: maskSecret(config.secretKey),
       webhookSecret: maskSecret(config.webhookSecret),
       priceId: maskSecret(config.priceId),
+      annualPriceId: maskSecret(config.annualPriceId),
       publishableKey: maskSecret(config.publishableKey),
     },
     pricing: {
       premiumPriceDisplay: config.premiumPriceDisplay,
+      premiumAnnualPriceDisplay: config.premiumAnnualPriceDisplay,
       premiumName: config.premiumName,
     },
     // Let the UI know if the value comes from env (read-only in admin UI)
@@ -50,6 +53,7 @@ export async function GET() {
       secretKey: !!process.env.STRIPE_SECRET_KEY,
       webhookSecret: !!process.env.STRIPE_WEBHOOK_SECRET,
       priceId: !!process.env.STRIPE_PREMIUM_PRICE_ID,
+      annualPriceId: !!process.env.STRIPE_ANNUAL_PRICE_ID,
       publishableKey: !!process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
     },
   });
@@ -63,8 +67,10 @@ export async function POST(req: NextRequest) {
     secretKey?: string;
     webhookSecret?: string;
     priceId?: string;
+    annualPriceId?: string;
     publishableKey?: string;
     premiumPriceDisplay?: string;
+    premiumAnnualPriceDisplay?: string;
     premiumName?: string;
   };
 
@@ -80,11 +86,17 @@ export async function POST(req: NextRequest) {
   if (body.priceId !== undefined && body.priceId !== "") {
     updates.push(setSetting("stripe_premium_price_id", body.priceId, adminId));
   }
+  if (body.annualPriceId !== undefined && body.annualPriceId !== "") {
+    updates.push(setSetting("stripe_annual_price_id", body.annualPriceId, adminId));
+  }
   if (body.publishableKey !== undefined && body.publishableKey !== "") {
     updates.push(setSetting("stripe_publishable_key", body.publishableKey, adminId));
   }
   if (body.premiumPriceDisplay !== undefined) {
     updates.push(setSetting("stripe_premium_price_display", body.premiumPriceDisplay, adminId));
+  }
+  if (body.premiumAnnualPriceDisplay !== undefined) {
+    updates.push(setSetting("stripe_annual_price_display", body.premiumAnnualPriceDisplay, adminId));
   }
   if (body.premiumName !== undefined && body.premiumName.trim() !== "") {
     updates.push(setSetting("stripe_premium_name", body.premiumName.trim(), adminId));

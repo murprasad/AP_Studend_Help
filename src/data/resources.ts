@@ -109,7 +109,7 @@ export const GLOBAL_RESOURCES: Resource[] = [
   {
     id: "library-of-congress",
     name: "Library of Congress Digital Collections",
-    description: "Millions of free primary source documents, photographs, maps, newspapers, and timelines from American and world history. Used by PrepNova to enrich AI tutor answers.",
+    description: "Millions of free primary source documents, photographs, maps, newspapers, and timelines from American and world history. Used by StudentNest to enrich AI tutor answers.",
     url: "https://www.loc.gov/collections/",
     type: "primary_source",
     icon: "Library",
@@ -179,11 +179,31 @@ export const GLOBAL_RESOURCES: Resource[] = [
   {
     id: "dig-stanford",
     name: "Digital Inquiry Group (Stanford)",
-    description: "Provides 'Reading Like a Historian' lessons and primary-source assessments for AP World History and APUSH. NovAP fetches DIG content to craft higher-quality historical thinking questions.",
+    description: "Provides 'Reading Like a Historian' lessons and primary-source assessments for AP World History and APUSH. StudentNest fetches DIG content to craft higher-quality historical thinking questions.",
     url: "https://www.inquirygroup.org/history-lessons",
     type: "primary_source",
     icon: "FileText",
     color: "text-violet-400",
+    free: true,
+  },
+  {
+    id: "sat-prep",
+    name: "College Board SAT Prep (Official)",
+    description: "Official College Board SAT preparation hub — free full-length practice tests, Bluebook digital testing app, and Khan Academy partnership for personalized practice.",
+    url: "https://satsuite.collegeboard.org/sat/preparation",
+    type: "practice",
+    icon: "GraduationCap",
+    color: "text-blue-400",
+    free: true,
+  },
+  {
+    id: "act-prep",
+    name: "ACT Free Test Prep (Official)",
+    description: "Official ACT free preparation resources — full-length practice tests, question-of-the-day, and official ACT prep guide covering all four sections (English, Math, Reading, Science).",
+    url: "https://www.act.org/content/act/en/products-and-services/the-act/test-preparation/free-act-test-prep.html",
+    type: "practice",
+    icon: "ClipboardCheck",
+    color: "text-orange-400",
     free: true,
   },
 ];
@@ -193,12 +213,14 @@ export const GLOBAL_RESOURCES: Resource[] = [
 export interface CourseTextbook {
   course: "AP_WORLD_HISTORY" | "AP_COMPUTER_SCIENCE_PRINCIPLES" | "AP_PHYSICS_1" |
           "AP_CALCULUS_AB" | "AP_CALCULUS_BC" | "AP_STATISTICS" |
-          "AP_CHEMISTRY" | "AP_BIOLOGY" | "AP_US_HISTORY" | "AP_PSYCHOLOGY";
+          "AP_CHEMISTRY" | "AP_BIOLOGY" | "AP_US_HISTORY" | "AP_PSYCHOLOGY" |
+          "SAT_MATH" | "SAT_READING_WRITING" |
+          "ACT_MATH" | "ACT_ENGLISH" | "ACT_SCIENCE" | "ACT_READING";
   name: string;
   authors: string;
   publisher: string;
   description: string;
-  type: "textbook" | "study_guide" | "curriculum";
+  type: "textbook" | "study_guide" | "curriculum" | "practice";
   free: boolean;
   url?: string;
 }
@@ -638,6 +660,118 @@ export const COURSE_TEXTBOOKS: CourseTextbook[] = [
     description: "Unit-by-unit psychology reviews, complete practice exams, and a proven FRQ writing strategy for AP Psychology.",
     type: "study_guide",
     free: false,
+  },
+
+  // ── SAT Math ──
+  {
+    course: "SAT_MATH",
+    name: "Khan Academy SAT Math (Official Partner)",
+    authors: "Khan Academy & College Board",
+    publisher: "Khan Academy",
+    description: "Official College Board SAT partner — free personalized practice, video lessons, and full-length tests for all 4 SAT Math domains.",
+    type: "curriculum",
+    free: true,
+    url: "https://www.khanacademy.org/sat",
+  },
+  {
+    course: "SAT_MATH",
+    name: "College Board Bluebook Digital SAT Practice",
+    authors: "College Board",
+    publisher: "College Board",
+    description: "Free official SAT practice tests in the Bluebook app — the exact interface used on test day with adaptive scoring.",
+    type: "practice",
+    free: true,
+    url: "https://bluebook.collegeboard.org",
+  },
+
+  // ── SAT Reading & Writing ──
+  {
+    course: "SAT_READING_WRITING",
+    name: "Khan Academy SAT Reading & Writing (Official Partner)",
+    authors: "Khan Academy & College Board",
+    publisher: "Khan Academy",
+    description: "Official College Board SAT partner — free lessons and practice for all 4 Reading & Writing domains including grammar and rhetorical analysis.",
+    type: "curriculum",
+    free: true,
+    url: "https://www.khanacademy.org/sat",
+  },
+  {
+    course: "SAT_READING_WRITING",
+    name: "College Board Bluebook Digital SAT Practice",
+    authors: "College Board",
+    publisher: "College Board",
+    description: "Official full-length SAT practice tests in the Bluebook app — adaptive format matches the real digital SAT.",
+    type: "practice",
+    free: true,
+    url: "https://bluebook.collegeboard.org",
+  },
+
+  // ── ACT Math ──
+  {
+    course: "ACT_MATH",
+    name: "ACT Official Free Practice Test",
+    authors: "ACT",
+    publisher: "ACT, Inc.",
+    description: "Free official full-length ACT practice test with answer key and scoring guide — the best benchmark for your ACT Math readiness.",
+    type: "practice",
+    free: true,
+    url: "https://www.act.org/content/act/en/products-and-services/the-act/test-preparation/free-act-test-prep.html",
+  },
+  {
+    course: "ACT_MATH",
+    name: "Khan Academy ACT Math Practice",
+    authors: "Khan Academy",
+    publisher: "Khan Academy",
+    description: "Free video lessons and exercises covering all ACT Math domains: algebra, geometry, statistics, and integrated skills.",
+    type: "curriculum",
+    free: true,
+    url: "https://www.khanacademy.org/test-prep/act-math",
+  },
+
+  // ── ACT English ──
+  {
+    course: "ACT_ENGLISH",
+    name: "ACT Official Free Practice Test",
+    authors: "ACT",
+    publisher: "ACT, Inc.",
+    description: "Free official ACT practice test including the full English section — 75 passage-embedded grammar and rhetoric questions.",
+    type: "practice",
+    free: true,
+    url: "https://www.act.org/content/act/en/products-and-services/the-act/test-preparation/free-act-test-prep.html",
+  },
+
+  // ── ACT Science ──
+  {
+    course: "ACT_SCIENCE",
+    name: "ACT Official Free Practice Test",
+    authors: "ACT",
+    publisher: "ACT, Inc.",
+    description: "Free official ACT practice test including the full Science section — 40 questions on data interpretation, research summaries, and conflicting viewpoints.",
+    type: "practice",
+    free: true,
+    url: "https://www.act.org/content/act/en/products-and-services/the-act/test-preparation/free-act-test-prep.html",
+  },
+
+  // ── ACT Reading ──
+  {
+    course: "ACT_READING",
+    name: "ACT Official Free Practice Test",
+    authors: "ACT",
+    publisher: "ACT, Inc.",
+    description: "Free official ACT practice test including the full Reading section — 4 passages (literary, social science, humanities, natural science) with 40 questions.",
+    type: "practice",
+    free: true,
+    url: "https://www.act.org/content/act/en/products-and-services/the-act/test-preparation/free-act-test-prep.html",
+  },
+  {
+    course: "ACT_READING",
+    name: "Khan Academy ACT Reading Practice",
+    authors: "Khan Academy",
+    publisher: "Khan Academy",
+    description: "Free video lessons and exercises on ACT Reading strategies: main idea, inference, vocabulary in context, and passage analysis.",
+    type: "curriculum",
+    free: true,
+    url: "https://www.khanacademy.org/test-prep/act-reading",
   },
 ];
 
