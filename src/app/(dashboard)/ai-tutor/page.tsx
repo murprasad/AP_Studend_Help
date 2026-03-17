@@ -497,6 +497,29 @@ export default function AiTutorPage() {
             )}
           </div>
 
+          {/* Follow-up chips — above input so they're always reachable */}
+          {!isStreaming && lastFollowUps.length > 0 && (
+            <div className="flex-shrink-0 space-y-1.5">
+              <p className="text-xs text-muted-foreground flex items-center gap-1">
+                <Lightbulb className="h-3 w-3" />
+                Follow-up questions
+              </p>
+              <div className="flex flex-col gap-1.5">
+                {lastFollowUps.map((q) => (
+                  <button
+                    key={q}
+                    onClick={() => sendMessage(q)}
+                    className="w-full text-left text-xs px-3 py-2 rounded-lg border border-indigo-500/30
+                      bg-indigo-500/5 hover:bg-indigo-500/15 text-indigo-300
+                      hover:text-indigo-200 transition-colors leading-relaxed"
+                  >
+                    {q}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* Limit banner */}
           {limitBanner}
 
@@ -513,28 +536,6 @@ export default function AiTutorPage() {
                 isStreaming={isStreaming}
                 wikiImageUrl={wikiImageUrl}
               />
-              {/* Follow-up chips */}
-              {!isStreaming && lastFollowUps.length > 0 && (
-                <div>
-                  <p className="text-xs text-muted-foreground mb-2 flex items-center gap-1">
-                    <Lightbulb className="h-3 w-3" />
-                    Follow-up questions
-                  </p>
-                  <div className="flex flex-wrap gap-2">
-                    {lastFollowUps.map((q) => (
-                      <button
-                        key={q}
-                        onClick={() => sendMessage(q)}
-                        className="text-xs px-3 py-1.5 rounded-full border border-indigo-500/30
-                          bg-indigo-500/5 hover:bg-indigo-500/15 text-indigo-300
-                          hover:text-indigo-200 transition-colors"
-                      >
-                        {q}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
             </div>
           ) : (
             <div className="flex flex-col items-center justify-center h-full text-center gap-4">
@@ -673,32 +674,6 @@ export default function AiTutorPage() {
                   )}
                 </div>
 
-                {/* Follow-up chips — only under the last assistant message */}
-                {msg.role === "assistant" &&
-                  i === lastAssistantIdx &&
-                  !isLoading &&
-                  msg.followUps &&
-                  msg.followUps.length > 0 && (
-                    <div className="pl-11">
-                      <p className="text-xs text-muted-foreground mb-2 flex items-center gap-1">
-                        <Lightbulb className="h-3 w-3" />
-                        Follow-up questions
-                      </p>
-                      <div className="flex flex-wrap gap-2">
-                        {msg.followUps.map((q) => (
-                          <button
-                            key={q}
-                            onClick={() => sendMessage(q)}
-                            className="text-xs px-3 py-1.5 rounded-full border border-indigo-500/30
-                              bg-indigo-500/5 hover:bg-indigo-500/15 text-indigo-300
-                              hover:text-indigo-200 transition-colors"
-                          >
-                            {q}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  )}
               </div>
             ))
           )}
@@ -719,6 +694,29 @@ export default function AiTutorPage() {
 
           <div ref={messagesEndRef} />
         </div>
+
+        {/* Follow-up chips — above input, always visible without scrolling */}
+        {!isStreaming && lastFollowUps.length > 0 && (
+          <div className="mb-3 space-y-1.5 flex-shrink-0">
+            <p className="text-xs text-muted-foreground flex items-center gap-1">
+              <Lightbulb className="h-3 w-3" />
+              Follow-up questions
+            </p>
+            <div className="flex flex-col gap-1.5">
+              {lastFollowUps.map((q) => (
+                <button
+                  key={q}
+                  onClick={() => sendMessage(q)}
+                  className="w-full text-left text-xs px-3 py-2 rounded-lg border border-indigo-500/30
+                    bg-indigo-500/5 hover:bg-indigo-500/15 text-indigo-300
+                    hover:text-indigo-200 transition-colors leading-relaxed"
+                >
+                  {q}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
 
         {limitBanner}
         {inputCard}
