@@ -91,7 +91,7 @@ export default function LandingPage() {
 
       {/* Hero */}
       <section className="relative pt-20 pb-32 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-indigo-950/30 to-transparent pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-b from-indigo-950/40 via-violet-950/20 to-transparent pointer-events-none" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight mb-4">
             <span className="gradient-text">Student</span><span className="text-foreground/80 font-medium">Nest</span>
