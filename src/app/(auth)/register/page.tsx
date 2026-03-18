@@ -46,7 +46,15 @@ export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  const [googleAvailable, setGoogleAvailable] = useState(false);
   const [success, setSuccess] = useState(false);
+
+  useEffect(() => {
+    fetch("/api/auth/providers")
+      .then((r) => r.json())
+      .then((p) => setGoogleAvailable("google" in (p ?? {})))
+      .catch(() => {});
+  }, []);
   const [registeredEmail, setRegisteredEmail] = useState("");
   const [verified, setVerified] = useState(false);
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -154,29 +162,33 @@ export default function RegisterPage() {
         <CardDescription>Start your AP exam journey today — free</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        {/* Google sign-up — shown first, reduces friction dramatically */}
-        <Button
-          type="button"
-          variant="outline"
-          className="w-full gap-3 h-11 border-border/60 hover:bg-accent"
-          onClick={handleGoogleSignIn}
-          disabled={isGoogleLoading || isLoading}
-        >
-          {isGoogleLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <GoogleIcon />}
-          Continue with Google
-        </Button>
-        <p className="text-xs text-center text-muted-foreground -mt-1">
-          One click · No password · No email verification needed
-        </p>
+        {/* Google sign-up — only shown once GOOGLE_CLIENT_ID + SECRET are configured */}
+        {googleAvailable && (
+          <>
+            <Button
+              type="button"
+              variant="outline"
+              className="w-full gap-3 h-11 border-border/60 hover:bg-accent"
+              onClick={handleGoogleSignIn}
+              disabled={isGoogleLoading || isLoading}
+            >
+              {isGoogleLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <GoogleIcon />}
+              Continue with Google
+            </Button>
+            <p className="text-xs text-center text-muted-foreground -mt-1">
+              One click · No password · No email verification needed
+            </p>
 
-        <div className="relative">
-          <div className="absolute inset-0 flex items-center">
-            <span className="w-full border-t border-border/40" />
-          </div>
-          <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-card px-2 text-muted-foreground">or sign up with email</span>
-          </div>
-        </div>
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t border-border/40" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-card px-2 text-muted-foreground">or sign up with email</span>
+              </div>
+            </div>
+          </>
+        )}
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
