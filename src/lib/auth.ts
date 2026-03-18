@@ -1,10 +1,15 @@
 import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import GoogleProvider from "next-auth/providers/google";
 import { compareSync } from "bcrypt-ts";
 import { prisma } from "@/lib/prisma";
 
 export const authOptions: NextAuthOptions = {
+  logger: {
+    error(code, metadata) {
+      console.error("[NextAuth Error]", code, JSON.stringify(metadata, null, 2));
+    },
+    warn(code) { console.warn("[NextAuth Warn]", code); },
+  },
   session: {
     strategy: "jwt",
     maxAge: 30 * 24 * 60 * 60, // 30 days
@@ -16,21 +21,62 @@ export const authOptions: NextAuthOptions = {
   providers: [
     // Only register Google if credentials are actually configured — avoids OAuthSignin
     // errors when the env vars aren't set in Cloudflare Pages yet.
+    // Manual Google OAuth provider — uses plain fetch for token exchange and userinfo,
+    // bypassing openid-client entirely (which uses Node.js crypto incompatible with CF Workers).
     ...(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET
-      ? [GoogleProvider({
-          clientId: process.env.GOOGLE_CLIENT_ID,
-          clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-          // Disable PKCE — CF Workers WebCrypto can fail PKCE challenge generation.
-          // State-only check is sufficient for server-side OAuth flows.
-          checks: ["state"],
+      ? [{
+          id: "google",
+          name: "Google",
+          type: "oauth" as const,
+          checks: ["state"] as ["state"],
           authorization: {
+            url: "https://accounts.google.com/o/oauth2/v2/auth",
             params: {
+              scope: "openid email profile",
               prompt: "consent",
               access_type: "offline",
-              response_type: "code",
             },
           },
-        })]
+          token: {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            async request(context: any) {
+              const res = await fetch("https://oauth2.googleapis.com/token", {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: new URLSearchParams({
+                  code: String(context.params.code ?? ""),
+                  client_id: String(context.provider.clientId ?? ""),
+                  client_secret: String(context.provider.clientSecret ?? ""),
+                  // redirect_uri is not in callback params — use the provider's callbackUrl
+                  redirect_uri: String(context.provider.callbackUrl ?? ""),
+                  grant_type: "authorization_code",
+                }).toString(),
+              });
+              const tokens = await res.json();
+              return { tokens };
+            },
+          },
+          userinfo: {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            async request(context: any) {
+              const res = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
+                headers: { Authorization: `Bearer ${context.tokens.access_token}` },
+              });
+              return res.json();
+            },
+          },
+          idToken: false,
+          clientId: process.env.GOOGLE_CLIENT_ID,
+          clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+          profile(profile: { sub: string; name?: string; email: string; picture?: string; given_name?: string; family_name?: string }) {
+            return {
+              id: profile.sub,
+              name: profile.name ?? profile.email,
+              email: profile.email,
+              image: profile.picture,
+            };
+          },
+        }]
       : []),
     CredentialsProvider({
       name: "credentials",

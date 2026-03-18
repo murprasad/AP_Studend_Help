@@ -349,3 +349,26 @@ then run `npx prisma migrate deploy` against the production DB.
 - [ ] Use `callAIWithCascade` from `src/lib/ai-providers.ts`
 - [ ] Cap any external enrichment fetches at 2-3s with `Promise.race`
 - [ ] Handle the "All AI providers failed" error gracefully
+
+---
+
+## Release History
+
+### Beta 1.3 (2026-03-18)
+- **Landing page overhaul**: Reduced from 12 sections → 7 sections — removed Stats bar, Practice Modes, full inline Pricing section, About section from bottom
+- **Nav update**: Replaced `Pricing → /#pricing` with `About → /about`; footer now links to `/about` and `/pricing` page
+- **Pricing teaser**: Landing page final CTA now shows "Free forever · Premium at $9.99/month · See full pricing →" instead of full duplicate pricing cards
+- **Google OAuth — plain fetch fix**: Replaced `openid-client` token exchange with plain `fetch` calls in `src/lib/auth.ts` to fix `OAuthCallback` error on CF Workers. Both `token.request` and `userinfo.request` use native `fetch`. `redirect_uri` sourced from `context.provider.callbackUrl`.
+- **Google OAuth — discovery bypass**: Replaced `GoogleProvider()` (which fetches OIDC wellKnown on cold starts) with a manual OAuth provider config — hardcoded `authorization`, `token`, and `userinfo` URLs to eliminate CF Workers cold-start failures.
+- **package.json version**: Bumped to `1.3.0`
+
+### Beta 1.22 (2026-03-18)
+- **Google OAuth**: Added GoogleProvider to NextAuth (`src/lib/auth.ts`); manual user create/lookup in `signIn` callback (no PrismaAdapter — avoids transaction issues); `passwordHash String?` now optional in schema; `checks: ["state"]` to disable PKCE on CF Workers
+- **FRQ Speed Fix**: `generateQuestion()` skips `validateQuestion()` for FRQ/SAQ/DBQ/LEQ/CODING types (saves ~10s/question)
+- **Sage Loading Bubble**: Practice page shows animated Sage bubble with cycling messages while FRQ session starts; disappears when questions load
+- **Landing Page**: Hero rewritten for clarity; soft pricing in 3 spots; "Meet Sage" section; "How It Works" 3-step section; inline pricing cards; outcome-focused features; trust signals; stronger CTAs
+
+### Beta 1.21 (prior)
+- Practice hang fixes + premium badge flicker
+- AI provider SDK calls converted to plain fetch for CF Workers compat
+- Content hash dedup, 5-criterion validator, apSkill tagging, topic saturation guard, longestStreak, topic coverage admin panel
