@@ -20,6 +20,16 @@ export const authOptions: NextAuthOptions = {
       ? [GoogleProvider({
           clientId: process.env.GOOGLE_CLIENT_ID,
           clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+          // Disable PKCE — CF Workers WebCrypto can fail PKCE challenge generation.
+          // State-only check is sufficient for server-side OAuth flows.
+          checks: ["state"],
+          authorization: {
+            params: {
+              prompt: "consent",
+              access_type: "offline",
+              response_type: "code",
+            },
+          },
         })]
       : []),
     CredentialsProvider({
