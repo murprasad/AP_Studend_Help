@@ -12,6 +12,7 @@ import { AdminBulkGenerate } from "@/components/admin/bulk-generate";
 import { AdminMegaPopulate } from "@/components/admin/mega-populate";
 import { AdminFeatureFlags } from "@/components/admin/feature-flags";
 import { AdminPaymentSetup } from "@/components/admin/payment-setup";
+import { AdminFeedbackOverview } from "@/components/admin/feedback-overview";
 
 export default async function AdminPage() {
   const session = await getServerSession(authOptions);
@@ -74,6 +75,9 @@ export default async function AdminPage() {
           </Card>
         ))}
       </div>
+
+      {/* Session Feedback */}
+      <AdminFeedbackOverview />
 
       {/* Bulk Question Generation */}
       <AdminBulkGenerate />

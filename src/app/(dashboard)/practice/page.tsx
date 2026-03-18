@@ -27,6 +27,8 @@ import {
   Lock,
   Crown,
   PenLine,
+  ThumbsUp,
+  ThumbsDown,
 } from "lucide-react";
 import Link from "next/link";
 import { MarkdownContent } from "@/components/tutor/section-cards";
@@ -108,6 +110,7 @@ export default function PracticePage() {
   const [sessionSummary, setSessionSummary] = useState<SessionSummary | null>(null);
   const [results, setResults] = useState<Array<{ correct: boolean; timeSecs: number }>>([]);
   const [openEndedAnswer, setOpenEndedAnswer] = useState("");
+  const [feedbackRating, setFeedbackRating] = useState<1 | -1 | null>(null);
 
   // Reset unit selection when course changes
   useEffect(() => {
@@ -248,6 +251,16 @@ export default function PracticePage() {
     }
   }
 
+  async function submitFeedback(rating: 1 | -1) {
+    if (!sessionId || feedbackRating !== null) return;
+    setFeedbackRating(rating);
+    await fetch("/api/practice/feedback", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ sessionId, rating }),
+    }).catch(() => {});
+  }
+
   function resetSession() {
     questionsRef.current = [];
     setMode("select");
@@ -262,6 +275,7 @@ export default function PracticePage() {
     setQuestionStartTime(null);
     setSessionLimitReached(false);
     setOpenEndedAnswer("");
+    setFeedbackRating(null);
   }
 
   if (mode === "summary" && sessionSummary) {
@@ -314,6 +328,39 @@ export default function PracticePage() {
                 </div>
               ))}
             </div>
+          </CardContent>
+        </Card>
+
+        {/* Quick feedback */}
+        <Card className="card-glow">
+          <CardContent className="p-4">
+            {feedbackRating === null ? (
+              <div className="flex items-center justify-between gap-4">
+                <p className="text-sm text-muted-foreground">How was this session?</p>
+                <div className="flex gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="gap-2 hover:border-emerald-500 hover:text-emerald-400"
+                    onClick={() => submitFeedback(1)}
+                  >
+                    <ThumbsUp className="h-4 w-4" /> Good
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="gap-2 hover:border-red-500 hover:text-red-400"
+                    onClick={() => submitFeedback(-1)}
+                  >
+                    <ThumbsDown className="h-4 w-4" /> Needs work
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <p className="text-sm text-center text-muted-foreground">
+                {feedbackRating === 1 ? "👍 Thanks for the feedback!" : "👎 Thanks — we'll keep improving!"}
+              </p>
+            )}
           </CardContent>
         </Card>
 

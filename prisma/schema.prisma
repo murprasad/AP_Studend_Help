@@ -44,6 +44,7 @@ model User {
   diagnosticResults   DiagnosticResult[]
   discussionThreads   DiscussionThread[]
   discussionReplies   DiscussionReply[]
+  sessionFeedbacks    SessionFeedback[]
 
   @@map("users")
 }
@@ -152,6 +153,7 @@ model PracticeSession {
   user      User               @relation(fields: [userId], references: [id], onDelete: Cascade)
   questions SessionQuestion[]
   responses StudentResponse[]
+  feedback  SessionFeedback?
 
   @@index([userId, course, completedAt])
   @@index([userId, startedAt])
@@ -262,6 +264,19 @@ model TutorConversation {
 
   @@index([userId, createdAt])
   @@map("tutor_conversations")
+}
+
+model SessionFeedback {
+  id        String   @id @default(cuid())
+  sessionId String   @unique
+  userId    String
+  rating    Int      // 1 = thumbs up, -1 = thumbs down
+  createdAt DateTime @default(now())
+
+  session PracticeSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  user    User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("session_feedback")
 }
 
 model SiteSetting {

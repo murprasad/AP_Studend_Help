@@ -255,6 +255,23 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* About */}
+      <section id="about" className="border-t border-border/40 py-16 bg-secondary/10">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-4">
+          <h2 className="text-2xl font-bold">About StudentNest</h2>
+          <p className="text-muted-foreground leading-relaxed">
+            StudentNest is an AI-powered exam prep platform built for high school students tackling AP, SAT, and ACT exams.
+            We combine adaptive practice, instant AI tutoring, and detailed progress analytics to help every student reach their target score.
+          </p>
+          <p className="text-muted-foreground text-sm">
+            Questions? Reach us at{" "}
+            <a href="mailto:contact@studentnest.ai" className="text-indigo-400 hover:underline">
+              contact@studentnest.ai
+            </a>
+          </p>
+        </div>
+      </section>
+
       {/* Footer */}
       <footer className="border-t border-border/40 py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
