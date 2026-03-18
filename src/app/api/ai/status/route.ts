@@ -1,8 +1,5 @@
 import { NextResponse } from "next/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import Groq from "groq-sdk";
-import { CohereClient } from "cohere-ai";
-import Anthropic from "@anthropic-ai/sdk";
 
 export const dynamic = "force-dynamic";
 
@@ -17,14 +14,21 @@ async function testGemini(): Promise<string> {
 }
 
 async function testGroq(): Promise<string> {
-  if (!process.env.GROQ_API_KEY) return "NO_KEY";
-  const client = new Groq({ apiKey: process.env.GROQ_API_KEY });
-  const res = await client.chat.completions.create({
-    model: "llama-3.3-70b-versatile",
-    messages: [{ role: "user", content: TEST_PROMPT }],
-    max_tokens: 10,
+  const apiKey = process.env.GROQ_API_KEY;
+  if (!apiKey) return "NO_KEY";
+  const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
+    body: JSON.stringify({
+      model: "llama-3.3-70b-versatile",
+      messages: [{ role: "user", content: TEST_PROMPT }],
+      max_tokens: 10,
+    }),
+    signal: AbortSignal.timeout(10000),
   });
-  return res.choices[0]?.message?.content ? "OK" : "EMPTY_RESPONSE";
+  if (!res.ok) return `HTTP_${res.status}`;
+  const d = await res.json() as { choices?: Array<{ message?: { content?: string } }> };
+  return d.choices?.[0]?.message?.content ? "OK" : "EMPTY_RESPONSE";
 }
 
 async function testTogether(): Promise<string> {
@@ -44,7 +48,7 @@ async function testOpenRouter(): Promise<string> {
   if (!process.env.OPENROUTER_API_KEY) return "NO_KEY";
   const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
     method: "POST",
-    headers: { "Content-Type": "application/json", Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`, "HTTP-Referer": "https://prepnova.netlify.app", "X-Title": "StudentNest" },
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`, "HTTP-Referer": process.env.NEXT_PUBLIC_APP_URL ?? "https://studentnest.ai", "X-Title": "StudentNest" },
     body: JSON.stringify({ model: "google/gemini-flash-1.5", messages: [{ role: "user", content: TEST_PROMPT }], max_tokens: 10 }),
     signal: AbortSignal.timeout(10000),
   });
@@ -66,21 +70,39 @@ async function testHuggingFace(): Promise<string> {
 }
 
 async function testCohere(): Promise<string> {
-  if (!process.env.COHERE_API_KEY) return "NO_KEY";
-  const client = new CohereClient({ token: process.env.COHERE_API_KEY });
-  const res = await client.chat({ model: "command-r", message: TEST_PROMPT, maxTokens: 10 });
-  return res.text ? "OK" : "EMPTY_RESPONSE";
+  const apiKey = process.env.COHERE_API_KEY;
+  if (!apiKey) return "NO_KEY";
+  const res = await fetch("https://api.cohere.ai/v1/chat", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
+    body: JSON.stringify({ model: "command-r", message: TEST_PROMPT, max_tokens: 10 }),
+    signal: AbortSignal.timeout(10000),
+  });
+  if (!res.ok) return `HTTP_${res.status}`;
+  const d = await res.json() as { text?: string };
+  return d.text ? "OK" : "EMPTY_RESPONSE";
 }
 
 async function testAnthropic(): Promise<string> {
-  if (!process.env.ANTHROPIC_API_KEY) return "NO_KEY";
-  const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-  const res = await client.messages.create({
-    model: "claude-haiku-4-5-20251001",
-    max_tokens: 10,
-    messages: [{ role: "user", content: TEST_PROMPT }],
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) return "NO_KEY";
+  const res = await fetch("https://api.anthropic.com/v1/messages", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "x-api-key": apiKey,
+      "anthropic-version": "2023-06-01",
+    },
+    body: JSON.stringify({
+      model: "claude-haiku-4-5-20251001",
+      max_tokens: 10,
+      messages: [{ role: "user", content: TEST_PROMPT }],
+    }),
+    signal: AbortSignal.timeout(10000),
   });
-  return res.content[0]?.type === "text" ? "OK" : "EMPTY_RESPONSE";
+  if (!res.ok) return `HTTP_${res.status}`;
+  const d = await res.json() as { content?: Array<{ type: string; text?: string }> };
+  return d.content?.[0]?.text ? "OK" : "EMPTY_RESPONSE";
 }
 
 export async function GET() {

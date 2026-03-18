@@ -16,10 +16,6 @@
  */
 
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import Groq from "groq-sdk";
-import { HfInference } from "@huggingface/inference";
-import { CohereClient } from "cohere-ai";
-import Anthropic from "@anthropic-ai/sdk";
 
 export interface AICallResult {
   response: string;
@@ -39,27 +35,6 @@ function getGemini() {
     : null;
 }
 
-function getGroq() {
-  return process.env.GROQ_API_KEY ? new Groq({ apiKey: process.env.GROQ_API_KEY }) : null;
-}
-
-function getHuggingFace() {
-  return process.env.HUGGINGFACE_API_KEY
-    ? new HfInference(process.env.HUGGINGFACE_API_KEY)
-    : null;
-}
-
-function getCohere() {
-  return process.env.COHERE_API_KEY
-    ? new CohereClient({ token: process.env.COHERE_API_KEY })
-    : null;
-}
-
-function getAnthropic() {
-  return process.env.ANTHROPIC_API_KEY
-    ? new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
-    : null;
-}
 
 // ── Individual provider call functions ─────────────────────────────────────
 
@@ -233,20 +208,23 @@ async function callHuggingFace(
   prompt: string,
   systemPrompt?: string
 ): Promise<string> {
-  const client = getHuggingFace();
-  if (!client) throw new Error("No HUGGINGFACE_API_KEY");
+  const apiKey = process.env.HUGGINGFACE_API_KEY;
+  if (!apiKey) throw new Error("No HUGGINGFACE_API_KEY");
 
   const fullPrompt = systemPrompt
     ? `<|system|>\n${systemPrompt}\n<|user|>\n${prompt}\n<|assistant|>`
     : prompt;
 
-  const result = await client.textGeneration({
-    model: "mistralai/Mistral-7B-Instruct-v0.3",
-    inputs: fullPrompt,
-    parameters: { max_new_tokens: 1200, temperature: 0.7, return_full_text: false },
+  const res = await fetch("https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.3", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
+    body: JSON.stringify({ inputs: fullPrompt, parameters: { max_new_tokens: 1200, temperature: 0.7, return_full_text: false } }),
+    signal: AbortSignal.timeout(25000),
   });
 
-  return result.generated_text || "";
+  if (!res.ok) throw new Error(`HuggingFace error: ${res.status}`);
+  const data = await res.json() as Array<{ generated_text?: string }>;
+  return data[0]?.generated_text || "";
 }
 
 async function callCohere(
@@ -254,25 +232,23 @@ async function callCohere(
   systemPrompt?: string,
   history?: Array<{ role: "user" | "assistant"; content: string }>
 ): Promise<string> {
-  const client = getCohere();
-  if (!client) throw new Error("No COHERE_API_KEY");
+  const apiKey = process.env.COHERE_API_KEY;
+  if (!apiKey) throw new Error("No COHERE_API_KEY");
 
   const chatHistory = history
-    ? history.map((m) => ({
-        role: m.role === "assistant" ? ("CHATBOT" as const) : ("USER" as const),
-        message: m.content,
-      }))
+    ? history.map((m) => ({ role: m.role === "assistant" ? "CHATBOT" : "USER", message: m.content }))
     : [];
 
-  const response = await client.chat({
-    model: "command-r",
-    message: prompt,
-    preamble: systemPrompt,
-    chatHistory,
-    maxTokens: 1200,
+  const res = await fetch("https://api.cohere.ai/v1/chat", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
+    body: JSON.stringify({ model: "command-r", message: prompt, preamble: systemPrompt, chat_history: chatHistory, max_tokens: 1200 }),
+    signal: AbortSignal.timeout(25000),
   });
 
-  return response.text || "";
+  if (!res.ok) throw new Error(`Cohere error: ${res.status}`);
+  const data = await res.json() as { text?: string };
+  return data.text || "";
 }
 
 async function callVertexAI(
@@ -383,24 +359,38 @@ async function callAnthropic(
   systemPrompt?: string,
   history?: Array<{ role: "user" | "assistant"; content: string }>
 ): Promise<string> {
-  const client = getAnthropic();
-  if (!client) throw new Error("No ANTHROPIC_API_KEY");
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) throw new Error("No ANTHROPIC_API_KEY");
 
   const messages = [
     ...(history || []).map((m) => ({ role: m.role as "user" | "assistant", content: m.content })),
     { role: "user" as const, content: prompt },
   ];
 
-  const response = await client.messages.create({
-    model: "claude-sonnet-4-6",
-    max_tokens: 1500,
-    ...(systemPrompt ? { system: systemPrompt } : {}),
-    messages,
+  const res = await fetch("https://api.anthropic.com/v1/messages", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "x-api-key": apiKey,
+      "anthropic-version": "2023-06-01",
+    },
+    body: JSON.stringify({
+      model: "claude-haiku-4-5-20251001",
+      max_tokens: 1500,
+      ...(systemPrompt ? { system: systemPrompt } : {}),
+      messages,
+    }),
+    signal: AbortSignal.timeout(25000),
   });
 
-  const content = response.content[0];
-  if (content.type !== "text") throw new Error("Unexpected Anthropic response type");
-  return content.text;
+  if (!res.ok) {
+    const err = await res.text().catch(() => res.statusText);
+    throw new Error(`Anthropic error ${res.status}: ${err.slice(0, 100)}`);
+  }
+  const data = await res.json() as { content?: Array<{ type: string; text?: string }> };
+  const content = data.content?.[0];
+  if (!content || content.type !== "text") throw new Error("Anthropic: empty response");
+  return content.text!;
 }
 
 // ── Provider cascade ───────────────────────────────────────────────────────
