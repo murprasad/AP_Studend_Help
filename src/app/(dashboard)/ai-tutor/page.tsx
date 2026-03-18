@@ -457,7 +457,7 @@ export default function AiTutorPage() {
                   <div key={i}>
                     {msg.role === "user" ? (
                       <div className="flex gap-2 justify-end">
-                        <div className="max-w-[85%] p-2.5 rounded-xl text-xs bg-indigo-600 text-white rounded-br-sm">
+                        <div className="max-w-[85%] p-2.5 rounded-xl text-sm bg-indigo-600 text-white rounded-br-sm">
                           {msg.content}
                         </div>
                         <div className="w-6 h-6 rounded-full bg-secondary flex items-center justify-center flex-shrink-0 mt-0.5">
@@ -470,7 +470,7 @@ export default function AiTutorPage() {
                           <Bot className="h-3 w-3 text-indigo-400" />
                         </div>
                         <button
-                          className="max-w-[85%] p-2.5 rounded-xl text-xs bg-card border border-border/40 rounded-bl-sm text-left hover:border-indigo-500/40 transition-colors"
+                          className="max-w-[85%] p-2.5 rounded-xl text-sm bg-card border border-border/40 rounded-bl-sm text-left hover:border-indigo-500/40 transition-colors"
                           onClick={() => {
                             if (msg.content) {
                               setCurrentSections(parseSections(msg.content));
@@ -513,7 +513,7 @@ export default function AiTutorPage() {
                   <button
                     key={q}
                     onClick={() => sendMessage(q)}
-                    className="w-full text-left text-xs px-3 py-2 rounded-lg border border-indigo-500/30
+                    className="w-full text-left text-xs lg:text-sm px-3 py-2 rounded-lg border border-indigo-500/30
                       bg-indigo-500/5 hover:bg-indigo-500/15 text-indigo-300
                       hover:text-indigo-200 transition-colors leading-relaxed"
                   >
@@ -646,9 +646,9 @@ export default function AiTutorPage() {
                     }`}
                   >
                     {msg.role === "assistant" ? (
-                      <div className="prose prose-invert prose-sm max-w-none
+                      <div className="prose prose-invert max-w-none
                         prose-headings:font-semibold prose-headings:text-foreground
-                        prose-h2:text-base prose-h3:text-sm
+                        prose-h2:text-lg prose-h3:text-base
                         prose-p:text-foreground prose-p:leading-relaxed
                         prose-li:text-foreground prose-li:leading-relaxed
                         prose-strong:text-foreground prose-strong:font-semibold

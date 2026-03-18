@@ -250,7 +250,7 @@ export function SageChat() {
                 )}
               </Button>
             </div>
-            <p className="text-[10px] text-muted-foreground text-center mt-1.5">
+            <p className="text-xs text-muted-foreground text-center mt-1.5">
               Enter to send · Shift+Enter for new line
             </p>
           </div>

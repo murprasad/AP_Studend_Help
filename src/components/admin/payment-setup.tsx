@@ -20,7 +20,8 @@ interface PaymentConfigResponse {
   stripeConfig: { secretKey: boolean; webhookSecret: boolean; priceId: boolean; annualPriceId: boolean; publishableKey: boolean };
   masked: { secretKey: string; webhookSecret: string; priceId: string; annualPriceId: string; publishableKey: string };
   pricing: { premiumPriceDisplay: string; premiumAnnualPriceDisplay: string; premiumName: string };
-  fromEnv: { secretKey: boolean; webhookSecret: boolean; priceId: boolean; annualPriceId: boolean; publishableKey: boolean };
+  paymentLinks: { monthly: string; annual: string };
+  fromEnv: { secretKey: boolean; webhookSecret: boolean; priceId: boolean; annualPriceId: boolean; publishableKey: boolean; paymentLinkMonthly: boolean; paymentLinkAnnual: boolean };
 }
 
 interface FormState {
@@ -32,6 +33,8 @@ interface FormState {
   premiumPriceDisplay: string;
   premiumAnnualPriceDisplay: string;
   premiumName: string;
+  paymentLinkMonthly: string;
+  paymentLinkAnnual: string;
 }
 
 export function AdminPaymentSetup() {
@@ -49,6 +52,8 @@ export function AdminPaymentSetup() {
     premiumPriceDisplay: "9.99",
     premiumAnnualPriceDisplay: "79.99",
     premiumName: "Premium",
+    paymentLinkMonthly: "",
+    paymentLinkAnnual: "",
   });
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
@@ -62,6 +67,8 @@ export function AdminPaymentSetup() {
           premiumPriceDisplay: d.pricing.premiumPriceDisplay,
           premiumAnnualPriceDisplay: d.pricing.premiumAnnualPriceDisplay,
           premiumName: d.pricing.premiumName,
+          paymentLinkMonthly: d.paymentLinks?.monthly || "",
+          paymentLinkAnnual: d.paymentLinks?.annual || "",
         }));
       })
       .catch(() => setConfig(null))
@@ -116,6 +123,8 @@ export function AdminPaymentSetup() {
         premiumPriceDisplay: updated.pricing.premiumPriceDisplay,
         premiumAnnualPriceDisplay: updated.pricing.premiumAnnualPriceDisplay,
         premiumName: updated.pricing.premiumName,
+        paymentLinkMonthly: updated.paymentLinks?.monthly || "",
+        paymentLinkAnnual: updated.paymentLinks?.annual || "",
       }));
       setMessage({ type: "success", text: "Payment configuration saved successfully." });
     } catch {
@@ -338,6 +347,87 @@ export function AdminPaymentSetup() {
                   </div>
                 );
               })}
+            </div>
+
+            {/* Payment Links */}
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <p className="text-sm font-medium">Stripe Payment Links</p>
+                <a
+                  href="https://dashboard.stripe.com/payment-links"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-1 text-xs text-indigo-400 hover:text-indigo-300"
+                >
+                  Open Payment Links <ExternalLink className="h-3 w-3" />
+                </a>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Payment Links bypass server-side checkout session creation, fixing the &ldquo;Country ZZ&rdquo; error on Cloudflare edge.
+                Create one link per price in the Stripe Dashboard, then paste the URLs here.
+              </p>
+
+              {/* Monthly Payment Link */}
+              <div className="space-y-1.5">
+                <div className="flex items-center gap-2">
+                  {form.paymentLinkMonthly || config?.fromEnv.paymentLinkMonthly ? (
+                    <CheckCircle className="h-3.5 w-3.5 text-emerald-400 flex-shrink-0" />
+                  ) : (
+                    <XCircle className="h-3.5 w-3.5 text-muted-foreground/50 flex-shrink-0" />
+                  )}
+                  <label className="text-xs font-medium">Monthly Payment Link</label>
+                  <code className="text-xs text-muted-foreground/70 font-mono">STRIPE_PAYMENT_LINK_MONTHLY</code>
+                  {config?.fromEnv.paymentLinkMonthly && (
+                    <Badge variant="outline" className="text-xs text-blue-400 border-blue-500/30">from env</Badge>
+                  )}
+                </div>
+                {config?.fromEnv.paymentLinkMonthly ? (
+                  <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-blue-500/5 border border-blue-500/20">
+                    <span className="text-xs text-blue-400">set via environment variable</span>
+                    <span className="text-xs text-muted-foreground ml-auto">Override not needed</span>
+                  </div>
+                ) : (
+                  <input
+                    type="url"
+                    value={form.paymentLinkMonthly}
+                    onChange={(e) => setForm((prev) => ({ ...prev, paymentLinkMonthly: e.target.value }))}
+                    placeholder="https://buy.stripe.com/..."
+                    className="w-full px-3 py-2 text-xs font-mono rounded-lg border border-border/40 bg-secondary/30 placeholder:text-muted-foreground/50 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                  />
+                )}
+                <p className="text-xs text-muted-foreground/60 pl-5">Stripe Dashboard → Payment Links → create for monthly Premium price</p>
+              </div>
+
+              {/* Annual Payment Link */}
+              <div className="space-y-1.5">
+                <div className="flex items-center gap-2">
+                  {form.paymentLinkAnnual || config?.fromEnv.paymentLinkAnnual ? (
+                    <CheckCircle className="h-3.5 w-3.5 text-emerald-400 flex-shrink-0" />
+                  ) : (
+                    <XCircle className="h-3.5 w-3.5 text-muted-foreground/50 flex-shrink-0" />
+                  )}
+                  <label className="text-xs font-medium">Annual Payment Link</label>
+                  <code className="text-xs text-muted-foreground/70 font-mono">STRIPE_PAYMENT_LINK_ANNUAL</code>
+                  {config?.fromEnv.paymentLinkAnnual && (
+                    <Badge variant="outline" className="text-xs text-blue-400 border-blue-500/30">from env</Badge>
+                  )}
+                </div>
+                {config?.fromEnv.paymentLinkAnnual ? (
+                  <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-blue-500/5 border border-blue-500/20">
+                    <span className="text-xs text-blue-400">set via environment variable</span>
+                    <span className="text-xs text-muted-foreground ml-auto">Override not needed</span>
+                  </div>
+                ) : (
+                  <input
+                    type="url"
+                    value={form.paymentLinkAnnual}
+                    onChange={(e) => setForm((prev) => ({ ...prev, paymentLinkAnnual: e.target.value }))}
+                    placeholder="https://buy.stripe.com/..."
+                    className="w-full px-3 py-2 text-xs font-mono rounded-lg border border-border/40 bg-secondary/30 placeholder:text-muted-foreground/50 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                  />
+                )}
+                <p className="text-xs text-muted-foreground/60 pl-5">Stripe Dashboard → Payment Links → create for annual Premium price</p>
+              </div>
             </div>
 
             {/* Pricing Display Config */}

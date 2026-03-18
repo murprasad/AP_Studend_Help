@@ -48,6 +48,11 @@ export async function GET() {
       premiumAnnualPriceDisplay: config.premiumAnnualPriceDisplay,
       premiumName: config.premiumName,
     },
+    // Payment Links — returned as plain URLs (not secret)
+    paymentLinks: {
+      monthly: config.paymentLinkMonthly,
+      annual: config.paymentLinkAnnual,
+    },
     // Let the UI know if the value comes from env (read-only in admin UI)
     fromEnv: {
       secretKey: !!process.env.STRIPE_SECRET_KEY,
@@ -55,6 +60,8 @@ export async function GET() {
       priceId: !!process.env.STRIPE_PREMIUM_PRICE_ID,
       annualPriceId: !!process.env.STRIPE_ANNUAL_PRICE_ID,
       publishableKey: !!process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
+      paymentLinkMonthly: !!process.env.STRIPE_PAYMENT_LINK_MONTHLY,
+      paymentLinkAnnual: !!process.env.STRIPE_PAYMENT_LINK_ANNUAL,
     },
   });
 }
@@ -72,6 +79,8 @@ export async function POST(req: NextRequest) {
     premiumPriceDisplay?: string;
     premiumAnnualPriceDisplay?: string;
     premiumName?: string;
+    paymentLinkMonthly?: string;
+    paymentLinkAnnual?: string;
   };
 
   const adminId = auth.session!.user.id;
@@ -100,6 +109,12 @@ export async function POST(req: NextRequest) {
   }
   if (body.premiumName !== undefined && body.premiumName.trim() !== "") {
     updates.push(setSetting("stripe_premium_name", body.premiumName.trim(), adminId));
+  }
+  if (body.paymentLinkMonthly !== undefined) {
+    updates.push(setSetting("stripe_payment_link_monthly", body.paymentLinkMonthly, adminId));
+  }
+  if (body.paymentLinkAnnual !== undefined) {
+    updates.push(setSetting("stripe_payment_link_annual", body.paymentLinkAnnual, adminId));
   }
 
   await Promise.all(updates);

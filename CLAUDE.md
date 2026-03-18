@@ -140,13 +140,22 @@ Always use `AbortSignal.timeout(25000)` on provider fetch calls.
 - The API route (`/api/ai/tutor`) forwards `followUps` to the client.
 - The UI renders the follow-ups as clickable chips below the last assistant message.
 
-### 5. NextAuth JWT Sessions
+### 5. NextAuth JWT Sessions + Google OAuth
 
 JWT strategy — sessions are stored in cookies, not the database.
 `session.user.id` comes from `token.id` set in the `jwt` callback.
 The `Session` table in Prisma is unused (JWT doesn't write to it).
 
 Email verification is **auto-bypassed** in development when `EMAIL_SERVER_USER` is unset.
+
+**Google OAuth (added Beta 1.22):**
+- Added `GoogleProvider` alongside `CredentialsProvider` — no PrismaAdapter needed.
+- `signIn` callback handles Google sign-ins manually: finds or creates DB user, auto-sets `emailVerified`.
+- `jwt` callback detects `account.provider === "google"` and looks up DB user by email to set `token.id`.
+- `User.passwordHash` is now `String?` (nullable) — Google users have no password.
+- Credentials authorize checks `if (!user.passwordHash)` and returns a helpful error.
+- **Required env vars**: `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`
+- **Google Cloud Console**: Authorized redirect URI must include `https://studentnest.ai/api/auth/callback/google`
 
 ### 6. Course State
 
@@ -228,6 +237,24 @@ receive full platform access unless explicitly enabled by admin.
 - `/admin` page runs `prisma.question.groupBy({ by: ["unit","topic"] })` sorted by count ASC
 - Color coding: red < 3, yellow 3–7, green ≥ 8 questions per topic
 
+### 10. CF Workers Banned Imports (enforced by `scripts/check-cf-compat.js`)
+
+Never import these packages in any file under `src/` — they use Node.js HTTP clients
+that are **not** supported by Cloudflare Workers (`nodejs_compat_v2`):
+
+| Banned package | Why |
+|----------------|-----|
+| `groq-sdk` | Internal HTTP client uses Node net APIs |
+| `@anthropic-ai/sdk` | Same issue |
+| `@huggingface/inference` | Same issue |
+| `cohere-ai` | Same issue |
+
+**Always use plain `fetch` with `AbortSignal.timeout()`** for all AI provider calls.
+The only edge-safe AI SDK is `@google/generative-ai` (uses fetch internally).
+
+`scripts/check-cf-compat.js` is wired into `npm run pages:deploy` as a pre-build gate
+and will block the deploy immediately if a banned import is detected.
+
 ---
 
 ## Commands
@@ -301,6 +328,7 @@ then run `npx prisma migrate deploy` against the production DB.
 | AI tutor slow / "AI unavailable" | Enrichment fetches (Wikipedia etc.) block AI call on CF edge | 2.5s timeout cap in `askTutor` + Groq via plain fetch |
 | Anthropic API credits | Billing issue, not code | Groq is primary — Anthropic is last resort in cascade |
 | OpenNext Windows warning | OpenNext not fully tested on Windows | Use WSL for builds if hitting unexplained failures |
+| SDK imports on CF Workers | groq-sdk, @anthropic-ai/sdk, etc. use Node.js HTTP clients incompatible with CF Workers | Never import AI SDKs in server code — use plain fetch. Run `scripts/check-cf-compat.js` before deploy |
 
 ---
 

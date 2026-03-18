@@ -249,6 +249,9 @@ export async function generateQuestion(
 
   const prompt = buildQuestionPrompt(inferredCourse, unit, unitName, difficulty, questionType, topic);
 
+  // FRQ/open-ended types have no distractors — skip validator (saves ~10s/attempt)
+  const needsValidation = !["FRQ", "SAQ", "DBQ", "LEQ", "CODING"].includes(questionType ?? "");
+
   const MAX_GEN_ATTEMPTS = 3;
   let aiResult: AICallResult | null = null;
   let parsed: Record<string, unknown> | null = null;
@@ -259,14 +262,17 @@ export async function generateQuestion(
       const raw = await callAIForTier(userTier, prompt);
       const rawText = raw.response.trim().replace(/^```(?:json)?\s*/i, "").replace(/```\s*$/i, "");
       const candidate = JSON.parse(rawText) as Record<string, unknown>;
-      const validation = await validateQuestion(JSON.stringify(candidate));
-      if (validation.approved) {
-        aiResult = raw;
-        parsed = candidate;
-        break;
+      if (needsValidation) {
+        const validation = await validateQuestion(JSON.stringify(candidate));
+        if (!validation.approved) {
+          console.warn(`[generateQuestion] Attempt ${attempt} rejected: ${validation.reason}`);
+          lastError = validation.reason ?? "validation failed";
+          continue;
+        }
       }
-      console.warn(`[generateQuestion] Attempt ${attempt} rejected: ${validation.reason}`);
-      lastError = validation.reason ?? "validation failed";
+      aiResult = raw;
+      parsed = candidate;
+      break;
     } catch (err) {
       lastError = err instanceof Error ? err.message : String(err);
       console.warn(`[generateQuestion] Attempt ${attempt} error: ${lastError}`);

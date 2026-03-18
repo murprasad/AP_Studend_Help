@@ -60,26 +60,56 @@ export default function BillingPage() {
     }
   }, [status, fetchBillingStatus]);
 
-  // After Stripe redirects back with ?success=1, refresh the session so
-  // the JWT picks up the new PREMIUM subscriptionTier from the DB.
+  // After Stripe redirects back with ?success=1, poll the DB billing status
+  // (not the JWT) to detect when the webhook has upgraded the account.
+  // Once the DB shows PREMIUM, call update() once to sync the JWT, then stop.
   useEffect(() => {
-    if (searchParams.get("success") === "1") {
-      setRefreshing(true);
-      const interval = setInterval(async () => {
-        await update();
-        await fetchBillingStatus();
-      }, 1500);
-      const timeout = setTimeout(() => {
-        clearInterval(interval);
+    if (searchParams.get("success") !== "1") return;
+
+    setRefreshing(true);
+    let stopped = false;
+
+    const poll = async () => {
+      if (stopped) return;
+      try {
+        const res = await fetch("/api/billing/status");
+        if (res.ok) {
+          const data = await res.json() as BillingStatus;
+          setBillingStatus(data);
+          if (data.subscriptionTier === "PREMIUM") {
+            stopped = true;
+            clearInterval(intervalId);
+            clearTimeout(timeoutId);
+            // Sync JWT once so the rest of the app sees PREMIUM immediately
+            await update();
+            setRefreshing(false);
+          }
+        }
+      } catch { /* ignore transient errors */ }
+    };
+
+    // Poll immediately, then every 2 s
+    poll();
+    const intervalId = setInterval(poll, 2000);
+    // Hard stop after 30 s in case the webhook is delayed
+    const timeoutId = setTimeout(() => {
+      if (!stopped) {
+        stopped = true;
+        clearInterval(intervalId);
         setRefreshing(false);
-      }, 10000);
-      return () => { clearInterval(interval); clearTimeout(timeout); };
-    }
+      }
+    }, 30000);
+
+    return () => { stopped = true; clearInterval(intervalId); clearTimeout(timeoutId); };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const [billingCycle, setBillingCycle] = useState<"monthly" | "annual">("monthly");
-  const isPremium = session?.user?.subscriptionTier === "PREMIUM";
+  // Use billingStatus (live DB) as the primary source of truth for premium state.
+  // The JWT (session) can lag until update() syncs it; billingStatus is always current.
+  const isPremium =
+    session?.user?.subscriptionTier === "PREMIUM" ||
+    billingStatus?.subscriptionTier === "PREMIUM";
   const isCanceling = billingStatus?.subscriptionStatus === "canceling";
   const periodEnd = billingStatus?.currentPeriodEnd;
   const daysLeft = periodEnd ? daysUntil(periodEnd) : null;
@@ -171,7 +201,7 @@ export default function BillingPage() {
             </p>
             <p className="text-sm text-muted-foreground mt-0.5">
               {refreshing && !isPremium
-                ? "Your payment was successful. Activating Premium features — this takes a few seconds."
+                ? "Payment confirmed. Waiting for Stripe to activate your account — usually under 10 seconds."
                 : "Your Premium subscription is active. Enjoy unlimited AI tutoring and all premium features!"}
             </p>
           </div>

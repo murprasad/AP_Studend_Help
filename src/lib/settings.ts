@@ -70,6 +70,8 @@ export interface StripeConfig {
   premiumPriceDisplay: string;
   premiumAnnualPriceDisplay: string;
   premiumName: string;
+  paymentLinkMonthly: string;
+  paymentLinkAnnual: string;
 }
 
 /**
@@ -77,7 +79,7 @@ export interface StripeConfig {
  * Env vars take precedence over DB settings so CF Pages secrets override admin UI values.
  */
 export async function getStripeConfig(): Promise<StripeConfig> {
-  const [secretKey, webhookSecret, priceId, annualPriceId, publishableKey, premiumPriceDisplay, premiumAnnualPriceDisplay, premiumName] =
+  const [secretKey, webhookSecret, priceId, annualPriceId, publishableKey, premiumPriceDisplay, premiumAnnualPriceDisplay, premiumName, paymentLinkMonthly, paymentLinkAnnual] =
     await Promise.all([
       getSetting("stripe_secret_key", ""),
       getSetting("stripe_webhook_secret", ""),
@@ -87,6 +89,8 @@ export async function getStripeConfig(): Promise<StripeConfig> {
       getSetting("stripe_premium_price_display", "9.99"),
       getSetting("stripe_annual_price_display", "79.99"),
       getSetting("stripe_premium_name", "Premium"),
+      getSetting("stripe_payment_link_monthly", ""),
+      getSetting("stripe_payment_link_annual", ""),
     ]);
 
   return {
@@ -98,6 +102,8 @@ export async function getStripeConfig(): Promise<StripeConfig> {
     premiumPriceDisplay,
     premiumAnnualPriceDisplay,
     premiumName,
+    paymentLinkMonthly: process.env.STRIPE_PAYMENT_LINK_MONTHLY || paymentLinkMonthly,
+    paymentLinkAnnual: process.env.STRIPE_PAYMENT_LINK_ANNUAL || paymentLinkAnnual,
   };
 }
 

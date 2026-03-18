@@ -19,28 +19,51 @@ const loaderPath = path.join(clientDir, "wasm-node-loader.mjs");
 //    - No top-level await (prevents inline execution during esbuild bundling).
 //    - Tries Node.js readFileSync first; falls back to wrangler-bundled import.
 const loaderContent = `\
-// Universal WASM loader — works on Node.js AND Cloudflare Workers.
+// Universal WASM loader — works on Node.js (including webpack/Next.js dev) AND Cloudflare Workers.
 // No top-level await so esbuild does not execute it inline at bundle time.
 // Prisma reads: (await (await import('...')).default).default
 
 export default (async function loadWasm() {
-  // Node.js: load from filesystem
+  const { readFileSync } = await import("node:fs");
+  const { resolve } = await import("node:path");
+
+  // Strategy 1: resolve relative to __dirname (standard Node.js ESM via fileURLToPath)
   try {
-    const { readFileSync } = await import("node:fs");
-    const { resolve, dirname } = await import("node:path");
+    const { dirname } = await import("node:path");
     const { fileURLToPath } = await import("node:url");
-    const __filename = fileURLToPath(import.meta.url);
-    const __dirname = dirname(__filename);
-    const wasmPath = resolve(__dirname, "./query_engine_bg.wasm");
-    const wasmBuffer = readFileSync(wasmPath);
-    const wasmModule = await WebAssembly.compile(wasmBuffer);
-    return { default: wasmModule };
-  } catch {
-    // Cloudflare Workers: wrangler bundles the .wasm file as an ES module
-    const wasmImport = await import("./query_engine_bg.wasm");
-    const wasmModule = wasmImport.default || wasmImport;
-    return { default: wasmModule };
-  }
+    // import.meta.url may be a webpack synthetic URL — only use it if it starts with file://
+    const metaUrl = import.meta.url;
+    if (metaUrl && metaUrl.startsWith("file://")) {
+      const __dir = dirname(fileURLToPath(metaUrl));
+      const wasmBuffer = readFileSync(resolve(__dir, "./query_engine_bg.wasm"));
+      return { default: await WebAssembly.compile(wasmBuffer) };
+    }
+  } catch { /* fall through */ }
+
+  // Strategy 2: resolve from a known absolute path using require.resolve (works in webpack CJS context)
+  try {
+    const r = (typeof require !== "undefined") ? require : null;
+    if (r) {
+      const wasmPath = r.resolve(".prisma/client/query_engine_bg.wasm");
+      const wasmBuffer = readFileSync(wasmPath);
+      return { default: await WebAssembly.compile(wasmBuffer) };
+    }
+  } catch { /* fall through */ }
+
+  // Strategy 3: hardcoded path relative to node_modules (last resort for webpack dev server)
+  try {
+    const cwd = (typeof process !== "undefined") ? process.cwd() : "";
+    if (cwd) {
+      const wasmPath = resolve(cwd, "node_modules/.prisma/client/query_engine_bg.wasm");
+      const wasmBuffer = readFileSync(wasmPath);
+      return { default: await WebAssembly.compile(wasmBuffer) };
+    }
+  } catch { /* fall through */ }
+
+  // Strategy 4: Cloudflare Workers — wrangler bundles the .wasm file as an ES module
+  const wasmImport = await import("./query_engine_bg.wasm");
+  const wasmModule = wasmImport.default || wasmImport;
+  return { default: wasmModule };
 })();
 `;
 fs.writeFileSync(loaderPath, loaderContent);

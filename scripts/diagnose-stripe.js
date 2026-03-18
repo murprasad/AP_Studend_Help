@@ -73,8 +73,8 @@ async function run() {
     'payment_method_types[0]': 'card',
     'line_items[0][price]': priceId,
     'line_items[0][quantity]': '1',
-    success_url: 'https://novaprep.ai/billing?success=1',
-    cancel_url: 'https://novaprep.ai/pricing?canceled=1',
+    success_url: 'https://studentnest.ai/billing?success=1',
+    cancel_url: 'https://studentnest.ai/pricing?canceled=1',
   });
 
   if (session.error) {

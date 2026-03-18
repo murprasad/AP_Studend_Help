@@ -29,6 +29,7 @@ import {
   PenLine,
   ThumbsUp,
   ThumbsDown,
+  Sparkles,
 } from "lucide-react";
 import Link from "next/link";
 import { MarkdownContent } from "@/components/tutor/section-cards";
@@ -65,6 +66,20 @@ interface FrqScore {
 
 type PracticeMode = "select" | "practicing" | "summary";
 
+const CODING_WAIT_MESSAGES = [
+  "Ooh, a coding challenge! Let me cook something up... 🧑‍💻",
+  "Checking AP CSP pseudocode standards...",
+  "Adding algorithm tracing rubric... this one's spicy 🌶️",
+  "Almost ready! Get your thinking cap on 🎓",
+];
+
+const FRQ_WAIT_MESSAGES = [
+  "Crafting your free response question... Sage is on it! ✍️",
+  "Pulling in the AP rubric criteria...",
+  "Take a deep breath — you've got this 🌿",
+  "Almost done! Loading your question now...",
+];
+
 export default function PracticePage() {
   const { toast } = useToast();
   const [course] = useCourse();
@@ -78,7 +93,7 @@ export default function PracticePage() {
   const [selectedDifficulty, setSelectedDifficulty] = useState<string>("ALL");
   const [questionCount, setQuestionCount] = useState(10);
   const [sessionType, setSessionType] = useState("QUICK_PRACTICE");
-  const [questionType, setQuestionType] = useState<"MCQ" | "FRQ" | "SAQ" | "LEQ" | "DBQ">("MCQ");
+  const [questionType, setQuestionType] = useState<"MCQ" | "FRQ" | "SAQ" | "LEQ" | "DBQ" | "CODING">("MCQ");
 
   useEffect(() => {
     Promise.all([
@@ -111,11 +126,21 @@ export default function PracticePage() {
   const [results, setResults] = useState<Array<{ correct: boolean; timeSecs: number }>>([]);
   const [openEndedAnswer, setOpenEndedAnswer] = useState("");
   const [feedbackRating, setFeedbackRating] = useState<1 | -1 | null>(null);
+  const [startMsgIndex, setStartMsgIndex] = useState(0);
 
   // Reset unit selection when course changes
   useEffect(() => {
     setSelectedUnit("ALL");
   }, [course]);
+
+  useEffect(() => {
+    if (!isStarting || questionType === "MCQ") return;
+    setStartMsgIndex(0);
+    const interval = setInterval(() => {
+      setStartMsgIndex((prev) => Math.min(prev + 1, CODING_WAIT_MESSAGES.length - 1));
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [isStarting, questionType]);
 
   const currentQuestion = questions[currentIndex];
   const parsedOptions: string[] = (() => {
@@ -637,7 +662,7 @@ export default function PracticePage() {
           const courseConfig = getCourseConfig(course as ApCourse);
           const availableFrqTypes = Object.keys(courseConfig?.questionTypeFormats ?? {}).filter((t) => t !== "MCQ");
           if (availableFrqTypes.length === 0) return null;
-          const defaultFrqType = availableFrqTypes[0] as "FRQ" | "SAQ" | "LEQ" | "DBQ";
+          const defaultFrqType = availableFrqTypes[0] as "FRQ" | "SAQ" | "LEQ" | "DBQ" | "CODING";
           const typeLabel = availableFrqTypes.join(" · ");
           const isLocked = premiumRestricted && subscriptionTier !== "PREMIUM";
           return (
@@ -677,7 +702,7 @@ export default function PracticePage() {
                   {availableFrqTypes.map((t) => (
                     <button
                       key={t}
-                      onClick={() => setQuestionType(t as "FRQ" | "SAQ" | "LEQ" | "DBQ")}
+                      onClick={() => setQuestionType(t as "FRQ" | "SAQ" | "LEQ" | "DBQ" | "CODING")}
                       className={`px-3 py-1 rounded-lg text-xs font-medium border transition-all ${
                         questionType === t
                           ? "border-purple-500 bg-purple-500/20 text-purple-300"
@@ -742,6 +767,34 @@ export default function PracticePage() {
         )
       )}
 
+      {/* Sage loading bubble — shown while FRQ/CODING session is starting */}
+      {isStarting && questionType !== "MCQ" && (
+        <Card className="card-glow border-indigo-500/30 bg-gradient-to-br from-indigo-500/10 to-purple-500/10">
+          <CardContent className="p-5">
+            <div className="flex items-start gap-3">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <Sparkles className="h-5 w-5 text-white" />
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-1.5">
+                  <p className="text-sm font-bold text-indigo-300">Sage 🌿</p>
+                  <span className="flex gap-1 items-center">
+                    <span className="w-1.5 h-1.5 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
+                    <span className="w-1.5 h-1.5 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
+                    <span className="w-1.5 h-1.5 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+                  </span>
+                </div>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  {questionType === "CODING"
+                    ? CODING_WAIT_MESSAGES[startMsgIndex]
+                    : FRQ_WAIT_MESSAGES[startMsgIndex]}
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Filters */}
       <Card className="card-glow">
         <CardHeader>
@@ -797,7 +850,9 @@ export default function PracticePage() {
 
           <Button onClick={startSession} disabled={isStarting || sessionLimitReached} className="w-full gap-2">
             {isStarting ? (
-              <><Loader2 className="h-4 w-4 animate-spin" /> Starting...</>
+              <><Loader2 className="h-4 w-4 animate-spin" />
+                {questionType !== "MCQ" ? " AI is preparing your question…" : " Starting…"}
+              </>
             ) : (
               <><Zap className="h-4 w-4" /> Start Session</>
             )}

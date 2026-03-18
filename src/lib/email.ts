@@ -24,7 +24,7 @@ export async function sendVerificationEmail(
   firstName: string,
   token: string
 ): Promise<void> {
-  const verifyUrl = `${process.env.NEXT_PUBLIC_APP_URL}/verify-email?token=${token}`;
+  const verifyUrl = `${process.env.APP_URL ?? process.env.NEXT_PUBLIC_APP_URL ?? "https://studentnest.ai"}/verify-email?token=${token}`;
 
   await sendEmail(
     email,
@@ -48,7 +48,7 @@ export async function sendPasswordResetEmail(
   firstName: string,
   token: string
 ): Promise<void> {
-  const resetUrl = `${process.env.NEXT_PUBLIC_APP_URL}/reset-password?token=${token}`;
+  const resetUrl = `${process.env.APP_URL ?? process.env.NEXT_PUBLIC_APP_URL ?? "https://studentnest.ai"}/reset-password?token=${token}`;
 
   await sendEmail(
     email,

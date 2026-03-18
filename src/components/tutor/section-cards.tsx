@@ -120,11 +120,12 @@ const mermaidComponents = {
 
 export function MarkdownContent({ content, useMermaid = false }: { content: string; useMermaid?: boolean }) {
   return (
-    <div className="prose prose-invert prose-sm max-w-none
+    <div className="prose prose-invert max-w-none
       prose-p:text-foreground prose-p:leading-relaxed prose-p:my-1
       prose-li:text-foreground prose-li:leading-relaxed
       prose-strong:text-foreground prose-strong:font-semibold
       prose-headings:text-foreground prose-headings:font-semibold
+      prose-h2:text-lg prose-h3:text-base
       prose-code:text-indigo-300 prose-code:bg-indigo-500/10
       prose-code:px-1 prose-code:py-0.5 prose-code:rounded
       prose-ul:my-1 prose-ol:my-1"
@@ -178,7 +179,7 @@ function SectionCard({
   return (
     <div className={`rounded-xl border ${borderColor} ${bgColor} p-4`}>
       <div className="flex items-center justify-between mb-3">
-        <h3 className="text-sm font-semibold flex items-center gap-2">
+        <h3 className="text-base font-semibold flex items-center gap-2">
           {icon}
           {title}
         </h3>

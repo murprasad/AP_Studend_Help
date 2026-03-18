@@ -32,7 +32,7 @@ async function main() {
 
   // ── 2. User lookup for admin account ──────────────────────────────────────
   const adminEmail = "murprasad@yahoo.com";
-  let adminUser: { id: string; email: string; role: string; emailVerified: Date | null; passwordHash: string } | null = null;
+  let adminUser: { id: string; email: string; role: string; emailVerified: Date | null; passwordHash: string | null } | null = null;
   try {
     adminUser = await prisma.user.findUnique({
       where: { email: adminEmail },
@@ -77,7 +77,7 @@ async function main() {
   // ── 6. Register a fresh test user and verify bcrypt round-trip ────────────
   const testEmail = `login_test_${Date.now()}@example.com`;
   const testPassword = "TestPass123";
-  let testUser: { id: string; emailVerified: Date | null; passwordHash: string } | null = null;
+  let testUser: { id: string; emailVerified: Date | null; passwordHash: string | null } | null = null;
   try {
     const hash = await bcrypt.hash(testPassword, 12);
     testUser = await prisma.user.create({
@@ -98,7 +98,7 @@ async function main() {
 
   // ── 7. bcrypt.compare — correct password ───────────────────────────────────
   if (testUser) {
-    const correct = await bcrypt.compare(testPassword, testUser.passwordHash);
+    const correct = await bcrypt.compare(testPassword, testUser.passwordHash ?? "");
     if (correct) {
       pass("bcrypt correct password", `bcrypt.compare('${testPassword}', hash) = true`);
     } else {
@@ -106,7 +106,7 @@ async function main() {
     }
 
     // ── 8. bcrypt.compare — wrong password ──────────────────────────────────
-    const wrong = await bcrypt.compare("WrongPassword99", testUser.passwordHash);
+    const wrong = await bcrypt.compare("WrongPassword99", testUser.passwordHash ?? "");
     if (!wrong) {
       pass("bcrypt wrong password", "bcrypt.compare('WrongPassword99', hash) = false (correct)");
     } else {

@@ -23,6 +23,22 @@ export async function POST(req: NextRequest) {
       return NextResponse.redirect(new URL("/pricing?error=payment_unavailable", req.url));
     }
 
+    const { searchParams } = new URL(req.url);
+    const plan = searchParams.get("plan") || "monthly";
+
+    // Payment Link path — bypasses server-side session creation (avoids "Country ZZ" error on CF edge)
+    const paymentLink = plan === "annual" && stripeConfig.paymentLinkAnnual
+      ? stripeConfig.paymentLinkAnnual
+      : stripeConfig.paymentLinkMonthly;
+
+    if (paymentLink) {
+      const url = new URL(paymentLink);
+      url.searchParams.set("client_reference_id", session.user.id);
+      if (session.user.email) url.searchParams.set("prefilled_email", session.user.email);
+      return NextResponse.redirect(url.toString(), { status: 303 });
+    }
+
+    // Fallback: create checkout session server-side (requires priceId)
     if (!stripeConfig.priceId) {
       console.error("Stripe price ID not configured (set STRIPE_PREMIUM_PRICE_ID env var or configure in Admin → Payment Setup)");
       return NextResponse.redirect(new URL("/pricing?error=payment_unavailable", req.url));
@@ -32,8 +48,7 @@ export async function POST(req: NextRequest) {
       apiVersion: "2024-06-20",
       httpClient: Stripe.createFetchHttpClient(),
     });
-    const { searchParams } = new URL(req.url);
-    const plan = searchParams.get("plan") || "monthly";
+
     const priceId = plan === "annual" && stripeConfig.annualPriceId
       ? stripeConfig.annualPriceId
       : stripeConfig.priceId;

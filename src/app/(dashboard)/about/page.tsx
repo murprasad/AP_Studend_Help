@@ -349,7 +349,7 @@ export default function AboutPage() {
           <div>
             <div className="flex items-center gap-2 flex-wrap">
               <h1 className="text-3xl font-bold gradient-text">About StudentNest</h1>
-              <Badge className="bg-indigo-500/20 text-indigo-300 border-indigo-500/30 text-xs font-semibold">Beta 1.21</Badge>
+              <Badge className="bg-indigo-500/20 text-indigo-300 border-indigo-500/30 text-xs font-semibold">Beta 1.22</Badge>
             </div>
             <p className="text-muted-foreground text-sm">AI-powered · Free core · Premium AI models</p>
           </div>
@@ -574,7 +574,7 @@ export default function AboutPage() {
       {/* Version */}
       <div className="flex items-center justify-center gap-3 py-2">
         <Badge className="bg-indigo-500/20 text-indigo-300 border-indigo-500/30 text-xs font-semibold px-3 py-1">
-          Beta 1.21
+          Beta 1.22
         </Badge>
       </div>
 
