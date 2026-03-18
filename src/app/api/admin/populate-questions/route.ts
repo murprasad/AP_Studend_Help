@@ -8,6 +8,7 @@
  * Response: { filled: number, skipped: number, failed: number, details: UnitResult[] }
  */
 
+import { createHash } from "crypto";
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
@@ -159,26 +160,36 @@ export async function POST(req: NextRequest) {
         try {
           const q = await generateOneQuestion(course, unit, difficulty, topic, courseConfig, questionType);
           if (q) {
-            await prisma.question.create({
-              data: {
-                course,
-                unit,
-                topic: q.topic,
-                subtopic: q.subtopic ?? "",
-                difficulty,
-                questionType,
-                questionText: q.questionText,
-                stimulus: q.stimulus ?? null,
-                options: questionType === QuestionType.MCQ ? (q.options ?? Prisma.JsonNull) : Prisma.JsonNull,
-                correctAnswer: q.correctAnswer,
-                explanation: q.explanation,
-                isAiGenerated: true,
-                isApproved: true,
-                modelUsed: null,
-                generatedForTier: "PREMIUM" as SubTier,
-              },
-            });
-            generated++;
+            try {
+              await prisma.question.create({
+                data: {
+                  course,
+                  unit,
+                  topic: q.topic,
+                  subtopic: q.subtopic ?? "",
+                  difficulty,
+                  questionType,
+                  questionText: q.questionText,
+                  stimulus: q.stimulus ?? null,
+                  options: questionType === QuestionType.MCQ ? (q.options ?? Prisma.JsonNull) : Prisma.JsonNull,
+                  correctAnswer: q.correctAnswer,
+                  explanation: q.explanation,
+                  isAiGenerated: true,
+                  isApproved: true,
+                  modelUsed: null,
+                  generatedForTier: "PREMIUM" as SubTier,
+                  contentHash: q.contentHash ?? null,
+                  apSkill: q.apSkill ?? null,
+                },
+              });
+              generated++;
+            } catch (dupErr: unknown) {
+              if ((dupErr as { code?: string })?.code === "P2002") {
+                console.warn(`[populate] Duplicate question skipped for ${unit}`);
+              } else {
+                throw dupErr;
+              }
+            }
           }
         } catch (err) {
           console.warn(`[populate] Failed q ${i + 1} for ${unit}:`, err instanceof Error ? err.message : err);
@@ -211,6 +222,8 @@ interface SimpleQuestion {
   options: string[] | null;
   correctAnswer: string;
   explanation: string;
+  apSkill?: string;
+  contentHash?: string;
 }
 
 async function generateOneQuestion(
@@ -243,16 +256,22 @@ async function generateOneQuestion(
     throw new Error("Incomplete MCQ question from AI — missing options");
   }
 
+  const questionText = parsed.questionText as string;
+  const normalized = questionText.toLowerCase().replace(/\s+/g, " ").trim();
+  const contentHash = createHash("sha256").update(normalized).digest("hex");
+
   return {
     topic: parsed.topic ?? topic ?? unitName,
     subtopic: parsed.subtopic ?? "",
-    questionText: parsed.questionText,
+    questionText,
     stimulus: parsed.stimulus && parsed.stimulus !== "null" ? parsed.stimulus : undefined,
     options: questionType === QuestionType.MCQ ? parsed.options : null,
     correctAnswer: questionType === QuestionType.MCQ
       ? parsed.correctAnswer.trim().charAt(0).toUpperCase()
       : parsed.correctAnswer.trim(),
     explanation: parsed.explanation ?? "",
+    apSkill: (parsed.apSkill as string) || undefined,
+    contentHash,
   };
 }
 

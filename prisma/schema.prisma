@@ -24,6 +24,7 @@ model User {
   stripeSubscriptionStatus String?   // 'active' | 'canceling' | 'canceled'
   avatarUrl                String?
   streakDays        Int       @default(0)
+  longestStreak     Int       @default(0)
   lastActiveDate    DateTime?
   totalXp           Int       @default(0)
   level             Int       @default(1)
@@ -122,6 +123,8 @@ model Question {
   isApproved   Boolean      @default(true)
   modelUsed          String?
   generatedForTier   SubTier   @default(FREE)
+  contentHash        String?   @unique  // SHA-256 of normalized questionText — prevents duplicates
+  apSkill            String?            // e.g., "Causation", "Comparison", "Data Analysis"
   timesAnswered Int         @default(0)
   timesCorrect  Int         @default(0)
   reportedCount Int         @default(0)

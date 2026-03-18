@@ -18,7 +18,7 @@ export default async function AdminPage() {
   const session = await getServerSession(authOptions);
   if (!session || session.user.role !== "ADMIN") redirect("/dashboard");
 
-  const [totalUsers, totalQuestions, pendingQuestions, recentUsers, questionsByUnit] =
+  const [totalUsers, totalQuestions, pendingQuestions, recentUsers, questionsByUnit, questionsByTopic] =
     await Promise.all([
       prisma.user.count(),
       prisma.question.count({ where: { isApproved: true } }),
@@ -40,6 +40,12 @@ export default async function AdminPage() {
         by: ["course", "unit"],
         where: { isApproved: true },
         _count: { id: true },
+      }),
+      prisma.question.groupBy({
+        by: ["unit", "topic"],
+        where: { isApproved: true },
+        _count: { id: true },
+        orderBy: { _count: { id: "asc" } },
       }),
     ]);
 
@@ -162,6 +168,40 @@ export default async function AdminPage() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Topic Coverage */}
+      <Card className="card-glow">
+        <CardHeader>
+          <CardTitle className="text-lg">Topic Coverage (thin topics highlighted in red)</CardTitle>
+          <p className="text-xs text-muted-foreground">
+            Red &lt;3 questions per topic · Yellow 3–7 · Green ≥8 — sorted by least covered
+          </p>
+        </CardHeader>
+        <CardContent>
+          <div className="max-h-72 overflow-y-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-1">
+            {questionsByTopic.map((row) => (
+              <div key={`${row.unit}-${row.topic}`} className="flex items-center justify-between py-1 px-2 rounded hover:bg-secondary/30">
+                <span className="text-xs text-muted-foreground truncate">{row.topic || "(no topic)"}</span>
+                <Badge
+                  variant={row._count.id < 3 ? "destructive" : "secondary"}
+                  className={
+                    row._count.id >= 8
+                      ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/30 ml-2 shrink-0"
+                      : row._count.id >= 3
+                      ? "bg-yellow-500/20 text-yellow-400 border-yellow-500/30 ml-2 shrink-0"
+                      : "ml-2 shrink-0"
+                  }
+                >
+                  {row._count.id}
+                </Badge>
+              </div>
+            ))}
+            {questionsByTopic.length === 0 && (
+              <p className="text-xs text-muted-foreground col-span-3">No topic data yet.</p>
+            )}
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }

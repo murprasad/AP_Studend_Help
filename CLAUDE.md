@@ -198,6 +198,36 @@ New Question columns: `modelUsed String?`, `generatedForTier SubTier @default(FR
 **Note:** `premium_feature_restriction` feature flag defaults to `"false"` — all users
 receive full platform access unless explicitly enabled by admin.
 
+### 9. Question Quality, Dedup & Growth Strategy (Beta 1.2)
+
+**Content-hash deduplication:**
+- `generateQuestion()` computes SHA-256 of `questionText.toLowerCase().replace(/\s+/g," ").trim()`
+- Hash stored in `Question.contentHash` (`@unique`)
+- All three save paths (practice, populate, mega-populate) catch `P2002` (unique constraint violation) and skip silently — no 500 errors
+
+**Topic saturation guard (`MAX_PER_TOPIC = 8`):**
+- Before generating, `generateQuestion()` counts existing questions for the requested `topic`
+- If count ≥ 8, rotates to the first `keyTheme` in `COURSE_REGISTRY` that doesn't match the saturated topic
+
+**5-criterion validator (in `validateQuestion()`):**
+1. Factual accuracy
+2. Single unambiguous answer
+3. Distractor quality
+4. Cognitive level
+5. Exam alignment
+
+**apSkill tagging:**
+- AI prompt includes `apSkill` in the JSON response format (e.g. "Causation", "Data Analysis")
+- Stored in `Question.apSkill String?`
+
+**longestStreak tracking:**
+- `updateUserProgress()` in `practice/[sessionId]/route.ts` now sets `longestStreak = Math.max(newStreak, user.longestStreak ?? 0)`
+- `User.longestStreak Int @default(0)` column added to schema
+
+**Admin Topic Coverage panel:**
+- `/admin` page runs `prisma.question.groupBy({ by: ["unit","topic"] })` sorted by count ASC
+- Color coding: red < 3, yellow 3–7, green ≥ 8 questions per topic
+
 ---
 
 ## Commands
@@ -216,7 +246,7 @@ npx prisma studio            # Open Prisma Studio GUI
 # Build & deploy
 npm run build                # Standard Next.js production build
 npm run pages:build          # Cloudflare Pages build (OpenNext + patches)
-npm run pages:deploy         # Build + deploy to novaprep Cloudflare Pages project
+npm run pages:deploy         # Build + deploy to studentnest Cloudflare Pages project
 npm run pages:preview        # Build + run local CF Pages preview
 
 # Install
@@ -251,9 +281,9 @@ This runs:
 2. `node scripts/patch-prisma-wasm.js` — patches WASM loader for dual Node/CF compat
 3. `opennextjs-cloudflare build` — OpenNext CF build
 4. `node scripts/prepare-cf-deploy.js` — assembles `.cf-deploy/` directory
-5. `wrangler pages deploy .cf-deploy --project-name=novaprep` — uploads to CF
+5. `wrangler pages deploy .cf-deploy --project-name=studentnest` — uploads to CF
 
-Cloudflare Pages project: `novaprep`
+Cloudflare Pages project: `studentnest`
 Custom domain: `https://studentnest.ai`
 Wrangler config: `wrangler.toml`
 

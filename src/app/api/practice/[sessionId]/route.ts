@@ -332,6 +332,7 @@ async function updateUserProgress(userId: string, xpEarned: number) {
         totalXp: newXp,
         level: newLevel,
         streakDays: newStreak,
+        longestStreak: Math.max(newStreak, user.longestStreak ?? 0),
         lastActiveDate: new Date(),
       },
     });

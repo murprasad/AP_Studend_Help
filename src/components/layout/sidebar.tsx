@@ -28,6 +28,7 @@ import {
   Moon,
 } from "lucide-react";
 import { useTheme } from "@/hooks/use-theme";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -87,6 +88,14 @@ export function Sidebar({ userRole, isOpen = false, onClose = () => {} }: Sideba
   const router = useRouter();
   const [course, setCourse] = useCourse();
   const { theme, toggleTheme } = useTheme();
+  const [streakDays, setStreakDays] = useState<number>(0);
+
+  useEffect(() => {
+    fetch("/api/user")
+      .then((r) => r.json())
+      .then((data: { streakDays?: number }) => { if (data.streakDays) setStreakDays(data.streakDays); })
+      .catch(() => {});
+  }, []);
 
   function handleCourseChange(newCourse: ApCourse) {
     setCourse(newCourse);
@@ -115,12 +124,19 @@ export function Sidebar({ userRole, isOpen = false, onClose = () => {} }: Sideba
       )}>
         {/* Logo */}
         <div className="p-6 border-b border-border/40 pt-14 lg:pt-6">
-          <Link href="/dashboard" className="flex items-center gap-2" onClick={handleNavClick}>
-            <Sparkles className="h-7 w-7 text-indigo-400" />
-            <span className="text-lg font-bold">
-              <span className="gradient-text">Student</span><span className="text-foreground/80 font-medium">Nest</span>
-            </span>
-          </Link>
+          <div className="flex items-center justify-between">
+            <Link href="/dashboard" className="flex items-center gap-2" onClick={handleNavClick}>
+              <Sparkles className="h-7 w-7 text-indigo-400" />
+              <span className="text-lg font-bold">
+                <span className="gradient-text">Student</span><span className="text-foreground/80 font-medium">Nest</span>
+              </span>
+            </Link>
+            {streakDays > 1 && (
+              <span className="text-sm font-semibold text-orange-400 flex items-center gap-0.5" title={`${streakDays}-day streak`}>
+                🔥{streakDays}
+              </span>
+            )}
+          </div>
         </div>
 
         {/* Course Switcher */}

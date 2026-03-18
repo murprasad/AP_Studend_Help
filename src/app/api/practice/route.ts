@@ -163,6 +163,8 @@ export async function POST(req: NextRequest) {
                 isApproved: true,
                 modelUsed: gen.modelUsed ?? null,
                 generatedForTier: (tier === "PREMIUM" ? "PREMIUM" : "FREE") as SubTier,
+                contentHash: gen.contentHash ?? null,
+                apSkill: gen.apSkill ?? null,
               },
               select: {
                 id: true, course: true, unit: true, topic: true, subtopic: true,
@@ -170,13 +172,17 @@ export async function POST(req: NextRequest) {
                 stimulus: true, stimulusImageUrl: true, options: true,
                 correctAnswer: true, explanation: true,
               },
+            }).catch((err: { code?: string }) => {
+              // P2002 = unique constraint violation — duplicate question; skip silently
+              if (err?.code === "P2002") return null;
+              throw err;
             })
           );
       });
 
       const settled = await Promise.allSettled(genPromises);
       const generated = settled
-        .filter((r): r is PromiseFulfilledResult<(typeof allQuestions)[0]> => r.status === "fulfilled")
+        .filter((r): r is PromiseFulfilledResult<(typeof allQuestions)[0]> => r.status === "fulfilled" && r.value !== null)
         .map((r) => r.value);
 
       if (generated.length > 0) {

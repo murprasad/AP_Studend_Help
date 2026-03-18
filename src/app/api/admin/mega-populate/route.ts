@@ -8,6 +8,7 @@
  * Response: { generated: number; failed: number; difficulty: { EASY: number; MEDIUM: number; HARD: number } }
  */
 
+import { createHash } from "crypto";
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
@@ -55,6 +56,7 @@ export async function POST(req: NextRequest) {
   const toInsert: Array<{
     topic: string; subtopic: string; questionText: string; stimulus: string | null;
     options: string[]; correctAnswer: string; explanation: string; difficulty: Difficulty;
+    apSkill?: string; contentHash?: string;
   }> = [];
 
   for (let i = 0; i < queue.length; i++) {
@@ -95,13 +97,20 @@ export async function POST(req: NextRequest) {
             isApproved: true,
             modelUsed: null,
             generatedForTier: "PREMIUM" as SubTier,
+            contentHash: q.contentHash ?? null,
+            apSkill: q.apSkill ?? null,
           },
         });
       } catch (err) {
-        console.warn("[mega-populate] DB insert failed:", err instanceof Error ? err.message : err);
-        failed++;
-        generated--;
-        diffCount[q.difficulty]--;
+        const errCode = (err as { code?: string })?.code;
+        if (errCode === "P2002") {
+          console.warn("[mega-populate] Duplicate question skipped");
+        } else {
+          console.warn("[mega-populate] DB insert failed:", err instanceof Error ? err.message : err);
+          failed++;
+          generated--;
+          diffCount[q.difficulty]--;
+        }
       }
     }
   }
@@ -151,7 +160,7 @@ async function generateOne(
   unitName: string,
   difficulty: Difficulty,
   topic: string | undefined
-): Promise<{ topic: string; subtopic: string; questionText: string; stimulus: string | null; options: string[]; correctAnswer: string; explanation: string } | null> {
+): Promise<{ topic: string; subtopic: string; questionText: string; stimulus: string | null; options: string[]; correctAnswer: string; explanation: string; apSkill?: string; contentHash: string } | null> {
   const prompt = buildQuestionPrompt(course, unit, unitName, difficulty, QuestionType.MCQ, topic);
   const raw = await callAIWithCascade(prompt);
   const cleaned = raw.trim().replace(/^```(?:json)?\s*/i, "").replace(/```\s*$/i, "").trim();
@@ -161,14 +170,20 @@ async function generateOne(
   const parsed = JSON.parse(jsonMatch[0]);
   if (!parsed.questionText || !parsed.correctAnswer || !Array.isArray(parsed.options)) return null;
 
+  const questionText = parsed.questionText as string;
+  const normalized = questionText.toLowerCase().replace(/\s+/g, " ").trim();
+  const contentHash = createHash("sha256").update(normalized).digest("hex");
+
   return {
     topic: parsed.topic ?? topic ?? unitName,
     subtopic: parsed.subtopic ?? "",
-    questionText: parsed.questionText,
+    questionText,
     stimulus: parsed.stimulus && parsed.stimulus !== "null" ? parsed.stimulus : null,
     options: parsed.options,
     correctAnswer: parsed.correctAnswer.trim().charAt(0).toUpperCase(),
     explanation: parsed.explanation ?? "",
+    apSkill: (parsed.apSkill as string) || undefined,
+    contentHash,
   };
 }
 

@@ -578,18 +578,20 @@ export async function callAIForTier(
  * Uses Groq (fast, free) with a 10s timeout, falls back to Pollinations-Free.
  */
 export async function validateQuestion(questionJson: string): Promise<ValidationResult> {
-  const validatorPrompt = `You are an AP exam question quality reviewer. Evaluate this question JSON strictly.
+  const validatorPrompt = `You are a College Board AP exam quality reviewer. Evaluate this question on FIVE criteria:
+1. Factual accuracy — Is the content and explanation factually correct?
+2. Single unambiguous answer — Only one choice is clearly correct; the others are definitively wrong.
+3. Distractor quality — Wrong answers are plausible but clearly incorrect on careful reflection; each represents a distinct common misconception.
+4. Cognitive level — Tests understanding, analysis, or application (NOT pure rote memorization or trivia).
+5. Exam alignment — Matches AP/SAT/ACT exam style (appropriate stimulus if needed, appropriate stem verb, no trick questions).
 
-Criteria:
-1. Single unambiguous correct answer
-2. Distractors are plausible but clearly wrong
-3. AP exam style (no trivial or trick questions)
-4. No factual errors in explanation
+Score each criterion PASS or FAIL.
 
 Question JSON:
 ${questionJson}
 
-Reply with ONLY valid JSON (no markdown): {"approved": true} or {"approved": false, "reason": "brief reason"}`;
+Reply ONLY with valid JSON (no markdown, no extra text):
+{"approved": true} if all 5 pass, or {"approved": false, "reason": "criterion: explanation"}`;
 
   const groqKey = process.env.GROQ_API_KEY;
   if (groqKey) {

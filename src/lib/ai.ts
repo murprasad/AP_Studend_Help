@@ -1,7 +1,9 @@
+import { createHash } from "crypto";
 import { ApUnit, ApCourse, Difficulty, QuestionType } from "@prisma/client";
 import { COURSE_UNITS } from "./utils";
 import { COURSE_REGISTRY, getCourseForUnit } from "./courses";
 import { callAIWithCascade, callAIForTier, validateQuestion, AICallResult } from "./ai-providers";
+import { prisma } from "./prisma";
 import { getWikipediaSummary, getEduContextForQuery, searchStackExchange, getEnrichedContext, fetchMITOCWContent, fetchDIGContent, fetchOpenStaxContent, fetchSmithsonianContent, fetchCollegeBoardSATTopics, fetchACTTopics } from "./edu-apis";
 
 // ── Unified helpers (thin wrappers over the cascade engine) ────────────────
@@ -36,6 +38,8 @@ export interface GeneratedQuestion {
   estimatedMinutes: number;
   modelUsed?: string;
   generatedForTier?: "FREE" | "PREMIUM";
+  apSkill?: string;
+  contentHash?: string;
 }
 
 // ── Fetch web content from open educational resources ──────────────────────
@@ -160,7 +164,7 @@ export function buildQuestionPrompt(
     ?? `Create a College Board-style multiple choice question. ${config.stimulusRequirement}. Provide exactly 4 answer choices labeled A, B, C, D. Only one correct answer. Explanation should ${config.explanationGuidance}`;
 
   const responseFormat = typeFormat?.responseFormat
-    ?? `{"topic":"specific topic name","subtopic":"specific subtopic","questionText":"the question text","stimulus":"${config.stimulusDescription}","options":["A) option text","B) option text","C) option text","D) option text"],"correctAnswer":"A","explanation":"detailed explanation ${config.explanationGuidance}"}`;
+    ?? `{"topic":"specific topic name","subtopic":"specific subtopic","apSkill":"the primary AP skill tested (e.g. Causation, Comparison, Data Analysis, Argumentation)","questionText":"the question text","stimulus":"${config.stimulusDescription}","options":["A) option text","B) option text","C) option text","D) option text"],"correctAnswer":"A","explanation":"detailed explanation ${config.explanationGuidance}"}`;
 
   const difficultySection = config.difficultyRubric?.[difficulty]
     ? `\nDIFFICULTY DEFINITION (${difficulty}):\n${config.difficultyRubric[difficulty]}`
@@ -223,6 +227,26 @@ export async function generateQuestion(
 ): Promise<GeneratedQuestion> {
   const inferredCourse = course || getCourseForUnit(unit);
   const unitName = COURSE_REGISTRY[inferredCourse].units[unit]?.name || unit;
+
+  // ── Topic saturation guard: rotate away from over-represented topics ───────
+  const MAX_PER_TOPIC = 8;
+  if (topic) {
+    try {
+      const topicCount = await prisma.question.count({
+        where: { course: inferredCourse, unit, topic: { contains: topic, mode: "insensitive" } },
+      });
+      if (topicCount >= MAX_PER_TOPIC) {
+        const config = COURSE_REGISTRY[inferredCourse];
+        const unitMeta = config.units[unit];
+        const themes = unitMeta?.keyThemes ?? [];
+        // Pick the first theme that differs from the saturated topic
+        topic = themes.find((t) => !t.toLowerCase().includes(topic!.toLowerCase())) ?? undefined;
+      }
+    } catch {
+      // DB error — continue with original topic
+    }
+  }
+
   const prompt = buildQuestionPrompt(inferredCourse, unit, unitName, difficulty, questionType, topic);
 
   const MAX_GEN_ATTEMPTS = 3;
@@ -272,13 +296,17 @@ export async function generateQuestion(
     }
   }
 
+  const questionText = parsed.questionText as string;
+  const normalized = questionText.toLowerCase().replace(/\s+/g, " ").trim();
+  const contentHash = createHash("sha256").update(normalized).digest("hex");
+
   return {
     unit,
     topic: parsed.topic as string,
     subtopic: parsed.subtopic as string,
     difficulty,
     questionType,
-    questionText: parsed.questionText as string,
+    questionText,
     stimulus: (parsed.stimulus as string) || undefined,
     stimulusImageUrl,
     options: parsed.options as string[] | undefined,
@@ -287,6 +315,8 @@ export async function generateQuestion(
     estimatedMinutes,
     modelUsed: aiResult.modelUsed,
     generatedForTier: userTier,
+    apSkill: (parsed.apSkill as string) || undefined,
+    contentHash,
     isAiGenerated: true,
     isApproved: false,
   } as GeneratedQuestion & { isAiGenerated: boolean; isApproved: boolean };
