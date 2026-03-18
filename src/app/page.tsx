@@ -74,12 +74,12 @@ export default function LandingPage() {
       {/* Navbar */}
       <nav className="border-b border-border/40 backdrop-blur-sm sticky top-0 z-50 bg-background/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-2">
+          <Link href="/" className="flex items-center gap-2">
             <Sparkles className="h-7 w-7 text-indigo-400" />
             <span className="text-xl font-bold">
               <span className="gradient-text">Student</span><span className="text-foreground/80 font-medium">Nest</span>
             </span>
-          </div>
+          </Link>
           <div className="flex items-center gap-2 sm:gap-4">
             <Link href="/about" className="hidden sm:block text-sm text-muted-foreground hover:text-foreground transition-colors">
               About
