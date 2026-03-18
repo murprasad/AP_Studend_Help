@@ -347,13 +347,17 @@ export default function AboutPage() {
             <Globe className="h-6 w-6 text-indigo-400" />
           </div>
           <div>
-            <h1 className="text-3xl font-bold gradient-text">About StudentNest</h1>
+            <div className="flex items-center gap-2 flex-wrap">
+              <h1 className="text-3xl font-bold gradient-text">About StudentNest</h1>
+              <Badge className="bg-indigo-500/20 text-indigo-300 border-indigo-500/30 text-xs font-semibold">Beta 1.21</Badge>
+            </div>
             <p className="text-muted-foreground text-sm">AI-powered · Free core · Premium AI models</p>
           </div>
         </div>
         <p className="text-muted-foreground leading-relaxed max-w-2xl">
-          StudentNest gives every student unlimited, AI-powered AP practice. Core features are free — Premium unlocks the most powerful AI models.
-          Now supporting <strong className="text-foreground">10 AP courses</strong> plus <strong className="text-foreground">SAT and ACT prep</strong> — 16 courses total across Mathematics, Science, Social Studies, and standardized test preparation.
+          StudentNest is an AI-powered exam prep platform built for high school students tackling AP, SAT, and ACT exams. We combine adaptive practice, instant AI tutoring, and detailed progress analytics to help every student reach their target score.{" "}
+          Questions? Reach us at{" "}
+          <a href="mailto:contact@studentnest.ai" className="text-indigo-400 hover:text-indigo-300 underline">contact@studentnest.ai</a>
         </p>
       </div>
 
@@ -566,6 +570,13 @@ export default function AboutPage() {
           </a>
         </CardContent>
       </Card>
+
+      {/* Version */}
+      <div className="flex items-center justify-center gap-3 py-2">
+        <Badge className="bg-indigo-500/20 text-indigo-300 border-indigo-500/30 text-xs font-semibold px-3 py-1">
+          Beta 1.21
+        </Badge>
+      </div>
 
       {/* Footer note */}
       <p className="text-xs text-muted-foreground text-center pb-4">

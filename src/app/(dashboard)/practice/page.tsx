@@ -89,7 +89,7 @@ export default function PracticePage() {
         setSubscriptionTier(userData.user?.subscriptionTier ?? "FREE");
         setPremiumRestricted(flagsData.premiumRestrictionEnabled ?? false);
       })
-      .catch(() => setSubscriptionTier("FREE"));
+      .catch(() => {});
   }, []);
 
   const [sessionId, setSessionId] = useState<string | null>(null);
@@ -196,6 +196,7 @@ export default function PracticePage() {
           answer,
           timeSpentSecs: timeSecs,
         }),
+        signal: AbortSignal.timeout(20000),
       });
 
       const data = await response.json();
@@ -233,21 +234,36 @@ export default function PracticePage() {
   }
 
   async function completeSession() {
+    const fallbackSummary: SessionSummary = {
+      totalQuestions: questionsRef.current.length,
+      correctAnswers: results.filter((r) => r.correct).length,
+      accuracy: questionsRef.current.length > 0
+        ? Math.round((results.filter((r) => r.correct).length / questionsRef.current.length) * 100)
+        : 0,
+      timeSpentSecs: startTime ? Math.round((Date.now() - startTime.getTime()) / 1000) : 0,
+      xpEarned: 0,
+      apScoreEstimate: 0,
+    };
     try {
       const response = await fetch(`/api/practice/${sessionId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({}),
+        signal: AbortSignal.timeout(15000),
       });
       const data = await response.json();
       if (!response.ok) {
-        toast({ title: "Error", description: data.error || "Failed to complete session", variant: "destructive" });
+        toast({ title: "Error", description: data.error || "Failed to save session results", variant: "destructive" });
+        setSessionSummary(fallbackSummary);
+        setMode("summary");
         return;
       }
       setSessionSummary(data.summary);
       setMode("summary");
     } catch {
-      toast({ title: "Error", description: "Failed to complete session. Check your connection.", variant: "destructive" });
+      toast({ title: "Connection issue", description: "Session results may not be saved. Here's your local summary.", variant: "destructive" });
+      setSessionSummary(fallbackSummary);
+      setMode("summary");
     }
   }
 
@@ -315,6 +331,37 @@ export default function PracticePage() {
               </div>
             )}
 
+            {/* Quick feedback — always above the fold */}
+            <div className="border-t border-border/40 pt-4">
+              {feedbackRating === null ? (
+                <div className="flex items-center justify-between gap-3">
+                  <p className="text-sm text-muted-foreground">How was this session?</p>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="gap-2 hover:border-emerald-500 hover:text-emerald-400"
+                      onClick={() => submitFeedback(1)}
+                    >
+                      <ThumbsUp className="h-4 w-4" /> Good
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="gap-2 hover:border-red-500 hover:text-red-400"
+                      onClick={() => submitFeedback(-1)}
+                    >
+                      <ThumbsDown className="h-4 w-4" /> Needs work
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <p className="text-sm text-center text-muted-foreground">
+                  {feedbackRating === 1 ? "👍 Thanks for the feedback!" : "👎 Thanks — we'll keep improving!"}
+                </p>
+              )}
+            </div>
+
             <div className="space-y-2">
               {results.map((r, i) => (
                 <div key={i} className="flex items-center gap-3 p-2 rounded-lg bg-secondary/50">
@@ -328,39 +375,6 @@ export default function PracticePage() {
                 </div>
               ))}
             </div>
-          </CardContent>
-        </Card>
-
-        {/* Quick feedback */}
-        <Card className="card-glow">
-          <CardContent className="p-4">
-            {feedbackRating === null ? (
-              <div className="flex items-center justify-between gap-4">
-                <p className="text-sm text-muted-foreground">How was this session?</p>
-                <div className="flex gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="gap-2 hover:border-emerald-500 hover:text-emerald-400"
-                    onClick={() => submitFeedback(1)}
-                  >
-                    <ThumbsUp className="h-4 w-4" /> Good
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="gap-2 hover:border-red-500 hover:text-red-400"
-                    onClick={() => submitFeedback(-1)}
-                  >
-                    <ThumbsDown className="h-4 w-4" /> Needs work
-                  </Button>
-                </div>
-              </div>
-            ) : (
-              <p className="text-sm text-center text-muted-foreground">
-                {feedbackRating === 1 ? "👍 Thanks for the feedback!" : "👎 Thanks — we'll keep improving!"}
-              </p>
-            )}
           </CardContent>
         </Card>
 
@@ -654,7 +668,7 @@ export default function PracticePage() {
                 {isLocked && (
                   <Badge className="bg-indigo-600 text-white text-xs">Premium</Badge>
                 )}
-                {!premiumRestricted && subscriptionTier !== "PREMIUM" && (
+                {!premiumRestricted && subscriptionTier === "FREE" && (
                   <Badge className="bg-amber-500/20 text-amber-300 text-xs border border-amber-500/30">Limited Time Access</Badge>
                 )}
               </div>
