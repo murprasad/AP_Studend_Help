@@ -231,7 +231,7 @@ export default function LandingPage() {
       <section className="py-16 px-4">
         <div className="max-w-2xl mx-auto">
           <p className="text-center text-sm text-muted-foreground mb-4 font-medium uppercase tracking-wide">
-            This is Sage — your 24/7 AP tutor
+            This is Sage — your 24/7 AI study tutor
           </p>
           <div className="rounded-2xl border border-border/40 bg-card/60 overflow-hidden shadow-xl">
             {/* Window chrome */}
