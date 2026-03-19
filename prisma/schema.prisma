@@ -46,6 +46,7 @@ model User {
   discussionThreads   DiscussionThread[]
   discussionReplies   DiscussionReply[]
   sessionFeedbacks    SessionFeedback[]
+  tutorKnowledgeChecks TutorKnowledgeCheck[]
 
   @@map("users")
 }
@@ -544,6 +545,23 @@ model DiscussionReply {
 
   @@index([threadId, createdAt])
   @@map("discussion_replies")
+}
+
+model TutorKnowledgeCheck {
+  id             String   @id @default(cuid())
+  userId         String
+  conversationId String?
+  course         ApCourse
+  topic          String?
+  questions      Json     // [{question, options:[4 strings], correctIndex:0-3, explanation}]
+  answers        Json     // [2, 0, 1] — user's chosen index per question
+  score          Int      // 0–3
+  completedAt    DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, course])
+  @@map("tutor_knowledge_checks")
 }
 
 model DiagnosticResult {

@@ -34,8 +34,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
@@ -89,6 +87,14 @@ export function Sidebar({ userRole, isOpen = false, onClose = () => {} }: Sideba
   const [course, setCourse] = useCourse();
   const { theme, toggleTheme } = useTheme();
   const [streakDays, setStreakDays] = useState<number>(0);
+  const [activeGroup, setActiveGroup] = useState<string>(() => {
+    return COURSE_GROUPS.find(g => g.keys.includes(course as ApCourse))?.label ?? "AP Courses";
+  });
+
+  useEffect(() => {
+    const group = COURSE_GROUPS.find(g => g.keys.includes(course as ApCourse));
+    if (group) setActiveGroup(group.label);
+  }, [course]);
 
   useEffect(() => {
     fetch("/api/user")
@@ -153,31 +159,44 @@ export function Sidebar({ userRole, isOpen = false, onClose = () => {} }: Sideba
                 <ChevronDown className="h-3.5 w-3.5 ml-1 flex-shrink-0 opacity-60" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="start" className="w-60">
-              {COURSE_GROUPS.map((group, gi) => (
-                <div key={group.label}>
-                  {gi > 0 && <DropdownMenuSeparator />}
-                  <DropdownMenuLabel className="text-xs text-muted-foreground px-2 py-1.5">
-                    {group.label}
-                  </DropdownMenuLabel>
-                  {group.keys.map((key) => {
-                    const opt = COURSE_OPTIONS.find((o) => o.value === key);
-                    if (!opt) return null;
-                    return (
-                      <DropdownMenuItem
-                        key={opt.value}
-                        onClick={() => handleCourseChange(opt.value)}
-                        className={cn(
-                          "cursor-pointer text-sm",
-                          course === opt.value && "bg-primary/10 text-primary font-medium"
-                        )}
-                      >
-                        {opt.label}
-                      </DropdownMenuItem>
-                    );
-                  })}
-                </div>
-              ))}
+            <DropdownMenuContent align="start" className="w-64 p-0">
+              {/* Category tabs */}
+              <div className="flex gap-1 p-2 border-b border-border/40">
+                {COURSE_GROUPS.map((g) => (
+                  <button
+                    key={g.label}
+                    onClick={(e) => { e.preventDefault(); setActiveGroup(g.label); }}
+                    className={cn(
+                      "flex-1 text-[10px] font-semibold py-1.5 rounded-md transition-colors truncate",
+                      activeGroup === g.label
+                        ? "bg-primary/15 text-primary"
+                        : "text-muted-foreground hover:text-foreground hover:bg-accent"
+                    )}
+                  >
+                    {g.label === "AP Courses" ? "AP" : g.label === "SAT Prep" ? "SAT" : "ACT"}
+                  </button>
+                ))}
+              </div>
+              {/* Course list for active tab only */}
+              {COURSE_GROUPS.filter(g => g.label === activeGroup).map((group) =>
+                group.keys.map((key) => {
+                  const opt = COURSE_OPTIONS.find((o) => o.value === key);
+                  if (!opt) return null;
+                  return (
+                    <DropdownMenuItem
+                      key={opt.value}
+                      onClick={() => handleCourseChange(opt.value)}
+                      className={cn(
+                        "cursor-pointer text-sm mx-1 my-0.5 rounded-md",
+                        course === opt.value && "bg-primary/10 text-primary font-medium"
+                      )}
+                    >
+                      {opt.label}
+                    </DropdownMenuItem>
+                  );
+                })
+              )}
+              <div className="h-1" />
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
@@ -223,12 +242,6 @@ export function Sidebar({ userRole, isOpen = false, onClose = () => {} }: Sideba
 
         {/* Sign out + theme toggle */}
         <div className="p-4 border-t border-border/40 space-y-1">
-          <p
-            className="px-3 py-1.5 text-[9px] text-muted-foreground/40 truncate"
-            title="AP® and SAT® are trademarks of the College Board. ACT® is a trademark of ACT, Inc. Not affiliated with or endorsed by either organization."
-          >
-            AP®, SAT® — College Board. ACT® — ACT, Inc. Not affiliated.
-          </p>
           <Button
             variant="ghost"
             className="w-full justify-start gap-3 text-muted-foreground hover:text-foreground"

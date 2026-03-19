@@ -65,6 +65,10 @@ export default function AnalyticsPage() {
   const [masteryData, setMasteryData] = useState<MasteryData[]>([]);
   const [accuracyTimeline, setAccuracyTimeline] = useState<AccuracyPoint[]>([]);
   const [stats, setStats] = useState<Stats | null>(null);
+  const [knowledgeCheckStats, setKnowledgeCheckStats] = useState<{
+    totalChecks: number;
+    avgComprehension: number | null;
+  } | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -80,6 +84,7 @@ export default function AnalyticsPage() {
         setMasteryData(data.masteryData || []);
         setAccuracyTimeline(data.accuracyTimeline || []);
         setStats(data.stats);
+        setKnowledgeCheckStats(data.knowledgeCheckStats ?? null);
       })
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
@@ -177,6 +182,30 @@ export default function AnalyticsPage() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Tutor Comprehension card — only if user has taken at least one check */}
+      {knowledgeCheckStats && knowledgeCheckStats.totalChecks > 0 && (
+        <Card className="card-glow">
+          <CardContent className="p-5">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-lg bg-indigo-500/20 flex items-center justify-center">
+                <Sparkles className="h-5 w-5 text-indigo-400" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold">
+                  {knowledgeCheckStats.avgComprehension !== null
+                    ? `${knowledgeCheckStats.avgComprehension}%`
+                    : "—"}
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  Tutor Comprehension ({knowledgeCheckStats.totalChecks}{" "}
+                  {knowledgeCheckStats.totalChecks === 1 ? "check" : "checks"} taken)
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Estimated AP Score */}
       {stats?.estimatedApScore && (

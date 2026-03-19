@@ -19,7 +19,7 @@ const features = [
   {
     icon: Brain,
     title: "Get Instant AI Explanations",
-    description: "Stuck on a concept? Ask Sage — your 24/7 AI tutor — and get a clear, exam-focused answer in seconds. No waiting, no judgment.",
+    description: "Ask Sage anything — get clear explanations and instant comprehension checks that prove you understood it.",
   },
   {
     icon: Target,
@@ -150,7 +150,7 @@ export default function LandingPage() {
               {
                 icon: MessageSquare,
                 title: "Ask Sage Anything",
-                desc: "Get step-by-step explanations for any AP, SAT, or ACT concept. Sage formats answers with key terms, visual breakdowns, and memory hooks.",
+                desc: "Get step-by-step explanations of any concept — then Sage quizzes you back with 3 targeted questions to lock in what you just learned.",
                 color: "text-indigo-400",
                 bg: "bg-indigo-500/10",
               },
@@ -178,6 +178,20 @@ export default function LandingPage() {
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* Knowledge Check callout */}
+      <section className="py-16">
+        <div className="max-w-3xl mx-auto text-center space-y-3 px-4">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-xs text-indigo-400 font-medium">
+            <Sparkles className="h-3.5 w-3.5" /> What makes us different
+          </div>
+          <h2 className="text-2xl font-bold">Most AI tutors explain. Sage tests you back.</h2>
+          <p className="text-muted-foreground">
+            After every answer, Sage offers a quick 3-question comprehension check — optional, instant, and built around exactly what it just taught you.
+            Your score builds your Comprehension % on the Analytics page. Active recall at zero extra effort.
+          </p>
         </div>
       </section>
 

@@ -23,6 +23,7 @@ import { AP_COURSES } from "@/lib/utils";
 import { COURSE_REGISTRY } from "@/lib/courses";
 import { parseSections, type TutorSections } from "@/components/tutor/section-parser";
 import { SectionCards } from "@/components/tutor/section-cards";
+import { KnowledgeCheck } from "@/components/tutor/knowledge-check";
 import Link from "next/link";
 import {
   MessageSquare,
@@ -524,6 +525,18 @@ export default function AiTutorPage() {
             </div>
           )}
 
+          {/* Knowledge check — optional, click-to-start */}
+          {!isStreaming && lastAssistantIdx >= 0 && messages[lastAssistantIdx]?.content && (
+            <div className="flex-shrink-0">
+              <KnowledgeCheck
+                tutorResponse={messages[lastAssistantIdx].content}
+                course={course}
+                topic={null}
+                conversationId={conversationId}
+              />
+            </div>
+          )}
+
           {/* Limit banner */}
           {limitBanner}
 
@@ -719,6 +732,18 @@ export default function AiTutorPage() {
                 </button>
               ))}
             </div>
+          </div>
+        )}
+
+        {/* Knowledge check — optional, click-to-start */}
+        {!isStreaming && lastAssistantIdx >= 0 && messages[lastAssistantIdx]?.content && (
+          <div className="mb-3 flex-shrink-0">
+            <KnowledgeCheck
+              tutorResponse={messages[lastAssistantIdx].content}
+              course={course}
+              topic={null}
+              conversationId={conversationId}
+            />
           </div>
         )}
 

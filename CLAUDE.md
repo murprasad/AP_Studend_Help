@@ -354,6 +354,16 @@ then run `npx prisma migrate deploy` against the production DB.
 
 ## Release History
 
+### Beta 1.5 (2026-03-18)
+- **AI Knowledge Check**: Optional 3-MCQ comprehension quiz after each Sage response. Button "Check your understanding" appears below follow-up chips; never auto-triggers. Groq generates all 3 questions in one JSON call (~1s), Pollinations-Free fallback. Results saved to `TutorKnowledgeCheck` DB table (fire-and-forget submit).
+- **Comprehension Analytics**: `GET /api/analytics` now returns `knowledgeCheckStats: { totalChecks, avgComprehension }`. Analytics page shows "Tutor Comprehension %" stat card once ≥1 check taken.
+- **Disclaimer cleanup**: Removed 9px sidebar disclaimer (invisible in light mode, poor UX). Disclaimer now lives only on About page (full text, subtle footer style) and marketing layout footer (condensed). Legal evaluation: About + marketing footer is sufficient under US trademark law (Lanham Act).
+- **Disclaimer restyling**: About page disclaimer changed from amber warning card → subtle `text-[11px] text-muted-foreground/70` footer section. Works correctly in both dark and light mode.
+- **About page**: Added Beta 1.5 badge, feature overview grid, Release History section with all versions since Beta 1.3.
+- **Marketing footer**: Added nav links (Contact · About · Pricing) above trademark text.
+- **Bug fixes**: D1=race condition in KnowledgeCheck loading state (snapshot guard), D2=sidebar disclaimer invisible in light mode (removed), D3=About page showed wrong version badge.
+- **QA test plan**: `qa_test_plan_beta15.md` — 31 test cases across Knowledge Check, Analytics, Disclaimer, and regression.
+
 ### Beta 1.3 (2026-03-18)
 - **Landing page overhaul**: Reduced from 12 sections → 7 sections — removed Stats bar, Practice Modes, full inline Pricing section, About section from bottom
 - **Nav update**: Replaced `Pricing → /#pricing` with `About → /about`; footer now links to `/about` and `/pricing` page

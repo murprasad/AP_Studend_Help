@@ -154,9 +154,23 @@ export async function GET(req: NextRequest) {
     const weeklyGrowth = Math.round((recentWeekAccuracy - prevWeekAccuracy) * 100)
     const improving = weeklyGrowth > 0
 
+    // Knowledge check comprehension stats
+    const knowledgeChecks = await prisma.tutorKnowledgeCheck.findMany({
+      where: { userId, course },
+      select: { score: true, topic: true, completedAt: true },
+    });
+    const totalChecks = knowledgeChecks.length;
+    const avgComprehension =
+      totalChecks > 0
+        ? Math.round(
+            (knowledgeChecks.reduce((s, c) => s + c.score, 0) / (totalChecks * 3)) * 100
+          )
+        : null;
+
     return NextResponse.json({
       masteryData,
       accuracyTimeline,
+      knowledgeCheckStats: { totalChecks, avgComprehension },
       stats: {
         totalAnswered,
         totalCorrect,
