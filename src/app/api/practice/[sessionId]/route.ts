@@ -136,13 +136,34 @@ Return ONLY valid JSON (no markdown, no extra text):
     });
 
     // Update question stats
-    await prisma.question.update({
+    const updatedQuestion = await prisma.question.update({
       where: { id: questionId },
       data: {
         timesAnswered: { increment: 1 },
         timesCorrect: { increment: isCorrect ? 1 : 0 },
       },
+      select: { timesAnswered: true, timesCorrect: true, difficulty: true },
     });
+
+    // Performance feedback loop: auto-adjust difficulty or flag for review
+    const { timesAnswered: ta, timesCorrect: tc, difficulty: currentDiff } = updatedQuestion;
+    if (ta >= 50) {
+      const correctRate = tc / ta;
+      if (correctRate > 0.85 && currentDiff !== "EASY") {
+        // Question is too easy for its labeled difficulty — downgrade one tier
+        const nextDiff = currentDiff === "HARD" ? "MEDIUM" : "EASY";
+        await prisma.question.update({
+          where: { id: questionId },
+          data: { difficulty: nextDiff },
+        }).catch(() => {}); // non-blocking — don't fail the answer submission
+      } else if (correctRate < 0.15) {
+        // Question may be flawed or impossible — flag for admin review
+        await prisma.question.update({
+          where: { id: questionId },
+          data: { reportedCount: { increment: 1 } },
+        }).catch(() => {});
+      }
+    }
 
     // Update mastery score for this unit
     await updateMasteryScore(session.user.id, question.unit);

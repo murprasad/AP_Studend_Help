@@ -778,3 +778,103 @@ Key skill: No outside science knowledge required — all answers are in the pass
 export function fetchACTTopics(unit: string): string {
   return ACT_TOPIC_MAP[unit] ?? "";
 }
+
+// ── College Board FRQ Content (Phase 4) ──────────────────────────────────────
+
+/**
+ * Fetch and extract readable text from a College Board FRQ PDF URL.
+ * Modern CB PDFs contain plaintext streams — we extract readable word sequences
+ * without a full PDF parser, which is compatible with CF Workers.
+ * Returns a plain-text excerpt suitable for use as AI seed context.
+ */
+export async function fetchCBFRQContent(pdfUrl: string): Promise<string> {
+  try {
+    const res = await fetch(pdfUrl, {
+      headers: {
+        "User-Agent": "Mozilla/5.0 (compatible; StudentNest/1.0; Educational AP Prep)",
+        "Accept": "application/pdf,*/*",
+      },
+      signal: AbortSignal.timeout(10000),
+    });
+    if (!res.ok) return "";
+
+    // Read as text — PDF binary will be mostly garbage, but modern CB PDFs
+    // embed readable text in plaintext streams between BT...ET markers
+    const raw = await res.text();
+
+    // Extract text between BT (Begin Text) and ET (End Text) PDF operators
+    const textBlocks: string[] = [];
+    const btEtRegex = /BT[\s\S]{0,2000}?ET/g;
+    let match;
+    while ((match = btEtRegex.exec(raw)) !== null) {
+      // Extract string literals from parentheses: (text here)
+      const parenStrings = match[0].match(/\(([^)]{2,100})\)/g) || [];
+      const extracted = parenStrings
+        .map((s) => s.slice(1, -1).replace(/\\n/g, " ").replace(/\\r/g, " ").trim())
+        .filter((s) => /[A-Za-z]{3,}/.test(s)) // must contain real words
+        .join(" ");
+      if (extracted.length > 20) textBlocks.push(extracted);
+      if (textBlocks.join(" ").length > 2000) break;
+    }
+
+    if (textBlocks.length > 0) {
+      return textBlocks.join(" ").replace(/\s+/g, " ").trim().slice(0, 1500);
+    }
+
+    // Fallback: extract sequences of 4+ consecutive alphabetic words from raw binary
+    const wordSequences = raw.match(/[A-Z][a-z]{2,}(?:\s+[A-Za-z]{3,}){3,}/g) || [];
+    const fallback = wordSequences.slice(0, 30).join(" ").slice(0, 1000);
+    return fallback;
+  } catch {
+    return "";
+  }
+}
+
+/**
+ * Fetch the best CB FRQ PDF URL for a given course from the catalog.
+ * Returns the most recent entry available.
+ */
+export function getCBFRQUrl(course: string): string | null {
+  const entries = CB_FRQ_CATALOG[course];
+  if (!entries || entries.length === 0) return null;
+  // Sort by year descending, return most recent
+  const sorted = [...entries].sort((a, b) => b.year - a.year);
+  return sorted[0].url;
+}
+
+// ── Khan Academy Topic Context (Phase 5) ─────────────────────────────────────
+
+/**
+ * Attempt to fetch Khan Academy article content for a topic.
+ * Uses the KA CDN article API (public, no key required).
+ * Fails silently — KA may block server-side requests.
+ * Returns topic explanation text suitable for AI context enrichment.
+ */
+export async function fetchKhanAcademyContext(topic: string, course?: string): Promise<string> {
+  try {
+    // Khan Academy's internal search API (public, returns JSON)
+    const query = course
+      ? `${topic} ${course.toLowerCase().replace(/_/g, " ")}`
+      : topic;
+    const url = `https://www.khanacademy.org/api/internal/search?q=${encodeURIComponent(query)}&lang=en&page_size=3`;
+    const res = await fetch(url, {
+      headers: {
+        "User-Agent": "Mozilla/5.0 (compatible; StudentNest/1.0; Educational)",
+        "Accept": "application/json",
+      },
+      signal: AbortSignal.timeout(5000),
+    });
+    if (!res.ok) return "";
+    const data = await res.json() as { results?: { hits?: Array<{ title?: string; description?: string; url?: string }> } };
+    const hits = data.results?.hits ?? [];
+    if (hits.length === 0) return "";
+    const lines = hits
+      .slice(0, 3)
+      .filter((h) => h.title)
+      .map((h) => `• ${h.title}${h.description ? `: ${h.description.slice(0, 150)}` : ""}`);
+    if (lines.length === 0) return "";
+    return `Khan Academy resources:\n${lines.join("\n")}`;
+  } catch {
+    return "";
+  }
+}

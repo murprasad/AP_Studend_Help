@@ -62,7 +62,7 @@ export default function DashboardLayout({
         </button>
         <div className="flex items-center gap-2">
           <Sparkles className="h-6 w-6 text-indigo-400" />
-          <span className="text-base font-bold">
+          <span className="text-lg font-bold">
             <span className="gradient-text">Student</span><span className="text-foreground/80 font-medium">Nest</span>
           </span>
         </div>

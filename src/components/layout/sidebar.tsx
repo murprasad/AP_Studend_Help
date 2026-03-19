@@ -223,6 +223,10 @@ export function Sidebar({ userRole, isOpen = false, onClose = () => {} }: Sideba
 
         {/* Sign out + theme toggle */}
         <div className="p-4 border-t border-border/40 space-y-1">
+          <p className="px-3 py-2 text-[10px] text-muted-foreground/50 leading-relaxed">
+            AP® and SAT® are trademarks of the College Board. ACT® is a trademark of ACT, Inc.
+            Not affiliated with or endorsed by either organization.
+          </p>
           <Button
             variant="ghost"
             className="w-full justify-start gap-3 text-muted-foreground hover:text-foreground"

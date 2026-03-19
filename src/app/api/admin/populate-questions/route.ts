@@ -239,40 +239,64 @@ async function generateOneQuestion(
 
   const prompt = buildQuestionPrompt(course, unit, unitName, difficulty, questionType, topic);
 
-  const { callAIWithCascade } = await import("@/lib/ai-providers");
-  const raw = await callAIWithCascade(prompt);
-  const cleaned = raw.trim().replace(/^```(?:json)?\s*/i, "").replace(/```\s*$/i, "").trim();
+  const { callAIWithCascade, validateQuestion } = await import("@/lib/ai-providers");
 
-  // Find the first valid JSON object in the response
-  const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
-  if (!jsonMatch) throw new Error("No JSON found in AI response");
+  const MAX_ATTEMPTS = 3;
+  const needsValidation = questionType === QuestionType.MCQ;
 
-  const parsed = JSON.parse(jsonMatch[0]);
+  for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+    const raw = await callAIWithCascade(prompt);
+    const cleaned = raw.trim().replace(/^```(?:json)?\s*/i, "").replace(/```\s*$/i, "").trim();
 
-  if (!parsed.questionText || !parsed.correctAnswer) {
-    throw new Error("Incomplete question from AI");
+    // Find the first valid JSON object in the response
+    const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) {
+      if (attempt === MAX_ATTEMPTS) throw new Error("No JSON found in AI response");
+      continue;
+    }
+
+    const parsed = JSON.parse(jsonMatch[0]);
+
+    if (!parsed.questionText || !parsed.correctAnswer) {
+      if (attempt === MAX_ATTEMPTS) throw new Error("Incomplete question from AI");
+      continue;
+    }
+    if (questionType === QuestionType.MCQ && !Array.isArray(parsed.options)) {
+      if (attempt === MAX_ATTEMPTS) throw new Error("Incomplete MCQ question from AI — missing options");
+      continue;
+    }
+
+    // Validate MCQ quality — reject and retry if it fails
+    if (needsValidation) {
+      const difficultyRubricEntry = courseConfig.difficultyRubric?.[difficulty];
+      const validation = await validateQuestion(JSON.stringify(parsed), difficulty, difficultyRubricEntry);
+      if (!validation.approved) {
+        console.warn(`[populate] Attempt ${attempt} rejected: ${validation.reason}`);
+        if (attempt === MAX_ATTEMPTS) return null; // Give up after 3 failed attempts
+        continue;
+      }
+    }
+
+    const questionText = parsed.questionText as string;
+    const normalized = questionText.toLowerCase().replace(/\s+/g, " ").trim();
+    const contentHash = createHash("sha256").update(normalized).digest("hex");
+
+    return {
+      topic: parsed.topic ?? topic ?? unitName,
+      subtopic: parsed.subtopic ?? "",
+      questionText,
+      stimulus: parsed.stimulus && parsed.stimulus !== "null" ? parsed.stimulus : undefined,
+      options: questionType === QuestionType.MCQ ? parsed.options : null,
+      correctAnswer: questionType === QuestionType.MCQ
+        ? parsed.correctAnswer.trim().charAt(0).toUpperCase()
+        : parsed.correctAnswer.trim(),
+      explanation: parsed.explanation ?? "",
+      apSkill: (parsed.apSkill as string) || undefined,
+      contentHash,
+    };
   }
-  if (questionType === QuestionType.MCQ && !Array.isArray(parsed.options)) {
-    throw new Error("Incomplete MCQ question from AI — missing options");
-  }
 
-  const questionText = parsed.questionText as string;
-  const normalized = questionText.toLowerCase().replace(/\s+/g, " ").trim();
-  const contentHash = createHash("sha256").update(normalized).digest("hex");
-
-  return {
-    topic: parsed.topic ?? topic ?? unitName,
-    subtopic: parsed.subtopic ?? "",
-    questionText,
-    stimulus: parsed.stimulus && parsed.stimulus !== "null" ? parsed.stimulus : undefined,
-    options: questionType === QuestionType.MCQ ? parsed.options : null,
-    correctAnswer: questionType === QuestionType.MCQ
-      ? parsed.correctAnswer.trim().charAt(0).toUpperCase()
-      : parsed.correctAnswer.trim(),
-    explanation: parsed.explanation ?? "",
-    apSkill: (parsed.apSkill as string) || undefined,
-    contentHash,
-  };
+  return null;
 }
 
 function sleep(ms: number) {

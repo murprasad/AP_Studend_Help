@@ -4,7 +4,7 @@ import { COURSE_UNITS } from "./utils";
 import { COURSE_REGISTRY, getCourseForUnit } from "./courses";
 import { callAIWithCascade, callAIForTier, validateQuestion, AICallResult } from "./ai-providers";
 import { prisma } from "./prisma";
-import { getWikipediaSummary, getEduContextForQuery, searchStackExchange, getEnrichedContext, fetchMITOCWContent, fetchDIGContent, fetchOpenStaxContent, fetchSmithsonianContent, fetchCollegeBoardSATTopics, fetchACTTopics } from "./edu-apis";
+import { getWikipediaSummary, getEduContextForQuery, searchStackExchange, getEnrichedContext, fetchMITOCWContent, fetchDIGContent, fetchOpenStaxContent, fetchSmithsonianContent, fetchCollegeBoardSATTopics, fetchACTTopics, fetchCBFRQContent, getCBFRQUrl, fetchKhanAcademyContext } from "./edu-apis";
 
 // ── Unified helpers (thin wrappers over the cascade engine) ────────────────
 async function callAI(prompt: string, systemPrompt?: string): Promise<string> {
@@ -121,16 +121,27 @@ async function getUnitContext(unit: ApUnit): Promise<string> {
   if (smithsonianContent.status === "fulfilled" && smithsonianContent.value) {
     enriched += `\nSmithsonian collections (open access):\n${smithsonianContent.value.slice(0, 400)}`;
   }
-  // SAT courses: inject static College Board topic context
+  // SAT courses: inject static College Board topic context + Khan Academy context
   if (course === "SAT_MATH" || course === "SAT_READING_WRITING") {
     const satContext = fetchCollegeBoardSATTopics(unit);
     if (satContext) enriched += `\nCollege Board SAT Curriculum Guide:\n${satContext}`;
+    // Khan Academy context enrichment (fails silently if unavailable)
+    const kaContext = await fetchKhanAcademyContext(searchQuery, course).catch(() => "");
+    if (kaContext) enriched += `\n${kaContext}`;
   }
   // ACT courses: inject static ACT topic context
   if (course === "ACT_MATH" || course === "ACT_ENGLISH" ||
       course === "ACT_SCIENCE" || course === "ACT_READING") {
     const actContext = fetchACTTopics(unit);
     if (actContext) enriched += `\nACT Curriculum Guide:\n${actContext}`;
+  }
+  // AP courses with CB FRQ catalog entries: inject FRQ seed context (Phase 4)
+  const cbFrqUrl = getCBFRQUrl(course);
+  if (cbFrqUrl) {
+    const frqContext = await fetchCBFRQContent(cbFrqUrl).catch(() => "");
+    if (frqContext && frqContext.length > 50) {
+      enriched += `\nCollege Board Official FRQ Seed (public domain — use as style/difficulty reference only, generate a DIFFERENT question):\n${frqContext.slice(0, 800)}`;
+    }
   }
   return enriched;
 }
@@ -223,7 +234,8 @@ export async function generateQuestion(
   questionType: QuestionType = QuestionType.MCQ,
   topic?: string,
   course?: ApCourse,
-  userTier: "FREE" | "PREMIUM" = "FREE"
+  userTier: "FREE" | "PREMIUM" = "FREE",
+  seedQuestion?: string
 ): Promise<GeneratedQuestion> {
   const inferredCourse = course || getCourseForUnit(unit);
   const unitName = COURSE_REGISTRY[inferredCourse].units[unit]?.name || unit;
@@ -247,7 +259,31 @@ export async function generateQuestion(
     }
   }
 
-  const prompt = buildQuestionPrompt(inferredCourse, unit, unitName, difficulty, questionType, topic);
+  const basePrompt = buildQuestionPrompt(inferredCourse, unit, unitName, difficulty, questionType, topic);
+
+  // Phase 4: Optionally inject CB FRQ seed context for AP courses that have public FRQs
+  // Fetch in parallel with a 6s timeout; fails silently if unavailable
+  let cbFrqSeedSection = "";
+  const cbFrqUrl = getCBFRQUrl(inferredCourse);
+  if (cbFrqUrl) {
+    try {
+      const frqText = await Promise.race([
+        fetchCBFRQContent(cbFrqUrl),
+        new Promise<string>((resolve) => setTimeout(() => resolve(""), 6000)),
+      ]);
+      if (frqText && frqText.length > 50) {
+        cbFrqSeedSection = `\n\nCOLLEGE BOARD OFFICIAL FRQ REFERENCE (public domain — use for style/difficulty calibration only):\n"${frqText.slice(0, 600)}"\nGenerate a DIFFERENT question inspired by this style and difficulty. Do NOT copy the scenario.`;
+      }
+    } catch {
+      // Fail silently — question generation continues without seed
+    }
+  }
+
+  const prompt = seedQuestion
+    ? `${basePrompt}${cbFrqSeedSection}\n\nREFERENCE QUESTION (for style/difficulty calibration — generate something DIFFERENT):\n"${seedQuestion}"\n\nGenerate a new question on the SAME concept with entirely different numbers, context, and scenario. Do NOT reuse the same values or phrasing from the reference.`
+    : cbFrqSeedSection
+    ? `${basePrompt}${cbFrqSeedSection}`
+    : basePrompt;
 
   // FRQ/open-ended types have no distractors — skip validator (saves ~10s/attempt)
   const needsValidation = !["FRQ", "SAQ", "DBQ", "LEQ", "CODING"].includes(questionType ?? "");

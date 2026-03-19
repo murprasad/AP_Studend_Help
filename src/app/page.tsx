@@ -75,12 +75,15 @@ export default function LandingPage() {
       <nav className="border-b border-border/40 backdrop-blur-sm sticky top-0 z-50 bg-background/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
-            <Sparkles className="h-7 w-7 text-indigo-400" />
-            <span className="text-xl font-bold">
+            <Sparkles className="h-6 w-6 text-indigo-400" />
+            <span className="text-lg font-bold">
               <span className="gradient-text">Student</span><span className="text-foreground/80 font-medium">Nest</span>
             </span>
           </Link>
           <div className="flex items-center gap-2 sm:gap-4">
+            <Link href="/pricing" className="hidden sm:block text-sm text-muted-foreground hover:text-foreground transition-colors">
+              Pricing
+            </Link>
             <Link href="/about" className="hidden sm:block text-sm text-muted-foreground hover:text-foreground transition-colors">
               About
             </Link>
@@ -325,6 +328,12 @@ export default function LandingPage() {
           </div>
           <p className="text-sm text-muted-foreground">
             © 2025 StudentNest. Your AI Study Partner.
+          </p>
+        </div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4 border-t border-border/20 pt-4">
+          <p className="text-xs text-muted-foreground text-center max-w-3xl mx-auto">
+            AP® and SAT® are trademarks of the College Board. ACT® is a trademark of ACT, Inc.
+            Neither organization is affiliated with or endorses StudentNest.
           </p>
         </div>
       </footer>

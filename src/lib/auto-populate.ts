@@ -14,7 +14,7 @@ import { ApCourse, ApUnit, Difficulty, QuestionType, Prisma } from "@prisma/clie
 import { prisma } from "./prisma";
 import { COURSE_REGISTRY, VALID_AP_COURSES } from "./courses";
 import { buildQuestionPrompt } from "./ai";
-import { callAIWithCascade } from "./ai-providers";
+import { callAIWithCascade, validateQuestion } from "./ai-providers";
 import { getWikipediaSummary } from "./edu-apis";
 
 /** Minimum approved questions to maintain per unit. */
@@ -188,41 +188,61 @@ async function generateOneQuestion(
   questionType: QuestionType = QuestionType.MCQ
 ): Promise<{ topic: string; subtopic: string; questionText: string; stimulus: string | null; stimulusImageUrl: string | null; options: string[]; correctAnswer: string; explanation: string } | null> {
   const prompt = buildQuestionPrompt(course, unit, unitName, difficulty, questionType, topic);
-  const raw = await callAIWithCascade(prompt);
-  const cleaned = raw.trim().replace(/^```(?:json)?\s*/i, "").replace(/```\s*$/i, "").trim();
-  const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
-  if (!jsonMatch) return null;
+  const needsValidation = questionType === QuestionType.MCQ;
+  const config = COURSE_REGISTRY[course];
+  const difficultyRubricEntry = config.difficultyRubric?.[difficulty];
 
-  const parsed = JSON.parse(jsonMatch[0]);
-  if (!parsed.questionText || !parsed.correctAnswer) return null;
-  if (questionType === QuestionType.MCQ && !Array.isArray(parsed.options)) return null;
+  const MAX_ATTEMPTS = needsValidation ? 3 : 1;
 
-  // Fetch Wikipedia image for World History questions that provide a topic hint
-  let stimulusImageUrl: string | null = null;
-  if (course === "AP_WORLD_HISTORY" && parsed.wikiImageTopic && parsed.wikiImageTopic !== "null") {
-    try {
-      const wikiResult = await Promise.race([
-        getWikipediaSummary(parsed.wikiImageTopic),
-        new Promise<null>((resolve) => setTimeout(() => resolve(null), 3000)),
-      ]);
-      stimulusImageUrl = (wikiResult as Awaited<ReturnType<typeof getWikipediaSummary>>)?.imageUrl ?? null;
-    } catch {
-      stimulusImageUrl = null;
+  for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+    const raw = await callAIWithCascade(prompt);
+    const cleaned = raw.trim().replace(/^```(?:json)?\s*/i, "").replace(/```\s*$/i, "").trim();
+    const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) continue;
+
+    const parsed = JSON.parse(jsonMatch[0]);
+    if (!parsed.questionText || !parsed.correctAnswer) continue;
+    if (questionType === QuestionType.MCQ && !Array.isArray(parsed.options)) continue;
+
+    // Validate MCQ quality — skip validation for open-ended types
+    if (needsValidation) {
+      const validation = await validateQuestion(JSON.stringify(parsed), difficulty, difficultyRubricEntry);
+      if (!validation.approved) {
+        console.warn(`[auto-populate] Attempt ${attempt} rejected: ${validation.reason}`);
+        if (attempt === MAX_ATTEMPTS) return null;
+        continue;
+      }
     }
+
+    // Fetch Wikipedia image for World History questions that provide a topic hint
+    let stimulusImageUrl: string | null = null;
+    if (course === "AP_WORLD_HISTORY" && parsed.wikiImageTopic && parsed.wikiImageTopic !== "null") {
+      try {
+        const wikiResult = await Promise.race([
+          getWikipediaSummary(parsed.wikiImageTopic),
+          new Promise<null>((resolve) => setTimeout(() => resolve(null), 3000)),
+        ]);
+        stimulusImageUrl = (wikiResult as Awaited<ReturnType<typeof getWikipediaSummary>>)?.imageUrl ?? null;
+      } catch {
+        stimulusImageUrl = null;
+      }
+    }
+
+    return {
+      topic: parsed.topic ?? topic ?? unitName,
+      subtopic: parsed.subtopic ?? "",
+      questionText: parsed.questionText,
+      stimulus: parsed.stimulus && parsed.stimulus !== "null" ? parsed.stimulus : null,
+      stimulusImageUrl,
+      options: parsed.options,
+      correctAnswer: questionType === QuestionType.MCQ
+        ? parsed.correctAnswer.trim().charAt(0).toUpperCase()
+        : parsed.correctAnswer.trim(),
+      explanation: parsed.explanation ?? "",
+    };
   }
 
-  return {
-    topic: parsed.topic ?? topic ?? unitName,
-    subtopic: parsed.subtopic ?? "",
-    questionText: parsed.questionText,
-    stimulus: parsed.stimulus && parsed.stimulus !== "null" ? parsed.stimulus : null,
-    stimulusImageUrl,
-    options: parsed.options,
-    correctAnswer: questionType === QuestionType.MCQ
-      ? parsed.correctAnswer.trim().charAt(0).toUpperCase()
-      : parsed.correctAnswer.trim(),
-    explanation: parsed.explanation ?? "",
-  };
+  return null;
 }
 
 function sleep(ms: number) {

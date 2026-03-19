@@ -16,7 +16,7 @@ import { prisma } from "@/lib/prisma";
 import { ApCourse, ApUnit, Difficulty, QuestionType, SubTier } from "@prisma/client";
 import { VALID_AP_COURSES, COURSE_REGISTRY } from "@/lib/courses";
 import { buildQuestionPrompt } from "@/lib/ai";
-import { callAIWithCascade } from "@/lib/ai-providers";
+import { callAIWithCascade, validateQuestion } from "@/lib/ai-providers";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 300;
@@ -161,30 +161,46 @@ async function generateOne(
   difficulty: Difficulty,
   topic: string | undefined
 ): Promise<{ topic: string; subtopic: string; questionText: string; stimulus: string | null; options: string[]; correctAnswer: string; explanation: string; apSkill?: string; contentHash: string } | null> {
+  const courseConfig = COURSE_REGISTRY[course];
+  const difficultyRubricEntry = courseConfig.difficultyRubric?.[difficulty];
   const prompt = buildQuestionPrompt(course, unit, unitName, difficulty, QuestionType.MCQ, topic);
-  const raw = await callAIWithCascade(prompt);
-  const cleaned = raw.trim().replace(/^```(?:json)?\s*/i, "").replace(/```\s*$/i, "").trim();
-  const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
-  if (!jsonMatch) return null;
 
-  const parsed = JSON.parse(jsonMatch[0]);
-  if (!parsed.questionText || !parsed.correctAnswer || !Array.isArray(parsed.options)) return null;
+  const MAX_ATTEMPTS = 3;
+  for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+    const raw = await callAIWithCascade(prompt);
+    const cleaned = raw.trim().replace(/^```(?:json)?\s*/i, "").replace(/```\s*$/i, "").trim();
+    const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) continue;
 
-  const questionText = parsed.questionText as string;
-  const normalized = questionText.toLowerCase().replace(/\s+/g, " ").trim();
-  const contentHash = createHash("sha256").update(normalized).digest("hex");
+    const parsed = JSON.parse(jsonMatch[0]);
+    if (!parsed.questionText || !parsed.correctAnswer || !Array.isArray(parsed.options)) continue;
 
-  return {
-    topic: parsed.topic ?? topic ?? unitName,
-    subtopic: parsed.subtopic ?? "",
-    questionText,
-    stimulus: parsed.stimulus && parsed.stimulus !== "null" ? parsed.stimulus : null,
-    options: parsed.options,
-    correctAnswer: parsed.correctAnswer.trim().charAt(0).toUpperCase(),
-    explanation: parsed.explanation ?? "",
-    apSkill: (parsed.apSkill as string) || undefined,
-    contentHash,
-  };
+    // Validate MCQ quality
+    const validation = await validateQuestion(JSON.stringify(parsed), difficulty, difficultyRubricEntry);
+    if (!validation.approved) {
+      console.warn(`[mega-populate] Attempt ${attempt} rejected: ${validation.reason}`);
+      if (attempt === MAX_ATTEMPTS) return null;
+      continue;
+    }
+
+    const questionText = parsed.questionText as string;
+    const normalized = questionText.toLowerCase().replace(/\s+/g, " ").trim();
+    const contentHash = createHash("sha256").update(normalized).digest("hex");
+
+    return {
+      topic: parsed.topic ?? topic ?? unitName,
+      subtopic: parsed.subtopic ?? "",
+      questionText,
+      stimulus: parsed.stimulus && parsed.stimulus !== "null" ? parsed.stimulus : null,
+      options: parsed.options,
+      correctAnswer: parsed.correctAnswer.trim().charAt(0).toUpperCase(),
+      explanation: parsed.explanation ?? "",
+      apSkill: (parsed.apSkill as string) || undefined,
+      contentHash,
+    };
+  }
+
+  return null;
 }
 
 function sleep(ms: number) {

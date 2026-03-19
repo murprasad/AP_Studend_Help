@@ -564,16 +564,30 @@ export async function callAIForTier(
 }
 
 /**
- * Validate a generated question for AP style and correctness.
+ * Validate a generated question for AP/SAT/ACT style and correctness.
  * Uses Groq (fast, free) with a 10s timeout, falls back to Pollinations-Free.
+ *
+ * @param questionJson - JSON string of the generated question
+ * @param difficulty - Optional difficulty level (EASY/MEDIUM/HARD) for calibration check
+ * @param difficultyRubricEntry - Optional rubric text for the requested difficulty, used as 6th criterion
  */
-export async function validateQuestion(questionJson: string): Promise<ValidationResult> {
-  const validatorPrompt = `You are a College Board AP exam quality reviewer. Evaluate this question on FIVE criteria:
+export async function validateQuestion(
+  questionJson: string,
+  difficulty?: string,
+  difficultyRubricEntry?: string
+): Promise<ValidationResult> {
+  const difficultySection = difficulty && difficultyRubricEntry
+    ? `\n6. Difficulty calibration — The question matches the ${difficulty} difficulty standard: "${difficultyRubricEntry}"`
+    : "";
+
+  const criteriaCount = difficultyRubricEntry ? "SIX" : "FIVE";
+
+  const validatorPrompt = `You are a College Board AP exam quality reviewer. Evaluate this question on ${criteriaCount} criteria:
 1. Factual accuracy — Is the content and explanation factually correct?
 2. Single unambiguous answer — Only one choice is clearly correct; the others are definitively wrong.
 3. Distractor quality — Wrong answers are plausible but clearly incorrect on careful reflection; each represents a distinct common misconception.
 4. Cognitive level — Tests understanding, analysis, or application (NOT pure rote memorization or trivia).
-5. Exam alignment — Matches AP/SAT/ACT exam style (appropriate stimulus if needed, appropriate stem verb, no trick questions).
+5. Exam alignment — Matches AP/SAT/ACT exam style (appropriate stimulus if needed, appropriate stem verb, no trick questions).${difficultySection}
 
 Score each criterion PASS or FAIL.
 
@@ -581,7 +595,7 @@ Question JSON:
 ${questionJson}
 
 Reply ONLY with valid JSON (no markdown, no extra text):
-{"approved": true} if all 5 pass, or {"approved": false, "reason": "criterion: explanation"}`;
+{"approved": true} if all criteria pass, or {"approved": false, "reason": "criterion: explanation"}`;
 
   const groqKey = process.env.GROQ_API_KEY;
   if (groqKey) {
@@ -595,7 +609,7 @@ Reply ONLY with valid JSON (no markdown, no extra text):
         body: JSON.stringify({
           model: "llama-3.3-70b-versatile",
           messages: [{ role: "user", content: validatorPrompt }],
-          max_tokens: 100,
+          max_tokens: 200,
           temperature: 0.1,
         }),
         signal: AbortSignal.timeout(10000),

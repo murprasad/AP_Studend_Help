@@ -11,24 +11,31 @@ export default function MarketingLayout({ children }: { children: React.ReactNod
             <span className="text-lg font-bold">
               <span className="gradient-text">Student</span><span className="text-foreground/80 font-medium">Nest</span>
             </span>
-            <p className="text-xs text-muted-foreground leading-none">Your AI Study Partner</p>
+            <p className="text-xs text-muted-foreground leading-none hidden sm:block">Your AI Study Partner</p>
           </div>
         </Link>
-        <div className="flex items-center gap-4">
-          <Link href="/login" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+        <div className="flex items-center gap-2 sm:gap-4">
+          <Link href="/pricing" className="hidden sm:block text-sm text-muted-foreground hover:text-foreground transition-colors">
+            Pricing
+          </Link>
+          <Link href="/login" className="hidden sm:block text-sm text-muted-foreground hover:text-foreground transition-colors">
             Sign in
           </Link>
           <Link
             href="/register"
-            className="text-sm bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition-colors"
+            className="text-sm bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 sm:px-4 rounded-lg transition-colors"
           >
-            Get started free
+            <span className="hidden sm:inline">Get started </span>free
           </Link>
         </div>
       </nav>
       <div className="flex-1">{children}</div>
-      <footer className="border-t border-border/40 p-6 text-center text-sm text-muted-foreground">
-        © {new Date().getFullYear()} StudentNest. Built for AP students.
+      <footer className="border-t border-border/40 py-6 px-4 text-center space-y-2">
+        <p className="text-xs text-muted-foreground">
+          AP® and SAT® are trademarks of the College Board, which is not affiliated with, and does not endorse, this site.
+          ACT® is a registered trademark of ACT, Inc., which is not affiliated with, and does not endorse, this site.
+        </p>
+        <p className="text-xs text-muted-foreground">© {new Date().getFullYear()} StudentNest. Independent educational platform. Not affiliated with College Board or ACT, Inc.</p>
       </footer>
     </div>
   );

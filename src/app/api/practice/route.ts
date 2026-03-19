@@ -135,6 +135,14 @@ export async function POST(req: NextRequest) {
       const courseUnitKeys = getUnitsForCourse(course as ApCourse);
       const diffs: Difficulty[] = [Difficulty.EASY, Difficulty.MEDIUM, Difficulty.HARD];
 
+      // Pick a random existing question as seed for variation generation
+      const seedPool = allQuestions.filter((q) =>
+        difficulty && difficulty !== "ALL" ? q.difficulty === difficulty : true
+      );
+      const seedQuestion = seedPool.length > 0
+        ? seedPool[Math.floor(Math.random() * Math.min(seedPool.length, 5))].questionText
+        : undefined;
+
       const genPromises = Array.from({ length: needed }, (_, i) => {
         const u: ApUnit = (unit && unit !== "ALL")
           ? (unit as ApUnit)
@@ -143,7 +151,7 @@ export async function POST(req: NextRequest) {
           ? (difficulty as Difficulty)
           : diffs[i % diffs.length];
         const weakTopic = weakTopicMap.get(u) || undefined;
-        return generateQuestion(u, d, resolvedQuestionType, weakTopic, course as ApCourse, tier as "FREE" | "PREMIUM")
+        return generateQuestion(u, d, resolvedQuestionType, weakTopic, course as ApCourse, tier as "FREE" | "PREMIUM", seedQuestion)
           .then((gen) =>
             prisma.question.create({
               data: {
@@ -156,7 +164,7 @@ export async function POST(req: NextRequest) {
                 questionText: gen.questionText,
                 stimulus: gen.stimulus || null,
                 stimulusImageUrl: gen.stimulusImageUrl || null,
-                options: gen.options ? JSON.stringify(gen.options) : undefined,
+                options: gen.options ?? undefined,
                 correctAnswer: gen.correctAnswer,
                 explanation: gen.explanation,
                 isAiGenerated: true,
