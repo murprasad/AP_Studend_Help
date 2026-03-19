@@ -332,6 +332,31 @@ then run `npx prisma migrate deploy` against the production DB.
 
 ---
 
+## Release Checklist (run before EVERY deploy)
+
+**Automated — enforced by `npm run release:check` (runs automatically inside `pages:deploy`):**
+- `npx tsc --noEmit` passes
+- `node scripts/check-cf-compat.js` passes (no banned SDK imports)
+- All key files contain `9.99`, `79.99`, `33%` where expected
+- 7-day refund policy present in `/pricing` FAQ and `/terms`
+- Sparkles + `gradient-text` + "Nest" present in all 5 layout/logo files
+- `/terms` link present in marketing footer
+
+**Manual — verify before committing:**
+- [ ] Pricing change? Update ALL of: `src/app/page.tsx` (hero + card + footer CTA), `/pricing`, `/billing`, `/about`, `/terms`
+- [ ] New feature? Add user-facing description to About page Beta X.Y section (no file paths or internal details)
+- [ ] New Beta version? Bump `package.json` version field to match
+- [ ] Update `CLAUDE.md` Release History section with new Beta version
+- [ ] Git tag: `git tag -a beta-X.Y -m "Beta X.Y"` then `git push origin beta-X.Y`
+
+**Deploy command (runs all automated checks first):**
+```bash
+npm run release:check   # run checks only (fast, no build)
+npm run pages:deploy    # checks + build + deploy to CF Pages
+```
+
+---
+
 ## Adding Features: Checklist
 
 **New API route:**

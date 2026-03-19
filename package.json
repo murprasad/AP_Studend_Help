@@ -13,7 +13,8 @@
     "db:seed": "tsx prisma/seed.ts",
     "db:studio": "prisma studio",
     "pages:build": "npx prisma generate && node scripts/patch-prisma-wasm.js && opennextjs-cloudflare build --dangerouslyUseUnsupportedNextVersion && node scripts/prepare-cf-deploy.js",
-    "pages:deploy": "node scripts/check-cf-compat.js && npm run pages:build && wrangler pages deploy .cf-deploy --project-name=studentnest --commit-dirty=true && node scripts/post-deploy-verify.js",
+    "release:check": "node scripts/pre-release-check.js",
+    "pages:deploy": "node scripts/pre-release-check.js && npm run pages:build && wrangler pages deploy .cf-deploy --project-name=studentnest --commit-dirty=true && node scripts/post-deploy-verify.js",
     "pages:preview": "npm run pages:build && wrangler pages dev .cf-deploy"
   },
   "dependencies": {
