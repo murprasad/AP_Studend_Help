@@ -127,6 +127,15 @@ export default function PracticePage() {
   const [openEndedAnswer, setOpenEndedAnswer] = useState("");
   const [feedbackRating, setFeedbackRating] = useState<1 | -1 | null>(null);
   const [startMsgIndex, setStartMsgIndex] = useState(0);
+  // Embedded knowledge check after wrong MCQ answers
+  const [checkQuestion, setCheckQuestion] = useState<{
+    question: string;
+    options: string[];
+    correctIndex: number;
+    explanation: string;
+  } | null>(null);
+  const [checkAnswer, setCheckAnswer] = useState<number | null>(null);
+  const [checkLoading, setCheckLoading] = useState(false);
 
   // Reset unit selection when course changes
   useEffect(() => {
@@ -232,6 +241,28 @@ export default function PracticePage() {
       }
       setFeedback(data);
       setResults((prev) => [...prev, { correct: data.isCorrect, timeSecs }]);
+      // Auto-trigger embedded knowledge check for wrong MCQ answers
+      if (!data.isCorrect && parsedOptions.length > 0) {
+        setCheckQuestion(null);
+        setCheckAnswer(null);
+        setCheckLoading(true);
+        fetch("/api/ai/tutor/knowledge-check", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            tutorResponse: `${currentQuestion.questionText}\nCorrect Answer: ${data.correctAnswer}\nExplanation: ${data.explanation}`,
+            topic: currentQuestion.topic,
+            course: currentQuestion.course,
+          }),
+          signal: AbortSignal.timeout(18000),
+        })
+          .then((r) => r.json())
+          .then((d) => {
+            if (d.questions?.[0]) setCheckQuestion(d.questions[0]);
+          })
+          .catch(() => {})
+          .finally(() => setCheckLoading(false));
+      }
     } catch {
       toast({ title: "Error", description: "Failed to submit answer. Check your connection.", variant: "destructive" });
       setSelectedAnswer(null);
@@ -253,6 +284,9 @@ export default function PracticePage() {
       setSelectedAnswer(null);
       setFeedback(null);
       setOpenEndedAnswer("");
+      setCheckQuestion(null);
+      setCheckAnswer(null);
+      setCheckLoading(false);
       setQuestionStartTime(new Date());
       return next;
     });
@@ -317,6 +351,9 @@ export default function PracticePage() {
     setSessionLimitReached(false);
     setOpenEndedAnswer("");
     setFeedbackRating(null);
+    setCheckQuestion(null);
+    setCheckAnswer(null);
+    setCheckLoading(false);
   }
 
   if (mode === "summary" && sessionSummary) {
@@ -609,6 +646,58 @@ export default function PracticePage() {
                   </div>
                 </div>
               )}
+
+              {/* Embedded knowledge check — auto-appears after wrong MCQ */}
+              {!feedback.isCorrect && !feedback.frqScore && (
+                <div className="border-t border-border/40 pt-4 space-y-3">
+                  <p className="text-xs font-semibold text-amber-400 uppercase tracking-wide flex items-center gap-1.5">
+                    <Sparkles className="h-3.5 w-3.5" />
+                    Quick Check — Before You Move On
+                  </p>
+                  {checkLoading && (
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                      Generating comprehension check…
+                    </div>
+                  )}
+                  {checkQuestion && (
+                    <div className="space-y-2">
+                      <p className="text-sm font-medium leading-relaxed">{checkQuestion.question}</p>
+                      <div className="space-y-1.5">
+                        {checkQuestion.options.map((opt, i) => {
+                          let cls = "border border-border/40 hover:bg-accent cursor-pointer";
+                          if (checkAnswer !== null) {
+                            if (i === checkQuestion.correctIndex) {
+                              cls = "border-emerald-500 bg-emerald-500/10 text-emerald-400";
+                            } else if (i === checkAnswer) {
+                              cls = "border-red-500 bg-red-500/10 text-red-400";
+                            } else {
+                              cls = "border border-border/20 opacity-50";
+                            }
+                          }
+                          return (
+                            <button
+                              key={i}
+                              disabled={checkAnswer !== null}
+                              onClick={() => setCheckAnswer(i)}
+                              className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-all ${cls}`}
+                            >
+                              {opt}
+                            </button>
+                          );
+                        })}
+                      </div>
+                      {checkAnswer !== null && (
+                        <p className="text-xs text-muted-foreground leading-relaxed">
+                          {checkAnswer === checkQuestion.correctIndex ? "✓ " : "✗ "}
+                          {checkQuestion.explanation}
+                        </p>
+                      )}
+                    </div>
+                  )}
+                </div>
+              )}
+
               <Button onClick={nextQuestion} className="w-full gap-2">
                 {currentIndex + 1 >= questionsRef.current.length ? "See Results" : `Next Question (${currentIndex + 2} of ${questionsRef.current.length})`}
                 <ChevronRight className="h-4 w-4" />

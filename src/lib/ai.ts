@@ -610,21 +610,31 @@ FOLLOW_UPS: ["<specific follow-up question 1>", "<specific follow-up question 2>
   return { answer, followUps };
 }
 
-// ── Hint Generator ────────────────────────────────────────────────────────
+// ── Hint Generator (3-level Socratic scaffolding) ─────────────────────────
 export async function generateHint(
   questionText: string,
   options: string[],
-  attempt?: string
+  attempt?: string,
+  hintLevel: 1 | 2 | 3 = 1
 ): Promise<string> {
   const optionsText = options.map((o, i) => `${String.fromCharCode(65+i)}) ${o}`).join("\n")
-  const attemptText = attempt ? `\nStudent attempted: ${attempt}` : ""
-  const prompt = `Give a one-sentence hint for this AP exam question without revealing the answer. Be helpful but don't give it away.
+  const attemptText = attempt ? `\nStudent previously considered: ${attempt}` : ""
+
+  const levelInstructions: Record<1|2|3, string> = {
+    1: `Give a one-sentence concept reminder that identifies what AP topic or skill this question is testing. Do NOT hint at which option is correct.`,
+    2: `Give a 2-sentence process clue that tells the student HOW to approach this question — which reasoning strategy to use, what to compare, or what to look for. Do NOT reveal the correct answer or eliminate options directly.`,
+    3: `Walk the student through the reasoning process step-by-step (3-4 steps) up to — but not including — the final answer. End with a guiding question that helps them reach the answer themselves. Do NOT state the correct letter.`,
+  }
+
+  const prompt = `You are a Socratic AP exam tutor. Help the student think through this question without giving the answer away.
 
 Question: ${questionText}
 Options:
 ${optionsText}${attemptText}
 
-Hint:`
+Hint Level ${hintLevel}/3: ${levelInstructions[hintLevel]}
+
+Respond in plain text only. Be concise.`
 
   const result = await callAIWithCascade(prompt, undefined, undefined)
   return result.trim()

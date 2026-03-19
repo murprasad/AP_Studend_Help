@@ -330,6 +330,7 @@ async function updateUserProgress(userId: string, xpEarned: number) {
     const lastActive = user.lastActiveDate ? new Date(user.lastActiveDate) : null;
 
     let newStreak = user.streakDays;
+    let newFreezes = (user as { streakFreezes?: number }).streakFreezes ?? 0;
     if (lastActive) {
       const yesterday = new Date(today);
       yesterday.setDate(yesterday.getDate() - 1);
@@ -338,10 +339,26 @@ async function updateUserProgress(userId: string, xpEarned: number) {
       if (lastActive.getTime() === yesterday.getTime()) {
         newStreak += 1;
       } else if (lastActive.getTime() < yesterday.getTime()) {
-        newStreak = 1;
+        // Missed at least one day — try to apply a freeze token
+        const twoDaysAgo = new Date(today);
+        twoDaysAgo.setDate(today.getDate() - 2);
+        const missedOneDayOnly = lastActive.getTime() === twoDaysAgo.getTime();
+        if (missedOneDayOnly && newFreezes > 0) {
+          // Freeze covers exactly one missed day — streak continues
+          newFreezes -= 1;
+          newStreak += 1;
+        } else {
+          newStreak = 1;
+        }
       }
     } else {
       newStreak = 1;
+    }
+
+    // Award a freeze token for every 7-day streak milestone (weekly consistency)
+    const prevStreak = user.streakDays;
+    if (newStreak > prevStreak && newStreak % 7 === 0) {
+      newFreezes = Math.min(newFreezes + 1, 5); // cap at 5
     }
 
     const newXp = user.totalXp + xpEarned;
@@ -354,8 +371,9 @@ async function updateUserProgress(userId: string, xpEarned: number) {
         level: newLevel,
         streakDays: newStreak,
         longestStreak: Math.max(newStreak, user.longestStreak ?? 0),
+        streakFreezes: newFreezes,
         lastActiveDate: new Date(),
-      },
+      } as Record<string, unknown>,
     });
   } catch (error) {
     console.error("updateUserProgress error:", error);

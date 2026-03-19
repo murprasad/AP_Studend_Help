@@ -28,6 +28,8 @@ model User {
   lastActiveDate    DateTime?
   totalXp           Int       @default(0)
   level             Int       @default(1)
+  streakFreezes     Int       @default(0)  // streak freeze tokens
+  examDate          DateTime?              // AP exam date for countdown
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
 
@@ -38,6 +40,7 @@ model User {
   practiceSessions  PracticeSession[]
   responses         StudentResponse[]
   masteryScores     MasteryScore[]
+  masteryGoals      MasteryGoal[]
   studyPlans        StudyPlan[]
   achievements      UserAchievement[]
   tutorConversations TutorConversation[]
@@ -49,6 +52,22 @@ model User {
   tutorKnowledgeChecks TutorKnowledgeCheck[]
 
   @@map("users")
+}
+
+model MasteryGoal {
+  id          String    @id @default(cuid())
+  userId      String
+  course      ApCourse
+  unit        ApUnit
+  targetScore Float
+  targetDate  DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, unit])
+  @@map("mastery_goals")
 }
 
 model Account {

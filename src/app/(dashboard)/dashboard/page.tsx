@@ -23,8 +23,13 @@ import {
   ArrowRight,
   Clock,
   Crown,
+  Medal,
+  RotateCcw,
 } from "lucide-react";
 import { format, subDays } from "date-fns";
+import { ExamCountdownSetter } from "@/components/dashboard/exam-countdown-setter";
+import { LeaderboardWidget } from "@/components/dashboard/leaderboard-widget";
+import { DailyReviewCard } from "@/components/dashboard/daily-review-card";
 
 export default async function DashboardPage() {
   const session = await getServerSession(authOptions);
@@ -364,6 +369,13 @@ export default async function DashboardPage() {
           </CardContent>
         </Card>
       </div>
+      {/* Exam Countdown, Daily Review, Leaderboard */}
+      <div className="grid lg:grid-cols-3 gap-6">
+        <ExamCountdownSetter course={selectedCourse} />
+        <DailyReviewCard course={selectedCourse} />
+        <LeaderboardWidget course={selectedCourse} />
+      </div>
+
       {/* Achievements */}
       {earnedAchievements.length > 0 && (
         <Card className="card-glow">

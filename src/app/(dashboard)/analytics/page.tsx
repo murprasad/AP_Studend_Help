@@ -28,10 +28,13 @@ import {
   GraduationCap,
   Crown,
   Sparkles,
+  Flag,
+  X,
 } from "lucide-react";
 import { CourseSelectorInline } from "@/components/layout/course-selector-inline";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
+import { ApCourse, ApUnit } from "@prisma/client";
 
 interface MasteryData {
   unit: string;
@@ -71,24 +74,71 @@ export default function AnalyticsPage() {
   } | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [goals, setGoals] = useState<Record<string, { targetScore: number; targetDate?: string }>>({});
+  const [goalModalUnit, setGoalModalUnit] = useState<{ unit: string; unitName: string; current: number } | null>(null);
+  const [goalTarget, setGoalTarget] = useState("75");
+  const [goalDate, setGoalDate] = useState("");
+  const [goalSaving, setGoalSaving] = useState(false);
 
   useEffect(() => {
     setLoading(true);
     setError(null);
-    fetch(`/api/analytics?course=${course}`)
-      .then((r) => {
+    Promise.all([
+      fetch(`/api/analytics?course=${course}`).then((r) => {
         if (!r.ok) throw new Error("Failed to load analytics");
         return r.json();
-      })
-      .then((data) => {
+      }),
+      fetch(`/api/mastery-goal?course=${course}`).then((r) => r.json()).catch(() => ({ goals: [] })),
+    ])
+      .then(([data, goalData]) => {
         setMasteryData(data.masteryData || []);
         setAccuracyTimeline(data.accuracyTimeline || []);
         setStats(data.stats);
         setKnowledgeCheckStats(data.knowledgeCheckStats ?? null);
+        const goalMap: Record<string, { targetScore: number; targetDate?: string }> = {};
+        for (const g of (goalData.goals || [])) {
+          goalMap[g.unit] = { targetScore: g.targetScore, targetDate: g.targetDate };
+        }
+        setGoals(goalMap);
       })
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
   }, [course]);
+
+  async function saveGoal() {
+    if (!goalModalUnit) return;
+    setGoalSaving(true);
+    try {
+      await fetch("/api/mastery-goal", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          course,
+          unit: goalModalUnit.unit,
+          targetScore: parseFloat(goalTarget),
+          targetDate: goalDate || undefined,
+        }),
+      });
+      setGoals((prev) => ({
+        ...prev,
+        [goalModalUnit.unit]: { targetScore: parseFloat(goalTarget), targetDate: goalDate || undefined },
+      }));
+      setGoalModalUnit(null);
+    } catch {
+      // ignore
+    } finally {
+      setGoalSaving(false);
+    }
+  }
+
+  async function deleteGoal(unit: string) {
+    await fetch(`/api/mastery-goal?unit=${unit}`, { method: "DELETE" }).catch(() => {});
+    setGoals((prev) => {
+      const next = { ...prev };
+      delete next[unit];
+      return next;
+    });
+  }
 
   if (loading) {
     return (
@@ -117,6 +167,66 @@ export default function AnalyticsPage() {
 
   return (
     <div className="space-y-6">
+      {/* Goal-setting modal */}
+      {goalModalUnit && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="bg-card border border-border/40 rounded-xl p-6 w-full max-w-sm space-y-4 shadow-2xl">
+            <div className="flex items-center justify-between">
+              <h3 className="font-semibold">Set Mastery Goal</h3>
+              <button onClick={() => setGoalModalUnit(null)} className="text-muted-foreground hover:text-foreground">
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+            <p className="text-sm text-muted-foreground line-clamp-2">{goalModalUnit.unitName}</p>
+            <div className="flex items-center gap-2 text-sm">
+              <span className="text-muted-foreground">Current:</span>
+              <span className="font-bold">{Math.round(goalModalUnit.current)}%</span>
+              <span className="text-muted-foreground ml-2">Target:</span>
+              <span className="font-bold text-indigo-400">{goalTarget}%</span>
+            </div>
+            <div className="space-y-1">
+              <label className="text-xs text-muted-foreground">Target mastery (%)</label>
+              <input
+                type="range"
+                min={Math.ceil(goalModalUnit.current) + 1}
+                max={100}
+                value={goalTarget}
+                onChange={(e) => setGoalTarget(e.target.value)}
+                className="w-full accent-indigo-500"
+              />
+              <div className="flex justify-between text-xs text-muted-foreground">
+                <span>{Math.ceil(goalModalUnit.current) + 1}%</span>
+                <span>100%</span>
+              </div>
+            </div>
+            <div className="space-y-1">
+              <label className="text-xs text-muted-foreground">Target date (optional)</label>
+              <input
+                type="date"
+                value={goalDate}
+                onChange={(e) => setGoalDate(e.target.value)}
+                className="w-full rounded-md border border-border/40 bg-background px-3 py-1.5 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-indigo-500"
+              />
+            </div>
+            <div className="flex gap-2">
+              <button
+                onClick={() => setGoalModalUnit(null)}
+                className="flex-1 px-4 py-2 rounded-lg border border-border/40 text-sm hover:bg-accent transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={saveGoal}
+                disabled={goalSaving}
+                className="flex-1 px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium transition-colors disabled:opacity-50"
+              >
+                {goalSaving ? "Saving…" : "Set Goal"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div>
         <h1 className="text-3xl font-bold">Analytics</h1>
         <p className="text-muted-foreground mt-1">Track your progress and identify growth areas</p>
@@ -306,36 +416,83 @@ export default function AnalyticsPage() {
       {/* Detailed unit breakdown */}
       <Card className="card-glow">
         <CardHeader>
-          <CardTitle className="text-lg">Unit-by-Unit Breakdown</CardTitle>
+          <CardTitle className="text-lg flex items-center gap-2">
+            Unit-by-Unit Breakdown
+            <span className="text-xs font-normal text-muted-foreground">Click a unit to set a mastery goal</span>
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {masteryData.map((unit) => (
-              <div key={unit.unit} className="space-y-1.5">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <p className="text-sm font-medium">{unit.unitName}</p>
-                    <Badge
-                      variant="outline"
-                      className={`text-xs ${getMasteryColor(unit.masteryScore)}`}
-                    >
-                      {getMasteryLabel(unit.masteryScore)}
-                    </Badge>
+            {masteryData.map((unit) => {
+              const goal = goals[unit.unit];
+              const ptsToGo = goal ? Math.max(0, goal.targetScore - unit.masteryScore) : null;
+              return (
+                <div key={unit.unit} className="space-y-1.5">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2 flex-1 min-w-0">
+                      <p className="text-sm font-medium truncate">{unit.unitName}</p>
+                      <Badge
+                        variant="outline"
+                        className={`text-xs flex-shrink-0 ${getMasteryColor(unit.masteryScore)}`}
+                      >
+                        {getMasteryLabel(unit.masteryScore)}
+                      </Badge>
+                    </div>
+                    <div className="flex items-center gap-2 flex-shrink-0">
+                      <span className="text-sm font-bold">{Math.round(unit.masteryScore)}%</span>
+                      {goal ? (
+                        <div className="flex items-center gap-1">
+                          <span className="text-xs text-indigo-400">→ {Math.round(goal.targetScore)}%</span>
+                          <button
+                            onClick={() => deleteGoal(unit.unit)}
+                            className="text-muted-foreground hover:text-red-400 transition-colors"
+                            title="Remove goal"
+                          >
+                            <X className="h-3 w-3" />
+                          </button>
+                        </div>
+                      ) : (
+                        <button
+                          onClick={() => {
+                            setGoalModalUnit({ unit: unit.unit, unitName: unit.unitName, current: unit.masteryScore });
+                            setGoalTarget(String(Math.min(100, Math.ceil(unit.masteryScore) + 15)));
+                            setGoalDate("");
+                          }}
+                          className="text-muted-foreground hover:text-indigo-400 transition-colors"
+                          title="Set mastery goal"
+                        >
+                          <Flag className="h-3.5 w-3.5" />
+                        </button>
+                      )}
+                    </div>
                   </div>
-                  <div className="text-right">
-                    <span className="text-sm font-bold">{Math.round(unit.masteryScore)}%</span>
-                    <span className="text-xs text-muted-foreground ml-2">
-                      ({unit.totalAttempts} questions)
-                    </span>
+                  <div className="relative">
+                    <Progress
+                      value={unit.masteryScore}
+                      className="h-2"
+                      indicatorClassName={getMasteryBg(unit.masteryScore)}
+                    />
+                    {goal && (
+                      <div
+                        className="absolute top-0 h-2 w-0.5 bg-indigo-400 rounded"
+                        style={{ left: `${Math.min(goal.targetScore, 100)}%` }}
+                        title={`Goal: ${Math.round(goal.targetScore)}%`}
+                      />
+                    )}
                   </div>
+                  {goal && ptsToGo !== null && ptsToGo > 0 && (
+                    <p className="text-[10px] text-indigo-400">
+                      {Math.round(ptsToGo)} pts to goal
+                      {goal.targetDate ? ` · by ${new Date(goal.targetDate).toLocaleDateString("en-US", { month: "short", day: "numeric" })}` : ""}
+                    </p>
+                  )}
+                  {goal && ptsToGo === 0 && (
+                    <p className="text-[10px] text-emerald-400">Goal reached! 🎉</p>
+                  )}
+                  <p className="text-xs text-muted-foreground">({unit.totalAttempts} questions)</p>
                 </div>
-                <Progress
-                  value={unit.masteryScore}
-                  className="h-2"
-                  indicatorClassName={getMasteryBg(unit.masteryScore)}
-                />
-              </div>
-            ))}
+              );
+            })}
           </div>
         </CardContent>
       </Card>

@@ -26,6 +26,7 @@ import {
   Users,
   Sun,
   Moon,
+  Calendar,
 } from "lucide-react";
 import { useTheme } from "@/hooks/use-theme";
 import { useState, useEffect } from "react";
@@ -87,6 +88,8 @@ export function Sidebar({ userRole, isOpen = false, onClose = () => {} }: Sideba
   const [course, setCourse] = useCourse();
   const { theme, toggleTheme } = useTheme();
   const [streakDays, setStreakDays] = useState<number>(0);
+  const [streakFreezes, setStreakFreezes] = useState<number>(0);
+  const [examDate, setExamDate] = useState<Date | null>(null);
   const [activeGroup, setActiveGroup] = useState<string>(() => {
     return COURSE_GROUPS.find(g => g.keys.includes(course as ApCourse))?.label ?? "AP Courses";
   });
@@ -99,7 +102,12 @@ export function Sidebar({ userRole, isOpen = false, onClose = () => {} }: Sideba
   useEffect(() => {
     fetch("/api/user")
       .then((r) => r.json())
-      .then((data: { streakDays?: number }) => { if (data.streakDays) setStreakDays(data.streakDays); })
+      .then((data: { user?: { streakDays?: number; streakFreezes?: number; examDate?: string } }) => {
+        const u = data.user;
+        if (u?.streakDays) setStreakDays(u.streakDays);
+        if (u?.streakFreezes) setStreakFreezes(u.streakFreezes);
+        if (u?.examDate) setExamDate(new Date(u.examDate));
+      })
       .catch(() => {});
   }, []);
 
@@ -137,12 +145,37 @@ export function Sidebar({ userRole, isOpen = false, onClose = () => {} }: Sideba
                 <span className="gradient-text">Student</span><span className="text-foreground/80 font-medium">Nest</span>
               </span>
             </Link>
-            {streakDays > 1 && (
-              <span className="text-sm font-semibold text-orange-400 flex items-center gap-0.5" title={`${streakDays}-day streak`}>
-                🔥{streakDays}
-              </span>
-            )}
+            <div className="flex items-center gap-1.5">
+              {streakFreezes > 0 && (
+                <span
+                  className="text-xs font-semibold text-blue-300 flex items-center gap-0.5"
+                  title={`${streakFreezes} streak freeze${streakFreezes !== 1 ? "s" : ""} saved`}
+                >
+                  🧊{streakFreezes}
+                </span>
+              )}
+              {streakDays > 1 && (
+                <span className="text-sm font-semibold text-orange-400 flex items-center gap-0.5" title={`${streakDays}-day streak`}>
+                  🔥{streakDays}
+                </span>
+              )}
+            </div>
           </div>
+          {/* Exam countdown */}
+          {examDate && (() => {
+            const daysLeft = Math.ceil((examDate.getTime() - Date.now()) / (1000 * 60 * 60 * 24));
+            if (daysLeft <= 0) return null;
+            return (
+              <div className={`mt-3 flex items-center gap-1.5 text-xs font-medium px-2 py-1.5 rounded-lg ${
+                daysLeft <= 14
+                  ? "bg-red-500/15 text-red-400 border border-red-500/20"
+                  : "bg-indigo-500/10 text-indigo-300 border border-indigo-500/15"
+              }`}>
+                <Calendar className="h-3.5 w-3.5 flex-shrink-0" />
+                <span>{daysLeft} day{daysLeft !== 1 ? "s" : ""} until exam</span>
+              </div>
+            );
+          })()}
         </div>
 
         {/* Course Switcher */}

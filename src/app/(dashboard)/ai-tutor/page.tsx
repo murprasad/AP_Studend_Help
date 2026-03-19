@@ -36,6 +36,8 @@ import {
   RefreshCw,
   Crown,
   ArrowRight,
+  Mic,
+  MicOff,
 } from "lucide-react";
 
 interface Message {
@@ -81,6 +83,9 @@ export default function AiTutorPage() {
   const [wikiImageUrl, setWikiImageUrl] = useState<string | undefined>(undefined);
   const [isStreaming, setIsStreaming] = useState(false);
   const rightPanelRef = useRef<HTMLDivElement>(null);
+  const [isRecording, setIsRecording] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const recognitionRef = useRef<any>(null);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const conversationIdRef = useRef<string | null>(null);
@@ -324,6 +329,35 @@ export default function AiTutorPage() {
   // Follow-up chips from last assistant message
   const lastFollowUps = lastAssistantIdx >= 0 ? messages[lastAssistantIdx].followUps ?? [] : [];
 
+  function toggleVoice() {
+    if (typeof window === "undefined") return;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SR) {
+      toast({ title: "Voice not supported", description: "Your browser doesn't support speech input.", variant: "destructive" });
+      return;
+    }
+    if (isRecording) {
+      recognitionRef.current?.stop();
+      setIsRecording(false);
+      return;
+    }
+    const rec = new SR();
+    rec.lang = "en-US";
+    rec.continuous = false;
+    rec.interimResults = false;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    rec.onresult = (e: any) => {
+      const transcript = e.results[0][0].transcript as string;
+      setInput((prev) => (prev ? prev + " " + transcript : transcript));
+    };
+    rec.onerror = () => setIsRecording(false);
+    rec.onend = () => setIsRecording(false);
+    recognitionRef.current = rec;
+    rec.start();
+    setIsRecording(true);
+  }
+
   // Input / header shared components
   const inputCard = (
     <Card className={`border-border/40 flex-shrink-0 ${limitReached ? "opacity-50 pointer-events-none" : ""}`}>
@@ -339,6 +373,16 @@ export default function AiTutorPage() {
             disabled={limitReached}
           />
           <Button
+            onClick={toggleVoice}
+            disabled={limitReached}
+            size="icon"
+            variant={isRecording ? "destructive" : "outline"}
+            className="h-9 w-9 flex-shrink-0"
+            title={isRecording ? "Stop recording" : "Voice input"}
+          >
+            {isRecording ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
+          </Button>
+          <Button
             onClick={() => sendMessage(input)}
             disabled={!input.trim() || isLoading || limitReached}
             size="icon"
@@ -347,7 +391,9 @@ export default function AiTutorPage() {
             <Send className="h-4 w-4" />
           </Button>
         </div>
-        <p className="text-xs text-muted-foreground mt-1">Enter to send · Shift+Enter for new line</p>
+        <p className="text-xs text-muted-foreground mt-1">
+          Enter to send · Shift+Enter for new line · 🎙 voice input supported
+        </p>
       </CardContent>
     </Card>
   );
