@@ -1,0 +1,30 @@
+{
+  "_meta": {
+    "version": "1.9.0",
+    "date": "2026-03-19",
+    "function": "askTutor()",
+    "prompt_file": "prompts/tutor_system.md",
+    "model": "llama-3.3-70b-versatile (Groq)",
+    "note": "Exact text will vary — validate SHAPE and SECTION PRESENCE, not verbatim content"
+  },
+  "input": {
+    "question": "Why did the French Revolution happen?",
+    "course": "AP_WORLD_HISTORY",
+    "conversationHistory": []
+  },
+  "expected_output_shape": {
+    "answer": "## 🎯 Core Concept\n[2-3 sentence explanation]\n\n## 📊 Visual Breakdown\n[markdown table or bullets]\n\n## 📝 How AP Asks This\n[one AP-style question stem with Skill label]\n\n## ⚠️ Common Traps\n[2-3 named traps]\n\n## 💡 Memory Hook\n[one mnemonic or analogy]",
+    "followUps": [
+      "[specific follow-up question 1 about French Revolution]",
+      "[specific follow-up question 2 about French Revolution]",
+      "[specific follow-up question 3 about French Revolution]"
+    ]
+  },
+  "validation_checklist": [
+    "answer contains all 5 section headers (🎯, 📊, 📝, ⚠️, 💡)",
+    "followUps array has exactly 3 items",
+    "followUps items are specific questions (not placeholders like q1/q2/q3)",
+    "FOLLOW_UPS line is NOT present in the answer string (should be stripped)",
+    "answer references at least one of: financial crisis, Estates system, Enlightenment"
+  ]
+}

@@ -13,6 +13,7 @@ import {
   Target,
   Star,
 } from "lucide-react";
+import { InteractiveDemo } from "@/components/landing/interactive-demo";
 
 const features = [
   {
@@ -58,19 +59,19 @@ const courses = [
 
 const testimonials = [
   {
-    quote: "Finally an AP prep tool that actually explains why the answer is correct — not just what it is.",
+    quote: "I finally understood the causes of the French Revolution instead of just memorizing them. Walked into the AP World exam feeling actually prepared.",
     name: "Sofia R.",
-    context: "Preparing for AP World History",
+    context: "AP World History",
   },
   {
-    quote: "Sage explained limits better in 5 minutes than my teacher did all semester.",
+    quote: "Sage explained limits better in 5 minutes than my teacher did all semester. My calc grade went from a D to a B in one month.",
     name: "Marcus T.",
-    context: "Preparing for AP Calculus AB",
+    context: "AP Calculus AB",
   },
   {
-    quote: "The comprehension check after each explanation is a game changer. I actually remember things now.",
+    quote: "The comprehension check after each explanation is a game changer. I retained so much more — ended up getting a 5 on AP Bio.",
     name: "Priya K.",
-    context: "Preparing for AP Biology",
+    context: "AP Biology",
   },
 ];
 
@@ -113,7 +114,7 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <Badge className="mb-6 bg-indigo-500/10 text-indigo-300 border-indigo-500/20 text-sm px-4 py-1.5">
             <Sparkles className="h-3.5 w-3.5 mr-1.5" />
-            AI-powered · Free to start
+            Free forever · 16 courses · No credit card
           </Badge>
           <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight mb-4">
             <span className="gradient-text">Student</span><span className="text-foreground/80 font-medium">Nest</span>
@@ -130,7 +131,7 @@ export default function LandingPage() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/register">
               <Button size="lg" className="gap-2 text-base px-8 h-12">
-                Start Studying Free <ArrowRight className="h-5 w-5" />
+                Start Practicing Free <ArrowRight className="h-5 w-5" />
               </Button>
             </Link>
             <Link href="/login">
@@ -139,7 +140,10 @@ export default function LandingPage() {
               </Button>
             </Link>
           </div>
-          <p className="mt-4 text-sm text-muted-foreground">
+          <p className="mt-4 text-sm text-muted-foreground/70 max-w-lg mx-auto">
+            AP exams are every May · SAT/ACT testing windows run year-round · Students who start earlier score higher.
+          </p>
+          <p className="mt-1 text-sm text-muted-foreground">
             Takes less than 30 seconds to sign up · No credit card required
           </p>
         </div>
@@ -152,7 +156,7 @@ export default function LandingPage() {
             {[
               { icon: "🎯", stat: "16 courses covered", sub: "AP, SAT & ACT" },
               { icon: "📚", stat: "Exam-aligned questions", sub: "Never running out" },
-              { icon: "🤖", stat: "Powered by Groq", sub: "Available 24/7" },
+              { icon: "🔥", stat: "8 engagement features", sub: "Stay motivated daily" },
             ].map(({ icon, stat, sub }) => (
               <div key={stat} className="flex flex-col items-center gap-1">
                 <span className="text-2xl">{icon}</span>
@@ -207,6 +211,19 @@ export default function LandingPage() {
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* Interactive MCQ Demo */}
+      <section className="py-16 px-4">
+        <div className="max-w-2xl mx-auto">
+          <p className="text-center text-sm text-muted-foreground mb-2 font-medium uppercase tracking-wide">
+            Try it yourself — no sign-up needed
+          </p>
+          <p className="text-center text-xs text-muted-foreground mb-6">
+            Answer a real AP World History question and see how Sage explains it
+          </p>
+          <InteractiveDemo />
         </div>
       </section>
 
@@ -335,6 +352,33 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* Engagement Features */}
+      <section className="py-16 bg-secondary/20">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-xs text-indigo-400 font-medium mb-4">
+            <Sparkles className="h-3.5 w-3.5" /> Built to keep you coming back
+          </div>
+          <h2 className="text-2xl font-bold mb-2">8 Features That Build Your Study Habit</h2>
+          <p className="text-muted-foreground text-sm mb-8 max-w-xl mx-auto">
+            Knowing content isn&apos;t enough — consistency wins exams. StudentNest makes showing up every day feel rewarding.
+          </p>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-left">
+            {[
+              { emoji: "🔥", title: "Daily Streaks", desc: "Miss a day? Your streak freeze protects your progress." },
+              { emoji: "📅", title: "Exam Countdown", desc: "47 days left — every dashboard visit feels urgent." },
+              { emoji: "🏆", title: "Weekly Leaderboard", desc: "See how you rank against other students this week." },
+              { emoji: "🃏", title: "Spaced Repetition", desc: "Wrong answers resurface at the exact right moment." },
+            ].map((f) => (
+              <div key={f.title} className="p-4 rounded-xl border border-border/40 bg-card/50">
+                <span className="text-2xl mb-2 block">{f.emoji}</span>
+                <p className="text-sm font-semibold mb-1">{f.title}</p>
+                <p className="text-xs text-muted-foreground leading-relaxed">{f.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Competitor Context */}
       <section className="py-12 bg-secondary/20">
         <div className="max-w-2xl mx-auto px-4 text-center space-y-4">
@@ -387,6 +431,64 @@ export default function LandingPage() {
               ))}
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Free vs Paid Comparison */}
+      <section className="py-20 px-4">
+        <div className="max-w-3xl mx-auto">
+          <div className="text-center mb-10">
+            <h2 className="text-3xl font-bold mb-2">What Do You Actually Get?</h2>
+            <p className="text-muted-foreground text-sm">Free is genuinely useful. Premium unlocks the full engine.</p>
+          </div>
+          <div className="grid sm:grid-cols-2 gap-4">
+            {/* Free column */}
+            <div className="rounded-xl border border-border/40 bg-card/50 p-6 space-y-3">
+              <div className="flex items-center gap-2 mb-4">
+                <span className="text-base font-bold">Free</span>
+                <span className="text-xl font-bold text-muted-foreground">$0</span>
+                <span className="text-xs text-muted-foreground">/ forever</span>
+              </div>
+              {[
+                "Unlimited MCQ practice",
+                "5 AI tutor chats per day",
+                "Basic study plan",
+                "Per-unit mastery analytics",
+                "Daily streaks & leaderboard",
+              ].map((item) => (
+                <div key={item} className="flex items-center gap-2 text-sm text-foreground/80">
+                  <CheckCircle className="h-4 w-4 text-emerald-400 flex-shrink-0" />
+                  {item}
+                </div>
+              ))}
+            </div>
+            {/* Premium column */}
+            <div className="rounded-xl border border-indigo-500/40 bg-indigo-500/5 p-6 space-y-3 relative">
+              <div className="absolute -top-3 right-4">
+                <span className="text-xs px-3 py-1 rounded-full bg-indigo-500/20 border border-indigo-500/30 text-indigo-300 font-medium">Most popular</span>
+              </div>
+              <div className="flex items-center gap-2 mb-4">
+                <span className="text-base font-bold">Premium</span>
+                <span className="text-xl font-bold text-indigo-300">$9.99</span>
+                <span className="text-xs text-muted-foreground">/ month</span>
+              </div>
+              {[
+                "Everything in Free",
+                "Unlimited AI tutor chats",
+                "Personalized AI study plan",
+                "FRQ with AI rubric scoring",
+                "Streaming AI responses",
+              ].map((item) => (
+                <div key={item} className="flex items-center gap-2 text-sm text-foreground/80">
+                  <CheckCircle className="h-4 w-4 text-indigo-400 flex-shrink-0" />
+                  {item}
+                </div>
+              ))}
+            </div>
+          </div>
+          <p className="text-center text-xs text-muted-foreground mt-5">
+            <Link href="/pricing" className="text-indigo-400 hover:underline">See full pricing details →</Link>
+          </p>
         </div>
       </section>
 

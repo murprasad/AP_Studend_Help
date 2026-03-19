@@ -10,14 +10,16 @@ import { AP_COURSES } from "@/lib/utils";
 
 interface Props {
   course: ApCourse;
+  inline?: boolean;
 }
 
-export function ExamCountdownSetter({ course }: Props) {
+export function ExamCountdownSetter({ course, inline = false }: Props) {
   const router = useRouter();
   const [examDate, setExamDate] = useState<string>("");
   const [saved, setSaved] = useState(false);
   const [loading, setLoading] = useState(true);
   const [saveError, setSaveError] = useState(false);
+  const [editing, setEditing] = useState(false);
 
   useEffect(() => {
     fetch("/api/user/exam-date")
@@ -52,13 +54,63 @@ export function ExamCountdownSetter({ course }: Props) {
       if (!res.ok) throw new Error();
       setSaved(true);
       setTimeout(() => setSaved(false), 2000);
+      window.dispatchEvent(new CustomEvent("exam-date-updated"));
       router.refresh(); // refreshes server components (sidebar) without hard reload
+      if (inline) setEditing(false);
     } catch {
       setSaveError(true);
     }
   }
 
   const courseName = AP_COURSES[course] || "Your Exam";
+
+  // Inline variant: compact badge + expandable date editor
+  if (inline) {
+    return (
+      <div className="flex items-center gap-2 flex-wrap">
+        {daysLeft !== null && daysLeft > 0 ? (
+          <span className={`inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full border ${
+            daysLeft <= 14
+              ? "bg-red-500/15 text-red-400 border-red-500/20"
+              : "bg-indigo-500/10 text-indigo-300 border-indigo-500/15"
+          }`}>
+            <Calendar className="h-3 w-3" />
+            {daysLeft} day{daysLeft !== 1 ? "s" : ""} until exam
+          </span>
+        ) : daysLeft !== null && daysLeft <= 0 ? (
+          <span className="inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full border bg-emerald-500/10 text-emerald-400 border-emerald-500/20">
+            Exam passed 🎉
+          </span>
+        ) : !loading ? (
+          <span className="text-xs text-muted-foreground">No exam date set</span>
+        ) : null}
+        {!loading && (
+          <button
+            onClick={() => setEditing((e) => !e)}
+            className="text-xs text-muted-foreground hover:text-foreground underline underline-offset-2"
+          >
+            {editing ? "Cancel" : daysLeft !== null ? "Change date" : "Set exam date"}
+          </button>
+        )}
+        {editing && (
+          <div className="flex items-center gap-2 w-full mt-1">
+            <input
+              type="date"
+              value={examDate}
+              onChange={(e) => setExamDate(e.target.value)}
+              className="flex-1 rounded-md border border-border/40 bg-background px-3 py-1.5 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            />
+            <Button size="sm" onClick={save} variant="outline" className="shrink-0">
+              {saved ? "Saved ✓" : "Save"}
+            </Button>
+          </div>
+        )}
+        {saveError && editing && (
+          <p className="text-xs text-red-400 w-full">Failed to save. Please try again.</p>
+        )}
+      </div>
+    );
+  }
 
   return (
     <Card className="card-glow">

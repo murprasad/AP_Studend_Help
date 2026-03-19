@@ -1,0 +1,95 @@
+{
+  "_version": "1.9.0",
+  "_updated": "2026-03-19",
+  "_note": "Pinned model versions — never use 'latest'. Bump _version and _updated on any change.",
+
+  "providers": {
+    "gemini": {
+      "model": "gemini-1.5-flash",
+      "max_tokens": 1500,
+      "priority": 1,
+      "env_key": "GOOGLE_AI_API_KEY",
+      "tier": ["FREE", "PREMIUM"]
+    },
+    "groq": {
+      "model": "llama-3.3-70b-versatile",
+      "temperature": 0.7,
+      "max_tokens": 1500,
+      "timeout_ms": 25000,
+      "priority": 2,
+      "env_key": "GROQ_API_KEY",
+      "tier": ["FREE", "PREMIUM"]
+    },
+    "together": {
+      "model": "meta-llama/Llama-3-70b-chat-hf",
+      "temperature": 0.7,
+      "max_tokens": 1500,
+      "timeout_ms": 30000,
+      "priority": 3,
+      "env_key": "TOGETHER_AI_API_KEY",
+      "tier": ["FREE", "PREMIUM"]
+    },
+    "openrouter_free": {
+      "model": "google/gemini-flash-1.5",
+      "max_tokens": 1500,
+      "timeout_ms": 30000,
+      "priority": 4,
+      "env_key": "OPENROUTER_API_KEY",
+      "tier": ["FREE"]
+    },
+    "openrouter_premium": {
+      "model": "openai/gpt-4o",
+      "max_tokens": 1500,
+      "timeout_ms": 30000,
+      "priority": 5,
+      "env_key": "OPENROUTER_API_KEY",
+      "tier": ["PREMIUM"]
+    },
+    "huggingface": {
+      "model": "mistral-7b",
+      "temperature": 0.7,
+      "max_tokens": 1200,
+      "timeout_ms": 25000,
+      "priority": 6,
+      "env_key": "HUGGINGFACE_API_KEY",
+      "tier": ["FREE"]
+    },
+    "cohere": {
+      "model": "command-r",
+      "max_tokens": 1200,
+      "timeout_ms": 25000,
+      "priority": 7,
+      "env_key": "COHERE_API_KEY",
+      "tier": ["FREE"]
+    },
+    "anthropic": {
+      "model": "claude-haiku-4-5-20251001",
+      "max_tokens": 1500,
+      "timeout_ms": 30000,
+      "priority": 9,
+      "env_key": "ANTHROPIC_API_KEY",
+      "tier": ["PREMIUM"],
+      "note": "Last resort — billing issues historically. Use Groq."
+    },
+    "pollinations": {
+      "model": "openai",
+      "priority": 10,
+      "env_key": null,
+      "note": "No API key required. GPT-4o-mini quality. seed=42 for pseudo-determinism.",
+      "tier": ["FREE", "PREMIUM"]
+    }
+  },
+
+  "validator": {
+    "provider": "groq",
+    "model": "llama-3.3-70b-versatile",
+    "temperature": 0.1,
+    "max_tokens": 200,
+    "timeout_ms": 10000,
+    "fallback_provider": "pollinations",
+    "note": "Low temperature for consistent quality judgments. Fails open (approved=true) if validator errors."
+  },
+
+  "cascade_order_free": ["gemini", "groq", "together", "openrouter_free", "huggingface", "cohere", "pollinations"],
+  "cascade_order_premium": ["gemini", "openrouter_premium", "anthropic", "groq", "together", "pollinations"]
+}

@@ -230,7 +230,7 @@ export default function PracticePage() {
           answer,
           timeSpentSecs: timeSecs,
         }),
-        signal: AbortSignal.timeout(20000),
+        signal: AbortSignal.timeout(35000),
       });
 
       const data = await response.json();
@@ -643,6 +643,22 @@ export default function PracticePage() {
                     <p className="text-sm text-muted-foreground leading-relaxed">
                       {feedback.explanation}
                     </p>
+                    {!feedback.isCorrect && (
+                      <Link
+                        href="/ai-tutor"
+                        onClick={() => {
+                          if (currentQuestion) {
+                            sessionStorage.setItem(
+                              "sage_prefill",
+                              `Why is "${feedback.correctAnswer}" the correct answer for this question? "${currentQuestion.questionText.slice(0, 200)}"`
+                            );
+                          }
+                        }}
+                        className="inline-flex items-center gap-1.5 text-xs text-teal-400 hover:text-teal-300 font-medium transition-colors"
+                      >
+                        🌿 Still confused? Ask Sage to explain this →
+                      </Link>
+                    )}
                   </div>
                 </div>
               )}

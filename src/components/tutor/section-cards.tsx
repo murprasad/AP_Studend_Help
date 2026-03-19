@@ -86,9 +86,43 @@ function MermaidBlock({ code }: { code: string }) {
   return <div ref={ref} className={`overflow-x-auto ${state === "pending" ? "hidden" : ""}`} />;
 }
 
+// ── Table normalizer: splits single-line pipe tables into multi-line ───────
+// When an LLM collapses all table rows onto one line, remark-gfm can't parse them.
+// Detects lines containing an inline separator row (| --- |) and reformats as
+// proper multi-line markdown tables.
+
+export function normalizeMarkdownTables(md: string): string {
+  return md.split("\n").map((line) => {
+    if (!line.includes("|") || !line.includes("---")) return line;
+    const sepMatches = line.match(/\|\s*-+\s*/g);
+    if (!sepMatches || sepMatches.length < 2) return line;
+
+    const cells = line.split("|").map((c) => c.trim()).filter(Boolean);
+    const sepStart = cells.findIndex((c) => /^-+$/.test(c));
+    if (sepStart === -1) return line;
+    let sepEnd = sepStart;
+    while (sepEnd < cells.length && /^-+$/.test(cells[sepEnd])) sepEnd++;
+
+    const numCols = sepEnd - sepStart;
+    const headerCells = cells.slice(sepStart - numCols, sepStart);
+    if (headerCells.length !== numCols) return line;
+
+    const rows: string[] = [
+      "| " + headerCells.join(" | ") + " |",
+      "| " + cells.slice(sepStart, sepEnd).join(" | ") + " |",
+    ];
+    const dataCells = cells.slice(sepEnd);
+    for (let i = 0; i < dataCells.length; i += numCols) {
+      const row = dataCells.slice(i, i + numCols);
+      if (row.length > 0) rows.push("| " + row.join(" | ") + " |");
+    }
+    return rows.join("\n");
+  }).join("\n");
+}
+
 // ── Shared markdown renderer ───────────────────────────────────────────────
 
-const tableComponents = {
+export const tableComponents = {
   table: ({ children }: { children?: React.ReactNode }) => (
     <div className="overflow-x-auto my-2">
       <table className="w-full border-collapse border border-blue-500/20 text-sm">{children}</table>
@@ -104,7 +138,7 @@ const tableComponents = {
   ),
 };
 
-const mermaidComponents = {
+export const mermaidComponents = {
   ...tableComponents,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   code: ({ className, children }: any) => {
@@ -134,7 +168,7 @@ export function MarkdownContent({ content, useMermaid = false }: { content: stri
         remarkPlugins={[remarkGfm]}
         components={useMermaid ? mermaidComponents : tableComponents}
       >
-        {content}
+        {normalizeMarkdownTables(content)}
       </ReactMarkdown>
     </div>
   );

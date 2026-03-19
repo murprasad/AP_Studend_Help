@@ -557,8 +557,8 @@ export async function askTutor(
     courseConfig.name.includes("Biology");
 
   const visualBreakdownInstruction = isCalcCourse
-    ? "Use a markdown table, numbered steps, or bullet comparison. For CALCULATION or DERIVATION problems, always show: **Given** (list known values + units) → **Formula/Rule** (write the relevant equation or theorem) → **Work** (show algebraic steps) → **Answer** (value + correct units or interpretation)."
-    : "Use a markdown table, numbered steps, or bullet comparison. For causal chains, historical sequences, or psychological processes, you may use a mermaid flowchart block.";
+    ? "Use a markdown table, numbered steps, or bullet comparison. For CALCULATION or DERIVATION problems, always show: **Given** (list known values + units) → **Formula/Rule** (write the relevant equation or theorem) → **Work** (show algebraic steps) → **Answer** (value + correct units or interpretation). IMPORTANT for tables: each row MUST be on its own line — the header row, then the separator row (| --- | --- |), then one data row per line."
+    : "Use a markdown table, numbered steps, or bullet comparison. For causal chains, historical sequences, or psychological processes, you may use a mermaid flowchart block. IMPORTANT for tables: each row MUST be on its own line — the header row, then the separator row (| --- | --- |), then one data row per line.";
 
   const systemPrompt = `You are an expert ${courseConfig.name} tutor for US high schoolers (gr 10-12) preparing for the AP exam.
 Units covered: ${unitList}

@@ -1,5 +1,5 @@
 import { Badge } from "@/components/ui/badge";
-import { Globe, Mail, Target, Heart, Sparkles } from "lucide-react";
+import { Globe, Mail, Target, Heart, Sparkles, Flame, Calendar, Trophy, Layers, Mic, Lightbulb } from "lucide-react";
 import Link from "next/link";
 
 const COURSES = [
@@ -45,7 +45,7 @@ export default function AboutPage() {
           </div>
           <div className="flex items-center gap-2 flex-wrap">
             <h1 className="text-3xl font-bold gradient-text">About StudentNest</h1>
-            <Badge className="bg-indigo-500/20 text-indigo-300 border-indigo-500/30 text-xs font-semibold">Beta 1.6</Badge>
+            <Badge className="bg-indigo-500/20 text-indigo-300 border-indigo-500/30 text-xs font-semibold">Beta 1.9</Badge>
           </div>
         </div>
         <p className="text-muted-foreground leading-relaxed max-w-2xl mx-auto">
@@ -161,7 +161,38 @@ export default function AboutPage() {
         </div>
       </div>
 
-      {/* Section 7: Contact */}
+      {/* Section 7: What's New in Beta 1.9 */}
+      <div className="space-y-6">
+        <div className="text-center space-y-1">
+          <Badge className="bg-indigo-500/20 text-indigo-300 border-indigo-500/30 text-xs font-semibold mb-2">Latest Release</Badge>
+          <h2 className="text-xl font-bold">What&apos;s New in Beta 1.9</h2>
+          <p className="text-sm text-muted-foreground">8 engagement features shipped — keeping students consistent matters as much as content quality.</p>
+        </div>
+        <div className="grid sm:grid-cols-2 gap-3 text-left">
+          {[
+            { icon: Flame,     color: "text-orange-400", bg: "bg-orange-500/10", title: "Daily Streaks + Freeze Tokens",  desc: "Build a study habit. Miss a day? Streak freeze tokens protect your progress." },
+            { icon: Calendar,  color: "text-blue-400",   bg: "bg-blue-500/10",   title: "Exam Countdown Timer",          desc: "Set your exam date and see a live countdown on every dashboard visit." },
+            { icon: Trophy,    color: "text-yellow-400", bg: "bg-yellow-500/10", title: "Weekly Leaderboard",            desc: "See how you rank against other students by XP earned this week." },
+            { icon: Layers,    color: "text-teal-400",   bg: "bg-teal-500/10",   title: "Spaced Repetition Review",     desc: "Wrong answers resurface at the exact right moment via SRS scheduling." },
+            { icon: Target,    color: "text-indigo-400", bg: "bg-indigo-500/10", title: "Study Goals",                  desc: "Set daily question targets and track completion with a progress ring." },
+            { icon: Mic,       color: "text-emerald-400",bg: "bg-emerald-500/10",title: "Voice Input for Sage",         desc: "Ask Sage questions by speaking — hands-free studying while you commute." },
+            { icon: Lightbulb, color: "text-violet-400", bg: "bg-violet-500/10", title: "Socratic AI Hints",            desc: "Stuck on a practice question? Sage gives a hint without giving away the answer." },
+            { icon: Sparkles,  color: "text-pink-400",   bg: "bg-pink-500/10",   title: "Dashboard UX Overhaul",       desc: "All 8 features surface on the dashboard with zero extra clicks required." },
+          ].map(({ icon: Icon, color, bg, title, desc }) => (
+            <div key={title} className="flex gap-3 p-4 rounded-xl border border-border/40 bg-card">
+              <div className={`w-8 h-8 rounded-lg ${bg} flex items-center justify-center flex-shrink-0 mt-0.5`}>
+                <Icon className={`h-4 w-4 ${color}`} />
+              </div>
+              <div>
+                <p className="text-sm font-semibold">{title}</p>
+                <p className="text-xs text-muted-foreground leading-relaxed mt-0.5">{desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Section 10: Contact */}
       <div className="space-y-3">
         <h2 className="text-xl font-bold">Get in Touch</h2>
         <p className="text-muted-foreground text-sm">

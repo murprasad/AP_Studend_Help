@@ -83,7 +83,12 @@ Student Response: ${answer}
 Return ONLY valid JSON (no markdown, no extra text):
 {"pointsEarned": 2, "totalPoints": 4, "feedback": "specific rubric-based feedback referencing exactly what was correct and what key points were missing", "modelAnswer": "complete model response earning full credit, following AP exam conventions for this question type"}`;
 
-        const raw = await callAIWithCascade(scoringPrompt);
+        const raw = await Promise.race([
+          callAIWithCascade(scoringPrompt),
+          new Promise<string>((_, reject) =>
+            setTimeout(() => reject(new Error("AI scoring timeout")), 15000)
+          ),
+        ]);
         const jsonMatch = raw.match(/\{[\s\S]*\}/);
         if (jsonMatch) {
           const parsed = JSON.parse(jsonMatch[0]);

@@ -99,7 +99,7 @@ export function Sidebar({ userRole, isOpen = false, onClose = () => {} }: Sideba
     if (group) setActiveGroup(group.label);
   }, [course]);
 
-  useEffect(() => {
+  function fetchUserData() {
     fetch("/api/user")
       .then((r) => r.json())
       .then((data: { user?: { streakDays?: number; streakFreezes?: number; examDate?: string } }) => {
@@ -107,8 +107,18 @@ export function Sidebar({ userRole, isOpen = false, onClose = () => {} }: Sideba
         if (u?.streakDays != null) setStreakDays(u.streakDays);
         if (u?.streakFreezes != null) setStreakFreezes(u.streakFreezes);
         if (u?.examDate) setExamDate(new Date(u.examDate));
+        else setExamDate(null);
       })
       .catch(() => {});
+  }
+
+  useEffect(() => {
+    fetchUserData();
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener("exam-date-updated", fetchUserData);
+    return () => window.removeEventListener("exam-date-updated", fetchUserData);
   }, []);
 
   function handleCourseChange(newCourse: ApCourse) {

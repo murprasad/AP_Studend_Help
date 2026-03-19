@@ -1,0 +1,40 @@
+{
+  "_meta": {
+    "version": "1.9.0",
+    "date": "2026-03-19",
+    "function": "generateQuestion()",
+    "prompt_file": "prompts/question_generator_system.md",
+    "model": "llama-3.3-70b-versatile (Groq, FREE tier)",
+    "note": "Validate field presence and types — not exact text"
+  },
+  "input": {
+    "unit": "AP_WORLD_HISTORY_UNIT_5",
+    "difficulty": "MEDIUM",
+    "questionType": "MCQ",
+    "topic": "Revolutions",
+    "course": "AP_WORLD_HISTORY",
+    "userTier": "FREE"
+  },
+  "expected_output_shape": {
+    "topic": "string (specific topic)",
+    "subtopic": "string",
+    "apSkill": "string (e.g. Causation, Comparison, Argumentation)",
+    "questionText": "string (15-40 words)",
+    "stimulus": "string or null (40-120 words if provided)",
+    "options": ["A) text", "B) text", "C) text", "D) text"],
+    "correctAnswer": "A|B|C|D (single letter)",
+    "explanation": "string (80-150 words)"
+  },
+  "validation_checklist": [
+    "options array has exactly 4 items",
+    "correctAnswer is one of A, B, C, D",
+    "explanation is 80-150 words",
+    "questionText is 15-40 words",
+    "apSkill is a recognized AP History skill",
+    "question passes validateQuestion() 5-criterion check",
+    "contentHash is set (SHA-256 of normalized questionText)"
+  ],
+  "act_math_override": {
+    "note": "For ACT_MATH questions, options must have 5 items: A, B, C, D, E"
+  }
+}

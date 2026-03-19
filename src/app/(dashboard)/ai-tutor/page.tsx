@@ -22,7 +22,7 @@ import { ChevronDown } from "lucide-react";
 import { AP_COURSES } from "@/lib/utils";
 import { COURSE_REGISTRY } from "@/lib/courses";
 import { parseSections, type TutorSections } from "@/components/tutor/section-parser";
-import { SectionCards } from "@/components/tutor/section-cards";
+import { SectionCards, mermaidComponents, normalizeMarkdownTables } from "@/components/tutor/section-cards";
 import { KnowledgeCheck } from "@/components/tutor/knowledge-check";
 import Link from "next/link";
 import {
@@ -99,6 +99,33 @@ export default function AiTutorPage() {
     setCurrentSections(null);
     setWikiImageUrl(undefined);
   }, [course]);
+
+  // Check sessionStorage for sage_prefill (set by practice page "Ask Sage" button)
+  useEffect(() => {
+    const prefill = sessionStorage.getItem("sage_prefill");
+    if (prefill) {
+      sessionStorage.removeItem("sage_prefill");
+      setInput(prefill);
+    }
+  }, []);
+
+  // First-visit greeting: inject synthetic Sage message if user has zero prior conversations
+  useEffect(() => {
+    fetch("/api/ai/tutor")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data: { conversations?: unknown[] } | null) => {
+        if (data && Array.isArray(data.conversations) && data.conversations.length === 0) {
+          const firstName = (session?.user as { name?: string })?.name?.split(" ")[0];
+          const hi = firstName ? `Hey ${firstName}!` : "Hey!";
+          setMessages([{
+            role: "assistant",
+            content: `${hi} I'm Sage 🌿 Ready to help with ${courseLabel}. Here's how most students start with me: paste a practice question you got wrong and ask "why is [X] the answer?" — it's the fastest way to close knowledge gaps. What do you want to work on?`,
+          }]);
+        }
+      })
+      .catch(() => {});
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -439,7 +466,7 @@ export default function AiTutorPage() {
             <div>
               <h1 className="text-xl font-bold flex items-center gap-2">
                 <MessageSquare className="h-5 w-5 text-indigo-400" />
-                AI Tutor
+                Sage 🌿
               </h1>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -481,9 +508,9 @@ export default function AiTutorPage() {
                   <div className="w-12 h-12 rounded-full bg-indigo-500/20 flex items-center justify-center mx-auto mb-3">
                     <Bot className="h-6 w-6 text-indigo-400" />
                   </div>
-                  <h2 className="text-base font-bold mb-1">{courseLabel} Tutor</h2>
+                  <h2 className="text-base font-bold mb-1">I&apos;m Sage 🌿</h2>
                   <p className="text-muted-foreground text-xs">
-                    Ask anything about {courseLabel} — concepts, strategies, or practice questions.
+                    Your personal {courseLabel} tutor. Ask me anything — concepts, why you got a question wrong, or &ldquo;explain [topic] like I&apos;m 14.&rdquo;
                   </p>
                 </div>
                 <div>
@@ -579,7 +606,7 @@ export default function AiTutorPage() {
 
           {/* Knowledge check — optional, click-to-start */}
           {!isStreaming && lastAssistantIdx >= 0 && messages[lastAssistantIdx]?.content && (
-            <div className="flex-shrink-0">
+            <div className="flex-shrink-0 overflow-y-auto max-h-80">
               <KnowledgeCheck
                 tutorResponse={messages[lastAssistantIdx].content}
                 course={course}
@@ -629,7 +656,7 @@ export default function AiTutorPage() {
           <div>
             <h1 className="text-3xl font-bold flex items-center gap-2">
               <MessageSquare className="h-8 w-8 text-indigo-400" />
-              AI Tutor
+              Sage 🌿
             </h1>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -671,9 +698,9 @@ export default function AiTutorPage() {
                 <div className="w-16 h-16 rounded-full bg-indigo-500/20 flex items-center justify-center mx-auto mb-4">
                   <Bot className="h-8 w-8 text-indigo-400" />
                 </div>
-                <h2 className="text-xl font-bold mb-2">{courseLabel} Tutor</h2>
+                <h2 className="text-xl font-bold mb-2">I&apos;m Sage 🌿</h2>
                 <p className="text-muted-foreground max-w-md mx-auto text-sm">
-                  Ask me anything about {courseLabel} — concepts, exam strategies, practice questions, or study tips.
+                  Your personal {courseLabel} tutor. Ask me anything — concepts, why you got a question wrong, or &ldquo;explain [topic] like I&apos;m 14.&rdquo;
                 </p>
               </div>
               <div>
@@ -724,7 +751,7 @@ export default function AiTutorPage() {
                         prose-hr:border-border/40"
                       >
                         {msg.content ? (
-                          <ReactMarkdown remarkPlugins={[remarkGfm]}>{msg.content}</ReactMarkdown>
+                          <ReactMarkdown remarkPlugins={[remarkGfm]} components={mermaidComponents}>{normalizeMarkdownTables(msg.content)}</ReactMarkdown>
                         ) : (
                           <div className="flex items-center gap-2 text-muted-foreground">
                             <Loader2 className="h-3 w-3 animate-spin" />
@@ -789,7 +816,7 @@ export default function AiTutorPage() {
 
         {/* Knowledge check — optional, click-to-start */}
         {!isStreaming && lastAssistantIdx >= 0 && messages[lastAssistantIdx]?.content && (
-          <div className="mb-3 flex-shrink-0">
+          <div className="mb-3 flex-shrink-0 overflow-y-auto max-h-80">
             <KnowledgeCheck
               tutorResponse={messages[lastAssistantIdx].content}
               course={course}

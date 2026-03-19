@@ -1,0 +1,50 @@
+{
+  "_meta": {
+    "version": "1.9.0",
+    "date": "2026-03-19",
+    "function": "generateStudyPlan()",
+    "prompt_file": "prompts/study_plan_system.md",
+    "model": "llama-3.3-70b-versatile (Groq, free cascade)",
+    "note": "Validate field presence and types — not exact text"
+  },
+  "input": {
+    "masteryScores": [
+      { "unit": "AP_WORLD_HISTORY_UNIT_1", "masteryScore": 45, "accuracy": 50 },
+      { "unit": "AP_WORLD_HISTORY_UNIT_5", "masteryScore": 72, "accuracy": 68 }
+    ],
+    "recentPerformance": { "accuracy": 60, "totalAnswered": 35 },
+    "course": "AP_WORLD_HISTORY"
+  },
+  "expected_output_shape": {
+    "weeklyGoal": "string (specific and motivational)",
+    "dailyMinutes": "number",
+    "focusAreas": [
+      {
+        "unit": "string",
+        "priority": "high|medium|low",
+        "reason": "string",
+        "mcqCount": "number",
+        "saqCount": "number",
+        "estimatedMinutes": "number",
+        "resources": ["string"]
+      }
+    ],
+    "strengths": ["string"],
+    "tips": ["string (exactly 3 items)"],
+    "dailySchedule": {
+      "Monday": "string",
+      "Tuesday": "string",
+      "Wednesday": "string",
+      "Thursday": "string",
+      "Friday": "string",
+      "Weekend": "string"
+    }
+  },
+  "validation_checklist": [
+    "tips array has exactly 3 items",
+    "dailySchedule has all 6 keys (Mon–Fri + Weekend)",
+    "focusAreas is non-empty array",
+    "weakest unit (masteryScore < 70) appears in focusAreas with priority=high",
+    "response parses as valid JSON (no markdown wrapper)"
+  ]
+}
