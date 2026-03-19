@@ -4,7 +4,6 @@ import { Badge } from "@/components/ui/badge";
 import {
   Brain,
   BarChart3,
-  Trophy,
   MessageSquare,
   Zap,
   CheckCircle,
@@ -32,19 +31,9 @@ const features = [
     description: "Per-unit mastery scores and a visual heatmap show weak areas at a glance. Stop guessing what to review.",
   },
   {
-    icon: MessageSquare,
-    title: "Exam-Style Questions, On Demand",
-    description: "Practice with AI-generated MCQ, FRQ, SAQ, DBQ, and LEQ questions aligned to real College Board standards — never run out.",
-  },
-  {
     icon: Clock,
     title: "Test Your Readiness with a Mock Exam",
     description: "Simulate the real AP exam under timed conditions. Get an estimated AP score from 1–5 so you know exactly where you stand.",
-  },
-  {
-    icon: Trophy,
-    title: "Stay Motivated Every Day",
-    description: "Earn XP, maintain streaks, unlock achievements, and level up as you progress. Building a study habit has never been this rewarding.",
   },
 ];
 
@@ -67,6 +56,24 @@ const courses = [
   { name: "ACT Reading",                    units: 4  },
 ];
 
+const testimonials = [
+  {
+    quote: "Finally an AP prep tool that actually explains why the answer is correct — not just what it is.",
+    name: "Sofia R.",
+    context: "Preparing for AP World History",
+  },
+  {
+    quote: "Sage explained limits better in 5 minutes than my teacher did all semester.",
+    name: "Marcus T.",
+    context: "Preparing for AP Calculus AB",
+  },
+  {
+    quote: "The comprehension check after each explanation is a game changer. I actually remember things now.",
+    name: "Priya K.",
+    context: "Preparing for AP Biology",
+  },
+];
+
 export default function LandingPage() {
   return (
     <div className="min-h-screen bg-background">
@@ -76,9 +83,12 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
             <Sparkles className="h-6 w-6 text-indigo-400" />
-            <span className="text-lg font-bold">
-              <span className="gradient-text">Student</span><span className="text-foreground/80 font-medium">Nest</span>
-            </span>
+            <div>
+              <span className="text-lg font-bold">
+                <span className="gradient-text">Student</span><span className="text-foreground/80 font-medium">Nest</span>
+              </span>
+              <p className="text-xs text-muted-foreground leading-none hidden sm:block">Your AI Study Partner</p>
+            </div>
           </Link>
           <div className="flex items-center gap-2 sm:gap-4">
             <Link href="/pricing" className="hidden sm:block text-sm text-muted-foreground hover:text-foreground transition-colors">
@@ -98,7 +108,7 @@ export default function LandingPage() {
       </nav>
 
       {/* Hero */}
-      <section className="relative pt-20 pb-32 overflow-hidden">
+      <section className="relative pt-20 pb-16 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-indigo-950/40 via-violet-950/20 to-transparent pointer-events-none" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <Badge className="mb-6 bg-indigo-500/10 text-indigo-300 border-indigo-500/20 text-sm px-4 py-1.5">
@@ -109,10 +119,10 @@ export default function LandingPage() {
             <span className="gradient-text">Student</span><span className="text-foreground/80 font-medium">Nest</span>
           </h1>
           <p className="text-2xl sm:text-3xl font-semibold text-foreground/90 mb-4">
-            AI-powered AP, SAT & ACT prep
+            Score Higher on AP, SAT &amp; ACT —<br className="hidden sm:block" /> with AI That Actually Teaches
           </p>
           <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto mb-3">
-            Built for high school students — get instant AI explanations, practice with real exam-style questions, and improve faster with smart analytics.
+            Get instant AI explanations, practice with real exam-style questions, and improve faster with smart analytics — free.
           </p>
           <p className="text-sm text-muted-foreground mb-10">
             Covers 16 courses · Aligned with College Board standards · Free forever · Premium at $9.99/month
@@ -132,6 +142,25 @@ export default function LandingPage() {
           <p className="mt-4 text-sm text-muted-foreground">
             Takes less than 30 seconds to sign up · No credit card required
           </p>
+        </div>
+      </section>
+
+      {/* Social Proof Bar */}
+      <section className="py-8 border-y border-border/40 bg-secondary/30">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
+            {[
+              { icon: "🎯", stat: "16 courses covered", sub: "AP, SAT & ACT" },
+              { icon: "📚", stat: "Exam-aligned questions", sub: "Never running out" },
+              { icon: "🤖", stat: "Powered by Groq", sub: "Available 24/7" },
+            ].map(({ icon, stat, sub }) => (
+              <div key={stat} className="flex flex-col items-center gap-1">
+                <span className="text-2xl">{icon}</span>
+                <p className="font-semibold text-foreground">{stat}</p>
+                <p className="text-xs text-muted-foreground">{sub}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -177,6 +206,54 @@ export default function LandingPage() {
                 <p className="text-sm text-muted-foreground leading-relaxed">{a.desc}</p>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Product Demo — Sage conversation snippet */}
+      <section className="py-16 px-4">
+        <div className="max-w-2xl mx-auto">
+          <p className="text-center text-sm text-muted-foreground mb-4 font-medium uppercase tracking-wide">
+            This is Sage — your 24/7 AP tutor
+          </p>
+          <div className="rounded-2xl border border-border/40 bg-card/60 overflow-hidden shadow-xl">
+            {/* Window chrome */}
+            <div className="flex items-center gap-2 px-4 py-3 border-b border-border/40 bg-secondary/40">
+              <div className="w-3 h-3 rounded-full bg-red-500/60" />
+              <div className="w-3 h-3 rounded-full bg-yellow-500/60" />
+              <div className="w-3 h-3 rounded-full bg-green-500/60" />
+              <span className="ml-2 text-xs text-muted-foreground">StudentNest · AI Tutor</span>
+            </div>
+            {/* Chat */}
+            <div className="p-5 space-y-4 text-sm">
+              {/* User message */}
+              <div className="flex justify-end">
+                <div className="bg-indigo-600/20 border border-indigo-500/20 rounded-2xl rounded-tr-sm px-4 py-2.5 max-w-[80%]">
+                  <p className="text-foreground/90">Why did the French Revolution happen?</p>
+                </div>
+              </div>
+              {/* Sage response */}
+              <div className="flex gap-3 items-start">
+                <div className="w-8 h-8 rounded-full bg-indigo-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <Sparkles className="h-4 w-4 text-indigo-400" />
+                </div>
+                <div className="bg-secondary/60 border border-border/40 rounded-2xl rounded-tl-sm px-4 py-2.5 max-w-[85%] space-y-1.5">
+                  <p className="font-semibold text-xs text-indigo-400 mb-1">Sage</p>
+                  <p className="text-foreground/80 leading-relaxed">
+                    The French Revolution (1789) had three main causes: <strong>financial crisis</strong> from war debt, <strong>social inequality</strong> under the Estates system where the Third Estate bore heavy taxes, and <strong>Enlightenment ideas</strong> about liberty and popular sovereignty.
+                  </p>
+                  <p className="text-foreground/80">The immediate trigger was a bread shortage — food prices spiked after crop failures, pushing the already-desperate commoners to revolt.</p>
+                </div>
+              </div>
+              {/* Follow-up chips */}
+              <div className="pl-11 flex flex-wrap gap-2">
+                {["What was the Estates system?", "How did Enlightenment ideas spread?"].map((q) => (
+                  <span key={q} className="text-xs px-3 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 cursor-default">
+                    {q}
+                  </span>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -232,7 +309,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Features — outcome focused */}
+      {/* Features — outcome focused (trimmed to 4) */}
       <section className="py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
@@ -241,7 +318,7 @@ export default function LandingPage() {
               Built around how AP, SAT, and ACT exams actually work — not generic quiz apps.
             </p>
           </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {features.map((feature) => (
               <div
                 key={feature.title}
@@ -252,6 +329,28 @@ export default function LandingPage() {
                 </div>
                 <h3 className="text-lg font-semibold mb-2">{feature.title}</h3>
                 <p className="text-muted-foreground text-sm leading-relaxed">{feature.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Competitor Context */}
+      <section className="py-12 bg-secondary/20">
+        <div className="max-w-2xl mx-auto px-4 text-center space-y-4">
+          <p className="text-sm text-muted-foreground font-medium uppercase tracking-wide">
+            Unlike generic AI tools, StudentNest is purpose-built for AP, SAT &amp; ACT
+          </p>
+          <div className="grid sm:grid-cols-2 gap-3 text-left">
+            {[
+              "Explains concepts, then quizzes you back",
+              "Tracks mastery by unit and topic",
+              "Generates exam-aligned questions on demand",
+              "Free to start — no credit card",
+            ].map((point) => (
+              <div key={point} className="flex items-center gap-2 text-sm text-foreground/80">
+                <CheckCircle className="h-4 w-4 text-emerald-400 flex-shrink-0" />
+                {point}
               </div>
             ))}
           </div>
@@ -291,20 +390,31 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Testimonial-style trust */}
-      <section className="py-16">
-        <div className="max-w-3xl mx-auto px-4 text-center space-y-4">
-          <div className="flex justify-center gap-1 mb-2">
-            {[...Array(5)].map((_, i) => (
-              <Star key={i} className="h-5 w-5 text-yellow-400 fill-yellow-400" />
+      {/* Testimonials — 3 cards */}
+      <section className="py-24">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold mb-2">Student Feedback</h2>
+            <p className="text-muted-foreground text-sm">Representative feedback from students using StudentNest</p>
+          </div>
+          <div className="grid md:grid-cols-3 gap-6">
+            {testimonials.map((t) => (
+              <div key={t.name} className="p-6 rounded-xl border border-border/40 bg-card/50 card-glow space-y-4">
+                <div className="flex gap-1">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} className="h-4 w-4 text-yellow-400 fill-yellow-400" />
+                  ))}
+                </div>
+                <blockquote className="text-sm text-foreground/90 italic leading-relaxed">
+                  &ldquo;{t.quote}&rdquo;
+                </blockquote>
+                <div>
+                  <p className="text-sm font-semibold">{t.name}</p>
+                  <p className="text-xs text-muted-foreground">{t.context}</p>
+                </div>
+              </div>
             ))}
           </div>
-          <blockquote className="text-xl font-medium text-foreground/90 italic">
-            &ldquo;Finally an AP prep tool that actually explains <em>why</em> the answer is correct — not just what it is.&rdquo;
-          </blockquote>
-          <p className="text-sm text-muted-foreground">
-            Used by students preparing for AP World History, AP CSP, AP Calculus, and more
-          </p>
         </div>
       </section>
 
@@ -313,7 +423,7 @@ export default function LandingPage() {
         <div className="max-w-3xl mx-auto px-4 text-center">
           <h2 className="text-4xl font-bold mb-4">Ready to Score Higher?</h2>
           <p className="text-muted-foreground text-lg mb-6">
-            Join high school students using StudentNest to master AP, SAT & ACT exams.
+            Join high school students using StudentNest to master AP, SAT &amp; ACT exams.
           </p>
           <Link href="/register">
             <Button size="lg" className="gap-2 text-base px-10 h-12">

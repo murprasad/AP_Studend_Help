@@ -1,5 +1,5 @@
 import { Badge } from "@/components/ui/badge";
-import { Globe, Mail, BookOpen, Brain, BarChart3, Zap } from "lucide-react";
+import { Globe, Mail, Target, Heart, Sparkles } from "lucide-react";
 import Link from "next/link";
 
 const COURSES = [
@@ -35,9 +35,9 @@ const CATEGORY_COLORS: Record<string, string> = {
 
 export default function AboutPage() {
   return (
-    <div className="max-w-3xl mx-auto px-4 py-16 space-y-14 text-center">
+    <div className="max-w-3xl mx-auto px-4 py-16 space-y-16 text-center">
 
-      {/* Hero */}
+      {/* Section 1: Opening */}
       <div className="space-y-4">
         <div className="flex items-center justify-center gap-3">
           <div className="w-12 h-12 rounded-xl bg-indigo-500/20 flex items-center justify-center">
@@ -49,54 +49,76 @@ export default function AboutPage() {
           </div>
         </div>
         <p className="text-muted-foreground leading-relaxed max-w-2xl mx-auto">
-          StudentNest is an AI-powered exam prep platform built for high school students tackling AP®, SAT®, and ACT® exams.
-          We combine adaptive practice, instant AI tutoring, and detailed progress analytics to help every student reach their target score.
-          Core features are free — Premium unlocks better AI models for those who want more.
+          AP exams shape college admissions. But the best prep tools cost hundreds of dollars — or require hiring a tutor.
+          StudentNest exists to change that: world-class AI-powered AP, SAT &amp; ACT prep, free for every student.
         </p>
       </div>
 
-      {/* Key Features */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-left">
-        {[
-          { icon: Zap,       label: "Practice",       desc: "Adaptive MCQ & FRQ by unit and difficulty" },
-          { icon: Brain,     label: "AI Tutor",       desc: "Get instant explanations, then prove you understood it — Sage quizzes you back with 3 targeted questions after every answer" },
-          { icon: BarChart3, label: "Analytics",      desc: "Mastery heatmap, streak, XP, and comprehension score" },
-          { icon: BookOpen,  label: "Study Plan",     desc: "Personalized weekly plan based on your weak units" },
-        ].map(({ icon: Icon, label, desc }) => (
-          <div key={label} className="rounded-xl border border-border/40 bg-card p-4 space-y-2">
-            <div className="w-8 h-8 rounded-lg bg-indigo-500/10 flex items-center justify-center">
-              <Icon className="h-4 w-4 text-indigo-400" />
-            </div>
-            <p className="text-sm font-semibold">{label}</p>
-            <p className="text-xs text-muted-foreground leading-relaxed">{desc}</p>
+      {/* Section 2: Our Story */}
+      <div className="rounded-2xl border border-border/40 bg-card/50 p-8 text-left space-y-4">
+        <div className="flex items-center gap-2 mb-2">
+          <div className="w-8 h-8 rounded-lg bg-indigo-500/10 flex items-center justify-center">
+            <Sparkles className="h-4 w-4 text-indigo-400" />
           </div>
-        ))}
-      </div>
-
-      {/* AI Knowledge Check differentiator */}
-      <div className="rounded-2xl border border-indigo-500/20 bg-indigo-500/5 p-6 text-left space-y-3">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-indigo-500/20 flex items-center justify-center">
-            <Brain className="h-4 w-4 text-indigo-400" />
-          </div>
-          <span className="text-xs font-semibold uppercase tracking-wider text-indigo-400">What makes Sage different</span>
+          <h2 className="text-xl font-bold">Why We Built This</h2>
         </div>
-        <p className="text-base font-semibold">Most AI tutors explain. Sage tests you back.</p>
-        <p className="text-sm text-muted-foreground leading-relaxed">
-          After every explanation, Sage offers 3 multiple-choice questions drawn directly from what it just taught you.
-          Answer them, get instant feedback, and see your comprehension score build over time on your Analytics page.
-          Active recall — the most effective study technique — built into every conversation.
+        <p className="text-muted-foreground leading-relaxed">
+          AP prep hasn&apos;t changed much in 20 years — thick review books, expensive tutors, or generic flashcard apps.
+          We built StudentNest to do what a great tutor does: explain <em>why</em>, not just <em>what</em> — then test whether it clicked.
         </p>
-        <div className="flex flex-wrap gap-2 pt-1">
-          {["Active recall", "Instant feedback", "Comprehension tracking", "No extra steps"].map(tag => (
-            <span key={tag} className="text-[11px] px-2.5 py-1 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
-              {tag}
-            </span>
+        <p className="text-muted-foreground leading-relaxed">
+          Sage, our AI tutor, is the result of that idea: a study partner that&apos;s available 24/7, never gets impatient,
+          and remembers exactly where you&apos;re struggling.
+        </p>
+      </div>
+
+      {/* Section 3: Mission */}
+      <div className="rounded-2xl border border-indigo-500/20 bg-indigo-500/5 p-8 space-y-3">
+        <p className="text-xs font-semibold uppercase tracking-wider text-indigo-400">Our Mission</p>
+        <p className="text-xl font-semibold text-foreground/90 leading-relaxed max-w-2xl mx-auto">
+          &ldquo;Make world-class AP, SAT &amp; ACT prep accessible to every high school student — not just those who can afford a tutor.&rdquo;
+        </p>
+      </div>
+
+      {/* Section 4: Values */}
+      <div className="space-y-4 text-left">
+        <h2 className="text-xl font-bold text-center">What We Stand For</h2>
+        <div className="grid sm:grid-cols-3 gap-4">
+          {[
+            {
+              icon: Target,
+              color: "text-indigo-400",
+              bg: "bg-indigo-500/10",
+              title: "Outcome-Obsessed",
+              desc: "We measure success in score improvements, not time-on-site.",
+            },
+            {
+              icon: Heart,
+              color: "text-emerald-400",
+              bg: "bg-emerald-500/10",
+              title: "Accessible First",
+              desc: "Core features are free. Always. Premium is for students who want more — not a paywall for the basics.",
+            },
+            {
+              icon: Sparkles,
+              color: "text-violet-400",
+              bg: "bg-violet-500/10",
+              title: "AI as a Teacher",
+              desc: "Sage doesn\u2019t just answer questions. It explains, checks your understanding, and adapts to your weak points.",
+            },
+          ].map(({ icon: Icon, color, bg, title, desc }) => (
+            <div key={title} className="rounded-xl border border-border/40 bg-card p-5 space-y-2">
+              <div className={`w-9 h-9 rounded-lg ${bg} flex items-center justify-center`}>
+                <Icon className={`h-5 w-5 ${color}`} />
+              </div>
+              <p className="text-sm font-semibold">{title}</p>
+              <p className="text-xs text-muted-foreground leading-relaxed">{desc}</p>
+            </div>
           ))}
         </div>
       </div>
 
-      {/* What We Cover */}
+      {/* Section 5: What We Cover */}
       <div className="space-y-6">
         <h2 className="text-xl font-bold">
           What We Cover{" "}
@@ -121,28 +143,29 @@ export default function AboutPage() {
         ))}
       </div>
 
-      {/* What's New */}
-      <div className="space-y-3">
-        <h2 className="text-xl font-bold">What&apos;s New</h2>
-        <div className="space-y-2 text-left max-w-xl mx-auto">
+      {/* Section 6: Impact Stats */}
+      <div className="space-y-4">
+        <h2 className="text-xl font-bold">In Beta</h2>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
           {[
-            "AI Knowledge Check — test your understanding after each tutor session",
-            "Tutor Comprehension score now tracked on your Analytics page",
-            "Cleaner navigation and accessibility improvements throughout",
-          ].map((item) => (
-            <div key={item} className="flex gap-2 text-sm text-muted-foreground">
-              <span className="text-indigo-400 flex-shrink-0 mt-0.5">✓</span>
-              {item}
+            { value: "16",   label: "Courses covered" },
+            { value: "10+",  label: "AP exams supported" },
+            { value: "24/7", label: "AI tutor availability" },
+            { value: "Free", label: "To start, forever" },
+          ].map(({ value, label }) => (
+            <div key={label} className="rounded-xl border border-border/40 bg-card p-4 space-y-1">
+              <p className="text-2xl font-bold gradient-text">{value}</p>
+              <p className="text-xs text-muted-foreground">{label}</p>
             </div>
           ))}
         </div>
       </div>
 
-      {/* Contact */}
+      {/* Section 7: Contact */}
       <div className="space-y-3">
-        <h2 className="text-xl font-bold">Contact</h2>
+        <h2 className="text-xl font-bold">Get in Touch</h2>
         <p className="text-muted-foreground text-sm">
-          Found a bug or want to suggest a new course? We read everything.
+          Have a question, found a bug, or want to suggest a course? We read everything — reply within 24 hours.
         </p>
         <a
           href="mailto:contact@studentnest.ai"
@@ -160,7 +183,7 @@ export default function AboutPage() {
         </p>
       </div>
 
-      {/* Legal & Trademarks — subtle footer, not a warning card */}
+      {/* Section 8: Legal */}
       <div className="border-t border-border/40 pt-8 space-y-2">
         <p className="text-[11px] text-muted-foreground/70 leading-relaxed">
           AP® is a trademark registered by the College Board, which is not affiliated with, and does not endorse, this product or site.
