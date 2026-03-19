@@ -1,5 +1,5 @@
 import { Badge } from "@/components/ui/badge";
-import { Globe, Mail, Target, Heart, Sparkles, Flame, Calendar, Trophy, Layers, Mic, Lightbulb } from "lucide-react";
+import { Globe, Mail, Target, Heart, Sparkles, Flame, Calendar, Trophy, Layers, Mic, Lightbulb, Scale, Crown } from "lucide-react";
 import Link from "next/link";
 
 const COURSES = [
@@ -45,7 +45,7 @@ export default function AboutPage() {
           </div>
           <div className="flex items-center gap-2 flex-wrap">
             <h1 className="text-3xl font-bold gradient-text">About StudentNest</h1>
-            <Badge className="bg-indigo-500/20 text-indigo-300 border-indigo-500/30 text-xs font-semibold">Beta 1.9</Badge>
+            <Badge className="bg-indigo-500/20 text-indigo-300 border-indigo-500/30 text-xs font-semibold">Beta 1.10</Badge>
           </div>
         </div>
         <p className="text-muted-foreground leading-relaxed max-w-2xl mx-auto">
@@ -161,10 +161,36 @@ export default function AboutPage() {
         </div>
       </div>
 
-      {/* Section 7: What's New in Beta 1.9 */}
+      {/* Section 7: What's New in Beta 1.10 */}
       <div className="space-y-6">
         <div className="text-center space-y-1">
           <Badge className="bg-indigo-500/20 text-indigo-300 border-indigo-500/30 text-xs font-semibold mb-2">Latest Release</Badge>
+          <h2 className="text-xl font-bold">What&apos;s New in Beta 1.10</h2>
+          <p className="text-sm text-muted-foreground">Annual plan on pricing page, 7-day refund guarantee, and full Terms of Service.</p>
+        </div>
+        <div className="grid sm:grid-cols-2 gap-3 text-left">
+          {[
+            { icon: Crown,    color: "text-indigo-400", bg: "bg-indigo-500/10", title: "Annual Plan on Pricing Page",   desc: "New monthly/annual toggle on /pricing. Save 33% at $79.99/yr — now visible to prospects before sign-up." },
+            { icon: Scale,    color: "text-green-400",  bg: "bg-green-500/10",  title: "7-Day Money-Back Guarantee",   desc: "Not satisfied within 7 days of your first Premium payment? Email us for a full refund, no questions asked." },
+            { icon: Scale,    color: "text-blue-400",   bg: "bg-blue-500/10",   title: "Terms of Service",             desc: "Full ToS page at /terms covering billing, refunds, cancellation, AI content, and intellectual property." },
+          ].map(({ icon: Icon, color, bg, title, desc }) => (
+            <div key={title} className="flex gap-3 p-4 rounded-xl border border-border/40 bg-card">
+              <div className={`w-8 h-8 rounded-lg ${bg} flex items-center justify-center flex-shrink-0 mt-0.5`}>
+                <Icon className={`h-4 w-4 ${color}`} />
+              </div>
+              <div>
+                <p className="text-sm font-semibold">{title}</p>
+                <p className="text-xs text-muted-foreground leading-relaxed mt-0.5">{desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Section 7b: Beta 1.9 */}
+      <div className="space-y-6">
+        <div className="text-center space-y-1">
+          <Badge className="bg-border/60 text-muted-foreground border-border/40 text-xs font-semibold mb-2">Beta 1.9</Badge>
           <h2 className="text-xl font-bold">What&apos;s New in Beta 1.9</h2>
           <p className="text-sm text-muted-foreground">8 engagement features shipped — keeping students consistent matters as much as content quality.</p>
         </div>

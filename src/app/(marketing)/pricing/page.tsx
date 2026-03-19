@@ -1,8 +1,8 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
 import { CheckCircle, Zap, Crown } from "lucide-react";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
-import { isPaymentsEnabled, getStripeConfig } from "@/lib/settings";
 
 const FREE_FEATURES = [
   "All 10 AP courses (Math, Science, Social Studies)",
@@ -28,20 +28,18 @@ const PREMIUM_FEATURES = [
   "Email support",
 ];
 
-export default async function PricingPage() {
-  const session = await getServerSession(authOptions);
-  const isPremium = session?.user?.subscriptionTier === "PREMIUM";
-  const [paymentsEnabled, stripeConfig] = await Promise.all([
-    isPaymentsEnabled(),
-    getStripeConfig(),
-  ]);
-  const premiumPrice = stripeConfig.premiumPriceDisplay || "9.99";
-  const premiumName = stripeConfig.premiumName || "Premium";
+export default function PricingPage() {
+  const [billingCycle, setBillingCycle] = useState<"monthly" | "annual">("monthly");
+
+  const isAnnual = billingCycle === "annual";
+  const monthlyPrice = "9.99";
+  const annualPrice = "79.99";
+  const annualMonthly = "6.67";
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-16">
       {/* Header */}
-      <div className="text-center mb-16">
+      <div className="text-center mb-10">
         <h1 className="text-4xl font-bold mb-4">
           Simple, transparent pricing
         </h1>
@@ -49,6 +47,35 @@ export default async function PricingPage() {
           Start free. Upgrade when you want unlimited AI tutoring and a
           personalized study plan that adapts as you improve.
         </p>
+      </div>
+
+      {/* Billing toggle */}
+      <div className="flex items-center justify-center gap-3 mb-10">
+        <button
+          onClick={() => setBillingCycle("monthly")}
+          className={`px-5 py-2 rounded-lg text-sm font-medium transition-colors ${
+            !isAnnual
+              ? "bg-indigo-600 text-white"
+              : "text-muted-foreground hover:text-foreground"
+          }`}
+        >
+          Monthly
+        </button>
+        <button
+          onClick={() => setBillingCycle("annual")}
+          className={`px-5 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${
+            isAnnual
+              ? "bg-indigo-600 text-white"
+              : "text-muted-foreground hover:text-foreground"
+          }`}
+        >
+          Annual
+          <span className={`text-xs font-bold px-1.5 py-0.5 rounded ${
+            isAnnual ? "bg-white/20 text-white" : "bg-green-500/20 text-green-500"
+          }`}>
+            Save 33%
+          </span>
+        </button>
       </div>
 
       {/* Pricing cards */}
@@ -76,21 +103,12 @@ export default async function PricingPage() {
             ))}
           </ul>
 
-          {session ? (
-            <Link
-              href="/dashboard"
-              className="block text-center py-3 px-6 rounded-xl border border-border/40 text-sm font-medium hover:bg-accent transition-colors"
-            >
-              Go to dashboard
-            </Link>
-          ) : (
-            <Link
-              href="/register"
-              className="block text-center py-3 px-6 rounded-xl border border-border/40 text-sm font-medium hover:bg-accent transition-colors"
-            >
-              Get started free
-            </Link>
-          )}
+          <Link
+            href="/register"
+            className="block text-center py-3 px-6 rounded-xl border border-border/40 text-sm font-medium hover:bg-accent transition-colors"
+          >
+            Get started free
+          </Link>
         </div>
 
         {/* Premium tier */}
@@ -102,13 +120,25 @@ export default async function PricingPage() {
           <div className="mb-6">
             <div className="flex items-center gap-2 mb-2">
               <Crown className="h-5 w-5 text-indigo-400" />
-              <h2 className="text-xl font-bold">{premiumName}</h2>
+              <h2 className="text-xl font-bold">Premium</h2>
             </div>
-            <div className="flex items-end gap-1 mb-1">
-              <span className="text-4xl font-bold">${premiumPrice}</span>
-              <span className="text-muted-foreground mb-1">/month</span>
-            </div>
-            <p className="text-sm text-muted-foreground">Cancel anytime</p>
+            {isAnnual ? (
+              <>
+                <div className="flex items-end gap-1 mb-1">
+                  <span className="text-4xl font-bold">${annualPrice}</span>
+                  <span className="text-muted-foreground mb-1">/year</span>
+                </div>
+                <p className="text-sm text-green-500 font-medium">≈${annualMonthly}/mo — save 33%</p>
+              </>
+            ) : (
+              <>
+                <div className="flex items-end gap-1 mb-1">
+                  <span className="text-4xl font-bold">${monthlyPrice}</span>
+                  <span className="text-muted-foreground mb-1">/month</span>
+                </div>
+                <p className="text-sm text-muted-foreground">Cancel anytime</p>
+              </>
+            )}
           </div>
 
           <ul className="space-y-3 flex-1 mb-8">
@@ -120,27 +150,12 @@ export default async function PricingPage() {
             ))}
           </ul>
 
-          {isPremium ? (
-            <Link
-              href="/billing"
-              className="block text-center py-3 px-6 rounded-xl bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-700 transition-colors"
-            >
-              Manage subscription
-            </Link>
-          ) : paymentsEnabled ? (
-            <form action="/api/checkout" method="POST">
-              <button
-                type="submit"
-                className="w-full py-3 px-6 rounded-xl bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-700 transition-colors"
-              >
-                {session ? "Upgrade to Premium" : "Start free trial"}
-              </button>
-            </form>
-          ) : (
-            <div className="block text-center py-3 px-6 rounded-xl bg-secondary text-sm text-muted-foreground">
-              Payments temporarily unavailable
-            </div>
-          )}
+          <Link
+            href={isAnnual ? "/register?plan=annual" : "/register"}
+            className="block text-center py-3 px-6 rounded-xl bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-700 transition-colors"
+          >
+            Start free trial
+          </Link>
         </div>
       </div>
 
@@ -154,12 +169,20 @@ export default async function PricingPage() {
               a: "Yes. Cancel from your billing page and you'll keep Premium access until the end of your billing period.",
             },
             {
+              q: "Can I pay annually?",
+              a: "Yes — $79.99/year saves you 33% compared to monthly billing (≈$6.67/mo). Select Annual above to get started.",
+            },
+            {
+              q: "What is your refund policy?",
+              a: "We offer a 7-day money-back guarantee on new Premium subscriptions. If you're not satisfied within 7 days of your first payment, email contact@studentnest.ai and we'll issue a full refund — no questions asked. After 7 days, subscriptions are non-refundable but you can cancel anytime and keep access until the end of your billing period.",
+            },
+            {
               q: "What happens when I hit the free AI limit?",
               a: "Free users can start 5 new AI Tutor conversations per day. Your existing conversations are never deleted.",
             },
             {
               q: "Is there a student discount?",
-              a: `We keep the free tier generous so every student can prepare for their AP exams. ${premiumName} is designed to be affordable at $${premiumPrice}/month.`,
+              a: "We keep the free tier generous so every student can prepare for their AP exams. Premium is designed to be affordable at $9.99/month — or $79.99/year.",
             },
             {
               q: "Which payment methods are accepted?",

@@ -37,6 +37,8 @@ export default function MarketingLayout({ children }: { children: React.ReactNod
           <a href="/about" className="hover:text-foreground transition-colors">About</a>
           <span className="text-border">|</span>
           <a href="/pricing" className="hover:text-foreground transition-colors">Pricing</a>
+          <span className="text-border">|</span>
+          <a href="/terms" className="hover:text-foreground transition-colors">Terms</a>
         </div>
         <p className="text-[11px] text-muted-foreground/60 max-w-2xl mx-auto leading-relaxed">
           AP® and SAT® are trademarks of the College Board. ACT® is a registered trademark of ACT, Inc.
