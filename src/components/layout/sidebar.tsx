@@ -118,7 +118,7 @@ export function Sidebar({ userRole, isOpen = false, onClose = () => {} }: Sideba
 
       <aside className={cn(
         "fixed inset-y-0 left-0 z-50 w-64 bg-card border-r border-border/40 flex flex-col",
-        "lg:relative lg:inset-auto lg:z-auto lg:translate-x-0",
+        "lg:relative lg:inset-auto lg:z-auto lg:translate-x-0 lg:flex-shrink-0",
         "transform transition-transform duration-200 ease-in-out",
         isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
       )}>
@@ -223,9 +223,11 @@ export function Sidebar({ userRole, isOpen = false, onClose = () => {} }: Sideba
 
         {/* Sign out + theme toggle */}
         <div className="p-4 border-t border-border/40 space-y-1">
-          <p className="px-3 py-2 text-[10px] text-muted-foreground/50 leading-relaxed">
-            AP® and SAT® are trademarks of the College Board. ACT® is a trademark of ACT, Inc.
-            Not affiliated with or endorsed by either organization.
+          <p
+            className="px-3 py-1.5 text-[9px] text-muted-foreground/40 truncate"
+            title="AP® and SAT® are trademarks of the College Board. ACT® is a trademark of ACT, Inc. Not affiliated with or endorsed by either organization."
+          >
+            AP®, SAT® — College Board. ACT® — ACT, Inc. Not affiliated.
           </p>
           <Button
             variant="ghost"

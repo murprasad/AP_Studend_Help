@@ -69,8 +69,8 @@ export default function DashboardLayout({
       </header>
 
       <Sidebar userRole={session.user.role} isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-      <main className="flex-1 overflow-y-auto pt-14 lg:pt-0">
-        <div className="p-6 max-w-7xl mx-auto">
+      <main className="flex-1 min-w-0 overflow-y-auto overflow-x-hidden pt-14 lg:pt-0">
+        <div className="px-4 py-4 sm:px-6 sm:py-6 max-w-7xl mx-auto">
           {children}
         </div>
       </main>
