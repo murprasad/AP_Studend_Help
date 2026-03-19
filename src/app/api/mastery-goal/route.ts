@@ -45,7 +45,7 @@ export async function POST(req: NextRequest) {
   }
 
   const goal = await prisma.masteryGoal.upsert({
-    where: { userId_unit: { userId: session.user.id, unit } },
+    where: { userId_course_unit: { userId: session.user.id, course, unit } },
     create: {
       userId: session.user.id,
       course,
@@ -62,16 +62,17 @@ export async function POST(req: NextRequest) {
   return NextResponse.json({ goal });
 }
 
-// DELETE /api/mastery-goal?unit=UNIT_1_GLOBAL_TAPESTRY
+// DELETE /api/mastery-goal?unit=UNIT_1_GLOBAL_TAPESTRY&course=AP_WORLD_HISTORY
 export async function DELETE(req: NextRequest) {
   const session = await getServerSession(authOptions);
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const unit = req.nextUrl.searchParams.get("unit") as ApUnit | null;
-  if (!unit) return NextResponse.json({ error: "unit required" }, { status: 400 });
+  const course = req.nextUrl.searchParams.get("course") as ApCourse | null;
+  if (!unit || !course) return NextResponse.json({ error: "unit and course required" }, { status: 400 });
 
   await prisma.masteryGoal.deleteMany({
-    where: { userId: session.user.id, unit },
+    where: { userId: session.user.id, unit, course },
   });
 
   return NextResponse.json({ ok: true });

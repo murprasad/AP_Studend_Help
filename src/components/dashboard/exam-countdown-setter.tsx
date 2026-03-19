@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "lucide-react";
@@ -12,9 +13,11 @@ interface Props {
 }
 
 export function ExamCountdownSetter({ course }: Props) {
+  const router = useRouter();
   const [examDate, setExamDate] = useState<string>("");
   const [saved, setSaved] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [saveError, setSaveError] = useState(false);
 
   useEffect(() => {
     fetch("/api/user/exam-date")
@@ -28,20 +31,31 @@ export function ExamCountdownSetter({ course }: Props) {
       .finally(() => setLoading(false));
   }, []);
 
-  const daysLeft = examDate
-    ? Math.ceil((new Date(examDate).getTime() - Date.now()) / (1000 * 60 * 60 * 24))
-    : null;
+  const daysLeft = (() => {
+    if (!examDate) return null;
+    // Parse as local midnight to avoid timezone offset issues
+    const [y, m, d] = examDate.split("-").map(Number);
+    const target = new Date(y, m - 1, d);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return Math.ceil((target.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+  })();
 
   async function save() {
-    await fetch("/api/user/exam-date", {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ examDate: examDate || null }),
-    });
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
-    // Refresh page so sidebar updates
-    window.location.reload();
+    setSaveError(false);
+    try {
+      const res = await fetch("/api/user/exam-date", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ examDate: examDate || null }),
+      });
+      if (!res.ok) throw new Error();
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2000);
+      router.refresh(); // refreshes server components (sidebar) without hard reload
+    } catch {
+      setSaveError(true);
+    }
   }
 
   const courseName = AP_COURSES[course] || "Your Exam";
@@ -87,6 +101,9 @@ export function ExamCountdownSetter({ course }: Props) {
             <Button size="sm" onClick={save} className="w-full" variant="outline">
               {saved ? "Saved ✓" : "Save Exam Date"}
             </Button>
+            {saveError && (
+              <p className="text-xs text-red-400 text-center">Failed to save. Please try again.</p>
+            )}
           </div>
         )}
       </CardContent>

@@ -39,6 +39,8 @@ export async function GET(req: NextRequest) {
           questionText: true,
           options: true,
           stimulus: true,
+          correctAnswer: true,
+          explanation: true,
         },
       },
     },

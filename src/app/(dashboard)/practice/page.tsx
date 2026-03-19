@@ -254,7 +254,7 @@ export default function PracticePage() {
             topic: currentQuestion.topic,
             course: currentQuestion.course,
           }),
-          signal: AbortSignal.timeout(18000),
+          signal: AbortSignal.timeout(25000),
         })
           .then((r) => r.json())
           .then((d) => {

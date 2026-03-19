@@ -66,7 +66,7 @@ model MasteryGoal {
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@unique([userId, unit])
+  @@unique([userId, course, unit])
   @@map("mastery_goals")
 }
 

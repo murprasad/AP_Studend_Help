@@ -33,6 +33,7 @@ import {
 } from "lucide-react";
 import { CourseSelectorInline } from "@/components/layout/course-selector-inline";
 import { useSession } from "next-auth/react";
+import { useToast } from "@/hooks/use-toast";
 import Link from "next/link";
 import { ApCourse, ApUnit } from "@prisma/client";
 
@@ -65,6 +66,7 @@ interface Stats {
 export default function AnalyticsPage() {
   const [course] = useCourse();
   const { data: session } = useSession();
+  const { toast } = useToast();
   const [masteryData, setMasteryData] = useState<MasteryData[]>([]);
   const [accuracyTimeline, setAccuracyTimeline] = useState<AccuracyPoint[]>([]);
   const [stats, setStats] = useState<Stats | null>(null);
@@ -109,7 +111,7 @@ export default function AnalyticsPage() {
     if (!goalModalUnit) return;
     setGoalSaving(true);
     try {
-      await fetch("/api/mastery-goal", {
+      const res = await fetch("/api/mastery-goal", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -119,25 +121,30 @@ export default function AnalyticsPage() {
           targetDate: goalDate || undefined,
         }),
       });
+      if (!res.ok) throw new Error("save failed");
       setGoals((prev) => ({
         ...prev,
         [goalModalUnit.unit]: { targetScore: parseFloat(goalTarget), targetDate: goalDate || undefined },
       }));
       setGoalModalUnit(null);
     } catch {
-      // ignore
+      toast({ title: "Error", description: "Failed to save goal. Please try again.", variant: "destructive" });
     } finally {
       setGoalSaving(false);
     }
   }
 
   async function deleteGoal(unit: string) {
-    await fetch(`/api/mastery-goal?unit=${unit}`, { method: "DELETE" }).catch(() => {});
-    setGoals((prev) => {
-      const next = { ...prev };
-      delete next[unit];
-      return next;
-    });
+    const res = await fetch(`/api/mastery-goal?unit=${encodeURIComponent(unit)}&course=${encodeURIComponent(course)}`, { method: "DELETE" }).catch(() => null);
+    if (res?.ok) {
+      setGoals((prev) => {
+        const next = { ...prev };
+        delete next[unit];
+        return next;
+      });
+    } else {
+      toast({ title: "Error", description: "Failed to remove goal.", variant: "destructive" });
+    }
   }
 
   if (loading) {

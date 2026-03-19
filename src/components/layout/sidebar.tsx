@@ -104,8 +104,8 @@ export function Sidebar({ userRole, isOpen = false, onClose = () => {} }: Sideba
       .then((r) => r.json())
       .then((data: { user?: { streakDays?: number; streakFreezes?: number; examDate?: string } }) => {
         const u = data.user;
-        if (u?.streakDays) setStreakDays(u.streakDays);
-        if (u?.streakFreezes) setStreakFreezes(u.streakFreezes);
+        if (u?.streakDays != null) setStreakDays(u.streakDays);
+        if (u?.streakFreezes != null) setStreakFreezes(u.streakFreezes);
         if (u?.examDate) setExamDate(new Date(u.examDate));
       })
       .catch(() => {});

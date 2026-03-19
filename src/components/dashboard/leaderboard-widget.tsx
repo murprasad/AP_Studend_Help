@@ -22,6 +22,7 @@ export function LeaderboardWidget({ course }: Props) {
   const [userRank, setUserRank] = useState<number | null>(null);
   const [userXp, setUserXp] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState(false);
 
   useEffect(() => {
     setLoading(true);
@@ -32,7 +33,7 @@ export function LeaderboardWidget({ course }: Props) {
         setUserRank(d.userRank ?? null);
         setUserXp(d.userXp || 0);
       })
-      .catch(() => {})
+      .catch(() => setFetchError(true))
       .finally(() => setLoading(false));
   }, [course]);
 
@@ -63,6 +64,8 @@ export function LeaderboardWidget({ course }: Props) {
           <div className="flex justify-center py-6">
             <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
           </div>
+        ) : fetchError ? (
+          <p className="text-sm text-red-400 text-center py-4">Couldn&apos;t load leaderboard.</p>
         ) : leaderboard.length === 0 ? (
           <p className="text-sm text-muted-foreground text-center py-4">
             No activity this week yet. Be the first!
@@ -83,7 +86,7 @@ export function LeaderboardWidget({ course }: Props) {
                 </Badge>
               </div>
             ))}
-            {userRank && userRank > 10 && (
+            {userRank && userRank > leaderboard.length && (
               <div className="flex items-center gap-2 p-2 rounded-lg border border-indigo-500/20 bg-indigo-500/5 mt-2">
                 <span className="text-sm font-bold w-7 flex-shrink-0 text-indigo-400">#{userRank}</span>
                 <span className="text-sm flex-1 text-indigo-300">You</span>

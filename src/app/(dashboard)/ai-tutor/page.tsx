@@ -348,10 +348,16 @@ export default function AiTutorPage() {
     rec.interimResults = false;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     rec.onresult = (e: any) => {
-      const transcript = e.results[0][0].transcript as string;
-      setInput((prev) => (prev ? prev + " " + transcript : transcript));
+      const transcript = e.results?.[0]?.[0]?.transcript as string | undefined;
+      if (transcript) setInput((prev) => (prev ? prev + " " + transcript : transcript));
     };
-    rec.onerror = () => setIsRecording(false);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    rec.onerror = (e: any) => {
+      setIsRecording(false);
+      if (e?.error === "not-allowed") {
+        toast({ title: "Microphone denied", description: "Allow microphone access in your browser settings.", variant: "destructive" });
+      }
+    };
     rec.onend = () => setIsRecording(false);
     recognitionRef.current = rec;
     rec.start();

@@ -51,7 +51,7 @@ export async function GET(req: NextRequest) {
   const sorted = Array.from(xpByUser.entries())
     .map(([userId, xp]) => {
       const u = userMap.get(userId);
-      const displayName = u ? `${u.firstName} ${u.lastName.charAt(0)}.` : "Anonymous";
+      const displayName = u ? `${u.firstName} ${u.lastName?.charAt(0) ?? "?"}. ` : "Anonymous";
       return { userId, displayName, xp };
     })
     .sort((a, b) => b.xp - a.xp);
