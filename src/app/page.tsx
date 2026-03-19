@@ -126,7 +126,7 @@ export default function LandingPage() {
             Get instant AI explanations, practice with real exam-style questions, and improve faster with smart analytics — free.
           </p>
           <p className="text-sm text-muted-foreground mb-10">
-            Covers 16 courses · Aligned with College Board standards · Free forever · Premium at $9.99/month
+            Covers 16 courses · Aligned with College Board standards · Free forever · Premium from $6.67/mo (billed annually) or $9.99/mo
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/register">
@@ -467,11 +467,12 @@ export default function LandingPage() {
               <div className="absolute -top-3 right-4">
                 <span className="text-xs px-3 py-1 rounded-full bg-indigo-500/20 border border-indigo-500/30 text-indigo-300 font-medium">Most popular</span>
               </div>
-              <div className="flex items-center gap-2 mb-4">
+              <div className="flex items-center gap-2 mb-1">
                 <span className="text-base font-bold">Premium</span>
                 <span className="text-xl font-bold text-indigo-300">$9.99</span>
                 <span className="text-xs text-muted-foreground">/ month</span>
               </div>
+              <p className="text-xs text-green-500 font-medium mb-3">or $79.99/yr — save 33%</p>
               {[
                 "Everything in Free",
                 "Unlimited AI tutor chats",
@@ -533,7 +534,7 @@ export default function LandingPage() {
             </Button>
           </Link>
           <p className="mt-3 text-sm text-muted-foreground">
-            Free forever · Premium at $9.99/month ·{" "}
+            Free forever · Premium from $6.67/mo (annual) or $9.99/mo ·{" "}
             <Link href="/pricing" className="text-indigo-400 hover:underline">See full pricing</Link>
           </p>
         </div>
