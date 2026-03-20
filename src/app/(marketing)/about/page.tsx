@@ -45,7 +45,7 @@ export default function AboutPage() {
           </div>
           <div className="flex items-center gap-2 flex-wrap">
             <h1 className="text-3xl font-bold gradient-text">About StudentNest</h1>
-            <Badge className="bg-indigo-500/20 text-indigo-300 border-indigo-500/30 text-xs font-semibold">Beta 1.12</Badge>
+            <Badge className="bg-indigo-500/20 text-indigo-300 border-indigo-500/30 text-xs font-semibold">Beta 1.13</Badge>
           </div>
         </div>
         <p className="text-muted-foreground leading-relaxed max-w-2xl mx-auto">
@@ -161,10 +161,37 @@ export default function AboutPage() {
         </div>
       </div>
 
-      {/* Section 7: What's New in Beta 1.12 */}
+      {/* Section 7: What's New in Beta 1.13 */}
       <div className="space-y-6">
         <div className="text-center space-y-1">
           <Badge className="bg-indigo-500/20 text-indigo-300 border-indigo-500/30 text-xs font-semibold mb-2">Latest Release</Badge>
+          <h2 className="text-xl font-bold">What&apos;s New in Beta 1.13</h2>
+          <p className="text-sm text-muted-foreground">Premium membership notifications, automated question bank seeding, and infrastructure reliability improvements.</p>
+        </div>
+        <div className="grid sm:grid-cols-2 gap-3 text-left">
+          {[
+            { icon: Sparkles,        color: "text-indigo-400", bg: "bg-indigo-500/10", title: "Premium Signup Alerts",      desc: "Team is instantly notified by email whenever a new student upgrades to Premium — no more manual checks." },
+            { icon: LayoutDashboard, color: "text-violet-400", bg: "bg-violet-500/10", title: "Automated Question Seeding",  desc: "A new one-time seeding workflow fills all course units to green coverage automatically, eliminating empty question banks." },
+            { icon: Sparkles,        color: "text-green-400",  bg: "bg-green-500/10",  title: "Cron Reliability",           desc: "Auto-populate cron jobs now retry on failure, respect Cloudflare timeout limits, and report clear diagnostics on each run." },
+            { icon: LayoutDashboard, color: "text-orange-400", bg: "bg-orange-500/10", title: "Dead Code Cleanup",           desc: "Removed unused Netlify functions and banned SDK packages, shrinking the bundle and eliminating stale failure emails." },
+          ].map(({ icon: Icon, color, bg, title, desc }) => (
+            <div key={title} className="flex gap-3 p-4 rounded-xl border border-border/40 bg-card">
+              <div className={`w-8 h-8 rounded-lg ${bg} flex items-center justify-center flex-shrink-0 mt-0.5`}>
+                <Icon className={`h-4 w-4 ${color}`} />
+              </div>
+              <div>
+                <p className="text-sm font-semibold">{title}</p>
+                <p className="text-xs text-muted-foreground leading-relaxed mt-0.5">{desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Section 7b: Beta 1.12 */}
+      <div className="space-y-6">
+        <div className="text-center space-y-1">
+          <Badge className="bg-border/60 text-muted-foreground border-border/40 text-xs font-semibold mb-2">Beta 1.12</Badge>
           <h2 className="text-xl font-bold">What&apos;s New in Beta 1.12</h2>
           <p className="text-sm text-muted-foreground">Stability and reliability improvements — admin dashboard now renders correctly on all browsers and devices.</p>
         </div>
@@ -186,7 +213,7 @@ export default function AboutPage() {
         </div>
       </div>
 
-      {/* Section 7b: Beta 1.11 */}
+      {/* Section 7c: Beta 1.11 */}
       <div className="space-y-6">
         <div className="text-center space-y-1">
           <Badge className="bg-border/60 text-muted-foreground border-border/40 text-xs font-semibold mb-2">Beta 1.11</Badge>

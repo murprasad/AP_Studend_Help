@@ -43,6 +43,35 @@ export async function sendVerificationEmail(
   );
 }
 
+export async function sendPremiumSignupNotification(opts: {
+  userEmail: string;
+  userName: string;
+  plan: string;
+}): Promise<void> {
+  const { userEmail, userName, plan } = opts;
+  const adminUrl = "https://studentnest.ai/admin";
+  const now = new Date().toLocaleString("en-US", { timeZone: "UTC", dateStyle: "full", timeStyle: "short" });
+
+  await sendEmail(
+    "contact@studentnest.ai",
+    `🎉 New Premium Member: ${userName}`,
+    `
+    <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; background: #0f0f1a; color: #e2e8f0; padding: 24px; border-radius: 12px;">
+      <h1 style="color: #818cf8; margin-top: 0;">New Premium Signup</h1>
+      <table style="width: 100%; border-collapse: collapse; margin: 16px 0;">
+        <tr><td style="padding: 8px 0; color: #94a3b8; width: 120px;">Name</td><td style="padding: 8px 0; font-weight: 600;">${userName}</td></tr>
+        <tr><td style="padding: 8px 0; color: #94a3b8;">Email</td><td style="padding: 8px 0;">${userEmail}</td></tr>
+        <tr><td style="padding: 8px 0; color: #94a3b8;">Plan</td><td style="padding: 8px 0; color: #34d399; font-weight: 600;">${plan}</td></tr>
+        <tr><td style="padding: 8px 0; color: #94a3b8;">Time</td><td style="padding: 8px 0;">${now} UTC</td></tr>
+      </table>
+      <a href="${adminUrl}" style="display: inline-block; background: #6366f1; color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; margin-top: 8px;">
+        View Admin Dashboard
+      </a>
+    </div>
+    `
+  );
+}
+
 export async function sendPasswordResetEmail(
   email: string,
   firstName: string,

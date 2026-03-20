@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import Stripe from "stripe";
 import { getStripeConfig } from "@/lib/settings";
+import { sendPremiumSignupNotification } from "@/lib/email";
 
 // Disable body parsing so we can verify the raw webhook signature
 export const dynamic = "force-dynamic";
@@ -66,10 +67,20 @@ export async function POST(req: NextRequest) {
         const checkoutSession = event.data.object as Stripe.Checkout.Session;
         const userId = checkoutSession.metadata?.userId || checkoutSession.client_reference_id;
         if (userId && checkoutSession.mode === "subscription") {
-          await prisma.user.update({
+          const user = await prisma.user.update({
             where: { id: userId },
             data: { subscriptionTier: "PREMIUM" },
+            select: { email: true, firstName: true, lastName: true },
           });
+          // Determine plan label from amount
+          const amountTotal = checkoutSession.amount_total ?? 0;
+          const plan = amountTotal >= 7000 ? "Annual ($79.99/yr)" : "Monthly ($9.99/mo)";
+          // Fire-and-forget — don't let email failure block webhook response
+          sendPremiumSignupNotification({
+            userEmail: user.email,
+            userName: `${user.firstName} ${user.lastName}`.trim(),
+            plan,
+          }).catch((err) => console.warn("[webhook] Premium notification email failed:", err));
         }
         break;
       }

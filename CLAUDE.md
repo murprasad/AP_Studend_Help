@@ -379,6 +379,13 @@ npm run pages:deploy    # checks + build + deploy to CF Pages
 
 ## Release History
 
+### Beta 1.13 (2026-03-20)
+- **Premium Signup Notification**: `checkout.session.completed` Stripe webhook now sends an email to `contact@studentnest.ai` with the new member's name, email, and plan type (monthly/annual). Fire-and-forget — email failure never blocks the webhook response.
+- **One-Time Seeding Workflow**: `.github/workflows/seed-question-bank.yml` — manual GitHub Actions workflow that loops up to 120 iterations × 8 questions to seed all ~109 units to green coverage. Stops early when all units are full.
+- **Cron Timeout Fix**: Auto-populate cron capped at 5 questions per CF call (was unbounded → 524 timeout). GitHub Actions loops 6 batches per run. `?limit=N` query param allows override up to 20.
+- **Dead Code Removal**: Deleted `netlify/functions/`, `netlify.toml`, and removed `@netlify/blobs`, `@netlify/functions`, `@netlify/plugin-nextjs`, `@anthropic-ai/sdk`, `@huggingface/inference`, `cohere-ai`, `groq-sdk` from `package.json`. Fixed `src/lib/backup.ts` to not import removed packages.
+- **package.json**: Bumped to `1.13.0`.
+
 ### Beta 1.12 (2026-03-19)
 - **Admin Stability Fix**: Wrapped `AdminMonitorTabs` and `AdminManageTabs` in `<Suspense>` boundaries — Next.js 14 requires this for any client component using `useSearchParams()` rendered by a server component page. Missing Suspense caused "Application error: a client-side exception" on `/admin` and `/admin/manage`.
 - **package.json**: Bumped to `1.12.0`.
