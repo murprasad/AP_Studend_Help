@@ -39,7 +39,7 @@ function run() {
   const commits = rawLog || "- (no commits since last tag)";
 
   // ── Read smoke test results ───────────────────────────────────────────────
-  let smokeSection = "Smoke tests: not run (run `node scripts/smoke-tests.js` separately)";
+  let smokeSection = "Smoke tests: not run";
   try {
     const smokeFile = path.join(os.tmpdir(), "studentnest_smoke_results.json");
     if (fs.existsSync(smokeFile)) {
@@ -49,12 +49,31 @@ function run() {
         return `  ${icon} ${t.label}${t.detail ? " — " + t.detail : ""}`;
       });
       smokeSection = `Smoke tests: ${r.passed} passed, ${r.warned} warnings, ${r.failed} failed\n${lines.join("\n")}`;
-      // Clean up temp file
       fs.unlinkSync(smokeFile);
     }
-  } catch {
-    // Smoke results unavailable — continue
-  }
+  } catch { /* unavailable */ }
+
+  // ── Read integration test results ─────────────────────────────────────────
+  let integrationSection = "Integration tests: not run (CRON_SECRET not set or tests skipped)";
+  try {
+    const intFile = path.join(os.tmpdir(), "studentnest_integration_results.json");
+    if (fs.existsSync(intFile)) {
+      const r = JSON.parse(fs.readFileSync(intFile, "utf8"));
+      if (r.skipped) {
+        integrationSection = "Integration tests: skipped (CRON_SECRET not configured)";
+      } else {
+        const summary = r.summary
+          ? `Total questions: ${r.summary.totalApprovedQuestions} | Courses: ${r.summary.courses?.green} green, ${r.summary.courses?.yellow} yellow, ${r.summary.courses?.red} red`
+          : "";
+        const lines = (r.results || []).map((t) => {
+          const icon = t.status === "pass" ? "✅" : t.status === "warn" ? "⚠️" : "❌";
+          return `  ${icon} ${t.label}${t.detail ? " — " + t.detail : ""}`;
+        });
+        integrationSection = `Integration tests: ${r.passed} passed, ${r.warned} warnings, ${r.failed} failed\n${summary ? "  " + summary + "\n" : ""}${lines.join("\n")}`;
+      }
+      fs.unlinkSync(intFile);
+    }
+  } catch { /* unavailable */ }
 
   // ── Build the new log entry ───────────────────────────────────────────────
   const entry = `
@@ -73,16 +92,46 @@ ${commits}
 ${smokeSection}
 \`\`\`
 
+### Integration tests (practice coverage — all 16 courses)
+\`\`\`
+${integrationSection}
+\`\`\`
+
 ### Manual P0 checklist (fill in before marking release complete)
-- [ ] AP_WORLD_HISTORY MCQ session starts (ALL units, ALL difficulty)
-- [ ] SAT_MATH MCQ session starts
-- [ ] ACT_MATH MCQ session starts — verify 5 answer choices
-- [ ] AP_PHYSICS_1 FRQ session starts within 30s
-- [ ] Wrong MCQ answer → knowledge-check mini-quiz appears (1 question)
-- [ ] Correct MCQ answer → "Go deeper with Sage →" button visible
+**Practice — all 16 courses:**
+- [ ] AP_WORLD_HISTORY MCQ — ALL units, ALL difficulty → session starts, questions load
+- [ ] AP_US_HISTORY MCQ — session starts
+- [ ] AP_COMPUTER_SCIENCE_PRINCIPLES MCQ — session starts
+- [ ] AP_PHYSICS_1 MCQ + FRQ — both session types start within 30s
+- [ ] AP_CALCULUS_AB MCQ — session starts
+- [ ] AP_STATISTICS MCQ — session starts
+- [ ] AP_CHEMISTRY MCQ — session starts
+- [ ] AP_BIOLOGY MCQ — session starts
+- [ ] AP_PSYCHOLOGY MCQ — session starts
+- [ ] SAT_MATH MCQ — session starts
+- [ ] SAT_READING_WRITING MCQ — session starts
+- [ ] ACT_MATH MCQ — session starts, verify 5 answer choices (A-E not A-D)
+- [ ] ACT_ENGLISH MCQ — session starts
+- [ ] ACT_SCIENCE MCQ — session starts
+- [ ] ACT_READING MCQ — session starts
+
+**Student experience:**
+- [ ] Wrong MCQ answer → knowledge-check mini-quiz appears (count=1, within 15s)
+- [ ] Correct MCQ answer → "Go deeper with Sage →" teal pill visible
 - [ ] Ask Sage from practice → "Continue Practice" banner visible on Sage page
-- [ ] "Continue Practice" → resumes exact question position
-- [ ] Session completes → summary screen with accuracy + XP
+- [ ] "Continue Practice" → returns to exact question position (no progress lost)
+- [ ] Session completes → summary screen with accuracy %, XP earned, AP score estimate
+- [ ] No 500 errors or blank screens during any flow above
+
+**PWA:**
+- [ ] On mobile Chrome: "Add to Home Screen" prompt appears (or menu option works)
+- [ ] Installed PWA launches in standalone mode (no browser chrome)
+- [ ] App loads from home screen without internet (cached shell)
+
+**AI & Sage:**
+- [ ] Sage answers a question within 15s
+- [ ] Sage response includes 5 sections (Core Concept, Visual Breakdown, How AP Asks, Common Traps, Memory Hook)
+- [ ] Follow-up chips appear and clicking one pre-fills the input
 
 `;
 

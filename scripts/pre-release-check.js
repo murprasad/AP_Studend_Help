@@ -130,17 +130,21 @@ if (layoutContent.includes('href="/terms"') || layoutContent.includes("href='/te
   fail("Marketing footer is MISSING /terms link");
 }
 
-// ─── 6. Version bump reminder ─────────────────────────────────────────────────
+// ─── 6. Version consistency (hard fail if mismatch) ───────────────────────────
 section("6. Version consistency");
 const pkgJson = JSON.parse(read("package.json") || "{}");
 const aboutContent = read("src/app/(marketing)/about/page.tsx");
 const pkgVersion = pkgJson.version || "?";
-// Extract Beta x.y from about page badge
 const betaMatch = aboutContent.match(/Beta ([\d.]+)/);
 const aboutBeta = betaMatch ? betaMatch[1] : "?";
-// Just report — don't fail (versions use different formats: 1.9.0 vs Beta 1.10)
-console.log(`  ℹ️  package.json version: ${pkgVersion}  |  About page badge: Beta ${aboutBeta}`);
-console.log(`     (Manual check: bump package.json version to match About page badge)`);
+// package.json: "1.14.0" → compare first two parts against About page "Beta 1.14"
+const pkgMajorMinor = pkgVersion.split(".").slice(0, 2).join(".");
+if (pkgMajorMinor === aboutBeta) {
+  ok(`Version consistent: package.json ${pkgVersion} matches About page Beta ${aboutBeta}`);
+} else {
+  fail(`Version mismatch: package.json is ${pkgVersion} but About page shows Beta ${aboutBeta}. ` +
+    `Update package.json version OR About page badge before deploying.`);
+}
 
 // ─── 7. Practice test plan coverage ──────────────────────────────────────────
 section("7. Practice test plan");
@@ -173,6 +177,16 @@ console.log(`     [ ] AP_PHYSICS_1 FRQ session starts`);
 console.log(`     [ ] Wrong MCQ answer → knowledge-check appears (1 question, not 3)`);
 console.log(`     [ ] Session completes → summary screen shows accuracy + XP`);
 console.log(`     [ ] No 500 errors in CF Pages logs after starting sessions`);
+
+// ─── 8. PWA checks ────────────────────────────────────────────────────────────
+section("8. PWA compatibility");
+try {
+  execSync("node scripts/check-pwa.js", { cwd: ROOT, stdio: "pipe" });
+  ok("PWA checks passed (manifest, icons, SW, meta tags)");
+} catch (e) {
+  const output = (e.stdout?.toString() || "") + (e.stderr?.toString() || "");
+  fail(`PWA check failed:\n${output.slice(0, 600)}`);
+}
 
 // ─── Summary ─────────────────────────────────────────────────────────────────
 console.log(`\n${"─".repeat(50)}`);

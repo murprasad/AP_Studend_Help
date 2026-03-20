@@ -15,7 +15,9 @@
     "pages:build": "npx prisma generate && node scripts/patch-prisma-wasm.js && opennextjs-cloudflare build --dangerouslyUseUnsupportedNextVersion && node scripts/prepare-cf-deploy.js",
     "release:check": "node scripts/pre-release-check.js",
     "smoke-tests": "node scripts/smoke-tests.js",
-    "pages:deploy": "node scripts/pre-release-check.js && npm run pages:build && wrangler pages deploy .cf-deploy --project-name=studentnest --commit-dirty=true && node scripts/smoke-tests.js && node scripts/update-test-plan.js && node scripts/archive-release.js",
+    "integration-tests": "node scripts/integration-tests.js",
+    "check-pwa": "node scripts/check-pwa.js",
+    "pages:deploy": "node scripts/pre-release-check.js && npm run pages:build && wrangler pages deploy .cf-deploy --project-name=studentnest --commit-dirty=true && node scripts/smoke-tests.js && node scripts/integration-tests.js && node scripts/update-test-plan.js && node scripts/archive-release.js",
     "pages:preview": "npm run pages:build && wrangler pages dev .cf-deploy"
   },
   "dependencies": {
