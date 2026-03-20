@@ -47,7 +47,7 @@ async function callGemini(
   if (!client) throw new Error("No GOOGLE_AI_API_KEY");
 
   const model = client.getGenerativeModel({
-    model: "gemini-1.5-flash",
+    model: "gemini-2.0-flash-lite",
     ...(systemPrompt ? { systemInstruction: systemPrompt } : {}),
   });
 
@@ -159,7 +159,7 @@ async function callOpenRouter(
       "X-Title": "StudentNest",
     },
     body: JSON.stringify({
-      model: "google/gemini-flash-1.5",  // free model on OpenRouter
+      model: "openrouter/free",  // OpenRouter auto-selects best available free model
       messages,
       max_tokens: 1500,
     }),
@@ -449,10 +449,10 @@ async function callPollinationsFree(
 }
 
 const PROVIDERS: Provider[] = [
-  { name: "Gemini",             envKey: "GOOGLE_AI_API_KEY",       modelId: "google/gemini-1.5-flash",              call: callGemini },
+  { name: "Gemini",             envKey: "GOOGLE_AI_API_KEY",       modelId: "google/gemini-2.0-flash-lite",         call: callGemini },
   { name: "Groq",               envKey: "GROQ_API_KEY",            modelId: "groq/llama-3.3-70b-versatile",         call: callGroq },
   { name: "Together.ai",        envKey: "TOGETHER_AI_API_KEY",     modelId: "together/llama-3-70b",                 call: callTogetherAI },
-  { name: "OpenRouter",         envKey: "OPENROUTER_API_KEY",      modelId: "openrouter/gemini-flash-1.5",          call: callOpenRouter },
+  { name: "OpenRouter",         envKey: "OPENROUTER_API_KEY",      modelId: "openrouter/free",                      call: callOpenRouter },
   { name: "OpenRouter-Premium", envKey: "OPENROUTER_API_KEY",      modelId: "openrouter/gpt-4o",                    call: callOpenRouterPremium },
   { name: "HuggingFace",        envKey: "HUGGINGFACE_API_KEY",     modelId: "huggingface/mistral-7b",               call: callHuggingFace },
   { name: "Cohere",             envKey: "COHERE_API_KEY",          modelId: "cohere/command-r",                     call: callCohere },

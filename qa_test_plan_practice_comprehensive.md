@@ -650,3 +650,215 @@ Integration tests: 17 passed, 10 warnings, 0 failed
 - [ ] Sage response includes 5 sections (Core Concept, Visual Breakdown, How AP Asks, Common Traps, Memory Hook)
 - [ ] Follow-up chips appear and clicking one pre-fills the input
 
+
+---
+
+## Release Log — v1.14.0 (2026-03-20)
+
+**Deployed:** Fri, 20 Mar 2026 18:58:45 GMT
+**Version:** 1.14.0
+
+### Changes in this release
+- chore: release archive beta-1.14 — update test plan log
+- feat: Beta 1.14 — version bump, About page update, targeted seeding scripts
+- fix: replace 112 parallel count queries with single groupBy in practice-check endpoint
+- fix: auto-load .env in integration tests + add CRON_SECRET to .env.example
+- feat: comprehensive release pipeline — integration tests, PWA checks, beta version gate
+- fix: replace AbortSignal.timeout with unref'd timer to prevent Windows libuv crash on pipeline exit
+- chore: full release pipeline — smoke tests, auto test-plan update, archive
+- feat: Sage practice integration — session restore + return banner + richer context
+- perf: quickMode for on-demand AI gen + count=1 knowledge check + comprehensive test plan
+- feat: Beta 1.13 — premium signup notifications, seeding workflow, cron fixes
+
+### Automated smoke tests
+```
+Smoke tests: 12 passed, 0 warnings, 0 failed
+  ✅ GET /
+  ✅ GET /pricing
+  ✅ GET /about
+  ✅ GET /login
+  ✅ GET /register
+  ✅ GET /api/ai/status
+  ✅ GET /api/feature-flags
+  ✅ POST /api/practice
+  ✅ POST /api/ai/tutor/knowledge-check
+  ✅ GET /api/analytics
+  ✅ GET /api/user
+  ✅ POST /api/ai/tutor/knowledge-check (bad input)
+```
+
+### Integration tests (practice coverage — all 16 courses)
+```
+Integration tests: 17 passed, 10 warnings, 0 failed
+  Total questions: 438 | Courses: 12 green, 0 yellow, 4 red
+  ✅ AI generation enabled — students will get questions even for thin courses
+  ✅ AP_WORLD_HISTORY — 64 MCQ questions
+  ✅ AP_COMPUTER_SCIENCE_PRINCIPLES — 35 MCQ questions
+  ✅ AP_PHYSICS_1 — 51 MCQ questions
+  ✅ AP_CALCULUS_AB — 42 MCQ questions
+  ✅ AP_CALCULUS_BC — 6 MCQ questions
+  ⚠️ AP_STATISTICS — 0 questions — AI will generate on first session
+  ⚠️ AP_CHEMISTRY — 0 questions — AI will generate on first session
+  ✅ AP_BIOLOGY — 14 MCQ questions
+  ⚠️ AP_US_HISTORY — 0 questions — AI will generate on first session
+  ⚠️ AP_PSYCHOLOGY — 0 questions — AI will generate on first session
+  ✅ SAT_MATH — 45 MCQ questions
+  ✅ SAT_READING_WRITING — 40 MCQ questions
+  ✅ ACT_MATH — 40 MCQ questions
+  ✅ ACT_ENGLISH — 24 MCQ questions
+  ✅ ACT_SCIENCE — 24 MCQ questions
+  ✅ ACT_READING — 32 MCQ questions
+  ✅ AP World History: Modern FRQ — 5 questions
+  ✅ AP Computer Science Principles FRQ — 6 questions
+  ⚠️ AP Physics 1: Algebra-Based FRQ — 0 FRQ questions — AI will generate on first session
+  ✅ AP Calculus AB FRQ — 9 questions
+  ✅ AP Calculus BC FRQ — 1 questions
+  ⚠️ AP Statistics FRQ — 0 FRQ questions — AI will generate on first session
+  ⚠️ AP Chemistry FRQ — 0 FRQ questions — AI will generate on first session
+  ⚠️ AP Biology FRQ — 0 FRQ questions — AI will generate on first session
+  ⚠️ AP US History FRQ — 0 FRQ questions — AI will generate on first session
+  ⚠️ AP Psychology FRQ — 0 FRQ questions — AI will generate on first session
+```
+
+### Manual P0 checklist (fill in before marking release complete)
+**Practice — all 16 courses:**
+- [ ] AP_WORLD_HISTORY MCQ — ALL units, ALL difficulty → session starts, questions load
+- [ ] AP_US_HISTORY MCQ — session starts
+- [ ] AP_COMPUTER_SCIENCE_PRINCIPLES MCQ — session starts
+- [ ] AP_PHYSICS_1 MCQ + FRQ — both session types start within 30s
+- [ ] AP_CALCULUS_AB MCQ — session starts
+- [ ] AP_STATISTICS MCQ — session starts
+- [ ] AP_CHEMISTRY MCQ — session starts
+- [ ] AP_BIOLOGY MCQ — session starts
+- [ ] AP_PSYCHOLOGY MCQ — session starts
+- [ ] SAT_MATH MCQ — session starts
+- [ ] SAT_READING_WRITING MCQ — session starts
+- [ ] ACT_MATH MCQ — session starts, verify 5 answer choices (A-E not A-D)
+- [ ] ACT_ENGLISH MCQ — session starts
+- [ ] ACT_SCIENCE MCQ — session starts
+- [ ] ACT_READING MCQ — session starts
+
+**Student experience:**
+- [ ] Wrong MCQ answer → knowledge-check mini-quiz appears (count=1, within 15s)
+- [ ] Correct MCQ answer → "Go deeper with Sage →" teal pill visible
+- [ ] Ask Sage from practice → "Continue Practice" banner visible on Sage page
+- [ ] "Continue Practice" → returns to exact question position (no progress lost)
+- [ ] Session completes → summary screen with accuracy %, XP earned, AP score estimate
+- [ ] No 500 errors or blank screens during any flow above
+
+**PWA:**
+- [ ] On mobile Chrome: "Add to Home Screen" prompt appears (or menu option works)
+- [ ] Installed PWA launches in standalone mode (no browser chrome)
+- [ ] App loads from home screen without internet (cached shell)
+
+**AI & Sage:**
+- [ ] Sage answers a question within 15s
+- [ ] Sage response includes 5 sections (Core Concept, Visual Breakdown, How AP Asks, Common Traps, Memory Hook)
+- [ ] Follow-up chips appear and clicking one pre-fills the input
+
+
+---
+
+## Release Log — v1.14.0 (2026-03-20)
+
+**Deployed:** Fri, 20 Mar 2026 19:13:45 GMT
+**Version:** 1.14.0
+
+### Changes in this release
+- chore: release archive beta-1.14 — update test plan log
+- feat: Beta 1.14 — version bump, About page update, targeted seeding scripts
+- fix: replace 112 parallel count queries with single groupBy in practice-check endpoint
+- fix: auto-load .env in integration tests + add CRON_SECRET to .env.example
+- feat: comprehensive release pipeline — integration tests, PWA checks, beta version gate
+- fix: replace AbortSignal.timeout with unref'd timer to prevent Windows libuv crash on pipeline exit
+- chore: full release pipeline — smoke tests, auto test-plan update, archive
+- feat: Sage practice integration — session restore + return banner + richer context
+- perf: quickMode for on-demand AI gen + count=1 knowledge check + comprehensive test plan
+- feat: Beta 1.13 — premium signup notifications, seeding workflow, cron fixes
+
+### Automated smoke tests
+```
+Smoke tests: 12 passed, 0 warnings, 0 failed
+  ✅ GET /
+  ✅ GET /pricing
+  ✅ GET /about
+  ✅ GET /login
+  ✅ GET /register
+  ✅ GET /api/ai/status
+  ✅ GET /api/feature-flags
+  ✅ POST /api/practice
+  ✅ POST /api/ai/tutor/knowledge-check
+  ✅ GET /api/analytics
+  ✅ GET /api/user
+  ✅ POST /api/ai/tutor/knowledge-check (bad input)
+```
+
+### Integration tests (practice coverage — all 16 courses)
+```
+Integration tests: 17 passed, 10 warnings, 0 failed
+  Total questions: 438 | Courses: 12 green, 0 yellow, 4 red
+  ✅ AI generation enabled — students will get questions even for thin courses
+  ✅ AP_WORLD_HISTORY — 64 MCQ questions
+  ✅ AP_COMPUTER_SCIENCE_PRINCIPLES — 35 MCQ questions
+  ✅ AP_PHYSICS_1 — 51 MCQ questions
+  ✅ AP_CALCULUS_AB — 42 MCQ questions
+  ✅ AP_CALCULUS_BC — 6 MCQ questions
+  ⚠️ AP_STATISTICS — 0 questions — AI will generate on first session
+  ⚠️ AP_CHEMISTRY — 0 questions — AI will generate on first session
+  ✅ AP_BIOLOGY — 14 MCQ questions
+  ⚠️ AP_US_HISTORY — 0 questions — AI will generate on first session
+  ⚠️ AP_PSYCHOLOGY — 0 questions — AI will generate on first session
+  ✅ SAT_MATH — 45 MCQ questions
+  ✅ SAT_READING_WRITING — 40 MCQ questions
+  ✅ ACT_MATH — 40 MCQ questions
+  ✅ ACT_ENGLISH — 24 MCQ questions
+  ✅ ACT_SCIENCE — 24 MCQ questions
+  ✅ ACT_READING — 32 MCQ questions
+  ✅ AP World History: Modern FRQ — 5 questions
+  ✅ AP Computer Science Principles FRQ — 6 questions
+  ⚠️ AP Physics 1: Algebra-Based FRQ — 0 FRQ questions — AI will generate on first session
+  ✅ AP Calculus AB FRQ — 9 questions
+  ✅ AP Calculus BC FRQ — 1 questions
+  ⚠️ AP Statistics FRQ — 0 FRQ questions — AI will generate on first session
+  ⚠️ AP Chemistry FRQ — 0 FRQ questions — AI will generate on first session
+  ⚠️ AP Biology FRQ — 0 FRQ questions — AI will generate on first session
+  ⚠️ AP US History FRQ — 0 FRQ questions — AI will generate on first session
+  ⚠️ AP Psychology FRQ — 0 FRQ questions — AI will generate on first session
+```
+
+### Manual P0 checklist (fill in before marking release complete)
+**Practice — all 16 courses:**
+- [ ] AP_WORLD_HISTORY MCQ — ALL units, ALL difficulty → session starts, questions load
+- [ ] AP_US_HISTORY MCQ — session starts
+- [ ] AP_COMPUTER_SCIENCE_PRINCIPLES MCQ — session starts
+- [ ] AP_PHYSICS_1 MCQ + FRQ — both session types start within 30s
+- [ ] AP_CALCULUS_AB MCQ — session starts
+- [ ] AP_STATISTICS MCQ — session starts
+- [ ] AP_CHEMISTRY MCQ — session starts
+- [ ] AP_BIOLOGY MCQ — session starts
+- [ ] AP_PSYCHOLOGY MCQ — session starts
+- [ ] SAT_MATH MCQ — session starts
+- [ ] SAT_READING_WRITING MCQ — session starts
+- [ ] ACT_MATH MCQ — session starts, verify 5 answer choices (A-E not A-D)
+- [ ] ACT_ENGLISH MCQ — session starts
+- [ ] ACT_SCIENCE MCQ — session starts
+- [ ] ACT_READING MCQ — session starts
+
+**Student experience:**
+- [ ] Wrong MCQ answer → knowledge-check mini-quiz appears (count=1, within 15s)
+- [ ] Correct MCQ answer → "Go deeper with Sage →" teal pill visible
+- [ ] Ask Sage from practice → "Continue Practice" banner visible on Sage page
+- [ ] "Continue Practice" → returns to exact question position (no progress lost)
+- [ ] Session completes → summary screen with accuracy %, XP earned, AP score estimate
+- [ ] No 500 errors or blank screens during any flow above
+
+**PWA:**
+- [ ] On mobile Chrome: "Add to Home Screen" prompt appears (or menu option works)
+- [ ] Installed PWA launches in standalone mode (no browser chrome)
+- [ ] App loads from home screen without internet (cached shell)
+
+**AI & Sage:**
+- [ ] Sage answers a question within 15s
+- [ ] Sage response includes 5 sections (Core Concept, Visual Breakdown, How AP Asks, Common Traps, Memory Hook)
+- [ ] Follow-up chips appear and clicking one pre-fills the input
+
