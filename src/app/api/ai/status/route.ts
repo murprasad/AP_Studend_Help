@@ -59,14 +59,15 @@ async function testOpenRouter(): Promise<string> {
 
 async function testHuggingFace(): Promise<string> {
   if (!process.env.HUGGINGFACE_API_KEY) return "NO_KEY";
-  const res = await fetch("https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.3", {
+  const res = await fetch("https://router.huggingface.co/hf-inference/models/meta-llama/Meta-Llama-3-8B-Instruct/v1/chat/completions", {
     method: "POST",
     headers: { "Content-Type": "application/json", Authorization: `Bearer ${process.env.HUGGINGFACE_API_KEY}` },
-    body: JSON.stringify({ inputs: TEST_PROMPT, parameters: { max_new_tokens: 10 } }),
+    body: JSON.stringify({ model: "meta-llama/Meta-Llama-3-8B-Instruct", messages: [{ role: "user", content: TEST_PROMPT }], max_tokens: 10 }),
     signal: AbortSignal.timeout(15000),
   });
   if (!res.ok) return `HTTP_${res.status}`;
-  return "OK";
+  const d = await res.json();
+  return d.choices?.[0]?.message?.content ? "OK" : "EMPTY_RESPONSE";
 }
 
 async function testCohere(): Promise<string> {

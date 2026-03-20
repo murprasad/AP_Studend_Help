@@ -211,20 +211,22 @@ async function callHuggingFace(
   const apiKey = process.env.HUGGINGFACE_API_KEY;
   if (!apiKey) throw new Error("No HUGGINGFACE_API_KEY");
 
-  const fullPrompt = systemPrompt
-    ? `<|system|>\n${systemPrompt}\n<|user|>\n${prompt}\n<|assistant|>`
-    : prompt;
+  const messages = [
+    ...(systemPrompt ? [{ role: "system", content: systemPrompt }] : []),
+    { role: "user", content: prompt },
+  ];
 
-  const res = await fetch("https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.3", {
+  // New HuggingFace Inference Providers API (replaces deprecated api-inference.huggingface.co)
+  const res = await fetch("https://router.huggingface.co/hf-inference/models/meta-llama/Meta-Llama-3-8B-Instruct/v1/chat/completions", {
     method: "POST",
     headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
-    body: JSON.stringify({ inputs: fullPrompt, parameters: { max_new_tokens: 1200, temperature: 0.7, return_full_text: false } }),
+    body: JSON.stringify({ model: "meta-llama/Meta-Llama-3-8B-Instruct", messages, max_tokens: 1200, temperature: 0.7 }),
     signal: AbortSignal.timeout(25000),
   });
 
   if (!res.ok) throw new Error(`HuggingFace error: ${res.status}`);
-  const data = await res.json() as Array<{ generated_text?: string }>;
-  return data[0]?.generated_text || "";
+  const data = await res.json();
+  return data.choices?.[0]?.message?.content || "";
 }
 
 async function callCohere(
