@@ -1,0 +1,22 @@
+name: Auto-Populate Question Bank
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'   # every 6 hours
+  workflow_dispatch:          # manual trigger from GitHub Actions UI
+
+jobs:
+  auto-populate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger auto-populate
+        run: |
+          response=$(curl -s -w "\n%{http_code}" -X POST \
+            https://studentnest.ai/api/cron/auto-populate \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            -H "Content-Type: application/json")
+          body=$(echo "$response" | head -n -1)
+          status=$(echo "$response" | tail -n 1)
+          echo "Status: $status"
+          echo "Response: $body"
+          if [ "$status" != "200" ]; then exit 1; fi

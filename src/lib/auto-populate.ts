@@ -68,7 +68,10 @@ export interface AutoPopulateResult {
   details: Array<{ course: string; unit: string; added: number }>;
 }
 
-export async function runAutoPopulate(): Promise<AutoPopulateResult> {
+export async function runAutoPopulate(
+  threshold: number = AUTO_POPULATE_TARGET,
+  targetPerUnit: number = AUTO_POPULATE_TARGET,
+): Promise<AutoPopulateResult> {
   // 1. Count current approved questions per (course, unit)
   const allCounts = await prisma.question.groupBy({
     by: ["course", "unit"],
@@ -77,7 +80,7 @@ export async function runAutoPopulate(): Promise<AutoPopulateResult> {
   });
   const countMap = new Map(allCounts.map((c) => [`${c.course}::${c.unit}`, c._count.id]));
 
-  // 2. Find all units below target, sorted most critical first
+  // 2. Find all units below threshold, sorted most critical first
   type UnitJob = { course: ApCourse; unit: ApUnit; current: number; needed: number; keyThemes: string[] };
   const needsWork: UnitJob[] = [];
 
@@ -85,12 +88,12 @@ export async function runAutoPopulate(): Promise<AutoPopulateResult> {
     const config = COURSE_REGISTRY[course];
     for (const [unit, unitMeta] of Object.entries(config.units) as [ApUnit, typeof config.units[ApUnit]][]) {
       const current = countMap.get(`${course}::${unit}`) ?? 0;
-      if (current < AUTO_POPULATE_TARGET) {
+      if (current < threshold) {
         needsWork.push({
           course,
           unit,
           current,
-          needed: AUTO_POPULATE_TARGET - current,
+          needed: targetPerUnit - current,
           keyThemes: unitMeta?.keyThemes ?? [],
         });
       }

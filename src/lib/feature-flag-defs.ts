@@ -43,6 +43,12 @@ export const FEATURE_FLAG_DEFS = [
     default: "false",
     dangerous: false,
   },
+  // Auto-populate settings (not boolean flags — managed by AdminAutoPopulateSettings)
+  { key: "auto_populate_enabled", label: "Auto-Populate Enabled", description: "Master on/off for scheduled question bank auto-populate.", default: "false", dangerous: false },
+  { key: "auto_populate_threshold", label: "Auto-Populate Threshold", description: "Units with fewer questions than this are topped up.", default: "10", dangerous: false },
+  { key: "auto_populate_target", label: "Auto-Populate Target", description: "Fill each thin unit up to this many questions.", default: "20", dangerous: false },
+  { key: "auto_populate_last_run", label: "Auto-Populate Last Run", description: "ISO timestamp of the last auto-populate run.", default: "", dangerous: false },
+  { key: "auto_populate_last_result", label: "Auto-Populate Last Result", description: "JSON summary of the last auto-populate run.", default: "", dangerous: false },
 ] as const;
 
 export type FeatureFlagKey = (typeof FEATURE_FLAG_DEFS)[number]["key"];

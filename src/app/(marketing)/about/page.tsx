@@ -1,5 +1,5 @@
 import { Badge } from "@/components/ui/badge";
-import { Globe, Mail, Target, Heart, Sparkles, Flame, Calendar, Trophy, Layers, Mic, Lightbulb, Scale, Crown } from "lucide-react";
+import { Globe, Mail, Target, Heart, Sparkles, Flame, Calendar, Trophy, Layers, Mic, Lightbulb, Scale, Crown, LayoutDashboard } from "lucide-react";
 import Link from "next/link";
 
 const COURSES = [
@@ -45,7 +45,7 @@ export default function AboutPage() {
           </div>
           <div className="flex items-center gap-2 flex-wrap">
             <h1 className="text-3xl font-bold gradient-text">About StudentNest</h1>
-            <Badge className="bg-indigo-500/20 text-indigo-300 border-indigo-500/30 text-xs font-semibold">Beta 1.10</Badge>
+            <Badge className="bg-indigo-500/20 text-indigo-300 border-indigo-500/30 text-xs font-semibold">Beta 1.11</Badge>
           </div>
         </div>
         <p className="text-muted-foreground leading-relaxed max-w-2xl mx-auto">
@@ -161,10 +161,35 @@ export default function AboutPage() {
         </div>
       </div>
 
-      {/* Section 7: What's New in Beta 1.10 */}
+      {/* Section 7: What's New in Beta 1.11 */}
       <div className="space-y-6">
         <div className="text-center space-y-1">
           <Badge className="bg-indigo-500/20 text-indigo-300 border-indigo-500/30 text-xs font-semibold mb-2">Latest Release</Badge>
+          <h2 className="text-xl font-bold">What&apos;s New in Beta 1.11</h2>
+          <p className="text-sm text-muted-foreground">Admin dashboard redesigned into two focused pages — monitor platform health and manage content without scrolling past the fold.</p>
+        </div>
+        <div className="grid sm:grid-cols-2 gap-3 text-left">
+          {[
+            { icon: LayoutDashboard, color: "text-indigo-400", bg: "bg-indigo-500/10", title: "Monitor Page",  desc: "Dedicated Overview tab (stats + live infra metrics) and Users tab (recent sign-ups + session feedback). All read-only at a glance." },
+            { icon: Sparkles,        color: "text-violet-400", bg: "bg-violet-500/10", title: "Manage Page",  desc: "Question Bank, Coverage, and Config tabs — all write actions consolidated in one place with URL-based bookmarkable tab state." },
+          ].map(({ icon: Icon, color, bg, title, desc }) => (
+            <div key={title} className="flex gap-3 p-4 rounded-xl border border-border/40 bg-card">
+              <div className={`w-8 h-8 rounded-lg ${bg} flex items-center justify-center flex-shrink-0 mt-0.5`}>
+                <Icon className={`h-4 w-4 ${color}`} />
+              </div>
+              <div>
+                <p className="text-sm font-semibold">{title}</p>
+                <p className="text-xs text-muted-foreground leading-relaxed mt-0.5">{desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Section 7b: Beta 1.10 */}
+      <div className="space-y-6">
+        <div className="text-center space-y-1">
+          <Badge className="bg-border/60 text-muted-foreground border-border/40 text-xs font-semibold mb-2">Beta 1.10</Badge>
           <h2 className="text-xl font-bold">What&apos;s New in Beta 1.10</h2>
           <p className="text-sm text-muted-foreground">Annual billing option and a clearer refund guarantee — making Premium a no-brainer commitment.</p>
         </div>
@@ -186,7 +211,7 @@ export default function AboutPage() {
         </div>
       </div>
 
-      {/* Section 7b: Beta 1.9 */}
+      {/* Section 7c: Beta 1.9 */}
       <div className="space-y-6">
         <div className="text-center space-y-1">
           <Badge className="bg-border/60 text-muted-foreground border-border/40 text-xs font-semibold mb-2">Beta 1.9</Badge>

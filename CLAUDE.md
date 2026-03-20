@@ -379,6 +379,14 @@ npm run pages:deploy    # checks + build + deploy to CF Pages
 
 ## Release History
 
+### Beta 1.11 (2026-03-19)
+- **Admin Dashboard Redesign**: Split single scrolling admin page into two focused pages with URL-based tab state.
+- **Monitor page** (`/admin`): Overview tab (4 stat cards + live infra metrics, auto-refresh 60s) and Users tab (recent sign-ups + session feedback). Read-only — no destructive actions.
+- **Manage page** (`/admin/manage`): Question Bank tab (Auto-Populate Settings + Bulk Generate + Mega-Populate), Coverage tab (unit coverage + topic coverage grid), Config tab (Feature Flags + Payment Setup).
+- **AdminPageNav**: Shared 2-button pill nav (`Monitor` / `Manage`) rendered at the top of both pages; highlights the active page.
+- **URL tab state**: All tabs use `useSearchParams` + `router.push` so tabs survive refresh and are bookmarkable (e.g. `/admin?tab=users`, `/admin/manage?tab=coverage`).
+- **package.json**: Bumped to `1.11.0`.
+
 ### Beta 1.5 (2026-03-18)
 - **AI Knowledge Check**: Optional 3-MCQ comprehension quiz after each Sage response. Button "Check your understanding" appears below follow-up chips; never auto-triggers. Groq generates all 3 questions in one JSON call (~1s), Pollinations-Free fallback. Results saved to `TutorKnowledgeCheck` DB table (fire-and-forget submit).
 - **Comprehension Analytics**: `GET /api/analytics` now returns `knowledgeCheckStats: { totalChecks, avgComprehension }`. Analytics page shows "Tutor Comprehension %" stat card once ≥1 check taken.
