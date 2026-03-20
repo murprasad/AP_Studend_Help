@@ -45,7 +45,7 @@ export default function AboutPage() {
           </div>
           <div className="flex items-center gap-2 flex-wrap">
             <h1 className="text-3xl font-bold gradient-text">About StudentNest</h1>
-            <Badge className="bg-indigo-500/20 text-indigo-300 border-indigo-500/30 text-xs font-semibold">Beta 1.13</Badge>
+            <Badge className="bg-indigo-500/20 text-indigo-300 border-indigo-500/30 text-xs font-semibold">Beta 1.14</Badge>
           </div>
         </div>
         <p className="text-muted-foreground leading-relaxed max-w-2xl mx-auto">
@@ -161,10 +161,37 @@ export default function AboutPage() {
         </div>
       </div>
 
-      {/* Section 7: What's New in Beta 1.13 */}
+      {/* Section 7: What's New in Beta 1.14 */}
       <div className="space-y-6">
         <div className="text-center space-y-1">
           <Badge className="bg-indigo-500/20 text-indigo-300 border-indigo-500/30 text-xs font-semibold mb-2">Latest Release</Badge>
+          <h2 className="text-xl font-bold">What&apos;s New in Beta 1.14</h2>
+          <p className="text-sm text-muted-foreground">Full question bank coverage across all 16 courses, fully automated release pipeline, and integrated post-deploy verification.</p>
+        </div>
+        <div className="grid sm:grid-cols-2 gap-3 text-left">
+          {[
+            { icon: Sparkles,        color: "text-indigo-400", bg: "bg-indigo-500/10", title: "All 16 Courses Seeded",        desc: "AP Statistics, AP Chemistry, AP US History, and AP Psychology now have full MCQ question banks — students will never hit an empty course." },
+            { icon: LayoutDashboard, color: "text-violet-400", bg: "bg-violet-500/10", title: "Automated Release Pipeline",    desc: "Every deploy now runs pre-release checks, smoke tests, integration tests, and archives the release log — fully automated, zero manual steps." },
+            { icon: Sparkles,        color: "text-green-400",  bg: "bg-green-500/10",  title: "Post-Deploy Verification",      desc: "Smoke tests verify all 16 courses and key endpoints immediately after every deploy, catching regressions before students encounter them." },
+            { icon: LayoutDashboard, color: "text-orange-400", bg: "bg-orange-500/10", title: "Sage for Every Answer",         desc: "Sage now appears after both correct and wrong answers — students can always go deeper, then return to their exact practice session position." },
+          ].map(({ icon: Icon, color, bg, title, desc }) => (
+            <div key={title} className="flex gap-3 p-4 rounded-xl border border-border/40 bg-card">
+              <div className={`w-8 h-8 rounded-lg ${bg} flex items-center justify-center flex-shrink-0 mt-0.5`}>
+                <Icon className={`h-4 w-4 ${color}`} />
+              </div>
+              <div>
+                <p className="text-sm font-semibold">{title}</p>
+                <p className="text-xs text-muted-foreground leading-relaxed mt-0.5">{desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Section 7b: Beta 1.13 */}
+      <div className="space-y-6">
+        <div className="text-center space-y-1">
+          <Badge className="bg-border/60 text-muted-foreground border-border/40 text-xs font-semibold mb-2">Beta 1.13</Badge>
           <h2 className="text-xl font-bold">What&apos;s New in Beta 1.13</h2>
           <p className="text-sm text-muted-foreground">Premium membership notifications, automated question bank seeding, and infrastructure reliability improvements.</p>
         </div>
@@ -188,7 +215,7 @@ export default function AboutPage() {
         </div>
       </div>
 
-      {/* Section 7b: Beta 1.12 */}
+      {/* Section 7c: Beta 1.12 */}
       <div className="space-y-6">
         <div className="text-center space-y-1">
           <Badge className="bg-border/60 text-muted-foreground border-border/40 text-xs font-semibold mb-2">Beta 1.12</Badge>

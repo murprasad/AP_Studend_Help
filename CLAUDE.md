@@ -379,6 +379,15 @@ npm run pages:deploy    # checks + build + deploy to CF Pages
 
 ## Release History
 
+### Beta 1.14 (2026-03-20)
+- **Full Course Coverage**: Seeded all 4 previously empty courses (AP Statistics, AP Chemistry, AP US History, AP Psychology) to green status — no student will hit a 0-question course.
+- **Sage for Every Answer**: Sage now appears after both correct and wrong answers. Students can ask for a deep explanation, then return to their exact practice session position via the "Continue Practice" banner.
+- **count=1 Knowledge Check**: Wrong-answer inline quiz now generates 1 question (was 3) — ~10s faster, less interruption for students.
+- **quickMode AI Generation**: On-demand question generation skips CB FRQ fetch and validation for the inline session path, cutting wait time from ~20s to ~5s per question.
+- **Automated Release Pipeline**: `pages:deploy` now runs: pre-release-check → build → CF Pages deploy → smoke-tests → integration-tests → update-test-plan → archive-release. Fully automated, zero manual steps.
+- **Integration Tests**: `/api/test/practice-check` (CRON_SECRET-gated) checks all 16 courses with a single `groupBy` query. Results written to test plan on every deploy.
+- **package.json**: Bumped to `1.14.0`.
+
 ### Beta 1.13 (2026-03-20)
 - **Premium Signup Notification**: `checkout.session.completed` Stripe webhook now sends an email to `contact@studentnest.ai` with the new member's name, email, and plan type (monthly/annual). Fire-and-forget — email failure never blocks the webhook response.
 - **One-Time Seeding Workflow**: `.github/workflows/seed-question-bank.yml` — manual GitHub Actions workflow that loops up to 120 iterations × 8 questions to seed all ~109 units to green coverage. Stops early when all units are full.
