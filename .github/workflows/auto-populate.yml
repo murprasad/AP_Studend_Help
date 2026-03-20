@@ -9,23 +9,37 @@ jobs:
   auto-populate:
     runs-on: ubuntu-latest
     steps:
-      - name: Trigger auto-populate
+      - name: Trigger auto-populate (with retries)
         run: |
-          response=$(curl -s -w "\n%{http_code}" -X POST \
-            https://studentnest.ai/api/cron/auto-populate \
-            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
-            -H "Content-Type: application/json")
-          body=$(echo "$response" | head -n -1)
-          status=$(echo "$response" | tail -n 1)
-          echo "HTTP Status: $status"
-          echo "Response: $body"
-          if [ "$status" = "401" ]; then
-            echo "❌ 401 Unauthorized — check that CRON_SECRET in GitHub Actions matches the one in Cloudflare Pages."
-            exit 1
-          fi
-          if [ "$status" = "200" ]; then
-            echo "✅ Success"
-            exit 0
-          fi
-          echo "❌ Unexpected status $status"
+          MAX_ATTEMPTS=3
+          RETRY_DELAY=30  # seconds between retries
+
+          for attempt in $(seq 1 $MAX_ATTEMPTS); do
+            echo "--- Attempt $attempt of $MAX_ATTEMPTS ---"
+            response=$(curl -s -w "\n%{http_code}" -X POST \
+              https://studentnest.ai/api/cron/auto-populate \
+              -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+              -H "Content-Type: application/json")
+            body=$(echo "$response" | head -n -1)
+            status=$(echo "$response" | tail -n 1)
+            echo "HTTP Status: $status"
+            echo "Response: $body"
+
+            if [ "$status" = "401" ]; then
+              echo "❌ 401 Unauthorized — CRON_SECRET mismatch. No point retrying."
+              exit 1
+            fi
+
+            if [ "$status" = "200" ]; then
+              echo "✅ Success on attempt $attempt"
+              exit 0
+            fi
+
+            echo "⚠️  Got status $status — will retry in ${RETRY_DELAY}s"
+            if [ "$attempt" -lt "$MAX_ATTEMPTS" ]; then
+              sleep $RETRY_DELAY
+            fi
+          done
+
+          echo "❌ All $MAX_ATTEMPTS attempts failed."
           exit 1
