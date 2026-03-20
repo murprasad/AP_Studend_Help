@@ -6,11 +6,26 @@ import { askTutor } from "@/lib/ai";
 import { ApCourse } from "@prisma/client";
 import { VALID_AP_COURSES } from "@/lib/courses";
 import { isAiLimitEnabled, isPaymentsEnabled } from "@/lib/settings";
+import { rateLimit } from "@/lib/rate-limit";
+
+async function computeCacheKey(message: string, course: string): Promise<string> {
+  const input = `${message.toLowerCase().trim()}|${course}`;
+  const encoded = new TextEncoder().encode(input);
+  const hashBuffer = await crypto.subtle.digest("SHA-256", encoded);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
+}
 
 export async function POST(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
     if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+    // Per-minute rate limit (20 req/min per user)
+    const rl = rateLimit(session.user.id, "ai:tutor", 20);
+    if (!rl.allowed) {
+      return NextResponse.json({ error: "Too many requests. Please wait a moment." }, { status: 429 });
+    }
 
     const body = await req.json();
     const { message, conversationId, history = [], course = "AP_WORLD_HISTORY", skipAI, savedResponse } = body;
@@ -69,7 +84,53 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    const { answer, followUps } = await askTutor(message, history, undefined, course as ApCourse);
+    // Cache lookup — only for first-turn messages (no prior history)
+    let answer: string;
+    let followUps: string[];
+    let cacheHit = false;
+
+    if (history.length === 0) {
+      const cacheKey = await computeCacheKey(message, course);
+      const cutoff = new Date(Date.now() - 48 * 60 * 60 * 1000); // 48h TTL
+      const cached = await prisma.aiResponseCache.findUnique({ where: { cacheKey } });
+
+      if (cached && cached.createdAt > cutoff) {
+        answer = cached.response;
+        followUps = JSON.parse(cached.followUps) as string[];
+        cacheHit = true;
+
+        // Fire-and-forget: record conversation for history tracking
+        prisma.tutorConversation.create({
+          data: {
+            userId: session.user.id,
+            course: course as ApCourse,
+            messages: [
+              { role: "user", content: message },
+              { role: "assistant", content: answer },
+            ],
+            topic: message.slice(0, 100),
+          },
+        }).catch(() => {});
+
+        return NextResponse.json({ response: answer, followUps, conversationId: null, fromCache: true });
+      }
+
+      // Cache miss — call AI then write to cache
+      const result = await askTutor(message, history, undefined, course as ApCourse);
+      answer = result.answer;
+      followUps = result.followUps;
+
+      // Fire-and-forget cache write
+      prisma.aiResponseCache.upsert({
+        where: { cacheKey },
+        create: { cacheKey, course, response: answer, followUps: JSON.stringify(followUps) },
+        update: { response: answer, followUps: JSON.stringify(followUps), createdAt: new Date() },
+      }).catch(() => {});
+    } else {
+      const result = await askTutor(message, history, undefined, course as ApCourse);
+      answer = result.answer;
+      followUps = result.followUps;
+    }
 
     // Save or update conversation
     const messages = [
@@ -79,7 +140,6 @@ export async function POST(req: NextRequest) {
     ];
 
     if (conversationId) {
-      // Verify conversation belongs to user
       const existing = await prisma.tutorConversation.findFirst({
         where: { id: conversationId, userId: session.user.id },
       });

@@ -600,3 +600,15 @@ model DiagnosticResult {
   @@map("diagnostic_results")
 }
 
+model AiResponseCache {
+  id        String   @id @default(cuid())
+  cacheKey  String   @unique
+  course    String
+  response  String   @db.Text
+  followUps String   @db.Text    // JSON array
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+  @@map("ai_response_cache")
+}
+

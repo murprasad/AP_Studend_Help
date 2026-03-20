@@ -166,13 +166,12 @@ export default function AboutPage() {
         <div className="text-center space-y-1">
           <Badge className="bg-indigo-500/20 text-indigo-300 border-indigo-500/30 text-xs font-semibold mb-2">Latest Release</Badge>
           <h2 className="text-xl font-bold">What&apos;s New in Beta 1.10</h2>
-          <p className="text-sm text-muted-foreground">Annual plan on pricing page, 7-day refund guarantee, and full Terms of Service.</p>
+          <p className="text-sm text-muted-foreground">Annual billing option and a clearer refund guarantee — making Premium a no-brainer commitment.</p>
         </div>
         <div className="grid sm:grid-cols-2 gap-3 text-left">
           {[
-            { icon: Crown,    color: "text-indigo-400", bg: "bg-indigo-500/10", title: "Annual Plan on Pricing Page",   desc: "New monthly/annual toggle on /pricing. Save 33% at $79.99/yr — now visible to prospects before sign-up." },
-            { icon: Scale,    color: "text-green-400",  bg: "bg-green-500/10",  title: "7-Day Money-Back Guarantee",   desc: "Not satisfied within 7 days of your first Premium payment? Email us for a full refund, no questions asked." },
-            { icon: Scale,    color: "text-blue-400",   bg: "bg-blue-500/10",   title: "Terms of Service",             desc: "Full ToS page at /terms covering billing, refunds, cancellation, AI content, and intellectual property." },
+            { icon: Crown, color: "text-indigo-400", bg: "bg-indigo-500/10", title: "Annual Plan Available",        desc: "Save 33% with yearly billing at $79.99/yr (≈$6.67/mo). Toggle monthly vs annual directly on the Pricing page." },
+            { icon: Scale, color: "text-green-400",  bg: "bg-green-500/10",  title: "7-Day Money-Back Guarantee",  desc: "Not satisfied within 7 days of your first Premium payment? Email us for a full refund — no questions asked." },
           ].map(({ icon: Icon, color, bg, title, desc }) => (
             <div key={title} className="flex gap-3 p-4 rounded-xl border border-border/40 bg-card">
               <div className={`w-8 h-8 rounded-lg ${bg} flex items-center justify-center flex-shrink-0 mt-0.5`}>
