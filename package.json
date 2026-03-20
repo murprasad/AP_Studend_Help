@@ -18,15 +18,11 @@
     "pages:preview": "npm run pages:build && wrangler pages dev .cf-deploy"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.30.0",
     "@auth/prisma-adapter": "^2.7.2",
     "@cloudflare/next-on-pages": "^1.13.16",
     "@google/generative-ai": "^0.24.1",
     "@hookform/resolvers": "^3.9.0",
-    "@huggingface/inference": "^4.13.15",
     "@neondatabase/serverless": "^0.9.3",
-    "@netlify/blobs": "^10.7.0",
-    "@netlify/functions": "^5.1.2",
     "@opennextjs/cloudflare": "^1.17.1",
     "@prisma/adapter-neon": "^6.1.0",
     "@prisma/client": "^6.1.0",
@@ -46,9 +42,7 @@
     "bcryptjs": "^2.4.3",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
-    "cohere-ai": "^7.20.0",
     "date-fns": "^4.1.0",
-    "groq-sdk": "^0.37.0",
     "jose": "^5.9.6",
     "lucide-react": "^0.454.0",
     "next": "14.2.18",
@@ -68,7 +62,6 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
-    "@netlify/plugin-nextjs": "^5.15.8",
     "@types/bcryptjs": "^2.4.6",
     "@types/node": "^20.17.6",
     "@types/nodemailer": "^6.4.16",

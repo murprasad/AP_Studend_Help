@@ -45,19 +45,31 @@ export async function POST(req: NextRequest) {
   const threshold = parseInt(await getSetting("auto_populate_threshold", "10"), 10);
   const target = parseInt(await getSetting("auto_populate_target", "20"), 10);
 
-  const result = await runAutoPopulate(
-    isNaN(threshold) ? 10 : threshold,
-    isNaN(target) ? 20 : target,
-  );
+  let result;
+  try {
+    result = await runAutoPopulate(
+      isNaN(threshold) ? 10 : threshold,
+      isNaN(target) ? 20 : target,
+    );
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    console.error("[cron/auto-populate] runAutoPopulate threw:", msg);
+    return NextResponse.json({ status: "error", error: msg }, { status: 500 });
+  }
 
-  const now = new Date().toISOString();
-  await setSetting("auto_populate_last_run", now);
-  await setSetting("auto_populate_last_result", JSON.stringify({
-    generated: result.generated,
-    failed: result.failed,
-    processed: result.processed,
-    details: result.details,
-  }));
+  try {
+    const now = new Date().toISOString();
+    await setSetting("auto_populate_last_run", now);
+    await setSetting("auto_populate_last_result", JSON.stringify({
+      generated: result.generated,
+      failed: result.failed,
+      processed: result.processed,
+      details: result.details,
+    }));
+  } catch (err) {
+    console.warn("[cron/auto-populate] Failed to save last-run metadata:", err instanceof Error ? err.message : err);
+    // Don't fail the whole request — the populate itself succeeded
+  }
 
   return NextResponse.json({ status: "ok", ...result });
 }

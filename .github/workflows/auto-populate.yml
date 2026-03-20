@@ -9,6 +9,14 @@ jobs:
   auto-populate:
     runs-on: ubuntu-latest
     steps:
+      - name: Check CRON_SECRET is configured
+        if: ${{ secrets.CRON_SECRET == '' }}
+        run: |
+          echo "⚠️  CRON_SECRET is not set in GitHub Actions secrets."
+          echo "    Go to: Settings → Secrets and variables → Actions → New repository secret"
+          echo "    Name: CRON_SECRET  Value: (same value as CRON_SECRET in Cloudflare Pages)"
+          exit 1
+
       - name: Trigger auto-populate
         run: |
           response=$(curl -s -w "\n%{http_code}" -X POST \
@@ -17,6 +25,15 @@ jobs:
             -H "Content-Type: application/json")
           body=$(echo "$response" | head -n -1)
           status=$(echo "$response" | tail -n 1)
-          echo "Status: $status"
+          echo "HTTP Status: $status"
           echo "Response: $body"
-          if [ "$status" != "200" ]; then exit 1; fi
+          if [ "$status" = "401" ]; then
+            echo "❌ 401 Unauthorized — CRON_SECRET in GitHub does not match the one set in Cloudflare Pages."
+            exit 1
+          fi
+          if [ "$status" = "200" ]; then
+            echo "✅ Success"
+            exit 0
+          fi
+          echo "❌ Unexpected status $status"
+          exit 1
