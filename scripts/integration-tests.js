@@ -12,6 +12,20 @@
  * Exits 1 if any critical test fails (red courses without AI generation).
  */
 
+// Auto-load .env so CRON_SECRET is always available without manual env setup
+(function loadDotEnv() {
+  if (process.env.CRON_SECRET) return; // already set
+  try {
+    const fs = require("fs"), path = require("path");
+    const envPath = path.join(__dirname, "..", ".env");
+    if (!fs.existsSync(envPath)) return;
+    for (const line of fs.readFileSync(envPath, "utf8").split("\n")) {
+      const m = line.match(/^([A-Z_][A-Z0-9_]*)\s*=\s*["']?(.*?)["']?\s*$/);
+      if (m && !process.env[m[1]]) process.env[m[1]] = m[2];
+    }
+  } catch { /* silently skip if .env unreadable */ }
+})();
+
 const BASE_URL = (() => {
   const idx = process.argv.indexOf("--base-url");
   return idx !== -1 ? process.argv[idx + 1] : "https://studentnest.ai";
