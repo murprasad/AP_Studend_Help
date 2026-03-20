@@ -38,6 +38,7 @@ import {
   ArrowRight,
   Mic,
   MicOff,
+  Sparkles,
 } from "lucide-react";
 
 interface Message {
@@ -77,6 +78,7 @@ export default function AiTutorPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [conversationId, setConversationId] = useState<string | null>(null);
   const [limitReached, setLimitReached] = useState(false);
+  const [practiceReturn, setPracticeReturn] = useState(false);
 
   // Split-panel state
   const [currentSections, setCurrentSections] = useState<TutorSections | null>(null);
@@ -100,12 +102,15 @@ export default function AiTutorPage() {
     setWikiImageUrl(undefined);
   }, [course]);
 
-  // Check sessionStorage for sage_prefill (set by practice page "Ask Sage" button)
+  // Check sessionStorage for sage_prefill and practice return flag
   useEffect(() => {
     const prefill = sessionStorage.getItem("sage_prefill");
     if (prefill) {
       sessionStorage.removeItem("sage_prefill");
       setInput(prefill);
+    }
+    if (sessionStorage.getItem("sage_practice_return")) {
+      setPracticeReturn(true);
     }
   }, []);
 
@@ -456,6 +461,23 @@ export default function AiTutorPage() {
 
   return (
     <>
+      {/* ── Continue Practice banner ─────────────────────────────────────── */}
+      {practiceReturn && (
+        <div className="flex items-center justify-between bg-indigo-500/10 border border-indigo-500/30 rounded-lg px-4 py-2.5 mb-4 -mx-0">
+          <p className="text-sm text-indigo-300 flex items-center gap-2">
+            <Sparkles className="h-4 w-4" />
+            Your practice session is waiting — come back any time.
+          </p>
+          <Link
+            href="/practice"
+            className="text-xs font-semibold text-indigo-300 hover:text-indigo-200 border border-indigo-500/40 hover:border-indigo-400/60 rounded-full px-3 py-1 transition-colors"
+            onClick={() => sessionStorage.removeItem("sage_practice_return")}
+          >
+            ← Continue Practice
+          </Link>
+        </div>
+      )}
+
       {/* ── DESKTOP two-panel layout ─────────────────────────────────────── */}
       <div className="hidden lg:flex h-[calc(100vh-5rem)] overflow-hidden -mx-6">
 

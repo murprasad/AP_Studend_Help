@@ -107,6 +107,37 @@ export default function PracticePage() {
       .catch(() => {});
   }, []);
 
+  // Restore session if returning from Sage ("Continue Practice" button)
+  useEffect(() => {
+    try {
+      const raw = sessionStorage.getItem("sage_session_snapshot");
+      if (!raw) return;
+      sessionStorage.removeItem("sage_session_snapshot");
+      const snap = JSON.parse(raw) as {
+        sessionId: string;
+        questions: Question[];
+        currentIndex: number;
+        results: Array<{ correct: boolean; timeSecs: number }>;
+        startTime: string;
+      };
+      if (snap.sessionId && Array.isArray(snap.questions) && snap.questions.length > 0) {
+        questionsRef.current = snap.questions;
+        setSessionId(snap.sessionId);
+        setQuestions(snap.questions);
+        setCurrentIndex(snap.currentIndex);
+        setResults(snap.results);
+        setStartTime(new Date(snap.startTime));
+        setQuestionStartTime(new Date());
+        setFeedback(null);
+        setSelectedAnswer(null);
+        setMode("practicing");
+      }
+    } catch {
+      // Malformed snapshot — ignore
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [questions, setQuestions] = useState<Question[]>([]);
   const questionsRef = useRef<Question[]>([]);  // always up-to-date for async callbacks
@@ -160,6 +191,39 @@ export default function PracticePage() {
   })();
 
   const courseUnits = COURSE_UNITS[course];
+
+  function saveSessionSnapshot() {
+    if (!sessionId || questions.length === 0) return;
+    try {
+      sessionStorage.setItem("sage_session_snapshot", JSON.stringify({
+        sessionId,
+        questions,
+        currentIndex,
+        results,
+        startTime: startTime?.toISOString() ?? new Date().toISOString(),
+      }));
+      sessionStorage.setItem("sage_practice_return", "1");
+    } catch {
+      // sessionStorage full or unavailable — ignore
+    }
+  }
+
+  function buildSagePrefill(isCorrect: boolean) {
+    if (!currentQuestion || !feedback) return "";
+    const qText = currentQuestion.questionText.slice(0, 300);
+    const opts = (() => {
+      try {
+        const o = typeof currentQuestion.options === "string"
+          ? JSON.parse(currentQuestion.options)
+          : currentQuestion.options;
+        return Array.isArray(o) ? (o as string[]).join(" | ") : "";
+      } catch { return ""; }
+    })();
+    if (isCorrect) {
+      return `I just answered this ${currentQuestion.course.replace(/_/g, " ")} question correctly and want to go deeper:\n\n"${qText}"${opts ? `\nOptions: ${opts}` : ""}\n\nCorrect answer: ${feedback.correctAnswer}\n\nExplain the core concept behind this question and what I should know about it for the AP exam.`;
+    }
+    return `I got this ${currentQuestion.course.replace(/_/g, " ")} question wrong and need help understanding it:\n\n"${qText}"${opts ? `\nOptions: ${opts}` : ""}\n\nI chose the wrong answer. The correct answer is: ${feedback.correctAnswer}\n\nWhy is that the correct answer? Walk me through the concept step by step.`;
+  }
 
   async function startSession() {
     setIsStarting(true);
@@ -644,22 +708,21 @@ export default function PracticePage() {
                     <p className="text-sm text-muted-foreground leading-relaxed">
                       {feedback.explanation}
                     </p>
-                    {!feedback.isCorrect && (
-                      <Link
-                        href="/ai-tutor"
-                        onClick={() => {
-                          if (currentQuestion) {
-                            sessionStorage.setItem(
-                              "sage_prefill",
-                              `Why is "${feedback.correctAnswer}" the correct answer for this question? "${currentQuestion.questionText.slice(0, 200)}"`
-                            );
-                          }
-                        }}
-                        className="inline-flex items-center gap-1.5 text-xs text-teal-400 hover:text-teal-300 font-medium transition-colors"
-                      >
-                        🌿 Still confused? Ask Sage to explain this →
-                      </Link>
-                    )}
+                    <Link
+                      href="/ai-tutor"
+                      onClick={() => {
+                        saveSessionSnapshot();
+                        sessionStorage.setItem("sage_prefill", buildSagePrefill(feedback.isCorrect));
+                      }}
+                      className={`inline-flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded-full transition-colors ${
+                        feedback.isCorrect
+                          ? "bg-teal-500/10 text-teal-400 hover:bg-teal-500/20"
+                          : "bg-indigo-500/15 text-indigo-300 hover:bg-indigo-500/25"
+                      }`}
+                    >
+                      <Sparkles className="h-3.5 w-3.5" />
+                      {feedback.isCorrect ? "Go deeper with Sage →" : "Ask Sage to explain this →"}
+                    </Link>
                   </div>
                 </div>
               )}
