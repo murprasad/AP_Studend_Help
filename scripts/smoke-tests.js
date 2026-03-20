@@ -22,6 +22,14 @@ const BASE_URL = (() => {
 
 const TIMEOUT_MS = 15000;
 
+// Manual timeout to avoid Windows libuv crash from AbortSignal.timeout()
+function fetchWithTimeout(url, ms, opts = {}) {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), ms);
+  if (timer.unref) timer.unref();
+  return fetch(url, { ...opts, signal: ctrl.signal }).finally(() => clearTimeout(timer));
+}
+
 let passed = 0;
 let warned = 0;
 let failed = 0;
@@ -33,12 +41,7 @@ function fail(label, detail = "") { console.error(`  ❌ ${label}${detail ? " �
 function section(title)           { console.log(`\n── ${title} ──`); }
 
 async function get(path, opts = {}) {
-  const res = await fetch(`${BASE_URL}${path}`, {
-    signal: AbortSignal.timeout(TIMEOUT_MS),
-    redirect: "follow",
-    ...opts,
-  });
-  return res;
+  return fetchWithTimeout(`${BASE_URL}${path}`, TIMEOUT_MS, { redirect: "follow", ...opts });
 }
 
 async function run() {

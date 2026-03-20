@@ -8,16 +8,25 @@
 const STATUS_URL = "https://studentnest.ai/api/ai/status";
 const PROPAGATION_DELAY_MS = 8000;
 
+// Use a manual AbortController + unref'd timer to avoid Windows libuv crash on exit
+function fetchWithTimeout(url, ms) {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), ms);
+  if (timer.unref) timer.unref(); // prevent timer from keeping process alive
+  return fetch(url, { signal: ctrl.signal }).finally(() => clearTimeout(timer));
+}
+
 async function verify() {
   console.log(`\n⏳ Waiting ${PROPAGATION_DELAY_MS / 1000}s for CF propagation...`);
-  await new Promise((resolve) => setTimeout(resolve, PROPAGATION_DELAY_MS));
+  await new Promise((resolve) => {
+    const t = setTimeout(resolve, PROPAGATION_DELAY_MS);
+    if (t.unref) t.unref();
+  });
 
   console.log(`🔍 Checking AI provider status at ${STATUS_URL} ...`);
 
   try {
-    const res = await fetch(STATUS_URL, {
-      signal: AbortSignal.timeout(15000),
-    });
+    const res = await fetchWithTimeout(STATUS_URL, 15000);
 
     if (!res.ok) {
       console.warn(`⚠️  WARNING: /api/ai/status returned HTTP ${res.status}`);

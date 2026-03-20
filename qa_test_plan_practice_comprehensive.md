@@ -312,3 +312,51 @@ Inspect network request after wrong MCQ answer
 - Full Section 3 (FRQ flows)
 - Full Section 7 (premium restriction flows)
 - Full Section 8 per-course matrix
+
+---
+
+## Release Log — v1.13.0 (2026-03-20)
+
+**Deployed:** Fri, 20 Mar 2026 17:43:39 GMT
+**Version:** 1.13.0
+
+### Changes in this release
+- chore: full release pipeline — smoke tests, auto test-plan update, archive
+- feat: Sage practice integration — session restore + return banner + richer context
+- perf: quickMode for on-demand AI gen + count=1 knowledge check + comprehensive test plan
+- feat: Beta 1.13 — premium signup notifications, seeding workflow, cron fixes
+- feat: add one-time seeding workflow and ?limit= override for cron endpoint
+- fix: cap auto-populate to 5 questions/call to avoid CF 524 timeout
+- feat: add 3-attempt retry logic to auto-populate workflow
+- fix: remove invalid secrets comparison in workflow if condition
+- fix: remove @netlify/blobs dependency from backup.ts
+- fix: remove Netlify dead code, harden auto-populate cron endpoint
+
+### Automated smoke tests
+```
+Smoke tests: 12 passed, 0 warnings, 0 failed
+  ✅ GET /
+  ✅ GET /pricing
+  ✅ GET /about
+  ✅ GET /login
+  ✅ GET /register
+  ✅ GET /api/ai/status
+  ✅ GET /api/feature-flags
+  ✅ POST /api/practice
+  ✅ POST /api/ai/tutor/knowledge-check
+  ✅ GET /api/analytics
+  ✅ GET /api/user
+  ✅ POST /api/ai/tutor/knowledge-check (bad input)
+```
+
+### Manual P0 checklist (fill in before marking release complete)
+- [ ] AP_WORLD_HISTORY MCQ session starts (ALL units, ALL difficulty)
+- [ ] SAT_MATH MCQ session starts
+- [ ] ACT_MATH MCQ session starts — verify 5 answer choices
+- [ ] AP_PHYSICS_1 FRQ session starts within 30s
+- [ ] Wrong MCQ answer → knowledge-check mini-quiz appears (1 question)
+- [ ] Correct MCQ answer → "Go deeper with Sage →" button visible
+- [ ] Ask Sage from practice → "Continue Practice" banner visible on Sage page
+- [ ] "Continue Practice" → resumes exact question position
+- [ ] Session completes → summary screen with accuracy + XP
+
