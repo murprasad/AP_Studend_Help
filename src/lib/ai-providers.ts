@@ -216,8 +216,8 @@ async function callHuggingFace(
     { role: "user", content: prompt },
   ];
 
-  // New HuggingFace Inference Providers API (replaces deprecated api-inference.huggingface.co)
-  const res = await fetch("https://router.huggingface.co/hf-inference/models/meta-llama/Meta-Llama-3-8B-Instruct/v1/chat/completions", {
+  // HuggingFace Inference via featherless-ai provider
+  const res = await fetch("https://router.huggingface.co/featherless-ai/v1/chat/completions", {
     method: "POST",
     headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
     body: JSON.stringify({ model: "meta-llama/Meta-Llama-3-8B-Instruct", messages, max_tokens: 1200, temperature: 0.7 }),

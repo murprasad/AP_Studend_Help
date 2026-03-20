@@ -59,7 +59,7 @@ async function testOpenRouter(): Promise<string> {
 
 async function testHuggingFace(): Promise<string> {
   if (!process.env.HUGGINGFACE_API_KEY) return "NO_KEY";
-  const res = await fetch("https://router.huggingface.co/hf-inference/models/meta-llama/Meta-Llama-3-8B-Instruct/v1/chat/completions", {
+  const res = await fetch("https://router.huggingface.co/featherless-ai/v1/chat/completions", {
     method: "POST",
     headers: { "Content-Type": "application/json", Authorization: `Bearer ${process.env.HUGGINGFACE_API_KEY}` },
     body: JSON.stringify({ model: "meta-llama/Meta-Llama-3-8B-Instruct", messages: [{ role: "user", content: TEST_PROMPT }], max_tokens: 10 }),
