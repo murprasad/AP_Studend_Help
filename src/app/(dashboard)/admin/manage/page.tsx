@@ -2,6 +2,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
+import { Suspense } from "react";
 import { AdminPageNav } from "@/components/admin/admin-page-nav";
 import { AdminManageTabs } from "@/components/admin/manage-tabs";
 
@@ -32,10 +33,12 @@ export default async function AdminManagePage() {
         </div>
         <AdminPageNav />
       </div>
-      <AdminManageTabs
-        questionsByUnit={questionsByUnit}
-        questionsByTopic={questionsByTopic}
-      />
+      <Suspense fallback={<div className="text-muted-foreground text-sm">Loading...</div>}>
+        <AdminManageTabs
+          questionsByUnit={questionsByUnit}
+          questionsByTopic={questionsByTopic}
+        />
+      </Suspense>
     </div>
   );
 }

@@ -2,6 +2,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
+import { Suspense } from "react";
 import { AdminPageNav } from "@/components/admin/admin-page-nav";
 import { AdminMonitorTabs } from "@/components/admin/monitor-tabs";
 
@@ -38,17 +39,19 @@ export default async function AdminPage() {
         </div>
         <AdminPageNav />
       </div>
-      <AdminMonitorTabs
-        stats={{ totalUsers, totalQuestions, pendingQuestions, totalSessions }}
-        recentUsers={recentUsers.map((u) => ({
-          id: u.id,
-          firstName: u.firstName,
-          lastName: u.lastName,
-          email: u.email,
-          gradeLevel: u.gradeLevel ? String(u.gradeLevel) : null,
-          subscriptionTier: u.subscriptionTier,
-        }))}
-      />
+      <Suspense fallback={<div className="text-muted-foreground text-sm">Loading...</div>}>
+        <AdminMonitorTabs
+          stats={{ totalUsers, totalQuestions, pendingQuestions, totalSessions }}
+          recentUsers={recentUsers.map((u) => ({
+            id: u.id,
+            firstName: u.firstName,
+            lastName: u.lastName,
+            email: u.email,
+            gradeLevel: u.gradeLevel ? String(u.gradeLevel) : null,
+            subscriptionTier: u.subscriptionTier,
+          }))}
+        />
+      </Suspense>
     </div>
   );
 }
