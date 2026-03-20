@@ -1,0 +1,80 @@
+name: Seed Question Bank (One-Time)
+
+# Manual trigger only — run this once to get all units to green (≥ 8 questions).
+# ~120 iterations × 8 questions = up to 960 questions across all 109 units.
+# Expected runtime: ~90 minutes.
+on:
+  workflow_dispatch:
+    inputs:
+      iterations:
+        description: 'Number of batches to run (default 120, each adds 8 questions)'
+        required: false
+        default: '120'
+      questions_per_batch:
+        description: 'Questions per batch (max 10, keep ≤ 8 to avoid CF timeout)'
+        required: false
+        default: '8'
+
+jobs:
+  seed:
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    steps:
+      - name: Seed question bank
+        run: |
+          ITERATIONS=${{ github.event.inputs.iterations || 120 }}
+          QPB=${{ github.event.inputs.questions_per_batch || 8 }}
+          success=0
+          failed=0
+          total_generated=0
+
+          echo "Starting seed: $ITERATIONS iterations × $QPB questions each"
+          echo "Target: up to $((ITERATIONS * QPB)) new questions"
+
+          for i in $(seq 1 $ITERATIONS); do
+            response=$(curl -s -w "\n%{http_code}" -X POST \
+              "https://studentnest.ai/api/cron/auto-populate?limit=${QPB}" \
+              -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+              -H "Content-Type: application/json" \
+              --max-time 90)
+            body=$(echo "$response" | head -n -1)
+            status=$(echo "$response" | tail -n 1)
+
+            if [ "$status" = "401" ]; then
+              echo "❌ 401 Unauthorized — stopping."
+              exit 1
+            fi
+
+            if [ "$status" = "200" ]; then
+              generated=$(echo "$body" | grep -o '"generated":[0-9]*' | grep -o '[0-9]*' || echo 0)
+              total_generated=$((total_generated + generated))
+              success=$((success + 1))
+              echo "[$i/$ITERATIONS] ✅ +${generated} questions (total: $total_generated)"
+            else
+              failed=$((failed + 1))
+              echo "[$i/$ITERATIONS] ⚠️  status $status — $body"
+            fi
+
+            # Check if bank is fully seeded (all units have enough — server returns skipped=all)
+            skipped=$(echo "$body" | grep -o '"skipped":[0-9]*' | grep -o '[0-9]*' || echo 0)
+            processed=$(echo "$body" | grep -o '"processed":[0-9]*' | grep -o '[0-9]*' || echo 1)
+            if [ "$processed" = "0" ] && [ "$status" = "200" ]; then
+              echo "🎉 All units are fully seeded — stopping early at iteration $i"
+              break
+            fi
+
+            # Small delay between calls to respect Groq rate limits
+            sleep 5
+          done
+
+          echo ""
+          echo "═══ Seeding complete ═══"
+          echo "Successful batches : $success"
+          echo "Failed batches     : $failed"
+          echo "Total questions    : $total_generated"
+
+          if [ "$success" -gt 0 ]; then
+            exit 0
+          else
+            exit 1
+          fi

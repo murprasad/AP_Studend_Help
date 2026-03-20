@@ -46,12 +46,19 @@ export async function POST(req: NextRequest) {
   const target = parseInt(await getSetting("auto_populate_target", "20"), 10);
   const maxPerRun = parseInt(await getSetting("auto_populate_max_per_run", "5"), 10);
 
+  // Optional ?limit=N override — used by seeding workflow to push more per call
+  const { searchParams } = new URL(req.url);
+  const limitOverride = parseInt(searchParams.get("limit") ?? "", 10);
+  const effectiveLimit = !isNaN(limitOverride) && limitOverride > 0
+    ? Math.min(limitOverride, 20)   // cap at 20 to prevent accidental abuse
+    : (isNaN(maxPerRun) ? 5 : maxPerRun);
+
   let result;
   try {
     result = await runAutoPopulate(
       isNaN(threshold) ? 10 : threshold,
       isNaN(target) ? 20 : target,
-      isNaN(maxPerRun) ? 5 : maxPerRun,
+      effectiveLimit,
     );
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
