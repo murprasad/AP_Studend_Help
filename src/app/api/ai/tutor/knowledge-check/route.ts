@@ -17,7 +17,8 @@ interface KnowledgeCheckQuestion {
 async function generateQuestionsViaGroq(
   tutorResponse: string,
   course: string,
-  topic: string | null
+  topic: string | null,
+  count: number = 3
 ): Promise<KnowledgeCheckQuestion[] | null> {
   const apiKey = process.env.GROQ_API_KEY;
   if (!apiKey) return null;
@@ -25,10 +26,10 @@ async function generateQuestionsViaGroq(
   const topicLine = topic ? `\nTopic: ${topic}` : "";
   const prompt = `You are a quiz generator for ${course.replace(/_/g, " ")} students.${topicLine}
 
-Given the tutor explanation below, write exactly 3 multiple-choice questions to check a student's understanding. Keep questions simple and direct, focused on the key concepts explained.
+Given the tutor explanation below, write exactly ${count} multiple-choice question${count === 1 ? "" : "s"} to check a student's understanding. Keep questions simple and direct, focused on the key concepts explained.
 
 Return ONLY valid JSON — no markdown fences, no extra text:
-{"questions":[{"question":"...","options":["A...","B...","C...","D..."],"correctIndex":0,"explanation":"1-sentence why"},...]}
+{"questions":[{"question":"...","options":["A...","B...","C...","D..."],"correctIndex":0,"explanation":"1-sentence why"}]}
 
 Tutor explanation:
 ${tutorResponse.slice(0, 2000)}`;
@@ -44,9 +45,9 @@ ${tutorResponse.slice(0, 2000)}`;
         model: "llama-3.3-70b-versatile",
         messages: [{ role: "user", content: prompt }],
         temperature: 0.4,
-        max_tokens: 700,
+        max_tokens: count === 1 ? 250 : 700,
       }),
-      signal: AbortSignal.timeout(15000),
+      signal: AbortSignal.timeout(10000),
     });
 
     if (!res.ok) return null;
@@ -55,8 +56,8 @@ ${tutorResponse.slice(0, 2000)}`;
     };
     const text = data.choices?.[0]?.message?.content?.trim() ?? "";
     const parsed = JSON.parse(text) as { questions: KnowledgeCheckQuestion[] };
-    if (!Array.isArray(parsed.questions) || parsed.questions.length !== 3) return null;
-    return parsed.questions;
+    if (!Array.isArray(parsed.questions) || parsed.questions.length < 1) return null;
+    return parsed.questions.slice(0, count);
   } catch {
     return null;
   }
@@ -65,15 +66,16 @@ ${tutorResponse.slice(0, 2000)}`;
 async function generateQuestionsViaPolinations(
   tutorResponse: string,
   course: string,
-  topic: string | null
+  topic: string | null,
+  count: number = 3
 ): Promise<KnowledgeCheckQuestion[] | null> {
   const topicLine = topic ? `\nTopic: ${topic}` : "";
   const prompt = `You are a quiz generator for ${course.replace(/_/g, " ")} students.${topicLine}
 
-Given the tutor explanation below, write exactly 3 multiple-choice questions to check a student's understanding. Keep questions simple and direct.
+Given the tutor explanation below, write exactly ${count} multiple-choice question${count === 1 ? "" : "s"} to check a student's understanding. Keep questions simple and direct.
 
 Return ONLY valid JSON — no markdown fences, no extra text:
-{"questions":[{"question":"...","options":["A...","B...","C...","D..."],"correctIndex":0,"explanation":"1-sentence why"},...]}
+{"questions":[{"question":"...","options":["A...","B...","C...","D..."],"correctIndex":0,"explanation":"1-sentence why"}]}
 
 Tutor explanation:
 ${tutorResponse.slice(0, 1500)}`;
@@ -86,9 +88,9 @@ ${tutorResponse.slice(0, 1500)}`;
         model: "openai",
         messages: [{ role: "user", content: prompt }],
         temperature: 0.4,
-        max_tokens: 700,
+        max_tokens: count === 1 ? 250 : 700,
       }),
-      signal: AbortSignal.timeout(20000),
+      signal: AbortSignal.timeout(15000),
     });
 
     if (!res.ok) return null;
@@ -96,11 +98,10 @@ ${tutorResponse.slice(0, 1500)}`;
       choices?: Array<{ message?: { content?: string } }>;
     };
     const text = data.choices?.[0]?.message?.content?.trim() ?? "";
-    // Strip potential markdown fences
     const clean = text.replace(/^```(?:json)?\n?/, "").replace(/\n?```$/, "");
     const parsed = JSON.parse(clean) as { questions: KnowledgeCheckQuestion[] };
-    if (!Array.isArray(parsed.questions) || parsed.questions.length !== 3) return null;
-    return parsed.questions;
+    if (!Array.isArray(parsed.questions) || parsed.questions.length < 1) return null;
+    return parsed.questions.slice(0, count);
   } catch {
     return null;
   }
@@ -155,18 +156,20 @@ export async function POST(req: NextRequest) {
   }
 
   // Default: generate questions
-  const { tutorResponse, topic } = body as {
+  const { tutorResponse, topic, count: rawCount } = body as {
     tutorResponse: string;
     topic: string | null;
+    count?: number;
   };
+  const count = typeof rawCount === "number" && rawCount >= 1 && rawCount <= 10 ? rawCount : 3;
 
   if (!tutorResponse || tutorResponse.length < 50) {
     return NextResponse.json({ error: "tutorResponse too short" }, { status: 400 });
   }
 
-  let questions = await generateQuestionsViaGroq(tutorResponse, course, topic ?? null);
+  let questions = await generateQuestionsViaGroq(tutorResponse, course, topic ?? null, count);
   if (!questions) {
-    questions = await generateQuestionsViaPolinations(tutorResponse, course, topic ?? null);
+    questions = await generateQuestionsViaPolinations(tutorResponse, course, topic ?? null, count);
   }
 
   if (!questions) {

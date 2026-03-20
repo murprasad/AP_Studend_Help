@@ -253,6 +253,7 @@ export default function PracticePage() {
             tutorResponse: `${currentQuestion.questionText}\nCorrect Answer: ${data.correctAnswer}\nExplanation: ${data.explanation}`,
             topic: currentQuestion.topic,
             course: currentQuestion.course,
+            count: 1,
           }),
           signal: AbortSignal.timeout(25000),
         })

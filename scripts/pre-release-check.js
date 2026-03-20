@@ -138,6 +138,38 @@ const aboutBeta = betaMatch ? betaMatch[1] : "?";
 console.log(`  ℹ️  package.json version: ${pkgVersion}  |  About page badge: Beta ${aboutBeta}`);
 console.log(`     (Manual check: bump package.json version to match About page badge)`);
 
+// ─── 7. Practice test plan coverage ──────────────────────────────────────────
+section("7. Practice test plan");
+const REQUIRED_COURSES = [
+  "AP_WORLD_HISTORY", "AP_US_HISTORY", "AP_COMPUTER_SCIENCE_PRINCIPLES",
+  "AP_PHYSICS_1", "AP_CALCULUS_AB", "AP_CALCULUS_BC", "AP_STATISTICS",
+  "AP_CHEMISTRY", "AP_BIOLOGY", "AP_PSYCHOLOGY",
+  "SAT_MATH", "SAT_READING_WRITING",
+  "ACT_MATH", "ACT_ENGLISH", "ACT_SCIENCE", "ACT_READING",
+];
+const testPlanPath = "qa_test_plan_practice_comprehensive.md";
+const testPlanContent = read(testPlanPath);
+if (!testPlanContent) {
+  fail(`Test plan missing: ${testPlanPath} — run qa_test_plan_practice_comprehensive.md test suite before deploying`);
+} else {
+  ok("Practice test plan file exists");
+  const missingCourses = REQUIRED_COURSES.filter((c) => !testPlanContent.includes(c));
+  if (missingCourses.length > 0) {
+    fail(`Test plan is missing coverage for: ${missingCourses.join(", ")}`);
+  } else {
+    ok(`Test plan covers all ${REQUIRED_COURSES.length} courses`);
+  }
+}
+// Print manual testing checklist (informational — does not affect pass/fail count)
+console.log(`\n  📋 Manual P0 checks before deploying:`);
+console.log(`     [ ] AP_WORLD_HISTORY MCQ session starts (ALL units, ALL difficulty)`);
+console.log(`     [ ] SAT_MATH MCQ session starts`);
+console.log(`     [ ] ACT_MATH MCQ session starts (verify 5 choices)`);
+console.log(`     [ ] AP_PHYSICS_1 FRQ session starts`);
+console.log(`     [ ] Wrong MCQ answer → knowledge-check appears (1 question, not 3)`);
+console.log(`     [ ] Session completes → summary screen shows accuracy + XP`);
+console.log(`     [ ] No 500 errors in CF Pages logs after starting sessions`);
+
 // ─── Summary ─────────────────────────────────────────────────────────────────
 console.log(`\n${"─".repeat(50)}`);
 if (failed === 0) {

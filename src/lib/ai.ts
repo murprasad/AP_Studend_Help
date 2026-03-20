@@ -235,7 +235,8 @@ export async function generateQuestion(
   topic?: string,
   course?: ApCourse,
   userTier: "FREE" | "PREMIUM" = "FREE",
-  seedQuestion?: string
+  seedQuestion?: string,
+  quickMode: boolean = false  // skip validation + CB FRQ fetch for on-demand speed
 ): Promise<GeneratedQuestion> {
   const inferredCourse = course || getCourseForUnit(unit);
   const unitName = COURSE_REGISTRY[inferredCourse].units[unit]?.name || unit;
@@ -262,9 +263,10 @@ export async function generateQuestion(
   const basePrompt = buildQuestionPrompt(inferredCourse, unit, unitName, difficulty, questionType, topic);
 
   // Phase 4: Optionally inject CB FRQ seed context for AP courses that have public FRQs
-  // Fetch in parallel with a 6s timeout; fails silently if unavailable
+  // Fetch in parallel with a 6s timeout; fails silently if unavailable.
+  // Skipped in quickMode (on-demand practice) to avoid adding latency for the student.
   let cbFrqSeedSection = "";
-  const cbFrqUrl = getCBFRQUrl(inferredCourse);
+  const cbFrqUrl = !quickMode && getCBFRQUrl(inferredCourse);
   if (cbFrqUrl) {
     try {
       const frqText = await Promise.race([
@@ -285,8 +287,9 @@ export async function generateQuestion(
     ? `${basePrompt}${cbFrqSeedSection}`
     : basePrompt;
 
-  // FRQ/open-ended types have no distractors — skip validator (saves ~10s/attempt)
-  const needsValidation = !["FRQ", "SAQ", "DBQ", "LEQ", "CODING"].includes(questionType ?? "");
+  // FRQ/open-ended types have no distractors — skip validator (saves ~10s/attempt).
+  // Also skip in quickMode (on-demand practice) — speed > perfection for live sessions.
+  const needsValidation = !quickMode && !["FRQ", "SAQ", "DBQ", "LEQ", "CODING"].includes(questionType ?? "");
 
   const MAX_GEN_ATTEMPTS = 3;
   let aiResult: AICallResult | null = null;
