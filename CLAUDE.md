@@ -379,6 +379,10 @@ npm run pages:deploy    # checks + build + deploy to CF Pages
 
 ## Release History
 
+### Beta 1.12 (2026-03-19)
+- **Admin Stability Fix**: Wrapped `AdminMonitorTabs` and `AdminManageTabs` in `<Suspense>` boundaries — Next.js 14 requires this for any client component using `useSearchParams()` rendered by a server component page. Missing Suspense caused "Application error: a client-side exception" on `/admin` and `/admin/manage`.
+- **package.json**: Bumped to `1.12.0`.
+
 ### Beta 1.11 (2026-03-19)
 - **Admin Dashboard Redesign**: Split single scrolling admin page into two focused pages with URL-based tab state.
 - **Monitor page** (`/admin`): Overview tab (4 stat cards + live infra metrics, auto-refresh 60s) and Users tab (recent sign-ups + session feedback). Read-only — no destructive actions.
