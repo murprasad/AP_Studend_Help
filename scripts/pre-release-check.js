@@ -12,6 +12,10 @@
  *  4. Logo consistency — Sparkles + gradient-text in all 5 layout files
  *  5. Terms link — present in marketing footer
  *  6. package.json version — matches About page beta badge
+ *  7. Practice test plan — exists and covers all 16 courses
+ *
+ * Full deploy pipeline (pages:deploy):
+ *  pre-release-check → build → deploy → smoke-tests → update-test-plan → archive-release
  */
 
 const { execSync } = require("child_process");
