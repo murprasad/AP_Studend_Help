@@ -44,12 +44,14 @@ export async function POST(req: NextRequest) {
 
   const threshold = parseInt(await getSetting("auto_populate_threshold", "10"), 10);
   const target = parseInt(await getSetting("auto_populate_target", "20"), 10);
+  const maxPerRun = parseInt(await getSetting("auto_populate_max_per_run", "5"), 10);
 
   let result;
   try {
     result = await runAutoPopulate(
       isNaN(threshold) ? 10 : threshold,
       isNaN(target) ? 20 : target,
+      isNaN(maxPerRun) ? 5 : maxPerRun,
     );
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);

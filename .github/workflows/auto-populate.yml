@@ -9,37 +9,48 @@ jobs:
   auto-populate:
     runs-on: ubuntu-latest
     steps:
-      - name: Trigger auto-populate (with retries)
+      - name: Trigger auto-populate (6 batches × 5 questions)
         run: |
-          MAX_ATTEMPTS=3
-          RETRY_DELAY=30  # seconds between retries
+          # CF Pages has a ~100s HTTP timeout. Each call generates up to 5 questions
+          # (~8s each = ~40s total), well within the limit.
+          # Loop 6 times to generate up to 30 questions per workflow run.
+          BATCHES=6
+          BATCH_DELAY=10  # seconds between batches (let CF recover)
+          any_success=false
 
-          for attempt in $(seq 1 $MAX_ATTEMPTS); do
-            echo "--- Attempt $attempt of $MAX_ATTEMPTS ---"
+          for batch in $(seq 1 $BATCHES); do
+            echo "--- Batch $batch of $BATCHES ---"
             response=$(curl -s -w "\n%{http_code}" -X POST \
               https://studentnest.ai/api/cron/auto-populate \
               -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
-              -H "Content-Type: application/json")
+              -H "Content-Type: application/json" \
+              --max-time 90)
             body=$(echo "$response" | head -n -1)
             status=$(echo "$response" | tail -n 1)
             echo "HTTP Status: $status"
             echo "Response: $body"
 
             if [ "$status" = "401" ]; then
-              echo "❌ 401 Unauthorized — CRON_SECRET mismatch. No point retrying."
+              echo "❌ 401 Unauthorized — CRON_SECRET mismatch. Stopping."
               exit 1
             fi
 
             if [ "$status" = "200" ]; then
-              echo "✅ Success on attempt $attempt"
-              exit 0
+              echo "✅ Batch $batch succeeded"
+              any_success=true
+            else
+              echo "⚠️  Batch $batch got status $status — continuing remaining batches"
             fi
 
-            echo "⚠️  Got status $status — will retry in ${RETRY_DELAY}s"
-            if [ "$attempt" -lt "$MAX_ATTEMPTS" ]; then
-              sleep $RETRY_DELAY
+            if [ "$batch" -lt "$BATCHES" ]; then
+              sleep $BATCH_DELAY
             fi
           done
 
-          echo "❌ All $MAX_ATTEMPTS attempts failed."
-          exit 1
+          if [ "$any_success" = "true" ]; then
+            echo "✅ At least one batch succeeded"
+            exit 0
+          else
+            echo "❌ All batches failed"
+            exit 1
+          fi

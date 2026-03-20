@@ -20,8 +20,15 @@ import { getWikipediaSummary } from "./edu-apis";
 /** Minimum approved questions to maintain per unit. */
 export const AUTO_POPULATE_TARGET = 50;
 
-/** Max units processed per scheduled run (keeps runtime under 15 min Netlify limit). */
-export const MAX_UNITS_PER_RUN = 10;
+/** Max units processed per scheduled run. */
+export const MAX_UNITS_PER_RUN = 1;
+
+/**
+ * Max questions generated per cron invocation.
+ * Cloudflare Pages has a ~100s HTTP timeout — at ~8s/question this gives
+ * a safe limit of 5 questions per call. GitHub Actions loops multiple times.
+ */
+export const MAX_QUESTIONS_PER_RUN = 5;
 
 // ── Difficulty queue builder — 30% EASY / 50% MEDIUM / 20% HARD ──────────────
 // Exported so admin routes can import it instead of duplicating.
@@ -71,6 +78,7 @@ export interface AutoPopulateResult {
 export async function runAutoPopulate(
   threshold: number = AUTO_POPULATE_TARGET,
   targetPerUnit: number = AUTO_POPULATE_TARGET,
+  maxQuestionsTotal: number = MAX_QUESTIONS_PER_RUN,
 ): Promise<AutoPopulateResult> {
   // 1. Count current approved questions per (course, unit)
   const allCounts = await prisma.question.groupBy({
@@ -103,15 +111,17 @@ export async function runAutoPopulate(
   needsWork.sort((a, b) => a.current - b.current);
   const toProcess = needsWork.slice(0, MAX_UNITS_PER_RUN);
 
-  // 3. Generate questions for each unit
+  // 3. Generate questions for each unit (capped at maxQuestionsTotal)
   let generated = 0;
   let failed = 0;
   const details: Array<{ course: string; unit: string; added: number }> = [];
 
   for (const { course, unit, needed, keyThemes } of toProcess) {
+    if (generated + failed >= maxQuestionsTotal) break;
     const config = COURSE_REGISTRY[course];
     const unitName = config.units[unit]?.name ?? unit;
-    const queue = buildDifficultyQueue(needed, keyThemes);
+    const cappedNeeded = Math.min(needed, maxQuestionsTotal - generated - failed);
+    const queue = buildDifficultyQueue(cappedNeeded, keyThemes);
     let added = 0;
 
     // Mix in FRQ/SAQ at different rates depending on course type
