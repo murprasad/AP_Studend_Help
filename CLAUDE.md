@@ -379,6 +379,19 @@ npm run pages:deploy    # checks + build + deploy to CF Pages
 
 ## Release History
 
+### Beta 1.15 (2026-03-20)
+- **CLEP Course Support**: Added 6 CLEP (College-Level Examination Program) exams — College Algebra, College Composition, Intro Psychology, Principles of Marketing, Principles of Management, Introductory Sociology. Gated behind `clep_enabled` feature flag (default off, admin-togglable).
+- **CLEP Schema**: Added 6 `ApCourse` enum values and 30 `ApUnit` enum values (5 units per course) to Prisma schema. Schema synced via `npx prisma db push`.
+- **CLEP Course Registry**: Full `CourseConfig` blocks for all 6 CLEP courses in `COURSE_REGISTRY` — examSecsPerQuestion=72s, 5 units with keyThemes, OpenStax/Khan resources (all CC BY 4.0 / CC BY-SA), CLEP-specific AI prompts, ROI context ("Passing saves ~$1,200 in tuition").
+- **Legal Safety**: All CLEP questions are AI-generated original content. Resources: OpenStax CC BY 4.0, Khan Academy, Wikipedia CC BY-SA. CLEP® trademark notices added to landing page, About page, and `courses.ts` comment block.
+- **Landing Page — CLEP Section**: New emerald-accented section below AP/SAT/ACT area; "22 courses" badge; 6 CLEP exam cards with tuition-savings ROI; CLEP® trademark disclaimer. Hero and social proof updated.
+- **Sidebar — CLEP Group**: Fourth course group "CLEP Prep" with emerald highlight, shown only when `clep_enabled=true`. `clep_enabled` flag piggybacked on existing `/api/user` response as `flags.clepEnabled`.
+- **Pricing Page**: Premium tier updated to include "All 6 CLEP exam courses (earn college credit)". Free tier clarified as "All 16 AP/SAT/ACT courses".
+- **About Page**: Updated to Beta 1.15 badge; 6 CLEP courses in "What We Cover" grid under new "CLEP (College Credit)" category (emerald accent); mission statement updated; legal disclaimer updated with CLEP® trademark notice.
+- **Exam Countdown Bug Fix**: Resolved error shown on save due to CF Workers cold-start Prisma timeout — added fallback verification GET after non-ok PUT response; if date was actually saved, shows success rather than error. Moved `setEditing(false)` inside setTimeout so "Saved ✓" is visible before panel collapses.
+- **Phase 2 Backlog**: `docs/phase-2-clep-backlog.md` — full Phase 2 multi-course dashboard spec (DB `selectedCourses`, `/api/user/courses` route, JWT update, onboarding overhaul, multi-course tab bar).
+- **package.json**: Bumped to `1.15.0`.
+
 ### Beta 1.14 (2026-03-20)
 - **Full Course Coverage**: Seeded all 4 previously empty courses (AP Statistics, AP Chemistry, AP US History, AP Psychology) to green status — no student will hit a 0-question course.
 - **Sage for Every Answer**: Sage now appears after both correct and wrong answers. Students can ask for a deep explanation, then return to their exact practice session position via the "Continue Practice" banner.

@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "lucide-react";
@@ -14,7 +13,6 @@ interface Props {
 }
 
 export function ExamCountdownSetter({ course, inline = false }: Props) {
-  const router = useRouter();
   const [examDate, setExamDate] = useState<string>("");
   const [saved, setSaved] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -51,12 +49,28 @@ export function ExamCountdownSetter({ course, inline = false }: Props) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ examDate: examDate || null }),
       });
-      if (!res.ok) throw new Error();
+      if (!res.ok) {
+        // Verify if the save actually went through despite the error response
+        const verify = await fetch("/api/user/exam-date").then((r) => r.json()).catch(() => null);
+        const savedDate = verify?.examDate ? new Date(verify.examDate).toISOString().split("T")[0] : null;
+        if (savedDate === (examDate || null)) {
+          // Data is confirmed saved — treat as success
+          setSaved(true);
+          window.dispatchEvent(new CustomEvent("exam-date-updated"));
+          setTimeout(() => {
+            setSaved(false);
+            if (inline) setEditing(false);
+          }, 2000);
+          return;
+        }
+        throw new Error();
+      }
       setSaved(true);
-      setTimeout(() => setSaved(false), 2000);
       window.dispatchEvent(new CustomEvent("exam-date-updated"));
-      router.refresh(); // refreshes server components (sidebar) without hard reload
-      if (inline) setEditing(false);
+      setTimeout(() => {
+        setSaved(false);
+        if (inline) setEditing(false);
+      }, 2000);
     } catch {
       setSaveError(true);
     }

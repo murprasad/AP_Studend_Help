@@ -43,6 +43,14 @@ export const FEATURE_FLAG_DEFS = [
     default: "false",
     dangerous: false,
   },
+  {
+    key: "clep_enabled",
+    label: "CLEP Prep",
+    description:
+      "Enable CLEP (College-Level Examination Program) courses in the sidebar and landing page. When ON, 6 CLEP exams appear as a separate group alongside AP/SAT/ACT.",
+    default: "false",
+    dangerous: false,
+  },
   // Auto-populate settings (not boolean flags — managed by AdminAutoPopulateSettings)
   { key: "auto_populate_enabled", label: "Auto-Populate Enabled", description: "Master on/off for scheduled question bank auto-populate.", default: "false", dangerous: false },
   { key: "auto_populate_threshold", label: "Auto-Populate Threshold", description: "Units with fewer questions than this are topped up.", default: "10", dangerous: false },

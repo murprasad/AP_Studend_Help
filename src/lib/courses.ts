@@ -1855,6 +1855,453 @@ AP Exam: Section I — 100 MCQ (70 min). Section II — 2 FRQ (50 min).`,
       },
     },
   },
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // CLEP — College-Level Examination Program
+  // All questions are original AI-generated content.
+  // CLEP® is a registered trademark of College Board, which is not affiliated
+  // with, and does not endorse, this product or site.
+  // Resources referenced are freely available (OpenStax CC BY, Khan Academy,
+  // Wikipedia CC BY-SA) — no copyrighted exam content is reproduced.
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  // ── CLEP College Algebra ──────────────────────────────────────────────────
+  CLEP_COLLEGE_ALGEBRA: {
+    name: "CLEP College Algebra",
+    shortName: "CLEP Algebra",
+    examSecsPerQuestion: 90, // 60 questions in 90 minutes
+    enrichWithEduAPIs: false,
+    units: {
+      CLEP_ALGEBRA_1_FOUNDATIONS: {
+        name: "Unit 1: Algebraic Foundations",
+        keyThemes: ["real numbers", "order of operations", "absolute value", "exponent rules", "radicals", "factoring"],
+        openStaxUrl: "https://openstax.org/books/college-algebra-2e/pages/1-introduction-to-prerequisites",
+        khanUrl: "https://www.khanacademy.org/math/algebra/x2f8bb11595b61c86:foundation-algebra",
+      },
+      CLEP_ALGEBRA_2_EQUATIONS_INEQUALITIES: {
+        name: "Unit 2: Equations and Inequalities",
+        keyThemes: ["linear equations", "quadratic equations", "systems of equations", "compound inequalities", "absolute value equations"],
+        openStaxUrl: "https://openstax.org/books/college-algebra-2e/pages/2-introduction-to-equations-and-inequalities",
+        khanUrl: "https://www.khanacademy.org/math/algebra/x2f8bb11595b61c86:solve-equations-inequalities",
+      },
+      CLEP_ALGEBRA_3_FUNCTIONS_GRAPHS: {
+        name: "Unit 3: Functions and Their Graphs",
+        keyThemes: ["domain and range", "function notation", "transformations", "piecewise functions", "inverse functions", "graphing"],
+        openStaxUrl: "https://openstax.org/books/college-algebra-2e/pages/3-introduction-to-functions",
+        khanUrl: "https://www.khanacademy.org/math/algebra/x2f8bb11595b61c86:functions",
+      },
+      CLEP_ALGEBRA_4_POLYNOMIAL_RATIONAL: {
+        name: "Unit 4: Polynomial and Rational Functions",
+        keyThemes: ["polynomial division", "rational roots theorem", "asymptotes", "holes", "end behavior", "partial fractions"],
+        openStaxUrl: "https://openstax.org/books/college-algebra-2e/pages/5-introduction-to-polynomial-and-rational-functions",
+        khanUrl: "https://www.khanacademy.org/math/algebra2/x2ec2f6f830c9fb89:poly-graphs",
+      },
+      CLEP_ALGEBRA_5_EXPONENTIAL_LOGARITHMIC: {
+        name: "Unit 5: Exponential and Logarithmic Functions",
+        keyThemes: ["exponential growth and decay", "logarithm properties", "change of base", "natural log", "solving exponential equations"],
+        openStaxUrl: "https://openstax.org/books/college-algebra-2e/pages/6-introduction-to-exponential-and-logarithmic-functions",
+        khanUrl: "https://www.khanacademy.org/math/algebra2/x2ec2f6f830c9fb89:logs",
+      },
+    },
+    suggestedTutorQuestions: [
+      "How do I solve a quadratic equation by factoring?",
+      "What is the difference between domain and range?",
+      "How do I find a vertical asymptote?",
+      "What are the properties of logarithms?",
+      "How do I solve a system of two equations?",
+      "What does it mean for a function to be one-to-one?",
+    ],
+    curriculumContext: `CLEP College Algebra covers algebraic foundations through exponential and logarithmic functions.
+Exam: 60 questions, 90 minutes, multiple choice. Passing score (~50 correct) earns 3 college credits.
+Typical credit value: ~$1,200 in tuition savings at most colleges.
+Topics: algebraic operations (25%), equations/inequalities (25%), functions and their graphs (30%), number systems (10%), sequences/series (10%).`,
+    tutorResources: `
+- OpenStax College Algebra 2e (openstax.org/books/college-algebra-2e): Free, CC-licensed textbook — matches CLEP content exactly
+- Khan Academy Algebra 1 & 2 (khanacademy.org/math/algebra): Free video lessons for every topic
+- Paul's Online Math Notes (tutorial.math.lamar.edu): Reference for functions, polynomials, logs`,
+    examAlignmentNotes: `CLEP College Algebra alignment:
+- Algebraic operations: 25% of exam
+- Equations and inequalities: 25%
+- Functions and their graphs: 30%
+- Number systems and operations: 10%
+- Sequences and series: 10%
+All questions are 4-choice MCQ — no calculators on most CLEP versions.`,
+    stimulusRequirement: "Include a function definition, equation, or graph description as stimulus where relevant; null for direct computation questions",
+    stimulusDescription: "equation, function definition, or graph description (null for direct computation)",
+    explanationGuidance: "showing full algebraic steps and naming the property or theorem applied at each step",
+    difficultyRubric: {
+      EASY: "Evaluate or simplify a single expression; recall a property of logs or exponents. 65%+ of test-takers correct.",
+      MEDIUM: "Solve a multi-step equation, identify asymptotes, or evaluate composite functions. 40–55% correct.",
+      HARD: "Solve a system involving nonlinear equations, apply transformation sequences, or analyze end behavior of rational functions. 25–40% correct.",
+    },
+    distractorTaxonomy: "(1) SIGN FLIP TRAP — forgets to distribute a negative; (2) LOG PROPERTY TRAP — incorrectly applies log(a+b) = log(a)+log(b); (3) DOMAIN RESTRICTION TRAP — ignores where the function is undefined.",
+    stimulusQualityGuidance: "GOOD: A specific function like f(x) = (x²-4)/(x-2) with an explicit question. AVOID: Abstract 'let f be a function' without definition.",
+    skillCodes: ["Algebraic Operations", "Equation Solving", "Function Analysis", "Graphical Interpretation"],
+  },
+
+  // ── CLEP College Composition ─────────────────────────────────────────────
+  CLEP_COLLEGE_COMPOSITION: {
+    name: "CLEP College Composition",
+    shortName: "CLEP Composition",
+    examSecsPerQuestion: 90, // Part I: 90 MCQ in 95 min + Part II: 2 essays in 70 min
+    enrichWithEduAPIs: false,
+    units: {
+      CLEP_COMP_1_ESSAY_STRATEGIES: {
+        name: "Unit 1: Essay Organization and Strategies",
+        keyThemes: ["thesis development", "paragraph structure", "introductions", "conclusions", "transitions", "unity and coherence"],
+        openStaxUrl: "https://openstax.org/books/writing-guide/pages/1-unit-introduction",
+        khanUrl: "https://www.khanacademy.org/humanities/grammar/writing",
+      },
+      CLEP_COMP_2_RHETORICAL_ANALYSIS: {
+        name: "Unit 2: Rhetorical Analysis and Audience",
+        keyThemes: ["ethos pathos logos", "tone and voice", "purpose", "audience awareness", "diction", "figurative language"],
+        openStaxUrl: "https://openstax.org/books/writing-guide/pages/9-unit-introduction",
+        khanUrl: "https://www.khanacademy.org/humanities/ap-language-arts/x34d1f6760bc08fe2:welcome-to-ap-lang",
+      },
+      CLEP_COMP_3_RESEARCH_DOCUMENTATION: {
+        name: "Unit 3: Research Skills and Documentation",
+        keyThemes: ["source evaluation", "MLA citation", "paraphrase vs quote", "plagiarism", "annotated bibliography", "synthesizing sources"],
+        openStaxUrl: "https://openstax.org/books/writing-guide/pages/13-unit-introduction",
+        khanUrl: "https://www.khanacademy.org/humanities/grammar/style-and-usage",
+      },
+      CLEP_COMP_4_REVISION_EDITING: {
+        name: "Unit 4: Revision, Editing, and Mechanics",
+        keyThemes: ["sentence-level revision", "grammar and usage", "punctuation", "clarity", "concision", "passive vs active voice"],
+        openStaxUrl: "https://openstax.org/books/writing-guide/pages/1-4-annotated-student-sample",
+        khanUrl: "https://www.khanacademy.org/humanities/grammar",
+      },
+      CLEP_COMP_5_ARGUMENTATION: {
+        name: "Unit 5: Argumentation and Evidence",
+        keyThemes: ["claim and warrant", "counterargument", "logical fallacies", "evidence types", "refutation", "concession"],
+        openStaxUrl: "https://openstax.org/books/writing-guide/pages/10-unit-introduction",
+        khanUrl: "https://www.khanacademy.org/humanities/grammar/writing",
+      },
+    },
+    suggestedTutorQuestions: [
+      "What is the difference between a thesis and a topic sentence?",
+      "How do I identify ethos, pathos, and logos in an argument?",
+      "How should I cite a source in MLA format?",
+      "What is a logical fallacy and how do I spot one?",
+      "How do I improve the coherence of my paragraphs?",
+      "What is the difference between paraphrasing and quoting?",
+    ],
+    curriculumContext: `CLEP College Composition tests college-level writing skills.
+Exam: Part I — 90 MCQ in 95 minutes (multiple choice on grammar, usage, rhetoric, research).
+Passing (~48/90) earns 6 college credits — worth ~$2,400 in tuition savings at most institutions.
+Tests: revision (35%), conventions of standard written English (30%), rhetorical analysis (20%), research (15%).`,
+    tutorResources: `
+- OpenStax Writing Guide with Handbook (openstax.org/books/writing-guide): Free, CC-licensed
+- Purdue OWL (owl.purdue.edu): Free reference for grammar, citation, and writing process
+- Khan Academy Grammar (khanacademy.org/humanities/grammar): Free video lessons on usage and mechanics`,
+    examAlignmentNotes: `CLEP College Composition alignment:
+- Revision: 35% (improve effectiveness of passages)
+- Conventions of Standard Written English: 30% (grammar, usage, mechanics)
+- Ability to Use Source Materials: 20% (research integration, citation)
+- Rhetorical Analysis: 15% (purpose, audience, tone)
+MCQ section only — essay scoring is separate and institution-specific.`,
+    stimulusRequirement: "ALWAYS include a 4-6 sentence passage excerpt as stimulus — the question must reference a specific underlined portion or the passage as a whole",
+    stimulusDescription: "4-6 sentence passage excerpt with underlined portion (required for all questions)",
+    explanationGuidance: "citing the specific grammatical rule, rhetorical principle, or stylistic guideline that supports the correct revision",
+    difficultyRubric: {
+      EASY: "Identify an obvious grammar error (comma splice, subject-verb agreement) or name a rhetorical appeal in a clear example. 65%+ correct.",
+      MEDIUM: "Choose the best revision for an awkward sentence or identify the logical fallacy in an argument. 40–55% correct.",
+      HARD: "Evaluate whether adding/removing a sentence strengthens the passage's argument, or identify a subtle diction issue that undercuts the author's purpose. 25–40% correct.",
+    },
+    distractorTaxonomy: "(1) TOO-WORDY TRAP — technically correct but verbose when a shorter option is available; (2) TONE-SHIFT TRAP — correct grammar but wrong register for the passage's formal/informal voice; (3) OVER-CITATION TRAP — adds citation where paraphrase is already sufficient.",
+    stimulusQualityGuidance: "GOOD: A 5-sentence paragraph with a clear argument, one underlined sentence, and a question asking how to improve it. AVOID: Fragments without context or single-sentence stimuli that don't give enough rhetorical context.",
+    skillCodes: ["Revision", "Grammar and Mechanics", "Rhetorical Analysis", "Research Integration"],
+  },
+
+  // ── CLEP Introductory Psychology ─────────────────────────────────────────
+  CLEP_INTRO_PSYCHOLOGY: {
+    name: "CLEP Introductory Psychology",
+    shortName: "CLEP Psychology",
+    examSecsPerQuestion: 57, // 95 questions in 90 minutes
+    enrichWithEduAPIs: false,
+    units: {
+      CLEP_PSY_1_BIOLOGICAL_BASES: {
+        name: "Unit 1: Biological Bases of Behavior",
+        keyThemes: ["neurons and neurotransmitters", "brain structures", "peripheral nervous system", "genetics and behavior", "sensation and perception"],
+        openStaxUrl: "https://openstax.org/books/psychology-2e/pages/3-introduction",
+        khanUrl: "https://www.khanacademy.org/science/ap-biology/cell-communication-and-cell-cycle",
+      },
+      CLEP_PSY_2_COGNITION_MEMORY: {
+        name: "Unit 2: Cognition, Memory, and Learning",
+        keyThemes: ["classical conditioning", "operant conditioning", "observational learning", "memory encoding and retrieval", "forgetting", "cognitive biases"],
+        openStaxUrl: "https://openstax.org/books/psychology-2e/pages/6-introduction",
+        khanUrl: "https://www.khanacademy.org/science/ap-psychology/learning-ap",
+      },
+      CLEP_PSY_3_DEVELOPMENTAL: {
+        name: "Unit 3: Developmental Psychology",
+        keyThemes: ["Piaget's stages", "Erikson's stages", "attachment theory", "moral development", "adolescence", "lifespan development"],
+        openStaxUrl: "https://openstax.org/books/psychology-2e/pages/9-introduction",
+        khanUrl: "https://www.khanacademy.org/science/ap-psychology/developmental-psychology-ap",
+      },
+      CLEP_PSY_4_SOCIAL_PERSONALITY: {
+        name: "Unit 4: Social Psychology and Personality",
+        keyThemes: ["attribution theory", "conformity", "obedience", "attitudes", "trait theories", "psychodynamic theory", "humanistic psychology"],
+        openStaxUrl: "https://openstax.org/books/psychology-2e/pages/11-introduction",
+        khanUrl: "https://www.khanacademy.org/science/ap-psychology/social-psychology-ap",
+      },
+      CLEP_PSY_5_CLINICAL_ABNORMAL: {
+        name: "Unit 5: Clinical and Abnormal Psychology",
+        keyThemes: ["DSM-5 categories", "anxiety disorders", "mood disorders", "schizophrenia", "cognitive-behavioral therapy", "psychoanalysis", "drug therapies"],
+        openStaxUrl: "https://openstax.org/books/psychology-2e/pages/15-introduction",
+        khanUrl: "https://www.khanacademy.org/science/ap-psychology/clinical-psychology-ap",
+      },
+    },
+    suggestedTutorQuestions: [
+      "What is the difference between classical and operant conditioning?",
+      "What are Piaget's four stages of cognitive development?",
+      "How does serotonin affect mood?",
+      "What is the difference between long-term and short-term memory?",
+      "What is cognitive-behavioral therapy and how does it work?",
+      "What are the Big Five personality traits?",
+    ],
+    curriculumContext: `CLEP Introductory Psychology covers the breadth of an introductory psychology course.
+Exam: 95 questions, 90 minutes. Passing (~56 correct) earns 3 college credits (~$1,200 tuition savings).
+Topics: History and approaches (2-3%), biological bases (8-10%), sensation/perception (6-8%), states of consciousness (4-6%),
+learning (8-10%), cognition/memory (8-10%), language (3-4%), developmental (7-9%), motivation/emotion (6-8%),
+personality (5-7%), testing and individual differences (5-7%), abnormal psychology (12-14%), treatment (5-7%),
+social psychology (8-10%), statistics and research (3-5%).`,
+    tutorResources: `
+- OpenStax Psychology 2e (openstax.org/books/psychology-2e): Free, CC-licensed, chapter-by-chapter
+- Khan Academy AP Psychology (khanacademy.org/science/ap-psychology): Free video lessons + practice
+- Noba Project (nobaproject.com): Free, peer-reviewed psychology textbook modules`,
+    examAlignmentNotes: `CLEP Introductory Psychology alignment:
+- Abnormal psychology has the highest weight (12-14%)
+- Learning (classical/operant conditioning): 8-10%
+- Social psychology: 8-10%
+- Questions are application-focused — expect scenario-based questions asking you to identify which concept applies.`,
+    stimulusRequirement: "Include a brief scenario or case study as stimulus when the question asks the student to identify or apply a concept",
+    stimulusDescription: "short scenario (2-3 sentences) describing a behavior or experiment (null for direct recall questions)",
+    explanationGuidance: "naming the specific theory, theorist, or brain structure involved and explaining why the distractors describe a different concept",
+    difficultyRubric: {
+      EASY: "Recall a definition (e.g., what is reinforcement?) or name a theorist's stage. 65%+ correct.",
+      MEDIUM: "Apply a concept to a scenario (e.g., identify which type of learning is demonstrated). 40–55% correct.",
+      HARD: "Distinguish between two similar concepts (e.g., negative reinforcement vs punishment) in an ambiguous scenario, or evaluate treatment effectiveness. 25–40% correct.",
+    },
+    distractorTaxonomy: "(1) SIMILAR-TERM TRAP — negative reinforcement vs punishment; classical vs operant; (2) WRONG-THEORIST TRAP — attributes Freud's idea to Erikson or vice versa; (3) DIRECTION TRAP — confuses what increases vs decreases behavior.",
+    stimulusQualityGuidance: "GOOD: 'A child cries and his mother gives him a cookie, which stops the crying. The mother is more likely to give cookies in the future.' AVOID: Abstract definitions without a behavioral scenario.",
+    skillCodes: ["Concept Identification", "Application to Scenarios", "Research Methods", "Theoretical Frameworks"],
+  },
+
+  // ── CLEP Principles of Marketing ────────────────────────────────────────
+  CLEP_PRINCIPLES_OF_MARKETING: {
+    name: "CLEP Principles of Marketing",
+    shortName: "CLEP Marketing",
+    examSecsPerQuestion: 54, // 100 questions in 90 minutes
+    enrichWithEduAPIs: false,
+    units: {
+      CLEP_MARKETING_1_FUNDAMENTALS: {
+        name: "Unit 1: Marketing Fundamentals and Environment",
+        keyThemes: ["marketing concept", "value creation", "SWOT analysis", "marketing mix 4Ps", "macro and micro environment", "target markets"],
+        openStaxUrl: "https://openstax.org/books/principles-marketing/pages/1-introduction",
+        khanUrl: "https://www.khanacademy.org/economics-finance-domain/microeconomics",
+      },
+      CLEP_MARKETING_2_CONSUMER_BEHAVIOR: {
+        name: "Unit 2: Consumer Behavior and Market Research",
+        keyThemes: ["buying decision process", "psychological factors", "social influences", "market segmentation", "primary vs secondary research", "survey design"],
+        openStaxUrl: "https://openstax.org/books/principles-marketing/pages/3-introduction",
+        khanUrl: "https://www.khanacademy.org/economics-finance-domain/microeconomics/consumer-theory",
+      },
+      CLEP_MARKETING_3_PRODUCT_PRICING: {
+        name: "Unit 3: Product and Pricing Strategy",
+        keyThemes: ["product life cycle", "branding", "packaging", "price elasticity", "cost-plus pricing", "penetration vs skimming pricing", "new product development"],
+        openStaxUrl: "https://openstax.org/books/principles-marketing/pages/7-introduction",
+        khanUrl: "https://www.khanacademy.org/economics-finance-domain/microeconomics/firm-economic-profit",
+      },
+      CLEP_MARKETING_4_DISTRIBUTION_PROMOTION: {
+        name: "Unit 4: Distribution and Promotion",
+        keyThemes: ["distribution channels", "logistics", "wholesalers vs retailers", "integrated marketing communications", "advertising", "personal selling", "sales promotion"],
+        openStaxUrl: "https://openstax.org/books/principles-marketing/pages/11-introduction",
+        khanUrl: "https://www.khanacademy.org/economics-finance-domain",
+      },
+      CLEP_MARKETING_5_DIGITAL_GLOBAL: {
+        name: "Unit 5: Digital and Global Marketing",
+        keyThemes: ["social media marketing", "SEO", "content marketing", "global marketing adaptation", "e-commerce", "cultural considerations", "international trade"],
+        openStaxUrl: "https://openstax.org/books/principles-marketing/pages/16-introduction",
+        khanUrl: "https://www.khanacademy.org/economics-finance-domain/macroeconomics/international-trade-topic",
+      },
+    },
+    suggestedTutorQuestions: [
+      "What is the difference between the 4Ps and the 4Cs of marketing?",
+      "How does price elasticity affect a company's pricing strategy?",
+      "What is the product life cycle and how does marketing strategy change at each stage?",
+      "What is market segmentation and why does it matter?",
+      "How is digital marketing different from traditional marketing?",
+      "What is integrated marketing communications?",
+    ],
+    curriculumContext: `CLEP Principles of Marketing covers introductory marketing concepts from an undergraduate business course.
+Exam: 100 questions, 90 minutes. Passing earns 3 college credits (~$1,200 tuition savings).
+Topics: Role of marketing (10%), marketing strategy (20%), consumer behavior/market research (15%),
+product (15%), price (15%), place/distribution (10%), promotion (10%), international marketing (5%).`,
+    tutorResources: `
+- OpenStax Principles of Marketing (openstax.org/books/principles-marketing): Free, CC-licensed, full textbook
+- LibreTexts Business: Marketing (biz.libretexts.org): Free open-access marketing textbook
+- SCORE Business Learning Center (score.org/resource/marketing): Free small-business marketing guides`,
+    examAlignmentNotes: `CLEP Principles of Marketing alignment:
+- Questions are application-focused — given a business scenario, identify the correct marketing concept
+- Heavy weight on marketing strategy and marketing mix (4Ps)
+- Consumer behavior and segmentation appear frequently
+- Digital marketing has growing presence in recent exams`,
+    stimulusRequirement: "Include a business scenario or case vignette (2-3 sentences) as stimulus for application questions; null for direct recall",
+    stimulusDescription: "business scenario or product launch vignette (null for direct recall questions)",
+    explanationGuidance: "naming the specific marketing concept and explaining why the business scenario fits that concept over similar alternatives",
+    difficultyRubric: {
+      EASY: "Recall a definition (e.g., what is penetration pricing?) or identify a 4P element. 65%+ correct.",
+      MEDIUM: "Apply a marketing concept to a business case (e.g., which pricing strategy would Apple use for a new product launch?). 40–55% correct.",
+      HARD: "Evaluate a marketing strategy given conflicting objectives (e.g., maximize market share vs maximize profit) or analyze a segmentation scenario with multiple valid approaches. 25–40% correct.",
+    },
+    distractorTaxonomy: "(1) SIMILAR-STRATEGY TRAP — skimming vs premium pricing; push vs pull strategy; (2) WRONG-STAGE TRAP — applies introduction-stage strategy to maturity stage of PLC; (3) DIRECTION-OF-CAUSATION TRAP — confuses whether consumer demand drives price or price drives demand.",
+    stimulusQualityGuidance: "GOOD: 'A tech company launches a flagship phone at $1,499 to signal premium quality and recover R&D costs. Which pricing strategy is this?' AVOID: Hypothetical companies with no industry context.",
+    skillCodes: ["Marketing Mix Application", "Consumer Analysis", "Strategic Decision-Making", "Market Research"],
+  },
+
+  // ── CLEP Principles of Management ────────────────────────────────────────
+  CLEP_PRINCIPLES_OF_MANAGEMENT: {
+    name: "CLEP Principles of Management",
+    shortName: "CLEP Management",
+    examSecsPerQuestion: 54, // 100 questions in 90 minutes
+    enrichWithEduAPIs: false,
+    units: {
+      CLEP_MGMT_1_PLANNING_ORGANIZING: {
+        name: "Unit 1: Planning and Organizing",
+        keyThemes: ["strategic planning", "SWOT analysis", "organizational structure", "span of control", "centralization vs decentralization", "mission and vision", "MBO"],
+        openStaxUrl: "https://openstax.org/books/principles-management/pages/1-introduction",
+        khanUrl: "https://www.khanacademy.org/economics-finance-domain/macroeconomics",
+      },
+      CLEP_MGMT_2_LEADING_MOTIVATION: {
+        name: "Unit 2: Leading and Motivation",
+        keyThemes: ["leadership styles", "Maslow's hierarchy", "Herzberg two-factor", "expectancy theory", "equity theory", "transformational vs transactional leadership", "emotional intelligence"],
+        openStaxUrl: "https://openstax.org/books/principles-management/pages/12-introduction",
+        khanUrl: "https://www.khanacademy.org/economics-finance-domain",
+      },
+      CLEP_MGMT_3_CONTROLLING_OPERATIONS: {
+        name: "Unit 3: Controlling and Operations",
+        keyThemes: ["control process", "benchmarking", "balanced scorecard", "quality management", "TQM", "supply chain", "inventory management"],
+        openStaxUrl: "https://openstax.org/books/principles-management/pages/16-introduction",
+        khanUrl: "https://www.khanacademy.org/economics-finance-domain",
+      },
+      CLEP_MGMT_4_HUMAN_RESOURCES: {
+        name: "Unit 4: Human Resources and Organizational Behavior",
+        keyThemes: ["recruitment and selection", "training and development", "performance appraisal", "compensation", "group dynamics", "conflict resolution", "organizational culture"],
+        openStaxUrl: "https://openstax.org/books/principles-management/pages/10-introduction",
+        khanUrl: "https://www.khanacademy.org/economics-finance-domain",
+      },
+      CLEP_MGMT_5_STRATEGIC_ETHICS: {
+        name: "Unit 5: Strategy, Ethics, and Global Management",
+        keyThemes: ["Porter's five forces", "competitive advantage", "corporate social responsibility", "ethical decision-making", "stakeholder theory", "global expansion strategies"],
+        openStaxUrl: "https://openstax.org/books/principles-management/pages/4-introduction",
+        khanUrl: "https://www.khanacademy.org/economics-finance-domain/macroeconomics/international-trade-topic",
+      },
+    },
+    suggestedTutorQuestions: [
+      "What is the difference between transformational and transactional leadership?",
+      "How does Maslow's hierarchy of needs apply to employee motivation?",
+      "What is the difference between centralized and decentralized organizations?",
+      "What are Porter's five forces and why do they matter?",
+      "What is Management by Objectives (MBO)?",
+      "What is the balanced scorecard approach to performance management?",
+    ],
+    curriculumContext: `CLEP Principles of Management covers foundational management concepts from an introductory undergraduate course.
+Exam: 100 questions, 90 minutes. Passing earns 3 college credits (~$1,200 tuition savings).
+Topics: Organization and management (10%), planning (10%), organizing (15%), staffing (10%), directing/leading (20%),
+motivating (15%), controlling (15%), organizational behavior (5%).`,
+    tutorResources: `
+- OpenStax Principles of Management (openstax.org/books/principles-management): Free, CC-licensed
+- LibreTexts Management: Management and Organizational Behavior (biz.libretexts.org): Free open-access
+- MindTools Management Skills (mindtools.com): Free practical management frameworks and summaries`,
+    examAlignmentNotes: `CLEP Principles of Management alignment:
+- Leadership and motivation have combined 35% weight — know all major theories
+- Organizing and planning together: ~25%
+- Scenario-based questions dominate — given a management situation, identify the correct theory or action
+- Herzberg, Maslow, Fiedler, and Vroom appear frequently`,
+    stimulusRequirement: "Include a workplace scenario (2-3 sentences) as stimulus for application questions; null for direct recall of theory names",
+    stimulusDescription: "workplace or business scenario (null for direct theory-recall questions)",
+    explanationGuidance: "naming the specific management theory or framework and explaining how it applies to the scenario and why competing theories don't fit",
+    difficultyRubric: {
+      EASY: "Recall a theory name and its core idea (e.g., what does Maslow's esteem level represent?). 65%+ correct.",
+      MEDIUM: "Apply a motivation or leadership theory to a given workplace situation. 40–55% correct.",
+      HARD: "Distinguish between two similar theories (e.g., Hersey-Blanchard vs Fiedler contingency) in an ambiguous scenario, or evaluate a strategic management decision with trade-offs. 25–40% correct.",
+    },
+    distractorTaxonomy: "(1) THEORY-CONFUSION TRAP — Herzberg hygiene factor vs motivator; McGregor X vs Y; (2) LEVEL-CONFUSION TRAP — Maslow safety vs esteem; (3) DIRECTION TRAP — confuses what increases vs decreases motivation or performance.",
+    stimulusQualityGuidance: "GOOD: 'A manager gives employees decision-making authority and trusts them to self-direct. Which leadership style does this represent?' AVOID: Vague 'a company changed its strategy' without enough detail to apply a theory.",
+    skillCodes: ["Management Theory Application", "Leadership Analysis", "Organizational Design", "Strategic Thinking"],
+  },
+
+  // ── CLEP Introductory Sociology ──────────────────────────────────────────
+  CLEP_INTRODUCTORY_SOCIOLOGY: {
+    name: "CLEP Introductory Sociology",
+    shortName: "CLEP Sociology",
+    examSecsPerQuestion: 54, // 100 questions in 90 minutes
+    enrichWithEduAPIs: false,
+    units: {
+      CLEP_SOC_1_SOCIOLOGICAL_PERSPECTIVE: {
+        name: "Unit 1: The Sociological Perspective and Research Methods",
+        keyThemes: ["sociological imagination", "conflict theory", "functionalism", "symbolic interactionism", "quantitative vs qualitative research", "surveys and experiments"],
+        openStaxUrl: "https://openstax.org/books/introduction-sociology-3e/pages/1-introduction",
+        khanUrl: "https://www.khanacademy.org/test-prep/mcat/behavior/theories-of-socialization",
+      },
+      CLEP_SOC_2_SOCIAL_STRUCTURE_GROUPS: {
+        name: "Unit 2: Social Structure, Groups, and Culture",
+        keyThemes: ["norms and values", "culture and subculture", "socialization", "primary vs secondary groups", "formal organizations", "bureaucracy", "social roles"],
+        openStaxUrl: "https://openstax.org/books/introduction-sociology-3e/pages/3-introduction",
+        khanUrl: "https://www.khanacademy.org/test-prep/mcat/behavior",
+      },
+      CLEP_SOC_3_SOCIAL_STRATIFICATION: {
+        name: "Unit 3: Social Stratification and Inequality",
+        keyThemes: ["class systems", "social mobility", "income inequality", "racial and ethnic stratification", "gender inequality", "intersectionality", "global inequality"],
+        openStaxUrl: "https://openstax.org/books/introduction-sociology-3e/pages/9-introduction",
+        khanUrl: "https://www.khanacademy.org/test-prep/mcat/behavior/social-inequality",
+      },
+      CLEP_SOC_4_SOCIAL_INSTITUTIONS: {
+        name: "Unit 4: Social Institutions",
+        keyThemes: ["family structures", "education systems", "religion and society", "economic institutions", "political institutions", "healthcare systems", "media influence"],
+        openStaxUrl: "https://openstax.org/books/introduction-sociology-3e/pages/13-introduction",
+        khanUrl: "https://www.khanacademy.org/test-prep/mcat/behavior",
+      },
+      CLEP_SOC_5_SOCIAL_CHANGE_DEVIANCE: {
+        name: "Unit 5: Social Change and Deviance",
+        keyThemes: ["deviance definitions", "labeling theory", "strain theory", "crime statistics", "social movements", "collective behavior", "globalization effects"],
+        openStaxUrl: "https://openstax.org/books/introduction-sociology-3e/pages/7-introduction",
+        khanUrl: "https://www.khanacademy.org/test-prep/mcat/behavior/social-structures",
+      },
+    },
+    suggestedTutorQuestions: [
+      "What is the sociological imagination and why does it matter?",
+      "What are the three major sociological theories — functionalism, conflict, and symbolic interactionism?",
+      "How is social stratification different from social mobility?",
+      "What is labeling theory and how does it explain deviance?",
+      "What is the difference between primary and secondary socialization?",
+      "How do sociologists define culture, and what are norms vs values?",
+    ],
+    curriculumContext: `CLEP Introductory Sociology covers the scope of an introductory undergraduate sociology course.
+Exam: 100 questions, 90 minutes. Passing earns 3 college credits (~$1,200 tuition savings).
+Topics: Institutions (15%), social patterns (31%), social processes (17%), social stratification (25%),
+sociological theory and methods (12%).`,
+    tutorResources: `
+- OpenStax Introduction to Sociology 3e (openstax.org/books/introduction-sociology-3e): Free, CC-licensed
+- Khan Academy MCAT Social and Behavioral Sciences (khanacademy.org): Free lessons covering key sociological concepts
+- LibreTexts Sociology (socialsci.libretexts.org): Free open-access chapters on stratification, deviance, and institutions`,
+    examAlignmentNotes: `CLEP Introductory Sociology alignment:
+- Social stratification has the highest single-area weight (25%)
+- Social patterns (groups, culture, socialization): 31%
+- Know all three major theoretical perspectives and when each is typically applied
+- Questions are often scenario-based — given a social situation, identify the correct sociological concept`,
+    stimulusRequirement: "Include a brief social scenario or research finding as stimulus for application questions; null for direct theory-recall",
+    stimulusDescription: "social scenario or research summary (null for direct recall of theory names)",
+    explanationGuidance: "naming the specific sociological theory or concept and explaining how it interprets the scenario, contrasting with the alternative theories in the distractors",
+    difficultyRubric: {
+      EASY: "Recall a sociological term (e.g., what is a norm?) or identify which major theory explains a given statement. 65%+ correct.",
+      MEDIUM: "Apply a sociological concept to a social scenario (e.g., which type of social mobility does this represent?). 40–55% correct.",
+      HARD: "Distinguish between two similar theories or levels of analysis (micro vs macro) in an ambiguous social scenario, or evaluate research methodology for a sociological study. 25–40% correct.",
+    },
+    distractorTaxonomy: "(1) THEORY-DIRECTION TRAP — conflict theory vs functionalism give opposite explanations for the same phenomenon; (2) LEVEL-ANALYSIS TRAP — micro vs macro sociological perspective; (3) ADJACENT-CONCEPT TRAP — folkways vs mores; primary vs secondary groups.",
+    stimulusQualityGuidance: "GOOD: 'A sociologist argues that poverty persists because it serves a function for the wealthy by providing a cheap labor supply. Which theoretical perspective does this represent?' AVOID: Abstract definitions without a social context.",
+    skillCodes: ["Theory Application", "Social Structure Analysis", "Research Methods", "Stratification and Inequality"],
+  },
+
 };
 
 // ═════════════════════════════════════════════════════════════════════════════

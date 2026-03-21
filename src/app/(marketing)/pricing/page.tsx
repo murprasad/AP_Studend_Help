@@ -5,7 +5,7 @@ import Link from "next/link";
 import { CheckCircle, Zap, Crown } from "lucide-react";
 
 const FREE_FEATURES = [
-  "All 10 AP courses (Math, Science, Social Studies)",
+  "All 16 AP/SAT/ACT courses",
   "Unlimited MCQ practice questions",
   "MCQ sessions — 3 sessions/day",
   "AI Tutor — 5 conversations/day",
@@ -17,6 +17,7 @@ const FREE_FEATURES = [
 
 const PREMIUM_FEATURES = [
   "Everything in Free, plus:",
+  "All 6 CLEP exam courses (earn college credit)",
   "Unlimited MCQ practice sessions",
   "FRQ / SAQ / DBQ / LEQ practice with AI scoring",
   "Unlimited AI Tutor conversations",
@@ -24,7 +25,7 @@ const PREMIUM_FEATURES = [
   "Streaming AI responses (faster answers)",
   "Advanced analytics & weak-area insights",
   "Cancel anytime — keep access until period ends",
-  "Early access to new AP courses",
+  "Early access to new courses",
   "Email support",
 ];
 
@@ -44,8 +45,8 @@ export default function PricingPage() {
           Simple, transparent pricing
         </h1>
         <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-          Start free. Upgrade when you want unlimited AI tutoring and a
-          personalized study plan that adapts as you improve.
+          Start free. Upgrade when you want unlimited AI tutoring, a personalized study plan,
+          and access to all 6 CLEP college-credit exams.
         </p>
       </div>
 

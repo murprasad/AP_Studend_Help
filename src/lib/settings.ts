@@ -51,6 +51,12 @@ export async function isAiLimitEnabled(): Promise<boolean> {
   return val === "true";
 }
 
+/** Returns true if CLEP courses are enabled. Defaults to false. */
+export async function isClepEnabled(): Promise<boolean> {
+  const val = await getSetting("clep_enabled", "false");
+  return val === "true";
+}
+
 /**
  * Returns true if premium feature restrictions are enforced.
  * When false (default), all users have full access regardless of subscription tier.

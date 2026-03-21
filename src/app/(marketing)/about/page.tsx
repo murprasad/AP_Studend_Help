@@ -1,35 +1,43 @@
 import { Badge } from "@/components/ui/badge";
-import { Globe, Mail, Target, Heart, Sparkles, Flame, Calendar, Trophy, Layers, Mic, Lightbulb, Scale, Crown, LayoutDashboard } from "lucide-react";
+import { Globe, Mail, Target, Heart, Sparkles, Flame, Calendar, Trophy, Layers, Mic, Lightbulb, Scale, Crown, LayoutDashboard, GraduationCap } from "lucide-react";
 import Link from "next/link";
 
 const COURSES = [
   // AP
-  { name: "AP World History: Modern",       category: "AP Courses", color: "bg-blue-500/10 text-blue-300 border-blue-500/20 dark:text-blue-300 dark:border-blue-500/20 light:text-blue-700 light:border-blue-400/40" },
-  { name: "AP Computer Science Principles", category: "AP Courses", color: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-300 border-emerald-500/20" },
-  { name: "AP Physics 1: Algebra-Based",    category: "AP Courses", color: "bg-yellow-500/10 text-yellow-600 dark:text-yellow-300 border-yellow-500/20" },
-  { name: "AP Calculus AB",                 category: "AP Courses", color: "bg-violet-500/10 text-violet-600 dark:text-violet-300 border-violet-500/20" },
-  { name: "AP Calculus BC",                 category: "AP Courses", color: "bg-purple-500/10 text-purple-600 dark:text-purple-300 border-purple-500/20" },
-  { name: "AP Statistics",                  category: "AP Courses", color: "bg-cyan-500/10 text-cyan-600 dark:text-cyan-300 border-cyan-500/20" },
-  { name: "AP Chemistry",                   category: "AP Courses", color: "bg-orange-500/10 text-orange-600 dark:text-orange-300 border-orange-500/20" },
-  { name: "AP Biology",                     category: "AP Courses", color: "bg-green-500/10 text-green-600 dark:text-green-300 border-green-500/20" },
-  { name: "AP US History (APUSH)",          category: "AP Courses", color: "bg-red-500/10 text-red-600 dark:text-red-300 border-red-500/20" },
-  { name: "AP Psychology",                  category: "AP Courses", color: "bg-pink-500/10 text-pink-600 dark:text-pink-300 border-pink-500/20" },
+  { name: "AP World History: Modern",       category: "AP Courses",   color: "bg-blue-500/10 text-blue-300 border-blue-500/20 dark:text-blue-300 dark:border-blue-500/20 light:text-blue-700 light:border-blue-400/40" },
+  { name: "AP Computer Science Principles", category: "AP Courses",   color: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-300 border-emerald-500/20" },
+  { name: "AP Physics 1: Algebra-Based",    category: "AP Courses",   color: "bg-yellow-500/10 text-yellow-600 dark:text-yellow-300 border-yellow-500/20" },
+  { name: "AP Calculus AB",                 category: "AP Courses",   color: "bg-violet-500/10 text-violet-600 dark:text-violet-300 border-violet-500/20" },
+  { name: "AP Calculus BC",                 category: "AP Courses",   color: "bg-purple-500/10 text-purple-600 dark:text-purple-300 border-purple-500/20" },
+  { name: "AP Statistics",                  category: "AP Courses",   color: "bg-cyan-500/10 text-cyan-600 dark:text-cyan-300 border-cyan-500/20" },
+  { name: "AP Chemistry",                   category: "AP Courses",   color: "bg-orange-500/10 text-orange-600 dark:text-orange-300 border-orange-500/20" },
+  { name: "AP Biology",                     category: "AP Courses",   color: "bg-green-500/10 text-green-600 dark:text-green-300 border-green-500/20" },
+  { name: "AP US History (APUSH)",          category: "AP Courses",   color: "bg-red-500/10 text-red-600 dark:text-red-300 border-red-500/20" },
+  { name: "AP Psychology",                  category: "AP Courses",   color: "bg-pink-500/10 text-pink-600 dark:text-pink-300 border-pink-500/20" },
   // SAT
-  { name: "SAT Math",                       category: "SAT Prep",   color: "bg-blue-500/10 text-blue-600 dark:text-blue-300 border-blue-500/20" },
-  { name: "SAT Reading & Writing",          category: "SAT Prep",   color: "bg-sky-500/10 text-sky-600 dark:text-sky-300 border-sky-500/20" },
+  { name: "SAT Math",                       category: "SAT Prep",     color: "bg-blue-500/10 text-blue-600 dark:text-blue-300 border-blue-500/20" },
+  { name: "SAT Reading & Writing",          category: "SAT Prep",     color: "bg-sky-500/10 text-sky-600 dark:text-sky-300 border-sky-500/20" },
   // ACT
-  { name: "ACT Math",                       category: "ACT Prep",   color: "bg-orange-500/10 text-orange-600 dark:text-orange-300 border-orange-500/20" },
-  { name: "ACT English",                    category: "ACT Prep",   color: "bg-amber-500/10 text-amber-600 dark:text-amber-300 border-amber-500/20" },
-  { name: "ACT Science",                    category: "ACT Prep",   color: "bg-green-500/10 text-green-600 dark:text-green-300 border-green-500/20" },
-  { name: "ACT Reading",                    category: "ACT Prep",   color: "bg-teal-500/10 text-teal-600 dark:text-teal-300 border-teal-500/20" },
+  { name: "ACT Math",                       category: "ACT Prep",     color: "bg-orange-500/10 text-orange-600 dark:text-orange-300 border-orange-500/20" },
+  { name: "ACT English",                    category: "ACT Prep",     color: "bg-amber-500/10 text-amber-600 dark:text-amber-300 border-amber-500/20" },
+  { name: "ACT Science",                    category: "ACT Prep",     color: "bg-green-500/10 text-green-600 dark:text-green-300 border-green-500/20" },
+  { name: "ACT Reading",                    category: "ACT Prep",     color: "bg-teal-500/10 text-teal-600 dark:text-teal-300 border-teal-500/20" },
+  // CLEP — College Credit
+  { name: "CLEP College Algebra",           category: "CLEP (College Credit)", color: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-300 border-emerald-500/20" },
+  { name: "CLEP College Composition",       category: "CLEP (College Credit)", color: "bg-teal-500/10 text-teal-600 dark:text-teal-300 border-teal-500/20" },
+  { name: "CLEP Introductory Psychology",   category: "CLEP (College Credit)", color: "bg-green-500/10 text-green-600 dark:text-green-300 border-green-500/20" },
+  { name: "CLEP Principles of Marketing",   category: "CLEP (College Credit)", color: "bg-lime-500/10 text-lime-600 dark:text-lime-300 border-lime-500/20" },
+  { name: "CLEP Principles of Management",  category: "CLEP (College Credit)", color: "bg-emerald-500/10 text-emerald-500 dark:text-emerald-400 border-emerald-500/20" },
+  { name: "CLEP Introductory Sociology",    category: "CLEP (College Credit)", color: "bg-cyan-500/10 text-cyan-600 dark:text-cyan-300 border-cyan-500/20" },
 ];
 
 const COURSE_CATEGORIES = Array.from(new Set(COURSES.map((c) => c.category)));
 
 const CATEGORY_COLORS: Record<string, string> = {
-  "AP Courses": "text-indigo-500 dark:text-indigo-400",
-  "SAT Prep":   "text-blue-500 dark:text-blue-400",
-  "ACT Prep":   "text-amber-500 dark:text-amber-400",
+  "AP Courses":           "text-indigo-500 dark:text-indigo-400",
+  "SAT Prep":             "text-blue-500 dark:text-blue-400",
+  "ACT Prep":             "text-amber-500 dark:text-amber-400",
+  "CLEP (College Credit)":"text-emerald-500 dark:text-emerald-400",
 };
 
 
@@ -45,12 +53,12 @@ export default function AboutPage() {
           </div>
           <div className="flex items-center gap-2 flex-wrap">
             <h1 className="text-3xl font-bold gradient-text">About StudentNest</h1>
-            <Badge className="bg-indigo-500/20 text-indigo-300 border-indigo-500/30 text-xs font-semibold">Beta 1.14</Badge>
+            <Badge className="bg-indigo-500/20 text-indigo-300 border-indigo-500/30 text-xs font-semibold">Beta 1.15</Badge>
           </div>
         </div>
         <p className="text-muted-foreground leading-relaxed max-w-2xl mx-auto">
-          AP exams shape college admissions. But the best prep tools cost hundreds of dollars — or require hiring a tutor.
-          StudentNest exists to change that: world-class AI-powered AP, SAT &amp; ACT prep, free for every student.
+          AP exams shape college admissions. CLEP exams save thousands in tuition. But the best prep tools cost hundreds of dollars — or require hiring a tutor.
+          StudentNest exists to change that: world-class AI-powered AP, SAT, ACT &amp; CLEP prep, free for every student.
         </p>
       </div>
 
@@ -76,7 +84,7 @@ export default function AboutPage() {
       <div className="rounded-2xl border border-indigo-500/20 bg-indigo-500/5 p-8 space-y-3">
         <p className="text-xs font-semibold uppercase tracking-wider text-indigo-400">Our Mission</p>
         <p className="text-xl font-semibold text-foreground/90 leading-relaxed max-w-2xl mx-auto">
-          &ldquo;Make world-class AP, SAT &amp; ACT prep accessible to every high school student — not just those who can afford a tutor.&rdquo;
+          &ldquo;Make world-class AP, SAT, ACT &amp; CLEP prep accessible to every student — not just those who can afford a tutor.&rdquo;
         </p>
       </div>
 
@@ -122,7 +130,7 @@ export default function AboutPage() {
       <div className="space-y-6">
         <h2 className="text-xl font-bold">
           What We Cover{" "}
-          <span className="text-muted-foreground font-normal text-base">({COURSES.length} courses)</span>
+          <span className="text-muted-foreground font-normal text-base">({COURSES.length} courses · AP, SAT, ACT &amp; CLEP)</span>
         </h2>
         {COURSE_CATEGORIES.map((category) => (
           <div key={category} className="space-y-2">
@@ -148,8 +156,8 @@ export default function AboutPage() {
         <h2 className="text-xl font-bold">In Beta</h2>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
           {[
-            { value: "16",   label: "Courses covered" },
-            { value: "10+",  label: "AP exams supported" },
+            { value: "22",   label: "Courses covered" },
+            { value: "6",    label: "CLEP exams (college credit)" },
             { value: "24/7", label: "AI tutor availability" },
             { value: "Free", label: "To start, forever" },
           ].map(({ value, label }) => (
@@ -161,10 +169,37 @@ export default function AboutPage() {
         </div>
       </div>
 
-      {/* Section 7: What's New in Beta 1.14 */}
+      {/* Section 7: What's New in Beta 1.15 */}
       <div className="space-y-6">
         <div className="text-center space-y-1">
           <Badge className="bg-indigo-500/20 text-indigo-300 border-indigo-500/30 text-xs font-semibold mb-2">Latest Release</Badge>
+          <h2 className="text-xl font-bold">What&apos;s New in Beta 1.15</h2>
+          <p className="text-sm text-muted-foreground">CLEP college-credit prep arrives — 6 CLEP exams with full AI tutoring, practice, and mastery tracking. Save up to $2,400 in tuition per exam.</p>
+        </div>
+        <div className="grid sm:grid-cols-2 gap-3 text-left">
+          {[
+            { icon: GraduationCap, color: "text-emerald-400", bg: "bg-emerald-500/10", title: "6 CLEP Exams Added",             desc: "College Algebra, College Composition, Introductory Psychology, Principles of Marketing, Principles of Management, and Introductory Sociology — each with 5 units and full AI support." },
+            { icon: Sparkles,      color: "text-indigo-400",  bg: "bg-indigo-500/10",  title: "Sage Tutors CLEP Content",       desc: "The same AI that explains AP topics now handles CLEP subject matter — with resources from OpenStax, Khan Academy, and Wikipedia." },
+            { icon: LayoutDashboard, color: "text-teal-400",  bg: "bg-teal-500/10",    title: "Separate Sidebar Section",      desc: "CLEP courses appear as a dedicated 'CLEP Prep' tab in the course switcher, fully isolated from AP/SAT/ACT content." },
+            { icon: Sparkles,      color: "text-violet-400",  bg: "bg-violet-500/10",  title: "Legal & Copyright-Safe",        desc: "All CLEP practice questions are original AI-generated content. Resources are from openly licensed sources (OpenStax CC BY, Khan Academy, Wikipedia). CLEP® is a trademark of College Board, which does not endorse this platform." },
+          ].map(({ icon: Icon, color, bg, title, desc }) => (
+            <div key={title} className="flex gap-3 p-4 rounded-xl border border-border/40 bg-card">
+              <div className={`w-8 h-8 rounded-lg ${bg} flex items-center justify-center flex-shrink-0 mt-0.5`}>
+                <Icon className={`h-4 w-4 ${color}`} />
+              </div>
+              <div>
+                <p className="text-sm font-semibold">{title}</p>
+                <p className="text-xs text-muted-foreground leading-relaxed mt-0.5">{desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Section 7b-prev: What's New in Beta 1.14 */}
+      <div className="space-y-6">
+        <div className="text-center space-y-1">
+          <Badge className="bg-border/60 text-muted-foreground border-border/40 text-xs font-semibold mb-2">Beta 1.14</Badge>
           <h2 className="text-xl font-bold">What&apos;s New in Beta 1.14</h2>
           <p className="text-sm text-muted-foreground">Full question bank coverage across all 16 courses, fully automated release pipeline, and integrated post-deploy verification.</p>
         </div>
@@ -348,11 +383,13 @@ export default function AboutPage() {
         <p className="text-[11px] text-muted-foreground/70 leading-relaxed">
           AP® is a trademark registered by the College Board, which is not affiliated with, and does not endorse, this product or site.
           SAT® is a trademark registered by the College Board, which is not affiliated with, and does not endorse, this product or site.
+          CLEP® is a trademark registered by the College Board, which is not affiliated with, and does not endorse, this product or site.
           ACT® is a registered trademark of ACT, Inc., which is not affiliated with, and does not endorse, this product or site.
         </p>
         <p className="text-[11px] text-muted-foreground/70 leading-relaxed">
           StudentNest is an independent educational technology platform. All practice questions and study materials are original works
           created by StudentNest and AI models — not reproduced from any official exam publisher.
+          CLEP curriculum references use publicly available subject descriptions and freely licensed resources (OpenStax CC BY 4.0, Khan Academy, Wikipedia CC BY-SA).
         </p>
       </div>
 

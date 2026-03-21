@@ -57,9 +57,10 @@ const COURSE_OPTIONS = (Object.entries(COURSE_REGISTRY) as [ApCourse, { name: st
   ([value, cfg]) => ({ value, label: cfg.name, short: cfg.shortName })
 );
 
-const COURSE_GROUPS: { label: string; keys: ApCourse[] }[] = [
+const BASE_COURSE_GROUPS: { label: string; shortLabel: string; keys: ApCourse[] }[] = [
   {
     label: "AP Courses",
+    shortLabel: "AP",
     keys: [
       "AP_WORLD_HISTORY", "AP_COMPUTER_SCIENCE_PRINCIPLES", "AP_PHYSICS_1",
       "AP_CALCULUS_AB", "AP_CALCULUS_BC", "AP_STATISTICS",
@@ -68,13 +69,24 @@ const COURSE_GROUPS: { label: string; keys: ApCourse[] }[] = [
   },
   {
     label: "SAT Prep",
+    shortLabel: "SAT",
     keys: ["SAT_MATH", "SAT_READING_WRITING"] as ApCourse[],
   },
   {
     label: "ACT Prep",
+    shortLabel: "ACT",
     keys: ["ACT_MATH", "ACT_ENGLISH", "ACT_SCIENCE", "ACT_READING"] as ApCourse[],
   },
 ];
+
+const CLEP_GROUP: { label: string; shortLabel: string; keys: ApCourse[] } = {
+  label: "CLEP Prep",
+  shortLabel: "CLEP",
+  keys: [
+    "CLEP_COLLEGE_ALGEBRA", "CLEP_COLLEGE_COMPOSITION", "CLEP_INTRO_PSYCHOLOGY",
+    "CLEP_PRINCIPLES_OF_MARKETING", "CLEP_PRINCIPLES_OF_MANAGEMENT", "CLEP_INTRODUCTORY_SOCIOLOGY",
+  ] as ApCourse[],
+};
 
 interface SidebarProps {
   userRole?: string;
@@ -90,24 +102,32 @@ export function Sidebar({ userRole, isOpen = false, onClose = () => {} }: Sideba
   const [streakDays, setStreakDays] = useState<number>(0);
   const [streakFreezes, setStreakFreezes] = useState<number>(0);
   const [examDate, setExamDate] = useState<Date | null>(null);
+  const [clepEnabled, setClepEnabled] = useState<boolean>(false);
+
+  const COURSE_GROUPS = clepEnabled
+    ? [...BASE_COURSE_GROUPS, CLEP_GROUP]
+    : BASE_COURSE_GROUPS;
+
   const [activeGroup, setActiveGroup] = useState<string>(() => {
-    return COURSE_GROUPS.find(g => g.keys.includes(course as ApCourse))?.label ?? "AP Courses";
+    return BASE_COURSE_GROUPS.find(g => g.keys.includes(course as ApCourse))?.label ?? "AP Courses";
   });
 
   useEffect(() => {
-    const group = COURSE_GROUPS.find(g => g.keys.includes(course as ApCourse));
+    const allGroups = [...BASE_COURSE_GROUPS, CLEP_GROUP];
+    const group = allGroups.find(g => g.keys.includes(course as ApCourse));
     if (group) setActiveGroup(group.label);
   }, [course]);
 
   function fetchUserData() {
     fetch("/api/user")
       .then((r) => r.json())
-      .then((data: { user?: { streakDays?: number; streakFreezes?: number; examDate?: string } }) => {
+      .then((data: { user?: { streakDays?: number; streakFreezes?: number; examDate?: string }; flags?: { clepEnabled?: boolean } }) => {
         const u = data.user;
         if (u?.streakDays != null) setStreakDays(u.streakDays);
         if (u?.streakFreezes != null) setStreakFreezes(u.streakFreezes);
         if (u?.examDate) setExamDate(new Date(u.examDate));
         else setExamDate(null);
+        if (data.flags?.clepEnabled != null) setClepEnabled(data.flags.clepEnabled);
       })
       .catch(() => {});
   }
@@ -213,10 +233,13 @@ export function Sidebar({ userRole, isOpen = false, onClose = () => {} }: Sideba
                       "flex-1 text-[10px] font-semibold py-1.5 rounded-md transition-colors truncate",
                       activeGroup === g.label
                         ? "bg-primary/15 text-primary"
-                        : "text-muted-foreground hover:text-foreground hover:bg-accent"
+                        : "text-muted-foreground hover:text-foreground hover:bg-accent",
+                      g.label === "CLEP Prep" && activeGroup === g.label
+                        ? "bg-emerald-500/15 text-emerald-400"
+                        : ""
                     )}
                   >
-                    {g.label === "AP Courses" ? "AP" : g.label === "SAT Prep" ? "SAT" : "ACT"}
+                    {g.shortLabel}
                   </button>
                 ))}
               </div>

@@ -12,6 +12,7 @@ import {
   Clock,
   Target,
   Star,
+  GraduationCap,
 } from "lucide-react";
 import { InteractiveDemo } from "@/components/landing/interactive-demo";
 
@@ -55,6 +56,15 @@ const courses = [
   { name: "ACT English",                    units: 3  },
   { name: "ACT Science",                    units: 3  },
   { name: "ACT Reading",                    units: 4  },
+];
+
+const clepCourses = [
+  { name: "CLEP College Algebra",          units: 5, savings: "$1,200" },
+  { name: "CLEP College Composition",      units: 5, savings: "$2,400" },
+  { name: "CLEP Introductory Psychology",  units: 5, savings: "$1,200" },
+  { name: "CLEP Principles of Marketing",  units: 5, savings: "$1,200" },
+  { name: "CLEP Principles of Management", units: 5, savings: "$1,200" },
+  { name: "CLEP Introductory Sociology",   units: 5, savings: "$1,200" },
 ];
 
 const testimonials = [
@@ -114,7 +124,7 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <Badge className="mb-6 bg-indigo-500/10 text-indigo-300 border-indigo-500/20 text-sm px-4 py-1.5">
             <Sparkles className="h-3.5 w-3.5 mr-1.5" />
-            Free forever · 16 courses · No credit card
+            Free forever · 22 courses · No credit card
           </Badge>
           <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight mb-4">
             <span className="gradient-text">Student</span><span className="text-foreground/80 font-medium">Nest</span>
@@ -126,7 +136,7 @@ export default function LandingPage() {
             Get instant AI explanations, practice with real exam-style questions, and improve faster with smart analytics — free.
           </p>
           <p className="text-sm text-muted-foreground mb-10">
-            Covers 16 courses · Aligned with College Board standards · Free forever · Premium from $6.67/mo (billed annually) or $9.99/mo
+            16 AP/SAT/ACT courses + 6 CLEP exams · Free forever · Premium from $6.67/mo (billed annually) or $9.99/mo
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/register">
@@ -154,7 +164,7 @@ export default function LandingPage() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
             {[
-              { icon: "🎯", stat: "16 courses covered", sub: "AP, SAT & ACT" },
+              { icon: "🎯", stat: "22 courses covered", sub: "AP, SAT, ACT & CLEP" },
               { icon: "📚", stat: "Exam-aligned questions", sub: "Never running out" },
               { icon: "🔥", stat: "8 engagement features", sub: "Stay motivated daily" },
             ].map(({ icon, stat, sub }) => (
@@ -301,7 +311,7 @@ export default function LandingPage() {
               {
                 step: "1",
                 title: "Choose Your Subject",
-                desc: "Pick from 10 AP courses, SAT, or ACT. StudentNest tailors practice questions and Sage's explanations to your exact exam.",
+                desc: "Pick from AP courses, SAT, ACT, or CLEP. StudentNest tailors practice questions and Sage's explanations to your exact exam.",
               },
               {
                 step: "2",
@@ -401,7 +411,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Curriculum Coverage */}
+      {/* Curriculum Coverage — AP / SAT / ACT */}
       <section className="py-24 bg-secondary/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
@@ -431,6 +441,76 @@ export default function LandingPage() {
               ))}
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* CLEP Section — College Credit */}
+      <section className="py-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm font-medium mb-4">
+              <GraduationCap className="h-4 w-4" /> College Credit
+            </div>
+            <h2 className="text-4xl font-bold mb-3">Earn College Credit Faster — Save Thousands</h2>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              Pass CLEP exams and skip introductory college courses. One exam. One passing score. Up to $2,400 in tuition savings.
+            </p>
+            <p className="text-sm text-muted-foreground/70 mt-2 max-w-xl mx-auto">
+              CLEP® exams cost $93 each. StudentNest prepares you with the same AI-powered practice and tutoring used for AP — optimized for CLEP content.
+            </p>
+          </div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-10">
+            {clepCourses.map((c) => (
+              <div
+                key={c.name}
+                className="flex items-center justify-between p-4 rounded-xl border border-emerald-500/20 bg-emerald-500/5"
+              >
+                <div className="flex items-center gap-3">
+                  <CheckCircle className="h-5 w-5 text-emerald-400 flex-shrink-0" />
+                  <div>
+                    <p className="text-sm font-medium">{c.name}</p>
+                    <p className="text-xs text-muted-foreground">{c.units} units</p>
+                  </div>
+                </div>
+                <span className="text-xs font-semibold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-1 rounded-full whitespace-nowrap">
+                  Save {c.savings}
+                </span>
+              </div>
+            ))}
+          </div>
+
+          <div className="grid sm:grid-cols-3 gap-6 mb-10 max-w-3xl mx-auto">
+            {[
+              { icon: "💰", title: "99% Savings", desc: "Pay $93 for an exam. Skip a $1,200 college course." },
+              { icon: "⏱️", title: "Faster Graduation", desc: "Earn up to 30 credits before your first class." },
+              { icon: "🤖", title: "Same AI Tutor", desc: "Sage explains CLEP topics with the same depth as AP." },
+            ].map(({ icon, title, desc }) => (
+              <div key={title} className="text-center p-5 rounded-xl border border-emerald-500/15 bg-card/50">
+                <span className="text-3xl mb-3 block">{icon}</span>
+                <p className="font-semibold text-sm mb-1">{title}</p>
+                <p className="text-xs text-muted-foreground leading-relaxed">{desc}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="text-center flex flex-col sm:flex-row gap-3 justify-center">
+            <Link href="/register">
+              <Button size="lg" className="gap-2 bg-emerald-600 hover:bg-emerald-700 text-white">
+                Start CLEP Prep Free <ArrowRight className="h-5 w-5" />
+              </Button>
+            </Link>
+            <Link href="/about">
+              <Button size="lg" variant="outline" className="gap-2 border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/10">
+                Learn More About CLEP
+              </Button>
+            </Link>
+          </div>
+
+          <p className="text-center text-[11px] text-muted-foreground/50 mt-6">
+            CLEP® is a registered trademark of College Board, which is not affiliated with, and does not endorse, this product.
+            All practice questions are original AI-generated content — not reproduced from any official exam.
+          </p>
         </div>
       </section>
 
@@ -478,6 +558,7 @@ export default function LandingPage() {
                 "Unlimited AI tutor chats",
                 "Personalized AI study plan",
                 "FRQ with AI rubric scoring",
+                "All 6 CLEP exam courses included",
                 "Streaming AI responses",
               ].map((item) => (
                 <div key={item} className="flex items-center gap-2 text-sm text-foreground/80">
