@@ -78,6 +78,19 @@ export interface StripeConfig {
   premiumName: string;
   paymentLinkMonthly: string;
   paymentLinkAnnual: string;
+  // Per-module Stripe config (CLEP, SAT, ACT — AP uses the base priceId/annualPriceId)
+  clepPriceId: string;
+  clepAnnualPriceId: string;
+  clepPaymentLinkMonthly: string;
+  clepPaymentLinkAnnual: string;
+  satPriceId: string;
+  satAnnualPriceId: string;
+  satPaymentLinkMonthly: string;
+  satPaymentLinkAnnual: string;
+  actPriceId: string;
+  actAnnualPriceId: string;
+  actPaymentLinkMonthly: string;
+  actPaymentLinkAnnual: string;
 }
 
 /**
@@ -85,7 +98,7 @@ export interface StripeConfig {
  * Env vars take precedence over DB settings so CF Pages secrets override admin UI values.
  */
 export async function getStripeConfig(): Promise<StripeConfig> {
-  const [secretKey, webhookSecret, priceId, annualPriceId, publishableKey, premiumPriceDisplay, premiumAnnualPriceDisplay, premiumName, paymentLinkMonthly, paymentLinkAnnual] =
+  const [secretKey, webhookSecret, priceId, annualPriceId, publishableKey, premiumPriceDisplay, premiumAnnualPriceDisplay, premiumName, paymentLinkMonthly, paymentLinkAnnual, clepPriceId, clepAnnualPriceId, clepPaymentLinkMonthly, clepPaymentLinkAnnual, satPriceId, satAnnualPriceId, satPaymentLinkMonthly, satPaymentLinkAnnual, actPriceId, actAnnualPriceId, actPaymentLinkMonthly, actPaymentLinkAnnual] =
     await Promise.all([
       getSetting("stripe_secret_key", ""),
       getSetting("stripe_webhook_secret", ""),
@@ -97,6 +110,18 @@ export async function getStripeConfig(): Promise<StripeConfig> {
       getSetting("stripe_premium_name", "Premium"),
       getSetting("stripe_payment_link_monthly", ""),
       getSetting("stripe_payment_link_annual", ""),
+      getSetting("stripe_clep_premium_price_id", ""),
+      getSetting("stripe_clep_annual_price_id", ""),
+      getSetting("stripe_clep_payment_link_monthly", ""),
+      getSetting("stripe_clep_payment_link_annual", ""),
+      getSetting("stripe_sat_premium_price_id", ""),
+      getSetting("stripe_sat_annual_price_id", ""),
+      getSetting("stripe_sat_payment_link_monthly", ""),
+      getSetting("stripe_sat_payment_link_annual", ""),
+      getSetting("stripe_act_premium_price_id", ""),
+      getSetting("stripe_act_annual_price_id", ""),
+      getSetting("stripe_act_payment_link_monthly", ""),
+      getSetting("stripe_act_payment_link_annual", ""),
     ]);
 
   return {
@@ -110,6 +135,18 @@ export async function getStripeConfig(): Promise<StripeConfig> {
     premiumName,
     paymentLinkMonthly: process.env.STRIPE_PAYMENT_LINK_MONTHLY || paymentLinkMonthly,
     paymentLinkAnnual: process.env.STRIPE_PAYMENT_LINK_ANNUAL || paymentLinkAnnual,
+    clepPriceId: process.env.STRIPE_CLEP_PREMIUM_PRICE_ID || clepPriceId,
+    clepAnnualPriceId: process.env.STRIPE_CLEP_ANNUAL_PRICE_ID || clepAnnualPriceId,
+    clepPaymentLinkMonthly: process.env.STRIPE_CLEP_PAYMENT_LINK_MONTHLY || clepPaymentLinkMonthly,
+    clepPaymentLinkAnnual: process.env.STRIPE_CLEP_PAYMENT_LINK_ANNUAL || clepPaymentLinkAnnual,
+    satPriceId: process.env.STRIPE_SAT_PREMIUM_PRICE_ID || satPriceId,
+    satAnnualPriceId: process.env.STRIPE_SAT_ANNUAL_PRICE_ID || satAnnualPriceId,
+    satPaymentLinkMonthly: process.env.STRIPE_SAT_PAYMENT_LINK_MONTHLY || satPaymentLinkMonthly,
+    satPaymentLinkAnnual: process.env.STRIPE_SAT_PAYMENT_LINK_ANNUAL || satPaymentLinkAnnual,
+    actPriceId: process.env.STRIPE_ACT_PREMIUM_PRICE_ID || actPriceId,
+    actAnnualPriceId: process.env.STRIPE_ACT_ANNUAL_PRICE_ID || actAnnualPriceId,
+    actPaymentLinkMonthly: process.env.STRIPE_ACT_PAYMENT_LINK_MONTHLY || actPaymentLinkMonthly,
+    actPaymentLinkAnnual: process.env.STRIPE_ACT_PAYMENT_LINK_ANNUAL || actPaymentLinkAnnual,
   };
 }
 

@@ -13,7 +13,7 @@ import { ApUnit } from "@prisma/client"
 import Link from "next/link"
 import {
   ClipboardList, CheckCircle, XCircle, ChevronRight,
-  Loader2, TrendingUp, TrendingDown, Target, Crown, Sparkles,
+  Loader2, TrendingUp, TrendingDown, Target, Crown, Sparkles, BookOpen,
 } from "lucide-react"
 
 interface DiagQuestion {
@@ -196,7 +196,7 @@ export default function DiagnosticPage() {
                   <button
                     key={i}
                     onClick={() => handleAnswerSelect(letter)}
-                    className={`w-full text-left px-4 py-3 rounded-lg border text-sm transition-colors ${
+                    className={`w-full text-left px-4 py-3 rounded-lg border text-sm transition-colors min-h-[48px] leading-relaxed ${
                       isSelected
                         ? "border-indigo-500 bg-indigo-500/10 text-indigo-300"
                         : "border-border/40 hover:bg-accent"
@@ -305,31 +305,53 @@ export default function DiagnosticPage() {
           </CardContent>
         </Card>
 
+        {/* Study Plan CTA — always visible after results */}
+        {result.weakUnits.length > 0 && (
+          <div className="flex items-center gap-3 p-4 rounded-xl border border-indigo-500/20 bg-indigo-500/5">
+            <BookOpen className="h-5 w-5 text-indigo-400 flex-shrink-0" />
+            <div className="flex-1">
+              <p className="text-sm font-medium">Your weak areas have been identified</p>
+              <p className="text-xs text-muted-foreground">Get a personalized study plan targeting {result.weakUnits.length} weak unit{result.weakUnits.length > 1 ? "s" : ""}.</p>
+            </div>
+            <Link href="/study-plan">
+              <Button size="sm" variant="outline" className="gap-1.5 text-xs">
+                <BookOpen className="h-3.5 w-3.5" />
+                View Study Plan
+              </Button>
+            </Link>
+          </div>
+        )}
+
         {/* Premium upgrade CTA — shown to free users after they see their weak units */}
-        {session?.user?.subscriptionTier !== "PREMIUM" && result.weakUnits.length > 0 && (
-          <Card className="border-indigo-500/30 bg-gradient-to-br from-indigo-500/10 to-purple-500/5">
+        {session?.user?.subscriptionTier !== "PREMIUM" && session?.user?.subscriptionTier !== "AP_PREMIUM" && session?.user?.subscriptionTier !== "CLEP_PREMIUM" && result.weakUnits.length > 0 && (() => {
+          const diagTrack = (session?.user as { track?: string })?.track ?? "ap";
+          const isClep = diagTrack === "clep";
+          return (
+          <Card className={isClep ? "border-emerald-500/30 bg-gradient-to-br from-emerald-500/10 to-teal-500/5" : "border-indigo-500/30 bg-gradient-to-br from-indigo-500/10 to-purple-500/5"}>
             <CardContent className="p-5">
               <div className="flex items-start gap-4">
-                <div className="w-10 h-10 rounded-lg bg-indigo-500/20 flex items-center justify-center flex-shrink-0">
-                  <Sparkles className="h-5 w-5 text-indigo-400" />
+                <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${isClep ? "bg-emerald-500/20" : "bg-indigo-500/20"}`}>
+                  <Sparkles className={`h-5 w-5 ${isClep ? "text-emerald-400" : "text-indigo-400"}`} />
                 </div>
                 <div className="flex-1">
                   <p className="font-semibold text-sm">
                     Target your weak units with a personalized study plan
                   </p>
                   <p className="text-xs text-muted-foreground mt-1">
-                    Premium gives you an AI-generated weekly plan focused on{" "}
-                    <span className="text-indigo-300 font-medium">
+                    {isClep ? "CLEP Premium" : "AP Premium"} gives you an AI-generated weekly plan focused on{" "}
+                    <span className={isClep ? "text-emerald-300 font-medium" : "text-indigo-300 font-medium"}>
                       {courseUnits[result.weakUnits[0] as ApUnit] || result.weakUnits[0]}
                     </span>{" "}
                     and {result.weakUnits.length > 1 ? `${result.weakUnits.length - 1} other weak unit${result.weakUnits.length > 2 ? "s" : ""}` : "your identified gap areas"}.
-                    Unlock FRQ practice + unlimited AI tutoring.
+                    {isClep
+                      ? " Unlock unlimited AI tutoring + personalized CLEP study plan."
+                      : " Unlock FRQ practice + unlimited AI tutoring."}
                   </p>
                   <div className="flex gap-2 mt-3">
                     <Link href="/billing">
-                      <Button size="sm" className="bg-indigo-600 hover:bg-indigo-700 gap-1.5 text-xs">
+                      <Button size="sm" className={`gap-1.5 text-xs ${isClep ? "bg-emerald-600 hover:bg-emerald-700" : "bg-indigo-600 hover:bg-indigo-700"}`}>
                         <Crown className="h-3.5 w-3.5" />
-                        Upgrade to Premium
+                        Upgrade to {isClep ? "CLEP Premium" : "AP Premium"}
                       </Button>
                     </Link>
                     <Link href="/study-plan">
@@ -341,8 +363,8 @@ export default function DiagnosticPage() {
                 </div>
               </div>
             </CardContent>
-          </Card>
-        )}
+          </Card>);
+        })()}
 
         <Button
           variant="outline"

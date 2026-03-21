@@ -49,14 +49,16 @@ export default function RegisterPage() {
   const [googleAvailable, setGoogleAvailable] = useState(false);
   const [success, setSuccess] = useState(false);
   const [isClepTrack, setIsClepTrack] = useState(false);
+  const [userModule, setUserModule] = useState("ap");
 
   useEffect(() => {
-    // Read track from URL param to set CardDescription text
+    // Read module or track from URL param
     try {
       const params = new URLSearchParams(window.location.search);
-      const track = params.get("track");
-      if (track === "ap" || track === "clep") {
-        setIsClepTrack(track === "clep");
+      const module = params.get("module") || params.get("track") || "ap";
+      setUserModule(module);
+      if (module === "clep") {
+        setIsClepTrack(true);
       }
     } catch { /* ignore */ }
 
@@ -96,7 +98,7 @@ export default function RegisterPage() {
   async function handleGoogleSignIn() {
     setIsGoogleLoading(true);
     try {
-      await signIn("google", { callbackUrl: "/dashboard" });
+      await signIn("google", { callbackUrl: `/dashboard?track=${userModule}` });
     } catch {
       toast({ title: "Something went wrong", description: "Please try again.", variant: "destructive" });
       setIsGoogleLoading(false);
@@ -109,7 +111,7 @@ export default function RegisterPage() {
       const response = await fetch("/api/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...data, track: isClepTrack ? "clep" : "ap" }),
+        body: JSON.stringify({ ...data, track: userModule }),
       });
 
       const result = await response.json();

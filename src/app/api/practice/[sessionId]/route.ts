@@ -249,6 +249,18 @@ export async function PATCH(
     const xpEarned = Math.round(correctCount * 10 + (accuracy >= 80 ? 50 : 0));
     await updateUserProgress(session.user.id, xpEarned);
 
+    // Fetch previous session accuracy for improvement comparison
+    const previousSession = await prisma.practiceSession.findFirst({
+      where: {
+        userId: session.user.id,
+        course: practiceSession.course,
+        status: "COMPLETED",
+        id: { not: sessionId },
+      },
+      orderBy: { completedAt: "desc" },
+      select: { score: true },
+    });
+
     return NextResponse.json({
       session: updatedSession,
       summary: {
@@ -258,6 +270,7 @@ export async function PATCH(
         timeSpentSecs: totalTime,
         xpEarned,
         apScoreEstimate: apScore,
+        previousAccuracy: previousSession?.score != null ? Math.round(previousSession.score) : null,
       },
     });
   } catch (error) {

@@ -1,0 +1,17 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /admin/
+Disallow: /dashboard/
+Disallow: /practice/
+Disallow: /billing/
+Disallow: /onboarding/
+Disallow: /ai-tutor/
+Disallow: /analytics/
+Disallow: /study-plan/
+Disallow: /mock-exam/
+Disallow: /diagnostic/
+Disallow: /community/
+Disallow: /resources/
+
+Sitemap: https://studentnest.ai/sitemap.xml

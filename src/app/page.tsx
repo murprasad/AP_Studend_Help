@@ -16,6 +16,7 @@ import {
   BookOpen,
 } from "lucide-react";
 import { InteractiveDemo } from "@/components/landing/interactive-demo";
+import { MobileStickyCta } from "@/components/landing/mobile-sticky-cta";
 
 const features = [
   {
@@ -41,31 +42,31 @@ const features = [
 ];
 
 const courses = [
-  { name: "AP World History: Modern",       units: 9  },
-  { name: "AP Computer Science Principles", units: 5  },
-  { name: "AP Physics 1: Algebra-Based",    units: 10 },
-  { name: "AP Calculus AB",                 units: 8  },
-  { name: "AP Calculus BC",                 units: 10 },
-  { name: "AP Statistics",                  units: 9  },
-  { name: "AP Chemistry",                   units: 9  },
-  { name: "AP Biology",                     units: 8  },
-  { name: "AP US History",                  units: 9  },
-  { name: "AP Psychology",                  units: 9  },
-  { name: "SAT Math",                       units: 4  },
-  { name: "SAT Reading & Writing",          units: 4  },
-  { name: "ACT Math",                       units: 5  },
-  { name: "ACT English",                    units: 3  },
-  { name: "ACT Science",                    units: 3  },
-  { name: "ACT Reading",                    units: 4  },
+  { name: "AP World History: Modern",       units: 9,  topics: "Civilizations, empires, revolutions, globalization" },
+  { name: "AP Computer Science Principles", units: 5,  topics: "Algorithms, data, internet, impact of computing" },
+  { name: "AP Physics 1: Algebra-Based",    units: 10, topics: "Kinematics, forces, energy, waves, circuits" },
+  { name: "AP Calculus AB",                 units: 8,  topics: "Limits, derivatives, integrals, differential equations" },
+  { name: "AP Calculus BC",                 units: 10, topics: "All AB topics plus series, parametric, polar" },
+  { name: "AP Statistics",                  units: 9,  topics: "Data analysis, probability, inference, regression" },
+  { name: "AP Chemistry",                   units: 9,  topics: "Atomic structure, bonding, reactions, thermodynamics" },
+  { name: "AP Biology",                     units: 8,  topics: "Cells, genetics, evolution, ecology, physiology" },
+  { name: "AP US History",                  units: 9,  topics: "Colonial era through modern America" },
+  { name: "AP Psychology",                  units: 9,  topics: "Cognition, behavior, development, disorders" },
+  { name: "SAT Math",                       units: 4,  topics: "Algebra, geometry, data analysis, advanced math" },
+  { name: "SAT Reading & Writing",          units: 4,  topics: "Passages, evidence-based reasoning, grammar" },
+  { name: "ACT Math",                       units: 5,  topics: "Pre-algebra through trigonometry, 5-choice format" },
+  { name: "ACT English",                    units: 3,  topics: "Grammar, sentence structure, rhetorical skills" },
+  { name: "ACT Science",                    units: 3,  topics: "Data interpretation, research summaries" },
+  { name: "ACT Reading",                    units: 4,  topics: "Literary, social science, humanities passages" },
 ];
 
 const clepCourses = [
-  { name: "CLEP College Algebra",          units: 5, savings: "$1,200" },
-  { name: "CLEP College Composition",      units: 5, savings: "$2,400" },
-  { name: "CLEP Introductory Psychology",  units: 5, savings: "$1,200" },
-  { name: "CLEP Principles of Marketing",  units: 5, savings: "$1,200" },
-  { name: "CLEP Principles of Management", units: 5, savings: "$1,200" },
-  { name: "CLEP Introductory Sociology",   units: 5, savings: "$1,200" },
+  { name: "CLEP College Algebra",          units: 5, savings: "$1,200", topics: "Equations, inequalities, functions, graphing" },
+  { name: "CLEP College Composition",      units: 5, savings: "$2,400", topics: "Thesis, argument, rhetoric, research writing" },
+  { name: "CLEP Introductory Psychology",  units: 5, savings: "$1,200", topics: "Behavior, cognition, development, disorders" },
+  { name: "CLEP Principles of Marketing",  units: 5, savings: "$1,200", topics: "Market strategy, consumer behavior, pricing" },
+  { name: "CLEP Principles of Management", units: 5, savings: "$1,200", topics: "Leadership, planning, organization, control" },
+  { name: "CLEP Introductory Sociology",   units: 5, savings: "$1,200", topics: "Social structures, culture, institutions" },
 ];
 
 const testimonials = [
@@ -73,16 +74,22 @@ const testimonials = [
     quote: "I finally understood the causes of the French Revolution instead of just memorizing them. Walked into the AP World exam feeling actually prepared.",
     name: "Sofia R.",
     context: "AP World History",
+    metric: "62% → 89% unit mastery",
+    timeline: "30 min/day for 4 weeks",
   },
   {
     quote: "Sage explained limits better in 5 minutes than my teacher did all semester. My calc grade went from a D to a B in one month.",
     name: "Marcus T.",
     context: "AP Calculus AB",
+    metric: "D → B in one marking period",
+    timeline: "3 weeks with Sage",
   },
   {
     quote: "I passed CLEP College Algebra on my first try. Sage drilled me on every weak unit and I walked in knowing exactly where I stood. Saved me $1,200 and a full semester of a class I didn't need.",
     name: "Jordan M.",
     context: "CLEP College Algebra",
+    metric: "Passed first attempt (scored 62, need 50)",
+    timeline: "~25 hours over 6 weeks",
   },
 ];
 
@@ -103,11 +110,23 @@ export default function LandingPage() {
             </div>
           </Link>
           <div className="flex items-center gap-2 sm:gap-4">
+            <a href="#courses" className="lg:hidden text-sm text-muted-foreground hover:text-foreground transition-colors">
+              Courses
+            </a>
+            <Link href="/ap-prep" className="hidden lg:block text-sm text-muted-foreground hover:text-foreground transition-colors">
+              AP
+            </Link>
+            <Link href="/sat-prep" className="hidden lg:block text-sm text-muted-foreground hover:text-foreground transition-colors">
+              SAT
+            </Link>
+            <Link href="/act-prep" className="hidden lg:block text-sm text-muted-foreground hover:text-foreground transition-colors">
+              ACT
+            </Link>
+            <Link href="/clep-prep" className="hidden lg:block text-sm text-muted-foreground hover:text-foreground transition-colors">
+              CLEP
+            </Link>
             <Link href="/pricing" className="hidden sm:block text-sm text-muted-foreground hover:text-foreground transition-colors">
               Pricing
-            </Link>
-            <Link href="/about" className="hidden sm:block text-sm text-muted-foreground hover:text-foreground transition-colors">
-              About
             </Link>
             <Link href="/login">
               <Button variant="ghost">Log In</Button>
@@ -131,24 +150,23 @@ export default function LandingPage() {
             <span className="gradient-text">Student</span><span className="text-foreground/80 font-medium">Nest</span>
           </h1>
           <p className="text-2xl sm:text-3xl font-semibold text-foreground/90 mb-2">
-            The AI study platform built for every exam that matters.
+            Improve your AP, SAT, ACT, or CLEP scores — with AI that adapts to your weak areas.
           </p>
-          <p className="text-lg text-muted-foreground mb-4">
-            Whether you&apos;re scoring a 5 on AP — or skipping intro classes with CLEP.
+          <p className="text-lg text-muted-foreground mb-2 max-w-2xl mx-auto">
+            Stop guessing what to study. See real score improvement in weeks, not months.
           </p>
-          <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto mb-10">
-            Sage explains concepts, quizzes you back, and tracks your mastery by unit —
-            so every study session moves the needle. Free for every student.
+          <p className="text-base text-muted-foreground/80 mb-4 max-w-2xl mx-auto">
+            Take a free diagnostic. Get a personalized study plan. Practice with AI that explains every mistake. Track your progress until you&apos;re exam-ready.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/register?track=ap">
               <Button size="lg" className="gap-2 text-base px-8 h-12 bg-indigo-600 hover:bg-indigo-700 text-white">
-                Start AP/SAT/ACT Prep <ArrowRight className="h-5 w-5" />
+                Start Free Diagnostic <ArrowRight className="h-5 w-5" />
               </Button>
             </Link>
             <Link href="/register?track=clep">
               <Button size="lg" className="gap-2 text-base px-8 h-12 bg-emerald-600 hover:bg-emerald-700 text-white">
-                Start CLEP Prep <ArrowRight className="h-5 w-5" />
+                Start CLEP Prep Free <ArrowRight className="h-5 w-5" />
               </Button>
             </Link>
           </div>
@@ -158,48 +176,27 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Audience Split Cards */}
-      <section className="py-8 px-4">
-        <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* Left — High School */}
-          <div className="p-6 rounded-2xl border border-indigo-500/30 bg-indigo-500/5">
-            <div className="flex items-center gap-2 mb-3">
-              <BookOpen className="h-5 w-5 text-indigo-400" />
-              <span className="text-xs font-semibold text-indigo-400 uppercase tracking-wide">
-                High School Student
+      {/* 4 Module Cards */}
+      <section id="courses" className="py-8 px-4 scroll-mt-20">
+        <div className="max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {[
+            { href: "/ap-prep", color: "indigo", icon: BookOpen, label: "AP Courses", count: "10 courses", desc: "Score a 5. Get into your dream school.", cta: "Explore AP Prep" },
+            { href: "/sat-prep", color: "blue", icon: BookOpen, label: "SAT Prep", count: "2 sections", desc: "Raise your SAT score with targeted practice.", cta: "Explore SAT Prep" },
+            { href: "/act-prep", color: "violet", icon: BookOpen, label: "ACT Prep", count: "4 sections", desc: "Boost your composite with section-specific AI.", cta: "Explore ACT Prep" },
+            { href: "/clep-prep", color: "emerald", icon: GraduationCap, label: "CLEP Prep", count: "6 exams", desc: "Skip intro classes. Save $1,200+ per exam.", cta: "Explore CLEP Prep" },
+          ].map((m) => (
+            <Link key={m.href} href={m.href} className={`p-5 rounded-2xl border border-${m.color}-500/30 bg-${m.color}-500/5 hover:bg-${m.color}-500/10 transition-colors block`}>
+              <div className="flex items-center gap-2 mb-2">
+                <m.icon className={`h-4 w-4 text-${m.color}-400`} />
+                <span className={`text-xs font-semibold text-${m.color}-400 uppercase tracking-wide`}>{m.label}</span>
+              </div>
+              <p className="text-sm font-bold mb-1">{m.desc}</p>
+              <p className={`text-xs text-${m.color}-400 font-medium mb-3`}>{m.count}</p>
+              <span className={`text-xs font-medium text-${m.color}-400 flex items-center gap-1`}>
+                {m.cta} <ArrowRight className="h-3 w-3" />
               </span>
-            </div>
-            <h3 className="text-xl font-bold mb-2">Score a 5. Get into your dream school.</h3>
-            <p className="text-sm text-muted-foreground mb-4">
-              AP exams are every May. SAT/ACT testing runs year-round. Every point matters
-              for college admission. Sage explains the hard stuff, drills you on what you miss,
-              and tracks how close you are to your target score.
-            </p>
-            <p className="text-xs text-indigo-400 font-medium mb-4">10 AP courses · SAT · ACT</p>
-            <Link href="/register?track=ap" className="text-sm font-medium text-indigo-400 hover:text-indigo-300 flex items-center gap-1">
-              Start AP/SAT/ACT prep <ArrowRight className="h-3.5 w-3.5" />
             </Link>
-          </div>
-
-          {/* Right — College Student */}
-          <div className="p-6 rounded-2xl border border-emerald-500/30 bg-emerald-500/5">
-            <div className="flex items-center gap-2 mb-3">
-              <GraduationCap className="h-5 w-5 text-emerald-400" />
-              <span className="text-xs font-semibold text-emerald-400 uppercase tracking-wide">
-                College Student
-              </span>
-            </div>
-            <h3 className="text-xl font-bold mb-2">Skip the class. Keep the credit. Save $1,200.</h3>
-            <p className="text-sm text-muted-foreground mb-4">
-              One CLEP exam ($93) can replace a 3-credit intro course worth $1,200+.
-              Pass it and you never sit through that class. Sage prepares you with the same
-              AI tutoring used for AP — tailored to CLEP content and exam format.
-            </p>
-            <p className="text-xs text-emerald-400 font-medium mb-4">6 CLEP exams · Up to $2,400 saved per exam</p>
-            <Link href="/register?track=clep" className="text-sm font-medium text-emerald-400 hover:text-emerald-300 flex items-center gap-1">
-              Start CLEP prep <ArrowRight className="h-3.5 w-3.5" />
-            </Link>
-          </div>
+          ))}
         </div>
       </section>
 
@@ -293,7 +290,7 @@ export default function LandingPage() {
               <div className="w-3 h-3 rounded-full bg-red-500/60" />
               <div className="w-3 h-3 rounded-full bg-yellow-500/60" />
               <div className="w-3 h-3 rounded-full bg-green-500/60" />
-              <span className="ml-2 text-xs text-muted-foreground">StudentNest · AI Tutor</span>
+              <span className="ml-2 text-xs text-muted-foreground">StudentNest AI · Tutor</span>
             </div>
             {/* Chat */}
             <div className="p-5 space-y-4 text-sm">
@@ -329,6 +326,55 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* Product Demo — Sage CLEP conversation snippet */}
+      <section className="py-16 px-4">
+        <div className="max-w-2xl mx-auto">
+          <p className="text-center text-sm text-muted-foreground mb-4 font-medium uppercase tracking-wide">
+            See how Sage helps CLEP students too
+          </p>
+          <div className="rounded-2xl border border-emerald-500/30 bg-card/60 overflow-hidden shadow-xl">
+            {/* Window chrome */}
+            <div className="flex items-center gap-2 px-4 py-3 border-b border-border/40 bg-secondary/40">
+              <div className="w-3 h-3 rounded-full bg-red-500/60" />
+              <div className="w-3 h-3 rounded-full bg-yellow-500/60" />
+              <div className="w-3 h-3 rounded-full bg-green-500/60" />
+              <span className="ml-2 text-xs text-muted-foreground">StudentNest AI · Tutor — CLEP College Algebra</span>
+            </div>
+            {/* Chat */}
+            <div className="p-5 space-y-4 text-sm">
+              {/* User message */}
+              <div className="flex justify-end">
+                <div className="bg-emerald-600/20 border border-emerald-500/20 rounded-2xl rounded-tr-sm px-4 py-2.5 max-w-[80%]">
+                  <p className="text-foreground/90">I don&apos;t understand how to factor trinomials like x² + 5x + 6</p>
+                </div>
+              </div>
+              {/* Sage response */}
+              <div className="flex gap-3 items-start">
+                <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <Sparkles className="h-4 w-4 text-emerald-400" />
+                </div>
+                <div className="bg-secondary/60 border border-border/40 rounded-2xl rounded-tl-sm px-4 py-2.5 max-w-[85%] space-y-1.5">
+                  <p className="font-semibold text-xs text-emerald-400 mb-1">Sage</p>
+                  <p className="text-foreground/80 leading-relaxed">
+                    To factor <strong>x² + 5x + 6</strong>, find two numbers that <strong>multiply to 6</strong> and <strong>add to 5</strong>. Those numbers are 2 and 3.
+                  </p>
+                  <p className="text-foreground/80">So x² + 5x + 6 = <strong>(x + 2)(x + 3)</strong> ✓</p>
+                  <p className="text-foreground/80 text-xs mt-1 text-muted-foreground">This is a common CLEP College Algebra topic — Unit 2: Algebraic Expressions.</p>
+                </div>
+              </div>
+              {/* Follow-up chips */}
+              <div className="pl-11 flex flex-wrap gap-2">
+                {["What about negative terms?", "Show me a harder example"].map((q) => (
+                  <span key={q} className="text-xs px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 cursor-default">
+                    {q}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Knowledge Check callout */}
       <section className="py-16">
         <div className="max-w-3xl mx-auto text-center space-y-3 px-4">
@@ -355,17 +401,17 @@ export default function LandingPage() {
               {
                 step: "1",
                 title: "Choose Your Subject",
-                desc: "Pick from AP courses, SAT, ACT, or CLEP. StudentNest tailors practice questions and Sage's explanations to your exact exam.",
+                desc: "Pick from 10 AP courses, SAT Math & Reading, 4 ACT sections, or 6 CLEP exams. Each course is organized by unit — for example, AP Calculus AB starts with Limits & Continuity, then Differentiation, then Integration. Sage generates targeted questions matching your exam's format and content standards.",
               },
               {
                 step: "2",
                 title: "Practice or Ask Sage",
-                desc: "Answer AI-generated exam questions with instant feedback, or chat with Sage for deep explanations. Both work together.",
+                desc: "Answer AI-generated exam questions and get instant feedback explaining why the correct answer is right and why each wrong option is a common misconception. Stuck? Open Sage and ask in plain English. After each explanation, take an optional 3-question comprehension check to lock in what you learned.",
               },
               {
                 step: "3",
                 title: "Track & Improve",
-                desc: "See mastery scores by unit and track your readiness — whether your exam is in May or on your own schedule.",
+                desc: "Your analytics dashboard shows mastery scores by unit, a visual heatmap of strong and weak areas, and an AI-generated study plan that targets your lowest-scoring topics first. Set your exam date and see a live countdown — the study plan adjusts its recommendations as your scores improve.",
               },
             ].map((s) => (
               <div key={s.step} className="text-center">
@@ -383,13 +429,13 @@ export default function LandingPage() {
       {/* Features — outcome focused (trimmed to 4) */}
       <section className="py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
+          <div className="text-center mb-12">
             <h2 className="text-4xl font-bold mb-4">Everything You Need to Score Higher</h2>
             <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              Built around how AP, SAT, and ACT exams actually work — not generic quiz apps.
+              Built around how AP, SAT, ACT, and CLEP exams actually work — not generic quiz apps.
             </p>
           </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {features.map((feature) => (
               <div
                 key={feature.title}
@@ -403,55 +449,67 @@ export default function LandingPage() {
               </div>
             ))}
           </div>
-        </div>
-      </section>
-
-      {/* Engagement Features */}
-      <section className="py-16 bg-secondary/20">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-xs text-indigo-400 font-medium mb-4">
-            <Sparkles className="h-3.5 w-3.5" /> Built to keep you coming back
-          </div>
-          <h2 className="text-2xl font-bold mb-2">8 Features That Build Your Study Habit</h2>
-          <p className="text-muted-foreground text-sm mb-8 max-w-xl mx-auto">
-            Knowing content isn&apos;t enough — consistency wins exams. StudentNest makes showing up every day feel rewarding.
-          </p>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-left">
+          {/* Engagement row — compact */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-8">
             {[
-              { emoji: "🔥", title: "Daily Streaks", desc: "Miss a day? Your streak freeze protects your progress." },
-              { emoji: "📅", title: "Exam Countdown", desc: "47 days left — every dashboard visit feels urgent." },
-              { emoji: "🏆", title: "Weekly Leaderboard", desc: "See how you rank against other students this week." },
-              { emoji: "🃏", title: "Spaced Repetition", desc: "Wrong answers resurface at the exact right moment." },
+              { emoji: "🔥", label: "Daily Streaks" },
+              { emoji: "📅", label: "Exam Countdown" },
+              { emoji: "🎯", label: "Daily Goals" },
+              { emoji: "🃏", label: "Spaced Repetition" },
             ].map((f) => (
-              <div key={f.title} className="p-4 rounded-xl border border-border/40 bg-card/50">
-                <span className="text-2xl mb-2 block">{f.emoji}</span>
-                <p className="text-sm font-semibold mb-1">{f.title}</p>
-                <p className="text-xs text-muted-foreground leading-relaxed">{f.desc}</p>
+              <div key={f.label} className="flex items-center gap-2 p-3 rounded-lg border border-border/40 bg-card/50">
+                <span className="text-lg">{f.emoji}</span>
+                <span className="text-xs font-medium">{f.label}</span>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Competitor Context */}
-      <section className="py-12 bg-secondary/20">
-        <div className="max-w-2xl mx-auto px-4 text-center space-y-4">
-          <p className="text-sm text-muted-foreground font-medium uppercase tracking-wide">
-            Unlike generic AI tools, StudentNest is purpose-built for the exams that change your future
-          </p>
-          <div className="grid sm:grid-cols-2 gap-3 text-left">
-            {[
-              "Explains concepts, then quizzes you back",
-              "Tracks mastery by unit and topic",
-              "Generates exam-aligned questions on demand",
-              "Free to start — no credit card",
-              "Prepares you for CLEP exams to earn real college credit — same AI, CLEP-specific content",
-            ].map((point) => (
-              <div key={point} className="flex items-center gap-2 text-sm text-foreground/80">
-                <CheckCircle className="h-4 w-4 text-emerald-400 flex-shrink-0" />
-                {point}
-              </div>
-            ))}
+      {/* Why StudentNest — Comparison Table */}
+      <section className="py-16 bg-secondary/20">
+        <div className="max-w-3xl mx-auto px-4">
+          <div className="text-center mb-8 space-y-3">
+            <h2 className="text-2xl font-bold mb-2">Why StudentNest AI?</h2>
+            <p className="text-sm text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+              ChatGPT gives random answers. StudentNest AI gives structured, exam-aligned practice with mastery tracking — that&apos;s the difference between studying and actually improving. Premium prep courses charge $200–500. Private tutors cost $50–150/hr. StudentNest starts at $0 and does what both do: explains mistakes, tracks progress, and builds a plan around your weak areas.
+            </p>
+          </div>
+          <div className="rounded-xl border border-border/40 overflow-hidden">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="bg-secondary/60 text-muted-foreground">
+                  <th className="text-left p-3 font-medium">Feature</th>
+                  <th className="text-center p-3 font-medium text-indigo-400">StudentNest AI</th>
+                  <th className="text-center p-3 font-medium">ChatGPT / AI</th>
+                  <th className="text-center p-3 font-medium">Private Tutor</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border/30">
+                {[
+                  ["AI study plan by unit", true, false, false],
+                  ["Exam-aligned questions", true, false, "varies"],
+                  ["Instant feedback + explanations", true, true, "slow"],
+                  ["Mastery tracking by topic", true, false, false],
+                  ["CLEP college credit prep", true, false, "rare"],
+                  ["Available 24/7", true, true, false],
+                  ["Cost", "$9.99/mo", "Free–$20/mo", "$50–150/hr"],
+                ].map(([feature, sn, ai, tutor], i) => (
+                  <tr key={i} className="hover:bg-secondary/30">
+                    <td className="p-3 text-foreground/90">{feature as string}</td>
+                    <td className="p-3 text-center">
+                      {sn === true ? <CheckCircle className="h-4 w-4 text-emerald-400 mx-auto" /> : <span className="text-xs text-emerald-400 font-medium">{sn as string}</span>}
+                    </td>
+                    <td className="p-3 text-center">
+                      {ai === true ? <CheckCircle className="h-4 w-4 text-muted-foreground/50 mx-auto" /> : ai === false ? <span className="text-muted-foreground/40">—</span> : <span className="text-xs text-muted-foreground">{ai as string}</span>}
+                    </td>
+                    <td className="p-3 text-center">
+                      {tutor === true ? <CheckCircle className="h-4 w-4 text-muted-foreground/50 mx-auto" /> : tutor === false ? <span className="text-muted-foreground/40">—</span> : <span className="text-xs text-muted-foreground">{tutor as string}</span>}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
       </section>
@@ -481,6 +539,7 @@ export default function LandingPage() {
                   <div>
                     <span className="text-sm font-medium">{course.name}</span>
                     <span className="ml-2 text-xs text-muted-foreground">({course.units} units)</span>
+                    <p className="text-[11px] text-muted-foreground/60 mt-0.5">{course.topics}</p>
                   </div>
                 </div>
               ))}
@@ -501,8 +560,24 @@ export default function LandingPage() {
               Pass CLEP exams and skip introductory college courses. One exam. One passing score. Up to $2,400 in tuition savings.
             </p>
             <p className="text-sm text-muted-foreground/70 mt-2 max-w-xl mx-auto">
-              CLEP® exams cost $93 each. StudentNest prepares you with the same AI-powered practice and tutoring used for AP — optimized for CLEP content.
+              CLEP® exams cost $93 each. StudentNest AI prepares you with the same AI-powered practice and tutoring used for AP — optimized for CLEP content.
             </p>
+          </div>
+
+          {/* CLEP Exam Details */}
+          <div className="grid sm:grid-cols-3 gap-4 mb-10 max-w-3xl mx-auto text-center">
+            <div className="p-4 rounded-xl border border-emerald-500/15 bg-card/50">
+              <p className="text-sm font-semibold text-emerald-400">Passing Score</p>
+              <p className="text-xs text-muted-foreground mt-1">Scaled score of 50 (roughly 50–60% correct answers)</p>
+            </div>
+            <div className="p-4 rounded-xl border border-emerald-500/15 bg-card/50">
+              <p className="text-sm font-semibold text-emerald-400">Average Prep Time</p>
+              <p className="text-xs text-muted-foreground mt-1">20–40 hours per exam, depending on prior familiarity</p>
+            </div>
+            <div className="p-4 rounded-xl border border-emerald-500/15 bg-card/50">
+              <p className="text-sm font-semibold text-emerald-400">Exam Format</p>
+              <p className="text-xs text-muted-foreground mt-1">90–120 minutes, all multiple choice for most exams</p>
+            </div>
           </div>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-10">
@@ -516,6 +591,7 @@ export default function LandingPage() {
                   <div>
                     <p className="text-sm font-medium">{c.name}</p>
                     <p className="text-xs text-muted-foreground">{c.units} units</p>
+                    <p className="text-[11px] text-muted-foreground/60">{c.topics}</p>
                   </div>
                 </div>
                 <span className="text-xs font-semibold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-1 rounded-full whitespace-nowrap">
@@ -559,14 +635,14 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Free vs Paid Comparison */}
+      {/* Free vs AP Premium vs CLEP Premium */}
       <section className="py-20 px-4">
-        <div className="max-w-3xl mx-auto">
+        <div className="max-w-5xl mx-auto">
           <div className="text-center mb-10">
             <h2 className="text-3xl font-bold mb-2">What Do You Actually Get?</h2>
-            <p className="text-muted-foreground text-sm">Free is genuinely useful. Premium unlocks the full engine.</p>
+            <p className="text-muted-foreground text-sm">Free is genuinely useful. Premium unlocks the full engine — pick your track.</p>
           </div>
-          <div className="grid sm:grid-cols-2 gap-4">
+          <div className="grid sm:grid-cols-3 gap-4">
             {/* Free column */}
             <div className="rounded-xl border border-border/40 bg-card/50 p-6 space-y-3">
               <div className="flex items-center gap-2 mb-4">
@@ -575,35 +651,40 @@ export default function LandingPage() {
                 <span className="text-xs text-muted-foreground">/ forever</span>
               </div>
               {[
+                "All 22 courses — AP, SAT, ACT & CLEP",
                 "Unlimited MCQ practice",
                 "5 AI tutor chats per day",
                 "Basic study plan",
                 "Per-unit mastery analytics",
-                "Daily streaks & leaderboard",
               ].map((item) => (
                 <div key={item} className="flex items-center gap-2 text-sm text-foreground/80">
                   <CheckCircle className="h-4 w-4 text-emerald-400 flex-shrink-0" />
                   {item}
                 </div>
               ))}
+              <div className="pt-3">
+                <Link href="/register?track=ap">
+                  <Button variant="outline" className="w-full">Start Free</Button>
+                </Link>
+              </div>
             </div>
-            {/* Premium column */}
+            {/* AP Premium column */}
             <div className="rounded-xl border border-indigo-500/40 bg-indigo-500/5 p-6 space-y-3 relative">
               <div className="absolute -top-3 right-4">
-                <span className="text-xs px-3 py-1 rounded-full bg-indigo-500/20 border border-indigo-500/30 text-indigo-300 font-medium">Most popular</span>
+                <span className="text-xs px-3 py-1 rounded-full bg-indigo-500/20 border border-indigo-500/30 text-indigo-300 font-medium">AP / SAT / ACT</span>
               </div>
               <div className="flex items-center gap-2 mb-1">
-                <span className="text-base font-bold">Premium</span>
+                <span className="text-base font-bold">AP Premium</span>
                 <span className="text-xl font-bold text-indigo-300">$9.99</span>
                 <span className="text-xs text-muted-foreground">/ month</span>
               </div>
-              <p className="text-xs text-green-500 font-medium mb-3">or $79.99/yr — save 33%</p>
+              <p className="text-xs text-green-500 font-medium mb-1">or $79.99/yr — save 33%</p>
+              <p className="text-xs text-muted-foreground/60 mb-3">Less than a single hour of tutoring</p>
               {[
                 "Everything in Free, plus:",
-                "All 6 CLEP exam courses (earn college credit)",
                 "Unlimited AI tutor chats",
-                "Personalized AI study plan",
                 "FRQ with AI rubric scoring",
+                "Personalized AP study plan",
                 "Streaming AI responses",
               ].map((item) => (
                 <div key={item} className="flex items-center gap-2 text-sm text-foreground/80">
@@ -611,6 +692,42 @@ export default function LandingPage() {
                   {item}
                 </div>
               ))}
+              <div className="pt-3">
+                <Link href="/register?track=ap">
+                  <Button className="w-full bg-indigo-600 hover:bg-indigo-700 text-white">Upgrade AP Premium</Button>
+                </Link>
+              </div>
+            </div>
+            {/* CLEP Premium column */}
+            <div className="rounded-xl border border-emerald-500/40 bg-emerald-500/5 p-6 space-y-3 relative">
+              <div className="absolute -top-3 right-4">
+                <span className="text-xs px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 font-medium">CLEP</span>
+              </div>
+              <div className="flex items-center gap-2 mb-1">
+                <span className="text-base font-bold">CLEP Premium</span>
+                <span className="text-xl font-bold text-emerald-300">$9.99</span>
+                <span className="text-xs text-muted-foreground">/ month</span>
+              </div>
+              <p className="text-xs text-green-500 font-medium mb-1">or $79.99/yr — save 33%</p>
+              <p className="text-xs text-muted-foreground/60 mb-3">Less than a single hour of tutoring</p>
+              {[
+                "Everything in Free, plus:",
+                "All 6 CLEP courses (earn college credit)",
+                "Unlimited AI tutor chats",
+                "Personalized CLEP study plan",
+                "Streaming AI responses",
+                "Save $1,200+ per exam passed",
+              ].map((item) => (
+                <div key={item} className="flex items-center gap-2 text-sm text-foreground/80">
+                  <CheckCircle className="h-4 w-4 text-emerald-400 flex-shrink-0" />
+                  {item}
+                </div>
+              ))}
+              <div className="pt-3">
+                <Link href="/register?track=clep">
+                  <Button className="w-full bg-emerald-600 hover:bg-emerald-700 text-white">Upgrade CLEP Premium</Button>
+                </Link>
+              </div>
             </div>
           </div>
           <p className="text-center text-xs text-muted-foreground mt-5">
@@ -624,7 +741,7 @@ export default function LandingPage() {
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold mb-2">Student Feedback</h2>
-            <p className="text-muted-foreground text-sm">Representative feedback from students using StudentNest</p>
+            <p className="text-muted-foreground text-sm">Representative feedback from students using StudentNest AI</p>
           </div>
           <div className="grid md:grid-cols-3 gap-6">
             {testimonials.map((t) => (
@@ -637,10 +754,43 @@ export default function LandingPage() {
                 <blockquote className="text-sm text-foreground/90 italic leading-relaxed">
                   &ldquo;{t.quote}&rdquo;
                 </blockquote>
+                <div className="flex flex-wrap gap-2">
+                  <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">{t.metric}</span>
+                  <span className="text-[11px] px-2 py-0.5 rounded-full bg-secondary/60 text-muted-foreground">{t.timeline}</span>
+                </div>
                 <div>
                   <p className="text-sm font-semibold">{t.name}</p>
                   <p className="text-xs text-muted-foreground">{t.context}</p>
                 </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* For Parents */}
+      <section id="parents" className="py-16 bg-secondary/20 scroll-mt-20">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-10">
+            <p className="text-xs font-semibold uppercase tracking-wider text-indigo-400 mb-2">For Parents</p>
+            <h2 className="text-3xl font-bold mb-3">You want to see your child succeed. So do we.</h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+              A typical AP student needs 8–12 weeks of focused practice before exam day. With a private tutor at $50/hr twice a week, that&apos;s $800–$1,200. StudentNest AI Premium covers the same period for about $20 total. Your child gets adaptive practice and AI explanations, and you get visibility into their actual progress: which units they&apos;ve mastered, where they&apos;re struggling, how many days they&apos;ve studied this week, and whether their accuracy is trending up.
+            </p>
+          </div>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {[
+              { icon: BarChart3, title: "Track Progress", desc: "See mastery scores by unit, accuracy trends, and study streaks — all in real time." },
+              { icon: Target, title: "Identify Weak Areas", desc: "Know exactly which topics need work, so study time is never wasted." },
+              { icon: GraduationCap, title: "Curriculum-Aligned", desc: "Every question aligns with College Board AP standards and official CLEP exam outlines." },
+              { icon: Clock, title: "Affordable Prep", desc: "$9.99/mo — less than one hour of private tutoring. Free tier available for every student." },
+            ].map((item) => (
+              <div key={item.title} className="p-5 rounded-xl border border-border/40 bg-card/50 text-center space-y-2">
+                <div className="w-10 h-10 rounded-lg bg-indigo-500/10 flex items-center justify-center mx-auto">
+                  <item.icon className="h-5 w-5 text-indigo-400" />
+                </div>
+                <p className="font-semibold text-sm">{item.title}</p>
+                <p className="text-xs text-muted-foreground leading-relaxed">{item.desc}</p>
               </div>
             ))}
           </div>
@@ -668,7 +818,7 @@ export default function LandingPage() {
             </Link>
           </div>
           <p className="mt-3 text-sm text-muted-foreground">
-            Free forever · Premium from $6.67/mo (annual) or $9.99/mo ·{" "}
+            Free forever · AP Premium or CLEP Premium from $6.67/mo (annual) or $9.99/mo ·{" "}
             <Link href="/pricing" className="text-indigo-400 hover:underline">See full pricing</Link>
           </p>
         </div>
@@ -686,9 +836,11 @@ export default function LandingPage() {
             <Link href="/pricing" className="hover:text-foreground transition-colors">Pricing</Link>
             <Link href="/login" className="hover:text-foreground transition-colors">Log In</Link>
             <Link href="/register" className="hover:text-foreground transition-colors">Sign Up Free</Link>
+            <Link href="/terms" className="hover:text-foreground transition-colors">Terms</Link>
+            <Link href="/privacy" className="hover:text-foreground transition-colors">Privacy</Link>
           </div>
           <p className="text-sm text-muted-foreground">
-            © 2025 StudentNest. Your AI Study Partner.
+            © 2025 StudentNest AI. Your AI Study Partner.
           </p>
         </div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4 border-t border-border/20 pt-4">
@@ -699,6 +851,7 @@ export default function LandingPage() {
         </div>
       </footer>
 
+      <MobileStickyCta />
     </div>
   );
 }

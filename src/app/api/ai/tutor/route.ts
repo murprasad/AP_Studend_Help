@@ -7,6 +7,7 @@ import { ApCourse } from "@prisma/client";
 import { VALID_AP_COURSES } from "@/lib/courses";
 import { isAiLimitEnabled, isPaymentsEnabled } from "@/lib/settings";
 import { rateLimit } from "@/lib/rate-limit";
+import { isPremiumForTrack, hasAnyPremium, type ModuleSub } from "@/lib/tiers";
 
 async function computeCacheKey(message: string, course: string): Promise<string> {
   const input = `${message.toLowerCase().trim()}|${course}`;
@@ -38,8 +39,10 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Invalid course" }, { status: 400 });
     }
 
-    // Daily limit for free users (only for new conversations)
-    if (!conversationId && session.user.subscriptionTier === "FREE") {
+    // Daily limit for non-premium users (only for new conversations)
+    const moduleSubs: ModuleSub[] = (session.user as { moduleSubs?: ModuleSub[] }).moduleSubs ?? [];
+    const hasPremium = hasAnyPremium(moduleSubs) || isPremiumForTrack(session.user.subscriptionTier, session.user.track ?? "ap");
+    if (!conversationId && !hasPremium) {
       const [limitsOn, paymentsOn] = await Promise.all([isAiLimitEnabled(), isPaymentsEnabled()]);
       if (limitsOn && paymentsOn) {
         const startOfDay = new Date();

@@ -2343,7 +2343,16 @@ export function getUnitsForCourse(course: ApCourse): ApUnit[] {
   return Object.keys(COURSE_REGISTRY[course].units) as ApUnit[];
 }
 
-/** Returns the track a course belongs to. */
+/** Returns the track a course belongs to. @deprecated Use getCourseModule instead. */
 export function getCourseTrack(course: ApCourse): "ap" | "clep" {
   return (course as string).startsWith("CLEP_") ? "clep" : "ap";
+}
+
+/** Returns the module a course belongs to (4-way: ap, sat, act, clep). */
+export function getCourseModule(course: ApCourse): "ap" | "sat" | "act" | "clep" {
+  const s = course as string;
+  if (s.startsWith("CLEP_")) return "clep";
+  if (s.startsWith("SAT_")) return "sat";
+  if (s.startsWith("ACT_")) return "act";
+  return "ap";
 }

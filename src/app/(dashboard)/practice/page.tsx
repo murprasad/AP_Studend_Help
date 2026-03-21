@@ -11,6 +11,7 @@ import { useCourse } from "@/hooks/use-course";
 import { COURSE_UNITS, AP_COURSES, formatTime } from "@/lib/utils";
 import { ApCourse, ApUnit } from "@prisma/client";
 import { getCourseConfig } from "@/lib/courses";
+import { isPremiumForTrack } from "@/lib/tiers";
 import { Textarea } from "@/components/ui/textarea";
 import { CourseSelectorInline } from "@/components/layout/course-selector-inline";
 import {
@@ -55,6 +56,7 @@ interface SessionSummary {
   timeSpentSecs: number;
   xpEarned: number;
   apScoreEstimate: number;
+  previousAccuracy?: number | null;
 }
 
 interface FrqScore {
@@ -84,7 +86,8 @@ export default function PracticePage() {
   const { toast } = useToast();
   const [course] = useCourse();
 
-  const [subscriptionTier, setSubscriptionTier] = useState<"FREE" | "PREMIUM" | null>(null);
+  const [subscriptionTier, setSubscriptionTier] = useState<string | null>(null);
+  const [userTrack, setUserTrack] = useState<string>("ap");
   const [premiumRestricted, setPremiumRestricted] = useState(false);
   const [sessionLimitReached, setSessionLimitReached] = useState(false);
 
@@ -102,6 +105,7 @@ export default function PracticePage() {
     ])
       .then(([userData, flagsData]) => {
         setSubscriptionTier(userData.user?.subscriptionTier ?? "FREE");
+        setUserTrack(userData.user?.track ?? "ap");
         setPremiumRestricted(flagsData.premiumRestrictionEnabled ?? false);
       })
       .catch(() => {});
@@ -220,7 +224,7 @@ export default function PracticePage() {
       } catch { return ""; }
     })();
     if (isCorrect) {
-      return `I just answered this ${currentQuestion.course.replace(/_/g, " ")} question correctly and want to go deeper:\n\n"${qText}"${opts ? `\nOptions: ${opts}` : ""}\n\nCorrect answer: ${feedback.correctAnswer}\n\nExplain the core concept behind this question and what I should know about it for the AP exam.`;
+      return `I just answered this ${currentQuestion.course.replace(/_/g, " ")} question correctly and want to go deeper:\n\n"${qText}"${opts ? `\nOptions: ${opts}` : ""}\n\nCorrect answer: ${feedback.correctAnswer}\n\nExplain the core concept behind this question and what I should know about it for the exam.`;
     }
     return `I got this ${currentQuestion.course.replace(/_/g, " ")} question wrong and need help understanding it:\n\n"${qText}"${opts ? `\nOptions: ${opts}` : ""}\n\nI chose the wrong answer. The correct answer is: ${feedback.correctAnswer}\n\nWhy is that the correct answer? Walk me through the concept step by step.`;
   }
@@ -453,8 +457,31 @@ export default function PracticePage() {
 
             {sessionSummary.apScoreEstimate > 0 && (
               <div className="text-center p-4 rounded-lg bg-indigo-500/10 border border-indigo-500/20 mb-6">
-                <p className="text-sm text-muted-foreground">Estimated AP Score</p>
-                <p className="text-4xl font-bold text-indigo-400">{sessionSummary.apScoreEstimate}/5</p>
+                <p className="text-sm text-muted-foreground">Estimated {userTrack === "clep" ? "CLEP" : "AP"} Score</p>
+                <p className="text-4xl font-bold text-indigo-400">{userTrack === "clep" ? `${Math.round(sessionSummary.apScoreEstimate * 16)}/80` : `${sessionSummary.apScoreEstimate}/5`}</p>
+              </div>
+            )}
+
+            {/* Improvement message */}
+            {sessionSummary.previousAccuracy != null ? (
+              sessionSummary.accuracy > sessionSummary.previousAccuracy ? (
+                <div className="text-center p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/20 mb-4">
+                  <p className="text-sm font-medium text-emerald-400">
+                    Your accuracy improved {sessionSummary.accuracy - sessionSummary.previousAccuracy}% from your last session
+                  </p>
+                </div>
+              ) : sessionSummary.accuracy === sessionSummary.previousAccuracy ? (
+                <div className="text-center p-3 rounded-lg bg-indigo-500/10 border border-indigo-500/20 mb-4">
+                  <p className="text-sm text-indigo-300">Consistent performance — keep building on it</p>
+                </div>
+              ) : (
+                <div className="text-center p-3 rounded-lg bg-secondary/50 border border-border/40 mb-4">
+                  <p className="text-sm text-muted-foreground">Keep at it — consistency builds mastery</p>
+                </div>
+              )
+            ) : (
+              <div className="text-center p-3 rounded-lg bg-indigo-500/10 border border-indigo-500/20 mb-4">
+                <p className="text-sm text-indigo-300">Great first session! Keep practicing to track your improvement</p>
               </div>
             )}
 
@@ -642,9 +669,9 @@ export default function PracticePage() {
                     key={i}
                     onClick={() => !feedback && !isSubmitting && submitAnswer(letter)}
                     disabled={!!feedback || isSubmitting}
-                    className={`w-full text-left p-4 rounded-lg transition-all ${optionClass}`}
+                    className={`w-full text-left p-4 rounded-lg transition-all min-h-[48px] ${optionClass}`}
                   >
-                    <span className="text-sm">{option}</span>
+                    <span className="text-sm leading-relaxed">{option}</span>
                   </button>
                 );
               })}
@@ -826,6 +853,23 @@ export default function PracticePage() {
           <p className="text-xs text-muted-foreground">20 MCQs · Free</p>
         </button>
 
+        {/* For MCQ-only courses (CLEP), show session limit indicator when premium restriction is enabled */}
+        {(() => {
+          const courseConfig = getCourseConfig(course as ApCourse);
+          const availableFrqTypes = Object.keys(courseConfig?.questionTypeFormats ?? {}).filter((t) => t !== "MCQ");
+          if (availableFrqTypes.length > 0) return null; // AP/SAT/ACT courses — FRQ card handles this
+          if (!premiumRestricted || isPremiumForTrack(subscriptionTier ?? "FREE", userTrack)) return null;
+          return (
+            <div className="col-span-2 flex items-center gap-2 px-3 py-2 rounded-lg bg-yellow-500/5 border border-yellow-500/20 text-xs text-yellow-300/80">
+              <Crown className="h-3.5 w-3.5 flex-shrink-0 text-yellow-400" />
+              <span>You&apos;re on the Free plan — 3 sessions/day. {userTrack === "clep"
+                ? <>Want unlimited practice + all 6 CLEP courses? <Link href="/pricing" className="underline hover:text-indigo-200">Upgrade to CLEP Premium</Link></>
+                : <>Want unlimited practice + FRQ scoring? <Link href="/pricing" className="underline hover:text-indigo-200">Upgrade to AP Premium</Link></>
+              }</span>
+            </div>
+          );
+        })()}
+
         {/* FRQ Practice — Premium only, shown for any course that has FRQ/SAQ/DBQ/LEQ */}
         {(() => {
           const courseConfig = getCourseConfig(course as ApCourse);
@@ -833,7 +877,7 @@ export default function PracticePage() {
           if (availableFrqTypes.length === 0) return null;
           const defaultFrqType = availableFrqTypes[0] as "FRQ" | "SAQ" | "LEQ" | "DBQ" | "CODING";
           const typeLabel = availableFrqTypes.join(" · ");
-          const isLocked = premiumRestricted && subscriptionTier !== "PREMIUM";
+          const isLocked = premiumRestricted && !isPremiumForTrack(subscriptionTier ?? "FREE", userTrack);
           return (
             <button
               onClick={() => {
@@ -862,7 +906,7 @@ export default function PracticePage() {
                 {isLocked && (
                   <Badge className="bg-indigo-600 text-white text-xs">Premium</Badge>
                 )}
-                {!premiumRestricted && subscriptionTier === "FREE" && (
+                {!premiumRestricted && !isPremiumForTrack(subscriptionTier ?? "FREE", userTrack) && (
                   <Badge className="bg-amber-500/20 text-amber-300 text-xs border border-amber-500/30">Limited Time Access</Badge>
                 )}
               </div>
@@ -895,13 +939,15 @@ export default function PracticePage() {
             <div className="flex items-start gap-3">
               <Crown className="h-5 w-5 text-yellow-400 flex-shrink-0 mt-0.5" />
               <div className="space-y-2">
-                <p className="font-semibold text-yellow-300">Daily limit reached</p>
+                <p className="font-semibold text-yellow-300">You&apos;ve used your 3 free sessions today</p>
                 <p className="text-sm text-muted-foreground">
-                  Free accounts get 3 MCQ practice sessions per day. Upgrade to Premium for unlimited practice + FRQ with AI scoring.
+                  {userTrack === "clep"
+                    ? "Unlock unlimited CLEP practice with CLEP Premium."
+                    : "Unlock unlimited practice + FRQ with AI scoring with AP Premium."}
                 </p>
                 <Link href="/pricing">
-                  <Button size="sm" className="gap-2 bg-indigo-600 hover:bg-indigo-700 mt-1">
-                    <Crown className="h-4 w-4" /> Upgrade to Premium
+                  <Button size="sm" className={`gap-2 mt-1 ${userTrack === "clep" ? "bg-emerald-600 hover:bg-emerald-700" : "bg-indigo-600 hover:bg-indigo-700"}`}>
+                    <Crown className="h-4 w-4" /> Upgrade to {userTrack === "clep" ? "CLEP Premium" : "AP Premium"}
                   </Button>
                 </Link>
               </div>
@@ -911,7 +957,7 @@ export default function PracticePage() {
       )}
 
       {/* Premium upsell / limited-time banner for FRQ */}
-      {subscriptionTier === "FREE" && Object.keys(getCourseConfig(course as ApCourse)?.questionTypeFormats ?? {}).some((t) => t !== "MCQ") && !sessionLimitReached && (
+      {!isPremiumForTrack(subscriptionTier ?? "FREE", userTrack) && Object.keys(getCourseConfig(course as ApCourse)?.questionTypeFormats ?? {}).some((t) => t !== "MCQ") && !sessionLimitReached && (
         premiumRestricted ? (
           <Card className="card-glow border-purple-500/20 bg-purple-500/5">
             <CardContent className="p-4 flex items-center gap-3">

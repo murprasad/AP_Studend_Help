@@ -2,7 +2,7 @@
 
 import { useSession } from "next-auth/react";
 import { useRouter, usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Sidebar } from "@/components/layout/sidebar";
 import { SageChat } from "@/components/layout/sage-chat";
 import { Sparkles, Menu } from "lucide-react";
@@ -14,7 +14,7 @@ export default function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { data: session, status } = useSession();
+  const { data: session, status, update: updateSession } = useSession();
   const router = useRouter();
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -38,6 +38,29 @@ export default function DashboardLayout({
       // localStorage unavailable — skip onboarding
     }
   }, [status, pathname, router]);
+
+  // Sync track from URL param (e.g. /dashboard?track=clep after Google OAuth redirect)
+  const trackSynced = useRef(false);
+  useEffect(() => {
+    if (status !== "authenticated" || trackSynced.current) return;
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const urlTrack = params.get("track");
+      const validTracks = ["ap", "sat", "act", "clep"];
+      if (validTracks.includes(urlTrack ?? "") && urlTrack !== session?.user?.track) {
+        trackSynced.current = true;
+        fetch("/api/user", {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ track: urlTrack }),
+        }).then(async () => {
+          // Force JWT refresh to pick up new track, then reload
+          await updateSession();
+          window.location.replace(pathname);
+        }).catch(() => {});
+      }
+    } catch { /* ignore */ }
+  }, [status, session, pathname]);
 
   if (status === "loading") {
     return (

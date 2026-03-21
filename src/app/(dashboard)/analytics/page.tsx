@@ -522,27 +522,32 @@ export default function AnalyticsPage() {
       )}
 
       {/* Premium upgrade CTA — shown to free users */}
-      {session?.user?.subscriptionTier !== "PREMIUM" && (
-        <Card className="border-indigo-500/30 bg-gradient-to-br from-indigo-500/10 to-purple-500/5">
+      {session?.user?.subscriptionTier !== "PREMIUM" && session?.user?.subscriptionTier !== "AP_PREMIUM" && session?.user?.subscriptionTier !== "CLEP_PREMIUM" && (() => {
+        const analyticsTrack = (session?.user as { track?: string })?.track ?? "ap";
+        const isClep = analyticsTrack === "clep";
+        return (
+        <Card className={isClep ? "border-emerald-500/30 bg-gradient-to-br from-emerald-500/10 to-teal-500/5" : "border-indigo-500/30 bg-gradient-to-br from-indigo-500/10 to-purple-500/5"}>
           <CardContent className="p-5 flex items-start gap-4">
-            <div className="w-10 h-10 rounded-lg bg-indigo-500/20 flex items-center justify-center flex-shrink-0">
-              <Sparkles className="h-5 w-5 text-indigo-400" />
+            <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${isClep ? "bg-emerald-500/20" : "bg-indigo-500/20"}`}>
+              <Sparkles className={`h-5 w-5 ${isClep ? "text-emerald-400" : "text-indigo-400"}`} />
             </div>
             <div className="flex-1">
-              <p className="font-semibold text-sm">Unlock advanced analytics with Premium</p>
+              <p className="font-semibold text-sm">Unlock advanced analytics with {isClep ? "CLEP Premium" : "AP Premium"}</p>
               <p className="text-xs text-muted-foreground mt-1">
-                See detailed weak-area breakdowns, time-per-question trends, and an AI-generated action plan to push your estimated score from {stats?.estimatedApScore || "?"} to a 5.
+                {isClep
+                  ? "See detailed weak-area breakdowns, time-per-question trends, and know exactly which units to focus on before your CLEP exam."
+                  : `See detailed weak-area breakdowns, time-per-question trends, and an AI-generated action plan to push your estimated score from ${stats?.estimatedApScore || "?"} to a 5.`}
               </p>
             </div>
             <Link href="/billing">
-              <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-medium transition-colors whitespace-nowrap">
+              <button className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-white text-xs font-medium transition-colors whitespace-nowrap ${isClep ? "bg-emerald-600 hover:bg-emerald-700" : "bg-indigo-600 hover:bg-indigo-700"}`}>
                 <Crown className="h-3.5 w-3.5" />
                 Upgrade
               </button>
             </Link>
           </CardContent>
-        </Card>
-      )}
+        </Card>);
+      })()}
     </div>
   );
 }

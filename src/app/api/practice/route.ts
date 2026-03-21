@@ -3,10 +3,11 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { SessionType, ApUnit, Difficulty, ApCourse, QuestionType, SubTier } from "@prisma/client";
-import { VALID_AP_COURSES, getUnitsForCourse, COURSE_REGISTRY, getCourseTrack } from "@/lib/courses";
+import { VALID_AP_COURSES, getUnitsForCourse, COURSE_REGISTRY, getCourseTrack, getCourseModule } from "@/lib/courses";
 import { generateQuestion } from "@/lib/ai";
 import { isPremiumRestrictionEnabled, getSetting } from "@/lib/settings";
 import { rateLimit } from "@/lib/rate-limit";
+import { isPremiumForTrack, isAnyPremium, hasModulePremium, hasAnyPremium, type ModuleSub } from "@/lib/tiers";
 
 // Create a new practice session
 export async function POST(req: NextRequest) {
@@ -31,14 +32,9 @@ export async function POST(req: NextRequest) {
     }
 
     const userTrack = session.user.track ?? "ap";
-    if (getCourseTrack(course as ApCourse) !== userTrack) {
-      return NextResponse.json(
-        { error: "This course is not available on your current track." },
-        { status: 403 }
-      );
-    }
-
-    const tier = session.user.subscriptionTier;
+    const courseModule = getCourseModule(course as ApCourse);
+    const moduleSubs: ModuleSub[] = (session.user as { moduleSubs?: ModuleSub[] }).moduleSubs ?? [];
+    const hasPremium = hasModulePremium(moduleSubs, courseModule) || isPremiumForTrack(session.user.subscriptionTier, userTrack);
     const [premiumRestricted, aiGenEnabled] = await Promise.all([
       isPremiumRestrictionEnabled(),
       getSetting("ai_generation_enabled", "true").then((v) => v === "true"),
@@ -46,7 +42,7 @@ export async function POST(req: NextRequest) {
 
     // Gate FRQ/SAQ/LEQ/DBQ behind Premium (only when premium restriction is enabled)
     const isFrqType = requestedType && requestedType !== "MCQ";
-    if (premiumRestricted && isFrqType && tier !== "PREMIUM") {
+    if (premiumRestricted && isFrqType && !hasPremium) {
       return NextResponse.json({
         error: "FRQ practice (SAQ, LEQ, DBQ) requires a Premium subscription.",
         limitExceeded: true,
@@ -56,7 +52,7 @@ export async function POST(req: NextRequest) {
 
     // Gate FREE users to 3 practice sessions/day (mock exams excluded, only when restriction is enabled)
     if (premiumRestricted && (sessionType === "PRACTICE" || sessionType === "QUICK_PRACTICE" || sessionType === "FOCUSED_STUDY")) {
-      if (tier !== "PREMIUM") {
+      if (!hasPremium) {
         const startOfDay = new Date();
         startOfDay.setHours(0, 0, 0, 0);
         const todaySessions = await prisma.practiceSession.count({
@@ -159,7 +155,7 @@ export async function POST(req: NextRequest) {
           ? (difficulty as Difficulty)
           : diffs[i % diffs.length];
         const weakTopic = weakTopicMap.get(u) || undefined;
-        return generateQuestion(u, d, resolvedQuestionType, weakTopic, course as ApCourse, tier as "FREE" | "PREMIUM", seedQuestion, true /* quickMode */)
+        return generateQuestion(u, d, resolvedQuestionType, weakTopic, course as ApCourse, (hasPremium ? "PREMIUM" : "FREE") as "FREE" | "PREMIUM", seedQuestion, true /* quickMode */)
           .then((gen) =>
             prisma.question.create({
               data: {
@@ -178,7 +174,7 @@ export async function POST(req: NextRequest) {
                 isAiGenerated: true,
                 isApproved: true,
                 modelUsed: gen.modelUsed ?? null,
-                generatedForTier: (tier === "PREMIUM" ? "PREMIUM" : "FREE") as SubTier,
+                generatedForTier: (hasPremium ? "PREMIUM" : "FREE") as SubTier,
                 contentHash: gen.contentHash ?? null,
                 apSkill: gen.apSkill ?? null,
               },

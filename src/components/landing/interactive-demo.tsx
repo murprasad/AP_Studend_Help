@@ -5,7 +5,9 @@ import { CheckCircle, XCircle, ArrowRight, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
-const QUESTION = {
+const AP_QUESTION = {
+  label: "AP World History",
+  unit: "MCQ · Unit 5: Revolutions",
   text: "Which of the following BEST explains why the French Revolution spread ideas of democracy across Europe?",
   options: [
     { id: "A", text: "The invention of the printing press" },
@@ -18,28 +20,79 @@ const QUESTION = {
     "Napoleon's military campaigns (1799–1815) carried Revolutionary ideals of liberty, equality, and nationalism into conquered territories across Europe. He spread the Napoleonic Code, abolished feudal privileges, and dismantled old aristocratic orders — directly exporting the political legacy of the Revolution far beyond France's borders.",
   wrongExplanation:
     "Not quite. The correct answer is B — Napoleon's military campaigns. While the printing press (A) spread ideas earlier, and trade routes (D) facilitated cultural exchange, neither directly spread Revolutionary democratic ideals. Napoleon's conquests explicitly carried the Revolutionary Code into Europe, abolishing feudal systems and installing democratic legal frameworks across conquered nations.",
+  track: "ap" as const,
+};
+
+const CLEP_QUESTION = {
+  label: "CLEP College Algebra",
+  unit: "MCQ · Unit 2: Equations & Inequalities",
+  text: "If 2x + 7 = 15, what is the value of x?",
+  options: [
+    { id: "A", text: "3" },
+    { id: "B", text: "4" },
+    { id: "C", text: "5" },
+    { id: "D", text: "8" },
+  ],
+  correct: "B",
+  explanation:
+    "Subtract 7 from both sides: 2x = 8. Then divide both sides by 2: x = 4. This is a fundamental linear equation — mastering these is essential for the CLEP College Algebra exam, where they appear in both standalone and word-problem formats.",
+  wrongExplanation:
+    "Not quite. The correct answer is B — x = 4. To solve 2x + 7 = 15, subtract 7 from both sides to get 2x = 8, then divide by 2 to get x = 4. Always isolate the variable step-by-step.",
+  track: "clep" as const,
 };
 
 export function InteractiveDemo() {
+  const [activeTrack, setActiveTrack] = useState<"ap" | "clep">("ap");
   const [selected, setSelected] = useState<string | null>(null);
+
+  const QUESTION = activeTrack === "clep" ? CLEP_QUESTION : AP_QUESTION;
   const answered = selected !== null;
   const isCorrect = selected === QUESTION.correct;
+  const accentColor = activeTrack === "clep" ? "emerald" : "indigo";
+
+  function switchTrack(track: "ap" | "clep") {
+    if (track === activeTrack) return;
+    setActiveTrack(track);
+    setSelected(null);
+  }
 
   return (
     <div className="rounded-2xl border border-border/40 bg-card/60 overflow-hidden shadow-xl max-w-2xl mx-auto">
-      {/* Window chrome */}
+      {/* Window chrome with track toggle */}
       <div className="flex items-center gap-2 px-4 py-3 border-b border-border/40 bg-secondary/40">
         <div className="w-3 h-3 rounded-full bg-red-500/60" />
         <div className="w-3 h-3 rounded-full bg-yellow-500/60" />
         <div className="w-3 h-3 rounded-full bg-green-500/60" />
-        <span className="ml-2 text-xs text-muted-foreground">StudentNest · Practice — AP World History</span>
+        <span className="ml-2 text-xs text-muted-foreground">StudentNest · Practice</span>
+        <div className="ml-auto flex gap-1">
+          <button
+            onClick={() => switchTrack("ap")}
+            className={`text-xs px-4 py-2 rounded-full min-h-[44px] transition-colors ${
+              activeTrack === "ap"
+                ? "bg-indigo-500/20 text-indigo-300 border border-indigo-500/30"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            AP
+          </button>
+          <button
+            onClick={() => switchTrack("clep")}
+            className={`text-xs px-4 py-2 rounded-full min-h-[44px] transition-colors ${
+              activeTrack === "clep"
+                ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            CLEP
+          </button>
+        </div>
       </div>
 
       <div className="p-5 space-y-4">
         {/* Question */}
         <div>
           <p className="text-xs text-muted-foreground uppercase tracking-wide font-medium mb-2">
-            MCQ · Unit 5: Revolutions
+            {QUESTION.unit}
           </p>
           <p className="text-sm font-medium text-foreground/90 leading-relaxed">
             {QUESTION.text}
@@ -52,7 +105,7 @@ export function InteractiveDemo() {
             const isSelected = selected === opt.id;
             const isRightAnswer = opt.id === QUESTION.correct;
 
-            let borderClass = "border-border/40 bg-secondary/30 hover:border-indigo-500/40 hover:bg-indigo-500/5 cursor-pointer";
+            let borderClass = `border-border/40 bg-secondary/30 hover:border-${accentColor}-500/40 hover:bg-${accentColor}-500/5 cursor-pointer`;
             if (answered) {
               if (isRightAnswer) {
                 borderClass = "border-emerald-500/60 bg-emerald-500/10 cursor-default";
@@ -95,10 +148,12 @@ export function InteractiveDemo() {
             }`}
           >
             <div className="flex items-center gap-2">
-              <div className="w-6 h-6 rounded-full bg-indigo-500/20 flex items-center justify-center flex-shrink-0">
-                <Sparkles className="h-3.5 w-3.5 text-indigo-400" />
+              <div className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 ${
+                activeTrack === "clep" ? "bg-emerald-500/20" : "bg-indigo-500/20"
+              }`}>
+                <Sparkles className={`h-3.5 w-3.5 ${activeTrack === "clep" ? "text-emerald-400" : "text-indigo-400"}`} />
               </div>
-              <span className="text-xs font-semibold text-indigo-400">
+              <span className={`text-xs font-semibold ${activeTrack === "clep" ? "text-emerald-400" : "text-indigo-400"}`}>
                 {isCorrect ? "Correct! Sage explains:" : "Sage explains:"}
               </span>
             </div>
@@ -111,8 +166,10 @@ export function InteractiveDemo() {
         {/* CTA after answering */}
         {answered && (
           <div className="pt-1">
-            <Link href="/register">
-              <Button size="sm" className="gap-2 w-full">
+            <Link href={`/register?track=${activeTrack}`}>
+              <Button size="sm" className={`gap-2 w-full ${
+                activeTrack === "clep" ? "bg-emerald-600 hover:bg-emerald-700" : ""
+              }`}>
                 Want 10 more questions like this? Start free <ArrowRight className="h-4 w-4" />
               </Button>
             </Link>

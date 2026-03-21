@@ -3,6 +3,7 @@
 import { useSearchParams, useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { isAnyPremium, tierLabel } from "@/lib/tiers";
 import { Users, BookOpen, BarChart3, Clock } from "lucide-react";
 import { AdminInfrastructureMetrics } from "@/components/admin/infrastructure-metrics";
 import { AdminFeedbackOverview } from "@/components/admin/feedback-overview";
@@ -102,8 +103,8 @@ export function AdminMonitorTabs({ stats, recentUsers }: Props) {
                       <p className="text-xs text-muted-foreground">{user.email}</p>
                     </div>
                     <div className="text-right">
-                      <Badge variant={user.subscriptionTier === "PREMIUM" ? "default" : "outline"} className="text-xs">
-                        {user.subscriptionTier}
+                      <Badge variant={isAnyPremium(user.subscriptionTier) ? "default" : "outline"} className="text-xs">
+                        {tierLabel(user.subscriptionTier)}
                       </Badge>
                       <p className="text-xs text-muted-foreground mt-1">Grade {user.gradeLevel}</p>
                     </div>

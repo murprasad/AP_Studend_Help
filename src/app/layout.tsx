@@ -7,9 +7,29 @@ import { Toaster } from "@/components/ui/toaster";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "StudentNest - Your AI Study Partner",
+  title: "StudentNest AI — AP, SAT, ACT & CLEP Exam Prep",
   description:
-    "AI-powered AP exam preparation across multiple courses — adaptive practice questions, personalized study plans, and an AI tutor to help you score a 5.",
+    "Raise your exam score with AI that explains why, not just what. Personalized practice, instant feedback, and mastery tracking for AP, SAT, ACT & CLEP. Free for every student.",
+  metadataBase: new URL("https://studentnest.ai"),
+  openGraph: {
+    title: "StudentNest AI — Score Higher on AP, SAT, ACT & CLEP",
+    description: "AI-powered exam prep with personalized practice, instant feedback, and mastery tracking. Free for every student.",
+    url: "https://studentnest.ai",
+    siteName: "StudentNest AI",
+    type: "website",
+    locale: "en_US",
+    images: [{ url: "/og-image.svg", width: 1200, height: 630, alt: "StudentNest AI — AP, SAT, ACT & CLEP Exam Prep" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "StudentNest AI — Score Higher on AP, SAT, ACT & CLEP",
+    description: "AI-powered exam prep. Personalized practice. Free to start.",
+    images: ["/og-image.svg"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export const viewport: Viewport = {
@@ -27,6 +47,20 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        {/* JSON-LD Organization schema */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              name: "StudentNest AI",
+              url: "https://studentnest.ai",
+              description: "AI-powered exam preparation for AP, SAT, ACT, and CLEP exams",
+              contactPoint: { "@type": "ContactPoint", email: "contact@studentnest.ai", contactType: "customer support" },
+            }),
+          }}
+        />
         {/* Prevent flash of wrong theme — runs before React hydrates */}
         <script
           dangerouslySetInnerHTML={{

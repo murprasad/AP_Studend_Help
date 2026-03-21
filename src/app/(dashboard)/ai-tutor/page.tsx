@@ -79,6 +79,8 @@ export default function AiTutorPage() {
   const [conversationId, setConversationId] = useState<string | null>(null);
   const [limitReached, setLimitReached] = useState(false);
   const [practiceReturn, setPracticeReturn] = useState(false);
+  const tutorTrack = (session?.user as { track?: string })?.track ?? "ap";
+  const tutorPremiumName = tutorTrack === "clep" ? "CLEP Premium" : "AP Premium";
 
   // Split-panel state
   const [currentSections, setCurrentSections] = useState<TutorSections | null>(null);
@@ -103,11 +105,18 @@ export default function AiTutorPage() {
   }, [course]);
 
   // Check sessionStorage for sage_prefill and practice return flag
+  const prefillSent = useRef(false);
   useEffect(() => {
     const prefill = sessionStorage.getItem("sage_prefill");
     if (prefill) {
       sessionStorage.removeItem("sage_prefill");
       setInput(prefill);
+      // Auto-send the prefill so right panel updates immediately
+      if (!prefillSent.current) {
+        prefillSent.current = true;
+        // Small delay to let component mount fully
+        setTimeout(() => sendMessage(prefill), 300);
+      }
     }
     if (sessionStorage.getItem("sage_practice_return")) {
       setPracticeReturn(true);
@@ -405,7 +414,7 @@ export default function AiTutorPage() {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder={limitReached ? "Daily limit reached — upgrade to continue" : `Ask anything about ${courseLabel}…`}
+            placeholder={limitReached ? `5 free chats used today — upgrade to ${tutorPremiumName} to continue` : `Ask anything about ${courseLabel}…`}
             className="min-h-[44px] max-h-32 resize-none border-0 focus-visible:ring-0 p-0 text-sm bg-transparent"
             rows={1}
             disabled={limitReached}
@@ -436,23 +445,31 @@ export default function AiTutorPage() {
     </Card>
   );
 
-  const limitBanner = limitReached && session?.user?.subscriptionTier !== "PREMIUM" ? (
-    <div className="rounded-xl border border-indigo-500/30 bg-gradient-to-r from-indigo-500/10 to-purple-500/10 p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 flex-shrink-0">
+  const limitBanner = limitReached ? (
+    <div className={`rounded-xl border p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 flex-shrink-0 ${
+      tutorTrack === "clep"
+        ? "border-emerald-500/30 bg-gradient-to-r from-emerald-500/10 to-teal-500/10"
+        : "border-indigo-500/30 bg-gradient-to-r from-indigo-500/10 to-purple-500/10"
+    }`}>
       <div className="flex items-start gap-3">
-        <div className="w-9 h-9 rounded-lg bg-indigo-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
-          <Crown className="h-5 w-5 text-indigo-400" />
+        <div className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5 ${
+          tutorTrack === "clep" ? "bg-emerald-500/20" : "bg-indigo-500/20"
+        }`}>
+          <Crown className={`h-5 w-5 ${tutorTrack === "clep" ? "text-emerald-400" : "text-indigo-400"}`} />
         </div>
         <div>
-          <p className="font-semibold text-sm">Daily limit reached</p>
+          <p className="font-semibold text-sm">You&apos;ve reached today&apos;s 5 free conversations</p>
           <p className="text-xs text-muted-foreground mt-0.5">
-            Free accounts can start 10 new AI conversations per day. Upgrade to Premium for unlimited access.
+            Upgrade to {tutorPremiumName} for unlimited Sage access.
           </p>
         </div>
       </div>
       <Link href="/pricing" className="flex-shrink-0">
-        <Button size="sm" className="gap-1.5 bg-indigo-600 hover:bg-indigo-700 w-full sm:w-auto">
+        <Button size="sm" className={`gap-1.5 w-full sm:w-auto ${
+          tutorTrack === "clep" ? "bg-emerald-600 hover:bg-emerald-700" : "bg-indigo-600 hover:bg-indigo-700"
+        }`}>
           <Crown className="h-3.5 w-3.5" />
-          Upgrade to Premium
+          Upgrade to {tutorPremiumName}
           <ArrowRight className="h-3.5 w-3.5" />
         </Button>
       </Link>
@@ -672,12 +689,12 @@ export default function AiTutorPage() {
       </div>
 
       {/* ── MOBILE single-column layout (unchanged) ──────────────────────── */}
-      <div className="lg:hidden flex flex-col h-[calc(100vh-8rem)] max-w-3xl mx-auto">
+      <div className="lg:hidden flex flex-col h-[calc(100vh-8rem)] max-w-3xl mx-auto px-2 sm:px-0">
         {/* Header */}
-        <div className="mb-4 flex items-start justify-between">
+        <div className="mb-3 flex items-start justify-between">
           <div>
-            <h1 className="text-3xl font-bold flex items-center gap-2">
-              <MessageSquare className="h-8 w-8 text-indigo-400" />
+            <h1 className="text-2xl sm:text-3xl font-bold flex items-center gap-2">
+              <MessageSquare className="h-6 w-6 sm:h-8 sm:w-8 text-indigo-400" />
               Sage 🌿
             </h1>
             <DropdownMenu>

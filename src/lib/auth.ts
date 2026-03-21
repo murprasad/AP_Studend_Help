@@ -161,8 +161,18 @@ export const authOptions: NextAuthOptions = {
     },
 
     async jwt({ token, user, account, trigger }) {
+      // Helper: fetch module subscriptions for a user ID
+      async function fetchModuleSubs(userId: string) {
+        try {
+          const subs = await prisma.moduleSubscription.findMany({
+            where: { userId },
+            select: { module: true, status: true },
+          });
+          return subs.map(s => ({ module: s.module, status: s.status }));
+        } catch { return []; }
+      }
+
       if (account?.provider === "google") {
-        // Google OAuth: look up our DB user by email to get our internal ID + role
         const dbUser = await prisma.user.findUnique({
           where: { email: token.email! },
           select: { id: true, role: true, subscriptionTier: true, track: true },
@@ -172,12 +182,12 @@ export const authOptions: NextAuthOptions = {
           token.role = dbUser.role;
           token.subscriptionTier = dbUser.subscriptionTier;
           token.track = dbUser.track ?? "ap";
+          token.moduleSubs = await fetchModuleSubs(dbUser.id);
         }
         return token;
       }
 
       if (user) {
-        // Credentials sign-in: populate token from DB
         token.id = user.id;
         token.role = (user as unknown as { role: string }).role;
         const dbUser = await prisma.user.findUnique({
@@ -186,8 +196,10 @@ export const authOptions: NextAuthOptions = {
         });
         token.subscriptionTier = dbUser?.subscriptionTier ?? "FREE";
         token.track = dbUser?.track ?? "ap";
-      } else if (trigger === "update" && token.id) {
-        // useSession().update() called (e.g. post-payment activation) — re-sync tier from DB
+        token.moduleSubs = await fetchModuleSubs(user.id);
+      } else if (token.id) {
+        // Always refresh track + tier from DB on every JWT refresh
+        // This ensures track changes (e.g., from /dashboard?track=sat) take effect immediately
         const dbUser = await prisma.user.findUnique({
           where: { id: token.id as string },
           select: { subscriptionTier: true, track: true },
@@ -195,6 +207,9 @@ export const authOptions: NextAuthOptions = {
         if (dbUser) {
           token.subscriptionTier = dbUser.subscriptionTier;
           token.track = dbUser.track ?? "ap";
+        }
+        if (trigger === "update") {
+          token.moduleSubs = await fetchModuleSubs(token.id as string);
         }
       }
       return token;
@@ -206,6 +221,7 @@ export const authOptions: NextAuthOptions = {
         session.user.role = token.role as string;
         session.user.subscriptionTier = token.subscriptionTier as string;
         session.user.track = (token.track as string) ?? "ap";
+        session.user.moduleSubs = (token.moduleSubs as Array<{ module: string; status: string }>) ?? [];
       }
       return session;
     },
@@ -221,6 +237,7 @@ declare module "next-auth" {
       role: string;
       subscriptionTier: string;
       track: string;
+      moduleSubs: Array<{ module: string; status: string }>;
     };
   }
 }
@@ -231,5 +248,6 @@ declare module "next-auth/jwt" {
     role: string;
     subscriptionTier: string;
     track: string;
+    moduleSubs: Array<{ module: string; status: string }>;
   }
 }

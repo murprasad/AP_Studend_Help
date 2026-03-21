@@ -2,13 +2,39 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import Stripe from "stripe";
-import { isPaymentsEnabled, getStripeConfig } from "@/lib/settings";
+import { isPaymentsEnabled, getStripeConfig, type StripeConfig } from "@/lib/settings";
+
+/** Get Stripe payment link and price ID for a given module. */
+function getModuleStripeConfig(cfg: StripeConfig, module: string, plan: string) {
+  const isAnnual = plan === "annual";
+  switch (module) {
+    case "sat":
+      return {
+        paymentLink: isAnnual ? cfg.satPaymentLinkAnnual : cfg.satPaymentLinkMonthly,
+        priceId: isAnnual ? (cfg.satAnnualPriceId || cfg.satPriceId) : cfg.satPriceId,
+      };
+    case "act":
+      return {
+        paymentLink: isAnnual ? cfg.actPaymentLinkAnnual : cfg.actPaymentLinkMonthly,
+        priceId: isAnnual ? (cfg.actAnnualPriceId || cfg.actPriceId) : cfg.actPriceId,
+      };
+    case "clep":
+      return {
+        paymentLink: isAnnual ? cfg.clepPaymentLinkAnnual : cfg.clepPaymentLinkMonthly,
+        priceId: isAnnual ? (cfg.clepAnnualPriceId || cfg.clepPriceId) : cfg.clepPriceId,
+      };
+    default: // "ap"
+      return {
+        paymentLink: isAnnual ? cfg.paymentLinkAnnual : cfg.paymentLinkMonthly,
+        priceId: isAnnual ? (cfg.annualPriceId || cfg.priceId) : cfg.priceId,
+      };
+  }
+}
 
 export async function POST(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
     if (!session) {
-      // Not logged in — redirect to register with pricing intent
       return NextResponse.redirect(new URL("/register?next=/pricing", req.url));
     }
 
@@ -19,28 +45,30 @@ export async function POST(req: NextRequest) {
     const stripeConfig = await getStripeConfig();
 
     if (!stripeConfig.secretKey) {
-      console.error("Stripe secret key not configured (set STRIPE_SECRET_KEY env var or configure in Admin → Payment Setup)");
+      console.error("Stripe secret key not configured");
       return NextResponse.redirect(new URL("/pricing?error=payment_unavailable", req.url));
     }
 
     const { searchParams } = new URL(req.url);
     const plan = searchParams.get("plan") || "monthly";
+    // Support both ?module= (new) and ?track= (legacy)
+    const module = searchParams.get("module") || searchParams.get("track") || (session.user.track ?? "ap");
 
-    // Payment Link path — bypasses server-side session creation (avoids "Country ZZ" error on CF edge)
-    const paymentLink = plan === "annual" && stripeConfig.paymentLinkAnnual
-      ? stripeConfig.paymentLinkAnnual
-      : stripeConfig.paymentLinkMonthly;
+    const { paymentLink, priceId } = getModuleStripeConfig(stripeConfig, module, plan);
 
+    // Payment Link path (preferred — avoids CF Workers issues)
+    // Encode module into client_reference_id since payment links don't support custom metadata via URL.
+    // Format: "userId::module" — webhook parses this to extract both.
     if (paymentLink) {
       const url = new URL(paymentLink);
-      url.searchParams.set("client_reference_id", session.user.id);
+      url.searchParams.set("client_reference_id", `${session.user.id}::${module}`);
       if (session.user.email) url.searchParams.set("prefilled_email", session.user.email);
       return NextResponse.redirect(url.toString(), { status: 303 });
     }
 
-    // Fallback: create checkout session server-side (requires priceId)
-    if (!stripeConfig.priceId) {
-      console.error("Stripe price ID not configured (set STRIPE_PREMIUM_PRICE_ID env var or configure in Admin → Payment Setup)");
+    // Fallback: server-side checkout session
+    if (!priceId) {
+      console.error(`Stripe price ID not configured for ${module} module`);
       return NextResponse.redirect(new URL("/pricing?error=payment_unavailable", req.url));
     }
 
@@ -49,25 +77,19 @@ export async function POST(req: NextRequest) {
       httpClient: Stripe.createFetchHttpClient(),
     });
 
-    const priceId = plan === "annual" && stripeConfig.annualPriceId
-      ? stripeConfig.annualPriceId
-      : stripeConfig.priceId;
-
     const origin = req.headers.get("origin") || process.env.NEXTAUTH_URL || "http://localhost:3000";
 
     const checkoutSession = await stripe.checkout.sessions.create({
       mode: "subscription",
       payment_method_types: ["card"],
-      line_items: [
-        {
-          price: priceId,
-          quantity: 1,
-        },
-      ],
+      line_items: [{ price: priceId, quantity: 1 }],
       customer_email: session.user.email,
       client_reference_id: session.user.id,
       metadata: {
         userId: session.user.id,
+        module: module,
+        // Legacy compat
+        track: module,
       },
       success_url: `${origin}/billing?success=1`,
       cancel_url: `${origin}/pricing?canceled=1`,
@@ -75,6 +97,8 @@ export async function POST(req: NextRequest) {
       subscription_data: {
         metadata: {
           userId: session.user.id,
+          module: module,
+          track: module,
         },
       },
     });
@@ -85,7 +109,8 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.redirect(checkoutSession.url, { status: 303 });
   } catch (error) {
-    console.error("POST /api/checkout error:", error);
-    return NextResponse.redirect(new URL("/pricing?error=checkout_failed", req.url));
+    const errMsg = error instanceof Error ? error.message : String(error);
+    console.error("POST /api/checkout error:", errMsg, error);
+    return NextResponse.redirect(new URL(`/pricing?error=checkout_failed&detail=${encodeURIComponent(errMsg.slice(0, 100))}`, req.url));
   }
 }

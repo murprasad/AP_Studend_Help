@@ -1,0 +1,36 @@
+<svg width="1200" height="630" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f172a"/>
+      <stop offset="50%" style="stop-color:#1e1b4b"/>
+      <stop offset="100%" style="stop-color:#0f172a"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <!-- Logo -->
+  <text x="600" y="200" text-anchor="middle" font-family="system-ui, sans-serif" font-size="56" font-weight="700">
+    <tspan fill="#818cf8">Student</tspan><tspan fill="#e2e8f0">Nest</tspan>
+    <tspan fill="#94a3b8" font-weight="400" font-size="42" dx="12">AI</tspan>
+  </text>
+  <!-- Tagline -->
+  <text x="600" y="280" text-anchor="middle" font-family="system-ui, sans-serif" font-size="32" font-weight="600" fill="#e2e8f0">
+    Score higher on AP, SAT, ACT &amp; CLEP
+  </text>
+  <text x="600" y="330" text-anchor="middle" font-family="system-ui, sans-serif" font-size="28" font-weight="400" fill="#94a3b8">
+    with AI that explains why.
+  </text>
+  <!-- Feature pills -->
+  <g transform="translate(600, 420)" text-anchor="middle" font-family="system-ui, sans-serif" font-size="18" font-weight="500">
+    <rect x="-380" y="-22" width="160" height="44" rx="22" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+    <circle cx="-310" cy="0" r="5" fill="#818cf8"/>
+    <text x="-270" y="6" fill="#cbd5e1">22 Courses</text>
+    <rect x="-100" y="-22" width="170" height="44" rx="22" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+    <circle cx="-25" cy="0" r="5" fill="#34d399"/>
+    <text x="20" y="6" fill="#cbd5e1">AI Tutoring</text>
+    <rect x="190" y="-22" width="180" height="44" rx="22" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+    <circle cx="265" cy="0" r="5" fill="#fbbf24"/>
+    <text x="310" y="6" fill="#cbd5e1">Free to Start</text>
+  </g>
+  <!-- URL -->
+  <text x="600" y="580" text-anchor="middle" font-family="system-ui, sans-serif" font-size="18" fill="#64748b">studentnest.ai</text>
+</svg>

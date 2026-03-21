@@ -99,7 +99,7 @@ export function SageChat() {
   return (
     <>
       {/* Floating button */}
-      <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-2">
+      <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 flex flex-col items-end gap-2">
         {/* Tooltip before first open */}
         {!open && pulse && (
           <div className="bg-indigo-600 text-white text-xs px-3 py-1.5 rounded-full shadow-lg animate-bounce whitespace-nowrap">
@@ -127,8 +127,8 @@ export function SageChat() {
 
       {/* Chat panel */}
       {open && (
-        <div className="fixed bottom-24 right-6 z-50 w-80 sm:w-96 bg-card border border-border/60 rounded-2xl shadow-2xl shadow-black/40 flex flex-col overflow-hidden"
-          style={{ maxHeight: "520px" }}
+        <div className="fixed bottom-20 right-2 sm:bottom-24 sm:right-6 z-50 w-[calc(100vw-1rem)] sm:w-96 bg-card border border-border/60 rounded-2xl shadow-2xl shadow-black/40 flex flex-col overflow-hidden"
+          style={{ maxHeight: "min(520px, calc(100vh - 7rem))" }}
         >
           {/* Header */}
           <div className="bg-gradient-to-r from-indigo-600 to-purple-700 px-4 py-3 flex items-center justify-between flex-shrink-0">

@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 import { AP_COURSE_SHORT } from "@/lib/utils";
 import { useCourse } from "@/hooks/use-course";
 import { ApCourse } from "@prisma/client";
-import { COURSE_REGISTRY, getCourseTrack } from "@/lib/courses";
+import { COURSE_REGISTRY } from "@/lib/courses";
 import {
   LayoutDashboard,
   Zap,
@@ -103,24 +103,40 @@ export function Sidebar({ userRole, userTrack, isOpen = false, onClose = () => {
   const [streakDays, setStreakDays] = useState<number>(0);
   const [streakFreezes, setStreakFreezes] = useState<number>(0);
   const [examDate, setExamDate] = useState<Date | null>(null);
-  const [clepEnabled, setClepEnabled] = useState<boolean>(false);
-  // Initialize track from session prop (available immediately) — fetchUserData() will confirm/update
-  const [track, setTrackState] = useState<"ap" | "clep">(
-    (userTrack as "ap" | "clep") === "clep" ? "clep" : "ap"
+  // Always trust the session track prop when available
+  const effectiveTrack = userTrack || "ap";
+
+  // Map track to the specific course group — strict filtering, no expansion
+  const TRACK_TO_GROUP: Record<string, typeof BASE_COURSE_GROUPS[number][]> = {
+    ap: [BASE_COURSE_GROUPS[0]],     // AP Courses only
+    sat: [BASE_COURSE_GROUPS[1]],    // SAT Prep only
+    act: [BASE_COURSE_GROUPS[2]],    // ACT Prep only
+    clep: [CLEP_GROUP],              // CLEP Prep only
+  };
+
+  const COURSE_GROUPS = TRACK_TO_GROUP[effectiveTrack] ?? [BASE_COURSE_GROUPS[0]];
+
+  const DEFAULT_GROUP: Record<string, string> = {
+    ap: "AP Courses", sat: "SAT Prep", act: "ACT Prep", clep: "CLEP Prep",
+  };
+
+  const [activeGroup, setActiveGroup] = useState<string>(
+    DEFAULT_GROUP[effectiveTrack] ?? "AP Courses"
   );
 
-
-  const effectiveTrack = track === "clep" ? "clep" : "ap";
-  const COURSE_GROUPS = effectiveTrack === "clep" ? [CLEP_GROUP] : BASE_COURSE_GROUPS;
-
-  const [activeGroup, setActiveGroup] = useState<string>("AP Courses");
-
-  // Reset activeGroup when track changes so the dropdown never shows an empty list
+  // Auto-switch course when it doesn't belong to the user's track
   useEffect(() => {
-    setActiveGroup(effectiveTrack === "clep" ? "CLEP Prep" : "AP Courses");
-  }, [effectiveTrack]);
+    const trackGroup = TRACK_TO_GROUP[effectiveTrack];
+    if (trackGroup) {
+      const courseInTrack = trackGroup.some(g => g.keys.includes(course as ApCourse));
+      if (!courseInTrack && trackGroup[0]?.keys[0]) {
+        // Current course doesn't match track — switch to first course in track
+        setCourse(trackGroup[0].keys[0]);
+      }
+    }
+  }, [effectiveTrack]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Also sync activeGroup when course changes (e.g., user picks a course from another group)
+  // Sync activeGroup when course changes
   useEffect(() => {
     const allGroups = [...BASE_COURSE_GROUPS, CLEP_GROUP];
     const group = allGroups.find(g => g.keys.includes(course as ApCourse));
@@ -130,21 +146,13 @@ export function Sidebar({ userRole, userTrack, isOpen = false, onClose = () => {
   function fetchUserData() {
     fetch("/api/user")
       .then((r) => r.json())
-      .then((data: { user?: { streakDays?: number; streakFreezes?: number; examDate?: string; track?: string }; flags?: { clepEnabled?: boolean } }) => {
+      .then((data: { user?: { streakDays?: number; streakFreezes?: number; examDate?: string }; flags?: { clepEnabled?: boolean } }) => {
         const u = data.user;
         if (u?.streakDays != null) setStreakDays(u.streakDays);
         if (u?.streakFreezes != null) setStreakFreezes(u.streakFreezes);
         if (u?.examDate) setExamDate(new Date(u.examDate));
         else setExamDate(null);
-        if (data.flags?.clepEnabled != null) setClepEnabled(data.flags.clepEnabled);
-        if (u?.track) {
-          const newTrack = u.track as "ap" | "clep";
-          setTrackState(newTrack);
-          // Bug fix: if stored course belongs to wrong track, reset to track default
-          if (getCourseTrack(course) !== newTrack) {
-            setCourse(newTrack === "clep" ? "CLEP_COLLEGE_ALGEBRA" : "AP_WORLD_HISTORY");
-          }
-        }
+        // clepEnabled flag no longer used — track-based filtering handles course visibility
       })
       .catch(() => {});
   }
@@ -283,10 +291,6 @@ export function Sidebar({ userRole, userTrack, isOpen = false, onClose = () => {
               <div className="h-1" />
             </DropdownMenuContent>
           </DropdownMenu>
-          {/* Static track badge — confirms which track the user is on */}
-          {effectiveTrack === "clep" && (
-            <p className="mt-1.5 text-[11px] text-emerald-400/60 pl-0.5">CLEP Prep track</p>
-          )}
         </div>
 
         {/* Navigation */}

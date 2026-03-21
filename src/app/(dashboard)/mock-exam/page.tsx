@@ -9,7 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useCourse } from "@/hooks/use-course";
 import { AP_COURSES, formatTime } from "@/lib/utils";
 import { ApCourse } from "@prisma/client";
-import { COURSE_REGISTRY } from "@/lib/courses";
+import { COURSE_REGISTRY, getCourseTrack } from "@/lib/courses";
 import {
   Trophy,
   Clock,
@@ -186,8 +186,8 @@ export default function MockExamPage() {
     return (
       <div className="max-w-2xl mx-auto space-y-6">
         <div>
-          <h1 className="text-3xl font-bold">Mock AP Exam</h1>
-          <p className="text-muted-foreground mt-1">Timed section simulation with official AP pacing</p>
+          <h1 className="text-3xl font-bold">Mock {getCourseTrack(course as ApCourse) === "clep" ? "CLEP" : "AP"} Exam</h1>
+          <p className="text-muted-foreground mt-1">Timed section simulation with official {getCourseTrack(course as ApCourse) === "clep" ? "CLEP" : "AP"} pacing</p>
         </div>
 
         <CourseSelectorInline />
@@ -210,18 +210,28 @@ export default function MockExamPage() {
               </div>
               <div className="p-4 rounded-lg bg-secondary/50 text-center">
                 <p className="text-sm text-muted-foreground mb-1">Result</p>
-                <p className="text-2xl font-bold text-yellow-400">1–5</p>
-                <p className="text-xs text-muted-foreground">AP Score</p>
+                <p className="text-2xl font-bold text-yellow-400">{getCourseTrack(course as ApCourse) === "clep" ? "Pass/Fail" : "1–5"}</p>
+                <p className="text-xs text-muted-foreground">{getCourseTrack(course as ApCourse) === "clep" ? "CLEP Score" : "AP Score"}</p>
               </div>
             </div>
 
             {/* Pacing reference */}
             <div className="p-4 rounded-lg bg-secondary/30 text-sm space-y-1">
-              <p className="font-medium text-muted-foreground mb-2">Official AP pacing reference:</p>
+              <p className="font-medium text-muted-foreground mb-2">Official {getCourseTrack(course as ApCourse) === "clep" ? "CLEP" : "AP"} pacing reference:</p>
               <div className="grid grid-cols-3 gap-2 text-xs text-muted-foreground">
-                <span>WH: 55 MCQ / 55 min</span>
-                <span>CSP: 70 MCQ / 120 min</span>
-                <span>PHY1: 50 MCQ / 90 min</span>
+                {getCourseTrack(course as ApCourse) === "clep" ? (
+                  <>
+                    <span>Algebra: 60 MCQ / 90 min</span>
+                    <span>Psych: 95 MCQ / 90 min</span>
+                    <span>Marketing: 100 MCQ / 90 min</span>
+                  </>
+                ) : (
+                  <>
+                    <span>WH: 55 MCQ / 55 min</span>
+                    <span>CSP: 70 MCQ / 120 min</span>
+                    <span>PHY1: 50 MCQ / 90 min</span>
+                  </>
+                )}
               </div>
             </div>
 
@@ -255,7 +265,7 @@ export default function MockExamPage() {
     };
     const scoreMessages: Record<number, string> = {
       5: "Excellent! You're exam ready!",
-      4: "Great work! A few more sessions and you'll hit 5!",
+      4: getCourseTrack(course as ApCourse) === "clep" ? "Great work! You're close to a passing score!" : "Great work! A few more sessions and you'll hit 5!",
       3: "Good foundation. Focus on weak units to improve.",
       2: "Keep practicing. Review the units you struggled with.",
       1: "Don't give up! More practice will make a big difference.",
@@ -270,11 +280,11 @@ export default function MockExamPage() {
 
         <Card className="card-glow">
           <CardContent className="p-6 text-center">
-            <p className="text-sm text-muted-foreground mb-2">Estimated AP Score</p>
+            <p className="text-sm text-muted-foreground mb-2">Estimated {getCourseTrack(course as ApCourse) === "clep" ? "CLEP" : "AP"} Score</p>
             <p className={`text-8xl font-bold ${scoreColors[result.apScoreEstimate] || "text-foreground"}`}>
               {result.apScoreEstimate}
             </p>
-            <p className="text-muted-foreground mt-2 mb-6">out of 5</p>
+            <p className="text-muted-foreground mt-2 mb-6">{getCourseTrack(course as ApCourse) === "clep" ? "out of 80 (pass: 50+)" : "out of 5"}</p>
             <p className="text-base font-medium">
               {scoreMessages[result.apScoreEstimate] || "Keep practicing!"}
             </p>
@@ -364,9 +374,9 @@ export default function MockExamPage() {
                     key={i}
                     onClick={() => !feedback && !isSubmitting && submitAnswer(letter)}
                     disabled={!!feedback || isSubmitting}
-                    className={`w-full text-left p-4 rounded-lg transition-all ${cls}`}
+                    className={`w-full text-left p-4 rounded-lg transition-all min-h-[48px] ${cls}`}
                   >
-                    <span className="text-sm">{option}</span>
+                    <span className="text-sm leading-relaxed">{option}</span>
                   </button>
                 );
               })}

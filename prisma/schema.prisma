@@ -51,8 +51,23 @@ model User {
   discussionReplies   DiscussionReply[]
   sessionFeedbacks    SessionFeedback[]
   tutorKnowledgeChecks TutorKnowledgeCheck[]
+  moduleSubscriptions  ModuleSubscription[]
 
   @@map("users")
+}
+
+model ModuleSubscription {
+  id                     String    @id @default(cuid())
+  userId                 String
+  module                 String    // "ap" | "sat" | "act" | "clep"
+  status                 String    @default("active") // "active" | "canceling" | "canceled"
+  stripeSubscriptionId   String?
+  stripeCurrentPeriodEnd DateTime?
+  createdAt              DateTime  @default(now())
+  updatedAt              DateTime  @updatedAt
+  user                   User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@unique([userId, module])
+  @@map("module_subscriptions")
 }
 
 model MasteryGoal {
@@ -319,7 +334,11 @@ enum Role {
 
 enum SubTier {
   FREE
-  PREMIUM
+  PREMIUM      // Legacy — code treats as AP_PREMIUM
+  AP_PREMIUM
+  SAT_PREMIUM
+  ACT_PREMIUM
+  CLEP_PREMIUM
 }
 
 enum ApCourse {

@@ -1,34 +1,34 @@
 import { Badge } from "@/components/ui/badge";
-import { Globe, Mail, Target, Heart, Sparkles, Flame, Calendar, Trophy, Layers, Mic, Lightbulb, Scale, Crown, LayoutDashboard, GraduationCap } from "lucide-react";
+import { Globe, Mail, Target, Heart, Sparkles, Lightbulb, LayoutDashboard, GraduationCap } from "lucide-react";
 import Link from "next/link";
 
 const COURSES = [
   // AP
-  { name: "AP World History: Modern",       category: "AP Courses",   color: "bg-blue-500/10 text-blue-300 border-blue-500/20 dark:text-blue-300 dark:border-blue-500/20 light:text-blue-700 light:border-blue-400/40" },
-  { name: "AP Computer Science Principles", category: "AP Courses",   color: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-300 border-emerald-500/20" },
-  { name: "AP Physics 1: Algebra-Based",    category: "AP Courses",   color: "bg-yellow-500/10 text-yellow-600 dark:text-yellow-300 border-yellow-500/20" },
-  { name: "AP Calculus AB",                 category: "AP Courses",   color: "bg-violet-500/10 text-violet-600 dark:text-violet-300 border-violet-500/20" },
-  { name: "AP Calculus BC",                 category: "AP Courses",   color: "bg-purple-500/10 text-purple-600 dark:text-purple-300 border-purple-500/20" },
-  { name: "AP Statistics",                  category: "AP Courses",   color: "bg-cyan-500/10 text-cyan-600 dark:text-cyan-300 border-cyan-500/20" },
-  { name: "AP Chemistry",                   category: "AP Courses",   color: "bg-orange-500/10 text-orange-600 dark:text-orange-300 border-orange-500/20" },
-  { name: "AP Biology",                     category: "AP Courses",   color: "bg-green-500/10 text-green-600 dark:text-green-300 border-green-500/20" },
-  { name: "AP US History (APUSH)",          category: "AP Courses",   color: "bg-red-500/10 text-red-600 dark:text-red-300 border-red-500/20" },
-  { name: "AP Psychology",                  category: "AP Courses",   color: "bg-pink-500/10 text-pink-600 dark:text-pink-300 border-pink-500/20" },
+  { name: "AP World History: Modern",       category: "AP Courses",   color: "bg-blue-500/10 text-blue-300 border-blue-500/20 dark:text-blue-300 dark:border-blue-500/20 light:text-blue-700 light:border-blue-400/40", desc: "Civilizations, empires, revolutions, globalization" },
+  { name: "AP Computer Science Principles", category: "AP Courses",   color: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-300 border-emerald-500/20", desc: "Algorithms, data, internet, impact of computing" },
+  { name: "AP Physics 1: Algebra-Based",    category: "AP Courses",   color: "bg-yellow-500/10 text-yellow-600 dark:text-yellow-300 border-yellow-500/20", desc: "Kinematics, forces, energy, waves, circuits" },
+  { name: "AP Calculus AB",                 category: "AP Courses",   color: "bg-violet-500/10 text-violet-600 dark:text-violet-300 border-violet-500/20", desc: "Limits, derivatives, integrals, differential equations" },
+  { name: "AP Calculus BC",                 category: "AP Courses",   color: "bg-purple-500/10 text-purple-600 dark:text-purple-300 border-purple-500/20", desc: "All AB topics plus series, parametric, polar" },
+  { name: "AP Statistics",                  category: "AP Courses",   color: "bg-cyan-500/10 text-cyan-600 dark:text-cyan-300 border-cyan-500/20", desc: "Data analysis, probability, inference, regression" },
+  { name: "AP Chemistry",                   category: "AP Courses",   color: "bg-orange-500/10 text-orange-600 dark:text-orange-300 border-orange-500/20", desc: "Atomic structure, bonding, reactions, thermodynamics" },
+  { name: "AP Biology",                     category: "AP Courses",   color: "bg-green-500/10 text-green-600 dark:text-green-300 border-green-500/20", desc: "Cells, genetics, evolution, ecology, physiology" },
+  { name: "AP US History (APUSH)",          category: "AP Courses",   color: "bg-red-500/10 text-red-600 dark:text-red-300 border-red-500/20", desc: "Colonial era through modern America" },
+  { name: "AP Psychology",                  category: "AP Courses",   color: "bg-pink-500/10 text-pink-600 dark:text-pink-300 border-pink-500/20", desc: "Cognition, behavior, development, disorders" },
   // SAT
-  { name: "SAT Math",                       category: "SAT Prep",     color: "bg-blue-500/10 text-blue-600 dark:text-blue-300 border-blue-500/20" },
-  { name: "SAT Reading & Writing",          category: "SAT Prep",     color: "bg-sky-500/10 text-sky-600 dark:text-sky-300 border-sky-500/20" },
+  { name: "SAT Math",                       category: "SAT Prep",     color: "bg-blue-500/10 text-blue-600 dark:text-blue-300 border-blue-500/20", desc: "Algebra, geometry, data analysis, advanced math" },
+  { name: "SAT Reading & Writing",          category: "SAT Prep",     color: "bg-sky-500/10 text-sky-600 dark:text-sky-300 border-sky-500/20", desc: "Passages, evidence-based reasoning, grammar" },
   // ACT
-  { name: "ACT Math",                       category: "ACT Prep",     color: "bg-orange-500/10 text-orange-600 dark:text-orange-300 border-orange-500/20" },
-  { name: "ACT English",                    category: "ACT Prep",     color: "bg-amber-500/10 text-amber-600 dark:text-amber-300 border-amber-500/20" },
-  { name: "ACT Science",                    category: "ACT Prep",     color: "bg-green-500/10 text-green-600 dark:text-green-300 border-green-500/20" },
-  { name: "ACT Reading",                    category: "ACT Prep",     color: "bg-teal-500/10 text-teal-600 dark:text-teal-300 border-teal-500/20" },
+  { name: "ACT Math",                       category: "ACT Prep",     color: "bg-orange-500/10 text-orange-600 dark:text-orange-300 border-orange-500/20", desc: "Pre-algebra through trigonometry, 5-choice format" },
+  { name: "ACT English",                    category: "ACT Prep",     color: "bg-amber-500/10 text-amber-600 dark:text-amber-300 border-amber-500/20", desc: "Grammar, sentence structure, rhetorical skills" },
+  { name: "ACT Science",                    category: "ACT Prep",     color: "bg-green-500/10 text-green-600 dark:text-green-300 border-green-500/20", desc: "Data interpretation, research summaries" },
+  { name: "ACT Reading",                    category: "ACT Prep",     color: "bg-teal-500/10 text-teal-600 dark:text-teal-300 border-teal-500/20", desc: "Literary, social science, humanities passages" },
   // CLEP — College Credit
-  { name: "CLEP College Algebra",           category: "CLEP (College Credit)", color: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-300 border-emerald-500/20" },
-  { name: "CLEP College Composition",       category: "CLEP (College Credit)", color: "bg-teal-500/10 text-teal-600 dark:text-teal-300 border-teal-500/20" },
-  { name: "CLEP Introductory Psychology",   category: "CLEP (College Credit)", color: "bg-green-500/10 text-green-600 dark:text-green-300 border-green-500/20" },
-  { name: "CLEP Principles of Marketing",   category: "CLEP (College Credit)", color: "bg-lime-500/10 text-lime-600 dark:text-lime-300 border-lime-500/20" },
-  { name: "CLEP Principles of Management",  category: "CLEP (College Credit)", color: "bg-emerald-500/10 text-emerald-500 dark:text-emerald-400 border-emerald-500/20" },
-  { name: "CLEP Introductory Sociology",    category: "CLEP (College Credit)", color: "bg-cyan-500/10 text-cyan-600 dark:text-cyan-300 border-cyan-500/20" },
+  { name: "CLEP College Algebra",           category: "CLEP (College Credit)", color: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-300 border-emerald-500/20", desc: "Equations, inequalities, functions, graphing" },
+  { name: "CLEP College Composition",       category: "CLEP (College Credit)", color: "bg-teal-500/10 text-teal-600 dark:text-teal-300 border-teal-500/20", desc: "Thesis, argument, rhetoric, research writing" },
+  { name: "CLEP Introductory Psychology",   category: "CLEP (College Credit)", color: "bg-green-500/10 text-green-600 dark:text-green-300 border-green-500/20", desc: "Behavior, cognition, development, disorders" },
+  { name: "CLEP Principles of Marketing",   category: "CLEP (College Credit)", color: "bg-lime-500/10 text-lime-600 dark:text-lime-300 border-lime-500/20", desc: "Market strategy, consumer behavior, pricing" },
+  { name: "CLEP Principles of Management",  category: "CLEP (College Credit)", color: "bg-emerald-500/10 text-emerald-500 dark:text-emerald-400 border-emerald-500/20", desc: "Leadership, planning, organization, control" },
+  { name: "CLEP Introductory Sociology",    category: "CLEP (College Credit)", color: "bg-cyan-500/10 text-cyan-600 dark:text-cyan-300 border-cyan-500/20", desc: "Social structures, culture, institutions" },
 ];
 
 const COURSE_CATEGORIES = Array.from(new Set(COURSES.map((c) => c.category)));
@@ -52,8 +52,8 @@ export default function AboutPage() {
             <Globe className="h-6 w-6 text-indigo-400" />
           </div>
           <div className="flex items-center gap-2 flex-wrap">
-            <h1 className="text-3xl font-bold gradient-text">About StudentNest</h1>
-            <Badge className="bg-indigo-500/20 text-indigo-300 border-indigo-500/30 text-xs font-semibold">Beta 2.0</Badge>
+            <h1 className="text-3xl font-bold gradient-text">About StudentNest AI</h1>
+            <Badge className="bg-indigo-500/20 text-indigo-300 border-indigo-500/30 text-xs font-semibold">Beta 2.1</Badge>
           </div>
         </div>
         <p className="text-muted-foreground leading-relaxed max-w-2xl mx-auto">
@@ -71,12 +71,15 @@ export default function AboutPage() {
           <h2 className="text-xl font-bold">Why We Built This</h2>
         </div>
         <p className="text-muted-foreground leading-relaxed">
-          AP prep hasn&apos;t changed much in 20 years — thick review books, expensive tutors, or generic flashcard apps.
-          We built StudentNest to do what a great tutor does: explain <em>why</em>, not just <em>what</em> — then test whether it clicked.
+          For high schoolers, AP prep hasn&apos;t changed in 20 years — thick review books, expensive tutors, or generic flashcard apps.
+          For college students, CLEP exams offer a way to skip intro courses and save thousands — but there&apos;s almost no quality prep out there beyond outdated practice books.
+        </p>
+        <p className="text-muted-foreground leading-relaxed">
+          We built StudentNest to solve both problems. A platform that does what a great tutor does: explain <em>why</em>, not just <em>what</em> — then test whether it clicked.
         </p>
         <p className="text-muted-foreground leading-relaxed">
           Sage, our AI tutor, is the result of that idea: a study partner that&apos;s available 24/7, never gets impatient,
-          and remembers exactly where you&apos;re struggling.
+          and adapts to exactly where you&apos;re struggling — whether you&apos;re aiming for a 5 on AP World or a passing score on CLEP College Algebra.
         </p>
       </div>
 
@@ -86,6 +89,66 @@ export default function AboutPage() {
         <p className="text-xl font-semibold text-foreground/90 leading-relaxed max-w-2xl mx-auto">
           &ldquo;Make world-class AP, SAT, ACT &amp; CLEP prep accessible to every student — not just those who can afford a tutor.&rdquo;
         </p>
+      </div>
+
+      {/* Section 3b: The Science Behind Sage */}
+      <div className="rounded-2xl border border-border/40 bg-card/50 p-8 text-left space-y-4">
+        <div className="flex items-center gap-2 mb-2">
+          <div className="w-8 h-8 rounded-lg bg-violet-500/10 flex items-center justify-center">
+            <Lightbulb className="h-4 w-4 text-violet-400" />
+          </div>
+          <h2 className="text-xl font-bold">The Science Behind Sage</h2>
+        </div>
+        <p className="text-muted-foreground leading-relaxed">
+          <strong className="text-foreground/80">Active recall.</strong> Research consistently shows that actively retrieving information — not passively rereading notes — is the most effective way to move knowledge into long-term memory. Every StudentNest practice question and every Sage comprehension check is an act of retrieval.
+        </p>
+        <p className="text-muted-foreground leading-relaxed">
+          <strong className="text-foreground/80">Spaced repetition.</strong> When you answer a question wrong, StudentNest schedules it to reappear at increasing intervals. This technique has been shown in cognitive science studies to dramatically improve retention over weeks and months compared to massed practice.
+        </p>
+        <p className="text-muted-foreground leading-relaxed">
+          <strong className="text-foreground/80">Mastery-based progression.</strong> Rather than assigning the same material to every student, Sage tracks your mastery by unit and generates questions targeting your weakest areas first. This approach — rooted in Bloom&apos;s mastery learning framework — ensures that practice time goes where it has the most impact.
+        </p>
+        <p className="text-muted-foreground leading-relaxed">
+          <strong className="text-foreground/80">Comprehension verification.</strong> After Sage explains a concept, it offers an optional 3-question check to verify you understood the explanation — not just read it. This closes the loop between passive learning and active demonstration of understanding.
+        </p>
+      </div>
+
+      {/* Section 3c: What Students Experience */}
+      <div className="space-y-4 text-left">
+        <h2 className="text-xl font-bold text-center">What Students Experience</h2>
+        <div className="grid sm:grid-cols-3 gap-4">
+          {[
+            {
+              icon: Sparkles,
+              color: "text-indigo-400",
+              bg: "bg-indigo-500/10",
+              title: "Instant Feedback on Every Answer",
+              desc: "Every MCQ and FRQ gets an immediate explanation of why the correct answer is right and why each wrong answer is a common misconception. No waiting, no answer keys.",
+            },
+            {
+              icon: Target,
+              color: "text-emerald-400",
+              bg: "bg-emerald-500/10",
+              title: "Mastery Tracking Across All Units",
+              desc: "Your dashboard shows per-unit mastery percentages, accuracy trends over time, and a visual heatmap — so you always know exactly where to focus your next study session.",
+            },
+            {
+              icon: LayoutDashboard,
+              color: "text-violet-400",
+              bg: "bg-violet-500/10",
+              title: "Adaptive Study Plans",
+              desc: "Each week, Sage generates a study plan that targets your weakest units first and adjusts recommendations as your scores improve. Set your exam date and the plan counts down with you.",
+            },
+          ].map(({ icon: Icon, color, bg, title, desc }) => (
+            <div key={title} className="rounded-xl border border-border/40 bg-card p-5 space-y-2">
+              <div className={`w-9 h-9 rounded-lg ${bg} flex items-center justify-center`}>
+                <Icon className={`h-5 w-5 ${color}`} />
+              </div>
+              <p className="text-sm font-semibold">{title}</p>
+              <p className="text-xs text-muted-foreground leading-relaxed">{desc}</p>
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* Section 4: Values */}
@@ -141,9 +204,10 @@ export default function AboutPage() {
               {COURSES.filter((c) => c.category === category).map((c) => (
                 <span
                   key={c.name}
-                  className={`px-3 py-1 rounded-full text-xs font-medium border ${c.color}`}
+                  className={`px-3 py-1.5 rounded-full text-xs font-medium border ${c.color}`}
+                  title={c.desc}
                 >
-                  {c.name}
+                  {c.name} <span className="text-[10px] opacity-60">— {c.desc}</span>
                 </span>
               ))}
             </div>
@@ -154,12 +218,13 @@ export default function AboutPage() {
       {/* Section 6: Impact Stats */}
       <div className="space-y-4">
         <h2 className="text-xl font-bold">In Beta</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
           {[
             { value: "22",   label: "Courses covered" },
             { value: "6",    label: "CLEP exams (college credit)" },
             { value: "24/7", label: "AI tutor availability" },
             { value: "Free", label: "To start, forever" },
+            { value: "$9.99", label: "Premium per module/mo ($79.99/yr)" },
           ].map(({ value, label }) => (
             <div key={label} className="rounded-xl border border-border/40 bg-card p-4 space-y-1">
               <p className="text-2xl font-bold gradient-text">{value}</p>
@@ -169,10 +234,37 @@ export default function AboutPage() {
         </div>
       </div>
 
-      {/* Section 7: What's New in Beta 2.0 */}
+      {/* Section 7: What's New in Beta 2.1 */}
       <div className="space-y-6">
         <div className="text-center space-y-1">
           <Badge className="bg-indigo-500/20 text-indigo-300 border-indigo-500/30 text-xs font-semibold mb-2">Latest Release</Badge>
+          <h2 className="text-xl font-bold">What&apos;s New in Beta 2.1</h2>
+          <p className="text-sm text-muted-foreground">Per-module subscriptions, SEO overhaul, content optimization, and strict course filtering.</p>
+        </div>
+        <div className="grid sm:grid-cols-2 gap-3 text-left">
+          {[
+            { icon: GraduationCap, color: "text-emerald-400", bg: "bg-emerald-500/10", title: "Per-Module Stripe Subscriptions", desc: "Independent $9.99/mo subscriptions for AP, SAT, ACT, and CLEP. Subscribe to exactly the modules you need. Cancel or reactivate each independently." },
+            { icon: LayoutDashboard, color: "text-indigo-400", bg: "bg-indigo-500/10", title: "Module-Locked Sidebar", desc: "Sign up from /ap-prep → see only AP courses. SAT → only SAT. No more seeing all 22 courses — focused experience from day one." },
+            { icon: Sparkles, color: "text-violet-400", bg: "bg-violet-500/10", title: "SEO & Content Overhaul", desc: "JSON-LD structured data, OG images, XML sitemap, 4 dedicated prep landing pages with study flows, outcome messaging, and parent trust sections." },
+            { icon: Target, color: "text-teal-400", bg: "bg-teal-500/10", title: "Outcome-Driven Copy", desc: "Every page now leads with results: score improvements, prep timelines, cost savings. Comparison tables vs tutors and ChatGPT on pricing page." },
+          ].map(({ icon: Icon, color, bg, title, desc }) => (
+            <div key={title} className="flex gap-3 p-4 rounded-xl border border-border/40 bg-card">
+              <div className={`w-8 h-8 rounded-lg ${bg} flex items-center justify-center flex-shrink-0 mt-0.5`}>
+                <Icon className={`h-4 w-4 ${color}`} />
+              </div>
+              <div>
+                <p className="text-sm font-semibold">{title}</p>
+                <p className="text-xs text-muted-foreground leading-relaxed mt-0.5">{desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Section 7b: What's New in Beta 2.0 */}
+      <div className="space-y-6">
+        <div className="text-center space-y-1">
+          <Badge className="bg-border/60 text-muted-foreground border-border/40 text-xs font-semibold mb-2">Beta 2.0</Badge>
           <h2 className="text-xl font-bold">What&apos;s New in Beta 2.0</h2>
           <p className="text-sm text-muted-foreground">Track-based segmentation — high school and college students now get fully separate, focused experiences from the first click.</p>
         </div>
@@ -225,164 +317,11 @@ export default function AboutPage() {
         </div>
       </div>
 
-      {/* Section 7b-prev: What's New in Beta 1.14 */}
-      <div className="space-y-6">
-        <div className="text-center space-y-1">
-          <Badge className="bg-border/60 text-muted-foreground border-border/40 text-xs font-semibold mb-2">Beta 1.14</Badge>
-          <h2 className="text-xl font-bold">What&apos;s New in Beta 1.14</h2>
-          <p className="text-sm text-muted-foreground">Full question bank coverage across all 16 courses, fully automated release pipeline, and integrated post-deploy verification.</p>
-        </div>
-        <div className="grid sm:grid-cols-2 gap-3 text-left">
-          {[
-            { icon: Sparkles,        color: "text-indigo-400", bg: "bg-indigo-500/10", title: "All 16 Courses Seeded",        desc: "AP Statistics, AP Chemistry, AP US History, and AP Psychology now have full MCQ question banks — students will never hit an empty course." },
-            { icon: LayoutDashboard, color: "text-violet-400", bg: "bg-violet-500/10", title: "Automated Release Pipeline",    desc: "Every deploy now runs pre-release checks, smoke tests, integration tests, and archives the release log — fully automated, zero manual steps." },
-            { icon: Sparkles,        color: "text-green-400",  bg: "bg-green-500/10",  title: "Post-Deploy Verification",      desc: "Smoke tests verify all 16 courses and key endpoints immediately after every deploy, catching regressions before students encounter them." },
-            { icon: LayoutDashboard, color: "text-orange-400", bg: "bg-orange-500/10", title: "Sage for Every Answer",         desc: "Sage now appears after both correct and wrong answers — students can always go deeper, then return to their exact practice session position." },
-          ].map(({ icon: Icon, color, bg, title, desc }) => (
-            <div key={title} className="flex gap-3 p-4 rounded-xl border border-border/40 bg-card">
-              <div className={`w-8 h-8 rounded-lg ${bg} flex items-center justify-center flex-shrink-0 mt-0.5`}>
-                <Icon className={`h-4 w-4 ${color}`} />
-              </div>
-              <div>
-                <p className="text-sm font-semibold">{title}</p>
-                <p className="text-xs text-muted-foreground leading-relaxed mt-0.5">{desc}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Section 7b: Beta 1.13 */}
-      <div className="space-y-6">
-        <div className="text-center space-y-1">
-          <Badge className="bg-border/60 text-muted-foreground border-border/40 text-xs font-semibold mb-2">Beta 1.13</Badge>
-          <h2 className="text-xl font-bold">What&apos;s New in Beta 1.13</h2>
-          <p className="text-sm text-muted-foreground">Premium membership notifications, automated question bank seeding, and infrastructure reliability improvements.</p>
-        </div>
-        <div className="grid sm:grid-cols-2 gap-3 text-left">
-          {[
-            { icon: Sparkles,        color: "text-indigo-400", bg: "bg-indigo-500/10", title: "Premium Signup Alerts",      desc: "Team is instantly notified by email whenever a new student upgrades to Premium — no more manual checks." },
-            { icon: LayoutDashboard, color: "text-violet-400", bg: "bg-violet-500/10", title: "Automated Question Seeding",  desc: "A new one-time seeding workflow fills all course units to green coverage automatically, eliminating empty question banks." },
-            { icon: Sparkles,        color: "text-green-400",  bg: "bg-green-500/10",  title: "Cron Reliability",           desc: "Auto-populate cron jobs now retry on failure, respect Cloudflare timeout limits, and report clear diagnostics on each run." },
-            { icon: LayoutDashboard, color: "text-orange-400", bg: "bg-orange-500/10", title: "Dead Code Cleanup",           desc: "Removed unused Netlify functions and banned SDK packages, shrinking the bundle and eliminating stale failure emails." },
-          ].map(({ icon: Icon, color, bg, title, desc }) => (
-            <div key={title} className="flex gap-3 p-4 rounded-xl border border-border/40 bg-card">
-              <div className={`w-8 h-8 rounded-lg ${bg} flex items-center justify-center flex-shrink-0 mt-0.5`}>
-                <Icon className={`h-4 w-4 ${color}`} />
-              </div>
-              <div>
-                <p className="text-sm font-semibold">{title}</p>
-                <p className="text-xs text-muted-foreground leading-relaxed mt-0.5">{desc}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Section 7c: Beta 1.12 */}
-      <div className="space-y-6">
-        <div className="text-center space-y-1">
-          <Badge className="bg-border/60 text-muted-foreground border-border/40 text-xs font-semibold mb-2">Beta 1.12</Badge>
-          <h2 className="text-xl font-bold">What&apos;s New in Beta 1.12</h2>
-          <p className="text-sm text-muted-foreground">Stability and reliability improvements — admin dashboard now renders correctly on all browsers and devices.</p>
-        </div>
-        <div className="grid sm:grid-cols-2 gap-3 text-left">
-          {[
-            { icon: LayoutDashboard, color: "text-indigo-400", bg: "bg-indigo-500/10", title: "Admin Stability Fix",  desc: "Resolved a client-side rendering error on admin pages caused by missing Suspense boundaries around URL-based tab components." },
-            { icon: Sparkles,        color: "text-violet-400", bg: "bg-violet-500/10", title: "Bookmarkable Admin Tabs", desc: "Admin Monitor and Manage tabs now load reliably via direct URL (e.g. /admin?tab=users) without triggering application errors." },
-          ].map(({ icon: Icon, color, bg, title, desc }) => (
-            <div key={title} className="flex gap-3 p-4 rounded-xl border border-border/40 bg-card">
-              <div className={`w-8 h-8 rounded-lg ${bg} flex items-center justify-center flex-shrink-0 mt-0.5`}>
-                <Icon className={`h-4 w-4 ${color}`} />
-              </div>
-              <div>
-                <p className="text-sm font-semibold">{title}</p>
-                <p className="text-xs text-muted-foreground leading-relaxed mt-0.5">{desc}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Section 7c: Beta 1.11 */}
-      <div className="space-y-6">
-        <div className="text-center space-y-1">
-          <Badge className="bg-border/60 text-muted-foreground border-border/40 text-xs font-semibold mb-2">Beta 1.11</Badge>
-          <h2 className="text-xl font-bold">What&apos;s New in Beta 1.11</h2>
-          <p className="text-sm text-muted-foreground">Admin dashboard redesigned into two focused pages — monitor platform health and manage content without scrolling past the fold.</p>
-        </div>
-        <div className="grid sm:grid-cols-2 gap-3 text-left">
-          {[
-            { icon: LayoutDashboard, color: "text-indigo-400", bg: "bg-indigo-500/10", title: "Monitor Page",  desc: "Dedicated Overview tab (stats + live infra metrics) and Users tab (recent sign-ups + session feedback). All read-only at a glance." },
-            { icon: Sparkles,        color: "text-violet-400", bg: "bg-violet-500/10", title: "Manage Page",  desc: "Question Bank, Coverage, and Config tabs — all write actions consolidated in one place with URL-based bookmarkable tab state." },
-          ].map(({ icon: Icon, color, bg, title, desc }) => (
-            <div key={title} className="flex gap-3 p-4 rounded-xl border border-border/40 bg-card">
-              <div className={`w-8 h-8 rounded-lg ${bg} flex items-center justify-center flex-shrink-0 mt-0.5`}>
-                <Icon className={`h-4 w-4 ${color}`} />
-              </div>
-              <div>
-                <p className="text-sm font-semibold">{title}</p>
-                <p className="text-xs text-muted-foreground leading-relaxed mt-0.5">{desc}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Section 7c: Beta 1.10 */}
-      <div className="space-y-6">
-        <div className="text-center space-y-1">
-          <Badge className="bg-border/60 text-muted-foreground border-border/40 text-xs font-semibold mb-2">Beta 1.10</Badge>
-          <h2 className="text-xl font-bold">What&apos;s New in Beta 1.10</h2>
-          <p className="text-sm text-muted-foreground">Annual billing option and a clearer refund guarantee — making Premium a no-brainer commitment.</p>
-        </div>
-        <div className="grid sm:grid-cols-2 gap-3 text-left">
-          {[
-            { icon: Crown, color: "text-indigo-400", bg: "bg-indigo-500/10", title: "Annual Plan Available",        desc: "Save 33% with yearly billing at $79.99/yr (≈$6.67/mo). Toggle monthly vs annual directly on the Pricing page." },
-            { icon: Scale, color: "text-green-400",  bg: "bg-green-500/10",  title: "7-Day Money-Back Guarantee",  desc: "Not satisfied within 7 days of your first Premium payment? Email us for a full refund — no questions asked." },
-          ].map(({ icon: Icon, color, bg, title, desc }) => (
-            <div key={title} className="flex gap-3 p-4 rounded-xl border border-border/40 bg-card">
-              <div className={`w-8 h-8 rounded-lg ${bg} flex items-center justify-center flex-shrink-0 mt-0.5`}>
-                <Icon className={`h-4 w-4 ${color}`} />
-              </div>
-              <div>
-                <p className="text-sm font-semibold">{title}</p>
-                <p className="text-xs text-muted-foreground leading-relaxed mt-0.5">{desc}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Section 7d: Beta 1.9 */}
-      <div className="space-y-6">
-        <div className="text-center space-y-1">
-          <Badge className="bg-border/60 text-muted-foreground border-border/40 text-xs font-semibold mb-2">Beta 1.9</Badge>
-          <h2 className="text-xl font-bold">What&apos;s New in Beta 1.9</h2>
-          <p className="text-sm text-muted-foreground">8 engagement features shipped — keeping students consistent matters as much as content quality.</p>
-        </div>
-        <div className="grid sm:grid-cols-2 gap-3 text-left">
-          {[
-            { icon: Flame,     color: "text-orange-400", bg: "bg-orange-500/10", title: "Daily Streaks + Freeze Tokens",  desc: "Build a study habit. Miss a day? Streak freeze tokens protect your progress." },
-            { icon: Calendar,  color: "text-blue-400",   bg: "bg-blue-500/10",   title: "Exam Countdown Timer",          desc: "Set your exam date and see a live countdown on every dashboard visit." },
-            { icon: Trophy,    color: "text-yellow-400", bg: "bg-yellow-500/10", title: "Weekly Leaderboard",            desc: "See how you rank against other students by XP earned this week." },
-            { icon: Layers,    color: "text-teal-400",   bg: "bg-teal-500/10",   title: "Spaced Repetition Review",     desc: "Wrong answers resurface at the exact right moment via SRS scheduling." },
-            { icon: Target,    color: "text-indigo-400", bg: "bg-indigo-500/10", title: "Study Goals",                  desc: "Set daily question targets and track completion with a progress ring." },
-            { icon: Mic,       color: "text-emerald-400",bg: "bg-emerald-500/10",title: "Voice Input for Sage",         desc: "Ask Sage questions by speaking — hands-free studying while you commute." },
-            { icon: Lightbulb, color: "text-violet-400", bg: "bg-violet-500/10", title: "Socratic AI Hints",            desc: "Stuck on a practice question? Sage gives a hint without giving away the answer." },
-            { icon: Sparkles,  color: "text-pink-400",   bg: "bg-pink-500/10",   title: "Dashboard UX Overhaul",       desc: "All 8 features surface on the dashboard with zero extra clicks required." },
-          ].map(({ icon: Icon, color, bg, title, desc }) => (
-            <div key={title} className="flex gap-3 p-4 rounded-xl border border-border/40 bg-card">
-              <div className={`w-8 h-8 rounded-lg ${bg} flex items-center justify-center flex-shrink-0 mt-0.5`}>
-                <Icon className={`h-4 w-4 ${color}`} />
-              </div>
-              <div>
-                <p className="text-sm font-semibold">{title}</p>
-                <p className="text-xs text-muted-foreground leading-relaxed mt-0.5">{desc}</p>
-              </div>
-            </div>
-          ))}
-        </div>
+      {/* Previous Releases Summary */}
+      <div className="text-center py-4">
+        <p className="text-sm text-muted-foreground">
+          Previous releases (Beta 1.9 &ndash; 1.14) introduced daily streaks, spaced repetition, voice input, automated question bank seeding, admin dashboard redesign, annual billing, and a 7-day money-back guarantee.
+        </p>
       </div>
 
       {/* Section 10: Contact */}

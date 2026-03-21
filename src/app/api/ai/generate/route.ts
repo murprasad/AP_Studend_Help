@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { generateQuestion } from "@/lib/ai";
 import { ApUnit, ApCourse, Difficulty, QuestionType } from "@prisma/client";
 import { getCourseForUnit } from "@/lib/courses";
+import { isAnyPremium, hasAnyPremium, type ModuleSub } from "@/lib/tiers";
 
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions);
@@ -16,7 +17,8 @@ export async function POST(req: NextRequest) {
     select: { role: true, subscriptionTier: true },
   });
 
-  if (!user || (user.role !== "ADMIN" && user.subscriptionTier !== "PREMIUM")) {
+  const moduleSubs: ModuleSub[] = (session.user as { moduleSubs?: ModuleSub[] }).moduleSubs ?? [];
+  if (!user || (user.role !== "ADMIN" && !hasAnyPremium(moduleSubs) && !isAnyPremium(user.subscriptionTier))) {
     return NextResponse.json({ error: "Premium subscription required" }, { status: 403 });
   }
 

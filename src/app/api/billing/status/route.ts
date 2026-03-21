@@ -13,6 +13,7 @@ export async function GET() {
     where: { id: session.user.id },
     select: {
       subscriptionTier: true,
+      track: true,
       stripeSubscriptionId: true,
       stripeCurrentPeriodEnd: true,
       stripeSubscriptionStatus: true,
@@ -21,10 +22,21 @@ export async function GET() {
 
   if (!user) return NextResponse.json({ error: "User not found" }, { status: 404 });
 
+  const moduleSubs = await prisma.moduleSubscription.findMany({
+    where: { userId: session.user.id },
+    select: { module: true, status: true, stripeSubscriptionId: true, stripeCurrentPeriodEnd: true },
+  });
+
   return NextResponse.json({
     subscriptionTier: user.subscriptionTier,
+    track: user.track,
     subscriptionStatus: user.stripeSubscriptionStatus,
     currentPeriodEnd: user.stripeCurrentPeriodEnd?.toISOString() ?? null,
     hasSubscriptionId: !!user.stripeSubscriptionId,
+    moduleSubs: moduleSubs.map(s => ({
+      module: s.module,
+      status: s.status,
+      currentPeriodEnd: s.stripeCurrentPeriodEnd?.toISOString() ?? null,
+    })),
   });
 }

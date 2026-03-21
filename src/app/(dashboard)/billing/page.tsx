@@ -11,12 +11,21 @@ import {
   PartyPopper, AlertTriangle, Calendar, RefreshCw, Sparkles,
 } from "lucide-react";
 import Link from "next/link";
+import { isAnyPremium, tierLabel, hasAnyPremium as hasAnyModulePremium, modulePremiumName, type ModuleSub } from "@/lib/tiers";
+
+interface ModuleSubStatus {
+  module: string;
+  status: string;
+  currentPeriodEnd: string | null;
+}
 
 interface BillingStatus {
   subscriptionTier: string;
+  track?: string;
   subscriptionStatus: string | null;
   currentPeriodEnd: string | null;
   hasSubscriptionId: boolean;
+  moduleSubs?: ModuleSubStatus[];
 }
 
 function daysUntil(isoDate: string): number {
@@ -76,7 +85,7 @@ export default function BillingPage() {
         if (res.ok) {
           const data = await res.json() as BillingStatus;
           setBillingStatus(data);
-          if (data.subscriptionTier === "PREMIUM") {
+          if (isAnyPremium(data.subscriptionTier) || (data.moduleSubs ?? []).some(s => s.status === "active")) {
             stopped = true;
             clearInterval(intervalId);
             clearTimeout(timeoutId);
@@ -106,11 +115,18 @@ export default function BillingPage() {
 
   const [billingCycle, setBillingCycle] = useState<"monthly" | "annual">("monthly");
   // Use billingStatus (live DB) as the primary source of truth for premium state.
+  // Module subscriptions from billing status
+  const moduleSubs: ModuleSubStatus[] = billingStatus?.moduleSubs ?? [];
+  const activeModuleSubs = moduleSubs.filter(s => s.status === "active" || s.status === "canceling");
   // The JWT (session) can lag until update() syncs it; billingStatus is always current.
   const isPremium =
-    session?.user?.subscriptionTier === "PREMIUM" ||
-    billingStatus?.subscriptionTier === "PREMIUM";
-  const isCanceling = billingStatus?.subscriptionStatus === "canceling";
+    isAnyPremium(session?.user?.subscriptionTier ?? "") ||
+    isAnyPremium(billingStatus?.subscriptionTier ?? "") ||
+    activeModuleSubs.length > 0;
+  const premiumLabel = activeModuleSubs.length > 0
+    ? activeModuleSubs.map(s => modulePremiumName(s.module)).join(" + ")
+    : tierLabel(billingStatus?.subscriptionTier ?? session?.user?.subscriptionTier ?? "FREE");
+  const isCanceling = billingStatus?.subscriptionStatus === "canceling" || activeModuleSubs.some(s => s.status === "canceling");
   const periodEnd = billingStatus?.currentPeriodEnd;
   const daysLeft = periodEnd ? daysUntil(periodEnd) : null;
 
@@ -229,7 +245,7 @@ export default function BillingPage() {
             {isPremium && (
               <Badge className="bg-indigo-500/20 text-indigo-300 border-indigo-500/30 text-xs">
                 <Crown className="h-3 w-3 mr-1" />
-                Premium
+                {premiumLabel}
               </Badge>
             )}
             {isCanceling && (
@@ -251,7 +267,7 @@ export default function BillingPage() {
                 )}
               </div>
               <div>
-                <p className="font-semibold">{isPremium ? "Premium" : "Free"}</p>
+                <p className="font-semibold">{isPremium ? premiumLabel : "Free"}</p>
                 <p className="text-sm text-muted-foreground">
                   {isPremium
                     ? isCanceling
@@ -281,7 +297,7 @@ export default function BillingPage() {
               <Link href="/pricing">
                 <Button size="sm" className="gap-2 bg-indigo-600 hover:bg-indigo-700">
                   <ArrowUpRight className="h-3.5 w-3.5" />
-                  Upgrade to Premium
+                  Upgrade to {(session?.user as { track?: string })?.track === "clep" ? "CLEP Premium" : "AP Premium"}
                 </Button>
               </Link>
             )}
@@ -349,7 +365,14 @@ export default function BillingPage() {
           </CardHeader>
           <CardContent className="space-y-4">
             <ul className="space-y-2">
-              {[
+              {((session?.user as { track?: string })?.track === "clep" ? [
+                "Unlimited AI Tutor conversations",
+                "All 6 CLEP courses with full prep",
+                "AI-personalized CLEP study plan",
+                "Streaming AI responses",
+                "Advanced analytics & weak-area insights",
+                "Save $1,200+ per exam passed",
+              ] : [
                 "Unlimited AI Tutor conversations",
                 "AI-personalized study plan (updates weekly)",
                 "Streaming AI responses",
@@ -358,9 +381,9 @@ export default function BillingPage() {
                 "All 10 AP courses with full question types",
                 "FRQ / SAQ / DBQ / LEQ practice with AI scoring",
                 "Early access to new courses",
-              ].map((f) => (
+              ]).map((f) => (
                 <li key={f} className="flex items-center gap-2 text-sm">
-                  <CheckCircle className="h-4 w-4 text-indigo-400 flex-shrink-0" />
+                  <CheckCircle className={`h-4 w-4 flex-shrink-0 ${(session?.user as { track?: string })?.track === "clep" ? "text-emerald-400" : "text-indigo-400"}`} />
                   {f}
                 </li>
               ))}
@@ -416,83 +439,94 @@ export default function BillingPage() {
           </CardContent>
         </Card>
       ) : (
-        <Card className="border-indigo-500/30">
-          <CardHeader>
-            <CardTitle className="text-lg flex items-center gap-2">
-              <Sparkles className="h-5 w-5 text-indigo-400" />
-              Unlock Premium
-            </CardTitle>
-            <CardDescription>Get unlimited access to every StudentNest feature.</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-5">
-            {/* Billing cycle toggle */}
-            <div className="flex items-center gap-1 p-1 bg-secondary/50 rounded-lg w-fit">
-              <button
-                onClick={() => setBillingCycle("monthly")}
-                className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${
-                  billingCycle === "monthly"
-                    ? "bg-background text-foreground shadow-sm"
-                    : "text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                Monthly
-              </button>
-              <button
-                onClick={() => setBillingCycle("annual")}
-                className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors flex items-center gap-1.5 ${
-                  billingCycle === "annual"
-                    ? "bg-background text-foreground shadow-sm"
-                    : "text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                Annual
-                <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30 text-[10px] px-1.5 py-0">
-                  Save 33%
-                </Badge>
-              </button>
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-lg font-bold flex items-center gap-2">
+                <Sparkles className="h-5 w-5 text-indigo-400" />
+                Upgrade Your Modules
+              </h2>
+              <p className="text-sm text-muted-foreground">Each module is $9.99/mo or $79.99/yr. Subscribe to as many as you need.</p>
             </div>
-
-            {/* Price display */}
-            <div className="flex items-baseline gap-1">
-              <span className="text-3xl font-bold">
-                {billingCycle === "annual" ? "$79.99" : "$9.99"}
-              </span>
-              <span className="text-muted-foreground text-sm">
-                {billingCycle === "annual" ? "/ year" : "/ month"}
-              </span>
-              {billingCycle === "annual" && (
-                <span className="text-xs text-muted-foreground ml-1">(≈ $6.67/mo)</span>
-              )}
+            <div className="flex items-center gap-1 p-1 bg-secondary/50 rounded-lg">
+              <button onClick={() => setBillingCycle("monthly")} className={`px-3 py-1 rounded-md text-xs font-medium transition-colors ${billingCycle === "monthly" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground"}`}>Monthly</button>
+              <button onClick={() => setBillingCycle("annual")} className={`px-3 py-1 rounded-md text-xs font-medium transition-colors ${billingCycle === "annual" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground"}`}>Annual <span className="text-green-500 text-[10px] ml-1">-33%</span></button>
             </div>
-
-            <ul className="space-y-2">
-              {[
-                "Unlimited AI Tutor conversations (vs 5/day on Free)",
-                "Personalized study plan that adapts to your progress",
-                "Faster streaming AI responses",
-                "Advanced weak-area analytics",
-                "FRQ / SAQ / DBQ / LEQ practice with AI scoring",
-                "Priority access to new AP courses",
-              ].map((f) => (
-                <li key={f} className="flex items-center gap-2 text-sm">
-                  <CheckCircle className="h-4 w-4 text-green-500 flex-shrink-0" />
-                  {f}
-                </li>
-              ))}
-            </ul>
-
-            <form action={`/api/checkout${billingCycle === "annual" ? "?plan=annual" : ""}`} method="POST">
-              <Button type="submit" className="w-full bg-indigo-600 hover:bg-indigo-700 gap-2">
-                <Crown className="h-4 w-4" />
-                Upgrade to Premium — {billingCycle === "annual" ? "$79.99/yr" : "$9.99/mo"}
-              </Button>
-            </form>
-
-            <p className="text-xs text-center text-muted-foreground">
-              Cancel anytime · Secure payment via Stripe
-            </p>
-          </CardContent>
-        </Card>
+          </div>
+          <div className="grid sm:grid-cols-2 gap-3">
+            {([
+              { module: "ap", label: "AP Premium", desc: "10 AP courses + FRQ scoring", color: "indigo", btn: "bg-indigo-600 hover:bg-indigo-700", border: "border-indigo-500/30" },
+              { module: "sat", label: "SAT Premium", desc: "SAT Math + Reading & Writing", color: "blue", btn: "bg-blue-600 hover:bg-blue-700", border: "border-blue-500/30" },
+              { module: "act", label: "ACT Premium", desc: "All 4 ACT sections", color: "violet", btn: "bg-violet-600 hover:bg-violet-700", border: "border-violet-500/30" },
+              { module: "clep", label: "CLEP Premium", desc: "6 CLEP exams · Save $1,200+", color: "emerald", btn: "bg-emerald-600 hover:bg-emerald-700", border: "border-emerald-500/30" },
+            ] as const).map((m) => {
+              const activeSub = moduleSubs.find(s => s.module === m.module && (s.status === "active" || s.status === "canceling"));
+              return (
+                <Card key={m.module} className={activeSub ? `${m.border} bg-${m.color}-500/5` : "border-border/40"}>
+                  <CardContent className="p-4 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <p className="font-semibold text-sm">{m.label}</p>
+                      {activeSub ? (
+                        <Badge className={`text-xs ${activeSub.status === "canceling" ? "bg-amber-500/20 text-amber-400 border-amber-500/30" : "bg-emerald-500/20 text-emerald-400 border-emerald-500/30"}`}>
+                          {activeSub.status === "canceling" ? "Canceling" : "Active"}
+                        </Badge>
+                      ) : (
+                        <span className="text-xs text-muted-foreground">{billingCycle === "annual" ? "$79.99/yr" : "$9.99/mo"}</span>
+                      )}
+                    </div>
+                    <p className="text-xs text-muted-foreground">{m.desc}</p>
+                    {activeSub ? (
+                      <div className="space-y-2">
+                        {activeSub.currentPeriodEnd && (
+                          <p className="text-xs text-muted-foreground">
+                            {activeSub.status === "canceling" ? "Access until" : "Renews"} {formatDate(activeSub.currentPeriodEnd)}
+                          </p>
+                        )}
+                        {activeSub.status === "active" ? (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="w-full text-xs text-muted-foreground hover:text-red-400"
+                            onClick={async () => {
+                              if (!confirm(`Cancel ${m.label}? You'll keep access until the end of your billing period.`)) return;
+                              const res = await fetch(`/api/billing/cancel?module=${m.module}`, { method: "POST" });
+                              const data = await res.json();
+                              if (data.success) { await fetchBillingStatus(); }
+                              else { alert(data.error || "Could not cancel."); }
+                            }}
+                          >
+                            Cancel {m.label}
+                          </Button>
+                        ) : (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="w-full text-xs text-indigo-400 hover:text-indigo-300"
+                            onClick={async () => {
+                              const res = await fetch(`/api/billing/cancel?module=${m.module}`, { method: "DELETE" });
+                              const data = await res.json();
+                              if (data.success) { await fetchBillingStatus(); }
+                              else { alert(data.error || "Could not reactivate."); }
+                            }}
+                          >
+                            <RefreshCw className="h-3 w-3 mr-1" /> Reactivate
+                          </Button>
+                        )}
+                      </div>
+                    ) : (
+                      <form action={`/api/checkout?plan=${billingCycle}&module=${m.module}`} method="POST">
+                        <Button type="submit" size="sm" className={`w-full ${m.btn} text-white text-xs gap-1.5`}>
+                          <Crown className="h-3.5 w-3.5" /> Upgrade
+                        </Button>
+                      </form>
+                    )}
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+          <p className="text-xs text-center text-muted-foreground">Cancel anytime · Secure payment via Stripe</p>
+        </div>
       )}
 
       {/* Portal link for existing subscribers */}

@@ -379,6 +379,19 @@ npm run pages:deploy    # checks + build + deploy to CF Pages
 
 ## Release History
 
+### Beta 2.1 (2026-03-21)
+- **Per-Module Stripe Subscriptions**: Independent $9.99/mo or $79.99/yr subscriptions for AP, SAT, ACT, and CLEP modules. Each module has its own Stripe price ID, payment link, checkout flow, and webhook handling. `ModuleSubscription` table tracks per-module status.
+- **Module-Locked Sidebar**: Sidebar now filters courses strictly by user's module (ap/sat/act/clep). Users who sign up from `/ap-prep` see only AP courses. No "Browse all courses" escape hatch — clean, focused experience.
+- **4-Value Track System**: Expanded `User.track` from 2 values (ap/clep) to 4 (ap/sat/act/clep). Register page, dashboard layout URL sync, and API all accept all 4 values. JWT refreshes track from DB on every request.
+- **SEO Overhaul**: Schema.org JSON-LD on all 4 prep pages (Course ItemList) and pricing page (FAQPage). XML sitemap, robots.txt, OG image (SVG), per-page metadata exports. Privacy policy page added.
+- **Content Optimization**: Outcome-driven hero copy, "How It Works" study flows on all prep pages, enriched testimonials with metrics, expanded "For Parents" sections, CLEP "What is CLEP?" explainer, comparison tables on pricing page.
+- **Landing Page**: Merged duplicate feature sections, added urgency language ("in weeks, not months"), explicit ChatGPT differentiation, mobile sticky CTA, touch-friendly answer buttons (48px min), "Courses" nav anchor.
+- **About Page**: Trimmed 6 old beta release notes to single summary. Added "Science Behind Sage" methodology section (active recall, spaced repetition, mastery-based progression, comprehension verification). Added "What Students Experience" outcomes grid.
+- **Billing**: Per-module cancel/reactivate buttons. Cancel endpoint accepts `?module=` param. Reactivate (DELETE) endpoint accepts `?module=` param.
+- **Daily Goals**: Customizable daily question target (5/10/15/20 per day, stored in localStorage).
+- **Brand**: "StudentNest AI" branding consistency across all pages.
+- **package.json**: Bumped to `2.1.0`.
+
 ### Beta 2.0 (2026-03-20)
 - **Track-Based Segmentation**: Students now choose their learning path from the landing page — "Start AP/SAT/ACT Prep" (`?track=ap`) or "Start CLEP Prep" (`?track=clep`). Track persists via `localStorage["ap_track"]`.
 - **Landing Page CTAs**: All 7 register CTAs updated with `?track=ap` or `?track=clep`. Hero, audience split cards, curriculum section, CLEP section, navbar, and final CTA all carry the correct track param.

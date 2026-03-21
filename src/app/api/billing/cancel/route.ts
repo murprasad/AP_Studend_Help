@@ -4,6 +4,7 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import Stripe from "stripe";
 import { getStripeConfig } from "@/lib/settings";
+import { isAnyPremium } from "@/lib/tiers";
 
 export const dynamic = "force-dynamic";
 
@@ -22,20 +23,35 @@ export async function POST(req: NextRequest) {
       httpClient: Stripe.createFetchHttpClient(),
     });
 
-    // Get user and their subscription ID from DB
+    const { searchParams } = new URL(req.url);
+    const module = searchParams.get("module");
+
     const user = await prisma.user.findUnique({
       where: { id: session.user.id },
       select: { email: true, stripeSubscriptionId: true, subscriptionTier: true },
     });
 
     if (!user) return NextResponse.json({ error: "User not found" }, { status: 404 });
-    if (user.subscriptionTier !== "PREMIUM") {
-      return NextResponse.json({ error: "No active subscription" }, { status: 400 });
+
+    let subscriptionId: string | null = null;
+
+    // Try ModuleSubscription first (new model)
+    if (module) {
+      const modSub = await prisma.moduleSubscription.findUnique({
+        where: { userId_module: { userId: session.user.id, module } },
+      });
+      if (modSub?.stripeSubscriptionId) subscriptionId = modSub.stripeSubscriptionId;
     }
 
-    let subscriptionId = user.stripeSubscriptionId;
+    // Fall back to legacy User.stripeSubscriptionId
+    if (!subscriptionId) {
+      if (!isAnyPremium(user.subscriptionTier)) {
+        return NextResponse.json({ error: "No active subscription" }, { status: 400 });
+      }
+      subscriptionId = user.stripeSubscriptionId;
+    }
 
-    // If we don't have it stored, look it up from Stripe via email
+    // Last resort: look up from Stripe via email
     if (!subscriptionId) {
       const customers = await stripe.customers.list({ email: user.email, limit: 1 });
       if (customers.data.length > 0) {
@@ -62,6 +78,14 @@ export async function POST(req: NextRequest) {
     const periodEnd = new Date(subscription.current_period_end * 1000);
 
     // Update DB immediately so UI reflects canceling state
+    if (module) {
+      try {
+        await prisma.moduleSubscription.update({
+          where: { userId_module: { userId: session.user.id, module } },
+          data: { status: "canceling", stripeCurrentPeriodEnd: periodEnd },
+        });
+      } catch { /* ignore if not found */ }
+    }
     await prisma.user.update({
       where: { id: session.user.id },
       data: {
@@ -98,24 +122,54 @@ export async function DELETE(req: NextRequest) {
       httpClient: Stripe.createFetchHttpClient(),
     });
 
-    const user = await prisma.user.findUnique({
-      where: { id: session.user.id },
-      select: { stripeSubscriptionId: true },
-    });
+    const { searchParams } = new URL(req.url);
+    const module = searchParams.get("module");
 
-    if (!user?.stripeSubscriptionId) {
+    let subscriptionId: string | null = null;
+
+    // Try ModuleSubscription first if module specified
+    if (module) {
+      const modSub = await prisma.moduleSubscription.findUnique({
+        where: { userId_module: { userId: session.user.id, module } },
+      });
+      if (modSub?.stripeSubscriptionId) subscriptionId = modSub.stripeSubscriptionId;
+    }
+
+    // Fall back to legacy User.stripeSubscriptionId
+    if (!subscriptionId) {
+      const user = await prisma.user.findUnique({
+        where: { id: session.user.id },
+        select: { stripeSubscriptionId: true },
+      });
+      subscriptionId = user?.stripeSubscriptionId ?? null;
+    }
+
+    if (!subscriptionId) {
       return NextResponse.json({ error: "No subscription found" }, { status: 404 });
     }
 
-    const subscription = await stripe.subscriptions.update(user.stripeSubscriptionId, {
+    const subscription = await stripe.subscriptions.update(subscriptionId, {
       cancel_at_period_end: false,
     });
 
+    const periodEnd = new Date(subscription.current_period_end * 1000);
+
+    // Update ModuleSubscription if module specified
+    if (module) {
+      try {
+        await prisma.moduleSubscription.update({
+          where: { userId_module: { userId: session.user.id, module } },
+          data: { status: "active", stripeCurrentPeriodEnd: periodEnd },
+        });
+      } catch { /* ignore if not found */ }
+    }
+
+    // Always update legacy User fields
     await prisma.user.update({
       where: { id: session.user.id },
       data: {
         stripeSubscriptionStatus: subscription.status,
-        stripeCurrentPeriodEnd: new Date(subscription.current_period_end * 1000),
+        stripeCurrentPeriodEnd: periodEnd,
       },
     });
 

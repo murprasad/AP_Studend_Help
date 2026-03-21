@@ -65,21 +65,34 @@ export async function POST(req: NextRequest) {
     switch (event.type) {
       case "checkout.session.completed": {
         const checkoutSession = event.data.object as Stripe.Checkout.Session;
-        const userId = checkoutSession.metadata?.userId || checkoutSession.client_reference_id;
+        // client_reference_id may be "userId::module" (from payment links) or plain userId
+        const rawRef = checkoutSession.client_reference_id || "";
+        const [refUserId, refModule] = rawRef.includes("::") ? rawRef.split("::") : [rawRef, ""];
+        const userId = checkoutSession.metadata?.userId || refUserId;
         if (userId && checkoutSession.mode === "subscription") {
+          const module = checkoutSession.metadata?.module || checkoutSession.metadata?.track || refModule || "ap";
+          // Write to ModuleSubscription table (new)
+          try {
+            await prisma.moduleSubscription.upsert({
+              where: { userId_module: { userId, module } },
+              create: { userId, module, status: "active" },
+              update: { status: "active" },
+            });
+          } catch (e) { console.warn("[webhook] ModuleSubscription upsert failed:", e); }
+          // Legacy: also update subscriptionTier on User
+          const tierMap: Record<string, "AP_PREMIUM" | "SAT_PREMIUM" | "ACT_PREMIUM" | "CLEP_PREMIUM"> = { ap: "AP_PREMIUM", sat: "SAT_PREMIUM", act: "ACT_PREMIUM", clep: "CLEP_PREMIUM" };
           const user = await prisma.user.update({
             where: { id: userId },
-            data: { subscriptionTier: "PREMIUM" },
+            data: { subscriptionTier: tierMap[module] ?? "AP_PREMIUM" },
             select: { email: true, firstName: true, lastName: true },
           });
-          // Determine plan label from amount
           const amountTotal = checkoutSession.amount_total ?? 0;
-          const plan = amountTotal >= 7000 ? "Annual ($79.99/yr)" : "Monthly ($9.99/mo)";
-          // Fire-and-forget — don't let email failure block webhook response
+          const planCycle = amountTotal >= 7000 ? "Annual ($79.99/yr)" : "Monthly ($9.99/mo)";
+          const moduleNames: Record<string, string> = { ap: "AP Premium", sat: "SAT Premium", act: "ACT Premium", clep: "CLEP Premium" };
           sendPremiumSignupNotification({
             userEmail: user.email,
             userName: `${user.firstName} ${user.lastName}`.trim(),
-            plan,
+            plan: `${moduleNames[module] || "Premium"} — ${planCycle}`,
           }).catch((err) => console.warn("[webhook] Premium notification email failed:", err));
         }
         break;
@@ -92,10 +105,22 @@ export async function POST(req: NextRequest) {
         const isCanceling = isActive && subscription.cancel_at_period_end;
         const userId = await getUserIdFromSubscription(stripe, subscription);
         if (userId) {
+          const module = subscription.metadata?.module || subscription.metadata?.track || "ap";
+          const newStatus = isActive ? (isCanceling ? "canceling" : "active") : "canceled";
+          // Write to ModuleSubscription
+          try {
+            await prisma.moduleSubscription.upsert({
+              where: { userId_module: { userId, module } },
+              create: { userId, module, status: newStatus, stripeSubscriptionId: subscription.id, stripeCurrentPeriodEnd: new Date(subscription.current_period_end * 1000) },
+              update: { status: newStatus, stripeSubscriptionId: subscription.id, stripeCurrentPeriodEnd: new Date(subscription.current_period_end * 1000) },
+            });
+          } catch (e) { console.warn("[webhook] ModuleSubscription upsert failed:", e); }
+          // Legacy: update User fields
+          const tierMap2: Record<string, "AP_PREMIUM" | "SAT_PREMIUM" | "ACT_PREMIUM" | "CLEP_PREMIUM"> = { ap: "AP_PREMIUM", sat: "SAT_PREMIUM", act: "ACT_PREMIUM", clep: "CLEP_PREMIUM" };
           await prisma.user.update({
             where: { id: userId },
             data: {
-              subscriptionTier: isActive ? "PREMIUM" : "FREE",
+              subscriptionTier: isActive ? (tierMap2[module] ?? "AP_PREMIUM") : "FREE",
               stripeSubscriptionId: subscription.id,
               stripeCurrentPeriodEnd: new Date(subscription.current_period_end * 1000),
               stripeSubscriptionStatus: isCanceling ? "canceling" : subscription.status,
@@ -109,6 +134,16 @@ export async function POST(req: NextRequest) {
         const subscription = event.data.object as Stripe.Subscription;
         const userId = await getUserIdFromSubscription(stripe, subscription);
         if (userId) {
+          const module = subscription.metadata?.module || subscription.metadata?.track || "ap";
+          // Update ModuleSubscription
+          try {
+            await prisma.moduleSubscription.upsert({
+              where: { userId_module: { userId, module } },
+              create: { userId, module, status: "canceled" },
+              update: { status: "canceled", stripeCurrentPeriodEnd: null },
+            });
+          } catch (e) { console.warn("[webhook] ModuleSubscription update failed:", e); }
+          // Legacy: update User
           await prisma.user.update({
             where: { id: userId },
             data: {
