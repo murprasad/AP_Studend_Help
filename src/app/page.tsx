@@ -104,7 +104,7 @@ export default function LandingPage() {
             <Sparkles className="h-6 w-6 text-indigo-400" />
             <div>
               <span className="text-lg font-bold">
-                <span className="gradient-text">Student</span><span className="text-foreground/80 font-medium">Nest</span>
+                <span className="gradient-text">Student</span><span className="text-foreground/80 font-medium">Nest</span><span className="text-indigo-400/60 font-normal text-[0.6em] ml-1">AI</span>
               </span>
               <p className="text-xs text-muted-foreground leading-none hidden sm:block">Your AI Study Partner</p>
             </div>
@@ -147,7 +147,7 @@ export default function LandingPage() {
             Free forever · AP, SAT, ACT &amp; CLEP · No credit card
           </Badge>
           <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight mb-4">
-            <span className="gradient-text">Student</span><span className="text-foreground/80 font-medium">Nest</span>
+            <span className="gradient-text">Student</span><span className="text-foreground/80 font-medium">Nest</span><span className="text-indigo-400/60 font-normal text-[0.6em] ml-1">AI</span>
           </h1>
           <p className="text-2xl sm:text-3xl font-semibold text-foreground/90 mb-2">
             Improve your AP, SAT, ACT, or CLEP scores — with AI that adapts to your weak areas.
@@ -829,7 +829,7 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
             <Sparkles className="h-5 w-5 text-indigo-400" />
-            <span className="font-semibold"><span className="gradient-text">Student</span><span className="text-foreground/80 font-medium">Nest</span></span>
+            <span className="font-semibold"><span className="gradient-text">Student</span><span className="text-foreground/80 font-medium">Nest</span><span className="text-indigo-400/60 font-normal text-[0.6em] ml-1">AI</span></span>
           </div>
           <div className="flex items-center gap-6 text-sm text-muted-foreground">
             <Link href="/about" className="hover:text-foreground transition-colors">About</Link>
