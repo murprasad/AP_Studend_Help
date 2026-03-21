@@ -1422,3 +1422,81 @@ Integration tests: 18 passed, 9 warnings, 0 failed
 - [ ] Sage response includes 5 sections (Core Concept, Visual Breakdown, How AP Asks, Common Traps, Memory Hook)
 - [ ] Follow-up chips appear and clicking one pre-fills the input
 
+
+---
+
+## Release Log — v1.15.0 (2026-03-21)
+
+**Deployed:** Sat, 21 Mar 2026 02:41:29 GMT
+**Version:** 1.15.0
+
+### Changes in this release
+- feat: Beta 1.15 — CLEP course support, exam countdown fix, phase 2 backlog
+- fix: HuggingFace correct endpoint — featherless-ai provider
+- fix: update HuggingFace to new Inference Providers API
+- fix: update AI provider models — Gemini 2.0, OpenRouter free tier, Together key name
+- chore: release archive beta-1.14 — update test plan log
+- feat: Beta 1.14 — version bump, About page update, targeted seeding scripts
+- fix: replace 112 parallel count queries with single groupBy in practice-check endpoint
+- fix: auto-load .env in integration tests + add CRON_SECRET to .env.example
+- feat: comprehensive release pipeline — integration tests, PWA checks, beta version gate
+- fix: replace AbortSignal.timeout with unref'd timer to prevent Windows libuv crash on pipeline exit
+
+### Automated smoke tests
+```
+Smoke tests: 11 passed, 0 warnings, 1 failed
+  ✅ GET /
+  ✅ GET /pricing
+  ✅ GET /about
+  ✅ GET /login
+  ✅ GET /register
+  ❌ GET /api/ai/status — This operation was aborted
+  ✅ GET /api/feature-flags
+  ✅ POST /api/practice
+  ✅ POST /api/ai/tutor/knowledge-check
+  ✅ GET /api/analytics
+  ✅ GET /api/user
+  ✅ POST /api/ai/tutor/knowledge-check (bad input)
+```
+
+### Integration tests (practice coverage — all 16 courses)
+```
+Integration tests: not run (CRON_SECRET not set or tests skipped)
+```
+
+### Manual P0 checklist (fill in before marking release complete)
+**Practice — all 16 courses:**
+- [ ] AP_WORLD_HISTORY MCQ — ALL units, ALL difficulty → session starts, questions load
+- [ ] AP_US_HISTORY MCQ — session starts
+- [ ] AP_COMPUTER_SCIENCE_PRINCIPLES MCQ — session starts
+- [ ] AP_PHYSICS_1 MCQ + FRQ — both session types start within 30s
+- [ ] AP_CALCULUS_AB MCQ — session starts
+- [ ] AP_STATISTICS MCQ — session starts
+- [ ] AP_CHEMISTRY MCQ — session starts
+- [ ] AP_BIOLOGY MCQ — session starts
+- [ ] AP_PSYCHOLOGY MCQ — session starts
+- [ ] SAT_MATH MCQ — session starts
+- [ ] SAT_READING_WRITING MCQ — session starts
+- [ ] ACT_MATH MCQ — session starts, verify 5 answer choices (A-E not A-D)
+- [ ] ACT_ENGLISH MCQ — session starts
+- [ ] ACT_SCIENCE MCQ — session starts
+- [ ] ACT_READING MCQ — session starts
+
+**Student experience:**
+- [ ] Wrong MCQ answer → knowledge-check mini-quiz appears (count=1, within 15s)
+- [ ] Correct MCQ answer → "Go deeper with Sage →" teal pill visible
+- [ ] Ask Sage from practice → "Continue Practice" banner visible on Sage page
+- [ ] "Continue Practice" → returns to exact question position (no progress lost)
+- [ ] Session completes → summary screen with accuracy %, XP earned, AP score estimate
+- [ ] No 500 errors or blank screens during any flow above
+
+**PWA:**
+- [ ] On mobile Chrome: "Add to Home Screen" prompt appears (or menu option works)
+- [ ] Installed PWA launches in standalone mode (no browser chrome)
+- [ ] App loads from home screen without internet (cached shell)
+
+**AI & Sage:**
+- [ ] Sage answers a question within 15s
+- [ ] Sage response includes 5 sections (Core Concept, Visual Breakdown, How AP Asks, Common Traps, Memory Hook)
+- [ ] Follow-up chips appear and clicking one pre-fills the input
+
