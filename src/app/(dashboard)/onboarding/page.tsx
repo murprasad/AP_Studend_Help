@@ -79,11 +79,6 @@ export default function OnboardingPage() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [track, clepEnabled]);
 
-  function switchTrack(newTrack: "ap" | "clep") {
-    try { localStorage.setItem("ap_track", newTrack); } catch { /* ignore */ }
-    setTrackState(newTrack);
-  }
-
   const effectiveTrack = track === "clep" && clepEnabled ? "clep" : "ap";
   const COURSE_GROUPS = effectiveTrack === "clep" ? [CLEP_COURSE_GROUP] : AP_COURSE_GROUPS;
 
@@ -199,23 +194,6 @@ export default function OnboardingPage() {
               Continue with {COURSE_REGISTRY[course]?.shortName || course}
               <ChevronRight className="h-4 w-4 ml-1" />
             </Button>
-            {/* Switch track link */}
-            {(effectiveTrack === "ap" && clepEnabled) && (
-              <p className="text-center text-xs text-muted-foreground">
-                Earning college credit?{" "}
-                <button onClick={() => switchTrack("clep")} className="text-emerald-400 hover:underline">
-                  Switch to CLEP prep →
-                </button>
-              </p>
-            )}
-            {effectiveTrack === "clep" && (
-              <p className="text-center text-xs text-muted-foreground">
-                Preparing for AP/SAT/ACT?{" "}
-                <button onClick={() => switchTrack("ap")} className="text-indigo-400 hover:underline">
-                  Switch to AP/SAT/ACT prep →
-                </button>
-              </p>
-            )}
           </CardContent>
         </Card>
       )}

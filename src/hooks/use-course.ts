@@ -16,14 +16,9 @@ export function useCourse(): [ApCourse, (course: ApCourse) => void] {
       const stored = localStorage.getItem(STORAGE_KEY) as ApCourse | null;
       if (stored && VALID_AP_COURSES.includes(stored)) {
         setCourseState(stored);
-      } else {
-        // No stored course — pick default based on track
-        const track = localStorage.getItem("ap_track") ?? "ap";
-        const trackDefault: ApCourse = track === "clep" ? "CLEP_COLLEGE_ALGEBRA" : "AP_WORLD_HISTORY";
-        if (VALID_AP_COURSES.includes(trackDefault)) {
-          setCourseState(trackDefault);
-        }
       }
+      // No else — if nothing stored, keep AP_WORLD_HISTORY (safe universal default).
+      // The onboarding sets the correct CLEP course when clep_enabled=true + track=clep.
     } catch {
       // localStorage not available
     }
