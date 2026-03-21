@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 import { AP_COURSE_SHORT } from "@/lib/utils";
 import { useCourse } from "@/hooks/use-course";
 import { ApCourse } from "@prisma/client";
-import { COURSE_REGISTRY } from "@/lib/courses";
+import { COURSE_REGISTRY, getCourseTrack } from "@/lib/courses";
 import {
   LayoutDashboard,
   Zap,
@@ -106,7 +106,7 @@ export function Sidebar({ userRole, isOpen = false, onClose = () => {} }: Sideba
   const [track, setTrackState] = useState<"ap" | "clep">("ap");
 
 
-  const effectiveTrack = track === "clep" && clepEnabled ? "clep" : "ap";
+  const effectiveTrack = track === "clep" ? "clep" : "ap";
   const COURSE_GROUPS = effectiveTrack === "clep" ? [CLEP_GROUP] : BASE_COURSE_GROUPS;
 
   const [activeGroup, setActiveGroup] = useState<string>("AP Courses");
@@ -133,7 +133,14 @@ export function Sidebar({ userRole, isOpen = false, onClose = () => {} }: Sideba
         if (u?.examDate) setExamDate(new Date(u.examDate));
         else setExamDate(null);
         if (data.flags?.clepEnabled != null) setClepEnabled(data.flags.clepEnabled);
-        if (u?.track) setTrackState(u.track as "ap" | "clep");
+        if (u?.track) {
+          const newTrack = u.track as "ap" | "clep";
+          setTrackState(newTrack);
+          // Bug fix: if stored course belongs to wrong track, reset to track default
+          if (getCourseTrack(course) !== newTrack) {
+            setCourse(newTrack === "clep" ? "CLEP_COLLEGE_ALGEBRA" : "AP_WORLD_HISTORY");
+          }
+        }
       })
       .catch(() => {});
   }

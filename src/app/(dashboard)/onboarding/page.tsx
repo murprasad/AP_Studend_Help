@@ -61,17 +61,17 @@ export default function OnboardingPage() {
       .catch(() => {});
   }, []);
 
-  // Auto-select first course when track changes
+  // Auto-select first course when track changes (clepEnabled removed — track from DB is authoritative)
   useEffect(() => {
-    const effectiveTrack = track === "clep" && clepEnabled ? "clep" : "ap";
+    const effectiveTrack = track === "clep" ? "clep" : "ap";
     const firstCourse = effectiveTrack === "clep"
       ? CLEP_COURSE_GROUP.keys[0]
       : AP_COURSE_GROUPS[0].keys[0];
     setCourse(firstCourse);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [track, clepEnabled]);
+  }, [track]);
 
-  const effectiveTrack = track === "clep" && clepEnabled ? "clep" : "ap";
+  const effectiveTrack = track === "clep" ? "clep" : "ap";
   const COURSE_GROUPS = effectiveTrack === "clep" ? [CLEP_COURSE_GROUP] : AP_COURSE_GROUPS;
 
   // If already onboarded, skip to dashboard
