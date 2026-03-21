@@ -90,11 +90,12 @@ const CLEP_GROUP: { label: string; shortLabel: string; keys: ApCourse[] } = {
 
 interface SidebarProps {
   userRole?: string;
+  userTrack?: string;
   isOpen?: boolean;
   onClose?: () => void;
 }
 
-export function Sidebar({ userRole, isOpen = false, onClose = () => {} }: SidebarProps) {
+export function Sidebar({ userRole, userTrack, isOpen = false, onClose = () => {} }: SidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
   const [course, setCourse] = useCourse();
@@ -103,7 +104,10 @@ export function Sidebar({ userRole, isOpen = false, onClose = () => {} }: Sideba
   const [streakFreezes, setStreakFreezes] = useState<number>(0);
   const [examDate, setExamDate] = useState<Date | null>(null);
   const [clepEnabled, setClepEnabled] = useState<boolean>(false);
-  const [track, setTrackState] = useState<"ap" | "clep">("ap");
+  // Initialize track from session prop (available immediately) — fetchUserData() will confirm/update
+  const [track, setTrackState] = useState<"ap" | "clep">(
+    (userTrack as "ap" | "clep") === "clep" ? "clep" : "ap"
+  );
 
 
   const effectiveTrack = track === "clep" ? "clep" : "ap";
