@@ -98,7 +98,7 @@ ${integrationSection}
 \`\`\`
 
 ### Manual P0 checklist (fill in before marking release complete)
-**Practice — all 16 courses:**
+**Practice — AP/SAT/ACT (16 courses, AP-track user):**
 - [ ] AP_WORLD_HISTORY MCQ — ALL units, ALL difficulty → session starts, questions load
 - [ ] AP_US_HISTORY MCQ — session starts
 - [ ] AP_COMPUTER_SCIENCE_PRINCIPLES MCQ — session starts
@@ -114,6 +114,37 @@ ${integrationSection}
 - [ ] ACT_ENGLISH MCQ — session starts
 - [ ] ACT_SCIENCE MCQ — session starts
 - [ ] ACT_READING MCQ — session starts
+
+**Practice — CLEP (6 courses, CLEP-track user + clep_enabled=true):**
+- [ ] CLEP_COLLEGE_ALGEBRA MCQ — session starts
+- [ ] CLEP_COLLEGE_COMPOSITION MCQ — session starts
+- [ ] CLEP_INTRO_PSYCHOLOGY MCQ — session starts
+- [ ] CLEP_PRINCIPLES_OF_MARKETING MCQ — session starts
+- [ ] CLEP_PRINCIPLES_OF_MANAGEMENT MCQ — session starts
+- [ ] CLEP_INTRODUCTORY_SOCIOLOGY MCQ — session starts
+
+**Track enforcement (DB-backed — Beta 2.1):**
+- [ ] Register at \`/register?track=clep\` → DB \`User.track = "clep"\`
+- [ ] Register at \`/register?track=ap\` → DB \`User.track = "ap"\`
+- [ ] Register (no param) → DB \`User.track = "ap"\` (default)
+- [ ] AP user: POST \`/api/practice { course: "CLEP_COLLEGE_ALGEBRA" }\` → 403
+- [ ] AP user: POST \`/api/diagnostic { course: "CLEP_INTRO_PSYCHOLOGY" }\` → 403
+- [ ] CLEP user: POST \`/api/practice { course: "AP_WORLD_HISTORY" }\` → 403
+- [ ] CLEP user: POST \`/api/diagnostic { course: "AP_US_HISTORY" }\` → 403
+- [ ] AP user: normal AP course practice → no 403 (200 OK)
+- [ ] Sidebar: no "Change track" button visible for any user
+- [ ] Sidebar: CLEP user sees only CLEP courses (reads from DB, not localStorage)
+- [ ] Sidebar: AP user sees AP/SAT/ACT courses (DB wins even if localStorage says "clep")
+- [ ] Onboarding: CLEP user sees only CLEP courses without localStorage dependency
+- [ ] \`/api/user\` response includes \`user.track\` field
+- [ ] Session JWT includes \`track\` field after login
+
+**Auth — login & registration:**
+- [ ] New credential registration → email verification sent (or auto-verified in dev)
+- [ ] Login with correct credentials → redirected to /dashboard or /onboarding
+- [ ] Login with wrong password → error toast shown, no redirect
+- [ ] Google OAuth sign-in button visible (when GOOGLE_CLIENT_ID configured)
+- [ ] Unverified email login → error "Please verify your email"
 
 **Student experience:**
 - [ ] Wrong MCQ answer → knowledge-check mini-quiz appears (count=1, within 15s)

@@ -50,23 +50,15 @@ export default function OnboardingPage() {
   const [track, setTrackState] = useState<"ap" | "clep">("ap");
   const [clepEnabled, setClepEnabled] = useState(false);
 
-  // Fetch clepEnabled flag
+  // Fetch clepEnabled flag and track from DB
   useEffect(() => {
     fetch("/api/user")
       .then((r) => r.json())
-      .then((data: { flags?: { clepEnabled?: boolean } }) => {
+      .then((data: { user?: { track?: string }; flags?: { clepEnabled?: boolean } }) => {
         if (data.flags?.clepEnabled) setClepEnabled(true);
+        if (data.user?.track) setTrackState(data.user.track as "ap" | "clep");
       })
       .catch(() => {});
-  }, []);
-
-  // Read track from localStorage and set initial course
-  useEffect(() => {
-    try {
-      const stored = localStorage.getItem("ap_track");
-      const t = stored === "clep" ? "clep" : "ap";
-      setTrackState(t);
-    } catch { /* ignore */ }
   }, []);
 
   // Auto-select first course when track changes

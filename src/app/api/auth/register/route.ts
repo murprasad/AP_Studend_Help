@@ -13,6 +13,7 @@ const registerSchema = z.object({
   password: z.string().min(8),
   gradeLevel: z.string(),
   school: z.string().optional(),
+  track: z.enum(["ap", "clep"]).default("ap"),
 });
 
 export async function POST(req: NextRequest) {
@@ -46,6 +47,7 @@ export async function POST(req: NextRequest) {
         lastName: data.lastName,
         gradeLevel: data.gradeLevel,
         school: data.school || null,
+        track: data.track ?? "ap",
       },
     });
 

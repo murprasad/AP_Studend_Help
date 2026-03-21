@@ -165,12 +165,13 @@ export const authOptions: NextAuthOptions = {
         // Google OAuth: look up our DB user by email to get our internal ID + role
         const dbUser = await prisma.user.findUnique({
           where: { email: token.email! },
-          select: { id: true, role: true, subscriptionTier: true },
+          select: { id: true, role: true, subscriptionTier: true, track: true },
         });
         if (dbUser) {
           token.id = dbUser.id;
           token.role = dbUser.role;
           token.subscriptionTier = dbUser.subscriptionTier;
+          token.track = dbUser.track ?? "ap";
         }
         return token;
       }
@@ -181,16 +182,20 @@ export const authOptions: NextAuthOptions = {
         token.role = (user as unknown as { role: string }).role;
         const dbUser = await prisma.user.findUnique({
           where: { id: user.id },
-          select: { subscriptionTier: true },
+          select: { subscriptionTier: true, track: true },
         });
         token.subscriptionTier = dbUser?.subscriptionTier ?? "FREE";
+        token.track = dbUser?.track ?? "ap";
       } else if (trigger === "update" && token.id) {
         // useSession().update() called (e.g. post-payment activation) — re-sync tier from DB
         const dbUser = await prisma.user.findUnique({
           where: { id: token.id as string },
-          select: { subscriptionTier: true },
+          select: { subscriptionTier: true, track: true },
         });
-        if (dbUser) token.subscriptionTier = dbUser.subscriptionTier;
+        if (dbUser) {
+          token.subscriptionTier = dbUser.subscriptionTier;
+          token.track = dbUser.track ?? "ap";
+        }
       }
       return token;
     },
@@ -200,6 +205,7 @@ export const authOptions: NextAuthOptions = {
         session.user.id = token.id as string;
         session.user.role = token.role as string;
         session.user.subscriptionTier = token.subscriptionTier as string;
+        session.user.track = (token.track as string) ?? "ap";
       }
       return session;
     },
@@ -214,6 +220,7 @@ declare module "next-auth" {
       name: string;
       role: string;
       subscriptionTier: string;
+      track: string;
     };
   }
 }
@@ -223,5 +230,6 @@ declare module "next-auth/jwt" {
     id: string;
     role: string;
     subscriptionTier: string;
+    track: string;
   }
 }

@@ -1640,8 +1640,8 @@ Integration tests: not run (CRON_SECRET not set or tests skipped)
 - [ ] Onboarding with `track=clep` + `clep_enabled=true` → only 6 CLEP courses shown
 - [ ] Onboarding with `track=ap` → 16 AP/SAT/ACT courses, no CLEP
 - [ ] Sidebar with `track=clep` → only CLEP tab; sidebar with `track=ap` → only AP/SAT/ACT tabs
-- [ ] Sidebar "Switch to CLEP prep" click → dropdown immediately shows CLEP courses (no empty state)
-- [ ] Existing user (no `ap_track` key) → identical experience to pre-2.0 release
+- [x] Sidebar "Change track" button REMOVED (Beta 2.1 — track is DB-enforced, no client toggle)
+- [ ] Existing user (track="ap" in DB by default) → identical experience to pre-2.0 release
 
 ---
 
@@ -1665,3 +1665,326 @@ Integration tests: not run (CRON_SECRET not set or tests skipped)
 | B2-01 | High | sidebar.tsx | localStorage in useState initializer throws on SSR | Moved to useEffect |
 | B2-02 | High | sidebar.tsx | activeGroup not reset on track switch -> empty dropdown | Added useEffect resetting on effectiveTrack change |
 | B2-03 | Low | register/page.tsx | CardDescription always said "AP exam journey" regardless of track | Dynamic description via isClepTrack state |
+
+---
+
+## SECTION 9 — Track Enforcement (DB-backed, Beta 2.1)
+
+Track is now stored in the `User.track` column (default `"ap"`). Server-side 403 guards
+prevent cross-track API calls. The client-side "Change track" button is removed.
+
+### TC-TRACK-01: Track persisted to DB on credential registration
+
+**Setup:** Navigate to `/register?track=clep`
+**Steps:**
+1. Complete registration form and submit
+2. After account creation, query DB: `SELECT track FROM "users" WHERE email='...'`
+
+**Expected:**
+- `track = "clep"` in DB row
+- No `localStorage["ap_track"]` write by register page (dev tools application tab)
+
+---
+
+### TC-TRACK-02: Track persisted to DB on registration with `?track=ap`
+
+**Setup:** Navigate to `/register?track=ap`
+**Steps:**
+1. Complete registration and submit
+2. Query DB for track value
+
+**Expected:** `track = "ap"` in DB row
+
+---
+
+### TC-TRACK-03: Default track for users with no `?track` param
+
+**Setup:** Navigate to `/register` (no query param)
+**Steps:**
+1. Complete and submit registration
+2. Query DB
+
+**Expected:** `track = "ap"` (safe default)
+
+---
+
+### TC-TRACK-04: AP user blocked from CLEP course in `/api/practice`
+
+**Setup:** Logged-in AP-track user (track="ap" in DB)
+**Steps:**
+1. Open DevTools → Network
+2. POST `/api/practice` with body `{ "sessionType":"QUICK_PRACTICE", "course":"CLEP_COLLEGE_ALGEBRA", "questionCount":5 }`
+
+**Expected:**
+- HTTP `403 Forbidden`
+- Body: `{ "error": "This course is not available on your current track." }`
+- No practice session created in DB
+
+---
+
+### TC-TRACK-05: AP user blocked from CLEP course in `/api/diagnostic`
+
+**Setup:** Logged-in AP-track user
+**Steps:**
+1. POST `/api/diagnostic` with body `{ "course":"CLEP_INTRO_PSYCHOLOGY" }`
+
+**Expected:**
+- HTTP `403 Forbidden`
+- Body: `{ "error": "This course is not available on your current track." }`
+
+---
+
+### TC-TRACK-06: CLEP user blocked from AP course in `/api/practice`
+
+**Setup:** Logged-in CLEP-track user (track="clep" in DB, clep_enabled=true)
+**Steps:**
+1. POST `/api/practice` with body `{ "sessionType":"QUICK_PRACTICE", "course":"AP_WORLD_HISTORY", "questionCount":5 }`
+
+**Expected:**
+- HTTP `403 Forbidden`
+- Body: `{ "error": "This course is not available on your current track." }`
+
+---
+
+### TC-TRACK-07: CLEP user blocked from AP course in `/api/diagnostic`
+
+**Setup:** Logged-in CLEP-track user
+**Steps:**
+1. POST `/api/diagnostic` with body `{ "course":"AP_US_HISTORY" }`
+
+**Expected:** `403` with track mismatch error
+
+---
+
+### TC-TRACK-08: AP user can still use AP courses normally after enforcement added
+
+**Setup:** Existing AP-track user
+**Steps:**
+1. POST `/api/practice` with `"course":"AP_WORLD_HISTORY"` (valid for ap track)
+
+**Expected:**
+- Session created normally (200 or 201)
+- No 403 error
+
+---
+
+### TC-TRACK-09: CLEP user can use CLEP courses normally
+
+**Setup:** CLEP-track user, `clep_enabled=true`
+**Steps:**
+1. POST `/api/practice` with `"course":"CLEP_COLLEGE_ALGEBRA"`
+
+**Expected:**
+- Session created normally
+- No 403 error
+
+---
+
+### TC-TRACK-10: Sidebar reads track from DB — no "Change track" button
+
+**Setup:** CLEP-track user logs in
+**Steps:**
+1. Open `/practice` (sidebar visible)
+2. Inspect sidebar footer area
+
+**Expected:**
+- Sidebar shows only CLEP courses in course switcher
+- "CLEP Prep track" badge visible under switcher
+- **No "Change track" button** present anywhere in sidebar
+- Theme toggle and Sign Out buttons are the only footer controls
+
+---
+
+### TC-TRACK-11: Sidebar reads track from DB — AP user after previous localStorage CLEP entry
+
+**Setup:** User has `localStorage["ap_track"] = "clep"` in browser but DB `track = "ap"`
+**Steps:**
+1. Log in as AP-track user
+2. Open sidebar
+
+**Expected:**
+- Sidebar shows AP/SAT/ACT course groups (DB wins over stale localStorage)
+- No CLEP courses visible
+
+---
+
+### TC-TRACK-12: Onboarding reads track from DB
+
+**Setup:** Fresh CLEP-track user (track="clep" in DB, clep_enabled=true), localStorage cleared
+**Steps:**
+1. Log in and reach onboarding step 1
+
+**Expected:**
+- Course list shows only 6 CLEP courses
+- No AP/SAT/ACT courses in step 1 list
+- No localStorage dependency for track (DevTools → Application → Local Storage — no `ap_track` key)
+
+---
+
+### TC-TRACK-13: JWT contains track field
+
+**Setup:** Any user login
+**Steps:**
+1. Log in, decode session JWT (or check `/api/user` response)
+
+**Expected:**
+- Session JWT `track` field matches DB `User.track` value
+- `/api/user` response includes `user.track`
+
+---
+
+### TC-TRACK-14: Existing users (pre-Beta 2.1) unaffected
+
+**Setup:** Any account created before Beta 2.1 (no `track` column value set explicitly)
+**Steps:**
+1. Log in, verify sidebar
+2. Try practice with an AP course
+
+**Expected:**
+- DB `track = "ap"` (default migration value)
+- Full AP/SAT/ACT course access unchanged
+- No 403 errors on any previously-working course
+
+
+---
+
+## Release Log — v2.0.0 (2026-03-21)
+
+**Deployed:** Sat, 21 Mar 2026 04:26:33 GMT
+**Version:** 2.0.0
+
+### Changes in this release
+- fix: Beta 2.0 post-release — track segmentation UX fixes
+- feat: Beta 2.0 — track-based segmentation (AP/SAT/ACT vs CLEP)
+- chore: release archive beta-1.15 — update test plan log
+- feat: Beta 1.15 — CLEP course support, exam countdown fix, phase 2 backlog
+- fix: HuggingFace correct endpoint — featherless-ai provider
+- fix: update HuggingFace to new Inference Providers API
+- fix: update AI provider models — Gemini 2.0, OpenRouter free tier, Together key name
+- chore: release archive beta-1.14 — update test plan log
+- feat: Beta 1.14 — version bump, About page update, targeted seeding scripts
+- fix: replace 112 parallel count queries with single groupBy in practice-check endpoint
+
+### Automated smoke tests
+```
+Smoke tests: 11 passed, 0 warnings, 1 failed
+  ✅ GET /
+  ✅ GET /pricing
+  ✅ GET /about
+  ✅ GET /login
+  ✅ GET /register
+  ❌ GET /api/ai/status — This operation was aborted
+  ✅ GET /api/feature-flags
+  ✅ POST /api/practice
+  ✅ POST /api/ai/tutor/knowledge-check
+  ✅ GET /api/analytics
+  ✅ GET /api/user
+  ✅ POST /api/ai/tutor/knowledge-check (bad input)
+```
+
+### Integration tests (practice coverage — all 16 courses)
+```
+Integration tests: 21 passed, 12 warnings, 0 failed
+  Total questions: 509 | Courses: 15 green, 0 yellow, 7 red
+  ✅ AI generation enabled — students will get questions even for thin courses
+  ✅ AP_WORLD_HISTORY — 64 MCQ questions
+  ✅ AP_COMPUTER_SCIENCE_PRINCIPLES — 35 MCQ questions
+  ✅ AP_PHYSICS_1 — 55 MCQ questions
+  ✅ AP_CALCULUS_AB — 42 MCQ questions
+  ✅ AP_CALCULUS_BC — 17 MCQ questions
+  ✅ AP_STATISTICS — 22 MCQ questions
+  ✅ AP_CHEMISTRY — 16 MCQ questions
+  ✅ AP_BIOLOGY — 23 MCQ questions
+  ⚠️ AP_US_HISTORY — 0 questions — AI will generate on first session
+  ⚠️ AP_PSYCHOLOGY — 0 questions — AI will generate on first session
+  ✅ SAT_MATH — 45 MCQ questions
+  ✅ SAT_READING_WRITING — 40 MCQ questions
+  ✅ ACT_MATH — 40 MCQ questions
+  ✅ ACT_ENGLISH — 24 MCQ questions
+  ✅ ACT_SCIENCE — 24 MCQ questions
+  ✅ ACT_READING — 32 MCQ questions
+  ✅ CLEP_COLLEGE_ALGEBRA — 8 MCQ questions
+  ⚠️ CLEP_COLLEGE_COMPOSITION — 0 questions — AI will generate on first session
+  ⚠️ CLEP_INTRO_PSYCHOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_PRINCIPLES_OF_MARKETING — 0 questions — AI will generate on first session
+  ⚠️ CLEP_PRINCIPLES_OF_MANAGEMENT — 0 questions — AI will generate on first session
+  ⚠️ CLEP_INTRODUCTORY_SOCIOLOGY — 0 questions — AI will generate on first session
+  ✅ AP World History: Modern FRQ — 5 questions
+  ✅ AP Computer Science Principles FRQ — 6 questions
+  ⚠️ AP Physics 1: Algebra-Based FRQ — 0 FRQ questions — AI will generate on first session
+  ✅ AP Calculus AB FRQ — 9 questions
+  ✅ AP Calculus BC FRQ — 1 questions
+  ⚠️ AP Statistics FRQ — 0 FRQ questions — AI will generate on first session
+  ✅ AP Chemistry FRQ — 1 questions
+  ⚠️ AP Biology FRQ — 0 FRQ questions — AI will generate on first session
+  ⚠️ AP US History FRQ — 0 FRQ questions — AI will generate on first session
+  ⚠️ AP Psychology FRQ — 0 FRQ questions — AI will generate on first session
+```
+
+### Manual P0 checklist (fill in before marking release complete)
+**Practice — AP/SAT/ACT (16 courses, AP-track user):**
+- [ ] AP_WORLD_HISTORY MCQ — ALL units, ALL difficulty → session starts, questions load
+- [ ] AP_US_HISTORY MCQ — session starts
+- [ ] AP_COMPUTER_SCIENCE_PRINCIPLES MCQ — session starts
+- [ ] AP_PHYSICS_1 MCQ + FRQ — both session types start within 30s
+- [ ] AP_CALCULUS_AB MCQ — session starts
+- [ ] AP_STATISTICS MCQ — session starts
+- [ ] AP_CHEMISTRY MCQ — session starts
+- [ ] AP_BIOLOGY MCQ — session starts
+- [ ] AP_PSYCHOLOGY MCQ — session starts
+- [ ] SAT_MATH MCQ — session starts
+- [ ] SAT_READING_WRITING MCQ — session starts
+- [ ] ACT_MATH MCQ — session starts, verify 5 answer choices (A-E not A-D)
+- [ ] ACT_ENGLISH MCQ — session starts
+- [ ] ACT_SCIENCE MCQ — session starts
+- [ ] ACT_READING MCQ — session starts
+
+**Practice — CLEP (6 courses, CLEP-track user + clep_enabled=true):**
+- [ ] CLEP_COLLEGE_ALGEBRA MCQ — session starts
+- [ ] CLEP_COLLEGE_COMPOSITION MCQ — session starts
+- [ ] CLEP_INTRO_PSYCHOLOGY MCQ — session starts
+- [ ] CLEP_PRINCIPLES_OF_MARKETING MCQ — session starts
+- [ ] CLEP_PRINCIPLES_OF_MANAGEMENT MCQ — session starts
+- [ ] CLEP_INTRODUCTORY_SOCIOLOGY MCQ — session starts
+
+**Track enforcement (DB-backed — Beta 2.1):**
+- [ ] Register at `/register?track=clep` → DB `User.track = "clep"`
+- [ ] Register at `/register?track=ap` → DB `User.track = "ap"`
+- [ ] Register (no param) → DB `User.track = "ap"` (default)
+- [ ] AP user: POST `/api/practice { course: "CLEP_COLLEGE_ALGEBRA" }` → 403
+- [ ] AP user: POST `/api/diagnostic { course: "CLEP_INTRO_PSYCHOLOGY" }` → 403
+- [ ] CLEP user: POST `/api/practice { course: "AP_WORLD_HISTORY" }` → 403
+- [ ] CLEP user: POST `/api/diagnostic { course: "AP_US_HISTORY" }` → 403
+- [ ] AP user: normal AP course practice → no 403 (200 OK)
+- [ ] Sidebar: no "Change track" button visible for any user
+- [ ] Sidebar: CLEP user sees only CLEP courses (reads from DB, not localStorage)
+- [ ] Sidebar: AP user sees AP/SAT/ACT courses (DB wins even if localStorage says "clep")
+- [ ] Onboarding: CLEP user sees only CLEP courses without localStorage dependency
+- [ ] `/api/user` response includes `user.track` field
+- [ ] Session JWT includes `track` field after login
+
+**Auth — login & registration:**
+- [ ] New credential registration → email verification sent (or auto-verified in dev)
+- [ ] Login with correct credentials → redirected to /dashboard or /onboarding
+- [ ] Login with wrong password → error toast shown, no redirect
+- [ ] Google OAuth sign-in button visible (when GOOGLE_CLIENT_ID configured)
+- [ ] Unverified email login → error "Please verify your email"
+
+**Student experience:**
+- [ ] Wrong MCQ answer → knowledge-check mini-quiz appears (count=1, within 15s)
+- [ ] Correct MCQ answer → "Go deeper with Sage →" teal pill visible
+- [ ] Ask Sage from practice → "Continue Practice" banner visible on Sage page
+- [ ] "Continue Practice" → returns to exact question position (no progress lost)
+- [ ] Session completes → summary screen with accuracy %, XP earned, AP score estimate
+- [ ] No 500 errors or blank screens during any flow above
+
+**PWA:**
+- [ ] On mobile Chrome: "Add to Home Screen" prompt appears (or menu option works)
+- [ ] Installed PWA launches in standalone mode (no browser chrome)
+- [ ] App loads from home screen without internet (cached shell)
+
+**AI & Sage:**
+- [ ] Sage answers a question within 15s
+- [ ] Sage response includes 5 sections (Core Concept, Visual Breakdown, How AP Asks, Common Traps, Memory Hook)
+- [ ] Follow-up chips appear and clicking one pre-fills the input
+

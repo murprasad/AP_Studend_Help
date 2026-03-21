@@ -28,6 +28,7 @@ export async function GET(req: NextRequest) {
           totalXp: true,
           level: true,
           lastActiveDate: true,
+          track: true,
           createdAt: true,
         },
       }),

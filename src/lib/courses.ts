@@ -2342,3 +2342,8 @@ export function getCourseForUnit(unit: ApUnit): ApCourse {
 export function getUnitsForCourse(course: ApCourse): ApUnit[] {
   return Object.keys(COURSE_REGISTRY[course].units) as ApUnit[];
 }
+
+/** Returns the track a course belongs to. */
+export function getCourseTrack(course: ApCourse): "ap" | "clep" {
+  return (course as string).startsWith("CLEP_") ? "clep" : "ap";
+}

@@ -51,16 +51,12 @@ export default function RegisterPage() {
   const [isClepTrack, setIsClepTrack] = useState(false);
 
   useEffect(() => {
-    // Persist track from URL param to localStorage so onboarding can use it
+    // Read track from URL param to set CardDescription text
     try {
       const params = new URLSearchParams(window.location.search);
       const track = params.get("track");
       if (track === "ap" || track === "clep") {
-        localStorage.setItem("ap_track", track);
         setIsClepTrack(track === "clep");
-      } else {
-        // Read existing track if no param in URL
-        setIsClepTrack(localStorage.getItem("ap_track") === "clep");
       }
     } catch { /* ignore */ }
 
@@ -113,7 +109,7 @@ export default function RegisterPage() {
       const response = await fetch("/api/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        body: JSON.stringify({ ...data, track: isClepTrack ? "clep" : "ap" }),
       });
 
       const result = await response.json();

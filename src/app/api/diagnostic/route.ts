@@ -3,7 +3,7 @@ import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import { ApCourse, ApUnit } from "@prisma/client"
-import { COURSE_REGISTRY, VALID_AP_COURSES } from "@/lib/courses"
+import { COURSE_REGISTRY, VALID_AP_COURSES, getCourseTrack } from "@/lib/courses"
 import { COURSE_UNITS } from "@/lib/utils"
 
 export const dynamic = "force-dynamic"
@@ -15,6 +15,14 @@ export async function POST(req: NextRequest) {
   const { course = "AP_WORLD_HISTORY" } = await req.json()
   if (!VALID_AP_COURSES.includes(course as ApCourse)) {
     return NextResponse.json({ error: "Invalid course" }, { status: 400 })
+  }
+
+  const userTrack = session.user.track ?? "ap"
+  if (getCourseTrack(course as ApCourse) !== userTrack) {
+    return NextResponse.json(
+      { error: "This course is not available on your current track." },
+      { status: 403 }
+    )
   }
 
   const courseUnitKeys = Object.keys(COURSE_UNITS[course as ApCourse]) as ApUnit[]

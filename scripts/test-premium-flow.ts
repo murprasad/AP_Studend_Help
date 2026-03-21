@@ -92,6 +92,7 @@ async function makeSessionToken(user: {
       name: user.name,
       role: user.role,
       subscriptionTier: user.subscriptionTier,
+      track: "ap",
       iat: Math.floor(Date.now() / 1000),
       exp: Math.floor(Date.now() / 1000) + 30 * 24 * 60 * 60,
       jti: crypto.randomUUID(),

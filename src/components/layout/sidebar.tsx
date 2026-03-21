@@ -105,12 +105,6 @@ export function Sidebar({ userRole, isOpen = false, onClose = () => {} }: Sideba
   const [clepEnabled, setClepEnabled] = useState<boolean>(false);
   const [track, setTrackState] = useState<"ap" | "clep">("ap");
 
-  // Read track from localStorage on mount (not in useState — localStorage throws on SSR)
-  useEffect(() => {
-    try {
-      if (localStorage.getItem("ap_track") === "clep") setTrackState("clep");
-    } catch { /* ignore */ }
-  }, []);
 
   const effectiveTrack = track === "clep" && clepEnabled ? "clep" : "ap";
   const COURSE_GROUPS = effectiveTrack === "clep" ? [CLEP_GROUP] : BASE_COURSE_GROUPS;
@@ -132,13 +126,14 @@ export function Sidebar({ userRole, isOpen = false, onClose = () => {} }: Sideba
   function fetchUserData() {
     fetch("/api/user")
       .then((r) => r.json())
-      .then((data: { user?: { streakDays?: number; streakFreezes?: number; examDate?: string }; flags?: { clepEnabled?: boolean } }) => {
+      .then((data: { user?: { streakDays?: number; streakFreezes?: number; examDate?: string; track?: string }; flags?: { clepEnabled?: boolean } }) => {
         const u = data.user;
         if (u?.streakDays != null) setStreakDays(u.streakDays);
         if (u?.streakFreezes != null) setStreakFreezes(u.streakFreezes);
         if (u?.examDate) setExamDate(new Date(u.examDate));
         else setExamDate(null);
         if (data.flags?.clepEnabled != null) setClepEnabled(data.flags.clepEnabled);
+        if (u?.track) setTrackState(u.track as "ap" | "clep");
       })
       .catch(() => {});
   }
@@ -333,21 +328,6 @@ export function Sidebar({ userRole, isOpen = false, onClose = () => {} }: Sideba
             {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
             {theme === "dark" ? "Light Mode" : "Dark Mode"}
           </Button>
-          {/* Change track — escape hatch in settings area, not near course switcher */}
-          {clepEnabled && (
-            <Button
-              variant="ghost"
-              size="sm"
-              className="w-full justify-start gap-3 text-xs text-muted-foreground/50 hover:text-muted-foreground"
-              onClick={() => {
-                const newTrack = track === "clep" ? "ap" : "clep";
-                try { localStorage.setItem("ap_track", newTrack); } catch { /* ignore */ }
-                setTrackState(newTrack);
-              }}
-            >
-              Change track ({track === "clep" ? "→ AP/SAT/ACT" : "→ CLEP"})
-            </Button>
-          )}
           <Button
             variant="ghost"
             className="w-full justify-start gap-3 text-muted-foreground hover:text-foreground"

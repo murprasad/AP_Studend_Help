@@ -30,6 +30,7 @@ model User {
   level             Int       @default(1)
   streakFreezes     Int       @default(0)  // streak freeze tokens
   examDate          DateTime?              // AP exam date for countdown
+  track             String    @default("ap")  // "ap" | "clep"
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
 

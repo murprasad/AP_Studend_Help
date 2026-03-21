@@ -3,7 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { SessionType, ApUnit, Difficulty, ApCourse, QuestionType, SubTier } from "@prisma/client";
-import { VALID_AP_COURSES, getUnitsForCourse, COURSE_REGISTRY } from "@/lib/courses";
+import { VALID_AP_COURSES, getUnitsForCourse, COURSE_REGISTRY, getCourseTrack } from "@/lib/courses";
 import { generateQuestion } from "@/lib/ai";
 import { isPremiumRestrictionEnabled, getSetting } from "@/lib/settings";
 import { rateLimit } from "@/lib/rate-limit";
@@ -28,6 +28,14 @@ export async function POST(req: NextRequest) {
 
     if (!VALID_AP_COURSES.includes(course as ApCourse)) {
       return NextResponse.json({ error: "Invalid course" }, { status: 400 });
+    }
+
+    const userTrack = session.user.track ?? "ap";
+    if (getCourseTrack(course as ApCourse) !== userTrack) {
+      return NextResponse.json(
+        { error: "This course is not available on your current track." },
+        { status: 403 }
+      );
     }
 
     const tier = session.user.subscriptionTier;

@@ -381,12 +381,12 @@ npm run pages:deploy    # checks + build + deploy to CF Pages
 
 ### Beta 2.0 (2026-03-20)
 - **Track-Based Segmentation**: Students now choose their learning path from the landing page — "Start AP/SAT/ACT Prep" (`?track=ap`) or "Start CLEP Prep" (`?track=clep`). Track persists via `localStorage["ap_track"]`.
-- **Landing Page CTAs**: All 7 register CTAs updated with `?track=ap` or `?track=clep`. Hero, audience split cards, curriculum section, CLEP section, and final CTA all carry the correct track param.
+- **Landing Page CTAs**: All 7 register CTAs updated with `?track=ap` or `?track=clep`. Hero, audience split cards, curriculum section, CLEP section, navbar, and final CTA all carry the correct track param.
 - **Register Page**: Reads `?track` from URL on mount, persists to `localStorage["ap_track"]`. CardDescription dynamically reflects track: "Start earning college credit with CLEP — free" vs "Start your AP exam journey today — free".
-- **Onboarding Segmentation**: Step 1 course list is now dynamically filtered by track from `COURSE_REGISTRY`. CLEP-track users see only 6 CLEP courses (emerald accent, emerald Continue button). AP-track users see 16 AP/SAT/ACT courses. Switch-track text link always visible. Auto-selects first course in filtered list on track change.
-- **Sidebar Segmentation**: Course switcher groups filtered by track. CLEP-track: shows only CLEP group. AP-track: shows only BASE_COURSE_GROUPS (AP/SAT/ACT). "Switch to..." escape hatch link below dropdown.
-- **Smart Course Defaults**: `use-course.ts` defaults to `CLEP_COLLEGE_ALGEBRA` when no course is stored and `ap_track = "clep"`. Existing users (stored course present) are unaffected.
-- **Bug Fixes**: (B2-01) `localStorage` in `useState` initializer in sidebar throws on SSR → moved to `useEffect`. (B2-02) `activeGroup` not reset on track switch → empty dropdown fixed via `useEffect`. (B2-03) Register CardDescription always showed "AP journey" text regardless of track.
+- **Onboarding Segmentation**: Step 1 course list is dynamically filtered by track. CLEP-track + `clep_enabled=true` users see only 6 CLEP courses (emerald accent). AP-track users see 16 AP/SAT/ACT courses. Auto-selects first course in filtered list on track change.
+- **Sidebar Segmentation**: Course switcher groups filtered by track. CLEP-track: shows only CLEP group with "CLEP Prep track" badge. AP-track: shows AP/SAT/ACT groups. Track switching is intentionally moved to the footer settings area ("Change track" button near Sign Out) — prevents accidental switching but preserves escape hatch.
+- **Smart Course Default**: `use-course.ts` universal default is `AP_WORLD_HISTORY` (safe for all users regardless of track). Onboarding sets the correct CLEP course when `clep_enabled=true` + track=clep via `setCourse()`. Existing users (stored course) are unaffected.
+- **Bug Fixes**: (B2-01) `localStorage` in `useState` initializer in sidebar throws on SSR → moved to `useEffect`. (B2-02) `activeGroup` not reset on track switch → empty dropdown fixed. (B2-03) Register CardDescription always showed "AP journey" regardless of track. (B2-04) Post-release: CLEP Algebra shown as default with no other CLEP courses visible — reverted track-based default; fixed by correct `effectiveTrack` gating.
 - **package.json**: Bumped to `2.0.0`.
 
 ### Beta 1.15 (2026-03-20)
