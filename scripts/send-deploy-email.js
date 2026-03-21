@@ -2,9 +2,23 @@
  * Sends a deployment notification email after every successful deploy.
  * Runs as the final step in the pages:deploy pipeline.
  *
- * Requires: RESEND_API_KEY env var
+ * Requires: RESEND_API_KEY env var (loaded from .env if not set)
  * Sends to: contact@studentnest.ai
  */
+
+// Load .env if RESEND_API_KEY not already in environment
+if (!process.env.RESEND_API_KEY) {
+  try {
+    const fs = require("fs");
+    const path = require("path");
+    const envPath = path.join(__dirname, "..", ".env");
+    const envContent = fs.readFileSync(envPath, "utf8");
+    for (const line of envContent.split("\n")) {
+      const match = line.match(/^RESEND_API_KEY=(.+)$/);
+      if (match) process.env.RESEND_API_KEY = match[1].trim();
+    }
+  } catch { /* ignore */ }
+}
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
 const TO_EMAIL = "contact@studentnest.ai";
