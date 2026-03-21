@@ -53,7 +53,7 @@ export default function AboutPage() {
           </div>
           <div className="flex items-center gap-2 flex-wrap">
             <h1 className="text-3xl font-bold gradient-text">About StudentNest</h1>
-            <Badge className="bg-indigo-500/20 text-indigo-300 border-indigo-500/30 text-xs font-semibold">Beta 1.15</Badge>
+            <Badge className="bg-indigo-500/20 text-indigo-300 border-indigo-500/30 text-xs font-semibold">Beta 2.0</Badge>
           </div>
         </div>
         <p className="text-muted-foreground leading-relaxed max-w-2xl mx-auto">
@@ -169,10 +169,38 @@ export default function AboutPage() {
         </div>
       </div>
 
-      {/* Section 7: What's New in Beta 1.15 */}
+      {/* Section 7: What's New in Beta 2.0 */}
       <div className="space-y-6">
         <div className="text-center space-y-1">
           <Badge className="bg-indigo-500/20 text-indigo-300 border-indigo-500/30 text-xs font-semibold mb-2">Latest Release</Badge>
+          <h2 className="text-xl font-bold">What&apos;s New in Beta 2.0</h2>
+          <p className="text-sm text-muted-foreground">Track-based segmentation — high school and college students now get fully separate, focused experiences from the first click.</p>
+        </div>
+        <div className="grid sm:grid-cols-2 gap-3 text-left">
+          {[
+            { icon: GraduationCap, color: "text-emerald-400", bg: "bg-emerald-500/10", title: "CLEP vs AP/SAT/ACT Tracks",      desc: "Students now choose their path — 'Start AP/SAT/ACT Prep' or 'Start CLEP Prep' — from the landing page. The chosen track is remembered across sessions via localStorage." },
+            { icon: LayoutDashboard, color: "text-indigo-400", bg: "bg-indigo-500/10", title: "Track-Filtered Onboarding",      desc: "Onboarding Step 1 now shows only the 6 CLEP courses (emerald accent) or the 16 AP/SAT/ACT courses based on the student's chosen track. No more AP-world for college students." },
+            { icon: Sparkles,      color: "text-teal-400",    bg: "bg-teal-500/10",    title: "Track-Filtered Sidebar",         desc: "The sidebar course switcher shows only CLEP groups (for CLEP-track users) or only AP/SAT/ACT groups. A 'Switch to...' link is always visible as an escape hatch." },
+            { icon: LayoutDashboard, color: "text-violet-400", bg: "bg-violet-500/10", title: "Smart Course Defaults",          desc: "First-time CLEP-track users default to CLEP College Algebra instead of AP World History. Existing users see zero change — their stored course is preserved." },
+            { icon: Sparkles,      color: "text-emerald-400", bg: "bg-emerald-500/10", title: "Track-Aware Register Page",      desc: "The registration page subtitle dynamically reflects the student's chosen track — 'Start earning college credit' for CLEP, 'Start your AP exam journey' for AP/SAT/ACT." },
+          ].map(({ icon: Icon, color, bg, title, desc }) => (
+            <div key={title} className="flex gap-3 p-4 rounded-xl border border-border/40 bg-card">
+              <div className={`w-8 h-8 rounded-lg ${bg} flex items-center justify-center flex-shrink-0 mt-0.5`}>
+                <Icon className={`h-4 w-4 ${color}`} />
+              </div>
+              <div>
+                <p className="text-sm font-semibold">{title}</p>
+                <p className="text-xs text-muted-foreground leading-relaxed mt-0.5">{desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Section 7: What's New in Beta 1.15 */}
+      <div className="space-y-6">
+        <div className="text-center space-y-1">
+          <Badge className="bg-border/60 text-muted-foreground border-border/40 text-xs font-semibold mb-2">Beta 1.15</Badge>
           <h2 className="text-xl font-bold">What&apos;s New in Beta 1.15</h2>
           <p className="text-sm text-muted-foreground">CLEP college-credit prep arrives — 6 CLEP exams with full AI tutoring, practice, and mastery tracking. Save up to $2,400 in tuition per exam.</p>
         </div>
@@ -182,6 +210,7 @@ export default function AboutPage() {
             { icon: Sparkles,      color: "text-indigo-400",  bg: "bg-indigo-500/10",  title: "Sage Tutors CLEP Content",       desc: "The same AI that explains AP topics now handles CLEP subject matter — with resources from OpenStax, Khan Academy, and Wikipedia." },
             { icon: LayoutDashboard, color: "text-teal-400",  bg: "bg-teal-500/10",    title: "Separate Sidebar Section",      desc: "CLEP courses appear as a dedicated 'CLEP Prep' tab in the course switcher, fully isolated from AP/SAT/ACT content." },
             { icon: Sparkles,      color: "text-violet-400",  bg: "bg-violet-500/10",  title: "Legal & Copyright-Safe",        desc: "All CLEP practice questions are original AI-generated content. Resources are from openly licensed sources (OpenStax CC BY, Khan Academy, Wikipedia). CLEP® is a trademark of College Board, which does not endorse this platform." },
+            { icon: LayoutDashboard, color: "text-emerald-400", bg: "bg-emerald-500/10", title: "Audience-Split Landing Page",  desc: "The home page now speaks directly to both high school students (AP/SAT/ACT) and college students (CLEP) — with dedicated audience cards, dual CTAs, and above-the-fold ROI messaging for each track." },
           ].map(({ icon: Icon, color, bg, title, desc }) => (
             <div key={title} className="flex gap-3 p-4 rounded-xl border border-border/40 bg-card">
               <div className={`w-8 h-8 rounded-lg ${bg} flex items-center justify-center flex-shrink-0 mt-0.5`}>

@@ -1,5 +1,5 @@
 # Comprehensive Practice Session Test Plan
-**Version:** Beta 1.15 | **Date:** 2026-03-20
+**Version:** Beta 2.0 | **Date:** 2026-03-20
 
 This plan tests every meaningful combination of course × unit × difficulty × question type.
 Each test is written from a student's perspective — start at `/practice`, make selections, start session, answer questions.
@@ -297,7 +297,8 @@ For each course, run this full flow once:
 - Emerald/teal color scheme (distinct from indigo AP section)
 - 6 CLEP exam cards displayed with savings callout (e.g. "Saves ~$1,200")
 - CLEP® trademark disclaimer visible at bottom of section
-- "Get Started Free" CTA links to `/register`
+- "Start CLEP Prep Free" CTA links to `/register?track=clep` (Beta 2.0: has track param)
+- "Start AP/SAT/ACT Prep" hero CTA links to `/register?track=ap` (Beta 2.0: has track param)
 - Course count badge shows "22 courses" (not 16)
 
 ### TC-CLEP-03: CLEP College Algebra — Full Practice Flow
@@ -379,7 +380,7 @@ Same as TC-CLEP-03 but for CLEP_INTRODUCTORY_SOCIOLOGY.
 - "CLEP (College Credit)" category visible with emerald text color
 - All 6 CLEP exams listed in the grid
 - CLEP® trademark disclaimer visible in footer section
-- Version badge shows "Beta 1.15"
+- Version badge shows "Beta 2.0" (updated from 1.15)
 
 ### TC-CLEP-15: Exam Countdown Save — No False Error (Bug Fix Beta 1.15)
 1. Log in → go to `/dashboard`
@@ -389,6 +390,127 @@ Same as TC-CLEP-03 but for CLEP_INTRODUCTORY_SOCIOLOGY.
 - Panel collapses after 2 seconds
 - No error message shown even if Neon/Prisma is slow on first call
 - After page refresh, the set date is correctly displayed
+
+---
+
+## SECTION 8C — Track-Based Segmentation Tests (Beta 2.0)
+
+> **Feature:** `?track=ap` / `?track=clep` URL param → `localStorage["ap_track"]` → filters onboarding, sidebar, and course defaults.
+
+### TC-TRACK-01: CLEP Track — Landing Page → Register
+1. Visit `/` (logged out)
+2. Click "Start CLEP Prep" hero button
+**Expected:**
+- Navigates to `/register?track=clep` (verify URL)
+- `localStorage["ap_track"]` is set to `"clep"` on register page load
+- CardDescription shows "Start earning college credit with CLEP — free" (not "AP exam journey")
+
+### TC-TRACK-02: AP Track — Landing Page → Register
+1. Visit `/`
+2. Click "Start AP/SAT/ACT Prep" hero button
+**Expected:**
+- Navigates to `/register?track=ap`
+- `localStorage["ap_track"]` is set to `"ap"`
+- CardDescription shows "Start your AP exam journey today — free"
+
+### TC-TRACK-03: CLEP Track — Onboarding Course List
+**Prereq:** `clep_enabled = "true"` in admin config; `localStorage["ap_track"] = "clep"`
+1. Register as new user with `?track=clep`
+2. Complete registration → land on `/onboarding`
+**Expected:**
+- Step 1 shows **only 6 CLEP courses** (no AP/SAT/ACT courses visible)
+- Course buttons use emerald accent (border-emerald-500) when selected
+- Continue button is emerald-colored
+- "Preparing for AP/SAT/ACT? Switch to AP/SAT/ACT prep →" link visible below grid
+- Default selected course is CLEP College Algebra (first in CLEP list)
+
+### TC-TRACK-04: AP Track — Onboarding Course List
+**Prereq:** `localStorage["ap_track"] = "ap"` (or unset)
+1. Register as new user with `?track=ap`
+2. Complete registration → land on `/onboarding`
+**Expected:**
+- Step 1 shows **16 AP/SAT/ACT courses** in 3 groups: AP Courses, SAT Prep, ACT Prep
+- No CLEP courses visible
+- "Earning college credit? Switch to CLEP prep →" link visible (only if `clep_enabled=true`)
+- Default selected course is AP World History
+
+### TC-TRACK-05: Onboarding — Switch Track Link
+**Prereq:** `clep_enabled = "true"`, currently on CLEP onboarding (track=clep)
+1. Click "Switch to AP/SAT/ACT prep →" link in onboarding Step 1
+**Expected:**
+- Course grid immediately updates to show 16 AP/SAT/ACT courses
+- `localStorage["ap_track"]` updated to `"ap"`
+- Switch link now shows "Earning college credit? Switch to CLEP prep →"
+
+### TC-TRACK-06: Sidebar — CLEP Track Shows Only CLEP Group
+**Prereq:** `clep_enabled = "true"`, `localStorage["ap_track"] = "clep"`
+1. Log in (existing CLEP-track user)
+2. Open sidebar course switcher dropdown
+**Expected:**
+- Dropdown tabs show only "CLEP" (no AP, SAT, ACT tabs)
+- 6 CLEP courses listed in the dropdown
+- "Switch to AP/SAT/ACT prep →" text link visible below dropdown
+- Emerald accent on active CLEP tab
+
+### TC-TRACK-07: Sidebar — AP Track Shows Only AP/SAT/ACT Groups
+**Prereq:** `localStorage["ap_track"] = "ap"` (or unset)
+1. Open sidebar course switcher
+**Expected:**
+- Dropdown tabs: AP, SAT, ACT (no CLEP tab shown even if `clep_enabled=true`)
+- AP courses visible by default
+- "Switch to CLEP prep →" link visible (only if `clep_enabled=true`)
+
+### TC-TRACK-08: Sidebar — Switch Track Link Works
+1. On AP-track sidebar, click "Switch to CLEP prep →"
+**Expected:**
+- Dropdown immediately shows only CLEP tab and 6 CLEP courses
+- Link changes to "Switch to AP/SAT/ACT prep →"
+- `localStorage["ap_track"]` updated to `"clep"`
+
+### TC-TRACK-09: Existing User — No Track Set (Backward Compatibility)
+1. Log in with account that has no `ap_track` in localStorage (clear localStorage first)
+2. Open sidebar
+**Expected:**
+- Sidebar shows AP/SAT/ACT groups (default behavior — unchanged from pre-Beta 2.0)
+- No CLEP tab unless `clep_enabled=true` AND track was set to "clep"
+- Zero visible change vs pre-2.0 behavior
+
+### TC-TRACK-10: Default Course for CLEP Track (No Stored Course)
+**Prereq:** Clear `localStorage["ap_selected_course"]`, set `localStorage["ap_track"] = "clep"`, reload
+**Expected:**
+- `useCourse()` hook defaults to `CLEP_COLLEGE_ALGEBRA` (not AP_WORLD_HISTORY)
+- Practice page shows CLEP College Algebra as active course
+
+### TC-TRACK-11: Default Course for AP Track (No Stored Course)
+**Prereq:** Clear `localStorage["ap_selected_course"]`, set `localStorage["ap_track"] = "ap"`, reload
+**Expected:**
+- `useCourse()` hook defaults to `AP_WORLD_HISTORY`
+
+### TC-TRACK-12: CLEP Flag Off — Track=clep Falls Back to AP View
+**Prereq:** `clep_enabled = "false"` in admin config; `localStorage["ap_track"] = "clep"`
+1. Log in and open sidebar
+**Expected:**
+- Sidebar shows AP/SAT/ACT groups (CLEP flag off overrides track)
+- Onboarding shows AP/SAT/ACT courses (CLEP unavailable)
+- No broken states or empty dropdowns
+
+### TC-TRACK-13: Audience Split Cards — Correct Track Params
+1. Visit `/` landing page
+2. Inspect HTML for "Audience Split Cards" section
+**Expected:**
+- "Start AP/SAT/ACT prep" link href = `/register?track=ap`
+- "Start CLEP prep" link href = `/register?track=clep`
+- Curriculum Coverage section "Start Learning Free" href = `/register?track=ap`
+- Final CTA AP button href = `/register?track=ap`
+- Final CTA CLEP button href = `/register?track=clep`
+
+### TC-TRACK-14: Sidebar Dropdown — No Empty State After Track Switch
+1. User is on AP track; dropdown shows AP tab active
+2. Click "Switch to CLEP prep →" in sidebar
+**Expected:**
+- Dropdown immediately shows CLEP tab active with 6 CLEP courses
+- NO state where dropdown is open but empty (previously: activeGroup="AP Courses" but COURSE_GROUPS=[CLEP_GROUP] → no courses shown)
+- This is the Bug Fix from Beta 2.0 gap analysis
 
 ---
 
@@ -432,8 +554,13 @@ Inspect network request after wrong MCQ answer
 - TC-MCQ-01, TC-MCQ-02 (correct + wrong answer paths)
 - TC-COMPLETE-01 (session completion)
 - TC-CLEP-01 (feature flag toggle)
-- TC-CLEP-02 (landing page CLEP section)
+- TC-CLEP-02 (landing page CLEP section + correct `?track=` params — Beta 2.0)
 - TC-CLEP-15 (exam countdown save bug fix)
+- TC-TRACK-01, TC-TRACK-02 (landing page → register with track params — Beta 2.0)
+- TC-TRACK-03, TC-TRACK-04 (onboarding filtered by track — Beta 2.0)
+- TC-TRACK-06, TC-TRACK-07 (sidebar filtered by track — Beta 2.0)
+- TC-TRACK-09 (existing users — zero regression — Beta 2.0)
+- TC-TRACK-14 (no empty dropdown on track switch — Bug Fix Beta 2.0)
 
 **P1 (should pass):**
 - All Section 1 smoke tests (including CLEP rows 22-27 with clep_enabled=true)
@@ -441,13 +568,17 @@ Inspect network request after wrong MCQ answer
 - TC-ERROR-01 through TC-ERROR-03
 - TC-REG-01 through TC-REG-04
 - TC-CLEP-03 through TC-CLEP-11 (CLEP practice flows + AI context)
-- TC-CLEP-13, TC-CLEP-14 (pricing + about page)
+- TC-CLEP-13, TC-CLEP-14 (pricing + about page — verify Beta 2.0 badge)
+- TC-TRACK-05, TC-TRACK-08 (switch track in onboarding + sidebar)
+- TC-TRACK-10, TC-TRACK-11 (default course by track)
+- TC-TRACK-13 (all track param hrefs on landing page)
 
 **P2 (nice to have):**
 - Full Section 3 (FRQ flows)
 - Full Section 7 (premium restriction flows)
 - Full Section 8 per-course matrix (including 6 CLEP courses)
 - TC-CLEP-12 (flag-off course access guard)
+- TC-TRACK-12 (CLEP flag off + CLEP track fallback)
 
 ---
 
@@ -1500,3 +1631,37 @@ Integration tests: not run (CRON_SECRET not set or tests skipped)
 - [ ] Sage response includes 5 sections (Core Concept, Visual Breakdown, How AP Asks, Common Traps, Memory Hook)
 - [ ] Follow-up chips appear and clicking one pre-fills the input
 
+
+**Beta 2.0 — Track Segmentation (P0):**
+- [ ] Landing page "Start AP/SAT/ACT Prep" → `/register?track=ap` (verify URL)
+- [ ] Landing page "Start CLEP Prep" → `/register?track=clep` (verify URL)
+- [ ] Register page: arrive via `?track=clep` → CardDescription shows CLEP text
+- [ ] Register page: arrive via `?track=ap` → CardDescription shows AP text
+- [ ] Onboarding with `track=clep` + `clep_enabled=true` → only 6 CLEP courses shown
+- [ ] Onboarding with `track=ap` → 16 AP/SAT/ACT courses, no CLEP
+- [ ] Sidebar with `track=clep` → only CLEP tab; sidebar with `track=ap` → only AP/SAT/ACT tabs
+- [ ] Sidebar "Switch to CLEP prep" click → dropdown immediately shows CLEP courses (no empty state)
+- [ ] Existing user (no `ap_track` key) → identical experience to pre-2.0 release
+
+---
+
+## Release Log — v2.0.0 (2026-03-20)
+
+**Version:** 2.0.0
+
+### Changes in this release
+- feat: Beta 2.0 — Phase 1.1 track-based segmentation (AP/SAT/ACT vs CLEP)
+- feat: all landing page register CTAs carry `?track=ap` or `?track=clep`
+- feat: register page reads `?track`, persists to localStorage, shows track-aware description
+- feat: onboarding filters course list by track; auto-selects first; switch-track link
+- feat: sidebar course groups filtered by track; switch-track escape hatch link
+- feat: use-course.ts defaults to CLEP_COLLEGE_ALGEBRA for CLEP-track new users
+- fix: sidebar localStorage in useState initializer (SSR-safe fix -> moved to useEffect)
+- fix: sidebar activeGroup stale after track switch caused empty dropdown
+
+### Gaps identified & fixed in Beta 2.0 cycle
+| ID | Severity | Component | Description | Fix |
+|----|----------|-----------|-------------|-----|
+| B2-01 | High | sidebar.tsx | localStorage in useState initializer throws on SSR | Moved to useEffect |
+| B2-02 | High | sidebar.tsx | activeGroup not reset on track switch -> empty dropdown | Added useEffect resetting on effectiveTrack change |
+| B2-03 | Low | register/page.tsx | CardDescription always said "AP exam journey" regardless of track | Dynamic description via isClepTrack state |

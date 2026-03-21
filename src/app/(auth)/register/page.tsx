@@ -48,8 +48,22 @@ export default function RegisterPage() {
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [googleAvailable, setGoogleAvailable] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [isClepTrack, setIsClepTrack] = useState(false);
 
   useEffect(() => {
+    // Persist track from URL param to localStorage so onboarding can use it
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const track = params.get("track");
+      if (track === "ap" || track === "clep") {
+        localStorage.setItem("ap_track", track);
+        setIsClepTrack(track === "clep");
+      } else {
+        // Read existing track if no param in URL
+        setIsClepTrack(localStorage.getItem("ap_track") === "clep");
+      }
+    } catch { /* ignore */ }
+
     fetch("/api/auth/providers")
       .then((r) => r.json())
       .then((p) => setGoogleAvailable("google" in (p ?? {})))
@@ -159,7 +173,11 @@ export default function RegisterPage() {
     <Card className="w-full max-w-md">
       <CardHeader>
         <CardTitle className="text-2xl">Create your account</CardTitle>
-        <CardDescription>Start your AP exam journey today — free</CardDescription>
+        <CardDescription>
+          {isClepTrack
+            ? "Start earning college credit with CLEP — free"
+            : "Start your AP exam journey today — free"}
+        </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         {/* Google sign-up — only shown once GOOGLE_CLIENT_ID + SECRET are configured */}

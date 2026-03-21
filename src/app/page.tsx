@@ -13,6 +13,7 @@ import {
   Target,
   Star,
   GraduationCap,
+  BookOpen,
 } from "lucide-react";
 import { InteractiveDemo } from "@/components/landing/interactive-demo";
 
@@ -35,7 +36,7 @@ const features = [
   {
     icon: Clock,
     title: "Test Your Readiness with a Mock Exam",
-    description: "Simulate the real AP exam under timed conditions. Get an estimated AP score from 1–5 so you know exactly where you stand.",
+    description: "Simulate exam conditions under timed pressure. Get readiness scores per unit — whether you're targeting an AP 5 or a CLEP passing score.",
   },
 ];
 
@@ -79,9 +80,9 @@ const testimonials = [
     context: "AP Calculus AB",
   },
   {
-    quote: "The comprehension check after each explanation is a game changer. I retained so much more — ended up getting a 5 on AP Bio.",
-    name: "Priya K.",
-    context: "AP Biology",
+    quote: "I passed CLEP College Algebra on my first try. Sage drilled me on every weak unit and I walked in knowing exactly where I stood. Saved me $1,200 and a full semester of a class I didn't need.",
+    name: "Jordan M.",
+    context: "CLEP College Algebra",
   },
 ];
 
@@ -124,38 +125,81 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <Badge className="mb-6 bg-indigo-500/10 text-indigo-300 border-indigo-500/20 text-sm px-4 py-1.5">
             <Sparkles className="h-3.5 w-3.5 mr-1.5" />
-            Free forever · 22 courses · No credit card
+            Free forever · AP, SAT, ACT &amp; CLEP · No credit card
           </Badge>
           <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight mb-4">
             <span className="gradient-text">Student</span><span className="text-foreground/80 font-medium">Nest</span>
           </h1>
-          <p className="text-2xl sm:text-3xl font-semibold text-foreground/90 mb-4">
-            Score Higher on AP, SAT &amp; ACT —<br className="hidden sm:block" /> with AI That Actually Teaches
+          <p className="text-2xl sm:text-3xl font-semibold text-foreground/90 mb-2">
+            The AI study platform built for every exam that matters.
           </p>
-          <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto mb-3">
-            Get instant AI explanations, practice with real exam-style questions, and improve faster with smart analytics — free.
+          <p className="text-lg text-muted-foreground mb-4">
+            Whether you&apos;re scoring a 5 on AP — or skipping intro classes with CLEP.
           </p>
-          <p className="text-sm text-muted-foreground mb-10">
-            16 AP/SAT/ACT courses + 6 CLEP exams · Free forever · Premium from $6.67/mo (billed annually) or $9.99/mo
+          <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto mb-10">
+            Sage explains concepts, quizzes you back, and tracks your mastery by unit —
+            so every study session moves the needle. Free for every student.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/register">
-              <Button size="lg" className="gap-2 text-base px-8 h-12">
-                Start Practicing Free <ArrowRight className="h-5 w-5" />
+            <Link href="/register?track=ap">
+              <Button size="lg" className="gap-2 text-base px-8 h-12 bg-indigo-600 hover:bg-indigo-700 text-white">
+                Start AP/SAT/ACT Prep <ArrowRight className="h-5 w-5" />
               </Button>
             </Link>
-            <Link href="/login">
-              <Button size="lg" variant="outline" className="text-base px-8 h-12">
-                Log In
+            <Link href="/register?track=clep">
+              <Button size="lg" className="gap-2 text-base px-8 h-12 bg-emerald-600 hover:bg-emerald-700 text-white">
+                Start CLEP Prep <ArrowRight className="h-5 w-5" />
               </Button>
             </Link>
           </div>
-          <p className="mt-4 text-sm text-muted-foreground/70 max-w-lg mx-auto">
-            AP exams are every May · SAT/ACT testing windows run year-round · Students who start earlier score higher.
-          </p>
-          <p className="mt-1 text-sm text-muted-foreground">
+          <p className="mt-4 text-sm text-muted-foreground">
             Takes less than 30 seconds to sign up · No credit card required
           </p>
+        </div>
+      </section>
+
+      {/* Audience Split Cards */}
+      <section className="py-8 px-4">
+        <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Left — High School */}
+          <div className="p-6 rounded-2xl border border-indigo-500/30 bg-indigo-500/5">
+            <div className="flex items-center gap-2 mb-3">
+              <BookOpen className="h-5 w-5 text-indigo-400" />
+              <span className="text-xs font-semibold text-indigo-400 uppercase tracking-wide">
+                High School Student
+              </span>
+            </div>
+            <h3 className="text-xl font-bold mb-2">Score a 5. Get into your dream school.</h3>
+            <p className="text-sm text-muted-foreground mb-4">
+              AP exams are every May. SAT/ACT testing runs year-round. Every point matters
+              for college admission. Sage explains the hard stuff, drills you on what you miss,
+              and tracks how close you are to your target score.
+            </p>
+            <p className="text-xs text-indigo-400 font-medium mb-4">10 AP courses · SAT · ACT</p>
+            <Link href="/register?track=ap" className="text-sm font-medium text-indigo-400 hover:text-indigo-300 flex items-center gap-1">
+              Start AP/SAT/ACT prep <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
+          </div>
+
+          {/* Right — College Student */}
+          <div className="p-6 rounded-2xl border border-emerald-500/30 bg-emerald-500/5">
+            <div className="flex items-center gap-2 mb-3">
+              <GraduationCap className="h-5 w-5 text-emerald-400" />
+              <span className="text-xs font-semibold text-emerald-400 uppercase tracking-wide">
+                College Student
+              </span>
+            </div>
+            <h3 className="text-xl font-bold mb-2">Skip the class. Keep the credit. Save $1,200.</h3>
+            <p className="text-sm text-muted-foreground mb-4">
+              One CLEP exam ($93) can replace a 3-credit intro course worth $1,200+.
+              Pass it and you never sit through that class. Sage prepares you with the same
+              AI tutoring used for AP — tailored to CLEP content and exam format.
+            </p>
+            <p className="text-xs text-emerald-400 font-medium mb-4">6 CLEP exams · Up to $2,400 saved per exam</p>
+            <Link href="/register?track=clep" className="text-sm font-medium text-emerald-400 hover:text-emerald-300 flex items-center gap-1">
+              Start CLEP prep <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
+          </div>
         </div>
       </section>
 
@@ -165,7 +209,7 @@ export default function LandingPage() {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
             {[
               { icon: "🎯", stat: "22 courses covered", sub: "AP, SAT, ACT & CLEP" },
-              { icon: "📚", stat: "Exam-aligned questions", sub: "Never running out" },
+              { icon: "💰", stat: "$1,200+ saved per CLEP exam", sub: "Skip courses, keep the credit" },
               { icon: "🔥", stat: "8 engagement features", sub: "Stay motivated daily" },
             ].map(({ icon, stat, sub }) => (
               <div key={stat} className="flex flex-col items-center gap-1">
@@ -321,7 +365,7 @@ export default function LandingPage() {
               {
                 step: "3",
                 title: "Track & Improve",
-                desc: "See mastery scores by unit, spot weak areas at a glance, and watch your estimated AP score improve session by session.",
+                desc: "See mastery scores by unit and track your readiness — whether your exam is in May or on your own schedule.",
               },
             ].map((s) => (
               <div key={s.step} className="text-center">
@@ -393,7 +437,7 @@ export default function LandingPage() {
       <section className="py-12 bg-secondary/20">
         <div className="max-w-2xl mx-auto px-4 text-center space-y-4">
           <p className="text-sm text-muted-foreground font-medium uppercase tracking-wide">
-            Unlike generic AI tools, StudentNest is purpose-built for AP, SAT &amp; ACT
+            Unlike generic AI tools, StudentNest is purpose-built for the exams that change your future
           </p>
           <div className="grid sm:grid-cols-2 gap-3 text-left">
             {[
@@ -401,6 +445,7 @@ export default function LandingPage() {
               "Tracks mastery by unit and topic",
               "Generates exam-aligned questions on demand",
               "Free to start — no credit card",
+              "Prepares you for CLEP exams to earn real college credit — same AI, CLEP-specific content",
             ].map((point) => (
               <div key={point} className="flex items-center gap-2 text-sm text-foreground/80">
                 <CheckCircle className="h-4 w-4 text-emerald-400 flex-shrink-0" />
@@ -420,7 +465,7 @@ export default function LandingPage() {
               <p className="text-muted-foreground text-lg mb-8">
                 Every unit across 10 AP courses, SAT, and ACT — hundreds of exam-aligned questions per unit, free for every student.
               </p>
-              <Link href="/register">
+              <Link href="/register?track=ap">
                 <Button size="lg" className="gap-2">
                   Start Learning Free <ArrowRight className="h-5 w-5" />
                 </Button>
@@ -495,7 +540,7 @@ export default function LandingPage() {
           </div>
 
           <div className="text-center flex flex-col sm:flex-row gap-3 justify-center">
-            <Link href="/register">
+            <Link href="/register?track=clep">
               <Button size="lg" className="gap-2 bg-emerald-600 hover:bg-emerald-700 text-white">
                 Start CLEP Prep Free <ArrowRight className="h-5 w-5" />
               </Button>
@@ -554,11 +599,11 @@ export default function LandingPage() {
               </div>
               <p className="text-xs text-green-500 font-medium mb-3">or $79.99/yr — save 33%</p>
               {[
-                "Everything in Free",
+                "Everything in Free, plus:",
+                "All 6 CLEP exam courses (earn college credit)",
                 "Unlimited AI tutor chats",
                 "Personalized AI study plan",
                 "FRQ with AI rubric scoring",
-                "All 6 CLEP exam courses included",
                 "Streaming AI responses",
               ].map((item) => (
                 <div key={item} className="flex items-center gap-2 text-sm text-foreground/80">
@@ -605,15 +650,23 @@ export default function LandingPage() {
       {/* Final CTA */}
       <section className="py-24 bg-gradient-to-b from-indigo-950/30 to-background">
         <div className="max-w-3xl mx-auto px-4 text-center">
-          <h2 className="text-4xl font-bold mb-4">Ready to Score Higher?</h2>
-          <p className="text-muted-foreground text-lg mb-6">
-            Join high school students using StudentNest to master AP, SAT &amp; ACT exams.
+          <h2 className="text-4xl font-bold mb-4">Ready to prepare for the exam that changes everything?</h2>
+          <p className="text-muted-foreground text-lg mb-8">
+            Whether you&apos;re a high schooler aiming for a 5, or a college student saving thousands
+            with CLEP — StudentNest is free to start, and Sage is ready to teach.
           </p>
-          <Link href="/register">
-            <Button size="lg" className="gap-2 text-base px-10 h-12">
-              Start Studying Free <ArrowRight className="h-5 w-5" />
-            </Button>
-          </Link>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link href="/register?track=ap">
+              <Button size="lg" className="gap-2 text-base px-10 h-12 bg-indigo-600 hover:bg-indigo-700 text-white">
+                Start AP/SAT/ACT Prep Free
+              </Button>
+            </Link>
+            <Link href="/register?track=clep">
+              <Button size="lg" variant="outline" className="text-base px-10 h-12 border-emerald-500/40 text-emerald-400 hover:bg-emerald-500/10">
+                Start CLEP Prep Free
+              </Button>
+            </Link>
+          </div>
           <p className="mt-3 text-sm text-muted-foreground">
             Free forever · Premium from $6.67/mo (annual) or $9.99/mo ·{" "}
             <Link href="/pricing" className="text-indigo-400 hover:underline">See full pricing</Link>

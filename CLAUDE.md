@@ -379,6 +379,16 @@ npm run pages:deploy    # checks + build + deploy to CF Pages
 
 ## Release History
 
+### Beta 2.0 (2026-03-20)
+- **Track-Based Segmentation**: Students now choose their learning path from the landing page — "Start AP/SAT/ACT Prep" (`?track=ap`) or "Start CLEP Prep" (`?track=clep`). Track persists via `localStorage["ap_track"]`.
+- **Landing Page CTAs**: All 7 register CTAs updated with `?track=ap` or `?track=clep`. Hero, audience split cards, curriculum section, CLEP section, and final CTA all carry the correct track param.
+- **Register Page**: Reads `?track` from URL on mount, persists to `localStorage["ap_track"]`. CardDescription dynamically reflects track: "Start earning college credit with CLEP — free" vs "Start your AP exam journey today — free".
+- **Onboarding Segmentation**: Step 1 course list is now dynamically filtered by track from `COURSE_REGISTRY`. CLEP-track users see only 6 CLEP courses (emerald accent, emerald Continue button). AP-track users see 16 AP/SAT/ACT courses. Switch-track text link always visible. Auto-selects first course in filtered list on track change.
+- **Sidebar Segmentation**: Course switcher groups filtered by track. CLEP-track: shows only CLEP group. AP-track: shows only BASE_COURSE_GROUPS (AP/SAT/ACT). "Switch to..." escape hatch link below dropdown.
+- **Smart Course Defaults**: `use-course.ts` defaults to `CLEP_COLLEGE_ALGEBRA` when no course is stored and `ap_track = "clep"`. Existing users (stored course present) are unaffected.
+- **Bug Fixes**: (B2-01) `localStorage` in `useState` initializer in sidebar throws on SSR → moved to `useEffect`. (B2-02) `activeGroup` not reset on track switch → empty dropdown fixed via `useEffect`. (B2-03) Register CardDescription always showed "AP journey" text regardless of track.
+- **package.json**: Bumped to `2.0.0`.
+
 ### Beta 1.15 (2026-03-20)
 - **CLEP Course Support**: Added 6 CLEP (College-Level Examination Program) exams — College Algebra, College Composition, Intro Psychology, Principles of Marketing, Principles of Management, Introductory Sociology. Gated behind `clep_enabled` feature flag (default off, admin-togglable).
 - **CLEP Schema**: Added 6 `ApCourse` enum values and 30 `ApUnit` enum values (5 units per course) to Prisma schema. Schema synced via `npx prisma db push`.

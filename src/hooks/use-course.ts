@@ -16,6 +16,13 @@ export function useCourse(): [ApCourse, (course: ApCourse) => void] {
       const stored = localStorage.getItem(STORAGE_KEY) as ApCourse | null;
       if (stored && VALID_AP_COURSES.includes(stored)) {
         setCourseState(stored);
+      } else {
+        // No stored course — pick default based on track
+        const track = localStorage.getItem("ap_track") ?? "ap";
+        const trackDefault: ApCourse = track === "clep" ? "CLEP_COLLEGE_ALGEBRA" : "AP_WORLD_HISTORY";
+        if (VALID_AP_COURSES.includes(trackDefault)) {
+          setCourseState(trackDefault);
+        }
       }
     } catch {
       // localStorage not available

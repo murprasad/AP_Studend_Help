@@ -16,7 +16,7 @@ const ONBOARDING_KEY = "onboarding_completed";
 
 type Step = 1 | 2 | 3;
 
-const COURSE_GROUPS = [
+const AP_COURSE_GROUPS = [
   {
     label: "AP Courses",
     keys: [
@@ -35,10 +35,57 @@ const COURSE_GROUPS = [
   },
 ];
 
+const CLEP_COURSE_GROUP = {
+  label: "CLEP Prep",
+  keys: [
+    "CLEP_COLLEGE_ALGEBRA", "CLEP_COLLEGE_COMPOSITION", "CLEP_INTRO_PSYCHOLOGY",
+    "CLEP_PRINCIPLES_OF_MARKETING", "CLEP_PRINCIPLES_OF_MANAGEMENT", "CLEP_INTRODUCTORY_SOCIOLOGY",
+  ] as ApCourse[],
+};
+
 export default function OnboardingPage() {
   const [step, setStep] = useState<Step>(1);
   const [course, setCourse] = useCourse();
   const router = useRouter();
+  const [track, setTrackState] = useState<"ap" | "clep">("ap");
+  const [clepEnabled, setClepEnabled] = useState(false);
+
+  // Fetch clepEnabled flag
+  useEffect(() => {
+    fetch("/api/user")
+      .then((r) => r.json())
+      .then((data: { flags?: { clepEnabled?: boolean } }) => {
+        if (data.flags?.clepEnabled) setClepEnabled(true);
+      })
+      .catch(() => {});
+  }, []);
+
+  // Read track from localStorage and set initial course
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem("ap_track");
+      const t = stored === "clep" ? "clep" : "ap";
+      setTrackState(t);
+    } catch { /* ignore */ }
+  }, []);
+
+  // Auto-select first course when track changes
+  useEffect(() => {
+    const effectiveTrack = track === "clep" && clepEnabled ? "clep" : "ap";
+    const firstCourse = effectiveTrack === "clep"
+      ? CLEP_COURSE_GROUP.keys[0]
+      : AP_COURSE_GROUPS[0].keys[0];
+    setCourse(firstCourse);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [track, clepEnabled]);
+
+  function switchTrack(newTrack: "ap" | "clep") {
+    try { localStorage.setItem("ap_track", newTrack); } catch { /* ignore */ }
+    setTrackState(newTrack);
+  }
+
+  const effectiveTrack = track === "clep" && clepEnabled ? "clep" : "ap";
+  const COURSE_GROUPS = effectiveTrack === "clep" ? [CLEP_COURSE_GROUP] : AP_COURSE_GROUPS;
 
   // If already onboarded, skip to dashboard
   useEffect(() => {
@@ -115,7 +162,9 @@ export default function OnboardingPage() {
           <CardContent className="space-y-4">
             {COURSE_GROUPS.map((group) => (
               <div key={group.label}>
-                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+                <p className={`text-xs font-semibold uppercase tracking-wider mb-2 ${
+                  effectiveTrack === "clep" ? "text-emerald-400/70" : "text-muted-foreground"
+                }`}>
                   {group.label}
                 </p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -123,13 +172,16 @@ export default function OnboardingPage() {
                     const cfg = COURSE_REGISTRY[key];
                     if (!cfg) return null;
                     const isSelected = course === key;
+                    const isClep = effectiveTrack === "clep";
                     return (
                       <button
                         key={key}
                         onClick={() => setCourse(key)}
                         className={`text-left px-3 py-2.5 rounded-lg border text-sm transition-colors ${
                           isSelected
-                            ? "border-indigo-500 bg-indigo-500/10 text-indigo-300 font-medium"
+                            ? isClep
+                              ? "border-emerald-500 bg-emerald-500/10 text-emerald-300 font-medium"
+                              : "border-indigo-500 bg-indigo-500/10 text-indigo-300 font-medium"
                             : "border-border/40 hover:bg-accent hover:border-border"
                         }`}
                       >
@@ -140,10 +192,30 @@ export default function OnboardingPage() {
                 </div>
               </div>
             ))}
-            <Button className="w-full mt-2" onClick={() => setStep(2)}>
+            <Button
+              className={`w-full mt-2 ${effectiveTrack === "clep" ? "bg-emerald-600 hover:bg-emerald-700" : ""}`}
+              onClick={() => setStep(2)}
+            >
               Continue with {COURSE_REGISTRY[course]?.shortName || course}
               <ChevronRight className="h-4 w-4 ml-1" />
             </Button>
+            {/* Switch track link */}
+            {(effectiveTrack === "ap" && clepEnabled) && (
+              <p className="text-center text-xs text-muted-foreground">
+                Earning college credit?{" "}
+                <button onClick={() => switchTrack("clep")} className="text-emerald-400 hover:underline">
+                  Switch to CLEP prep →
+                </button>
+              </p>
+            )}
+            {effectiveTrack === "clep" && (
+              <p className="text-center text-xs text-muted-foreground">
+                Preparing for AP/SAT/ACT?{" "}
+                <button onClick={() => switchTrack("ap")} className="text-indigo-400 hover:underline">
+                  Switch to AP/SAT/ACT prep →
+                </button>
+              </p>
+            )}
           </CardContent>
         </Card>
       )}

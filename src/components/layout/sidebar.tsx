@@ -103,15 +103,31 @@ export function Sidebar({ userRole, isOpen = false, onClose = () => {} }: Sideba
   const [streakFreezes, setStreakFreezes] = useState<number>(0);
   const [examDate, setExamDate] = useState<Date | null>(null);
   const [clepEnabled, setClepEnabled] = useState<boolean>(false);
+  const [track, setTrackState] = useState<"ap" | "clep">("ap");
 
-  const COURSE_GROUPS = clepEnabled
-    ? [...BASE_COURSE_GROUPS, CLEP_GROUP]
-    : BASE_COURSE_GROUPS;
+  // Read track from localStorage on mount (not in useState — localStorage throws on SSR)
+  useEffect(() => {
+    try {
+      if (localStorage.getItem("ap_track") === "clep") setTrackState("clep");
+    } catch { /* ignore */ }
+  }, []);
 
-  const [activeGroup, setActiveGroup] = useState<string>(() => {
-    return BASE_COURSE_GROUPS.find(g => g.keys.includes(course as ApCourse))?.label ?? "AP Courses";
-  });
+  function switchTrack(newTrack: "ap" | "clep") {
+    try { localStorage.setItem("ap_track", newTrack); } catch { /* ignore */ }
+    setTrackState(newTrack);
+  }
 
+  const effectiveTrack = track === "clep" && clepEnabled ? "clep" : "ap";
+  const COURSE_GROUPS = effectiveTrack === "clep" ? [CLEP_GROUP] : BASE_COURSE_GROUPS;
+
+  const [activeGroup, setActiveGroup] = useState<string>("AP Courses");
+
+  // Reset activeGroup when track changes so the dropdown never shows an empty list
+  useEffect(() => {
+    setActiveGroup(effectiveTrack === "clep" ? "CLEP Prep" : "AP Courses");
+  }, [effectiveTrack]);
+
+  // Also sync activeGroup when course changes (e.g., user picks a course from another group)
   useEffect(() => {
     const allGroups = [...BASE_COURSE_GROUPS, CLEP_GROUP];
     const group = allGroups.find(g => g.keys.includes(course as ApCourse));
@@ -211,6 +227,7 @@ export function Sidebar({ userRole, isOpen = false, onClose = () => {} }: Sideba
         {/* Course Switcher */}
         <div className="px-4 py-3 border-b border-border/40">
           <p className="text-xs text-muted-foreground mb-1.5 font-medium uppercase tracking-wider">Current Course</p>
+
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
@@ -265,6 +282,23 @@ export function Sidebar({ userRole, isOpen = false, onClose = () => {} }: Sideba
               <div className="h-1" />
             </DropdownMenuContent>
           </DropdownMenu>
+          {/* Switch track link */}
+          {effectiveTrack === "ap" && clepEnabled && (
+            <button
+              onClick={() => switchTrack("clep")}
+              className="mt-2 w-full text-left text-[11px] text-emerald-400/70 hover:text-emerald-400 transition-colors"
+            >
+              Switch to CLEP prep →
+            </button>
+          )}
+          {effectiveTrack === "clep" && (
+            <button
+              onClick={() => switchTrack("ap")}
+              className="mt-2 w-full text-left text-[11px] text-indigo-400/70 hover:text-indigo-400 transition-colors"
+            >
+              Switch to AP/SAT/ACT prep →
+            </button>
+          )}
         </div>
 
         {/* Navigation */}
