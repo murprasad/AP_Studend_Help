@@ -59,7 +59,7 @@ export default function ApPrepPage() {
           <Sparkles className="h-4 w-4" /> 10 AP Courses
         </div>
         <h1 className="text-4xl sm:text-5xl font-bold">
-          Score a 5 on your AP Exam — with AI that actually teaches.
+          Go from a 3 to a 5 on your AP Exam — with AI that actually teaches.
         </h1>
         <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
           Sage explains concepts, quizzes you back, and tracks mastery by unit. Every study session moves your score.
@@ -109,6 +109,24 @@ export default function ApPrepPage() {
             <p className="text-xs text-muted-foreground">{f.desc}</p>
           </div>
         ))}
+      </div>
+
+      {/* Sample Study Schedule */}
+      <div className="space-y-4">
+        <h2 className="text-2xl font-bold text-center">Sample 8-Week AP Study Plan</h2>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          {[
+            { week: "Week 1", task: "Diagnostic test + start Unit 1" },
+            { week: "Weeks 2–5", task: "2 units per week with daily practice" },
+            { week: "Week 6", task: "Review weak areas + ask Sage" },
+            { week: "Weeks 7–8", task: "Full mock exams + final review" },
+          ].map((w) => (
+            <div key={w.week} className="p-4 rounded-xl border border-indigo-500/15 bg-card/50 text-center">
+              <p className="text-xs font-semibold text-indigo-400 mb-1">{w.week}</p>
+              <p className="text-xs text-muted-foreground">{w.task}</p>
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* Course List */}

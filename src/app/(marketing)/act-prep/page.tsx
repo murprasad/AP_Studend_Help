@@ -53,7 +53,7 @@ export default function ActPrepPage() {
           <Sparkles className="h-4 w-4" /> 4 ACT Sections
         </div>
         <h1 className="text-4xl sm:text-5xl font-bold">
-          Boost your ACT composite — with AI that targets your weakest sections.
+          Boost your ACT composite by 3–5 points — with AI that targets your weakest sections.
         </h1>
         <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
           Math, English, Science, Reading — Sage adapts to each section and drills you where it matters most.
@@ -103,6 +103,24 @@ export default function ActPrepPage() {
             <p className="text-xs text-muted-foreground">{f.desc}</p>
           </div>
         ))}
+      </div>
+
+      {/* Sample Study Schedule */}
+      <div className="space-y-4">
+        <h2 className="text-2xl font-bold text-center">Sample 6-Week ACT Study Plan</h2>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          {[
+            { week: "Week 1", task: "Diagnostic test + identify weakest section" },
+            { week: "Weeks 2–3", task: "Math + English with pacing drills" },
+            { week: "Weeks 4–5", task: "Science + Reading with timed practice" },
+            { week: "Week 6", task: "Full mock exams + composite review" },
+          ].map((w) => (
+            <div key={w.week} className="p-4 rounded-xl border border-violet-500/15 bg-card/50 text-center">
+              <p className="text-xs font-semibold text-violet-400 mb-1">{w.week}</p>
+              <p className="text-xs text-muted-foreground">{w.task}</p>
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* Course List */}

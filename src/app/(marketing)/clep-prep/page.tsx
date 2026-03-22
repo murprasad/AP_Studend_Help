@@ -130,6 +130,24 @@ export default function ClepPrepPage() {
         ))}
       </div>
 
+      {/* Sample Study Schedule */}
+      <div className="space-y-4">
+        <h2 className="text-2xl font-bold text-center">Sample 6-Week CLEP Prep Plan</h2>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          {[
+            { week: "Week 1", task: "Diagnostic — see how much you already know" },
+            { week: "Weeks 2–4", task: "Core topics with daily AI practice" },
+            { week: "Weeks 5–6", task: "Practice exams + review weak areas" },
+            { week: "Ready?", task: "Schedule your $93 exam and save $1,200+" },
+          ].map((w) => (
+            <div key={w.week} className="p-4 rounded-xl border border-emerald-500/15 bg-card/50 text-center">
+              <p className="text-xs font-semibold text-emerald-400 mb-1">{w.week}</p>
+              <p className="text-xs text-muted-foreground">{w.task}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
       {/* Course List */}
       <div>
         <h2 className="text-2xl font-bold mb-6 text-center">6 CLEP Exams — Save Thousands</h2>

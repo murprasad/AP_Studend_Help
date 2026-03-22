@@ -113,6 +113,9 @@ export default function LandingPage() {
             <a href="#courses" className="lg:hidden text-sm text-muted-foreground hover:text-foreground transition-colors">
               Courses
             </a>
+            <a href="#how-it-works" className="hidden sm:block text-sm text-muted-foreground hover:text-foreground transition-colors">
+              How It Works
+            </a>
             <Link href="/ap-prep" className="hidden lg:block text-sm text-muted-foreground hover:text-foreground transition-colors">
               AP
             </Link>
@@ -390,7 +393,7 @@ export default function LandingPage() {
       </section>
 
       {/* How It Works */}
-      <section className="py-24 bg-secondary/20">
+      <section id="how-it-works" className="py-24 bg-secondary/20 scroll-mt-20">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold mb-3">How It Works</h2>
