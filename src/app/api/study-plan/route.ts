@@ -41,23 +41,22 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Invalid course" }, { status: 400 });
     }
 
-    // Get mastery scores for units in this course
+    // Get mastery scores + recent sessions in parallel
     const courseUnitKeys = Object.keys(COURSE_UNITS[course]) as ApUnit[];
 
-    const masteryScores = await prisma.masteryScore.findMany({
-      where: { userId: session.user.id, unit: { in: courseUnitKeys } },
-    });
-
-    // Get recent responses from sessions of this course
-    const courseSessionIds = (
-      await prisma.practiceSession.findMany({
+    const [masteryScores, recentSessionIds] = await Promise.all([
+      prisma.masteryScore.findMany({
+        where: { userId: session.user.id, unit: { in: courseUnitKeys } },
+      }),
+      prisma.practiceSession.findMany({
         where: { userId: session.user.id, course },
         select: { id: true },
         orderBy: { startedAt: "desc" },
         take: 20,
-      })
-    ).map((s) => s.id);
+      }),
+    ]);
 
+    const courseSessionIds = recentSessionIds.map((s) => s.id);
     const recentResponses =
       courseSessionIds.length > 0
         ? await prisma.studentResponse.findMany({
@@ -72,7 +71,8 @@ export async function POST(req: NextRequest) {
         ? (recentResponses.filter((r) => r.isCorrect).length / recentResponses.length) * 100
         : 0;
 
-    let planData;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let planData: any;
 
     // Static plan for users with < 20 questions answered (save AI tokens)
     if (recentResponses.length < 20) {
@@ -118,15 +118,18 @@ export async function POST(req: NextRequest) {
     }
 
     try {
-      planData = await generateStudyPlan(
-        masteryScores.map((m) => ({
-          unit: m.unit as ApUnit,
-          masteryScore: m.masteryScore,
-          accuracy: m.accuracy,
-        })),
-        { accuracy: recentAccuracy, totalAnswered: recentResponses.length },
-        course
-      );
+      planData = (await Promise.race([
+        generateStudyPlan(
+          masteryScores.map((m) => ({
+            unit: m.unit as ApUnit,
+            masteryScore: m.masteryScore,
+            accuracy: m.accuracy,
+          })),
+          { accuracy: recentAccuracy, totalAnswered: recentResponses.length },
+          course
+        ),
+        new Promise((_, reject) => setTimeout(() => reject(new Error("AI timeout")), 20000)),
+      ])) as Record<string, unknown>;
     } catch (aiError) {
       console.error("AI study plan generation failed:", aiError);
       const courseLabel = COURSE_REGISTRY[course]?.name || course;
