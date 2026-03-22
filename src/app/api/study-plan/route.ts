@@ -7,6 +7,8 @@ import { ApUnit, ApCourse } from "@prisma/client";
 import { COURSE_UNITS } from "@/lib/utils";
 import { VALID_AP_COURSES, COURSE_REGISTRY } from "@/lib/courses";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
