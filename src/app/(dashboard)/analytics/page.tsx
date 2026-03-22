@@ -75,37 +75,55 @@ export default function AnalyticsPage() {
     avgComprehension: number | null;
   } | null>(null);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [goals, setGoals] = useState<Record<string, { targetScore: number; targetDate?: string }>>({});
   const [goalModalUnit, setGoalModalUnit] = useState<{ unit: string; unitName: string; current: number } | null>(null);
   const [goalTarget, setGoalTarget] = useState("75");
   const [goalDate, setGoalDate] = useState("");
   const [goalSaving, setGoalSaving] = useState(false);
+  const [featureDisabled, setFeatureDisabled] = useState(false);
+  const [stale, setStale] = useState(false);
+  const [cachedCourse, setCachedCourse] = useState<string>("");
 
   useEffect(() => {
-    setLoading(true);
+    const hasData = stats !== null && cachedCourse === course;
+    setLoading(!hasData); // only show spinner if no cached data for THIS course
+    setRefreshing(hasData); // show subtle banner if we have cached data for THIS course
     setError(null);
+    setStale(false);
+    setFeatureDisabled(false);
     Promise.all([
-      fetch(`/api/analytics?course=${course}`).then((r) => {
+      fetch(`/api/analytics?course=${course}`, { signal: AbortSignal.timeout(40000) }).then((r) => {
+        if (r.status === 503) { setFeatureDisabled(true); throw new Error("under-maintenance"); }
         if (!r.ok) throw new Error("Failed to load analytics");
         return r.json();
       }),
-      fetch(`/api/mastery-goal?course=${course}`).then((r) => r.json()).catch(() => ({ goals: [] })),
+      fetch(`/api/mastery-goal?course=${course}`, { signal: AbortSignal.timeout(40000) }).then((r) => r.json()).catch(() => ({ goals: [] })),
     ])
       .then(([data, goalData]) => {
         setMasteryData(data.masteryData || []);
         setAccuracyTimeline(data.accuracyTimeline || []);
         setStats(data.stats);
         setKnowledgeCheckStats(data.knowledgeCheckStats ?? null);
+        setCachedCourse(course);
+        setStale(false);
         const goalMap: Record<string, { targetScore: number; targetDate?: string }> = {};
         for (const g of (goalData.goals || [])) {
           goalMap[g.unit] = { targetScore: g.targetScore, targetDate: g.targetDate };
         }
         setGoals(goalMap);
       })
-      .catch((err) => setError(err.message))
-      .finally(() => setLoading(false));
-  }, [course]);
+      .catch((err) => {
+        if (hasData) {
+          // Keep showing cached data with stale banner
+          setStale(true);
+        } else {
+          setError(err.message);
+        }
+      })
+      .finally(() => { setLoading(false); setRefreshing(false); });
+  }, [course]); // eslint-disable-line react-hooks/exhaustive-deps
 
   async function saveGoal() {
     if (!goalModalUnit) return;
@@ -155,6 +173,20 @@ export default function AnalyticsPage() {
     );
   }
 
+  if (featureDisabled) {
+    return (
+      <div className="flex items-center justify-center h-96">
+        <div className="text-center max-w-md">
+          <div className="mx-auto w-16 h-16 rounded-full bg-yellow-500/10 flex items-center justify-center mb-4">
+            <BarChart3 className="h-8 w-8 text-yellow-400" />
+          </div>
+          <h2 className="text-xl font-semibold mb-2">Under Maintenance</h2>
+          <p className="text-muted-foreground">Analytics is temporarily being improved. Check back soon for an even better experience.</p>
+        </div>
+      </div>
+    );
+  }
+
   if (error) {
     return (
       <div className="flex items-center justify-center h-96">
@@ -174,6 +206,12 @@ export default function AnalyticsPage() {
 
   return (
     <div className="space-y-6">
+      {(stale || refreshing) && (
+        <div className="flex items-center gap-2 px-4 py-2 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-300 text-sm">
+          <Loader2 className="h-4 w-4 animate-spin" />
+          {stale ? "Couldn\u2019t refresh \u2014 showing your last loaded analytics." : "Refreshing analytics..."}
+        </div>
+      )}
       {/* Goal-setting modal */}
       {goalModalUnit && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">

@@ -236,7 +236,7 @@ export default function PricingPage() {
             <thead>
               <tr className="bg-secondary/60 text-muted-foreground">
                 <th className="text-left p-3 font-medium"></th>
-                <th className="text-center p-3 font-medium text-indigo-400">StudentNest AI</th>
+                <th className="text-center p-3 font-medium text-indigo-400">StudentNest Prep</th>
                 <th className="text-center p-3 font-medium">Prep Course</th>
                 <th className="text-center p-3 font-medium">Private Tutor</th>
                 <th className="text-center p-3 font-medium">ChatGPT</th>

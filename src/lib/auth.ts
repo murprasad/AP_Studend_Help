@@ -198,17 +198,17 @@ export const authOptions: NextAuthOptions = {
         token.track = dbUser?.track ?? "ap";
         token.moduleSubs = await fetchModuleSubs(user.id);
       } else if (token.id) {
-        // Always refresh track + tier from DB on every JWT refresh
-        // This ensures track changes (e.g., from /dashboard?track=sat) take effect immediately
-        const dbUser = await prisma.user.findUnique({
-          where: { id: token.id as string },
-          select: { subscriptionTier: true, track: true },
-        });
-        if (dbUser) {
-          token.subscriptionTier = dbUser.subscriptionTier;
-          token.track = dbUser.track ?? "ap";
-        }
+        // Only refresh from DB on explicit update trigger (track change, subscription update)
+        // Avoids 1-2 hidden DB calls on every getServerSession() — critical for CF Workers perf
         if (trigger === "update") {
+          const dbUser = await prisma.user.findUnique({
+            where: { id: token.id as string },
+            select: { subscriptionTier: true, track: true },
+          });
+          if (dbUser) {
+            token.subscriptionTier = dbUser.subscriptionTier;
+            token.track = dbUser.track ?? "ap";
+          }
           token.moduleSubs = await fetchModuleSubs(token.id as string);
         }
       }

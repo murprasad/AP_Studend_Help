@@ -57,6 +57,16 @@ export async function isClepEnabled(): Promise<boolean> {
   return val === "true";
 }
 
+/** Returns true if the Analytics page is enabled. Defaults to true. */
+export async function isAnalyticsEnabled(): Promise<boolean> {
+  return (await getSetting("analytics_enabled", "true")) === "true";
+}
+
+/** Returns true if the Study Plan page is enabled. Defaults to true. */
+export async function isStudyPlanEnabled(): Promise<boolean> {
+  return (await getSetting("study_plan_enabled", "true")) === "true";
+}
+
 /**
  * Returns true if premium feature restrictions are enforced.
  * When false (default), all users have full access regardless of subscription tier.

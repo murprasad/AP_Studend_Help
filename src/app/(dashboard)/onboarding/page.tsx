@@ -109,7 +109,7 @@ export default function OnboardingPage() {
             <Sparkles className="h-6 w-6 text-indigo-400" />
           </div>
         </div>
-        <h1 className="text-2xl font-bold">Welcome to StudentNest AI</h1>
+        <h1 className="text-2xl font-bold">Welcome to StudentNest Prep</h1>
         <p className="text-muted-foreground text-sm">Let&apos;s set you up for exam success in 3 quick steps.</p>
       </div>
 

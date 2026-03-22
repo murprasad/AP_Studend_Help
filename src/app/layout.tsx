@@ -7,28 +7,31 @@ import { Toaster } from "@/components/ui/toaster";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "StudentNest AI — AP, SAT, ACT & CLEP Exam Prep",
+  title: "StudentNest Prep — AP, SAT, ACT & CLEP Exam Prep",
   description:
     "Raise your exam score with AI that explains why, not just what. Personalized practice, instant feedback, and mastery tracking for AP, SAT, ACT & CLEP. Free for every student.",
   metadataBase: new URL("https://studentnest.ai"),
   openGraph: {
-    title: "StudentNest AI — Score Higher on AP, SAT, ACT & CLEP",
+    title: "StudentNest Prep — Score Higher on AP, SAT, ACT & CLEP",
     description: "AI-powered exam prep with personalized practice, instant feedback, and mastery tracking. Free for every student.",
     url: "https://studentnest.ai",
-    siteName: "StudentNest AI",
+    siteName: "StudentNest Prep",
     type: "website",
     locale: "en_US",
-    images: [{ url: "/og-image.svg", width: 1200, height: 630, alt: "StudentNest AI — AP, SAT, ACT & CLEP Exam Prep" }],
+    images: [{ url: "/og-image.svg?v=2", width: 1200, height: 630, alt: "StudentNest Prep — AP, SAT, ACT & CLEP Exam Prep" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "StudentNest AI — Score Higher on AP, SAT, ACT & CLEP",
+    title: "StudentNest Prep — Score Higher on AP, SAT, ACT & CLEP",
     description: "AI-powered exam prep. Personalized practice. Free to start.",
-    images: ["/og-image.svg"],
+    images: ["/og-image.svg?v=2"],
   },
   robots: {
     index: true,
     follow: true,
+  },
+  verification: {
+    google: "OIdAKp12XS0pym-ockZ-8QFg2zraUxTxnNIv2s_WiLA",
   },
 };
 
@@ -54,7 +57,7 @@ export default function RootLayout({
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "Organization",
-              name: "StudentNest AI",
+              name: "StudentNest Prep",
               url: "https://studentnest.ai",
               description: "AI-powered exam preparation for AP, SAT, ACT, and CLEP exams",
               contactPoint: { "@type": "ContactPoint", email: "contact@studentnest.ai", contactType: "customer support" },

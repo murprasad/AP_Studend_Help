@@ -9,9 +9,9 @@ export default function MarketingLayout({ children }: { children: React.ReactNod
           <Sparkles className="h-6 w-6 text-indigo-400" />
           <div>
             <span className="text-lg font-bold">
-              <span className="gradient-text">Student</span><span className="text-foreground/80 font-medium">Nest</span><span className="text-indigo-400/60 font-normal text-[0.6em] ml-1">AI</span>
+              <span className="gradient-text">Student</span><span className="text-foreground/80 font-medium">Nest</span><span className="text-indigo-400/60 font-normal text-[0.6em] ml-1">Prep</span>
             </span>
-            <p className="text-xs text-muted-foreground leading-none hidden sm:block">Your AI Study Partner</p>
+            <p className="text-xs text-muted-foreground leading-none hidden sm:block">Study Smarter. Score Higher.</p>
           </div>
         </Link>
         <div className="flex items-center gap-2 sm:gap-4">
@@ -43,9 +43,9 @@ export default function MarketingLayout({ children }: { children: React.ReactNod
           <a href="/privacy" className="hover:text-foreground transition-colors">Privacy</a>
         </div>
         <p className="text-[11px] text-muted-foreground/60 max-w-2xl mx-auto leading-relaxed">
-          AP® and SAT® are trademarks of the College Board. ACT® is a registered trademark of ACT, Inc.
+          AP®, SAT®, and CLEP® are trademarks of the College Board. ACT® is a registered trademark of ACT, Inc.
           StudentNest is not affiliated with or endorsed by the College Board or ACT, Inc.
-          © {new Date().getFullYear()} StudentNest AI — independent educational platform.
+          © {new Date().getFullYear()} StudentNest Prep — independent educational platform.
         </p>
       </footer>
     </div>

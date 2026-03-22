@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Pricing — Free & Premium Plans | StudentNest AI",
+  title: "Pricing — Free & Premium Plans | StudentNest Prep",
   description:
     "Free forever with all 22 courses. Premium upgrades for AP, SAT, ACT & CLEP at $9.99/mo or $79.99/yr (save 33%). 7-day money-back guarantee.",
   openGraph: {
-    title: "Pricing | StudentNest AI",
+    title: "Pricing | StudentNest Prep",
     description:
       "Free forever. Premium from $9.99/mo per module. 7-day money-back guarantee.",
     url: "https://studentnest.ai/pricing",

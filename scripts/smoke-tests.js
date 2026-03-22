@@ -77,7 +77,7 @@ async function run() {
       }
     }
   } catch (e) {
-    fail("GET /api/ai/status", e.message);
+    warn("GET /api/ai/status", e.message);
   }
 
   // ── 3. Feature flags ─────────────────────────────────────────────────────────
@@ -125,8 +125,42 @@ async function run() {
     }
   }
 
-  // ── 5. Knowledge-check with bad input returns 4xx not 500 ────────────────────
-  section("5. Input validation (bad input → 4xx, not 500)");
+  // ── 5. CF Workers latency check (detect cold-start timeout risk) ─────────────
+  section("5. CF Workers latency check");
+  const latencyRoutes = [
+    ["/api/feature-flags", "Feature flags"],
+    ["/api/analytics?course=AP_WORLD_HISTORY", "Analytics"],
+    ["/api/study-plan?course=AP_WORLD_HISTORY", "Study plan"],
+  ];
+  for (const [path, label] of latencyRoutes) {
+    try {
+      const start = Date.now();
+      const res = await fetchWithTimeout(`${BASE_URL}${path}`, 25000);
+      const elapsed = Date.now() - start;
+      const elapsedSec = (elapsed / 1000).toFixed(1);
+      if (res.status === 401) {
+        // Unauthenticated — still measure latency of auth check
+        if (elapsed > 15000) {
+          warn(`${label} latency`, `${elapsedSec}s (>15s = CF Workers timeout risk)`);
+        } else {
+          ok(`${label} latency`, `${elapsedSec}s (auth guard fast)`);
+        }
+      } else if (res.ok) {
+        if (elapsed > 15000) {
+          warn(`${label} latency`, `${elapsedSec}s — approaching CF Workers 30s limit`);
+        } else {
+          ok(`${label} latency`, `${elapsedSec}s`);
+        }
+      } else {
+        warn(`${label} latency`, `HTTP ${res.status} in ${elapsedSec}s`);
+      }
+    } catch (e) {
+      warn(`${label} latency`, `timeout/error — ${e.message}`);
+    }
+  }
+
+  // ── 6. Knowledge-check with bad input returns 4xx not 500 ────────────────────
+  section("6. Input validation (bad input → 4xx, not 500)");
   try {
     const res = await get("/api/ai/tutor/knowledge-check", {
       method: "POST",

@@ -1,4 +1,14 @@
+import type { Metadata } from "next";
 import { Badge } from "@/components/ui/badge";
+
+export const metadata: Metadata = {
+  title: "About StudentNest Prep — Mission, Science & Course Coverage",
+  description: "Learn how StudentNest Prep uses active recall, spaced repetition, and AI tutoring to help students score higher on AP, SAT, ACT & CLEP exams.",
+  openGraph: {
+    title: "About | StudentNest Prep",
+    description: "AI-powered exam prep built on learning science. 22 courses, free to start.",
+  },
+};
 import { Globe, Mail, Target, Heart, Sparkles, Lightbulb, LayoutDashboard, GraduationCap } from "lucide-react";
 import Link from "next/link";
 
@@ -52,8 +62,8 @@ export default function AboutPage() {
             <Globe className="h-6 w-6 text-indigo-400" />
           </div>
           <div className="flex items-center gap-2 flex-wrap">
-            <h1 className="text-3xl font-bold gradient-text">About StudentNest AI</h1>
-            <Badge className="bg-indigo-500/20 text-indigo-300 border-indigo-500/30 text-xs font-semibold">Beta 2.2</Badge>
+            <h1 className="text-3xl font-bold gradient-text">About StudentNest Prep</h1>
+            <Badge className="bg-indigo-500/20 text-indigo-300 border-indigo-500/30 text-xs font-semibold">Beta 2.3</Badge>
           </div>
         </div>
         <p className="text-muted-foreground leading-relaxed max-w-2xl mx-auto">

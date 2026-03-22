@@ -1,5 +1,11 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { Shield } from "lucide-react";
+
+export const metadata: Metadata = {
+  title: "Privacy Policy | StudentNest Prep",
+  description: "How StudentNest Prep collects, uses, and protects your data. GDPR and COPPA compliant.",
+};
 
 export default function PrivacyPage() {
   const sections = [

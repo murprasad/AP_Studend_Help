@@ -75,6 +75,25 @@ function run() {
     }
   } catch { /* unavailable */ }
 
+  // ── Read functional test results ──────────────────────────────────────────
+  let functionalSection = "Functional tests: not run (CRON_SECRET not set or tests skipped)";
+  try {
+    const funcFile = path.join(os.tmpdir(), "studentnest_functional_results.json");
+    if (fs.existsSync(funcFile)) {
+      const r = JSON.parse(fs.readFileSync(funcFile, "utf8"));
+      if (r.skipped) {
+        functionalSection = "Functional tests: skipped (CRON_SECRET not configured)";
+      } else {
+        const lines = (r.results || []).map((t) => {
+          const icon = t.status === "pass" ? "\u2705" : t.status === "warn" ? "\u26A0\uFE0F" : "\u274C";
+          return `  ${icon} ${t.label}${t.detail ? " \u2014 " + t.detail : ""}`;
+        });
+        functionalSection = `Functional tests: ${r.passed} passed, ${r.warned} warnings, ${r.failed} failed (${r.elapsed || "?"}s)\n${lines.join("\n")}`;
+      }
+      fs.unlinkSync(funcFile);
+    }
+  } catch { /* unavailable */ }
+
   // ── Build the new log entry ───────────────────────────────────────────────
   const entry = `
 ---
@@ -92,7 +111,12 @@ ${commits}
 ${smokeSection}
 \`\`\`
 
-### Integration tests (practice coverage — all 16 courses)
+### Functional tests (authenticated regression suite)
+\`\`\`
+${functionalSection}
+\`\`\`
+
+### Integration tests (practice coverage — all 22 courses)
 \`\`\`
 ${integrationSection}
 \`\`\`

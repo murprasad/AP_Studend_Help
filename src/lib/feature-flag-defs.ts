@@ -51,6 +51,22 @@ export const FEATURE_FLAG_DEFS = [
     default: "false",
     dangerous: false,
   },
+  {
+    key: "analytics_enabled",
+    label: "Analytics Page",
+    description:
+      "Show Analytics in sidebar and allow access. When OFF, hides the page and shows an 'Under Maintenance' banner if accessed directly.",
+    default: "true",
+    dangerous: false,
+  },
+  {
+    key: "study_plan_enabled",
+    label: "Study Plan Page",
+    description:
+      "Show Study Plan in sidebar and allow access. When OFF, hides the page and shows an 'Under Maintenance' banner if accessed directly.",
+    default: "true",
+    dangerous: false,
+  },
   // Auto-populate settings (not boolean flags — managed by AdminAutoPopulateSettings)
   { key: "auto_populate_enabled", label: "Auto-Populate Enabled", description: "Master on/off for scheduled question bank auto-populate.", default: "false", dangerous: false },
   { key: "auto_populate_threshold", label: "Auto-Populate Threshold", description: "Units with fewer questions than this are topped up.", default: "10", dangerous: false },

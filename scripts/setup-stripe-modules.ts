@@ -47,28 +47,28 @@ const MODULES: Module[] = [
   {
     key: "ap",
     name: "AP Premium",
-    description: "StudentNest AI — AP exam prep with unlimited AI tutoring, FRQ scoring, and personalized study plans.",
+    description: "StudentNest Prep — AP exam prep with unlimited AI tutoring, FRQ scoring, and personalized study plans.",
     monthlyEnv: "STRIPE_PREMIUM_PRICE_ID",
     annualEnv: "STRIPE_ANNUAL_PRICE_ID",
   },
   {
     key: "sat",
     name: "SAT Premium",
-    description: "StudentNest AI — SAT prep with unlimited AI tutoring, weak-area targeting, and score tracking.",
+    description: "StudentNest Prep — SAT prep with unlimited AI tutoring, weak-area targeting, and score tracking.",
     monthlyEnv: "STRIPE_SAT_PREMIUM_PRICE_ID",
     annualEnv: "STRIPE_SAT_ANNUAL_PRICE_ID",
   },
   {
     key: "act",
     name: "ACT Premium",
-    description: "StudentNest AI — ACT prep for all 4 sections with unlimited AI tutoring and composite tracking.",
+    description: "StudentNest Prep — ACT prep for all 4 sections with unlimited AI tutoring and composite tracking.",
     monthlyEnv: "STRIPE_ACT_PREMIUM_PRICE_ID",
     annualEnv: "STRIPE_ACT_ANNUAL_PRICE_ID",
   },
   {
     key: "clep",
     name: "CLEP Premium",
-    description: "StudentNest AI — CLEP exam prep for 6 exams. Earn college credit and save $1,200+ per exam.",
+    description: "StudentNest Prep — CLEP exam prep for 6 exams. Earn college credit and save $1,200+ per exam.",
     monthlyEnv: "STRIPE_CLEP_PREMIUM_PRICE_ID",
     annualEnv: "STRIPE_CLEP_ANNUAL_PRICE_ID",
   },
@@ -123,7 +123,7 @@ async function createPrice(productId: string, amount: number, interval: "month" 
 }
 
 async function main() {
-  console.log("Setting up Stripe products for StudentNest AI per-module subscriptions...\n");
+  console.log("Setting up Stripe products for StudentNest Prep per-module subscriptions...\n");
 
   const envVars: Record<string, string> = {};
 

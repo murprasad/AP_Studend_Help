@@ -138,9 +138,62 @@ async function run() {
     }
   }
 
-  // ── 3. Red course critical check ─────────────────────────────────────────────
+  // ── 3. Analytics + Study Plan API health (all courses) ───────────────────────
+  section("3. Analytics + Study Plan API health (all courses)");
+  const allCourseKeys = courses.map((c) => c.course);
+  let analyticsOk = 0, analyticsFail = 0;
+  let studyPlanOk = 0, studyPlanFail = 0;
+
+  // Test in batches of 4 to avoid overwhelming CF Workers
+  for (let i = 0; i < allCourseKeys.length; i += 4) {
+    const batch = allCourseKeys.slice(i, i + 4);
+    const batchResults = await Promise.allSettled(
+      batch.flatMap((course) => [
+        fetchWithTimeout(`${BASE_URL}/api/analytics?course=${course}`, 25000)
+          .then((r) => ({ course, route: "analytics", status: r.status, ok: r.ok })),
+        fetchWithTimeout(`${BASE_URL}/api/study-plan?course=${course}`, 25000)
+          .then((r) => ({ course, route: "study-plan", status: r.status, ok: r.ok })),
+      ])
+    );
+    for (const result of batchResults) {
+      if (result.status === "rejected") {
+        const label = `API timeout`;
+        warn(label, result.reason?.message || "unknown error");
+        analyticsFail++;
+      } else {
+        const { course, route, status, ok: isOk } = result.value;
+        const name = courses.find((c) => c.course === course)?.name ?? course;
+        if (status === 401) {
+          // Expected — no auth cookie in integration tests
+          if (route === "analytics") analyticsOk++;
+          else studyPlanOk++;
+        } else if (status >= 500) {
+          warn(`${name} ${route}`, `HTTP ${status} — server error`);
+          if (route === "analytics") analyticsFail++;
+          else studyPlanFail++;
+        } else {
+          if (route === "analytics") analyticsOk++;
+          else studyPlanOk++;
+        }
+      }
+    }
+  }
+
+  const totalCourses = allCourseKeys.length;
+  if (analyticsFail === 0) {
+    ok(`Analytics API`, `${analyticsOk}/${totalCourses} courses responding (all 401 auth guard — healthy)`);
+  } else {
+    warn(`Analytics API`, `${analyticsFail}/${totalCourses} courses returned 500 — CF Workers timeout risk`);
+  }
+  if (studyPlanFail === 0) {
+    ok(`Study Plan API`, `${studyPlanOk}/${totalCourses} courses responding (all 401 auth guard — healthy)`);
+  } else {
+    warn(`Study Plan API`, `${studyPlanFail}/${totalCourses} courses returned 500 — CF Workers timeout risk`);
+  }
+
+  // ── 4. Red course critical check ─────────────────────────────────────────────
   if (redCourses.length > 0) {
-    section("3. Red courses — action required");
+    section("4. Red courses — action required");
     if (summary.aiGenerationEnabled) {
       console.log(`  ℹ️  ${redCourses.length} courses have 0 questions. AI generation is ON — students will`);
       console.log(`     trigger generation on their first session (adds ~10-15s to first session start).`);

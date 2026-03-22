@@ -51,16 +51,32 @@ export default function StudyPlanPage() {
   const [plan, setPlan] = useState<StudyPlan | null>(null);
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
+  const [featureDisabled, setFeatureDisabled] = useState(false);
+  const [stale, setStale] = useState(false);
+  const [cachedCourse, setCachedCourse] = useState<string>("");
 
   useEffect(() => {
-    setLoading(true);
-    setPlan(null);
-    fetch(`/api/study-plan?course=${course}`)
-      .then((r) => r.json())
-      .then((data) => setPlan(data.plan))
-      .catch(() => toast({ title: "Failed to load study plan", variant: "destructive" }))
+    const hasData = plan !== null && cachedCourse === course;
+    setLoading(!hasData);
+    setStale(false);
+    setFeatureDisabled(false);
+    fetch(`/api/study-plan?course=${course}`, { signal: AbortSignal.timeout(40000) })
+      .then((r) => {
+        if (r.status === 503) { setFeatureDisabled(true); throw new Error("under-maintenance"); }
+        if (!r.ok) throw new Error("Failed to load study plan");
+        return r.json();
+      })
+      .then((data) => { setPlan(data.plan); setCachedCourse(course); setStale(false); })
+      .catch((e) => {
+        if (e.message === "under-maintenance") return;
+        if (hasData) {
+          setStale(true);
+        } else {
+          toast({ title: "Failed to load study plan", variant: "destructive" });
+        }
+      })
       .finally(() => setLoading(false));
-  }, [course]);
+  }, [course]); // eslint-disable-line react-hooks/exhaustive-deps
 
   async function generatePlan() {
     setGenerating(true);
@@ -86,6 +102,20 @@ export default function StudyPlanPage() {
     }
   }
 
+  if (featureDisabled) {
+    return (
+      <div className="flex items-center justify-center h-96">
+        <div className="text-center max-w-md">
+          <div className="mx-auto w-16 h-16 rounded-full bg-yellow-500/10 flex items-center justify-center mb-4">
+            <BookOpen className="h-8 w-8 text-yellow-400" />
+          </div>
+          <h2 className="text-xl font-semibold mb-2">Under Maintenance</h2>
+          <p className="text-muted-foreground">Study Plan is temporarily being improved. Check back soon for an even better experience.</p>
+        </div>
+      </div>
+    );
+  }
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-96">
@@ -96,6 +126,12 @@ export default function StudyPlanPage() {
 
   return (
     <div className="max-w-3xl space-y-6">
+      {stale && (
+        <div className="flex items-center gap-2 px-4 py-2 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-300 text-sm">
+          <Loader2 className="h-4 w-4 animate-spin" />
+          Couldn&apos;t refresh &mdash; showing your last loaded study plan.
+        </div>
+      )}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold">Study Plan</h1>

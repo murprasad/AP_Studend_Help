@@ -32,7 +32,7 @@ export async function sendVerificationEmail(
     `
     <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
       <h1 style="color: #6366f1;">Welcome to StudentNest, ${firstName}!</h1>
-      <p>Please verify your email address to get started — your AI study partner is ready.</p>
+      <p>Please verify your email address to get started — your study prep platform is ready.</p>
       <a href="${verifyUrl}" style="display: inline-block; background: #6366f1; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; margin: 16px 0;">
         Verify Email
       </a>

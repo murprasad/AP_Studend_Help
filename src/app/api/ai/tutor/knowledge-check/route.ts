@@ -152,7 +152,7 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    return NextResponse.json({ score, total: 3 });
+    return NextResponse.json({ score, total: questions.length });
   }
 
   // Default: generate questions

@@ -7,6 +7,7 @@ import { prisma } from "@/lib/prisma";
 import { ApUnit, ApCourse } from "@prisma/client";
 import { COURSE_UNITS } from "@/lib/utils";
 import { VALID_AP_COURSES } from "@/lib/courses";
+import { getSetting } from "@/lib/settings";
 import { format } from "date-fns";
 
 export async function GET(req: NextRequest) {
@@ -27,22 +28,48 @@ export async function GET(req: NextRequest) {
     const twoWeeksAgo = new Date(now - 14 * 86400000);
     const sevenDaysAgo = new Date(now - 7 * 86400000);
 
-    // Batch: 4 independent queries in parallel
-    const [masteryScores, user, allSessions, knowledgeChecks] = await Promise.all([
+    // Stage 1: parallel queries with allSettled — partial failures return partial data, never 500
+    const results = await Promise.allSettled([
+      getSetting("analytics_enabled", "true"),
       prisma.masteryScore.findMany({ where: { userId, unit: { in: courseUnitKeys } } }),
       prisma.user.findUnique({ where: { id: userId }, select: { totalXp: true, level: true, streakDays: true } }),
       prisma.practiceSession.findMany({
-        where: { userId, course },
+        where: { userId, course, status: "COMPLETED", completedAt: { not: null } },
         orderBy: { completedAt: "desc" },
+        take: 100,
+        select: {
+          id: true, completedAt: true, score: true,
+          totalQuestions: true, correctAnswers: true, sessionType: true,
+          apScoreEstimate: true,
+        },
       }),
       prisma.tutorKnowledgeCheck.findMany({
         where: { userId, course },
-        select: { score: true },
+        select: { score: true, questions: true },
       }),
     ]);
 
-    // Derive all needed data from the single sessions list (avoid extra queries)
-    const completedSessions = allSessions.filter(s => s.status === "COMPLETED" && s.completedAt);
+    const enabledFlag = results[0].status === "fulfilled" ? results[0].value : "true";
+    const masteryScores = results[1].status === "fulfilled" ? results[1].value : [];
+    const user = results[2].status === "fulfilled" ? results[2].value : null;
+    const completedSessions = results[3].status === "fulfilled" ? results[3].value : [];
+    const knowledgeChecks = results[4].status === "fulfilled" ? results[4].value : [];
+
+    if (enabledFlag !== "true") {
+      return NextResponse.json({ error: "Feature temporarily unavailable" }, { status: 503 });
+    }
+
+    // Stage 2: responses using simple IN filter — also resilient
+    const sessionIds = completedSessions.map(s => s.id);
+    let allResponses: { isCorrect: boolean; timeSpentSecs: number }[] = [];
+    if (sessionIds.length > 0) {
+      try {
+        allResponses = await prisma.studentResponse.findMany({
+          where: { userId, sessionId: { in: sessionIds } },
+          select: { isCorrect: true, timeSpentSecs: true },
+        });
+      } catch { /* partial data is better than no data */ }
+    }
 
     // Mastery data
     const unitLabels = COURSE_UNITS[course];
@@ -61,22 +88,14 @@ export async function GET(req: NextRequest) {
     // Accuracy timeline (last 14 days)
     const recentCompleted = completedSessions
       .filter(s => s.completedAt! >= twoWeeksAgo)
-      .reverse(); // oldest first for timeline
+      .reverse();
     const accuracyTimeline = recentCompleted.map((s) => ({
       date: format(s.completedAt!, "MMM d"),
       accuracy: Math.round(s.score || 0),
       questions: s.totalQuestions,
     }));
 
-    // Overall stats — one more query for responses (dependent on session IDs)
-    const sessionIds = allSessions.map(s => s.id);
-    const allResponses = sessionIds.length > 0
-      ? await prisma.studentResponse.findMany({
-          where: { userId, sessionId: { in: sessionIds } },
-          select: { isCorrect: true, timeSpentSecs: true },
-        })
-      : [];
-
+    // Overall stats
     const totalAnswered = allResponses.length;
     const totalCorrect = allResponses.filter((r) => r.isCorrect).length;
     const overallAccuracy = totalAnswered > 0 ? (totalCorrect / totalAnswered) * 100 : 0;
@@ -97,7 +116,7 @@ export async function GET(req: NextRequest) {
     const latestMock = mockSessions[0]?.apScoreEstimate ?? null;
     const weightedScore = (avgMastery * 0.50) + (recentAccuracy * 0.30) + (latestMock ? latestMock * 20 * 0.20 : 0);
     const predictedScore = Math.min(5, Math.max(1, Math.ceil(weightedScore / 20))) as 1|2|3|4|5;
-    const confidence: "low"|"medium"|"high" = allSessions.length > 20 ? "high" : allSessions.length > 5 ? "medium" : "low";
+    const confidence: "low"|"medium"|"high" = completedSessions.length > 20 ? "high" : completedSessions.length > 5 ? "medium" : "low";
 
     // Weekly growth
     const recentWeek = completedSessions.filter(s => s.completedAt! >= sevenDaysAgo);
@@ -108,10 +127,15 @@ export async function GET(req: NextRequest) {
       ? prevWeek.reduce((s, sess) => s + (sess.correctAnswers / Math.max(sess.totalQuestions, 1)), 0) / prevWeek.length : 0;
     const weeklyGrowth = Math.round((recentWeekAcc - prevWeekAcc) * 100);
 
-    // Knowledge check stats
+    // Knowledge check stats (safe JSON parse)
     const totalChecks = knowledgeChecks.length;
-    const avgComprehension = totalChecks > 0
-      ? Math.round((knowledgeChecks.reduce((s, c) => s + c.score, 0) / (totalChecks * 3)) * 100) : null;
+    const totalCheckScore = knowledgeChecks.reduce((s, c) => s + c.score, 0);
+    const totalCheckQuestions = knowledgeChecks.reduce((s, c) => {
+      const qs = Array.isArray(c.questions) ? c.questions : [];
+      return s + (qs.length > 0 ? qs.length : 3);
+    }, 0);
+    const avgComprehension = totalChecks > 0 && totalCheckQuestions > 0
+      ? Math.round((totalCheckScore / totalCheckQuestions) * 100) : null;
 
     return NextResponse.json({
       masteryData,

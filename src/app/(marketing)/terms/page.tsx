@@ -1,5 +1,11 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { Scale } from "lucide-react";
+
+export const metadata: Metadata = {
+  title: "Terms of Service | StudentNest Prep",
+  description: "Terms of Service for StudentNest Prep. Subscription billing, refund policy, AI-generated content disclaimer, and intellectual property.",
+};
 
 export default function TermsPage() {
   const sections = [
@@ -31,7 +37,7 @@ export default function TermsPage() {
     {
       id: "ip",
       title: "6. Intellectual Property",
-      body: `AP® and Advanced Placement® are trademarks registered by the College Board, which is not affiliated with and does not endorse this site. SAT® is a trademark registered by the College Board. ACT® is a registered trademark of ACT, Inc. These organizations have no involvement in the production of StudentNest content. The StudentNest platform, branding, and original content are owned by StudentNest and may not be reproduced without permission.`,
+      body: `AP®, Advanced Placement®, SAT®, and CLEP® are trademarks registered by the College Board, which is not affiliated with and does not endorse this site. ACT® is a registered trademark of ACT, Inc. These organizations have no involvement in the production of StudentNest content. The StudentNest platform, branding, and original content are owned by StudentNest and may not be reproduced without permission.`,
     },
     {
       id: "liability",

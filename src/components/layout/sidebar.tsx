@@ -103,6 +103,7 @@ export function Sidebar({ userRole, userTrack, isOpen = false, onClose = () => {
   const [streakDays, setStreakDays] = useState<number>(0);
   const [streakFreezes, setStreakFreezes] = useState<number>(0);
   const [examDate, setExamDate] = useState<Date | null>(null);
+  const [hiddenPages, setHiddenPages] = useState<Set<string>>(new Set());
   // Always trust the session track prop when available
   const effectiveTrack = userTrack || "ap";
 
@@ -159,6 +160,16 @@ export function Sidebar({ userRole, userTrack, isOpen = false, onClose = () => {
 
   useEffect(() => {
     fetchUserData();
+    // Fetch feature flags to hide disabled pages
+    fetch("/api/feature-flags")
+      .then(r => r.json())
+      .then((flags: { analyticsEnabled?: boolean; studyPlanEnabled?: boolean }) => {
+        const hidden = new Set<string>();
+        if (flags.analyticsEnabled === false) hidden.add("/analytics");
+        if (flags.studyPlanEnabled === false) hidden.add("/study-plan");
+        setHiddenPages(hidden);
+      })
+      .catch(() => {});
   }, []);
 
   useEffect(() => {
@@ -197,7 +208,7 @@ export function Sidebar({ userRole, userTrack, isOpen = false, onClose = () => {
             <Link href="/dashboard" className="flex items-center gap-2" onClick={handleNavClick}>
               <Sparkles className="h-6 w-6 text-indigo-400" />
               <span className="text-lg font-bold">
-                <span className="gradient-text">Student</span><span className="text-foreground/80 font-medium">Nest</span><span className="text-indigo-400/60 font-normal text-[0.6em] ml-1">AI</span>
+                <span className="gradient-text">Student</span><span className="text-foreground/80 font-medium">Nest</span><span className="text-indigo-400/60 font-normal text-[0.6em] ml-1">Prep</span>
               </span>
             </Link>
             <div className="flex items-center gap-1.5">
@@ -295,7 +306,7 @@ export function Sidebar({ userRole, userTrack, isOpen = false, onClose = () => {
 
         {/* Navigation */}
         <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
-          {navItems.map((item) => {
+          {navItems.filter(item => !hiddenPages.has(item.href)).map((item) => {
             const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
             return (
               <Link

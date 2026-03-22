@@ -389,7 +389,7 @@ npm run pages:deploy    # checks + build + deploy to CF Pages
 - **About Page**: Trimmed 6 old beta release notes to single summary. Added "Science Behind Sage" methodology section (active recall, spaced repetition, mastery-based progression, comprehension verification). Added "What Students Experience" outcomes grid.
 - **Billing**: Per-module cancel/reactivate buttons. Cancel endpoint accepts `?module=` param. Reactivate (DELETE) endpoint accepts `?module=` param.
 - **Daily Goals**: Customizable daily question target (5/10/15/20 per day, stored in localStorage).
-- **Brand**: "StudentNest AI" branding consistency across all pages.
+- **Brand**: "StudentNest Prep" branding consistency across all pages.
 - **package.json**: Bumped to `2.1.0`.
 
 ### Beta 2.0 (2026-03-20)

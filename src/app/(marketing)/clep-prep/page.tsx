@@ -4,10 +4,10 @@ import { Button } from "@/components/ui/button";
 import { CheckCircle, ArrowRight, Sparkles, Brain, Target, BarChart3, GraduationCap } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "CLEP Exam Prep — Earn College Credit with AI | StudentNest AI",
+  title: "CLEP Exam Prep — Earn College Credit with AI | StudentNest Prep",
   description: "Skip intro courses and save $1,200+ per exam. AI-powered CLEP prep for College Algebra, Psychology, Marketing, and more. 6 exams. Free to start.",
   openGraph: {
-    title: "CLEP Exam Prep | StudentNest AI",
+    title: "CLEP Exam Prep | StudentNest Prep",
     description: "Skip intro courses. Save $1,200+ per CLEP exam. AI-powered prep for 6 exams. Free to start.",
     url: "https://studentnest.ai/clep-prep",
   },
@@ -35,7 +35,7 @@ const jsonLd = {
       "@type": "Course",
       name: c.name,
       description: `AI-powered ${c.name} prep. ${c.units} units. Pass and save ${c.savings} in tuition.`,
-      provider: { "@type": "Organization", name: "StudentNest AI", url: "https://studentnest.ai" },
+      provider: { "@type": "Organization", name: "StudentNest Prep", url: "https://studentnest.ai" },
       isAccessibleForFree: true,
       offers: [
         { "@type": "Offer", price: "0", priceCurrency: "USD", name: "Free" },

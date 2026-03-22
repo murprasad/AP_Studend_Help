@@ -10,7 +10,7 @@
   <!-- Logo -->
   <text x="600" y="200" text-anchor="middle" font-family="system-ui, sans-serif" font-size="56" font-weight="700">
     <tspan fill="#818cf8">Student</tspan><tspan fill="#e2e8f0">Nest</tspan>
-    <tspan fill="#94a3b8" font-weight="400" font-size="42" dx="12">AI</tspan>
+    <tspan fill="#94a3b8" font-weight="400" font-size="42" dx="12">Prep</tspan>
   </text>
   <!-- Tagline -->
   <text x="600" y="280" text-anchor="middle" font-family="system-ui, sans-serif" font-size="32" font-weight="600" fill="#e2e8f0">

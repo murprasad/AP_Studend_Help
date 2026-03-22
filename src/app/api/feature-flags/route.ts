@@ -1,9 +1,13 @@
 import { NextResponse } from "next/server";
-import { isPremiumRestrictionEnabled } from "@/lib/settings";
+import { isPremiumRestrictionEnabled, isAnalyticsEnabled, isStudyPlanEnabled } from "@/lib/settings";
 
 export const dynamic = "force-dynamic";
 
 export async function GET() {
-  const premiumRestrictionEnabled = await isPremiumRestrictionEnabled();
-  return NextResponse.json({ premiumRestrictionEnabled });
+  const [premiumRestrictionEnabled, analyticsEnabled, studyPlanEnabled] = await Promise.all([
+    isPremiumRestrictionEnabled(),
+    isAnalyticsEnabled(),
+    isStudyPlanEnabled(),
+  ]);
+  return NextResponse.json({ premiumRestrictionEnabled, analyticsEnabled, studyPlanEnabled });
 }

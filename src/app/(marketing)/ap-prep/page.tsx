@@ -4,10 +4,10 @@ import { Button } from "@/components/ui/button";
 import { CheckCircle, ArrowRight, Sparkles, Brain, Target, BarChart3, Clock } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "AP Exam Prep — AI Practice & Tutoring | StudentNest AI",
+  title: "AP Exam Prep — AI Practice & Tutoring | StudentNest Prep",
   description: "Score a 5 on your AP exam with AI-powered practice questions, instant feedback, and mastery tracking across 10 AP courses. Free to start.",
   openGraph: {
-    title: "AP Exam Prep | StudentNest AI",
+    title: "AP Exam Prep | StudentNest Prep",
     description: "AI-powered AP exam prep. 10 courses. Instant AI explanations. Mastery tracking. Free to start.",
     url: "https://studentnest.ai/ap-prep",
   },
@@ -39,7 +39,7 @@ const jsonLd = {
       "@type": "Course",
       name: c.name,
       description: `AI-powered ${c.name} prep with ${c.units} units of practice questions, mastery tracking, and instant explanations.`,
-      provider: { "@type": "Organization", name: "StudentNest AI", url: "https://studentnest.ai" },
+      provider: { "@type": "Organization", name: "StudentNest Prep", url: "https://studentnest.ai" },
       isAccessibleForFree: true,
       offers: [
         { "@type": "Offer", price: "0", priceCurrency: "USD", name: "Free" },
