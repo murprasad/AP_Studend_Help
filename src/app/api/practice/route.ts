@@ -238,6 +238,14 @@ export async function POST(req: NextRequest) {
     const count = Math.min(questionCount, scored.length);
     const selectedQuestions = scored.slice(0, count);
 
+    // Guard: if no questions available after all attempts, return 400 (not 500)
+    if (selectedQuestions.length === 0) {
+      return NextResponse.json(
+        { error: "No questions available for this course yet. Questions are being generated — please try again in a few seconds." },
+        { status: 400 }
+      );
+    }
+
     // Create the session (two steps to avoid implicit transactions,
     // which are not supported by the Neon HTTP adapter)
     const practiceSession = await prisma.practiceSession.create({
