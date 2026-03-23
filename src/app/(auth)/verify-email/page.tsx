@@ -46,7 +46,7 @@ function VerifyEmailContent() {
       <CardContent className="pt-8 pb-6">
         {status === "loading" && (
           <>
-            <Loader2 className="h-16 w-16 text-indigo-400 mx-auto mb-4 animate-spin" />
+            <Loader2 className="h-16 w-16 text-blue-500 mx-auto mb-4 animate-spin" />
             <h2 className="text-2xl font-bold mb-2">Verifying your email...</h2>
           </>
         )}
@@ -81,7 +81,7 @@ export default function VerifyEmailPage() {
       fallback={
         <Card className="w-full max-w-md text-center">
           <CardContent className="pt-8 pb-6">
-            <Loader2 className="h-16 w-16 text-indigo-400 mx-auto mb-4 animate-spin" />
+            <Loader2 className="h-16 w-16 text-blue-500 mx-auto mb-4 animate-spin" />
             <h2 className="text-2xl font-bold mb-2">Loading...</h2>
           </CardContent>
         </Card>

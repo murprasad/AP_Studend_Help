@@ -254,7 +254,7 @@ export default function AnalyticsPage() {
               <span className="text-muted-foreground">Current:</span>
               <span className="font-bold">{Math.round(goalModalUnit.current)}%</span>
               <span className="text-muted-foreground ml-2">Target:</span>
-              <span className="font-bold text-indigo-400">{goalTarget}%</span>
+              <span className="font-bold text-blue-500">{goalTarget}%</span>
             </div>
             <div className="space-y-1">
               <label className="text-xs text-muted-foreground">Target mastery (%)</label>
@@ -264,7 +264,7 @@ export default function AnalyticsPage() {
                 max={100}
                 value={goalTarget}
                 onChange={(e) => setGoalTarget(e.target.value)}
-                className="w-full accent-indigo-500"
+                className="w-full accent-blue-500"
               />
               <div className="flex justify-between text-xs text-muted-foreground">
                 <span>{Math.ceil(goalModalUnit.current) + 1}%</span>
@@ -277,7 +277,7 @@ export default function AnalyticsPage() {
                 type="date"
                 value={goalDate}
                 onChange={(e) => setGoalDate(e.target.value)}
-                className="w-full rounded-md border border-border/40 bg-background px-3 py-1.5 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                className="w-full rounded-md border border-border/40 bg-background px-3 py-1.5 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-blue-500"
               />
             </div>
             <div className="flex gap-2">
@@ -290,7 +290,7 @@ export default function AnalyticsPage() {
               <button
                 onClick={saveGoal}
                 disabled={goalSaving}
-                className="flex-1 px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium transition-colors disabled:opacity-50"
+                className="flex-1 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium transition-colors disabled:opacity-50"
               >
                 {goalSaving ? "Saving…" : "Set Goal"}
               </button>
@@ -425,8 +425,8 @@ export default function AnalyticsPage() {
         <Card className="card-glow">
           <CardContent className="p-5">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-indigo-500/20 flex items-center justify-center">
-                <Sparkles className="h-5 w-5 text-indigo-400" />
+              <div className="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center">
+                <Sparkles className="h-5 w-5 text-blue-500" />
               </div>
               <div>
                 <p className="text-2xl font-bold">
@@ -446,10 +446,10 @@ export default function AnalyticsPage() {
 
       {/* Estimated AP Score */}
       {stats?.estimatedApScore && (
-        <Card className="card-glow border-indigo-500/30 bg-indigo-500/5">
+        <Card className="card-glow border-blue-500/30 bg-blue-500/5">
           <CardContent className="p-5 flex items-center gap-6">
-            <div className="w-16 h-16 rounded-full bg-indigo-500/20 flex items-center justify-center flex-shrink-0">
-              <span className="text-2xl font-bold text-indigo-400">{stats.estimatedApScore}</span>
+            <div className="w-16 h-16 rounded-full bg-blue-500/20 flex items-center justify-center flex-shrink-0">
+              <span className="text-2xl font-bold text-blue-500">{stats.estimatedApScore}</span>
             </div>
             <div>
               <p className="font-semibold text-lg">Estimated AP Score: {stats.estimatedApScore}/5</p>
@@ -485,7 +485,7 @@ export default function AnalyticsPage() {
                       }}
                       formatter={(v: number) => [`${v}%`, "Mastery"]}
                     />
-                    <Bar dataKey="mastery" fill="#6366f1" radius={[0, 4, 4, 0]} />
+                    <Bar dataKey="mastery" fill="#1865F2" radius={[0, 4, 4, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
               ) : (
@@ -569,7 +569,7 @@ export default function AnalyticsPage() {
                       <span className="text-sm font-bold">{Math.round(unit.masteryScore)}%</span>
                       {goal ? (
                         <div className="flex items-center gap-1">
-                          <span className="text-xs text-indigo-400">→ {Math.round(goal.targetScore)}%</span>
+                          <span className="text-xs text-blue-500">→ {Math.round(goal.targetScore)}%</span>
                           <button
                             onClick={() => deleteGoal(unit.unit)}
                             className="text-muted-foreground hover:text-red-400 transition-colors"
@@ -585,7 +585,7 @@ export default function AnalyticsPage() {
                             setGoalTarget(String(Math.min(100, Math.ceil(unit.masteryScore) + 15)));
                             setGoalDate("");
                           }}
-                          className="text-muted-foreground hover:text-indigo-400 transition-colors"
+                          className="text-muted-foreground hover:text-blue-500 transition-colors"
                           title="Set mastery goal"
                         >
                           <Flag className="h-3.5 w-3.5" />
@@ -601,14 +601,14 @@ export default function AnalyticsPage() {
                     />
                     {goal && (
                       <div
-                        className="absolute top-0 h-2 w-0.5 bg-indigo-400 rounded"
+                        className="absolute top-0 h-2 w-0.5 bg-blue-500 rounded"
                         style={{ left: `${Math.min(goal.targetScore, 100)}%` }}
                         title={`Goal: ${Math.round(goal.targetScore)}%`}
                       />
                     )}
                   </div>
                   {goal && ptsToGo !== null && ptsToGo > 0 && (
-                    <p className="text-[10px] text-indigo-400">
+                    <p className="text-[10px] text-blue-500">
                       {Math.round(ptsToGo)} pts to goal
                       {goal.targetDate ? ` · by ${new Date(goal.targetDate).toLocaleDateString("en-US", { month: "short", day: "numeric" })}` : ""}
                     </p>
@@ -646,10 +646,10 @@ export default function AnalyticsPage() {
         const analyticsTrack = (session?.user as { track?: string })?.track ?? "ap";
         const isClep = analyticsTrack === "clep";
         return (
-        <Card className={isClep ? "border-emerald-500/30 bg-gradient-to-br from-emerald-500/10 to-teal-500/5" : "border-indigo-500/30 bg-gradient-to-br from-indigo-500/10 to-purple-500/5"}>
+        <Card className={isClep ? "border-emerald-500/30 bg-gradient-to-br from-emerald-500/10 to-teal-500/5" : "border-blue-500/30 bg-gradient-to-br from-blue-500/10 to-purple-500/5"}>
           <CardContent className="p-5 flex items-start gap-4">
-            <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${isClep ? "bg-emerald-500/20" : "bg-indigo-500/20"}`}>
-              <Sparkles className={`h-5 w-5 ${isClep ? "text-emerald-400" : "text-indigo-400"}`} />
+            <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${isClep ? "bg-emerald-500/20" : "bg-blue-500/20"}`}>
+              <Sparkles className={`h-5 w-5 ${isClep ? "text-emerald-400" : "text-blue-500"}`} />
             </div>
             <div className="flex-1">
               <p className="font-semibold text-sm">Unlock advanced analytics with {isClep ? "CLEP Premium" : "AP Premium"}</p>
@@ -660,7 +660,7 @@ export default function AnalyticsPage() {
               </p>
             </div>
             <Link href="/billing">
-              <button className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-white text-xs font-medium transition-colors whitespace-nowrap ${isClep ? "bg-emerald-600 hover:bg-emerald-700" : "bg-indigo-600 hover:bg-indigo-700"}`}>
+              <button className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-white text-xs font-medium transition-colors whitespace-nowrap ${isClep ? "bg-emerald-600 hover:bg-emerald-700" : "bg-blue-600 hover:bg-blue-700"}`}>
                 <Crown className="h-3.5 w-3.5" />
                 Upgrade
               </button>

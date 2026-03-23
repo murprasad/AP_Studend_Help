@@ -450,7 +450,7 @@ export default function PracticePage() {
                 <p className="text-sm text-muted-foreground mt-1">Accuracy</p>
               </div>
               <div className="text-center">
-                <p className="text-5xl font-bold text-indigo-400">+{sessionSummary.xpEarned}</p>
+                <p className="text-5xl font-bold text-blue-500">+{sessionSummary.xpEarned}</p>
                 <p className="text-sm text-muted-foreground mt-1">XP Earned</p>
               </div>
               <div className="text-center">
@@ -464,9 +464,9 @@ export default function PracticePage() {
             </div>
 
             {sessionSummary.apScoreEstimate > 0 && (
-              <div className="text-center p-4 rounded-lg bg-indigo-500/10 border border-indigo-500/20 mb-6">
+              <div className="text-center p-4 rounded-lg bg-blue-500/10 border border-blue-500/20 mb-6">
                 <p className="text-sm text-muted-foreground">Estimated {userTrack === "clep" ? "CLEP" : "AP"} Score</p>
-                <p className="text-4xl font-bold text-indigo-400">{userTrack === "clep" ? `${Math.round(sessionSummary.apScoreEstimate * 16)}/80` : `${sessionSummary.apScoreEstimate}/5`}</p>
+                <p className="text-4xl font-bold text-blue-500">{userTrack === "clep" ? `${Math.round(sessionSummary.apScoreEstimate * 16)}/80` : `${sessionSummary.apScoreEstimate}/5`}</p>
               </div>
             )}
 
@@ -479,8 +479,8 @@ export default function PracticePage() {
                   </p>
                 </div>
               ) : sessionSummary.accuracy === sessionSummary.previousAccuracy ? (
-                <div className="text-center p-3 rounded-lg bg-indigo-500/10 border border-indigo-500/20 mb-4">
-                  <p className="text-sm text-indigo-300">Consistent performance — keep building on it</p>
+                <div className="text-center p-3 rounded-lg bg-blue-500/10 border border-blue-500/20 mb-4">
+                  <p className="text-sm text-blue-400">Consistent performance — keep building on it</p>
                 </div>
               ) : (
                 <div className="text-center p-3 rounded-lg bg-secondary/50 border border-border/40 mb-4">
@@ -488,8 +488,8 @@ export default function PracticePage() {
                 </div>
               )
             ) : (
-              <div className="text-center p-3 rounded-lg bg-indigo-500/10 border border-indigo-500/20 mb-4">
-                <p className="text-sm text-indigo-300">Great first session! Keep practicing to track your improvement</p>
+              <div className="text-center p-3 rounded-lg bg-blue-500/10 border border-blue-500/20 mb-4">
+                <p className="text-sm text-blue-400">Great first session! Keep practicing to track your improvement</p>
               </div>
             )}
 
@@ -573,15 +573,15 @@ export default function PracticePage() {
         <Progress
           value={(currentIndex / Math.max(questionsRef.current.length, 1)) * 100}
           className="h-2"
-          indicatorClassName="bg-indigo-500"
+          indicatorClassName="bg-blue-500"
         />
 
         {/* Question card */}
         <Card className="card-glow">
           <CardContent className="p-6 space-y-4">
             {(currentQuestion.stimulus || currentQuestion.stimulusImageUrl) && (
-              <div className="p-4 rounded-lg bg-secondary/50 border-l-4 border-indigo-500 space-y-3">
-                <p className="text-xs font-semibold uppercase tracking-wide text-indigo-400">Source / Context</p>
+              <div className="p-4 rounded-lg bg-secondary/50 border-l-4 border-blue-500 space-y-3">
+                <p className="text-xs font-semibold uppercase tracking-wide text-blue-500">Source / Context</p>
                 {currentQuestion.stimulusImageUrl && (
                   <div className="flex justify-center">
                     <img
@@ -609,27 +609,27 @@ export default function PracticePage() {
                 {currentQuestion.questionType === "CODING" ? (
                   <div className="space-y-1">
                     <p className="text-sm text-muted-foreground">Write your algorithm explanation or pseudocode solution below using AP CSP syntax.</p>
-                    <p className="text-xs text-indigo-400">Tip: Use AP pseudocode — DISPLAY, IF/ELSE, REPEAT TIMES, FOR EACH, PROCEDURE, RETURN</p>
+                    <p className="text-xs text-blue-500">Tip: Use AP pseudocode — DISPLAY, IF/ELSE, REPEAT TIMES, FOR EACH, PROCEDURE, RETURN</p>
                   </div>
                 ) : currentQuestion.questionType === "DBQ" ? (
                   <div className="space-y-1">
                     <p className="text-sm text-muted-foreground">Write your Document-Based Question essay below. Include: thesis, contextualization, document analysis, and outside evidence.</p>
-                    <p className="text-xs text-indigo-400">Tip: Aim for ~5–7 paragraphs. Reference specific documents and explain their purpose (HAPP).</p>
+                    <p className="text-xs text-blue-500">Tip: Aim for ~5–7 paragraphs. Reference specific documents and explain their purpose (HAPP).</p>
                   </div>
                 ) : currentQuestion.questionType === "LEQ" ? (
                   <div className="space-y-1">
                     <p className="text-sm text-muted-foreground">Write your Long Essay Question response below. Include: thesis, contextualization, evidence, and historical reasoning skill.</p>
-                    <p className="text-xs text-indigo-400">Tip: Aim for ~3–5 paragraphs. Use specific historical evidence to support your argument.</p>
+                    <p className="text-xs text-blue-500">Tip: Aim for ~3–5 paragraphs. Use specific historical evidence to support your argument.</p>
                   </div>
                 ) : currentQuestion.questionType === "SAQ" ? (
                   <div className="space-y-1">
                     <p className="text-sm text-muted-foreground">Write your Short Answer response below. Answer each labeled part (a), (b), (c) in 3–6 sentences each.</p>
-                    <p className="text-xs text-indigo-400">Tip: No thesis required. Be direct, use specific evidence, and address every part.</p>
+                    <p className="text-xs text-blue-500">Tip: No thesis required. Be direct, use specific evidence, and address every part.</p>
                   </div>
                 ) : (
                   <div className="space-y-1">
                     <p className="text-sm text-muted-foreground">Write your Free Response answer below. Show all work — equations, substitutions, units, and reasoning.</p>
-                    <p className="text-xs text-indigo-400">Tip: Label each part (a), (b), (c). Partial credit is awarded — show your reasoning even if unsure.</p>
+                    <p className="text-xs text-blue-500">Tip: Label each part (a), (b), (c). Partial credit is awarded — show your reasoning even if unsure.</p>
                   </div>
                 )}
                 <Textarea
@@ -669,7 +669,7 @@ export default function PracticePage() {
                     optionClass = "border border-border/20 opacity-50";
                   }
                 } else if (selectedAnswer === letter) {
-                  optionClass = "border-indigo-500 bg-indigo-500/10";
+                  optionClass = "border-blue-500 bg-blue-500/10";
                 }
 
                 return (
@@ -752,7 +752,7 @@ export default function PracticePage() {
                       className={`inline-flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded-full transition-colors ${
                         feedback.isCorrect
                           ? "bg-teal-500/10 text-teal-400 hover:bg-teal-500/20"
-                          : "bg-indigo-500/15 text-indigo-300 hover:bg-indigo-500/25"
+                          : "bg-blue-500/15 text-blue-400 hover:bg-blue-500/25"
                       }`}
                     >
                       <Sparkles className="h-3.5 w-3.5" />
@@ -840,7 +840,7 @@ export default function PracticePage() {
           onClick={() => { setSessionType("QUICK_PRACTICE"); setQuestionCount(10); setQuestionType("MCQ"); }}
           className={`p-4 rounded-xl border text-left transition-all ${
             sessionType === "QUICK_PRACTICE" && questionType === "MCQ"
-              ? "border-indigo-500 bg-indigo-500/10"
+              ? "border-blue-500 bg-blue-500/10"
               : "border-border/40 hover:bg-accent"
           }`}
         >
@@ -852,7 +852,7 @@ export default function PracticePage() {
           onClick={() => { setSessionType("FOCUSED_STUDY"); setQuestionCount(20); setQuestionType("MCQ"); }}
           className={`p-4 rounded-xl border text-left transition-all ${
             sessionType === "FOCUSED_STUDY" && questionType === "MCQ"
-              ? "border-indigo-500 bg-indigo-500/10"
+              ? "border-blue-500 bg-blue-500/10"
               : "border-border/40 hover:bg-accent"
           }`}
         >
@@ -871,8 +871,8 @@ export default function PracticePage() {
             <div className="col-span-2 flex items-center gap-2 px-3 py-2 rounded-lg bg-yellow-500/5 border border-yellow-500/20 text-xs text-yellow-300/80">
               <Crown className="h-3.5 w-3.5 flex-shrink-0 text-yellow-400" />
               <span>You&apos;re on the Free plan — 3 sessions/day. {userTrack === "clep"
-                ? <>Want unlimited practice + all 34 CLEP courses? <Link href="/pricing" className="underline hover:text-indigo-200">Upgrade to CLEP Premium</Link></>
-                : <>Want unlimited practice + FRQ scoring? <Link href="/pricing" className="underline hover:text-indigo-200">Upgrade to AP Premium</Link></>
+                ? <>Want unlimited practice + all 34 CLEP courses? <Link href="/pricing" className="underline hover:text-blue-300">Upgrade to CLEP Premium</Link></>
+                : <>Want unlimited practice + FRQ scoring? <Link href="/pricing" className="underline hover:text-blue-300">Upgrade to AP Premium</Link></>
               }</span>
             </div>
           );
@@ -896,7 +896,7 @@ export default function PracticePage() {
               }}
               className={`p-4 rounded-xl border text-left transition-all col-span-2 ${
                 questionType !== "MCQ"
-                  ? "border-indigo-500 bg-indigo-500/10"
+                  ? "border-blue-500 bg-blue-500/10"
                   : isLocked
                   ? "border-border/40 opacity-70 cursor-not-allowed"
                   : "border-border/40 hover:bg-accent"
@@ -912,7 +912,7 @@ export default function PracticePage() {
                   <p className="text-xs text-muted-foreground">{typeLabel} — AI-scored rubric feedback</p>
                 </div>
                 {isLocked && (
-                  <Badge className="bg-indigo-600 text-white text-xs">Premium</Badge>
+                  <Badge className="bg-blue-600 text-white text-xs">Premium</Badge>
                 )}
                 {!premiumRestricted && !isPremiumForTrack(subscriptionTier ?? "FREE", userTrack) && (
                   <Badge className="bg-amber-500/20 text-amber-300 text-xs border border-amber-500/30">Limited Time Access</Badge>
@@ -954,7 +954,7 @@ export default function PracticePage() {
                     : "Unlock unlimited practice + FRQ with AI scoring with AP Premium."}
                 </p>
                 <Link href="/pricing">
-                  <Button size="sm" className={`gap-2 mt-1 ${userTrack === "clep" ? "bg-emerald-600 hover:bg-emerald-700" : "bg-indigo-600 hover:bg-indigo-700"}`}>
+                  <Button size="sm" className={`gap-2 mt-1 ${userTrack === "clep" ? "bg-emerald-600 hover:bg-emerald-700" : "bg-blue-600 hover:bg-blue-700"}`}>
                     <Crown className="h-4 w-4" /> Upgrade to {userTrack === "clep" ? "CLEP Premium" : "AP Premium"}
                   </Button>
                 </Link>
@@ -982,7 +982,7 @@ export default function PracticePage() {
             </CardContent>
           </Card>
         ) : (
-          <Card className="card-glow border-indigo-500/20 bg-indigo-500/5">
+          <Card className="card-glow border-blue-500/20 bg-blue-500/5">
             <CardContent className="p-4">
               <p className="text-sm">🎉 Premium access is available to all users for a limited time — enjoy FRQ practice free!</p>
             </CardContent>
@@ -992,19 +992,19 @@ export default function PracticePage() {
 
       {/* Sage loading bubble — shown while FRQ/CODING session is starting */}
       {isStarting && questionType !== "MCQ" && (
-        <Card className="card-glow border-indigo-500/30 bg-gradient-to-br from-indigo-500/10 to-purple-500/10">
+        <Card className="card-glow border-blue-500/30 bg-gradient-to-br from-blue-500/10 to-purple-500/10">
           <CardContent className="p-5">
             <div className="flex items-start gap-3">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center flex-shrink-0 mt-0.5">
                 <Sparkles className="h-5 w-5 text-white" />
               </div>
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-1.5">
-                  <p className="text-sm font-bold text-indigo-300">Sage 🌿</p>
+                  <p className="text-sm font-bold text-blue-400">Sage 🌿</p>
                   <span className="flex gap-1 items-center">
-                    <span className="w-1.5 h-1.5 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
-                    <span className="w-1.5 h-1.5 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
-                    <span className="w-1.5 h-1.5 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+                    <span className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
+                    <span className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
+                    <span className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
                   </span>
                 </div>
                 <p className="text-sm text-muted-foreground leading-relaxed">

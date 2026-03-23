@@ -199,7 +199,7 @@ export default function BillingPage() {
     <div className="max-w-2xl mx-auto">
       <div className="mb-8">
         <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Crown className="h-8 w-8 text-indigo-400" />
+          <Crown className="h-8 w-8 text-blue-500" />
           Billing
         </h1>
         <p className="text-muted-foreground mt-1">Manage your subscription and payment details.</p>
@@ -243,7 +243,7 @@ export default function BillingPage() {
           <CardTitle className="text-lg flex items-center gap-2">
             Current plan
             {isPremium && (
-              <Badge className="bg-indigo-500/20 text-indigo-300 border-indigo-500/30 text-xs">
+              <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30 text-xs">
                 <Crown className="h-3 w-3 mr-1" />
                 {premiumLabel}
               </Badge>
@@ -259,9 +259,9 @@ export default function BillingPage() {
         <CardContent className="space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className={`w-10 h-10 rounded-full flex items-center justify-center ${isPremium ? "bg-indigo-500/20" : "bg-secondary"}`}>
+              <div className={`w-10 h-10 rounded-full flex items-center justify-center ${isPremium ? "bg-blue-500/20" : "bg-secondary"}`}>
                 {isPremium ? (
-                  <Crown className="h-5 w-5 text-indigo-400" />
+                  <Crown className="h-5 w-5 text-blue-500" />
                 ) : (
                   <Zap className="h-5 w-5 text-muted-foreground" />
                 )}
@@ -295,7 +295,7 @@ export default function BillingPage() {
               </Button>
             ) : (
               <Link href="/pricing">
-                <Button size="sm" className="gap-2 bg-indigo-600 hover:bg-indigo-700">
+                <Button size="sm" className="gap-2 bg-blue-600 hover:bg-blue-700">
                   <ArrowUpRight className="h-3.5 w-3.5" />
                   Upgrade to {(session?.user as { track?: string })?.track === "clep" ? "CLEP Premium" : "AP Premium"}
                 </Button>
@@ -310,10 +310,10 @@ export default function BillingPage() {
                 ? "border-amber-500/30 bg-amber-500/5"
                 : daysLeft !== null && daysLeft <= 7
                   ? "border-orange-500/30 bg-orange-500/5"
-                  : "border-indigo-500/20 bg-indigo-500/5"
+                  : "border-blue-500/20 bg-blue-500/5"
             }`}>
               <Calendar className={`h-4 w-4 flex-shrink-0 ${
-                isCanceling ? "text-amber-400" : "text-indigo-400"
+                isCanceling ? "text-amber-400" : "text-blue-500"
               }`} />
               <div className="flex-1">
                 {isCanceling ? (
@@ -327,7 +327,7 @@ export default function BillingPage() {
                   </>
                 ) : (
                   <>
-                    <p className="text-sm font-medium text-indigo-300">
+                    <p className="text-sm font-medium text-blue-400">
                       Renews {formatDate(periodEnd)}
                     </p>
                     <p className="text-xs text-muted-foreground mt-0.5">
@@ -342,7 +342,7 @@ export default function BillingPage() {
                   size="sm"
                   onClick={reactivateSubscription}
                   disabled={reactivating}
-                  className="text-xs gap-1.5 border-indigo-500/30 text-indigo-300 hover:bg-indigo-500/10"
+                  className="text-xs gap-1.5 border-blue-500/30 text-blue-400 hover:bg-blue-500/10"
                 >
                   {reactivating ? <Loader2 className="h-3 w-3 animate-spin" /> : <RefreshCw className="h-3 w-3" />}
                   Reactivate
@@ -355,12 +355,12 @@ export default function BillingPage() {
 
       {/* Premium features */}
       {isPremium ? (
-        <Card className="mb-6 border-indigo-500/20 bg-indigo-500/5">
+        <Card className="mb-6 border-blue-500/20 bg-blue-500/5">
           <CardHeader>
             <CardTitle className="text-lg flex items-center gap-2">
-              <Crown className="h-5 w-5 text-indigo-400" />
+              <Crown className="h-5 w-5 text-blue-500" />
               You&apos;re enjoying Premium access
-              <Badge className="bg-indigo-600 text-white text-xs border-0">Active</Badge>
+              <Badge className="bg-blue-600 text-white text-xs border-0">Active</Badge>
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -383,7 +383,7 @@ export default function BillingPage() {
                 "Early access to new courses",
               ]).map((f) => (
                 <li key={f} className="flex items-center gap-2 text-sm">
-                  <CheckCircle className={`h-4 w-4 flex-shrink-0 ${(session?.user as { track?: string })?.track === "clep" ? "text-emerald-400" : "text-indigo-400"}`} />
+                  <CheckCircle className={`h-4 w-4 flex-shrink-0 ${(session?.user as { track?: string })?.track === "clep" ? "text-emerald-400" : "text-blue-500"}`} />
                   {f}
                 </li>
               ))}
@@ -443,7 +443,7 @@ export default function BillingPage() {
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-lg font-bold flex items-center gap-2">
-                <Sparkles className="h-5 w-5 text-indigo-400" />
+                <Sparkles className="h-5 w-5 text-blue-500" />
                 Upgrade Your Modules
               </h2>
               <p className="text-sm text-muted-foreground">Each module is $9.99/mo or $79.99/yr. Subscribe to as many as you need.</p>
@@ -455,7 +455,7 @@ export default function BillingPage() {
           </div>
           <div className="grid sm:grid-cols-2 gap-3">
             {([
-              { module: "ap", label: "AP Premium", desc: "10 AP courses + FRQ scoring", color: "indigo", btn: "bg-indigo-600 hover:bg-indigo-700", border: "border-indigo-500/30" },
+              { module: "ap", label: "AP Premium", desc: "10 AP courses + FRQ scoring", color: "indigo", btn: "bg-blue-600 hover:bg-blue-700", border: "border-blue-500/30" },
               { module: "sat", label: "SAT Premium", desc: "SAT Math + Reading & Writing", color: "blue", btn: "bg-blue-600 hover:bg-blue-700", border: "border-blue-500/30" },
               { module: "act", label: "ACT Premium", desc: "All 4 ACT sections", color: "violet", btn: "bg-violet-600 hover:bg-violet-700", border: "border-violet-500/30" },
               { module: "clep", label: "CLEP Premium", desc: "34 CLEP exams · Save $1,200+", color: "emerald", btn: "bg-emerald-600 hover:bg-emerald-700", border: "border-emerald-500/30" },
@@ -501,7 +501,7 @@ export default function BillingPage() {
                           <Button
                             variant="ghost"
                             size="sm"
-                            className="w-full text-xs text-indigo-400 hover:text-indigo-300"
+                            className="w-full text-xs text-blue-500 hover:text-blue-400"
                             onClick={async () => {
                               const res = await fetch(`/api/billing/cancel?module=${m.module}`, { method: "DELETE" });
                               const data = await res.json();
@@ -535,7 +535,7 @@ export default function BillingPage() {
           To update payment info or view invoices, use{" "}
           <button
             onClick={openPortal}
-            className="text-indigo-400 hover:underline"
+            className="text-blue-500 hover:underline"
             disabled={isLoading}
           >
             the Stripe billing portal

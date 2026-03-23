@@ -192,7 +192,7 @@ export function AdminPaymentSetup() {
     <Card className="card-glow">
       <CardHeader>
         <CardTitle className="text-lg flex items-center gap-2">
-          <CreditCard className="h-5 w-5 text-indigo-400" />
+          <CreditCard className="h-5 w-5 text-blue-500" />
           Payment Setup
         </CardTitle>
         <CardDescription>
@@ -254,7 +254,7 @@ export function AdminPaymentSetup() {
                 onClick={togglePayments}
                 disabled={toggling}
                 className={`relative inline-flex h-6 w-11 flex-shrink-0 items-center rounded-full transition-colors ${
-                  config?.paymentsEnabled ? "bg-indigo-600" : "bg-secondary"
+                  config?.paymentsEnabled ? "bg-blue-600" : "bg-secondary"
                 } ${toggling ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
               >
                 {toggling ? (
@@ -277,7 +277,7 @@ export function AdminPaymentSetup() {
                   href="https://dashboard.stripe.com/apikeys"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-1 text-xs text-indigo-400 hover:text-indigo-300"
+                  className="flex items-center gap-1 text-xs text-blue-500 hover:text-blue-400"
                 >
                   Open Stripe Dashboard <ExternalLink className="h-3 w-3" />
                 </a>
@@ -327,7 +327,7 @@ export function AdminPaymentSetup() {
                             setForm((prev) => ({ ...prev, [field.key]: e.target.value }))
                           }
                           placeholder={isSet ? maskedVal || "••••••••" : field.placeholder}
-                          className="w-full px-3 py-2 pr-10 text-xs font-mono rounded-lg border border-border/40 bg-secondary/30 placeholder:text-muted-foreground/50 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                          className="w-full px-3 py-2 pr-10 text-xs font-mono rounded-lg border border-border/40 bg-secondary/30 placeholder:text-muted-foreground/50 focus:outline-none focus:ring-1 focus:ring-blue-500"
                           autoComplete="off"
                         />
                         <button
@@ -357,7 +357,7 @@ export function AdminPaymentSetup() {
                   href="https://dashboard.stripe.com/payment-links"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-1 text-xs text-indigo-400 hover:text-indigo-300"
+                  className="flex items-center gap-1 text-xs text-blue-500 hover:text-blue-400"
                 >
                   Open Payment Links <ExternalLink className="h-3 w-3" />
                 </a>
@@ -392,7 +392,7 @@ export function AdminPaymentSetup() {
                     value={form.paymentLinkMonthly}
                     onChange={(e) => setForm((prev) => ({ ...prev, paymentLinkMonthly: e.target.value }))}
                     placeholder="https://buy.stripe.com/..."
-                    className="w-full px-3 py-2 text-xs font-mono rounded-lg border border-border/40 bg-secondary/30 placeholder:text-muted-foreground/50 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                    className="w-full px-3 py-2 text-xs font-mono rounded-lg border border-border/40 bg-secondary/30 placeholder:text-muted-foreground/50 focus:outline-none focus:ring-1 focus:ring-blue-500"
                   />
                 )}
                 <p className="text-xs text-muted-foreground/60 pl-5">Stripe Dashboard → Payment Links → create for monthly Premium price</p>
@@ -423,7 +423,7 @@ export function AdminPaymentSetup() {
                     value={form.paymentLinkAnnual}
                     onChange={(e) => setForm((prev) => ({ ...prev, paymentLinkAnnual: e.target.value }))}
                     placeholder="https://buy.stripe.com/..."
-                    className="w-full px-3 py-2 text-xs font-mono rounded-lg border border-border/40 bg-secondary/30 placeholder:text-muted-foreground/50 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                    className="w-full px-3 py-2 text-xs font-mono rounded-lg border border-border/40 bg-secondary/30 placeholder:text-muted-foreground/50 focus:outline-none focus:ring-1 focus:ring-blue-500"
                   />
                 )}
                 <p className="text-xs text-muted-foreground/60 pl-5">Stripe Dashboard → Payment Links → create for annual Premium price</p>
@@ -441,7 +441,7 @@ export function AdminPaymentSetup() {
                     value={form.premiumName}
                     onChange={(e) => setForm((prev) => ({ ...prev, premiumName: e.target.value }))}
                     placeholder="Premium"
-                    className="w-full px-3 py-2 text-sm rounded-lg border border-border/40 bg-secondary/30 placeholder:text-muted-foreground/50 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                    className="w-full px-3 py-2 text-sm rounded-lg border border-border/40 bg-secondary/30 placeholder:text-muted-foreground/50 focus:outline-none focus:ring-1 focus:ring-blue-500"
                   />
                 </div>
                 <div className="space-y-1.5">
@@ -451,7 +451,7 @@ export function AdminPaymentSetup() {
                     value={form.premiumPriceDisplay}
                     onChange={(e) => setForm((prev) => ({ ...prev, premiumPriceDisplay: e.target.value }))}
                     placeholder="9.99"
-                    className="w-full px-3 py-2 text-sm rounded-lg border border-border/40 bg-secondary/30 placeholder:text-muted-foreground/50 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                    className="w-full px-3 py-2 text-sm rounded-lg border border-border/40 bg-secondary/30 placeholder:text-muted-foreground/50 focus:outline-none focus:ring-1 focus:ring-blue-500"
                   />
                 </div>
                 <div className="space-y-1.5 col-span-2">
@@ -461,7 +461,7 @@ export function AdminPaymentSetup() {
                     value={form.premiumAnnualPriceDisplay}
                     onChange={(e) => setForm((prev) => ({ ...prev, premiumAnnualPriceDisplay: e.target.value }))}
                     placeholder="79.99"
-                    className="w-full px-3 py-2 text-sm rounded-lg border border-border/40 bg-secondary/30 placeholder:text-muted-foreground/50 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                    className="w-full px-3 py-2 text-sm rounded-lg border border-border/40 bg-secondary/30 placeholder:text-muted-foreground/50 focus:outline-none focus:ring-1 focus:ring-blue-500"
                   />
                 </div>
               </div>
@@ -474,7 +474,7 @@ export function AdminPaymentSetup() {
             <button
               type="submit"
               disabled={saving}
-              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
               {saving ? "Saving…" : "Save Configuration"}

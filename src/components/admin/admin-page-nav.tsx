@@ -13,7 +13,7 @@ export function AdminPageNav() {
         href="/admin"
         className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${
           !isManage
-            ? "bg-indigo-600 text-white"
+            ? "bg-blue-600 text-white"
             : "text-muted-foreground hover:text-foreground"
         }`}
       >
@@ -23,7 +23,7 @@ export function AdminPageNav() {
         href="/admin/manage"
         className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${
           isManage
-            ? "bg-indigo-600 text-white"
+            ? "bg-blue-600 text-white"
             : "text-muted-foreground hover:text-foreground"
         }`}
       >

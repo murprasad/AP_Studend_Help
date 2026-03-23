@@ -7,10 +7,10 @@ export default function MarketingLayout({ children }: { children: React.ReactNod
     <div className="min-h-screen bg-background flex flex-col">
       <nav className="border-b border-border/40 p-4 flex items-center justify-between max-w-7xl mx-auto w-full">
         <Link href="/" className="flex items-center gap-2">
-          <Sparkles className="h-6 w-6 text-indigo-400" />
+          <Sparkles className="h-6 w-6 text-blue-500" />
           <div>
             <span className="text-lg font-bold">
-              <span className="gradient-text">Student</span><span className="text-foreground/80 font-medium">Nest</span><span className="text-indigo-400/60 font-normal text-[0.6em] ml-1">Prep</span>
+              <span className="gradient-text">Student</span><span className="text-foreground/80 font-medium">Nest</span><span className="text-blue-500/60 font-normal text-[0.6em] ml-1">Prep</span>
             </span>
             <p className="text-xs text-muted-foreground leading-none hidden sm:block">Study Smarter. Score Higher.</p>
           </div>
@@ -24,7 +24,7 @@ export default function MarketingLayout({ children }: { children: React.ReactNod
           </Link>
           <Link
             href="/register"
-            className="text-sm bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 sm:px-4 rounded-lg transition-colors"
+            className="text-sm bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 sm:px-4 rounded-lg transition-colors"
           >
             <span className="hidden sm:inline">Get started </span>free
           </Link>

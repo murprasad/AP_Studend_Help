@@ -49,7 +49,7 @@ export function AdminMonitorTabs({ stats, recentUsers }: Props) {
             onClick={() => router.push(`/admin?tab=${t.id}`)}
             className={`px-4 py-2 text-sm font-medium transition-colors border-b-2 -mb-px ${
               tab === t.id
-                ? "border-indigo-500 text-indigo-400"
+                ? "border-blue-500 text-blue-500"
                 : "border-transparent text-muted-foreground hover:text-foreground"
             }`}
           >
@@ -63,7 +63,7 @@ export function AdminMonitorTabs({ stats, recentUsers }: Props) {
         <div className="space-y-6">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             {[
-              { label: "Total Users", value: stats.totalUsers, icon: Users, color: "text-indigo-400", bg: "bg-indigo-500/20" },
+              { label: "Total Users", value: stats.totalUsers, icon: Users, color: "text-blue-500", bg: "bg-blue-500/20" },
               { label: "Questions", value: stats.totalQuestions, icon: BookOpen, color: "text-emerald-400", bg: "bg-emerald-500/20" },
               { label: "Pending Review", value: stats.pendingQuestions, icon: Clock, color: "text-yellow-400", bg: "bg-yellow-500/20" },
               { label: "Sessions Completed", value: stats.totalSessions, icon: BarChart3, color: "text-purple-400", bg: "bg-purple-500/20" },

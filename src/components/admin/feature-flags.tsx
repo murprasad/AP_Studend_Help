@@ -48,7 +48,7 @@ export function AdminFeatureFlags() {
     <Card className="card-glow">
       <CardHeader>
         <CardTitle className="text-lg flex items-center gap-2">
-          <Settings className="h-5 w-5 text-indigo-400" />
+          <Settings className="h-5 w-5 text-blue-500" />
           Feature Flags
         </CardTitle>
         <CardDescription>
@@ -118,7 +118,7 @@ export function AdminFeatureFlags() {
                   onClick={() => toggle(flag.key, value)}
                   disabled={isSaving}
                   className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer items-center rounded-full transition-colors focus:outline-none ${
-                    isEnabled ? "bg-indigo-600" : "bg-secondary"
+                    isEnabled ? "bg-blue-600" : "bg-secondary"
                   } ${isSaving ? "opacity-50 cursor-not-allowed" : ""}`}
                 >
                   {isSaving ? (

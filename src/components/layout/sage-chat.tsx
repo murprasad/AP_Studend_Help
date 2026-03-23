@@ -199,15 +199,15 @@ export function SageChat() {
       <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 flex flex-col items-end gap-2">
         {/* Tooltip before first open */}
         {!open && pulse && (
-          <div className="bg-indigo-600 text-white text-xs px-3 py-1.5 rounded-full shadow-lg animate-bounce whitespace-nowrap">
+          <div className="bg-blue-600 text-white text-xs px-3 py-1.5 rounded-full shadow-lg animate-bounce whitespace-nowrap">
             Hey! I&apos;m Sage 🌿 Ask me anything!
           </div>
         )}
 
         <button
           onClick={() => setOpen((v) => !v)}
-          className={`relative w-14 h-14 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 shadow-lg hover:shadow-indigo-500/40 hover:scale-105 transition-all duration-200 flex items-center justify-center ${
-            pulse ? "ring-2 ring-indigo-400 ring-offset-2 ring-offset-background" : ""
+          className={`relative w-14 h-14 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 shadow-lg hover:shadow-blue-500/40 hover:scale-105 transition-all duration-200 flex items-center justify-center ${
+            pulse ? "ring-2 ring-blue-500 ring-offset-2 ring-offset-background" : ""
           }`}
           aria-label="Open Sage chat"
         >
@@ -228,14 +228,14 @@ export function SageChat() {
           style={{ maxHeight: "min(520px, calc(100vh - 7rem))" }}
         >
           {/* Header */}
-          <div className="bg-gradient-to-r from-indigo-600 to-purple-700 px-4 py-3 flex items-center justify-between flex-shrink-0">
+          <div className="bg-gradient-to-r from-blue-600 to-purple-700 px-4 py-3 flex items-center justify-between flex-shrink-0">
             <div className="flex items-center gap-2.5">
               <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
                 <Sparkles className="h-4 w-4 text-white" />
               </div>
               <div>
                 <p className="text-white font-bold text-sm leading-none">Sage 🌿</p>
-                <p className="text-indigo-200 text-xs mt-0.5">StudentNest Guide · Powered by Groq</p>
+                <p className="text-blue-300 text-xs mt-0.5">StudentNest Guide · Powered by Groq</p>
               </div>
             </div>
             <div className="flex items-center gap-1">
@@ -261,7 +261,7 @@ export function SageChat() {
           <div className="flex-1 overflow-y-auto p-4 space-y-3 min-h-0">
             {/* Welcome */}
             <div className="flex gap-2.5">
-              <div className="w-7 h-7 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <div className="w-7 h-7 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center flex-shrink-0 mt-0.5">
                 <Sparkles className="h-3.5 w-3.5 text-white" />
               </div>
               <div className="bg-secondary rounded-2xl rounded-tl-sm px-3.5 py-2.5 max-w-[85%]">
@@ -276,7 +276,7 @@ export function SageChat() {
                   <button
                     key={q}
                     onClick={() => sendMessage(q)}
-                    className="text-xs px-3 py-2 rounded-full border border-indigo-500/30 text-indigo-400 hover:bg-indigo-500/10 transition-colors min-h-[36px]"
+                    className="text-xs px-3 py-2 rounded-full border border-blue-500/30 text-blue-500 hover:bg-blue-500/10 transition-colors min-h-[36px]"
                   >
                     {q}
                   </button>
@@ -288,14 +288,14 @@ export function SageChat() {
             {messages.map((m, i) => (
               <div key={i} className={`flex gap-2.5 ${m.role === "user" ? "flex-row-reverse" : ""}`}>
                 {m.role === "assistant" && (
-                  <div className="w-7 h-7 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <div className="w-7 h-7 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center flex-shrink-0 mt-0.5">
                     <Sparkles className="h-3.5 w-3.5 text-white" />
                   </div>
                 )}
                 <div
                   className={`rounded-2xl px-3.5 py-2.5 max-w-[85%] text-sm leading-relaxed ${
                     m.role === "user"
-                      ? "bg-indigo-600 text-white rounded-tr-sm"
+                      ? "bg-blue-600 text-white rounded-tr-sm"
                       : "bg-secondary rounded-tl-sm"
                   }`}
                 >
@@ -307,13 +307,13 @@ export function SageChat() {
             {/* Loading */}
             {loading && (
               <div className="flex gap-2.5">
-                <div className="w-7 h-7 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center flex-shrink-0">
+                <div className="w-7 h-7 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center flex-shrink-0">
                   <Sparkles className="h-3.5 w-3.5 text-white" />
                 </div>
                 <div className="bg-secondary rounded-2xl rounded-tl-sm px-4 py-3 flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
-                  <span className="w-1.5 h-1.5 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
-                  <span className="w-1.5 h-1.5 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
+                  <span className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
+                  <span className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />
+                  <span className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: "300ms" }} />
                 </div>
               </div>
             )}
@@ -338,7 +338,7 @@ export function SageChat() {
                 size="sm"
                 onClick={() => sendMessage(input)}
                 disabled={!input.trim() || loading}
-                className="bg-indigo-600 hover:bg-indigo-700 h-11 w-11 p-0 flex-shrink-0"
+                className="bg-blue-600 hover:bg-blue-700 h-11 w-11 p-0 flex-shrink-0"
               >
                 {loading ? (
                   <Loader2 className="h-4 w-4 animate-spin" />

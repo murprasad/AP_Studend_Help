@@ -31,9 +31,9 @@ export async function sendVerificationEmail(
     "Verify your StudentNest account",
     `
     <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
-      <h1 style="color: #6366f1;">Welcome to StudentNest, ${firstName}!</h1>
+      <h1 style="color: #1865F2;">Welcome to StudentNest, ${firstName}!</h1>
       <p>Please verify your email address to get started — your study prep platform is ready.</p>
-      <a href="${verifyUrl}" style="display: inline-block; background: #6366f1; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; margin: 16px 0;">
+      <a href="${verifyUrl}" style="display: inline-block; background: #1865F2; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; margin: 16px 0;">
         Verify Email
       </a>
       <p style="color: #666;">This link expires in 24 hours.</p>
@@ -64,7 +64,7 @@ export async function sendPremiumSignupNotification(opts: {
         <tr><td style="padding: 8px 0; color: #94a3b8;">Plan</td><td style="padding: 8px 0; color: #34d399; font-weight: 600;">${plan}</td></tr>
         <tr><td style="padding: 8px 0; color: #94a3b8;">Time</td><td style="padding: 8px 0;">${now} UTC</td></tr>
       </table>
-      <a href="${adminUrl}" style="display: inline-block; background: #6366f1; color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; margin-top: 8px;">
+      <a href="${adminUrl}" style="display: inline-block; background: #1865F2; color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; margin-top: 8px;">
         View Admin Dashboard
       </a>
     </div>
@@ -84,9 +84,9 @@ export async function sendPasswordResetEmail(
     "Reset your StudentNest password",
     `
     <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
-      <h1 style="color: #6366f1;">Password Reset</h1>
+      <h1 style="color: #1865F2;">Password Reset</h1>
       <p>Hi ${firstName}, we received a request to reset your password.</p>
-      <a href="${resetUrl}" style="display: inline-block; background: #6366f1; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; margin: 16px 0;">
+      <a href="${resetUrl}" style="display: inline-block; background: #1865F2; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; margin: 16px 0;">
         Reset Password
       </a>
       <p style="color: #666;">This link expires in 1 hour.</p>

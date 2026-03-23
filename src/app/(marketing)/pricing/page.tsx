@@ -85,7 +85,7 @@ export default function PricingPage() {
 
   // Tailwind can't do dynamic classes, so map explicitly
   const colorMap: Record<string, { border: string; bg: string; text: string; btn: string; check: string; badge: string }> = {
-    indigo: { border: "border-indigo-500", bg: "bg-indigo-500/5", text: "text-indigo-400", btn: "bg-indigo-600 hover:bg-indigo-700", check: "text-indigo-400", badge: "bg-indigo-600" },
+    indigo: { border: "border-blue-500", bg: "bg-blue-500/5", text: "text-blue-500", btn: "bg-blue-600 hover:bg-blue-700", check: "text-blue-500", badge: "bg-blue-600" },
     blue: { border: "border-blue-500", bg: "bg-blue-500/5", text: "text-blue-400", btn: "bg-blue-600 hover:bg-blue-700", check: "text-blue-400", badge: "bg-blue-600" },
     violet: { border: "border-violet-500", bg: "bg-violet-500/5", text: "text-violet-400", btn: "bg-violet-600 hover:bg-violet-700", check: "text-violet-400", badge: "bg-violet-600" },
     emerald: { border: "border-emerald-500", bg: "bg-emerald-500/5", text: "text-emerald-400", btn: "bg-emerald-600 hover:bg-emerald-700", check: "text-emerald-400", badge: "bg-emerald-600" },
@@ -107,7 +107,7 @@ export default function PricingPage() {
         <button
           onClick={() => setBillingCycle("monthly")}
           className={`px-5 py-2 rounded-lg text-sm font-medium transition-colors ${
-            !isAnnual ? "bg-indigo-600 text-white" : "text-muted-foreground hover:text-foreground"
+            !isAnnual ? "bg-blue-600 text-white" : "text-muted-foreground hover:text-foreground"
           }`}
         >
           Monthly
@@ -115,7 +115,7 @@ export default function PricingPage() {
         <button
           onClick={() => setBillingCycle("annual")}
           className={`px-5 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${
-            isAnnual ? "bg-indigo-600 text-white" : "text-muted-foreground hover:text-foreground"
+            isAnnual ? "bg-blue-600 text-white" : "text-muted-foreground hover:text-foreground"
           }`}
         >
           Annual
@@ -236,7 +236,7 @@ export default function PricingPage() {
             <thead>
               <tr className="bg-secondary/60 text-muted-foreground">
                 <th className="text-left p-3 font-medium"></th>
-                <th className="text-center p-3 font-medium text-indigo-400">StudentNest Prep</th>
+                <th className="text-center p-3 font-medium text-blue-500">StudentNest Prep</th>
                 <th className="text-center p-3 font-medium">Prep Course</th>
                 <th className="text-center p-3 font-medium">Private Tutor</th>
                 <th className="text-center p-3 font-medium">ChatGPT</th>
@@ -254,7 +254,7 @@ export default function PricingPage() {
                 <tr key={feature} className="hover:bg-secondary/20">
                   <td className="p-3 font-medium text-left">{feature}</td>
                   {values.map((v, i) => (
-                    <td key={i} className={`p-3 text-center ${i === 0 ? "text-indigo-400 font-medium" : "text-muted-foreground"}`}>{v}</td>
+                    <td key={i} className={`p-3 text-center ${i === 0 ? "text-blue-500 font-medium" : "text-muted-foreground"}`}>{v}</td>
                   ))}
                 </tr>
               ))}

@@ -48,7 +48,7 @@ export function AdminManageTabs({ questionsByUnit, questionsByTopic }: Props) {
             onClick={() => router.push(`/admin/manage?tab=${t.id}`)}
             className={`px-4 py-2 text-sm font-medium transition-colors border-b-2 -mb-px ${
               tab === t.id
-                ? "border-indigo-500 text-indigo-400"
+                ? "border-blue-500 text-blue-500"
                 : "border-transparent text-muted-foreground hover:text-foreground"
             }`}
           >

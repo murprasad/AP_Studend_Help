@@ -13,7 +13,7 @@ export function MockupPractice() {
       {/* Progress bar */}
       <div className="flex items-center gap-2">
         <div className="flex-1 h-1.5 rounded-full bg-secondary/40 overflow-hidden">
-          <div className="h-full w-[30%] rounded-full bg-indigo-500" />
+          <div className="h-full w-[30%] rounded-full bg-blue-500" />
         </div>
         <span className="text-[10px] text-muted-foreground flex-shrink-0">
           3 / 10
@@ -56,10 +56,10 @@ export function MockupPractice() {
       {/* Sage explanation */}
       <div className="rounded-lg border border-emerald-500/30 bg-emerald-500/5 p-3 space-y-1.5">
         <div className="flex items-center gap-1.5">
-          <div className="w-5 h-5 rounded-full bg-indigo-500/20 flex items-center justify-center flex-shrink-0">
-            <Sparkles className="h-3 w-3 text-indigo-400" />
+          <div className="w-5 h-5 rounded-full bg-blue-500/20 flex items-center justify-center flex-shrink-0">
+            <Sparkles className="h-3 w-3 text-blue-500" />
           </div>
-          <span className="text-[10px] font-semibold text-indigo-400">
+          <span className="text-[10px] font-semibold text-blue-500">
             Correct! Sage explains:
           </span>
         </div>

@@ -160,7 +160,7 @@ export function MarkdownContent({ content, useMermaid = false }: { content: stri
       prose-strong:text-foreground prose-strong:font-semibold
       prose-headings:text-foreground prose-headings:font-semibold
       prose-h2:text-lg prose-h3:text-base
-      prose-code:text-indigo-300 prose-code:bg-indigo-500/10
+      prose-code:text-blue-400 prose-code:bg-blue-500/10
       prose-code:px-1 prose-code:py-0.5 prose-code:rounded
       prose-ul:my-1 prose-ol:my-1"
     >
@@ -250,9 +250,9 @@ export function SectionCards({ sections, isStreaming, wikiImageUrl }: SectionCar
       {/* 🎯 Core Concept */}
       <SectionCard
         title="Core Concept"
-        icon={<Target className="h-4 w-4 text-indigo-400" />}
-        borderColor="border-indigo-500/30"
-        bgColor="bg-indigo-500/5"
+        icon={<Target className="h-4 w-4 text-blue-500" />}
+        borderColor="border-blue-500/30"
+        bgColor="bg-blue-500/5"
         isCompleted={completed.has("core")}
         isStreaming={isStreaming && !seenCore}
         extra={

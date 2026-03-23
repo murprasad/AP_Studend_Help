@@ -27,12 +27,12 @@ export function MockupStudyPlan() {
   return (
     <div className="p-4 space-y-3">
       {/* This Week's Goal — glowing card */}
-      <div className="p-3 rounded-xl border border-indigo-500/30 bg-indigo-500/5 shadow-[0_0_15px_rgba(99,102,241,0.08)]">
+      <div className="p-3 rounded-xl border border-blue-500/30 bg-blue-500/5 shadow-[0_0_15px_rgba(99,102,241,0.08)]">
         <div className="flex items-center gap-2 mb-1.5">
-          <div className="w-6 h-6 rounded-full bg-indigo-500/20 flex items-center justify-center">
-            <Target className="h-3.5 w-3.5 text-indigo-400" />
+          <div className="w-6 h-6 rounded-full bg-blue-500/20 flex items-center justify-center">
+            <Target className="h-3.5 w-3.5 text-blue-500" />
           </div>
-          <span className="text-xs font-semibold text-indigo-300">
+          <span className="text-xs font-semibold text-blue-400">
             This Week&apos;s Goal
           </span>
         </div>

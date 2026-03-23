@@ -56,7 +56,7 @@ async function main() {
 
   const html = `
     <div style="font-family: system-ui, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-      <h1 style="color: #6366f1; font-size: 24px;">StudentNest Prep — ${betaLabel} Deployed</h1>
+      <h1 style="color: #1865F2; font-size: 24px;">StudentNest Prep — ${betaLabel} Deployed</h1>
       <p style="color: #64748b; font-size: 14px;">${timestamp}</p>
       <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 16px 0;" />
       <h2 style="font-size: 16px; color: #1e293b;">Recent Changes</h2>
@@ -65,7 +65,7 @@ async function main() {
       </ul>
       <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 16px 0;" />
       <p style="color: #64748b; font-size: 12px;">
-        Live at <a href="https://studentnest.ai" style="color: #6366f1;">studentnest.ai</a> ·
+        Live at <a href="https://studentnest.ai" style="color: #1865F2;">studentnest.ai</a> ·
         Version: ${version}
       </p>
     </div>

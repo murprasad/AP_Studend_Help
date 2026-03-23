@@ -187,7 +187,7 @@ export default function StudyPlanPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-96">
-        <Loader2 className="h-8 w-8 animate-spin text-indigo-400" />
+        <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
       </div>
     );
   }
@@ -351,7 +351,7 @@ export default function StudyPlanPage() {
       {!plan ? (
         <Card className="card-glow">
           <CardContent className="p-10 text-center">
-            <BookOpen className="h-12 w-12 text-indigo-400 mx-auto mb-4" />
+            <BookOpen className="h-12 w-12 text-blue-500 mx-auto mb-4" />
             <h2 className="text-xl font-bold mb-2">No study plan yet</h2>
             <p className="text-muted-foreground mb-6">
               Generate your personalized {AP_COURSES[course]} study plan based on your practice history.
@@ -368,13 +368,13 @@ export default function StudyPlanPage() {
       ) : (
         <>
           {/* Weekly goal */}
-          <Card className="card-glow border-indigo-500/30 bg-indigo-500/5">
+          <Card className="card-glow border-blue-500/30 bg-blue-500/5">
             <CardContent className="p-5 flex items-start gap-4">
-              <div className="w-10 h-10 rounded-full bg-indigo-500/20 flex items-center justify-center flex-shrink-0">
-                <Target className="h-5 w-5 text-indigo-400" />
+              <div className="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center flex-shrink-0">
+                <Target className="h-5 w-5 text-blue-500" />
               </div>
               <div>
-                <p className="font-semibold text-sm text-indigo-300 mb-1">This Week&apos;s Goal</p>
+                <p className="font-semibold text-sm text-blue-400 mb-1">This Week&apos;s Goal</p>
                 <p className="text-base">{plan.weeklyGoal}</p>
                 <div className="flex items-center gap-2 mt-2">
                   <Clock className="h-4 w-4 text-muted-foreground" />
@@ -405,7 +405,7 @@ export default function StudyPlanPage() {
                   <p className="text-sm text-muted-foreground mb-3">{area.reason}</p>
                   <div className="flex flex-wrap gap-3 mb-2">
                     <div className="flex items-center gap-1.5 text-sm">
-                      <div className="w-2 h-2 rounded-full bg-indigo-400" />
+                      <div className="w-2 h-2 rounded-full bg-blue-500" />
                       {area.mcqCount} MCQ
                     </div>
                     {area.saqCount > 0 && (
@@ -452,7 +452,7 @@ export default function StudyPlanPage() {
                 <div className="space-y-2">
                   {Object.entries(plan.dailySchedule).map(([day, desc]) => (
                     <div key={day} className="flex items-start gap-3 p-3 rounded-lg bg-secondary/50">
-                      <span className="text-sm font-semibold text-indigo-400 w-20 flex-shrink-0">{day}</span>
+                      <span className="text-sm font-semibold text-blue-500 w-20 flex-shrink-0">{day}</span>
                       <p className="text-sm text-muted-foreground">{desc}</p>
                     </div>
                   ))}
@@ -496,7 +496,7 @@ export default function StudyPlanPage() {
                 <ul className="space-y-3">
                   {plan.tips.map((tip, i) => (
                     <li key={i} className="flex items-start gap-3 p-3 rounded-lg bg-secondary/50">
-                      <span className="text-indigo-400 font-bold text-sm flex-shrink-0">{i + 1}.</span>
+                      <span className="text-blue-500 font-bold text-sm flex-shrink-0">{i + 1}.</span>
                       <p className="text-sm">{tip}</p>
                     </li>
                   ))}

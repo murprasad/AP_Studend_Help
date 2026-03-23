@@ -113,7 +113,7 @@ export const GLOBAL_RESOURCES: Resource[] = [
     url: "https://www.loc.gov/collections/",
     type: "primary_source",
     icon: "Library",
-    color: "text-indigo-400",
+    color: "text-blue-500",
     free: true,
   },
   {
@@ -183,7 +183,7 @@ export const GLOBAL_RESOURCES: Resource[] = [
     url: "https://www.inquirygroup.org/history-lessons",
     type: "primary_source",
     icon: "FileText",
-    color: "text-violet-400",
+    color: "text-blue-500",
     free: true,
   },
   {

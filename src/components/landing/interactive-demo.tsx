@@ -69,7 +69,7 @@ export function InteractiveDemo() {
             onClick={() => switchTrack("ap")}
             className={`text-xs px-4 py-2 rounded-full min-h-[44px] transition-colors ${
               activeTrack === "ap"
-                ? "bg-indigo-500/20 text-indigo-300 border border-indigo-500/30"
+                ? "bg-blue-500/20 text-blue-400 border border-blue-500/30"
                 : "text-muted-foreground hover:text-foreground"
             }`}
           >
@@ -149,11 +149,11 @@ export function InteractiveDemo() {
           >
             <div className="flex items-center gap-2">
               <div className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 ${
-                activeTrack === "clep" ? "bg-emerald-500/20" : "bg-indigo-500/20"
+                activeTrack === "clep" ? "bg-emerald-500/20" : "bg-blue-500/20"
               }`}>
-                <Sparkles className={`h-3.5 w-3.5 ${activeTrack === "clep" ? "text-emerald-400" : "text-indigo-400"}`} />
+                <Sparkles className={`h-3.5 w-3.5 ${activeTrack === "clep" ? "text-emerald-400" : "text-blue-500"}`} />
               </div>
-              <span className={`text-xs font-semibold ${activeTrack === "clep" ? "text-emerald-400" : "text-indigo-400"}`}>
+              <span className={`text-xs font-semibold ${activeTrack === "clep" ? "text-emerald-400" : "text-blue-500"}`}>
                 {isCorrect ? "Correct! Sage explains:" : "Sage explains:"}
               </span>
             </div>

@@ -102,7 +102,7 @@ export function AdminCoverageTab({ questionsByUnit }: Props) {
           return (
             <div key={course}>
               <div className="flex items-center justify-between mb-2">
-                <p className="text-sm font-semibold text-indigo-300">{AP_COURSES[course as ApCourse]}</p>
+                <p className="text-sm font-semibold text-blue-400">{AP_COURSES[course as ApCourse]}</p>
                 <Badge variant="outline" className="text-xs">{courseTotal} total</Badge>
               </div>
               <div className="space-y-1">
@@ -121,7 +121,7 @@ export function AdminCoverageTab({ questionsByUnit }: Props) {
                           <button
                             onClick={() => fixUnit(course as ApCourse, unit)}
                             disabled={isFixing || fixingAll}
-                            className="flex items-center gap-1 px-2 py-0.5 rounded text-xs bg-indigo-600/80 hover:bg-indigo-500 text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="flex items-center gap-1 px-2 py-0.5 rounded text-xs bg-blue-600/80 hover:bg-blue-500 text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                           >
                             {isFixing ? <Loader2 className="h-3 w-3 animate-spin" /> : <Wrench className="h-3 w-3" />}
                             Generate

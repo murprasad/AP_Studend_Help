@@ -59,7 +59,7 @@ export function ReportQuestionModal({ questionId }: { questionId: string }) {
           <div className="space-y-2">
             {REASONS.map(r => (
               <label key={r.value} className="flex items-center gap-2 cursor-pointer">
-                <input type="radio" name="reason" value={r.value} checked={reason === r.value} onChange={e => setReason(e.target.value)} className="accent-indigo-500" />
+                <input type="radio" name="reason" value={r.value} checked={reason === r.value} onChange={e => setReason(e.target.value)} className="accent-blue-500" />
                 <span className="text-sm">{r.label}</span>
               </label>
             ))}

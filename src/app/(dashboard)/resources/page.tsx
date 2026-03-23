@@ -102,7 +102,7 @@ export default function ResourcesPage() {
             onClick={() => setActiveTab(tab.id as typeof activeTab)}
             className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors -mb-px ${
               activeTab === tab.id
-                ? "border-indigo-500 text-indigo-400"
+                ? "border-blue-500 text-blue-500"
                 : "border-transparent text-muted-foreground hover:text-foreground"
             }`}
           >
@@ -154,7 +154,7 @@ export default function ResourcesPage() {
             {GLOBAL_RESOURCES.map((resource) => {
               const Icon = ICON_MAP[resource.icon] || Globe;
               return (
-                <Card key={resource.id} className="card-glow hover:border-indigo-500/30 transition-colors">
+                <Card key={resource.id} className="card-glow hover:border-blue-500/30 transition-colors">
                   <CardContent className="p-5">
                     <div className="flex items-start gap-3 mb-3">
                       <div className="w-10 h-10 rounded-lg bg-secondary flex items-center justify-center flex-shrink-0">
@@ -201,7 +201,7 @@ export default function ResourcesPage() {
                       className="w-full flex items-center justify-between p-4 text-left hover:bg-accent/50 transition-colors rounded-lg"
                     >
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full bg-indigo-500/20 flex items-center justify-center text-xs font-bold text-indigo-400">
+                        <div className="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center text-xs font-bold text-blue-500">
                           {ur.unit.replace("UNIT_", "U").split("_")[0].replace("U", "")}
                         </div>
                         <div>
@@ -289,7 +289,7 @@ export default function ResourcesPage() {
                                 ur.mitocwUrl ? { label: "MIT OCW", url: ur.mitocwUrl, icon: GraduationCap, color: "text-blue-400" } : null,
                                 ur.khanUrl ? { label: "Khan Academy", url: ur.khanUrl, icon: Play, color: "text-green-400" } : null,
                                 ur.ck12Url ? { label: "CK-12", url: ur.ck12Url, icon: BookOpen, color: "text-cyan-400" } : null,
-                                ur.openStaxUrl ? { label: "OpenStax", url: ur.openStaxUrl, icon: FileText, color: "text-indigo-400" } : null,
+                                ur.openStaxUrl ? { label: "OpenStax", url: ur.openStaxUrl, icon: FileText, color: "text-blue-500" } : null,
                                 // Generic fallback links when no unit-level links are present
                                 !ur.khanUrl ? { label: "Khan Academy", url: "https://www.khanacademy.org", icon: Play, color: "text-green-400" } : null,
                                 !ur.oerUrl && !ur.ck12Url ? { label: "PracticeQuiz", url: "https://www.practicequiz.com/ap", icon: ClipboardCheck, color: "text-purple-400" } : null,
@@ -373,16 +373,16 @@ export default function ResourcesPage() {
           {COURSE_TEXTBOOKS.filter((b) => b.course === course && !b.free && b.type === "textbook").length > 0 && (
             <div className="space-y-3">
               <h2 className="text-lg font-bold flex items-center gap-2">
-                <BookMarked className="h-5 w-5 text-indigo-400" />
+                <BookMarked className="h-5 w-5 text-blue-500" />
                 Recommended Textbooks
               </h2>
               <div className="grid md:grid-cols-2 gap-4">
                 {COURSE_TEXTBOOKS.filter((b) => b.course === course && !b.free && b.type === "textbook").map((book) => (
-                  <Card key={book.name} className="card-glow hover:border-indigo-500/30 transition-colors">
+                  <Card key={book.name} className="card-glow hover:border-blue-500/30 transition-colors">
                     <CardContent className="p-5">
                       <div className="flex items-start gap-3 mb-2">
-                        <div className="w-10 h-10 rounded-lg bg-indigo-500/10 flex items-center justify-center flex-shrink-0">
-                          <BookMarked className="h-5 w-5 text-indigo-400" />
+                        <div className="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center flex-shrink-0">
+                          <BookMarked className="h-5 w-5 text-blue-500" />
                         </div>
                         <div className="flex-1 min-w-0">
                           <p className="font-semibold text-sm leading-tight">{book.name}</p>
@@ -603,7 +603,7 @@ export default function ResourcesPage() {
               <Card key={skill.skill} className="card-glow">
                 <CardHeader>
                   <CardTitle className="text-base flex items-center gap-2">
-                    <GraduationCap className="h-5 w-5 text-indigo-400" />
+                    <GraduationCap className="h-5 w-5 text-blue-500" />
                     {skill.skill}
                   </CardTitle>
                 </CardHeader>

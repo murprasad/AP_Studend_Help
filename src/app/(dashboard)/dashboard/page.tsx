@@ -128,7 +128,7 @@ export default async function DashboardPage() {
             <p className="text-muted-foreground text-sm">
               {new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })}
             </p>
-            <Badge variant="outline" className="text-indigo-400 border-indigo-500/40 bg-indigo-500/10 text-xs">
+            <Badge variant="outline" className="text-blue-500 border-blue-500/40 bg-blue-500/10 text-xs">
               {AP_COURSES[selectedCourse]}
             </Badge>
             <ExamCountdownSetter course={selectedCourse} inline />
@@ -179,8 +179,8 @@ export default async function DashboardPage() {
         <Card className="card-glow">
           <CardContent className="p-5">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-indigo-500/20 flex items-center justify-center">
-                <Star className="h-5 w-5 text-indigo-400" />
+              <div className="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center">
+                <Star className="h-5 w-5 text-blue-500" />
               </div>
               <div>
                 <p className="text-2xl font-bold">Lv.{user?.level || 1}</p>
@@ -219,7 +219,7 @@ export default async function DashboardPage() {
           <Progress
             value={(xpProgress.current / xpProgress.needed) * 100}
             className="h-2"
-            indicatorClassName="bg-indigo-500"
+            indicatorClassName="bg-blue-500"
           />
         </CardContent>
       </Card>
@@ -361,8 +361,8 @@ export default async function DashboardPage() {
             </div>
           ) : (
             <div className="text-center py-10 space-y-3">
-              <div className="w-12 h-12 rounded-full bg-indigo-500/10 flex items-center justify-center mx-auto">
-                <Sparkles className="h-6 w-6 text-indigo-400" />
+              <div className="w-12 h-12 rounded-full bg-blue-500/10 flex items-center justify-center mx-auto">
+                <Sparkles className="h-6 w-6 text-blue-500" />
               </div>
               <div>
                 <p className="font-semibold text-sm">Ready to start your first session?</p>
@@ -398,10 +398,10 @@ export default async function DashboardPage() {
 
       {/* Premium upsell — bottom */}
       {user?.subscriptionTier === "FREE" && (
-        <div className="rounded-xl border border-indigo-500/20 bg-gradient-to-r from-indigo-500/5 to-purple-500/5 p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+        <div className="rounded-xl border border-blue-500/20 bg-gradient-to-r from-blue-500/5 to-purple-500/5 p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-indigo-500/20 flex items-center justify-center flex-shrink-0">
-              <Crown className="h-5 w-5 text-indigo-400" />
+            <div className="w-9 h-9 rounded-lg bg-blue-500/20 flex items-center justify-center flex-shrink-0">
+              <Crown className="h-5 w-5 text-blue-500" />
             </div>
             <div>
               <p className="text-sm font-semibold">Unlock Premium Modules</p>
@@ -411,7 +411,7 @@ export default async function DashboardPage() {
             </div>
           </div>
           <Link href="/pricing" className="flex-shrink-0">
-            <Button size="sm" className="gap-1.5 w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700">
+            <Button size="sm" className="gap-1.5 w-full sm:w-auto bg-blue-600 hover:bg-blue-700">
               <Crown className="h-3.5 w-3.5" />
               See Pricing
             </Button>

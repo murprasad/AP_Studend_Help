@@ -39,7 +39,7 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
-  themeColor: "#6366f1",
+  themeColor: "#1865F2",
 };
 
 export default function RootLayout({
@@ -67,7 +67,7 @@ export default function RootLayout({
         {/* Prevent flash of wrong theme — runs before React hydrates */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var t=localStorage.getItem('theme')||'dark';document.documentElement.classList.toggle('dark',t==='dark')}catch(e){}})()`,
+            __html: `(function(){try{var t=localStorage.getItem('theme')||'light';document.documentElement.classList.toggle('dark',t==='dark')}catch(e){}})()`,
           }}
         />
         {/* PWA */}

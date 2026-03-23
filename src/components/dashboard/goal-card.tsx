@@ -13,10 +13,10 @@ const DEFAULT_DAILY_TARGET = 10;
 // Static Tailwind class maps — dynamic interpolation breaks Tailwind's compiler
 const ACCENT = {
   indigo: {
-    card: "border-indigo-500/20 bg-indigo-500/5",
-    iconBg: "w-9 h-9 rounded-lg bg-indigo-500/20 flex items-center justify-center",
-    iconText: "h-5 w-5 text-indigo-400",
-    progressBar: "bg-indigo-500",
+    card: "border-blue-500/20 bg-blue-500/5",
+    iconBg: "w-9 h-9 rounded-lg bg-blue-500/20 flex items-center justify-center",
+    iconText: "h-5 w-5 text-blue-500",
+    progressBar: "bg-blue-500",
   },
   emerald: {
     card: "border-emerald-500/20 bg-emerald-500/5",
@@ -136,7 +136,7 @@ export function GoalCard({ course, track, todayQuestions = 0 }: { course: string
   return (
     <button
       onClick={() => setPicking(true)}
-      className="w-full p-4 rounded-xl border border-dashed border-border/40 hover:border-indigo-500/30 hover:bg-indigo-500/5 transition-colors text-left flex items-center gap-3"
+      className="w-full p-4 rounded-xl border border-dashed border-border/40 hover:border-blue-500/30 hover:bg-blue-500/5 transition-colors text-left flex items-center gap-3"
     >
       <Target className="h-5 w-5 text-muted-foreground/50" />
       <div>

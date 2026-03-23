@@ -153,7 +153,7 @@ export function AdminAutoPopulateSettings() {
                   onClick={toggleEnabled}
                   disabled={saving}
                   className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer items-center rounded-full transition-colors focus:outline-none ${
-                    enabled ? "bg-indigo-600" : "bg-secondary"
+                    enabled ? "bg-blue-600" : "bg-secondary"
                   } ${saving ? "opacity-50 cursor-not-allowed" : ""}`}
                 >
                   {saving ? (
@@ -179,7 +179,7 @@ export function AdminAutoPopulateSettings() {
                   max={200}
                   value={threshold}
                   onChange={(e) => setThreshold(e.target.value)}
-                  className="w-full rounded-md border border-border bg-secondary/50 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                  className="w-full rounded-md border border-border bg-secondary/50 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
                 />
                 <p className="text-xs text-muted-foreground">Units with fewer questions get topped up</p>
               </div>
@@ -191,7 +191,7 @@ export function AdminAutoPopulateSettings() {
                   max={200}
                   value={target}
                   onChange={(e) => setTarget(e.target.value)}
-                  className="w-full rounded-md border border-border bg-secondary/50 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                  className="w-full rounded-md border border-border bg-secondary/50 px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
                 />
                 <p className="text-xs text-muted-foreground">Fill each thin unit up to this many</p>
               </div>
@@ -234,7 +234,7 @@ export function AdminAutoPopulateSettings() {
             <button
               onClick={runNow}
               disabled={running || !enabled}
-              className="flex items-center gap-2 px-4 py-2 rounded-md bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex items-center gap-2 px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {running ? <Loader2 className="h-4 w-4 animate-spin" /> : <Play className="h-4 w-4" />}
               {running ? "Running…" : "Run Now"}
@@ -244,8 +244,8 @@ export function AdminAutoPopulateSettings() {
             )}
 
             {/* GitHub Actions setup instructions */}
-            <div className="mt-2 p-4 rounded-lg border border-indigo-500/20 bg-indigo-500/5 space-y-3">
-              <p className="text-xs font-semibold text-indigo-400 flex items-center gap-1.5">
+            <div className="mt-2 p-4 rounded-lg border border-blue-500/20 bg-blue-500/5 space-y-3">
+              <p className="text-xs font-semibold text-blue-500 flex items-center gap-1.5">
                 <Info className="h-3.5 w-3.5" />
                 GitHub Actions Scheduler — One-Time Setup
               </p>
@@ -255,14 +255,14 @@ export function AdminAutoPopulateSettings() {
               </p>
               <ol className="text-xs text-muted-foreground space-y-2 list-none">
                 <li className="flex gap-2">
-                  <span className="text-indigo-400 font-bold shrink-0">1.</span>
+                  <span className="text-blue-500 font-bold shrink-0">1.</span>
                   <span>
                     Generate a secret:{" "}
                     <code className="bg-secondary px-1 rounded">openssl rand -hex 32</code>
                   </span>
                 </li>
                 <li className="flex gap-2">
-                  <span className="text-indigo-400 font-bold shrink-0">2.</span>
+                  <span className="text-blue-500 font-bold shrink-0">2.</span>
                   <span>
                     Add it to Cloudflare Pages:{" "}
                     <code className="bg-secondary px-1 rounded">wrangler pages secret put CRON_SECRET</code>
@@ -270,7 +270,7 @@ export function AdminAutoPopulateSettings() {
                   </span>
                 </li>
                 <li className="flex gap-2">
-                  <span className="text-indigo-400 font-bold shrink-0">3.</span>
+                  <span className="text-blue-500 font-bold shrink-0">3.</span>
                   <span>
                     Add the same value to GitHub: repo →{" "}
                     <strong className="text-foreground/80">Settings → Secrets and variables → Actions → New secret</strong>{" "}
@@ -278,7 +278,7 @@ export function AdminAutoPopulateSettings() {
                   </span>
                 </li>
                 <li className="flex gap-2">
-                  <span className="text-indigo-400 font-bold shrink-0">4.</span>
+                  <span className="text-blue-500 font-bold shrink-0">4.</span>
                   <span>Toggle <strong className="text-foreground/80">Auto-Populate Enabled</strong> ON above.</span>
                 </li>
               </ol>

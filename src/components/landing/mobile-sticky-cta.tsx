@@ -36,7 +36,7 @@ export function MobileStickyCta() {
     <div className="fixed bottom-0 left-0 right-0 z-40 p-3 bg-background/95 backdrop-blur-sm border-t border-border/40 md:hidden">
       <div className="flex gap-2">
         <Link href="/register?track=ap" className="flex-1">
-          <Button size="sm" className="w-full gap-1 bg-indigo-600 hover:bg-indigo-700 text-white">
+          <Button size="sm" className="w-full gap-1 bg-blue-600 hover:bg-blue-700 text-white">
             Start Free <ArrowRight className="h-4 w-4" />
           </Button>
         </Link>

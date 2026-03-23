@@ -40,10 +40,10 @@ export function CourseSelectorInline() {
   return (
     <Card className={cn(
       "card-glow",
-      userTrack === "clep" ? "border-emerald-500/20 bg-emerald-500/5" : "border-indigo-500/20 bg-indigo-500/5"
+      userTrack === "clep" ? "border-emerald-500/20 bg-emerald-500/5" : "border-blue-500/20 bg-blue-500/5"
     )}>
       <CardContent className="p-4 flex items-center gap-3">
-        <GraduationCap className={cn("h-5 w-5 flex-shrink-0", userTrack === "clep" ? "text-emerald-400" : "text-indigo-400")} />
+        <GraduationCap className={cn("h-5 w-5 flex-shrink-0", userTrack === "clep" ? "text-emerald-400" : "text-blue-500")} />
         <div className="flex-1 min-w-0">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>

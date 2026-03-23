@@ -51,8 +51,8 @@ export function DashboardMasteryChart({ data }: DashboardMasteryChartProps) {
           <Radar
             name="Mastery"
             dataKey="mastery"
-            stroke="#6366f1"
-            fill="#6366f1"
+            stroke="#1865F2"
+            fill="#1865F2"
             fillOpacity={0.3}
             strokeWidth={2}
           />

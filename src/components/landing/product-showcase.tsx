@@ -56,7 +56,7 @@ export function ProductShowcase() {
                   </div>
                 </BrowserFrame>
                 <div className="text-center mt-3">
-                  <div className="w-7 h-7 rounded-full bg-indigo-500/20 text-indigo-400 text-xs font-bold flex items-center justify-center mx-auto mb-1">
+                  <div className="w-7 h-7 rounded-full bg-blue-500/20 text-blue-500 text-xs font-bold flex items-center justify-center mx-auto mb-1">
                     {step.num}
                   </div>
                   <p className="text-xs font-medium">{step.label}</p>
@@ -81,7 +81,7 @@ export function ProductShowcase() {
                 </div>
               </BrowserFrame>
               <div className="flex items-center gap-2 mt-2 mb-1 justify-center">
-                <div className="w-6 h-6 rounded-full bg-indigo-500/20 text-indigo-400 text-xs font-bold flex items-center justify-center">
+                <div className="w-6 h-6 rounded-full bg-blue-500/20 text-blue-500 text-xs font-bold flex items-center justify-center">
                   {step.num}
                 </div>
                 <p className="text-xs font-medium">{step.label}</p>

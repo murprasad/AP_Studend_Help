@@ -15,8 +15,8 @@ export default function ContactPage() {
     <div className="max-w-3xl mx-auto px-4 py-16 space-y-12">
       {/* Header */}
       <div className="text-center space-y-3">
-        <div className="w-14 h-14 rounded-2xl bg-indigo-500/10 flex items-center justify-center mx-auto">
-          <Mail className="h-7 w-7 text-indigo-400" />
+        <div className="w-14 h-14 rounded-2xl bg-blue-500/10 flex items-center justify-center mx-auto">
+          <Mail className="h-7 w-7 text-blue-500" />
         </div>
         <h1 className="text-4xl font-bold">Get in Touch</h1>
         <p className="text-lg text-muted-foreground max-w-xl mx-auto">
@@ -30,11 +30,11 @@ export default function ContactPage() {
           href="mailto:contact@studentnest.ai"
           className="p-6 rounded-xl border border-border/40 bg-card/50 hover:bg-accent transition-colors space-y-3"
         >
-          <div className="w-10 h-10 rounded-lg bg-indigo-500/10 flex items-center justify-center">
-            <Mail className="h-5 w-5 text-indigo-400" />
+          <div className="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center">
+            <Mail className="h-5 w-5 text-blue-500" />
           </div>
           <p className="font-semibold">Email Us</p>
-          <p className="text-sm text-indigo-400">contact@studentnest.ai</p>
+          <p className="text-sm text-blue-500">contact@studentnest.ai</p>
           <p className="text-xs text-muted-foreground">Best for questions, feedback, and support requests.</p>
         </a>
 
@@ -61,7 +61,7 @@ export default function ContactPage() {
           <Shield className="h-5 w-5 text-muted-foreground mt-0.5 flex-shrink-0" />
           <div>
             <p className="text-sm font-semibold">Privacy</p>
-            <p className="text-xs text-muted-foreground mt-1">Your information is never shared with third parties. See our <a href="/privacy" className="text-indigo-400 hover:underline">Privacy Policy</a> for details.</p>
+            <p className="text-xs text-muted-foreground mt-1">Your information is never shared with third parties. See our <a href="/privacy" className="text-blue-500 hover:underline">Privacy Policy</a> for details.</p>
           </div>
         </div>
       </div>

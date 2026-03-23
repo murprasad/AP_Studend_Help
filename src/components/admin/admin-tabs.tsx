@@ -29,7 +29,7 @@ export function AdminTabs({ coverageTab, usersTab, topicsTab }: AdminTabsProps) 
             onClick={() => setActive(tab.id)}
             className={`px-4 py-2 text-sm font-medium transition-colors border-b-2 -mb-px ${
               active === tab.id
-                ? "border-indigo-500 text-indigo-400"
+                ? "border-blue-500 text-blue-500"
                 : "border-transparent text-muted-foreground hover:text-foreground"
             }`}
           >

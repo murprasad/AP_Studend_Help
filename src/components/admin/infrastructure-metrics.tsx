@@ -92,8 +92,8 @@ export function AdminInfrastructureMetrics() {
       value: metrics.tutorCallsToday,
       sub: `${metrics.tutorCallsWeek} this week`,
       icon: MessageSquare,
-      color: "text-indigo-400",
-      bg: "bg-indigo-500/20",
+      color: "text-blue-500",
+      bg: "bg-blue-500/20",
     },
     {
       label: "Questions Generated Today",

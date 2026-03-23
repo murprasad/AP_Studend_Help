@@ -21,7 +21,7 @@ const COURSES = [
   { name: "AP World History: Modern",       category: "AP Courses",   color: "bg-blue-500/10 text-blue-300 border-blue-500/20 dark:text-blue-300 dark:border-blue-500/20 light:text-blue-700 light:border-blue-400/40", desc: "Civilizations, empires, revolutions, globalization" },
   { name: "AP Computer Science Principles", category: "AP Courses",   color: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-300 border-emerald-500/20", desc: "Algorithms, data, internet, impact of computing" },
   { name: "AP Physics 1: Algebra-Based",    category: "AP Courses",   color: "bg-yellow-500/10 text-yellow-600 dark:text-yellow-300 border-yellow-500/20", desc: "Kinematics, forces, energy, waves, circuits" },
-  { name: "AP Calculus AB",                 category: "AP Courses",   color: "bg-violet-500/10 text-violet-600 dark:text-violet-300 border-violet-500/20", desc: "Limits, derivatives, integrals, differential equations" },
+  { name: "AP Calculus AB",                 category: "AP Courses",   color: "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20", desc: "Limits, derivatives, integrals, differential equations" },
   { name: "AP Calculus BC",                 category: "AP Courses",   color: "bg-purple-500/10 text-purple-600 dark:text-purple-300 border-purple-500/20", desc: "All AB topics plus series, parametric, polar" },
   { name: "AP Statistics",                  category: "AP Courses",   color: "bg-cyan-500/10 text-cyan-600 dark:text-cyan-300 border-cyan-500/20", desc: "Data analysis, probability, inference, regression" },
   { name: "AP Chemistry",                   category: "AP Courses",   color: "bg-orange-500/10 text-orange-600 dark:text-orange-300 border-orange-500/20", desc: "Atomic structure, bonding, reactions, thermodynamics" },
@@ -80,7 +80,7 @@ const COURSES = [
 const COURSE_CATEGORIES = Array.from(new Set(COURSES.map((c) => c.category)));
 
 const CATEGORY_COLORS: Record<string, string> = {
-  "AP Courses":           "text-indigo-500 dark:text-indigo-400",
+  "AP Courses":           "text-blue-500 dark:text-blue-500",
   "SAT Prep":             "text-blue-500 dark:text-blue-400",
   "ACT Prep":             "text-amber-500 dark:text-amber-400",
   "CLEP (College Credit)":"text-emerald-500 dark:text-emerald-400",
@@ -94,12 +94,12 @@ export default function AboutPage() {
       {/* Section 1: Opening */}
       <div className="space-y-4">
         <div className="flex items-center justify-center gap-3">
-          <div className="w-12 h-12 rounded-xl bg-indigo-500/20 flex items-center justify-center">
-            <Globe className="h-6 w-6 text-indigo-400" />
+          <div className="w-12 h-12 rounded-xl bg-blue-500/20 flex items-center justify-center">
+            <Globe className="h-6 w-6 text-blue-500" />
           </div>
           <div className="flex items-center gap-2 flex-wrap">
             <h1 className="text-3xl font-bold gradient-text">About StudentNest Prep</h1>
-            <Badge className="bg-indigo-500/20 text-indigo-300 border-indigo-500/30 text-xs font-semibold">Beta 2.4</Badge>
+            <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30 text-xs font-semibold">Beta 2.4</Badge>
           </div>
         </div>
         <p className="text-muted-foreground leading-relaxed max-w-2xl mx-auto">
@@ -111,8 +111,8 @@ export default function AboutPage() {
       {/* Section 2: Our Story */}
       <div className="rounded-2xl border border-border/40 bg-card/50 p-8 text-left space-y-4">
         <div className="flex items-center gap-2 mb-2">
-          <div className="w-8 h-8 rounded-lg bg-indigo-500/10 flex items-center justify-center">
-            <Sparkles className="h-4 w-4 text-indigo-400" />
+          <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center">
+            <Sparkles className="h-4 w-4 text-blue-500" />
           </div>
           <h2 className="text-xl font-bold">Why We Built This</h2>
         </div>
@@ -130,8 +130,8 @@ export default function AboutPage() {
       </div>
 
       {/* Section 3: Mission */}
-      <div className="rounded-2xl border border-indigo-500/20 bg-indigo-500/5 p-8 space-y-3">
-        <p className="text-xs font-semibold uppercase tracking-wider text-indigo-400">Our Mission</p>
+      <div className="rounded-2xl border border-blue-500/20 bg-blue-500/5 p-8 space-y-3">
+        <p className="text-xs font-semibold uppercase tracking-wider text-blue-500">Our Mission</p>
         <p className="text-xl font-semibold text-foreground/90 leading-relaxed max-w-2xl mx-auto">
           &ldquo;Make world-class AP, SAT, ACT &amp; CLEP prep accessible to every student — not just those who can afford a tutor.&rdquo;
         </p>
@@ -140,8 +140,8 @@ export default function AboutPage() {
       {/* Section 3b: The Science Behind Sage */}
       <div className="rounded-2xl border border-border/40 bg-card/50 p-8 text-left space-y-4">
         <div className="flex items-center gap-2 mb-2">
-          <div className="w-8 h-8 rounded-lg bg-violet-500/10 flex items-center justify-center">
-            <Lightbulb className="h-4 w-4 text-violet-400" />
+          <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center">
+            <Lightbulb className="h-4 w-4 text-blue-500" />
           </div>
           <h2 className="text-xl font-bold">The Science Behind Sage</h2>
         </div>
@@ -166,8 +166,8 @@ export default function AboutPage() {
           {[
             {
               icon: Sparkles,
-              color: "text-indigo-400",
-              bg: "bg-indigo-500/10",
+              color: "text-blue-500",
+              bg: "bg-blue-500/10",
               title: "Instant Feedback on Every Answer",
               desc: "Every MCQ and FRQ gets an immediate explanation of why the correct answer is right and why each wrong answer is a common misconception. No waiting, no answer keys.",
             },
@@ -180,8 +180,8 @@ export default function AboutPage() {
             },
             {
               icon: LayoutDashboard,
-              color: "text-violet-400",
-              bg: "bg-violet-500/10",
+              color: "text-blue-500",
+              bg: "bg-blue-500/10",
               title: "Adaptive Study Plans",
               desc: "Each week, Sage generates a study plan that targets your weakest units first and adjusts recommendations as your scores improve. Set your exam date and the plan counts down with you.",
             },
@@ -226,8 +226,8 @@ export default function AboutPage() {
           {[
             {
               icon: Target,
-              color: "text-indigo-400",
-              bg: "bg-indigo-500/10",
+              color: "text-blue-500",
+              bg: "bg-blue-500/10",
               title: "Outcome-Obsessed",
               desc: "We measure success in score improvements, not time-on-site.",
             },
@@ -240,8 +240,8 @@ export default function AboutPage() {
             },
             {
               icon: Sparkles,
-              color: "text-violet-400",
-              bg: "bg-violet-500/10",
+              color: "text-blue-500",
+              bg: "bg-blue-500/10",
               title: "AI as a Teacher",
               desc: "Sage doesn\u2019t just answer questions. It explains, checks your understanding, and adapts to your weak points.",
             },
@@ -305,15 +305,15 @@ export default function AboutPage() {
       {/* Section 7: What's New in Beta 2.1 */}
       <div className="space-y-6">
         <div className="text-center space-y-1">
-          <Badge className="bg-indigo-500/20 text-indigo-300 border-indigo-500/30 text-xs font-semibold mb-2">Latest Release</Badge>
+          <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30 text-xs font-semibold mb-2">Latest Release</Badge>
           <h2 className="text-xl font-bold">What&apos;s New in Beta 2.1</h2>
           <p className="text-sm text-muted-foreground">Per-module subscriptions, SEO overhaul, content optimization, and strict course filtering.</p>
         </div>
         <div className="grid sm:grid-cols-2 gap-3 text-left">
           {[
             { icon: GraduationCap, color: "text-emerald-400", bg: "bg-emerald-500/10", title: "Per-Module Stripe Subscriptions", desc: "Independent $9.99/mo subscriptions for AP, SAT, ACT, and CLEP. Subscribe to exactly the modules you need. Cancel or reactivate each independently." },
-            { icon: LayoutDashboard, color: "text-indigo-400", bg: "bg-indigo-500/10", title: "Module-Locked Sidebar", desc: "Sign up from /ap-prep → see only AP courses. SAT → only SAT. No more seeing all 50 courses — focused experience from day one." },
-            { icon: Sparkles, color: "text-violet-400", bg: "bg-violet-500/10", title: "SEO & Content Overhaul", desc: "JSON-LD structured data, OG images, XML sitemap, 4 dedicated prep landing pages with study flows, outcome messaging, and parent trust sections." },
+            { icon: LayoutDashboard, color: "text-blue-500", bg: "bg-blue-500/10", title: "Module-Locked Sidebar", desc: "Sign up from /ap-prep → see only AP courses. SAT → only SAT. No more seeing all 50 courses — focused experience from day one." },
+            { icon: Sparkles, color: "text-blue-500", bg: "bg-blue-500/10", title: "SEO & Content Overhaul", desc: "JSON-LD structured data, OG images, XML sitemap, 4 dedicated prep landing pages with study flows, outcome messaging, and parent trust sections." },
             { icon: Target, color: "text-teal-400", bg: "bg-teal-500/10", title: "Outcome-Driven Copy", desc: "Every page now leads with results: score improvements, prep timelines, cost savings. Comparison tables vs tutors and ChatGPT on pricing page." },
           ].map(({ icon: Icon, color, bg, title, desc }) => (
             <div key={title} className="flex gap-3 p-4 rounded-xl border border-border/40 bg-card">
@@ -339,9 +339,9 @@ export default function AboutPage() {
         <div className="grid sm:grid-cols-2 gap-3 text-left">
           {[
             { icon: GraduationCap, color: "text-emerald-400", bg: "bg-emerald-500/10", title: "CLEP vs AP/SAT/ACT Tracks",      desc: "Students now choose their path — 'Start AP/SAT/ACT Prep' or 'Start CLEP Prep' — from the landing page. The chosen track is remembered across sessions via localStorage." },
-            { icon: LayoutDashboard, color: "text-indigo-400", bg: "bg-indigo-500/10", title: "Track-Filtered Onboarding",      desc: "Onboarding Step 1 now shows only CLEP courses (emerald accent) or the 16 AP/SAT/ACT courses based on the student's chosen track. No more AP-world for college students." },
+            { icon: LayoutDashboard, color: "text-blue-500", bg: "bg-blue-500/10", title: "Track-Filtered Onboarding",      desc: "Onboarding Step 1 now shows only CLEP courses (emerald accent) or the 16 AP/SAT/ACT courses based on the student's chosen track. No more AP-world for college students." },
             { icon: Sparkles,      color: "text-teal-400",    bg: "bg-teal-500/10",    title: "Track-Filtered Sidebar",         desc: "The sidebar course switcher shows only CLEP groups (for CLEP-track users) or only AP/SAT/ACT groups. A 'Switch to...' link is always visible as an escape hatch." },
-            { icon: LayoutDashboard, color: "text-violet-400", bg: "bg-violet-500/10", title: "Smart Course Defaults",          desc: "First-time CLEP-track users default to CLEP College Algebra instead of AP World History. Existing users see zero change — their stored course is preserved." },
+            { icon: LayoutDashboard, color: "text-blue-500", bg: "bg-blue-500/10", title: "Smart Course Defaults",          desc: "First-time CLEP-track users default to CLEP College Algebra instead of AP World History. Existing users see zero change — their stored course is preserved." },
             { icon: Sparkles,      color: "text-emerald-400", bg: "bg-emerald-500/10", title: "Track-Aware Register Page",      desc: "The registration page subtitle dynamically reflects the student's chosen track — 'Start earning college credit' for CLEP, 'Start your AP exam journey' for AP/SAT/ACT." },
           ].map(({ icon: Icon, color, bg, title, desc }) => (
             <div key={title} className="flex gap-3 p-4 rounded-xl border border-border/40 bg-card">
@@ -367,9 +367,9 @@ export default function AboutPage() {
         <div className="grid sm:grid-cols-2 gap-3 text-left">
           {[
             { icon: GraduationCap, color: "text-emerald-400", bg: "bg-emerald-500/10", title: "34 CLEP Exams — Full Catalog",   desc: "All 34 official CLEP exams across 5 domains: Composition & Literature, History & Social Sciences, Science & Mathematics, Business, and World Languages — each with 5 units and full AI support." },
-            { icon: Sparkles,      color: "text-indigo-400",  bg: "bg-indigo-500/10",  title: "Sage Tutors CLEP Content",       desc: "The same AI that explains AP topics now handles CLEP subject matter — with resources from OpenStax, Khan Academy, and Wikipedia." },
+            { icon: Sparkles,      color: "text-blue-500",  bg: "bg-blue-500/10",  title: "Sage Tutors CLEP Content",       desc: "The same AI that explains AP topics now handles CLEP subject matter — with resources from OpenStax, Khan Academy, and Wikipedia." },
             { icon: LayoutDashboard, color: "text-teal-400",  bg: "bg-teal-500/10",    title: "Separate Sidebar Section",      desc: "CLEP courses appear as a dedicated 'CLEP Prep' tab in the course switcher, fully isolated from AP/SAT/ACT content." },
-            { icon: Sparkles,      color: "text-violet-400",  bg: "bg-violet-500/10",  title: "Legal & Copyright-Safe",        desc: "All CLEP practice questions are original AI-generated content. Resources are from openly licensed sources (OpenStax CC BY, Khan Academy, Wikipedia). CLEP® is a trademark of College Board, which does not endorse this platform." },
+            { icon: Sparkles,      color: "text-blue-500",  bg: "bg-blue-500/10",  title: "Legal & Copyright-Safe",        desc: "All CLEP practice questions are original AI-generated content. Resources are from openly licensed sources (OpenStax CC BY, Khan Academy, Wikipedia). CLEP® is a trademark of College Board, which does not endorse this platform." },
             { icon: LayoutDashboard, color: "text-emerald-400", bg: "bg-emerald-500/10", title: "Audience-Split Landing Page",  desc: "The home page now speaks directly to both high school students (AP/SAT/ACT) and college students (CLEP) — with dedicated audience cards, dual CTAs, and above-the-fold ROI messaging for each track." },
           ].map(({ icon: Icon, color, bg, title, desc }) => (
             <div key={title} className="flex gap-3 p-4 rounded-xl border border-border/40 bg-card">
@@ -400,14 +400,14 @@ export default function AboutPage() {
         </p>
         <a
           href="mailto:contact@studentnest.ai"
-          className="inline-flex items-center gap-2 text-indigo-400 hover:text-indigo-300 font-medium transition-colors"
+          className="inline-flex items-center gap-2 text-blue-500 hover:text-blue-400 font-medium transition-colors"
         >
           <Mail className="h-4 w-4" />
           contact@studentnest.ai
         </a>
         <p className="text-sm text-muted-foreground pt-2">
           For pricing details, see the{" "}
-          <Link href="/pricing" className="text-indigo-400 hover:text-indigo-300 underline">
+          <Link href="/pricing" className="text-blue-500 hover:text-blue-400 underline">
             Pricing page
           </Link>
           .

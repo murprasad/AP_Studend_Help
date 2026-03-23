@@ -16,7 +16,7 @@ const articles = [
     title: "How AI-Powered Practice Is Changing Test Prep",
     excerpt: "Traditional flashcards and textbooks can only take you so far. Here's how adaptive AI practice targets your weak areas and accelerates improvement.",
     category: "Learning Science",
-    categoryColor: "bg-indigo-500/10 text-indigo-400 border-indigo-500/20",
+    categoryColor: "bg-blue-500/10 text-blue-500 border-blue-500/20",
     readTime: "5 min read",
     date: "Mar 20, 2026",
   },
@@ -40,7 +40,7 @@ const articles = [
     title: "The Science Behind Mastery-Based Learning",
     excerpt: "Why do some students plateau at 70% while others push to 95%? The answer lies in how mastery-based progression rewires study habits and builds lasting understanding.",
     category: "Learning Science",
-    categoryColor: "bg-violet-500/10 text-violet-400 border-violet-500/20",
+    categoryColor: "bg-blue-500/10 text-blue-500 border-blue-500/20",
     readTime: "4 min read",
     date: "Mar 12, 2026",
   },
@@ -59,8 +59,8 @@ export default function BlogPage() {
     <div className="max-w-4xl mx-auto px-4 py-16 space-y-12">
       {/* Header */}
       <div className="text-center space-y-3">
-        <div className="w-14 h-14 rounded-2xl bg-indigo-500/10 flex items-center justify-center mx-auto">
-          <BookOpen className="h-7 w-7 text-indigo-400" />
+        <div className="w-14 h-14 rounded-2xl bg-blue-500/10 flex items-center justify-center mx-auto">
+          <BookOpen className="h-7 w-7 text-blue-500" />
         </div>
         <h1 className="text-4xl font-bold">Blog &amp; Resources</h1>
         <p className="text-lg text-muted-foreground max-w-xl mx-auto">
@@ -86,7 +86,7 @@ export default function BlogPage() {
             </div>
             <h2 className="text-lg font-bold">{a.title}</h2>
             <p className="text-sm text-muted-foreground leading-relaxed">{a.excerpt}</p>
-            <p className="text-xs text-indigo-400 font-medium flex items-center gap-1">
+            <p className="text-xs text-blue-500 font-medium flex items-center gap-1">
               Coming soon <ArrowRight className="h-3 w-3" />
             </p>
           </article>
@@ -96,7 +96,7 @@ export default function BlogPage() {
       {/* CTA */}
       <div className="text-center space-y-3 py-8">
         <p className="text-muted-foreground text-sm">More articles coming soon. In the meantime:</p>
-        <Link href="/register" className="inline-flex items-center gap-2 text-sm font-medium text-indigo-400 hover:underline">
+        <Link href="/register" className="inline-flex items-center gap-2 text-sm font-medium text-blue-500 hover:underline">
           Start practicing free <ArrowRight className="h-4 w-4" />
         </Link>
       </div>

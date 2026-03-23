@@ -11,7 +11,7 @@ import {
   Sparkles, BookOpen, ClipboardList, BarChart3, ChevronRight, Check, Clock, GraduationCap,
 } from "lucide-react";
 import Link from "next/link";
-import { staticCLEP7DayPlan } from "@/lib/ai";
+import { staticCLEP7DayPlan } from "@/lib/clep-plan";
 
 const ONBOARDING_KEY = "onboarding_completed";
 
@@ -122,8 +122,8 @@ export default function OnboardingPage() {
       {/* Header */}
       <div className="text-center space-y-2">
         <div className="flex justify-center">
-          <div className="w-12 h-12 rounded-xl bg-indigo-500/20 flex items-center justify-center">
-            <Sparkles className="h-6 w-6 text-indigo-400" />
+          <div className="w-12 h-12 rounded-xl bg-blue-500/20 flex items-center justify-center">
+            <Sparkles className="h-6 w-6 text-blue-500" />
           </div>
         </div>
         <h1 className="text-2xl font-bold">Welcome to StudentNest Prep</h1>
@@ -134,12 +134,12 @@ export default function OnboardingPage() {
       <div className="flex items-center justify-center gap-2">
         {steps.map((s, i) => (
           <div key={s.num} className="flex items-center gap-2">
-            <div className={`flex items-center gap-1.5 ${step >= s.num ? "text-indigo-400" : "text-muted-foreground"}`}>
+            <div className={`flex items-center gap-1.5 ${step >= s.num ? "text-blue-500" : "text-muted-foreground"}`}>
               <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium border ${
                 step > s.num
-                  ? "bg-indigo-600 border-indigo-600 text-white"
+                  ? "bg-blue-600 border-blue-600 text-white"
                   : step === s.num
-                    ? "border-indigo-500 text-indigo-400"
+                    ? "border-blue-500 text-blue-500"
                     : "border-border text-muted-foreground"
               }`}>
                 {step > s.num ? <Check className="h-3.5 w-3.5" /> : s.num}
@@ -147,7 +147,7 @@ export default function OnboardingPage() {
               <span className="text-xs font-medium hidden sm:inline">{s.label}</span>
             </div>
             {i < steps.length - 1 && (
-              <div className={`h-px w-8 ${step > s.num ? "bg-indigo-600" : "bg-border"}`} />
+              <div className={`h-px w-8 ${step > s.num ? "bg-blue-600" : "bg-border"}`} />
             )}
           </div>
         ))}
@@ -158,7 +158,7 @@ export default function OnboardingPage() {
         <Card className="border-border/40">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <BookOpen className="h-5 w-5 text-indigo-400" />
+              <BookOpen className="h-5 w-5 text-blue-500" />
               Which exam are you preparing for?
             </CardTitle>
             <CardDescription>You can change this anytime from the sidebar.</CardDescription>
@@ -193,14 +193,14 @@ export default function OnboardingPage() {
                           isSelected
                             ? isClep
                               ? "border-emerald-500 bg-emerald-500/10 text-emerald-300 font-medium"
-                              : "border-indigo-500 bg-indigo-500/10 text-indigo-300 font-medium"
+                              : "border-blue-500 bg-blue-500/10 text-blue-400 font-medium"
                             : "border-border/40 hover:bg-accent hover:border-border"
                         }`}
                       >
                         <span className="flex items-center gap-2 flex-wrap">
                           {cfg.name}
                           {["AP_WORLD_HISTORY", "AP_CALCULUS_AB", "SAT_MATH"].includes(key) && (
-                            <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-indigo-500/20 text-indigo-400 font-semibold">Popular</span>
+                            <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-blue-500/20 text-blue-500 font-semibold">Popular</span>
                           )}
                           {effectiveTrack === "clep" && CLEP_COURSE_META[key] && (
                             <span className={`text-[10px] px-1.5 py-0.5 rounded-full border ${CLEP_COURSE_META[key].color}`}>
@@ -230,7 +230,7 @@ export default function OnboardingPage() {
         <Card className="border-border/40">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <ClipboardList className="h-5 w-5 text-indigo-400" />
+              <ClipboardList className="h-5 w-5 text-blue-500" />
               Here&apos;s how StudentNest works
             </CardTitle>
             <CardDescription>Master your exam in a proven 3-step loop.</CardDescription>
@@ -364,11 +364,11 @@ export default function OnboardingPage() {
           <CardContent className="space-y-4">
             <div className="grid sm:grid-cols-2 gap-3">
               <Link href="/diagnostic" onClick={completeOnboarding} className="block">
-                <div className="p-4 rounded-xl border border-indigo-500/30 bg-indigo-500/5 hover:bg-indigo-500/10 transition-colors cursor-pointer">
-                  <ClipboardList className="h-6 w-6 text-indigo-400 mb-2" />
+                <div className="p-4 rounded-xl border border-blue-500/30 bg-blue-500/5 hover:bg-blue-500/10 transition-colors cursor-pointer">
+                  <ClipboardList className="h-6 w-6 text-blue-500 mb-2" />
                   <p className="font-semibold text-sm">Take Diagnostic</p>
                   <p className="text-xs text-muted-foreground mt-1">Find your weak units immediately</p>
-                  <span className="text-xs text-indigo-400 font-medium mt-2 inline-block">Recommended →</span>
+                  <span className="text-xs text-blue-500 font-medium mt-2 inline-block">Recommended →</span>
                 </div>
               </Link>
               <Link href="/practice" onClick={completeOnboarding} className="block">

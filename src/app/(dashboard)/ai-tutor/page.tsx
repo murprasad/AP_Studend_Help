@@ -449,13 +449,13 @@ export default function AiTutorPage() {
     <div className={`rounded-xl border p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 flex-shrink-0 ${
       tutorTrack === "clep"
         ? "border-emerald-500/30 bg-gradient-to-r from-emerald-500/10 to-teal-500/10"
-        : "border-indigo-500/30 bg-gradient-to-r from-indigo-500/10 to-purple-500/10"
+        : "border-blue-500/30 bg-gradient-to-r from-blue-500/10 to-purple-500/10"
     }`}>
       <div className="flex items-start gap-3">
         <div className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5 ${
-          tutorTrack === "clep" ? "bg-emerald-500/20" : "bg-indigo-500/20"
+          tutorTrack === "clep" ? "bg-emerald-500/20" : "bg-blue-500/20"
         }`}>
-          <Crown className={`h-5 w-5 ${tutorTrack === "clep" ? "text-emerald-400" : "text-indigo-400"}`} />
+          <Crown className={`h-5 w-5 ${tutorTrack === "clep" ? "text-emerald-400" : "text-blue-500"}`} />
         </div>
         <div>
           <p className="font-semibold text-sm">You&apos;ve reached today&apos;s 5 free conversations</p>
@@ -466,7 +466,7 @@ export default function AiTutorPage() {
       </div>
       <Link href="/pricing" className="flex-shrink-0">
         <Button size="sm" className={`gap-1.5 w-full sm:w-auto ${
-          tutorTrack === "clep" ? "bg-emerald-600 hover:bg-emerald-700" : "bg-indigo-600 hover:bg-indigo-700"
+          tutorTrack === "clep" ? "bg-emerald-600 hover:bg-emerald-700" : "bg-blue-600 hover:bg-blue-700"
         }`}>
           <Crown className="h-3.5 w-3.5" />
           Upgrade to {tutorPremiumName}
@@ -480,14 +480,14 @@ export default function AiTutorPage() {
     <>
       {/* ── Continue Practice banner ─────────────────────────────────────── */}
       {practiceReturn && (
-        <div className="flex items-center justify-between bg-indigo-500/10 border border-indigo-500/30 rounded-lg px-4 py-2.5 mb-4 -mx-0">
-          <p className="text-sm text-indigo-300 flex items-center gap-2">
+        <div className="flex items-center justify-between bg-blue-500/10 border border-blue-500/30 rounded-lg px-4 py-2.5 mb-4 -mx-0">
+          <p className="text-sm text-blue-400 flex items-center gap-2">
             <Sparkles className="h-4 w-4" />
             Your practice session is waiting — come back any time.
           </p>
           <Link
             href="/practice"
-            className="text-xs font-semibold text-indigo-300 hover:text-indigo-200 border border-indigo-500/40 hover:border-indigo-400/60 rounded-full px-3 py-1 transition-colors"
+            className="text-xs font-semibold text-blue-400 hover:text-blue-300 border border-blue-500/40 hover:border-blue-500/60 rounded-full px-3 py-1 transition-colors"
             onClick={() => sessionStorage.removeItem("sage_practice_return")}
           >
             ← Continue Practice
@@ -504,7 +504,7 @@ export default function AiTutorPage() {
           <div className="flex items-start justify-between flex-shrink-0">
             <div>
               <h1 className="text-xl font-bold flex items-center gap-2">
-                <MessageSquare className="h-5 w-5 text-indigo-400" />
+                <MessageSquare className="h-5 w-5 text-blue-500" />
                 Sage 🌿
               </h1>
               <DropdownMenu>
@@ -544,8 +544,8 @@ export default function AiTutorPage() {
             {messages.length === 0 ? (
               <div className="space-y-4 py-4">
                 <div className="text-center">
-                  <div className="w-12 h-12 rounded-full bg-indigo-500/20 flex items-center justify-center mx-auto mb-3">
-                    <Bot className="h-6 w-6 text-indigo-400" />
+                  <div className="w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center mx-auto mb-3">
+                    <Bot className="h-6 w-6 text-blue-500" />
                   </div>
                   <h2 className="text-base font-bold mb-1">I&apos;m Sage 🌿</h2>
                   <p className="text-muted-foreground text-xs">
@@ -576,7 +576,7 @@ export default function AiTutorPage() {
                   <div key={i}>
                     {msg.role === "user" ? (
                       <div className="flex gap-2 justify-end">
-                        <div className="max-w-[85%] p-2.5 rounded-xl text-sm bg-indigo-600 text-white rounded-br-sm">
+                        <div className="max-w-[85%] p-2.5 rounded-xl text-sm bg-blue-600 text-white rounded-br-sm">
                           {msg.content}
                         </div>
                         <div className="w-6 h-6 rounded-full bg-secondary flex items-center justify-center flex-shrink-0 mt-0.5">
@@ -585,11 +585,11 @@ export default function AiTutorPage() {
                       </div>
                     ) : (
                       <div className="flex gap-2 justify-start">
-                        <div className="w-6 h-6 rounded-full bg-indigo-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
-                          <Bot className="h-3 w-3 text-indigo-400" />
+                        <div className="w-6 h-6 rounded-full bg-blue-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                          <Bot className="h-3 w-3 text-blue-500" />
                         </div>
                         <button
-                          className="max-w-[85%] p-2.5 rounded-xl text-sm bg-card border border-border/40 rounded-bl-sm text-left hover:border-indigo-500/40 transition-colors"
+                          className="max-w-[85%] p-2.5 rounded-xl text-sm bg-card border border-border/40 rounded-bl-sm text-left hover:border-blue-500/40 transition-colors"
                           onClick={() => {
                             if (msg.content) {
                               setCurrentSections(parseSections(msg.content));
@@ -632,9 +632,9 @@ export default function AiTutorPage() {
                   <button
                     key={q}
                     onClick={() => sendMessage(q)}
-                    className="w-full text-left text-xs lg:text-sm px-3 py-2 rounded-lg border border-indigo-500/30
-                      bg-indigo-500/5 hover:bg-indigo-500/15 text-indigo-300
-                      hover:text-indigo-200 transition-colors leading-relaxed"
+                    className="w-full text-left text-xs lg:text-sm px-3 py-2 rounded-lg border border-blue-500/30
+                      bg-blue-500/5 hover:bg-blue-500/15 text-blue-400
+                      hover:text-blue-300 transition-colors leading-relaxed"
                   >
                     {q}
                   </button>
@@ -674,8 +674,8 @@ export default function AiTutorPage() {
             </div>
           ) : (
             <div className="flex flex-col items-center justify-center h-full text-center gap-4">
-              <div className="w-20 h-20 rounded-full bg-indigo-500/10 flex items-center justify-center">
-                <MessageSquare className="h-10 w-10 text-indigo-400/50" />
+              <div className="w-20 h-20 rounded-full bg-blue-500/10 flex items-center justify-center">
+                <MessageSquare className="h-10 w-10 text-blue-500/50" />
               </div>
               <div>
                 <p className="font-semibold text-muted-foreground">Ask a question to see your answer here</p>
@@ -694,7 +694,7 @@ export default function AiTutorPage() {
         <div className="mb-3 flex items-start justify-between">
           <div>
             <h1 className="text-2xl sm:text-3xl font-bold flex items-center gap-2">
-              <MessageSquare className="h-6 w-6 sm:h-8 sm:w-8 text-indigo-400" />
+              <MessageSquare className="h-6 w-6 sm:h-8 sm:w-8 text-blue-500" />
               Sage 🌿
             </h1>
             <DropdownMenu>
@@ -734,8 +734,8 @@ export default function AiTutorPage() {
           {messages.length === 0 ? (
             <div className="space-y-6">
               <div className="text-center py-8">
-                <div className="w-16 h-16 rounded-full bg-indigo-500/20 flex items-center justify-center mx-auto mb-4">
-                  <Bot className="h-8 w-8 text-indigo-400" />
+                <div className="w-16 h-16 rounded-full bg-blue-500/20 flex items-center justify-center mx-auto mb-4">
+                  <Bot className="h-8 w-8 text-blue-500" />
                 </div>
                 <h2 className="text-xl font-bold mb-2">I&apos;m Sage 🌿</h2>
                 <p className="text-muted-foreground max-w-md mx-auto text-sm">
@@ -765,14 +765,14 @@ export default function AiTutorPage() {
               <div key={i} className="space-y-2">
                 <div className={`flex gap-3 ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
                   {msg.role === "assistant" && (
-                    <div className="w-8 h-8 rounded-full bg-indigo-500/20 flex items-center justify-center flex-shrink-0 mt-1">
-                      <Bot className="h-4 w-4 text-indigo-400" />
+                    <div className="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center flex-shrink-0 mt-1">
+                      <Bot className="h-4 w-4 text-blue-500" />
                     </div>
                   )}
                   <div
                     className={`max-w-[85%] p-4 rounded-xl text-sm leading-relaxed ${
                       msg.role === "user"
-                        ? "bg-indigo-600 text-white rounded-br-sm"
+                        ? "bg-blue-600 text-white rounded-br-sm"
                         : "bg-card border border-border/40 rounded-bl-sm"
                     }`}
                   >
@@ -783,10 +783,10 @@ export default function AiTutorPage() {
                         prose-p:text-foreground prose-p:leading-relaxed
                         prose-li:text-foreground prose-li:leading-relaxed
                         prose-strong:text-foreground prose-strong:font-semibold
-                        prose-code:text-indigo-300 prose-code:bg-indigo-500/10
+                        prose-code:text-blue-400 prose-code:bg-blue-500/10
                         prose-code:px-1 prose-code:py-0.5 prose-code:rounded
                         prose-pre:bg-secondary prose-pre:border prose-pre:border-border/40
-                        prose-a:text-indigo-400 prose-a:no-underline hover:prose-a:underline
+                        prose-a:text-blue-500 prose-a:no-underline hover:prose-a:underline
                         prose-hr:border-border/40"
                       >
                         {msg.content ? (
@@ -815,8 +815,8 @@ export default function AiTutorPage() {
 
           {isLoading && messages.length === 0 && (
             <div className="flex gap-3 justify-start">
-              <div className="w-8 h-8 rounded-full bg-indigo-500/20 flex items-center justify-center flex-shrink-0">
-                <Bot className="h-4 w-4 text-indigo-400" />
+              <div className="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center flex-shrink-0">
+                <Bot className="h-4 w-4 text-blue-500" />
               </div>
               <div className="bg-card border border-border/40 rounded-xl p-4">
                 <div className="flex items-center gap-2 text-muted-foreground">
@@ -842,9 +842,9 @@ export default function AiTutorPage() {
                 <button
                   key={q}
                   onClick={() => sendMessage(q)}
-                  className="w-full text-left text-xs px-3 py-2 rounded-lg border border-indigo-500/30
-                    bg-indigo-500/5 hover:bg-indigo-500/15 text-indigo-300
-                    hover:text-indigo-200 transition-colors leading-relaxed"
+                  className="w-full text-left text-xs px-3 py-2 rounded-lg border border-blue-500/30
+                    bg-blue-500/5 hover:bg-blue-500/15 text-blue-400
+                    hover:text-blue-300 transition-colors leading-relaxed"
                 >
                   {q}
                 </button>

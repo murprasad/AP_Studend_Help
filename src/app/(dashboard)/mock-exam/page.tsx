@@ -200,7 +200,7 @@ export default function MockExamPage() {
             <div className="grid grid-cols-3 gap-4">
               <div className="p-4 rounded-lg bg-secondary/50 text-center">
                 <p className="text-sm text-muted-foreground mb-1">Questions</p>
-                <p className="text-2xl font-bold text-indigo-400">{EXAM_QUESTIONS}</p>
+                <p className="text-2xl font-bold text-blue-500">{EXAM_QUESTIONS}</p>
                 <p className="text-xs text-muted-foreground">MCQ</p>
               </div>
               <div className="p-4 rounded-lg bg-secondary/50 text-center">
@@ -339,7 +339,7 @@ export default function MockExamPage() {
         <Progress
           value={(currentIndex / Math.max(total, 1)) * 100}
           className="h-2"
-          indicatorClassName="bg-indigo-500"
+          indicatorClassName="bg-blue-500"
         />
 
         <p className="text-sm text-muted-foreground text-center">
@@ -349,7 +349,7 @@ export default function MockExamPage() {
         <Card className="card-glow">
           <CardContent className="p-6 space-y-4">
             {currentQ.stimulus && (
-              <div className="p-4 rounded-lg bg-secondary/50 border-l-4 border-indigo-500">
+              <div className="p-4 rounded-lg bg-secondary/50 border-l-4 border-blue-500">
                 <p className="text-sm leading-relaxed italic text-muted-foreground">
                   {currentQ.stimulus}
                 </p>
@@ -367,7 +367,7 @@ export default function MockExamPage() {
                   else if (answers[currentQ.id] === letter && !feedback.isCorrect) cls = "border-red-500 bg-red-500/10 text-red-400";
                   else cls = "border border-border/20 opacity-50";
                 } else if (answers[currentQ.id] === letter) {
-                  cls = "border-indigo-500 bg-indigo-500/10";
+                  cls = "border-blue-500 bg-blue-500/10";
                 }
                 return (
                   <button

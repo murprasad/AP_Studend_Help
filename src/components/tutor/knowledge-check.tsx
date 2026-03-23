@@ -126,7 +126,7 @@ export function KnowledgeCheck({
           variant="outline"
           size="sm"
           onClick={startCheck}
-          className="gap-2 text-xs border-indigo-500/40 text-indigo-400 hover:bg-indigo-500/10 hover:text-indigo-300"
+          className="gap-2 text-xs border-blue-500/40 text-blue-500 hover:bg-blue-500/10 hover:text-blue-400"
         >
           <BookOpen className="h-3.5 w-3.5" />
           Check your understanding
@@ -173,7 +173,7 @@ export function KnowledgeCheck({
   return (
     <div className="mt-3 rounded-lg border border-border/40 bg-card p-4 space-y-3">
       <div className="flex items-center justify-between">
-        <p className="text-xs font-medium text-indigo-400 flex items-center gap-1.5">
+        <p className="text-xs font-medium text-blue-500 flex items-center gap-1.5">
           <BookOpen className="h-3.5 w-3.5" />
           Question {currentQ + 1} of {questions.length}
         </p>
@@ -184,9 +184,9 @@ export function KnowledgeCheck({
               className={cn(
                 "h-1.5 w-6 rounded-full",
                 i < currentQ
-                  ? "bg-indigo-500"
+                  ? "bg-blue-500"
                   : i === currentQ
-                  ? "bg-indigo-400"
+                  ? "bg-blue-500"
                   : "bg-border/60"
               )}
             />
@@ -204,7 +204,7 @@ export function KnowledgeCheck({
             "w-full text-left text-xs px-3 py-2.5 rounded-lg border transition-colors";
 
           if (!showFeedback) {
-            optClass += " border-border/40 hover:border-indigo-500/40 hover:bg-indigo-500/5";
+            optClass += " border-border/40 hover:border-blue-500/40 hover:bg-blue-500/5";
           } else if (isCorrect) {
             optClass += " border-emerald-500/60 bg-emerald-500/10 text-emerald-300";
           } else if (isSelected && !isCorrect) {

@@ -65,7 +65,7 @@ export default function DashboardLayout({
   if (status === "loading") {
     return (
       <div className="flex h-screen items-center justify-center bg-background">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-400" />
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500" />
       </div>
     );
   }
@@ -84,9 +84,9 @@ export default function DashboardLayout({
           <Menu className="h-5 w-5" />
         </button>
         <div className="flex items-center gap-2">
-          <Sparkles className="h-6 w-6 text-indigo-400" />
+          <Sparkles className="h-6 w-6 text-blue-500" />
           <span className="text-lg font-bold">
-            <span className="gradient-text">Student</span><span className="text-foreground/80 font-medium">Nest</span><span className="text-indigo-400/60 font-normal text-[0.6em] ml-1">Prep</span>
+            <span className="gradient-text">Student</span><span className="text-foreground/80 font-medium">Nest</span><span className="text-blue-500/60 font-normal text-[0.6em] ml-1">Prep</span>
           </span>
         </div>
       </header>

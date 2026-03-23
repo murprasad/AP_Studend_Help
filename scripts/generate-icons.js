@@ -28,7 +28,7 @@ async function generateIcon(size) {
   <!-- Dark background -->
   <rect width="${size}" height="${size}" fill="#111827"/>
   <!-- Indigo circle -->
-  <circle cx="${cx}" cy="${cy}" r="${radius}" fill="#6366f1"/>
+  <circle cx="${cx}" cy="${cy}" r="${radius}" fill="#1865F2"/>
   <!-- White "SN" initials -->
   <text
     x="${cx}"

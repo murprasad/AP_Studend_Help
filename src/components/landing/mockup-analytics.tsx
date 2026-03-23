@@ -70,7 +70,7 @@ export function MockupAnalytics() {
           {[45, 52, 48, 61, 58, 67, 72, 69, 75, 78, 74, 82].map((v, i) => (
             <div
               key={i}
-              className="flex-1 rounded-t bg-indigo-500/60 transition-all"
+              className="flex-1 rounded-t bg-blue-500/60 transition-all"
               style={{ height: `${(v / 100) * 100}%` }}
             />
           ))}

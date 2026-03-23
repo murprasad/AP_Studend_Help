@@ -86,7 +86,7 @@ export function ExamCountdownSetter({ course, inline = false }: Props) {
           <span className={`inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full border ${
             daysLeft <= 14
               ? "bg-red-500/15 text-red-400 border-red-500/20"
-              : "bg-indigo-500/10 text-indigo-300 border-indigo-500/15"
+              : "bg-blue-500/10 text-blue-400 border-blue-500/15"
           }`}>
             <Calendar className="h-3 w-3" />
             {daysLeft} day{daysLeft !== 1 ? "s" : ""} until exam
@@ -112,7 +112,7 @@ export function ExamCountdownSetter({ course, inline = false }: Props) {
               type="date"
               value={examDate}
               onChange={(e) => setExamDate(e.target.value)}
-              className="flex-1 rounded-md border border-border/40 bg-background px-3 py-1.5 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-indigo-500"
+              className="flex-1 rounded-md border border-border/40 bg-background px-3 py-1.5 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
             <Button size="sm" onClick={save} variant="outline" className="shrink-0">
               {saved ? "Saved ✓" : "Save"}
@@ -130,7 +130,7 @@ export function ExamCountdownSetter({ course, inline = false }: Props) {
     <Card className="card-glow">
       <CardHeader>
         <CardTitle className="text-base flex items-center gap-2">
-          <Calendar className="h-4 w-4 text-indigo-400" />
+          <Calendar className="h-4 w-4 text-blue-500" />
           Exam Countdown
         </CardTitle>
       </CardHeader>
@@ -139,9 +139,9 @@ export function ExamCountdownSetter({ course, inline = false }: Props) {
           <div className={`text-center p-4 rounded-lg ${
             daysLeft <= 14
               ? "bg-red-500/10 border border-red-500/20"
-              : "bg-indigo-500/10 border border-indigo-500/20"
+              : "bg-blue-500/10 border border-blue-500/20"
           }`}>
-            <p className={`text-4xl font-bold ${daysLeft <= 14 ? "text-red-400" : "text-indigo-400"}`}>
+            <p className={`text-4xl font-bold ${daysLeft <= 14 ? "text-red-400" : "text-blue-500"}`}>
               {daysLeft}
             </p>
             <p className="text-xs text-muted-foreground mt-1">
@@ -162,7 +162,7 @@ export function ExamCountdownSetter({ course, inline = false }: Props) {
               type="date"
               value={examDate}
               onChange={(e) => setExamDate(e.target.value)}
-              className="w-full rounded-md border border-border/40 bg-background px-3 py-1.5 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-indigo-500"
+              className="w-full rounded-md border border-border/40 bg-background px-3 py-1.5 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-blue-500"
             />
             <Button size="sm" onClick={save} className="w-full" variant="outline">
               {saved ? "Saved ✓" : "Save Exam Date"}

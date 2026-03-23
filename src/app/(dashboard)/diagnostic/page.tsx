@@ -112,7 +112,7 @@ export default function DiagnosticPage() {
   }
 
   const isCLEP = getCourseModule(course) === "clep"
-  const accentColor = isCLEP ? "emerald" : "indigo"
+  const accentColor = isCLEP ? "emerald" : "blue"
   const courseName = AP_COURSES[course] || COURSE_REGISTRY[course]?.name || course
 
   if (mode === "intro") {
@@ -150,7 +150,7 @@ export default function DiagnosticPage() {
                 { icon: TrendingUp, title: "Study Plan", desc: "AI recommends what to focus on" },
               ].map((item) => (
                 <div key={item.title} className="flex flex-col items-center gap-2 p-4 rounded-lg bg-secondary/30">
-                  <item.icon className="h-6 w-6 text-indigo-400" />
+                  <item.icon className="h-6 w-6 text-blue-500" />
                   <p className="font-medium text-sm">{item.title}</p>
                   <p className="text-xs text-muted-foreground">{item.desc}</p>
                 </div>
@@ -212,7 +212,7 @@ export default function DiagnosticPage() {
                     onClick={() => handleAnswerSelect(letter)}
                     className={`w-full text-left px-4 py-3 rounded-lg border text-sm transition-colors min-h-[48px] leading-relaxed ${
                       isSelected
-                        ? "border-indigo-500 bg-indigo-500/10 text-indigo-300"
+                        ? "border-blue-500 bg-blue-500/10 text-blue-400"
                         : "border-border/40 hover:bg-accent"
                     }`}
                   >
@@ -250,7 +250,7 @@ export default function DiagnosticPage() {
           <p className="text-muted-foreground mt-1">{courseName} — personalized breakdown</p>
         </div>
 
-        <Card className="border-indigo-500/20 bg-indigo-500/5">
+        <Card className="border-blue-500/20 bg-blue-500/5">
           <CardContent className="p-6">
             <p className="text-sm text-muted-foreground mb-1 font-medium">AI Recommendation</p>
             <p className="text-sm leading-relaxed">{result.recommendation}</p>
@@ -321,8 +321,8 @@ export default function DiagnosticPage() {
 
         {/* Study Plan CTA — always visible after results */}
         {result.weakUnits.length > 0 && (
-          <div className="flex items-center gap-3 p-4 rounded-xl border border-indigo-500/20 bg-indigo-500/5">
-            <BookOpen className="h-5 w-5 text-indigo-400 flex-shrink-0" />
+          <div className="flex items-center gap-3 p-4 rounded-xl border border-blue-500/20 bg-blue-500/5">
+            <BookOpen className="h-5 w-5 text-blue-500 flex-shrink-0" />
             <div className="flex-1">
               <p className="text-sm font-medium">Your weak areas have been identified</p>
               <p className="text-xs text-muted-foreground">Get a personalized study plan targeting {result.weakUnits.length} weak unit{result.weakUnits.length > 1 ? "s" : ""}.</p>
@@ -341,11 +341,11 @@ export default function DiagnosticPage() {
           const diagTrack = (session?.user as { track?: string })?.track ?? "ap";
           const isClep = diagTrack === "clep";
           return (
-          <Card className={isClep ? "border-emerald-500/30 bg-gradient-to-br from-emerald-500/10 to-teal-500/5" : "border-indigo-500/30 bg-gradient-to-br from-indigo-500/10 to-purple-500/5"}>
+          <Card className={isClep ? "border-emerald-500/30 bg-gradient-to-br from-emerald-500/10 to-teal-500/5" : "border-blue-500/30 bg-gradient-to-br from-blue-500/10 to-purple-500/5"}>
             <CardContent className="p-5">
               <div className="flex items-start gap-4">
-                <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${isClep ? "bg-emerald-500/20" : "bg-indigo-500/20"}`}>
-                  <Sparkles className={`h-5 w-5 ${isClep ? "text-emerald-400" : "text-indigo-400"}`} />
+                <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${isClep ? "bg-emerald-500/20" : "bg-blue-500/20"}`}>
+                  <Sparkles className={`h-5 w-5 ${isClep ? "text-emerald-400" : "text-blue-500"}`} />
                 </div>
                 <div className="flex-1">
                   <p className="font-semibold text-sm">
@@ -353,7 +353,7 @@ export default function DiagnosticPage() {
                   </p>
                   <p className="text-xs text-muted-foreground mt-1">
                     {isClep ? "CLEP Premium" : "AP Premium"} gives you an AI-generated weekly plan focused on{" "}
-                    <span className={isClep ? "text-emerald-300 font-medium" : "text-indigo-300 font-medium"}>
+                    <span className={isClep ? "text-emerald-300 font-medium" : "text-blue-400 font-medium"}>
                       {courseUnits[result.weakUnits[0] as ApUnit] || result.weakUnits[0]}
                     </span>{" "}
                     and {result.weakUnits.length > 1 ? `${result.weakUnits.length - 1} other weak unit${result.weakUnits.length > 2 ? "s" : ""}` : "your identified gap areas"}.
@@ -363,7 +363,7 @@ export default function DiagnosticPage() {
                   </p>
                   <div className="flex gap-2 mt-3">
                     <Link href="/billing">
-                      <Button size="sm" className={`gap-1.5 text-xs ${isClep ? "bg-emerald-600 hover:bg-emerald-700" : "bg-indigo-600 hover:bg-indigo-700"}`}>
+                      <Button size="sm" className={`gap-1.5 text-xs ${isClep ? "bg-emerald-600 hover:bg-emerald-700" : "bg-blue-600 hover:bg-blue-700"}`}>
                         <Crown className="h-3.5 w-3.5" />
                         Upgrade to {isClep ? "CLEP Premium" : "AP Premium"}
                       </Button>

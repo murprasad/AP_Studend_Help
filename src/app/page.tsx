@@ -86,7 +86,7 @@ const testimonials = [
     quote: "I finally understood the causes of the French Revolution instead of just memorizing them. Walked into the AP World exam feeling actually prepared.",
     name: "Sofia R.",
     initials: "SR",
-    avatarColor: "bg-violet-500/20 text-violet-400",
+    avatarColor: "bg-blue-500/20 text-blue-500",
     location: "Grade 11, California",
     context: "AP World History",
     metric: "62% → 89% unit mastery",
@@ -97,7 +97,7 @@ const testimonials = [
     quote: "Sage explained limits better in 5 minutes than my teacher did all semester. My calc grade went from a D to a B in one month.",
     name: "Marcus T.",
     initials: "MT",
-    avatarColor: "bg-indigo-500/20 text-indigo-400",
+    avatarColor: "bg-blue-500/20 text-blue-500",
     location: "Grade 12, Texas",
     context: "AP Calculus AB",
     metric: "D → B in one marking period",
@@ -125,10 +125,10 @@ export default function LandingPage() {
       <nav className="border-b border-border/40 backdrop-blur-sm sticky top-0 z-50 bg-background/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
-            <Sparkles className="h-6 w-6 text-indigo-400" />
+            <Sparkles className="h-6 w-6 text-blue-500" />
             <div>
               <span className="text-lg font-bold">
-                <span className="gradient-text">Student</span><span className="text-foreground/80 font-medium">Nest</span><span className="text-indigo-400/60 font-normal text-[0.6em] ml-1">Prep</span>
+                <span className="gradient-text">Student</span><span className="text-foreground/80 font-medium">Nest</span><span className="text-blue-500/60 font-normal text-[0.6em] ml-1">Prep</span>
               </span>
               <p className="text-xs text-muted-foreground leading-none hidden sm:block">Study Smarter. Score Higher.</p>
             </div>
@@ -167,17 +167,17 @@ export default function LandingPage() {
 
       {/* Hero — two-column: text left, product mockup right */}
       <section className="relative pt-20 pb-16 lg:pt-28 lg:pb-24 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-indigo-950/40 via-violet-950/20 to-transparent pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-b from-blue-950/40 via-blue-950/20 to-transparent pointer-events-none" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
             {/* Left — text */}
             <div className="text-center lg:text-left">
-              <Badge className="mb-6 bg-indigo-500/10 text-indigo-300 border-indigo-500/20 text-sm px-4 py-1.5">
+              <Badge className="mb-6 bg-blue-500/10 text-blue-400 border-blue-500/20 text-sm px-4 py-1.5">
                 <Sparkles className="h-3.5 w-3.5 mr-1.5" />
                 Free forever · AP, SAT, ACT &amp; CLEP · No credit card
               </Badge>
               <h1 className="text-4xl sm:text-5xl lg:text-5xl font-bold tracking-tight mb-4">
-                <span className="gradient-text">Student</span><span className="text-foreground/80 font-medium">Nest</span><span className="text-indigo-400/60 font-normal text-[0.6em] ml-1">Prep</span>
+                <span className="gradient-text">Student</span><span className="text-foreground/80 font-medium">Nest</span><span className="text-blue-500/60 font-normal text-[0.6em] ml-1">Prep</span>
               </h1>
               <p className="text-xl sm:text-2xl font-semibold text-foreground/90 mb-2">
                 Improve your AP, SAT, ACT, or CLEP scores — with AI that adapts to your weak areas.
@@ -190,7 +190,7 @@ export default function LandingPage() {
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
                 <Link href="/register?track=ap">
-                  <Button size="lg" className="btn-lift gap-2 text-base px-8 h-12 bg-indigo-600 hover:bg-indigo-700 text-white">
+                  <Button size="lg" className="btn-lift gap-2 text-base px-8 h-12 bg-blue-600 hover:bg-blue-700 text-white">
                     Start Free Diagnostic <ArrowRight className="h-5 w-5" />
                   </Button>
                 </Link>
@@ -209,7 +209,7 @@ export default function LandingPage() {
 
             {/* Right — product mockup */}
             <div className="hidden lg:block animate-float">
-              <BrowserFrame title="StudentNest Prep · Analytics" className="shadow-2xl shadow-indigo-500/10">
+              <BrowserFrame title="StudentNest Prep · Analytics" className="shadow-2xl shadow-blue-500/10">
                 <MockupAnalytics />
               </BrowserFrame>
             </div>
@@ -272,9 +272,9 @@ export default function LandingPage() {
       </section>
 
       {/* Meet Sage — AI differentiator */}
-      <section className="py-24 bg-gradient-to-b from-indigo-950/20 to-transparent">
+      <section className="py-24 bg-gradient-to-b from-blue-950/20 to-transparent">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-sm font-medium mb-6">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-500 text-sm font-medium mb-6">
             <Sparkles className="h-4 w-4" /> Study Smarter. Score Higher.
           </div>
           <h2 className="text-4xl font-bold mb-4">Meet Sage 🌿</h2>
@@ -287,8 +287,8 @@ export default function LandingPage() {
                 icon: MessageSquare,
                 title: "Ask Sage Anything",
                 desc: "Get step-by-step explanations of any concept — then Sage quizzes you back with 3 targeted questions to lock in what you just learned.",
-                color: "text-indigo-400",
-                bg: "bg-indigo-500/10",
+                color: "text-blue-500",
+                bg: "bg-blue-500/10",
               },
               {
                 icon: Zap,
@@ -348,17 +348,17 @@ export default function LandingPage() {
             <div className="p-5 space-y-4 text-sm">
               {/* User message */}
               <div className="flex justify-end">
-                <div className="bg-indigo-600/20 border border-indigo-500/20 rounded-2xl rounded-tr-sm px-4 py-2.5 max-w-[80%]">
+                <div className="bg-blue-600/20 border border-blue-500/20 rounded-2xl rounded-tr-sm px-4 py-2.5 max-w-[80%]">
                   <p className="text-foreground/90">Why did the French Revolution happen?</p>
                 </div>
               </div>
               {/* Sage response */}
               <div className="flex gap-3 items-start">
-                <div className="w-8 h-8 rounded-full bg-indigo-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <Sparkles className="h-4 w-4 text-indigo-400" />
+                <div className="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <Sparkles className="h-4 w-4 text-blue-500" />
                 </div>
                 <div className="bg-secondary/60 border border-border/40 rounded-2xl rounded-tl-sm px-4 py-2.5 max-w-[85%] space-y-1.5">
-                  <p className="font-semibold text-xs text-indigo-400 mb-1">Sage</p>
+                  <p className="font-semibold text-xs text-blue-500 mb-1">Sage</p>
                   <p className="text-foreground/80 leading-relaxed">
                     The French Revolution (1789) had three main causes: <strong>financial crisis</strong> from war debt, <strong>social inequality</strong> under the Estates system where the Third Estate bore heavy taxes, and <strong>Enlightenment ideas</strong> about liberty and popular sovereignty.
                   </p>
@@ -368,7 +368,7 @@ export default function LandingPage() {
               {/* Follow-up chips */}
               <div className="pl-11 flex flex-wrap gap-2">
                 {["What was the Estates system?", "How did Enlightenment ideas spread?"].map((q) => (
-                  <span key={q} className="text-xs px-3 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 cursor-default">
+                  <span key={q} className="text-xs px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 cursor-default">
                     {q}
                   </span>
                 ))}
@@ -430,7 +430,7 @@ export default function LandingPage() {
       {/* Knowledge Check callout */}
       <section className="py-16">
         <div className="max-w-3xl mx-auto text-center space-y-3 px-4">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-xs text-indigo-400 font-medium">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-xs text-blue-500 font-medium">
             <Sparkles className="h-3.5 w-3.5" /> What makes us different
           </div>
           <h2 className="text-2xl font-bold">Most AI tutors explain. Sage tests you back.</h2>
@@ -453,8 +453,8 @@ export default function LandingPage() {
             {/* Row 1: text left, study plan right */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
               <div className="space-y-4">
-                <div className="w-10 h-10 rounded-lg bg-indigo-500/20 flex items-center justify-center">
-                  <Target className="h-5 w-5 text-indigo-400" />
+                <div className="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center">
+                  <Target className="h-5 w-5 text-blue-500" />
                 </div>
                 <h3 className="text-2xl font-bold">Your AI builds a study plan around your weak areas</h3>
                 <p className="text-muted-foreground leading-relaxed">
@@ -489,8 +489,8 @@ export default function LandingPage() {
             {/* Row 3: text left, analytics right */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
               <div className="space-y-4">
-                <div className="w-10 h-10 rounded-lg bg-violet-500/20 flex items-center justify-center">
-                  <BarChart3 className="h-5 w-5 text-violet-400" />
+                <div className="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center">
+                  <BarChart3 className="h-5 w-5 text-blue-500" />
                 </div>
                 <h3 className="text-2xl font-bold">Watch your mastery grow, unit by unit</h3>
                 <p className="text-muted-foreground leading-relaxed">
@@ -539,7 +539,7 @@ export default function LandingPage() {
               <thead>
                 <tr className="bg-secondary/60 text-muted-foreground">
                   <th className="text-left p-3 font-medium">Feature</th>
-                  <th className="text-center p-3 font-medium text-indigo-400">StudentNest Prep</th>
+                  <th className="text-center p-3 font-medium text-blue-500">StudentNest Prep</th>
                   <th className="text-center p-3 font-medium">ChatGPT / AI</th>
                   <th className="text-center p-3 font-medium">Private Tutor</th>
                 </tr>
@@ -728,13 +728,13 @@ export default function LandingPage() {
               </div>
             </div>
             {/* AP Premium column */}
-            <div className="rounded-xl border border-indigo-500/40 bg-indigo-500/5 p-6 space-y-3 relative">
+            <div className="rounded-xl border border-blue-500/40 bg-blue-500/5 p-6 space-y-3 relative">
               <div className="absolute -top-3 right-4">
-                <span className="text-xs px-3 py-1 rounded-full bg-indigo-500/20 border border-indigo-500/30 text-indigo-300 font-medium">AP / SAT / ACT</span>
+                <span className="text-xs px-3 py-1 rounded-full bg-blue-500/20 border border-blue-500/30 text-blue-400 font-medium">AP / SAT / ACT</span>
               </div>
               <div className="flex items-center gap-2 mb-1">
                 <span className="text-base font-bold">AP Premium</span>
-                <span className="text-xl font-bold text-indigo-300">$9.99</span>
+                <span className="text-xl font-bold text-blue-400">$9.99</span>
                 <span className="text-xs text-muted-foreground">/ month</span>
               </div>
               <p className="text-xs text-green-500 font-medium mb-1">or $79.99/yr — save 33%</p>
@@ -747,13 +747,13 @@ export default function LandingPage() {
                 "Streaming AI responses",
               ].map((item) => (
                 <div key={item} className="flex items-center gap-2 text-sm text-foreground/80">
-                  <CheckCircle className="h-4 w-4 text-indigo-400 flex-shrink-0" />
+                  <CheckCircle className="h-4 w-4 text-blue-500 flex-shrink-0" />
                   {item}
                 </div>
               ))}
               <div className="pt-3">
                 <Link href="/register?track=ap">
-                  <Button className="w-full bg-indigo-600 hover:bg-indigo-700 text-white">Upgrade AP Premium</Button>
+                  <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white">Upgrade AP Premium</Button>
                 </Link>
               </div>
             </div>
@@ -790,7 +790,7 @@ export default function LandingPage() {
             </div>
           </div>
           <p className="text-center text-xs text-muted-foreground mt-5">
-            <Link href="/pricing" className="text-indigo-400 hover:underline">See full pricing details →</Link>
+            <Link href="/pricing" className="text-blue-500 hover:underline">See full pricing details →</Link>
           </p>
         </div>
       </section>
@@ -823,7 +823,7 @@ export default function LandingPage() {
                     &ldquo;{t.quote}&rdquo;
                   </blockquote>
                   <div className="flex flex-wrap gap-2">
-                    <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">{t.metric}</span>
+                    <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-500 border border-blue-500/20">{t.metric}</span>
                     <span className="text-[11px] px-2 py-0.5 rounded-full bg-secondary/60 text-muted-foreground">{t.timeline}</span>
                   </div>
                   <div className="flex items-center gap-3">
@@ -846,7 +846,7 @@ export default function LandingPage() {
       <section id="parents" className="py-16 bg-secondary/20 scroll-mt-20">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-10">
-            <p className="text-xs font-semibold uppercase tracking-wider text-indigo-400 mb-2">For Parents</p>
+            <p className="text-xs font-semibold uppercase tracking-wider text-blue-500 mb-2">For Parents</p>
             <h2 className="text-3xl font-bold mb-3">You want to see your child succeed. So do we.</h2>
             <p className="text-muted-foreground max-w-2xl mx-auto leading-relaxed">
               A typical AP student needs 8–12 weeks of focused practice before exam day. With a private tutor at $50/hr twice a week, that&apos;s $800–$1,200. StudentNest Prep Premium covers the same period for about $20 total. Your child gets adaptive practice and AI explanations, and you get visibility into their actual progress: which units they&apos;ve mastered, where they&apos;re struggling, how many days they&apos;ve studied this week, and whether their accuracy is trending up.
@@ -860,8 +860,8 @@ export default function LandingPage() {
               { icon: Clock, title: "Affordable Prep", desc: "$9.99/mo — less than one hour of private tutoring. Free tier available for every student." },
             ].map((item) => (
               <div key={item.title} className="p-5 rounded-xl border border-border/40 bg-card/50 text-center space-y-2">
-                <div className="w-10 h-10 rounded-lg bg-indigo-500/10 flex items-center justify-center mx-auto">
-                  <item.icon className="h-5 w-5 text-indigo-400" />
+                <div className="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center mx-auto">
+                  <item.icon className="h-5 w-5 text-blue-500" />
                 </div>
                 <p className="font-semibold text-sm">{item.title}</p>
                 <p className="text-xs text-muted-foreground leading-relaxed">{item.desc}</p>
@@ -875,7 +875,7 @@ export default function LandingPage() {
       <LandingFaq />
 
       {/* Final CTA */}
-      <section className="py-24 lg:py-32 bg-gradient-to-b from-indigo-950/30 to-background">
+      <section className="py-24 lg:py-32 bg-gradient-to-b from-blue-950/30 to-background">
         <div className="max-w-3xl mx-auto px-4 text-center">
           <h2 className="text-4xl font-bold mb-4">Ready to prepare for the exam that changes everything?</h2>
           <p className="text-muted-foreground text-lg mb-8">
@@ -884,7 +884,7 @@ export default function LandingPage() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/register?track=ap">
-              <Button size="lg" className="gap-2 text-base px-10 h-12 bg-indigo-600 hover:bg-indigo-700 text-white">
+              <Button size="lg" className="gap-2 text-base px-10 h-12 bg-blue-600 hover:bg-blue-700 text-white">
                 Start AP/SAT/ACT Prep Free
               </Button>
             </Link>
@@ -896,7 +896,7 @@ export default function LandingPage() {
           </div>
           <p className="mt-3 text-sm text-muted-foreground">
             Free forever · AP Premium or CLEP Premium from $6.67/mo (annual) or $9.99/mo ·{" "}
-            <Link href="/pricing" className="text-indigo-400 hover:underline">See full pricing</Link>
+            <Link href="/pricing" className="text-blue-500 hover:underline">See full pricing</Link>
           </p>
         </div>
       </section>
@@ -908,8 +908,8 @@ export default function LandingPage() {
             {/* Col 1: Brand */}
             <div className="col-span-2 md:col-span-1 space-y-3">
               <div className="flex items-center gap-2">
-                <Sparkles className="h-5 w-5 text-indigo-400" />
-                <span className="font-semibold"><span className="gradient-text">Student</span><span className="text-foreground/80 font-medium">Nest</span><span className="text-indigo-400/60 font-normal text-[0.6em] ml-1">Prep</span></span>
+                <Sparkles className="h-5 w-5 text-blue-500" />
+                <span className="font-semibold"><span className="gradient-text">Student</span><span className="text-foreground/80 font-medium">Nest</span><span className="text-blue-500/60 font-normal text-[0.6em] ml-1">Prep</span></span>
               </div>
               <p className="text-xs text-muted-foreground leading-relaxed">
                 AI-powered exam prep for AP, SAT, ACT &amp; CLEP. Free to start.

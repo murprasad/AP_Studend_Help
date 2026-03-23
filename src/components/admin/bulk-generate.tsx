@@ -351,10 +351,10 @@ export function AdminBulkGenerate() {
       </Card>
 
       {/* ── Targeted generation ───────────────────────────────────────────── */}
-      <Card className="card-glow border-indigo-500/30">
+      <Card className="card-glow border-blue-500/30">
         <CardHeader>
           <CardTitle className="text-lg flex items-center gap-2">
-            <Brain className="h-5 w-5 text-indigo-400" />
+            <Brain className="h-5 w-5 text-blue-500" />
             Generate Specific Questions
           </CardTitle>
           <p className="text-sm text-muted-foreground">

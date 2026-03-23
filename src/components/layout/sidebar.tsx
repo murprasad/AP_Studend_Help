@@ -203,9 +203,9 @@ export function Sidebar({ userRole, userTrack, isOpen = false, onClose = () => {
         <div className="p-6 border-b border-border/40 pt-14 lg:pt-6">
           <div className="flex items-center justify-between">
             <Link href="/dashboard" className="flex items-center gap-2" onClick={handleNavClick}>
-              <Sparkles className="h-6 w-6 text-indigo-400" />
+              <Sparkles className="h-6 w-6 text-blue-500" />
               <span className="text-lg font-bold">
-                <span className="gradient-text">Student</span><span className="text-foreground/80 font-medium">Nest</span><span className="text-indigo-400/60 font-normal text-[0.6em] ml-1">Prep</span>
+                <span className="gradient-text">Student</span><span className="text-foreground/80 font-medium">Nest</span><span className="text-blue-500/60 font-normal text-[0.6em] ml-1">Prep</span>
               </span>
             </Link>
             <div className="flex items-center gap-1.5">
@@ -232,7 +232,7 @@ export function Sidebar({ userRole, userTrack, isOpen = false, onClose = () => {
               <div className={`mt-3 flex items-center gap-1.5 text-xs font-medium px-2 py-1.5 rounded-lg ${
                 daysLeft <= 14
                   ? "bg-red-500/15 text-red-400 border border-red-500/20"
-                  : "bg-indigo-500/10 text-indigo-300 border border-indigo-500/15"
+                  : "bg-blue-500/10 text-blue-400 border border-blue-500/15"
               }`}>
                 <Calendar className="h-3.5 w-3.5 flex-shrink-0" />
                 <span>{daysLeft} day{daysLeft !== 1 ? "s" : ""} until exam</span>

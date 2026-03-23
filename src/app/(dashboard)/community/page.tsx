@@ -187,7 +187,7 @@ export default function CommunityPage() {
                 </p>
               </div>
               {selectedThread.isPinned && (
-                <Pin className="h-4 w-4 text-indigo-400 flex-shrink-0 mt-1" />
+                <Pin className="h-4 w-4 text-blue-500 flex-shrink-0 mt-1" />
               )}
             </div>
           </CardHeader>
@@ -201,7 +201,7 @@ export default function CommunityPage() {
           <Button
             size="sm"
             variant="outline"
-            className="gap-2 border-indigo-500/40 text-indigo-400 hover:bg-indigo-500/10"
+            className="gap-2 border-blue-500/40 text-blue-500 hover:bg-blue-500/10"
             onClick={askAiTutor}
             disabled={aiTutorLoading || hasAiReply}
           >
@@ -218,11 +218,11 @@ export default function CommunityPage() {
           </p>
           {replies.map(reply => (
             reply.isAiTutor ? (
-              <Card key={reply.id} className="border-indigo-500/40 bg-indigo-950/20">
+              <Card key={reply.id} className="border-blue-500/40 bg-blue-950/20">
                 <CardContent className="p-4">
                   <div className="flex items-center gap-1.5 mb-2">
-                    <Sparkles className="h-3.5 w-3.5 text-indigo-400" />
-                    <span className="text-xs font-semibold text-indigo-400">AI Tutor</span>
+                    <Sparkles className="h-3.5 w-3.5 text-blue-500" />
+                    <span className="text-xs font-semibold text-blue-500">AI Tutor</span>
                     <span className="text-xs text-muted-foreground ml-1">· {formatDate(reply.createdAt)}</span>
                   </div>
                   <p className="text-sm whitespace-pre-wrap leading-relaxed">{reply.body}</p>
@@ -265,7 +265,7 @@ export default function CommunityPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold flex items-center gap-3">
-            <Users className="h-8 w-8 text-indigo-400" />
+            <Users className="h-8 w-8 text-blue-500" />
             Community
           </h1>
           <p className="text-muted-foreground mt-1 text-sm">Discuss AP, SAT, and ACT topics with fellow students</p>
@@ -276,7 +276,7 @@ export default function CommunityPage() {
       </div>
 
       {showNewThread && (
-        <Card className="border-indigo-500/30">
+        <Card className="border-blue-500/30">
           <CardContent className="p-4 space-y-3">
             <p className="font-medium">New Discussion Thread</p>
             <Input
@@ -325,7 +325,7 @@ export default function CommunityPage() {
               <div className="flex items-start justify-between gap-2">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">
-                    {thread.isPinned && <Pin className="h-3.5 w-3.5 text-indigo-400 flex-shrink-0" />}
+                    {thread.isPinned && <Pin className="h-3.5 w-3.5 text-blue-500 flex-shrink-0" />}
                     <p className="font-medium text-sm truncate">{thread.title}</p>
                   </div>
                   <p className="text-xs text-muted-foreground line-clamp-1">{thread.body}</p>

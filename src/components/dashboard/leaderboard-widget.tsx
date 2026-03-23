@@ -81,16 +81,16 @@ export function LeaderboardWidget({ course }: Props) {
                   {rankEmoji(entry.rank)}
                 </span>
                 <span className="text-sm flex-1 truncate">{entry.displayName}</span>
-                <Badge variant="outline" className="text-xs text-indigo-400 border-indigo-500/30 flex-shrink-0">
+                <Badge variant="outline" className="text-xs text-blue-500 border-blue-500/30 flex-shrink-0">
                   {entry.xp} XP
                 </Badge>
               </div>
             ))}
             {userRank && userRank > leaderboard.length && (
-              <div className="flex items-center gap-2 p-2 rounded-lg border border-indigo-500/20 bg-indigo-500/5 mt-2">
-                <span className="text-sm font-bold w-7 flex-shrink-0 text-indigo-400">#{userRank}</span>
-                <span className="text-sm flex-1 text-indigo-300">You</span>
-                <Badge variant="outline" className="text-xs text-indigo-400 border-indigo-500/30">
+              <div className="flex items-center gap-2 p-2 rounded-lg border border-blue-500/20 bg-blue-500/5 mt-2">
+                <span className="text-sm font-bold w-7 flex-shrink-0 text-blue-500">#{userRank}</span>
+                <span className="text-sm flex-1 text-blue-400">You</span>
+                <Badge variant="outline" className="text-xs text-blue-500 border-blue-500/30">
                   {userXp} XP
                 </Badge>
               </div>
