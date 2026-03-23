@@ -206,10 +206,31 @@ export async function POST(req: NextRequest) {
           ? `${generated.length} AI question${generated.length === 1 ? "" : "s"} generated. Start another session to get ${stillNeeded} more — they'll be ready instantly!`
           : `${generated.length} AI question${generated.length === 1 ? "" : "s"} generated and saved for future sessions too.`;
       } else if (allQuestions.length === 0) {
-        return NextResponse.json(
-          { error: "No questions available and AI generation failed. Please try again later." },
-          { status: 400 }
-        );
+        // Retry once more with reduced count — sometimes providers recover after a brief delay
+        try {
+          const retryUnit = courseUnitKeys[0] as ApUnit;
+          const retryQ = await generateQuestion(retryUnit, Difficulty.MEDIUM, resolvedQuestionType, undefined, course as ApCourse, "FREE", undefined, true);
+          const saved = await prisma.question.create({
+            data: {
+              course: course as ApCourse, unit: retryQ.unit, topic: retryQ.topic, subtopic: retryQ.subtopic,
+              difficulty: retryQ.difficulty, questionType: retryQ.questionType, questionText: retryQ.questionText,
+              stimulus: retryQ.stimulus || null, stimulusImageUrl: retryQ.stimulusImageUrl || null,
+              options: retryQ.options ?? undefined, correctAnswer: retryQ.correctAnswer, explanation: retryQ.explanation,
+              isAiGenerated: true, isApproved: true, modelUsed: retryQ.modelUsed ?? null,
+              contentHash: retryQ.contentHash ?? null, apSkill: retryQ.apSkill ?? null, bloomLevel: retryQ.bloomLevel ?? null,
+            },
+            select: { id: true, course: true, unit: true, topic: true, subtopic: true, difficulty: true, questionType: true, questionText: true, stimulus: true, stimulusImageUrl: true, options: true, correctAnswer: true, explanation: true },
+          });
+          if (saved) {
+            freshQuestions = [saved as (typeof allQuestions)[0]];
+            aiGenerationWarning = "1 question generated on retry. More will be available on your next session.";
+          }
+        } catch {
+          return NextResponse.json(
+            { error: "No questions available yet for this course. The question bank is being populated — please try again in a few minutes." },
+            { status: 400 }
+          );
+        }
       }
     }
 
