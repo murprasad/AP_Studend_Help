@@ -336,8 +336,11 @@ export async function generateQuestion(
       const { CLEP_CALIBRATION } = await import("./clep-calibration");
       const examples = CLEP_CALIBRATION[inferredCourse as string];
       if (examples && examples.length > 0) {
-        const sample = examples[Math.floor(Math.random() * examples.length)];
-        clepCalibrationSection = `\n\nCALIBRATION EXAMPLE (match this style and difficulty):\n"${sample}"\n\nGenerate a DIFFERENT question at the SAME quality level. Do NOT copy this scenario or wording.`;
+        // Inject 2 random examples (if available) for stronger style/difficulty anchoring
+        const shuffled = [...examples].sort(() => Math.random() - 0.5);
+        const samples = shuffled.slice(0, Math.min(2, shuffled.length));
+        const exampleText = samples.map((s, i) => `Example ${i + 1}: "${s}"`).join("\n");
+        clepCalibrationSection = `\n\nCALIBRATION EXAMPLES (match this style and difficulty):\n${exampleText}\n\nGenerate a DIFFERENT question at the SAME quality level. Do NOT copy these scenarios or wording.`;
       }
     } catch {
       // clep-calibration module not available — continue without examples

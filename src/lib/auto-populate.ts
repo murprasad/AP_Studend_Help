@@ -211,6 +211,103 @@ export async function runAutoPopulate(
   };
 }
 
+// ── Difficulty Audit — flag questions whose empirical difficulty diverges from label ─
+// Research shows AI questions tend to be easier than intended (p=0.78 vs human p=0.69).
+// This function identifies and flags miscalibrated questions using student response data.
+
+export interface DifficultyAuditResult {
+  audited: number;
+  flagged: number;
+  recalibrated: number;
+  details: Array<{ questionId: string; difficulty: string; pValue: number; action: string }>;
+}
+
+/**
+ * Audits questions with sufficient response data and flags those whose empirical
+ * difficulty diverges significantly from their labeled difficulty.
+ *
+ * Thresholds (based on CLEP exam calibration research):
+ *   EASY labeled but p < 0.40 → too hard, flag for review
+ *   MEDIUM labeled but p < 0.25 or p > 0.85 → miscalibrated
+ *   HARD labeled but p > 0.70 → too easy, flag for review
+ *
+ * @param minResponses - Minimum responses needed for stable p-value estimate (default 20)
+ * @param autoRecalibrate - If true, auto-correct the difficulty label instead of just flagging
+ */
+export async function runDifficultyAudit(
+  minResponses: number = 20,
+  autoRecalibrate: boolean = false,
+): Promise<DifficultyAuditResult> {
+  // Find questions with enough responses to compute reliable p-values
+  const questions = await prisma.question.findMany({
+    where: {
+      isApproved: true,
+      timesAnswered: { gte: minResponses },
+    },
+    select: {
+      id: true,
+      difficulty: true,
+      timesAnswered: true,
+      timesCorrect: true,
+      course: true,
+      unit: true,
+      topic: true,
+    },
+  });
+
+  let flagged = 0;
+  let recalibrated = 0;
+  const details: DifficultyAuditResult["details"] = [];
+
+  for (const q of questions) {
+    const pValue = (q.timesCorrect ?? 0) / (q.timesAnswered ?? 1);
+    let action = "";
+    let newDifficulty: Difficulty | null = null;
+
+    if (q.difficulty === Difficulty.EASY && pValue < 0.40) {
+      // Labeled EASY but only 40% get it right → actually MEDIUM or HARD
+      newDifficulty = pValue < 0.25 ? Difficulty.HARD : Difficulty.MEDIUM;
+      action = `EASY (p=${pValue.toFixed(2)}) → ${newDifficulty}`;
+    } else if (q.difficulty === Difficulty.MEDIUM && pValue > 0.85) {
+      // Labeled MEDIUM but 85%+ get it right → actually EASY
+      newDifficulty = Difficulty.EASY;
+      action = `MEDIUM (p=${pValue.toFixed(2)}) → EASY`;
+    } else if (q.difficulty === Difficulty.MEDIUM && pValue < 0.25) {
+      // Labeled MEDIUM but only 25% get it right → actually HARD
+      newDifficulty = Difficulty.HARD;
+      action = `MEDIUM (p=${pValue.toFixed(2)}) → HARD`;
+    } else if (q.difficulty === Difficulty.HARD && pValue > 0.70) {
+      // Labeled HARD but 70%+ get it right → actually MEDIUM or EASY
+      newDifficulty = pValue > 0.85 ? Difficulty.EASY : Difficulty.MEDIUM;
+      action = `HARD (p=${pValue.toFixed(2)}) → ${newDifficulty}`;
+    }
+
+    if (newDifficulty) {
+      flagged++;
+      if (autoRecalibrate) {
+        await prisma.question.update({
+          where: { id: q.id },
+          data: { difficulty: newDifficulty },
+        });
+        recalibrated++;
+        action += " [auto-recalibrated]";
+      } else {
+        // Just flag — set isApproved to false for admin review
+        await prisma.question.update({
+          where: { id: q.id },
+          data: { isApproved: false },
+        });
+        action += " [flagged for review]";
+      }
+      details.push({ questionId: q.id, difficulty: q.difficulty, pValue, action });
+      console.log(`[difficulty-audit] ${q.course}/${q.unit} Q:${q.id.slice(0, 8)} — ${action}`);
+    }
+  }
+
+  console.log(`[difficulty-audit] Audited ${questions.length} questions, flagged ${flagged}, recalibrated ${recalibrated}`);
+  return { audited: questions.length, flagged, recalibrated, details };
+}
+
 // ── Internal helpers ──────────────────────────────────────────────────────────
 
 async function generateOneQuestion(
