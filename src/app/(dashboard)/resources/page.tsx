@@ -115,7 +115,41 @@ export default function ResourcesPage() {
       {/* ── ALL RESOURCES TAB ── */}
       {activeTab === "resources" && (
         <div className="space-y-6">
-          {/* Resource cards grid */}
+          {/* Course-specific resources from COURSE_REGISTRY */}
+          {COURSE_REGISTRY[course]?.tutorResources && (
+            <div>
+              <h2 className="text-lg font-bold mb-3 flex items-center gap-2">
+                <BookOpen className="h-5 w-5 text-emerald-400" />
+                Recommended for {AP_COURSES[course] || COURSE_REGISTRY[course]?.name}
+              </h2>
+              <div className="space-y-2">
+                {COURSE_REGISTRY[course].tutorResources!.replace(/\\n/g, "\n").split("\n").filter((l: string) => l.trim().startsWith("-")).map((line: string, i: number) => {
+                  const text = line.replace(/^-\s*/, "").trim();
+                  const urlMatch = text.match(/\((https?:\/\/[^)]+)\)/);
+                  const nameMatch = text.match(/^([^(]+)/);
+                  const name = nameMatch?.[1]?.trim() || text;
+                  const url = urlMatch?.[1];
+                  return (
+                    <div key={i} className="flex items-start gap-3 p-3 rounded-lg border border-emerald-500/20 bg-emerald-500/5">
+                      <ExternalLink className="h-4 w-4 text-emerald-400 flex-shrink-0 mt-0.5" />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium">{name.replace(/:$/, "")}</p>
+                        {url && (
+                          <a href={url} target="_blank" rel="noopener noreferrer" className="text-xs text-emerald-400 hover:text-emerald-300 underline truncate block">{url}</a>
+                        )}
+                      </div>
+                      <Badge variant="outline" className="text-xs text-emerald-400 border-emerald-500/30 flex-shrink-0">Free</Badge>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* Global resource cards grid */}
+          <div>
+            <h2 className="text-lg font-bold mb-3">General Study Resources</h2>
+          </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
             {GLOBAL_RESOURCES.map((resource) => {
               const Icon = ICON_MAP[resource.icon] || Globe;

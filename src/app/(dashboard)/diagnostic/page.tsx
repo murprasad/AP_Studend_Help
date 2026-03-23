@@ -8,7 +8,8 @@ import { Progress } from "@/components/ui/progress"
 import { useCourse } from "@/hooks/use-course"
 import { useToast } from "@/hooks/use-toast"
 import { useSession } from "next-auth/react"
-import { COURSE_UNITS } from "@/lib/utils"
+import { COURSE_UNITS, AP_COURSES } from "@/lib/utils"
+import { COURSE_REGISTRY, getCourseModule } from "@/lib/courses"
 import { ApUnit } from "@prisma/client"
 import Link from "next/link"
 import {
@@ -110,20 +111,33 @@ export default function DiagnosticPage() {
     }
   }
 
+  const isCLEP = getCourseModule(course) === "clep"
+  const accentColor = isCLEP ? "emerald" : "indigo"
+  const courseName = AP_COURSES[course] || COURSE_REGISTRY[course]?.name || course
+
   if (mode === "intro") {
     return (
       <div className="max-w-2xl mx-auto space-y-6">
         <div>
           <h1 className="text-3xl font-bold flex items-center gap-3">
-            <ClipboardList className="h-8 w-8 text-indigo-400" />
+            <ClipboardList className={`h-8 w-8 text-${accentColor}-400`} />
             Diagnostic Assessment
           </h1>
           <p className="text-muted-foreground mt-2">
-            Find out exactly where you stand across all units in your AP course.
+            Find out exactly where you stand across all units.
           </p>
         </div>
 
-        <Card className="card-glow border-indigo-500/20">
+        {/* Selected course badge */}
+        <div className={`flex items-center gap-3 p-4 rounded-xl border border-${accentColor}-500/20 bg-${accentColor}-500/5`}>
+          <BookOpen className={`h-5 w-5 text-${accentColor}-400 flex-shrink-0`} />
+          <div>
+            <p className="text-sm font-semibold">{courseName}</p>
+            <p className="text-xs text-muted-foreground">{Object.keys(courseUnits).length} units · {isCLEP ? "CLEP Exam" : "AP/SAT/ACT"}</p>
+          </div>
+        </div>
+
+        <Card className={`card-glow border-${accentColor}-500/20`}>
           <CardHeader>
             <CardTitle>How It Works</CardTitle>
             <CardDescription>One question per unit — quick and targeted</CardDescription>
@@ -230,10 +244,10 @@ export default function DiagnosticPage() {
       <div className="max-w-2xl mx-auto space-y-6">
         <div>
           <h1 className="text-3xl font-bold flex items-center gap-3">
-            <Target className="h-8 w-8 text-indigo-400" />
+            <Target className={`h-8 w-8 text-${accentColor}-400`} />
             Diagnostic Results
           </h1>
-          <p className="text-muted-foreground mt-1">Here&apos;s your personalized breakdown</p>
+          <p className="text-muted-foreground mt-1">{courseName} — personalized breakdown</p>
         </div>
 
         <Card className="border-indigo-500/20 bg-indigo-500/5">
