@@ -1,17 +1,17 @@
 name: Seed Question Bank
 
-# Runs daily at 2 AM UTC to fill empty course units.
+# Runs every 6 hours to fill empty course units.
 # Also available as manual trigger for immediate seeding.
 # Stops early when all units have ≥ 8 questions.
 on:
   schedule:
-    - cron: '0 2 * * *'   # daily at 2 AM UTC
+    - cron: '0 2,8,14,20 * * *'   # every 6 hours (2 AM, 8 AM, 2 PM, 8 PM UTC)
   workflow_dispatch:
     inputs:
       iterations:
-        description: 'Number of batches to run (default 60, each adds up to 8 questions)'
+        description: 'Number of batches to run (default 120, each adds up to 8 questions)'
         required: false
-        default: '60'
+        default: '120'
       questions_per_batch:
         description: 'Questions per batch (max 10, keep ≤ 8 to avoid CF timeout)'
         required: false
@@ -26,7 +26,7 @@ jobs:
         env:
           CRON_SECRET: ${{ secrets.CRON_SECRET }}
         run: |
-          ITERATIONS=${{ github.event.inputs.iterations || 60 }}
+          ITERATIONS=${{ github.event.inputs.iterations || 120 }}
           QPB=${{ github.event.inputs.questions_per_batch || 8 }}
           success=0
           failed=0

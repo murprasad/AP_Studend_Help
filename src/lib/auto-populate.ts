@@ -21,7 +21,7 @@ import { getWikipediaSummary } from "./edu-apis";
 export const AUTO_POPULATE_TARGET = 50;
 
 /** Max units processed per scheduled run. */
-export const MAX_UNITS_PER_RUN = 3;
+export const MAX_UNITS_PER_RUN = 6;
 
 /**
  * Max questions generated per cron invocation.
