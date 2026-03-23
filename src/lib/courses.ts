@@ -124,6 +124,8 @@ export interface CourseConfig {
    * When present, buildDifficultyQueue distributes questions proportionally.
    */
   topicWeights?: Record<string, number>;
+  /** College Board-recommended textbooks and authoritative study resources */
+  recommendedTextbooks?: string[];
 }
 
 // ═════════════════════════════════════════════════════════════════════════════
@@ -1953,6 +1955,11 @@ All questions are 4-choice MCQ.`,
       "CLEP_ALGEBRA_4_POLYNOMIAL_RATIONAL": 0.13,
       "CLEP_ALGEBRA_5_EXPONENTIAL_LOGARITHMIC": 0.12,
     },
+    recommendedTextbooks: [
+      "OpenStax College Algebra 2e (free: openstax.org/books/college-algebra-2e)",
+      "Sullivan, Algebra and Trigonometry (Pearson)",
+      "Stewart et al., College Algebra (Cengage)",
+    ],
   },
 
   // ── CLEP College Composition ─────────────────────────────────────────────
@@ -2026,6 +2033,18 @@ MCQ section only — essay scoring is separate and institution-specific.`,
     distractorTaxonomy: "(1) TOO-WORDY TRAP — technically correct but verbose when a shorter option is available; (2) TONE-SHIFT TRAP — correct grammar but wrong register for the passage's formal/informal voice; (3) OVER-CITATION TRAP — adds citation where paraphrase is already sufficient.",
     stimulusQualityGuidance: "GOOD: A 5-sentence paragraph with a clear argument, one underlined sentence, and a question asking how to improve it. AVOID: Fragments without context or single-sentence stimuli that don't give enough rhetorical context.",
     skillCodes: ["Revision", "Grammar and Mechanics", "Rhetorical Analysis", "Research Integration"],
+    // CB weights: Conventions 10%, Revision 10%, Source Materials 25%, Rhetorical Analysis 25%, Essays 30%
+    topicWeights: {
+      "CLEP_COMP_1_ESSAY_STRATEGIES": 0.30,
+      "CLEP_COMP_2_RHETORICAL_ANALYSIS": 0.25,
+      "CLEP_COMP_3_RESEARCH_DOCUMENTATION": 0.25,
+      "CLEP_COMP_4_REVISION_EDITING": 0.10,
+      "CLEP_COMP_5_ARGUMENTATION": 0.10,
+    },
+    recommendedTextbooks: [
+      "Lunsford, The St. Martin's Handbook (Bedford/St. Martin's)",
+      "Hacker & Sommers, A Writer's Reference (Bedford/St. Martin's)",
+    ],
   },
 
   // ── CLEP Introductory Psychology ─────────────────────────────────────────
@@ -2123,6 +2142,11 @@ Questions are application-focused — expect scenario-based questions asking to 
       "CLEP_PSY_4_SOCIAL_PERSONALITY": 0.33,
       "CLEP_PSY_5_CLINICAL_ABNORMAL": 0.15,
     },
+    recommendedTextbooks: [
+      "Myers & DeWall, Psychology (Worth Publishers)",
+      "OpenStax Psychology 2e (free: openstax.org/books/psychology-2e)",
+      "Noba Project Psychology Modules (free: nobaproject.com)",
+    ],
   },
 
   // ── CLEP Principles of Marketing ────────────────────────────────────────
@@ -2195,6 +2219,19 @@ product (15%), price (15%), place/distribution (10%), promotion (10%), internati
     distractorTaxonomy: "(1) SIMILAR-STRATEGY TRAP — skimming vs premium pricing; push vs pull strategy; (2) WRONG-STAGE TRAP — applies introduction-stage strategy to maturity stage of PLC; (3) DIRECTION-OF-CAUSATION TRAP — confuses whether consumer demand drives price or price drives demand.",
     stimulusQualityGuidance: "GOOD: 'A tech company launches a flagship phone at $1,499 to signal premium quality and recover R&D costs. Which pricing strategy is this?' AVOID: Hypothetical companies with no industry context.",
     skillCodes: ["Marketing Mix Application", "Consumer Analysis", "Strategic Decision-Making", "Market Research"],
+    // CB weights: roughly equal with slight emphasis on fundamentals and product/pricing
+    topicWeights: {
+      "CLEP_MARKETING_1_FUNDAMENTALS": 0.25,
+      "CLEP_MARKETING_2_CONSUMER_BEHAVIOR": 0.15,
+      "CLEP_MARKETING_3_PRODUCT_PRICING": 0.25,
+      "CLEP_MARKETING_4_DISTRIBUTION_PROMOTION": 0.20,
+      "CLEP_MARKETING_5_DIGITAL_GLOBAL": 0.15,
+    },
+    recommendedTextbooks: [
+      "OpenStax Principles of Marketing (free: openstax.org/books/principles-marketing)",
+      "Kotler & Armstrong, Principles of Marketing (Pearson)",
+      "Lamb et al., MKTG (Cengage)",
+    ],
   },
 
   // ── CLEP Principles of Management ────────────────────────────────────────
@@ -2267,6 +2304,19 @@ motivating (15%), controlling (15%), organizational behavior (5%).`,
     distractorTaxonomy: "(1) THEORY-CONFUSION TRAP — Herzberg hygiene factor vs motivator; McGregor X vs Y; (2) LEVEL-CONFUSION TRAP — Maslow safety vs esteem; (3) DIRECTION TRAP — confuses what increases vs decreases motivation or performance.",
     stimulusQualityGuidance: "GOOD: 'A manager gives employees decision-making authority and trusts them to self-direct. Which leadership style does this represent?' AVOID: Vague 'a company changed its strategy' without enough detail to apply a theory.",
     skillCodes: ["Management Theory Application", "Leadership Analysis", "Organizational Design", "Strategic Thinking"],
+    // CB weights: Planning/organizing 30%, Leading/motivation 25%, Controlling/operations 20%, HR 15%, Strategic/ethics 10%
+    topicWeights: {
+      "CLEP_MGMT_1_PLANNING_ORGANIZING": 0.30,
+      "CLEP_MGMT_2_LEADING_MOTIVATION": 0.25,
+      "CLEP_MGMT_3_CONTROLLING_OPERATIONS": 0.20,
+      "CLEP_MGMT_4_HUMAN_RESOURCES": 0.15,
+      "CLEP_MGMT_5_STRATEGIC_ETHICS": 0.10,
+    },
+    recommendedTextbooks: [
+      "OpenStax Principles of Management (free: openstax.org/books/principles-management)",
+      "Robbins & Coulter, Management (Prentice Hall)",
+      "Daft & Marcic, Understanding Management (Cengage)",
+    ],
   },
 
   // ── CLEP Introductory Sociology ──────────────────────────────────────────
@@ -2352,6 +2402,11 @@ Questions are often scenario-based — given a social situation, identify the co
       "CLEP_SOC_4_SOCIAL_INSTITUTIONS": 0.20,
       "CLEP_SOC_5_SOCIAL_CHANGE_DEVIANCE": 0.25,
     },
+    recommendedTextbooks: [
+      "Macionis, Sociology (Pearson)",
+      "OpenStax Introduction to Sociology 3e (free: openstax.org/books/introduction-sociology-3e)",
+      "Henslin, Essentials of Sociology (Pearson)",
+    ],
   },
 
   // ═══════════════════════════════════════════════════════════════════════════
@@ -2399,6 +2454,11 @@ Scenario-based preferred.`,
       "CLEP_GOV_4_INSTITUTIONS": 0.325,
       "CLEP_GOV_5_CIVIL_RIGHTS": 0.15,
     },
+    recommendedTextbooks: [
+      "OpenStax American Government 3e (free: openstax.org/books/american-government-3e)",
+      "Edwards et al., Government in America (Pearson)",
+      "Wilson et al., American Government (Cengage)",
+    ],
   },
 
   // ─── CLEP Macroeconomics ───
@@ -2425,6 +2485,19 @@ Scenario-based preferred.`,
     difficultyRubric: { EASY: "Recall a macro definition or identify a GDP component (Bloom's: Remember). 65%+ correct.", MEDIUM: "Predict shift direction on AD-AS diagram given a policy change (Bloom's: Apply). 40-55% correct.", HARD: "Analyze combined fiscal+monetary policy effects on output, prices, and interest rates (Bloom's: Analyze/Evaluate). 25-40% correct." },
     distractorTaxonomy: "(1) SHIFT-VS-MOVEMENT TRAP — confuses curve shift with movement along it; (2) REAL-NOMINAL TRAP — uses nominal values where real needed; (3) SHORT-RUN/LONG-RUN TRAP — applies short-run logic to long-run equilibrium.",
     stimulusQualityGuidance: "GOOD: 'The central bank increases reserve requirement from 10% to 12%. Calculate the max change in money supply from a $1B deposit.' AVOID: 'What does the Federal Reserve do?'",
+    // CB weights: Basic concepts 8-13%, National income 15-20%, Financial sector 15-20%, Stabilization 20-25%, Growth 5-10%, International 10-15%
+    topicWeights: {
+      "CLEP_MACRO_1_BASIC_CONCEPTS": 0.12,
+      "CLEP_MACRO_2_GDP_MEASUREMENT": 0.20,
+      "CLEP_MACRO_3_FISCAL_POLICY": 0.25,
+      "CLEP_MACRO_4_MONETARY_POLICY": 0.20,
+      "CLEP_MACRO_5_INTERNATIONAL": 0.23,
+    },
+    recommendedTextbooks: [
+      "OpenStax Principles of Macroeconomics 3e (free: openstax.org/books/principles-macroeconomics-3e)",
+      "Mankiw, Principles of Macroeconomics (Cengage)",
+      "McConnell et al., Macroeconomics (McGraw-Hill)",
+    ],
   },
 
   // ─── CLEP Microeconomics ───
@@ -2451,6 +2524,18 @@ Scenario-based preferred.`,
     difficultyRubric: { EASY: "Identify a supply/demand shifter or recall elasticity definition (Bloom's: Remember). 65%+ correct.", MEDIUM: "Calculate profit/loss from a cost table or predict price changes from simultaneous shifts (Bloom's: Apply). 40-55% correct.", HARD: "Compare welfare outcomes across market structures or evaluate government intervention efficiency using deadweight loss (Bloom's: Analyze/Evaluate). 25-40% correct." },
     distractorTaxonomy: "(1) MR-VS-PRICE TRAP — uses price instead of MR for monopoly; (2) FIXED-VARIABLE TRAP — treats fixed costs as relevant to shutdown (should compare P to AVC); (3) SURPLUS-DIRECTION TRAP — confuses consumer and producer surplus areas.",
     stimulusQualityGuidance: "GOOD: 'A firm in perfect competition has TC = 100 + 5Q + Q². Market price is $25. Calculate profit-maximizing Q and economic profit.' AVOID: 'What is perfect competition?'",
+    // CB weights: Supply/demand 15-20%, Consumer theory 10-15%, Market structures 25-30%, Factor markets 10%, Public goods/externalities 10-15%
+    topicWeights: {
+      "CLEP_MICRO_1_SUPPLY_DEMAND": 0.20,
+      "CLEP_MICRO_2_ELASTICITY": 0.13,
+      "CLEP_MICRO_3_MARKET_STRUCTURES": 0.30,
+      "CLEP_MICRO_4_FACTOR_MARKETS": 0.12,
+      "CLEP_MICRO_5_MARKET_FAILURE": 0.25,
+    },
+    recommendedTextbooks: [
+      "OpenStax Principles of Microeconomics 3e (free: openstax.org/books/principles-microeconomics-3e)",
+      "Mankiw, Principles of Microeconomics (Cengage)",
+    ],
   },
 
   // ─── CLEP Biology ───
@@ -2477,6 +2562,18 @@ Scenario-based preferred.`,
     difficultyRubric: { EASY: "Recall function of a cell organelle or identify a mitosis stage (Bloom's: Remember). 65%+ correct.", MEDIUM: "Predict outcome of a genetic cross or trace energy through a metabolic pathway (Bloom's: Apply). 40-55% correct.", HARD: "Analyze experimental data on enzyme kinetics or evaluate which evolutionary mechanism explains an observed population change (Bloom's: Analyze/Evaluate). 25-40% correct." },
     distractorTaxonomy: "(1) PROCESS-REVERSAL TRAP — confuses photosynthesis/respiration reactants and products; (2) DOMINANCE-MISCONCEPTION TRAP — assumes dominant alleles are more common; (3) CORRELATION-CAUSATION TRAP — ecological correlation mistaken for causation.",
     stimulusQualityGuidance: "GOOD: 'An experiment measures O₂ in spinach at 20°C and 35°C. At 35°C, O₂ drops 40%. Which explanation best accounts for this?' AVOID: 'Where does photosynthesis occur?'",
+    // CB weights: Molecular/cell biology 33%, Organismal biology 34%, Population biology 33% — mapped across 5 units
+    topicWeights: {
+      "CLEP_BIO_1_MOLECULAR_CELL": 0.20,
+      "CLEP_BIO_2_GENETICS": 0.17,
+      "CLEP_BIO_3_EVOLUTION": 0.17,
+      "CLEP_BIO_4_ORGANISMS": 0.30,
+      "CLEP_BIO_5_ECOLOGY": 0.16,
+    },
+    recommendedTextbooks: [
+      "OpenStax Biology 2e (free: openstax.org/books/biology-2e)",
+      "Campbell Biology (Pearson)",
+    ],
   },
 
   // ─── CLEP US History I ───
@@ -2503,6 +2600,14 @@ Scenario-based preferred.`,
     difficultyRubric: { EASY: "Identify when an event occurred or a key figure's role (Bloom's: Remember). 65%+ correct.", MEDIUM: "Explain cause/consequence of a political decision in context (Bloom's: Apply). 40-55% correct.", HARD: "Compare developments across periods or evaluate competing historical interpretations (Bloom's: Analyze/Evaluate). 25-40% correct." },
     distractorTaxonomy: "(1) CHRONOLOGICAL-DISPLACEMENT TRAP — attributes event to wrong decade; (2) CAUSE-EFFECT-INVERSION TRAP — reverses cause and effect; (3) OVER-GENERALIZATION TRAP — applies regional trend to entire nation.",
     stimulusQualityGuidance: "GOOD: 'In 1832, Jackson vetoed the Bank recharter calling it a monopoly. Which political philosophy does this reflect?' AVOID: 'Who was Andrew Jackson?'",
+    // CB weights: Colonial 30%, Revolution/New Nation 30%, Antebellum/Civil War 40% — mapped across 5 units
+    topicWeights: {
+      "CLEP_USH1_1_COLONIAL": 0.20,
+      "CLEP_USH1_2_REVOLUTION": 0.20,
+      "CLEP_USH1_3_EARLY_REPUBLIC": 0.15,
+      "CLEP_USH1_4_EXPANSION_REFORM": 0.20,
+      "CLEP_USH1_5_CIVIL_WAR": 0.25,
+    },
   },
 
   // ─── CLEP US History II ───
@@ -2529,6 +2634,14 @@ Scenario-based preferred.`,
     difficultyRubric: { EASY: "Identify a key figure, event date, or New Deal program (Bloom's: Remember). 65%+ correct.", MEDIUM: "Explain how a policy addressed a social/economic problem (Bloom's: Apply). 40-55% correct.", HARD: "Evaluate long-term policy impact across decades or compare two movements' strategies (Bloom's: Analyze/Evaluate). 25-40% correct." },
     distractorTaxonomy: "(1) ERA-CONFLATION TRAP — mixes Progressive reforms with New Deal; (2) CAUSE-OVERSIMPLIFICATION TRAP — single cause for complex event; (3) LEADER-POLICY MISMATCH TRAP — assigns policy to wrong president.",
     stimulusQualityGuidance: "GOOD: 'Truman stated in 1947: \"We must support free peoples resisting subjugation.\" This led to which policy?' AVOID: 'What was the Truman Doctrine?'",
+    // CB weights: Reconstruction/Industrialization 25%, Progressive/WWI/1920s 25%, Depression/WWII 25%, Cold War/Modern 25%
+    topicWeights: {
+      "CLEP_USH2_1_RECONSTRUCTION": 0.25,
+      "CLEP_USH2_2_INDUSTRIALIZATION": 0.25,
+      "CLEP_USH2_3_WORLD_WARS": 0.25,
+      "CLEP_USH2_4_COLD_WAR": 0.15,
+      "CLEP_USH2_5_MODERN_ERA": 0.10,
+    },
   },
 
   // ─── CLEP Human Growth and Development ───
@@ -2555,6 +2668,14 @@ Scenario-based preferred.`,
     difficultyRubric: { EASY: "Recall which theorist proposed a concept or identify the correct stage (Bloom's: Remember). 65%+ correct.", MEDIUM: "Apply a developmental theory to a child behavior scenario (Bloom's: Apply). 40-55% correct.", HARD: "Evaluate which theory better explains a complex observation or analyze research design (Bloom's: Analyze/Evaluate). 25-40% correct." },
     distractorTaxonomy: "(1) STAGE-ADJACENT TRAP — assigns behavior to wrong Piagetian/Eriksonian stage; (2) THEORIST-SWAP TRAP — attributes concept to wrong psychologist; (3) NATURE-NURTURE CONFLATION TRAP — environmental explanation for biological basis or vice versa.",
     stimulusQualityGuidance: "GOOD: 'A 4-year-old insists a tall glass holds more juice than a short wide glass after watching it poured. Which concept?' AVOID: 'What is conservation?'",
+    // CB weights: Theories 10%, Research 5%, Biological 10%, Perceptual/cognitive 15%, Language 5%, Social/personality 20%, Learning 10%, Schooling 5%, Family/peers 10%, Atypical 10% — mapped across 5 units
+    topicWeights: {
+      "CLEP_HGD_1_PRENATAL_INFANCY": 0.20,
+      "CLEP_HGD_2_CHILDHOOD": 0.25,
+      "CLEP_HGD_3_ADOLESCENCE": 0.20,
+      "CLEP_HGD_4_ADULTHOOD": 0.20,
+      "CLEP_HGD_5_AGING_DEATH": 0.15,
+    },
   },
 
   // ─── CLEP Calculus ───
@@ -2581,6 +2702,14 @@ Scenario-based preferred.`,
     difficultyRubric: { EASY: "Apply a single differentiation or integration rule (Bloom's: Apply). 65%+ correct.", MEDIUM: "Combine multiple rules or set up an applied problem (Bloom's: Apply/Analyze). 40-55% correct.", HARD: "Multi-step optimization/related rates or determine series convergence (Bloom's: Analyze/Evaluate). 25-40% correct." },
     distractorTaxonomy: "(1) CHAIN-RULE-OMISSION TRAP — forgets inner derivative; (2) CONSTANT-OF-INTEGRATION TRAP — omits +C or wrong bounds; (3) SIGN-ERROR TRAP — drops negative during substitution.",
     stimulusQualityGuidance: "GOOD: 'A balloon inflates at 3 ft³/min. Find the rate the radius increases when r = 2 ft.' AVOID: 'Find the derivative of x².'",
+    // CB weights: Limits 10%, Derivatives 50%, Integrals 40% — mapped across 5 units
+    topicWeights: {
+      "CLEP_CALC_1_LIMITS": 0.10,
+      "CLEP_CALC_2_DERIVATIVES": 0.30,
+      "CLEP_CALC_3_INTEGRALS": 0.25,
+      "CLEP_CALC_4_APPLICATIONS": 0.25,
+      "CLEP_CALC_5_SEQUENCES_SERIES": 0.10,
+    },
   },
 
   // ─── CLEP Chemistry ───
@@ -2607,6 +2736,18 @@ Scenario-based preferred.`,
     difficultyRubric: { EASY: "Write an electron configuration or identify a periodic trend (Bloom's: Remember). 65%+ correct.", MEDIUM: "Calculate a limiting reagent or predict molecular geometry from Lewis structure (Bloom's: Apply). 40-55% correct.", HARD: "Use Hess's law to calculate ΔH from multiple equations, or predict simultaneous equilibrium effects (Bloom's: Analyze/Evaluate). 25-40% correct." },
     distractorTaxonomy: "(1) MOLE-RATIO TRAP — uses unbalanced coefficients or inverts ratio; (2) GEOMETRY-LONE-PAIR TRAP — ignores lone pairs (e.g., says H₂O is linear); (3) SIGN-CONVENTION TRAP — confuses exothermic (neg ΔH) with endothermic (pos ΔH).",
     stimulusQualityGuidance: "GOOD: 'When 50.0 mL of 0.200 M NaOH mixes with 50.0 mL of 0.150 M HCl, calculate the pH.' AVOID: 'What is an acid-base reaction?'",
+    // CB weights: Structure 20%, States 19%, Reactions 12%, Stoichiometry 10%, Equilibrium 7%, Kinetics 4%, Thermo 6%, Descriptive 14%, Lab 8% — mapped across 5 units
+    topicWeights: {
+      "CLEP_CHEM_1_ATOMIC_STRUCTURE": 0.25,
+      "CLEP_CHEM_2_BONDING": 0.20,
+      "CLEP_CHEM_3_REACTIONS": 0.22,
+      "CLEP_CHEM_4_STATES_SOLUTIONS": 0.18,
+      "CLEP_CHEM_5_THERMODYNAMICS": 0.15,
+    },
+    recommendedTextbooks: [
+      "OpenStax Chemistry 2e (free: openstax.org/books/chemistry-2e)",
+      "Zumdahl & Zumdahl, Chemistry (Cengage)",
+    ],
   },
 
   // ─── CLEP Financial Accounting ───
@@ -2650,6 +2791,10 @@ Journal entries and calculations common.`,
       "CLEP_ACCT_4_ANALYSIS_REPORTING": 0.08,
       "CLEP_ACCT_5_SPECIAL_TOPICS": 0.07,
     },
+    recommendedTextbooks: [
+      "OpenStax Principles of Financial Accounting (free: openstax.org/books/principles-financial-accounting)",
+      "Weygandt et al., Financial Accounting (Wiley)",
+    ],
   },
 
   // ─── CLEP American Literature ───
@@ -2676,6 +2821,14 @@ Journal entries and calculations common.`,
     difficultyRubric: { EASY: "Identify an author's literary period or recall a major work's theme (Bloom's: Remember). 65%+ correct.", MEDIUM: "Analyze a passage excerpt to identify literary devices or thematic concerns (Bloom's: Analyze). 40-55% correct.", HARD: "Compare two authors' stylistic approaches or evaluate how a passage reflects broader cultural movements (Bloom's: Evaluate). 25-40% correct." },
     distractorTaxonomy: "(1) PERIOD-DISPLACEMENT TRAP — assigns author to adjacent literary period; (2) AUTHOR-CONFLATION TRAP — attributes work to wrong author of same era; (3) DEVICE-MISIDENTIFICATION TRAP — confuses irony with satire or allegory with symbolism.",
     stimulusQualityGuidance: "GOOD: 'Read this excerpt: \"I celebrate myself, and sing myself...\" Which literary movement does this opening exemplify?' AVOID: 'Who wrote Leaves of Grass?'",
+    // Even distribution — no official CB per-unit breakdown available
+    topicWeights: {
+      "CLEP_AMLIT_1_COLONIAL_EARLY": 0.20,
+      "CLEP_AMLIT_2_ROMANTIC_PERIOD": 0.20,
+      "CLEP_AMLIT_3_REALISM_NATURALISM": 0.20,
+      "CLEP_AMLIT_4_MODERNISM": 0.20,
+      "CLEP_AMLIT_5_CONTEMPORARY": 0.20,
+    },
   },
 
   // ─── CLEP Analyzing and Interpreting Literature ───
@@ -2702,6 +2855,14 @@ Journal entries and calculations common.`,
     difficultyRubric: { EASY: "Identify the narrator's point of view or a basic literary device in a clear passage (Bloom's: Understand). 65%+ correct.", MEDIUM: "Analyze how figurative language contributes to tone or theme in a moderately complex passage (Bloom's: Analyze). 40-55% correct.", HARD: "Evaluate the effect of multiple interacting literary techniques or interpret ambiguous symbolism in a complex passage (Bloom's: Evaluate). 25-40% correct." },
     distractorTaxonomy: "(1) SURFACE-MEANING TRAP — chooses literal interpretation over figurative; (2) DEVICE-MIS-LABEL TRAP — confuses metaphor with personification or synecdoche; (3) TONE-REVERSAL TRAP — selects opposite tone (earnest vs ironic); (4) OVER-READING TRAP — ascribes symbolism not supported by text.",
     stimulusQualityGuidance: "GOOD: Provide a 4-line poem excerpt and ask 'The speaker's use of \"winter\" in line 3 most likely symbolizes...' AVOID: 'Define personification.' — this exam never tests definitions in isolation.",
+    // Even distribution — no official CB per-unit breakdown available
+    topicWeights: {
+      "CLEP_ANLIT_1_PROSE_FICTION": 0.20,
+      "CLEP_ANLIT_2_POETRY": 0.20,
+      "CLEP_ANLIT_3_DRAMA": 0.20,
+      "CLEP_ANLIT_4_NONFICTION": 0.20,
+      "CLEP_ANLIT_5_LITERARY_ANALYSIS": 0.20,
+    },
   },
 
   // ─── CLEP College Composition Modular ───
@@ -2728,6 +2889,14 @@ Journal entries and calculations common.`,
     difficultyRubric: { EASY: "Identify a grammar error (fragment, comma splice) or recall a citation rule (Bloom's: Remember/Apply). 65%+ correct.", MEDIUM: "Choose the best revision of a sentence for clarity and coherence, or identify a rhetorical strategy in a passage (Bloom's: Apply/Analyze). 40-55% correct.", HARD: "Evaluate competing revisions for tone and audience, or analyze how multiple rhetorical strategies interact in a complex passage (Bloom's: Evaluate). 25-40% correct." },
     distractorTaxonomy: "(1) WORDINESS TRAP — chooses verbose revision over concise; (2) COMMA-SPLICE TRAP — fixes fragment but creates comma splice; (3) PARALLEL-STRUCTURE TRAP — breaks parallelism in revision; (4) FALLACY-LABEL TRAP — confuses ad hominem with straw man.",
     stimulusQualityGuidance: "GOOD: 'Read this passage and select the revision that best improves coherence between paragraphs 2 and 3.' AVOID: 'Define a comma splice.' — the exam tests application, not definitions.",
+    // Even distribution — no official CB per-unit breakdown available
+    topicWeights: {
+      "CLEP_CCM_1_RHETORICAL_ANALYSIS": 0.20,
+      "CLEP_CCM_2_SYNTHESIS": 0.20,
+      "CLEP_CCM_3_ARGUMENTATION": 0.20,
+      "CLEP_CCM_4_RESEARCH_SKILLS": 0.20,
+      "CLEP_CCM_5_CONVENTIONS": 0.20,
+    },
   },
 
   // ─── CLEP English Literature ───
@@ -2754,6 +2923,14 @@ Journal entries and calculations common.`,
     difficultyRubric: { EASY: "Identify the literary period of a clearly marked passage or recall an author's major work (Bloom's: Remember). 65%+ correct.", MEDIUM: "Analyze a passage to determine its literary movement or identify the effect of a specific device (Bloom's: Analyze). 40-55% correct.", HARD: "Compare stylistic features across periods or evaluate competing interpretations of an ambiguous passage (Bloom's: Evaluate). 25-40% correct." },
     distractorTaxonomy: "(1) PERIOD-ADJACENT TRAP — assigns Romantic poem to Victorian or vice versa; (2) AUTHOR-SWAP TRAP — attributes Keats quotation to Shelley; (3) FORM-CONFUSION TRAP — confuses Petrarchan and Shakespearean sonnet structures; (4) ANACHRONISM TRAP — applies modern literary theory to pre-modern text.",
     stimulusQualityGuidance: "GOOD: 'Read this stanza: \"My heart aches, and a drowsy numbness pains / My sense...\" The speaker's condition is best described as...' AVOID: 'Who wrote Ode to a Nightingale?'",
+    // Even distribution — no official CB per-unit breakdown available
+    topicWeights: {
+      "CLEP_ENGLIT_1_MEDIEVAL_RENAISSANCE": 0.20,
+      "CLEP_ENGLIT_2_17TH_18TH_CENTURY": 0.20,
+      "CLEP_ENGLIT_3_ROMANTIC_PERIOD": 0.20,
+      "CLEP_ENGLIT_4_VICTORIAN": 0.20,
+      "CLEP_ENGLIT_5_20TH_CENTURY": 0.20,
+    },
   },
 
   // ─── CLEP Humanities ───
@@ -2780,6 +2957,14 @@ Journal entries and calculations common.`,
     difficultyRubric: { EASY: "Identify a major artist, composer, or literary figure's period or style (Bloom's: Remember). 65%+ correct.", MEDIUM: "Analyze stylistic features of a passage or artwork description to identify its period or movement (Bloom's: Analyze). 40-55% correct.", HARD: "Compare artistic expressions across disciplines in the same period or evaluate how cultural context shaped an artistic movement (Bloom's: Evaluate). 25-40% correct." },
     distractorTaxonomy: "(1) PERIOD-MIX TRAP — assigns Baroque artwork to Classical period; (2) DISCIPLINE-CROSSOVER TRAP — confuses literary Romanticism dates with musical Romanticism; (3) ARTIST-SWAP TRAP — attributes work to contemporary of the actual creator; (4) STYLE-FEATURE TRAP — assigns Impressionist technique to Realist school.",
     stimulusQualityGuidance: "GOOD: 'A painting uses dramatic chiaroscuro, dynamic composition, and intense emotion. Which period does this exemplify?' AVOID: 'In what century did Baroque art emerge?'",
+    // Even distribution — no official CB per-unit breakdown available
+    topicWeights: {
+      "CLEP_HUM_1_LITERATURE": 0.20,
+      "CLEP_HUM_2_VISUAL_ARTS": 0.20,
+      "CLEP_HUM_3_MUSIC": 0.20,
+      "CLEP_HUM_4_PERFORMING_ARTS": 0.20,
+      "CLEP_HUM_5_PHILOSOPHY_RELIGION": 0.20,
+    },
   },
 
   // ─── CLEP French Language ───
@@ -2806,6 +2991,14 @@ Journal entries and calculations common.`,
     difficultyRubric: { EASY: "Identify the main idea of a simple French passage or conjugate a regular verb (Bloom's: Remember/Understand). 65%+ correct.", MEDIUM: "Choose the correct pronoun or verb tense in a contextual sentence, or infer meaning from a moderately complex passage (Bloom's: Apply). 40-55% correct.", HARD: "Interpret nuanced meaning in literary French, select the correct subjunctive usage, or navigate a passage with multiple tenses and complex syntax (Bloom's: Analyze). 25-40% correct." },
     distractorTaxonomy: "(1) FALSE-COGNATE TRAP — 'actuellement' means 'currently' not 'actually'; (2) TENSE-CONFUSION TRAP — passé composé vs imparfait in context; (3) PRONOUN-PLACEMENT TRAP — wrong position for object pronouns; (4) GENDER-AGREEMENT TRAP — wrong article/adjective agreement.",
     stimulusQualityGuidance: "GOOD: 'Marie _____ (aller) au marché quand il a commencé à pleuvoir. Choose the correct verb form.' AVOID: 'Conjugate aller in the present tense.' — the exam tests application in context.",
+    // Even distribution — no official CB per-unit breakdown available
+    topicWeights: {
+      "CLEP_FRENCH_1_LISTENING": 0.20,
+      "CLEP_FRENCH_2_READING": 0.20,
+      "CLEP_FRENCH_3_GRAMMAR": 0.20,
+      "CLEP_FRENCH_4_VOCABULARY": 0.20,
+      "CLEP_FRENCH_5_CULTURE": 0.20,
+    },
   },
 
   // ─── CLEP German Language ───
@@ -2832,6 +3025,14 @@ Journal entries and calculations common.`,
     difficultyRubric: { EASY: "Identify the main idea of a simple German passage or select the correct article for a common noun (Bloom's: Remember/Understand). 65%+ correct.", MEDIUM: "Choose the correct case after a two-way preposition in context, or infer meaning from a moderately complex passage (Bloom's: Apply). 40-55% correct.", HARD: "Navigate complex subordinate clause structures, interpret literary German, or resolve ambiguous case usage in context (Bloom's: Analyze). 25-40% correct." },
     distractorTaxonomy: "(1) CASE-CONFUSION TRAP — uses Akkusativ where Dativ required (e.g., nach + Dativ); (2) WORD-ORDER TRAP — places verb incorrectly in subordinate clause; (3) FALSE-COGNATE TRAP — 'Gift' means 'poison' not 'gift'; (4) GENDER-ARTICLE TRAP — wrong gender for noun (der/die/das).",
     stimulusQualityGuidance: "GOOD: 'Er geht _____ (in/die/der) Schule. Choose the correct preposition and article.' AVOID: 'What is the accusative form of der?' — the exam tests grammar in context.",
+    // Even distribution — no official CB per-unit breakdown available
+    topicWeights: {
+      "CLEP_GERMAN_1_LISTENING": 0.20,
+      "CLEP_GERMAN_2_READING": 0.20,
+      "CLEP_GERMAN_3_GRAMMAR": 0.20,
+      "CLEP_GERMAN_4_VOCABULARY": 0.20,
+      "CLEP_GERMAN_5_CULTURE": 0.20,
+    },
   },
 
   // ─── CLEP Spanish Language ───
@@ -2858,6 +3059,14 @@ Journal entries and calculations common.`,
     difficultyRubric: { EASY: "Identify the main idea of a simple Spanish passage or conjugate a regular verb in the present (Bloom's: Remember/Understand). 65%+ correct.", MEDIUM: "Choose the correct tense (preterite vs imperfect) in a contextual sentence, or infer meaning from a moderately complex passage (Bloom's: Apply). 40-55% correct.", HARD: "Select the correct subjunctive form in a complex sentence, interpret nuanced literary Spanish, or navigate a passage with multiple tenses (Bloom's: Analyze). 25-40% correct." },
     distractorTaxonomy: "(1) TENSE-CONFUSION TRAP — preterite vs imperfect in narration context; (2) SER-ESTAR TRAP — uses ser where estar required or vice versa; (3) FALSE-COGNATE TRAP — 'embarazada' means 'pregnant' not 'embarrassed'; (4) SUBJUNCTIVE-INDICATIVE TRAP — uses indicative after a subjunctive trigger.",
     stimulusQualityGuidance: "GOOD: 'Es importante que los estudiantes _____ (estudiar) todos los días. Choose the correct verb form.' AVOID: 'Conjugate estudiar in the present subjunctive.' — the exam tests grammar in context.",
+    // Even distribution — no official CB per-unit breakdown available
+    topicWeights: {
+      "CLEP_SPANISH_1_LISTENING": 0.20,
+      "CLEP_SPANISH_2_READING": 0.20,
+      "CLEP_SPANISH_3_GRAMMAR": 0.20,
+      "CLEP_SPANISH_4_VOCABULARY": 0.20,
+      "CLEP_SPANISH_5_CULTURE": 0.20,
+    },
   },
 
   // ─── CLEP Spanish with Writing ───
@@ -2884,6 +3093,14 @@ Journal entries and calculations common.`,
     difficultyRubric: { EASY: "Identify a clear grammatical error in a simple sentence or complete a cloze with a common verb form (Bloom's: Understand). 65%+ correct.", MEDIUM: "Select the correct subjunctive or conditional form in context, or identify the best revision for paragraph coherence (Bloom's: Apply/Analyze). 40-55% correct.", HARD: "Navigate complex multi-clause sentences with subjunctive/conditional interaction, or evaluate competing paragraph revisions for style and precision (Bloom's: Analyze/Evaluate). 25-40% correct." },
     distractorTaxonomy: "(1) SUBJUNCTIVE-TENSE TRAP — uses present subjunctive where past subjunctive required; (2) POR-PARA TRAP — confuses the two prepositions in context; (3) SE-CONSTRUCTION TRAP — confuses reflexive, impersonal, and passive se; (4) COHERENCE TRAP — transition word that sounds right but breaks logical flow.",
     stimulusQualityGuidance: "GOOD: 'Read this paragraph and identify the sentence that contains a grammatical error: \"Si yo tendría más tiempo, estudiaría más.\"' AVOID: 'Conjugate tener in the conditional.' — the exam tests error identification in context.",
+    // Even distribution — no official CB per-unit breakdown available
+    topicWeights: {
+      "CLEP_SPANWR_1_LISTENING": 0.20,
+      "CLEP_SPANWR_2_READING": 0.20,
+      "CLEP_SPANWR_3_GRAMMAR": 0.20,
+      "CLEP_SPANWR_4_WRITING_SKILLS": 0.20,
+      "CLEP_SPANWR_5_ESSAY": 0.20,
+    },
   },
 
   // ─── CLEP Educational Psychology ───
@@ -2917,6 +3134,14 @@ Content aligns with a typical one-semester introductory educational psychology c
     difficultyRubric: { EASY: "Recall definitions of key theories and theorists (Bloom's: Remember). 65%+ correct.", MEDIUM: "Apply learning theories to classroom scenarios (Bloom's: Apply). 40-55% correct.", HARD: "Evaluate competing instructional strategies or analyze complex classroom dynamics (Bloom's: Analyze/Evaluate). 25-40% correct." },
     distractorTaxonomy: "(1) Theory misattribution — correct concept, wrong theorist; (2) Overgeneralization — applying a principle beyond its scope; (3) Superficial similarity — choosing an answer that sounds related but addresses a different construct.",
     stimulusQualityGuidance: "GOOD: 'A 3rd-grade teacher notices that students who receive verbal praise for effort attempt harder problems. Which theory best explains this?' AVOID: 'What is operant conditioning?'",
+    // Even distribution — no official CB per-unit breakdown available
+    topicWeights: {
+      "CLEP_EDPSY_1_LEARNING_THEORIES": 0.20,
+      "CLEP_EDPSY_2_COGNITIVE_DEV": 0.20,
+      "CLEP_EDPSY_3_MOTIVATION": 0.20,
+      "CLEP_EDPSY_4_ASSESSMENT": 0.20,
+      "CLEP_EDPSY_5_CLASSROOM_MGMT": 0.20,
+    },
   },
 
   // ─── CLEP Social Sciences & History ───
@@ -2950,6 +3175,14 @@ Content spans introductory-level courses across five social science disciplines.
     difficultyRubric: { EASY: "Identify key facts, dates, definitions, or geographic features (Bloom's: Remember). 65%+ correct.", MEDIUM: "Apply economic models or compare historical events across regions (Bloom's: Apply). 40-55% correct.", HARD: "Analyze causation across disciplines or evaluate competing interpretations of events (Bloom's: Analyze/Evaluate). 25-40% correct." },
     distractorTaxonomy: "(1) Chronological confusion — correct event, wrong time period; (2) Geographic misplacement — valid concept applied to wrong region; (3) Causal reversal — confusing cause and effect in historical or economic processes.",
     stimulusQualityGuidance: "GOOD: 'Between 1870 and 1914, European powers colonized over 80% of Africa. Which economic theory best explains the motivation?' AVOID: 'Name three European colonial powers.'",
+    // Even distribution — no official CB per-unit breakdown available
+    topicWeights: {
+      "CLEP_SSH_1_US_HISTORY": 0.20,
+      "CLEP_SSH_2_WORLD_HISTORY": 0.20,
+      "CLEP_SSH_3_ECONOMICS": 0.20,
+      "CLEP_SSH_4_GEOGRAPHY": 0.20,
+      "CLEP_SSH_5_POLITICAL_SCIENCE": 0.20,
+    },
   },
 
   // ─── CLEP Western Civilization I ───
@@ -2983,6 +3216,14 @@ Content aligns with a typical first-semester Western civilization survey course.
     difficultyRubric: { EASY: "Identify key figures, events, or time periods in Western history (Bloom's: Remember). 65%+ correct.", MEDIUM: "Compare institutions or trace cause-and-effect across periods (Bloom's: Apply). 40-55% correct.", HARD: "Analyze primary sources or evaluate historiographical interpretations of major developments (Bloom's: Analyze/Evaluate). 25-40% correct." },
     distractorTaxonomy: "(1) Anachronism — correct concept placed in wrong century; (2) Attribution error — achievement credited to wrong civilization; (3) Overgeneralization — applying a local development to all of Europe.",
     stimulusQualityGuidance: "GOOD: 'In 1517, Martin Luther nailed 95 theses to the door of a Wittenberg church. Which specific Church practice was his primary target?' AVOID: 'Who started the Protestant Reformation?'",
+    // Even distribution — no official CB per-unit breakdown available
+    topicWeights: {
+      "CLEP_WC1_1_ANCIENT_NEAR_EAST": 0.20,
+      "CLEP_WC1_2_GREECE_ROME": 0.20,
+      "CLEP_WC1_3_MEDIEVAL": 0.20,
+      "CLEP_WC1_4_RENAISSANCE_REFORM": 0.20,
+      "CLEP_WC1_5_EARLY_MODERN": 0.20,
+    },
   },
 
   // ─── CLEP Western Civilization II ───
@@ -3016,6 +3257,14 @@ Content aligns with a typical second-semester Western civilization survey course
     difficultyRubric: { EASY: "Recall key events, leaders, or dates from 1648 to present (Bloom's: Remember). 65%+ correct.", MEDIUM: "Compare revolutions or trace ideological influences across periods (Bloom's: Apply). 40-55% correct.", HARD: "Evaluate the causes of major conflicts or analyze competing historiographical perspectives (Bloom's: Analyze/Evaluate). 25-40% correct." },
     distractorTaxonomy: "(1) Ideological conflation — mixing liberal, socialist, and fascist principles; (2) Chronological displacement — correct event in wrong decade; (3) Causal oversimplification — attributing complex events to a single cause.",
     stimulusQualityGuidance: "GOOD: 'In his 1946 speech at Westminster College, Churchill declared an iron curtain had descended across Europe. What geopolitical reality did this metaphor describe?' AVOID: 'What was the Cold War?'",
+    // Even distribution — no official CB per-unit breakdown available
+    topicWeights: {
+      "CLEP_WC2_1_ENLIGHTENMENT": 0.20,
+      "CLEP_WC2_2_REVOLUTION_NAPOLEON": 0.20,
+      "CLEP_WC2_3_INDUSTRIALIZATION": 0.20,
+      "CLEP_WC2_4_WORLD_WARS": 0.20,
+      "CLEP_WC2_5_COLD_WAR_PRESENT": 0.20,
+    },
   },
 
   // ─── CLEP College Mathematics ───
@@ -3049,6 +3298,18 @@ Content aligns with a general education college mathematics requirement (non-cal
     difficultyRubric: { EASY: "Perform straightforward calculations or identify properties of numbers and shapes (Bloom's: Remember). 65%+ correct.", MEDIUM: "Apply formulas to multi-step problems or interpret data displays (Bloom's: Apply). 40-55% correct.", HARD: "Analyze complex functions, evaluate probability scenarios, or synthesize concepts across topics (Bloom's: Analyze/Evaluate). 25-40% correct." },
     distractorTaxonomy: "(1) Sign error — incorrect handling of negatives; (2) Formula misapplication — using the wrong formula for the context; (3) Order-of-operations mistake — computing steps in wrong sequence.",
     stimulusQualityGuidance: "GOOD: 'A survey of 200 students found that 120 take math, 80 take science, and 40 take both. How many take neither?' AVOID: 'What is the union of two sets?'",
+    // CB weights: Sets 10%, Logic 10%, Real number system 10%, Functions/graphs 15%, Probability/statistics 25%, Misc 30% — mapped across 5 units
+    topicWeights: {
+      "CLEP_CMATH_1_SETS_LOGIC": 0.15,
+      "CLEP_CMATH_2_REAL_NUMBERS": 0.15,
+      "CLEP_CMATH_3_FUNCTIONS": 0.20,
+      "CLEP_CMATH_4_PROBABILITY_STATS": 0.30,
+      "CLEP_CMATH_5_GEOMETRY": 0.20,
+    },
+    recommendedTextbooks: [
+      "OpenStax College Algebra 2e + Introductory Statistics (free: openstax.org)",
+      "Angel et al., A Survey of Mathematics with Applications (Pearson)",
+    ],
   },
 
   // ─── CLEP Natural Sciences ───
@@ -3082,6 +3343,14 @@ Content spans introductory-level courses in biology and physical sciences.`,
     difficultyRubric: { EASY: "Recall basic scientific facts, definitions, or processes (Bloom's: Remember). 65%+ correct.", MEDIUM: "Apply scientific principles to novel scenarios or interpret experimental data (Bloom's: Apply). 40-55% correct.", HARD: "Analyze experimental results, evaluate hypotheses, or synthesize concepts across scientific disciplines (Bloom's: Analyze/Evaluate). 25-40% correct." },
     distractorTaxonomy: "(1) Common misconception — reflects a widely held but incorrect scientific belief; (2) Partial truth — includes a correct element but reaches a wrong conclusion; (3) Scale confusion — confuses atomic, cellular, organismal, or planetary scale phenomena.",
     stimulusQualityGuidance: "GOOD: 'A scientist observes that a population of beetles on an island has darker coloring than the mainland population. What mechanism best explains this divergence?' AVOID: 'Define natural selection.'",
+    // Even distribution — no official CB per-unit breakdown available
+    topicWeights: {
+      "CLEP_NATSCI_1_BIOLOGICAL": 0.20,
+      "CLEP_NATSCI_2_PHYSICAL": 0.20,
+      "CLEP_NATSCI_3_EARTH_SPACE": 0.20,
+      "CLEP_NATSCI_4_CHEMISTRY": 0.20,
+      "CLEP_NATSCI_5_SCIENTIFIC_METHOD": 0.20,
+    },
   },
 
   // ─── CLEP Precalculus ───
@@ -3115,6 +3384,14 @@ Content aligns with a precalculus course that prepares students for calculus.`,
     difficultyRubric: { EASY: "Evaluate functions, simplify expressions, or recall trigonometric values at standard angles (Bloom's: Remember). 65%+ correct.", MEDIUM: "Solve multi-step equations, apply identities, or analyze function behavior (Bloom's: Apply). 40-55% correct.", HARD: "Synthesize concepts across topics, analyze complex conic sections, or model real-world scenarios with constraints (Bloom's: Analyze/Evaluate). 25-40% correct." },
     distractorTaxonomy: "(1) Sign/quadrant error — incorrect sign from wrong quadrant in trig; (2) Algebraic slip — distributing or factoring incorrectly; (3) Transformation reversal — confusing horizontal and vertical shifts or reflections.",
     stimulusQualityGuidance: "GOOD: 'The height of a Ferris wheel rider is modeled by h(t) = 30sin(πt/4) + 35. What is the maximum height and how long does one full revolution take?' AVOID: 'What is sin(π/4)?'",
+    // Even distribution — no official CB per-unit breakdown available
+    topicWeights: {
+      "CLEP_PRECALC_1_ALGEBRAIC": 0.20,
+      "CLEP_PRECALC_2_TRIGONOMETRY": 0.20,
+      "CLEP_PRECALC_3_ANALYTIC_GEOMETRY": 0.20,
+      "CLEP_PRECALC_4_FUNCTIONS": 0.20,
+      "CLEP_PRECALC_5_LIMITS_INTRO": 0.20,
+    },
   },
 
   // ─── CLEP Information Systems ───
@@ -3148,6 +3425,14 @@ Content aligns with an introductory management information systems (MIS) course.
     difficultyRubric: { EASY: "Recall definitions of IS concepts, hardware components, or network protocols (Bloom's: Remember). 65%+ correct.", MEDIUM: "Apply database design principles or recommend appropriate IS solutions for business scenarios (Bloom's: Apply). 40-55% correct.", HARD: "Evaluate system architectures, analyze security vulnerabilities, or compare development methodologies for complex requirements (Bloom's: Analyze/Evaluate). 25-40% correct." },
     distractorTaxonomy: "(1) Terminology confusion — mixing up similar-sounding IS concepts; (2) Layer mismatch — confusing application, network, and hardware layer responsibilities; (3) Methodology conflation — attributes of one SDLC methodology applied to another.",
     stimulusQualityGuidance: "GOOD: 'A mid-size retailer wants to unify inventory, sales, and HR into a single platform. Which type of system best addresses this need and why?' AVOID: 'What does ERP stand for?'",
+    // Even distribution — no official CB per-unit breakdown available
+    topicWeights: {
+      "CLEP_IS_1_FUNDAMENTALS": 0.20,
+      "CLEP_IS_2_HARDWARE_SOFTWARE": 0.20,
+      "CLEP_IS_3_DATABASES": 0.20,
+      "CLEP_IS_4_NETWORKS_SECURITY": 0.20,
+      "CLEP_IS_5_SYSTEMS_DEVELOPMENT": 0.20,
+    },
   },
 
   // ─── CLEP Introductory Business Law ───
@@ -3181,6 +3466,14 @@ Content aligns with a typical introductory business law or legal environment of 
     difficultyRubric: { EASY: "Recall legal definitions, court structures, or elements of basic legal concepts (Bloom's: Remember). 65%+ correct.", MEDIUM: "Apply contract or tort principles to a business scenario to determine liability (Bloom's: Apply). 40-55% correct.", HARD: "Analyze complex fact patterns with multiple legal issues or evaluate the strengths of competing legal arguments (Bloom's: Analyze/Evaluate). 25-40% correct." },
     distractorTaxonomy: "(1) Element confusion — satisfying the wrong element of a legal test; (2) Jurisdiction error — applying the wrong body of law (e.g., UCC to a service contract); (3) Remedy mismatch — selecting a remedy appropriate for a different type of legal claim.",
     stimulusQualityGuidance: "GOOD: 'A customer slips on a wet floor in a grocery store with no warning sign posted. Under negligence law, which element is most critical to establishing the store's liability?' AVOID: 'Define negligence.'",
+    // Even distribution — no official CB per-unit breakdown available
+    topicWeights: {
+      "CLEP_BIZLAW_1_LEGAL_SYSTEM": 0.20,
+      "CLEP_BIZLAW_2_CONTRACTS": 0.20,
+      "CLEP_BIZLAW_3_SALES_TORTS": 0.20,
+      "CLEP_BIZLAW_4_BUSINESS_ORG": 0.20,
+      "CLEP_BIZLAW_5_EMPLOYMENT_ETHICS": 0.20,
+    },
   },
 };
 
