@@ -132,8 +132,9 @@ export async function POST(req: NextRequest) {
     }
 
     // Auto-generate AI questions when the DB bank is insufficient (if flag enabled)
-    // Raise cap to 10 for thin banks (< 30 questions total) to help SAT/new courses bootstrap faster.
-    const MAX_GEN_PER_REQUEST = allQuestions.length < 30 ? 10 : 5;
+    // Keep generation count low to avoid CF Workers timeout (~100s).
+    // Empty banks: generate 3 (fast, reliable). Thin banks: 5. Normal: 5.
+    const MAX_GEN_PER_REQUEST = allQuestions.length === 0 ? 3 : 5;
     let aiGenerationWarning: string | null = null;
     if (aiGenEnabled && freshQuestions.length < questionCount) {
       const needed = Math.min(questionCount - freshQuestions.length, MAX_GEN_PER_REQUEST);
@@ -194,10 +195,16 @@ export async function POST(req: NextRequest) {
           );
       });
 
-      const settled = await Promise.allSettled(genPromises);
+      // Race against a 60s timeout to prevent CF Workers from being killed (~100s limit)
+      const settled = await Promise.race([
+        Promise.allSettled(genPromises),
+        new Promise<PromiseSettledResult<(typeof allQuestions)[0]>[]>((resolve) =>
+          setTimeout(() => resolve([]), 60000)
+        ),
+      ]);
       const generated = settled
-        .filter((r): r is PromiseFulfilledResult<(typeof allQuestions)[0]> => r.status === "fulfilled" && r.value !== null)
-        .map((r) => r.value);
+        .filter((r): r is PromiseFulfilledResult<(typeof allQuestions)[0]> => r.status === "fulfilled" && (r as PromiseFulfilledResult<unknown>).value !== null)
+        .map((r) => (r as PromiseFulfilledResult<(typeof allQuestions)[0]>).value);
 
       if (generated.length > 0) {
         freshQuestions = [...freshQuestions, ...generated];
