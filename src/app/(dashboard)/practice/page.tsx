@@ -31,6 +31,7 @@ import {
   ThumbsUp,
   ThumbsDown,
   Sparkles,
+  ShieldCheck,
 } from "lucide-react";
 import Link from "next/link";
 import { MarkdownContent } from "@/components/tutor/section-cards";
@@ -563,6 +564,12 @@ export default function PracticePage() {
           <div className="flex items-center gap-3">
             <Badge variant="outline">{currentQuestion.difficulty}</Badge>
             <Badge variant="secondary">{currentQuestion.topic}</Badge>
+            {currentQuestion.course?.startsWith("CLEP_") && (
+              <Badge variant="outline" className="gap-1 text-emerald-600 border-emerald-200 bg-emerald-50 dark:text-emerald-400 dark:border-emerald-800 dark:bg-emerald-950">
+                <ShieldCheck className="h-3 w-3" />
+                CB-Aligned
+              </Badge>
+            )}
           </div>
           <div className="flex items-center gap-2 text-muted-foreground text-sm">
             <Clock className="h-4 w-4" />
@@ -743,6 +750,13 @@ export default function PracticePage() {
                     <p className="text-sm text-muted-foreground leading-relaxed">
                       {feedback.explanation}
                     </p>
+                    {currentQuestion.course?.startsWith("CLEP_") && (
+                      <div className="flex items-center gap-3 pt-1 text-xs text-muted-foreground/60">
+                        <span className="inline-flex items-center gap-1"><ShieldCheck className="h-3 w-3 text-emerald-500" /> 8-criterion validated</span>
+                        <span className="inline-flex items-center gap-1">Cross-model verified</span>
+                        <span className="inline-flex items-center gap-1">CB topic-aligned</span>
+                      </div>
+                    )}
                     <Link
                       href="/ai-tutor"
                       onClick={() => {
