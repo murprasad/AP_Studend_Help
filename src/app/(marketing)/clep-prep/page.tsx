@@ -2,6 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { CheckCircle, ArrowRight, Sparkles, Brain, Target, BarChart3, GraduationCap } from "lucide-react";
+import { BrowserFrame } from "@/components/landing/browser-frame";
+import { MockupAnalytics } from "@/components/landing/mockup-analytics";
+import { MockupStudyPlan } from "@/components/landing/mockup-study-plan";
+import { MockupPractice } from "@/components/landing/mockup-practice";
 
 export const metadata: Metadata = {
   title: "CLEP Exam Prep — Earn College Credit with AI | StudentNest Prep",
@@ -49,24 +53,36 @@ export default function ClepPrepPage() {
   return (
     <div className="max-w-5xl mx-auto px-4 py-16 space-y-16">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      {/* Hero */}
-      <div className="text-center space-y-4">
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm font-medium">
-          <GraduationCap className="h-4 w-4" /> 6 CLEP Exams · Earn College Credit
+      {/* Hero — two-column */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+        <div className="text-center lg:text-left space-y-4">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm font-medium">
+            <GraduationCap className="h-4 w-4" /> 6 CLEP Exams · Earn College Credit
+          </div>
+          <h1 className="text-4xl sm:text-5xl font-bold">
+            Skip the class. Keep the credit. Save $1,200+ per exam.
+          </h1>
+          <p className="text-xl text-muted-foreground max-w-xl mx-auto lg:mx-0">
+            One CLEP exam ($93) can replace a 3-credit college course worth $1,200+. Sage prepares you with AI-powered practice tailored to CLEP content.
+          </p>
+          <div className="flex gap-3 justify-center lg:justify-start pt-2">
+            <Link href="/register?module=clep">
+              <Button size="lg" className="gap-2 bg-emerald-600 hover:bg-emerald-700">Start Free CLEP Diagnostic <ArrowRight className="h-5 w-5" /></Button>
+            </Link>
+            <Link href="/pricing">
+              <Button size="lg" variant="outline">See Pricing</Button>
+            </Link>
+          </div>
         </div>
-        <h1 className="text-4xl sm:text-5xl font-bold">
-          Skip the class. Keep the credit. Save $1,200+ per exam.
-        </h1>
-        <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-          One CLEP exam ($93) can replace a 3-credit college course worth $1,200+. Sage prepares you with AI-powered practice tailored to CLEP content.
-        </p>
-        <div className="flex gap-3 justify-center pt-2">
-          <Link href="/register?module=clep">
-            <Button size="lg" className="gap-2 bg-emerald-600 hover:bg-emerald-700">Start Free CLEP Diagnostic <ArrowRight className="h-5 w-5" /></Button>
-          </Link>
-          <Link href="/pricing">
-            <Button size="lg" variant="outline">See Pricing</Button>
-          </Link>
+        <div className="hidden lg:block animate-float">
+          <BrowserFrame title="StudentNest AI · CLEP Analytics" className="shadow-2xl shadow-emerald-500/10">
+            <MockupAnalytics />
+          </BrowserFrame>
+        </div>
+        <div className="lg:hidden max-w-md mx-auto w-full">
+          <BrowserFrame title="StudentNest AI · CLEP Analytics">
+            <MockupAnalytics />
+          </BrowserFrame>
         </div>
       </div>
 
@@ -93,22 +109,31 @@ export default function ClepPrepPage() {
         </p>
       </div>
 
-      {/* How It Works — Study Flow */}
-      <div className="space-y-6">
-        <h2 className="text-2xl font-bold text-center">Your CLEP Prep Path</h2>
-        <div className="grid sm:grid-cols-4 gap-4">
-          {[
-            { step: "1", title: "Take the Diagnostic", desc: "Quick assessment to see how much you already know. Many students have prior familiarity." },
-            { step: "2", title: "Get Your Study Plan", desc: "AI builds a 4–8 week plan (faster if you have prior coursework). Starting fresh? The plan adapts to your pace." },
-            { step: "3", title: "Practice & Ask Sage", desc: "CLEP-aligned questions with instant feedback. Sage explains concepts using free resources." },
-            { step: "4", title: "Mock Exam & Schedule", desc: "When mastery hits 70%+, you're ready. Schedule your $93 exam and save $1,200+." },
-          ].map((s) => (
-            <div key={s.step} className="text-center p-4 rounded-xl border border-border/40 bg-card/50">
-              <div className="w-10 h-10 rounded-full bg-emerald-500/20 text-emerald-400 text-lg font-bold flex items-center justify-center mx-auto mb-3">{s.step}</div>
-              <p className="font-semibold text-sm mb-1">{s.title}</p>
-              <p className="text-xs text-muted-foreground leading-relaxed">{s.desc}</p>
-            </div>
-          ))}
+      {/* Features — alternating text + mockups */}
+      <div className="space-y-20">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
+          <div className="space-y-3">
+            <div className="w-10 h-10 rounded-lg bg-emerald-500/20 flex items-center justify-center"><Target className="h-5 w-5 text-emerald-400" /></div>
+            <h3 className="text-2xl font-bold">AI builds your CLEP study plan</h3>
+            <p className="text-muted-foreground leading-relaxed">Quick diagnostic to see how much you already know. AI builds a 4–8 week plan (faster if you have prior coursework). The plan adapts to your pace.</p>
+          </div>
+          <BrowserFrame title="StudentNest AI · CLEP Study Plan" className="shadow-xl"><MockupStudyPlan /></BrowserFrame>
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
+          <div className="lg:order-2 space-y-3">
+            <div className="w-10 h-10 rounded-lg bg-emerald-500/20 flex items-center justify-center"><Brain className="h-5 w-5 text-emerald-400" /></div>
+            <h3 className="text-2xl font-bold">CLEP-aligned practice with instant feedback</h3>
+            <p className="text-muted-foreground leading-relaxed">Questions match official CLEP exam format. Sage explains concepts using free resources like OpenStax and Khan Academy.</p>
+          </div>
+          <div className="lg:order-1"><BrowserFrame title="StudentNest AI · CLEP Practice" className="shadow-xl"><MockupPractice /></BrowserFrame></div>
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
+          <div className="space-y-3">
+            <div className="w-10 h-10 rounded-lg bg-emerald-500/20 flex items-center justify-center"><BarChart3 className="h-5 w-5 text-emerald-400" /></div>
+            <h3 className="text-2xl font-bold">Know exactly when you&apos;re ready to test</h3>
+            <p className="text-muted-foreground leading-relaxed">Per-unit mastery scores tell you when to schedule your $93 exam. Hit 70%+ and you&apos;re ready to save $1,200+.</p>
+          </div>
+          <BrowserFrame title="StudentNest AI · CLEP Analytics" className="shadow-xl"><MockupAnalytics /></BrowserFrame>
         </div>
       </div>
 

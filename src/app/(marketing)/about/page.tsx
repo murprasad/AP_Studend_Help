@@ -11,6 +11,10 @@ export const metadata: Metadata = {
 };
 import { Globe, Mail, Target, Heart, Sparkles, Lightbulb, LayoutDashboard, GraduationCap } from "lucide-react";
 import Link from "next/link";
+import { BrowserFrame } from "@/components/landing/browser-frame";
+import { MockupPractice } from "@/components/landing/mockup-practice";
+import { MockupAnalytics } from "@/components/landing/mockup-analytics";
+import { MockupStudyPlan } from "@/components/landing/mockup-study-plan";
 
 const COURSES = [
   // AP
@@ -158,6 +162,28 @@ export default function AboutPage() {
               <p className="text-xs text-muted-foreground leading-relaxed">{desc}</p>
             </div>
           ))}
+        </div>
+      </div>
+
+      {/* Section 3d: See It in Action */}
+      <div className="space-y-6">
+        <h2 className="text-xl font-bold text-center">See StudentNest in Action</h2>
+        <p className="text-sm text-muted-foreground text-center max-w-xl mx-auto">
+          Here&apos;s what the experience looks like — from your personalized study plan to practice questions with instant AI feedback.
+        </p>
+        <div className="grid sm:grid-cols-3 gap-4">
+          <div>
+            <BrowserFrame title="Study Plan" className="shadow-lg"><MockupStudyPlan /></BrowserFrame>
+            <p className="text-xs text-muted-foreground text-center mt-2">Prioritized weekly plan by unit</p>
+          </div>
+          <div>
+            <BrowserFrame title="Practice" className="shadow-lg"><MockupPractice /></BrowserFrame>
+            <p className="text-xs text-muted-foreground text-center mt-2">Instant Sage explanations</p>
+          </div>
+          <div>
+            <BrowserFrame title="Analytics" className="shadow-lg"><MockupAnalytics /></BrowserFrame>
+            <p className="text-xs text-muted-foreground text-center mt-2">Per-unit mastery tracking</p>
+          </div>
         </div>
       </div>
 

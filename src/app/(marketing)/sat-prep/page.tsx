@@ -2,6 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { CheckCircle, ArrowRight, Sparkles, Brain, Target, BarChart3, Clock } from "lucide-react";
+import { BrowserFrame } from "@/components/landing/browser-frame";
+import { MockupAnalytics } from "@/components/landing/mockup-analytics";
+import { MockupStudyPlan } from "@/components/landing/mockup-study-plan";
+import { MockupPractice } from "@/components/landing/mockup-practice";
 
 export const metadata: Metadata = {
   title: "SAT Prep — AI Practice & Score Tracking | StudentNest Prep",
@@ -45,43 +49,64 @@ export default function SatPrepPage() {
   return (
     <div className="max-w-5xl mx-auto px-4 py-16 space-y-16">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      {/* Hero */}
-      <div className="text-center space-y-4">
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-sm font-medium">
-          <Sparkles className="h-4 w-4" /> SAT Prep
+      {/* Hero — two-column */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+        <div className="text-center lg:text-left space-y-4">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-sm font-medium">
+            <Sparkles className="h-4 w-4" /> SAT Prep
+          </div>
+          <h1 className="text-4xl sm:text-5xl font-bold">
+            Raise your SAT score 100–200 points — with AI that adapts to your weak areas.
+          </h1>
+          <p className="text-xl text-muted-foreground max-w-xl mx-auto lg:mx-0">
+            Sage identifies what you struggle with, drills you on those topics, and tracks your progress until you&apos;re ready.
+          </p>
+          <div className="flex gap-3 justify-center lg:justify-start pt-2">
+            <Link href="/register?module=sat">
+              <Button size="lg" className="gap-2 bg-blue-600 hover:bg-blue-700">Start Free SAT Diagnostic <ArrowRight className="h-5 w-5" /></Button>
+            </Link>
+            <Link href="/pricing">
+              <Button size="lg" variant="outline">See Pricing</Button>
+            </Link>
+          </div>
         </div>
-        <h1 className="text-4xl sm:text-5xl font-bold">
-          Raise your SAT score 100–200 points — with AI that adapts to your weak areas.
-        </h1>
-        <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-          Sage identifies what you struggle with, drills you on those topics, and tracks your progress until you&apos;re ready.
-        </p>
-        <div className="flex gap-3 justify-center pt-2">
-          <Link href="/register?module=sat">
-            <Button size="lg" className="gap-2 bg-blue-600 hover:bg-blue-700">Start Free SAT Diagnostic <ArrowRight className="h-5 w-5" /></Button>
-          </Link>
-          <Link href="/pricing">
-            <Button size="lg" variant="outline">See Pricing</Button>
-          </Link>
+        <div className="hidden lg:block animate-float">
+          <BrowserFrame title="StudentNest AI · SAT Analytics" className="shadow-2xl shadow-blue-500/10">
+            <MockupAnalytics />
+          </BrowserFrame>
+        </div>
+        <div className="lg:hidden max-w-md mx-auto w-full">
+          <BrowserFrame title="StudentNest AI · SAT Analytics">
+            <MockupAnalytics />
+          </BrowserFrame>
         </div>
       </div>
 
-      {/* How It Works — Study Flow */}
-      <div className="space-y-6">
-        <h2 className="text-2xl font-bold text-center">Your SAT Prep Path</h2>
-        <div className="grid sm:grid-cols-4 gap-4">
-          {[
-            { step: "1", title: "Take the Diagnostic", desc: "Quick assessment across Math and Reading & Writing. Sage pinpoints your weak areas." },
-            { step: "2", title: "Get Your Study Plan", desc: "Choose your timeline: 2-week intensive, 4-week standard, or 6-week deep prep. AI targets your lowest-scoring topics first." },
-            { step: "3", title: "Practice & Ask Sage", desc: "AI-generated SAT questions with instant feedback. Ask Sage for deeper explanations anytime." },
-            { step: "4", title: "Timed Practice & Track", desc: "Simulate real SAT pacing. Watch your estimated score climb session by session." },
-          ].map((s) => (
-            <div key={s.step} className="text-center p-4 rounded-xl border border-border/40 bg-card/50">
-              <div className="w-10 h-10 rounded-full bg-blue-500/20 text-blue-400 text-lg font-bold flex items-center justify-center mx-auto mb-3">{s.step}</div>
-              <p className="font-semibold text-sm mb-1">{s.title}</p>
-              <p className="text-xs text-muted-foreground leading-relaxed">{s.desc}</p>
-            </div>
-          ))}
+      {/* Features — alternating text + mockups */}
+      <div className="space-y-20">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
+          <div className="space-y-3">
+            <div className="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center"><Target className="h-5 w-5 text-blue-400" /></div>
+            <h3 className="text-2xl font-bold">AI targets your weakest SAT areas</h3>
+            <p className="text-muted-foreground leading-relaxed">Quick diagnostic across Math and Reading &amp; Writing. Choose your timeline (2–6 weeks) and Sage builds a plan targeting your lowest-scoring topics first.</p>
+          </div>
+          <BrowserFrame title="StudentNest AI · SAT Study Plan" className="shadow-xl"><MockupStudyPlan /></BrowserFrame>
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
+          <div className="lg:order-2 space-y-3">
+            <div className="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center"><Brain className="h-5 w-5 text-blue-400" /></div>
+            <h3 className="text-2xl font-bold">SAT-format questions with instant explanations</h3>
+            <p className="text-muted-foreground leading-relaxed">AI-generated questions matching real SAT format. Get instant feedback explaining why each answer is right or wrong — ask Sage for deeper explanations anytime.</p>
+          </div>
+          <div className="lg:order-1"><BrowserFrame title="StudentNest AI · SAT Practice" className="shadow-xl"><MockupPractice /></BrowserFrame></div>
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
+          <div className="space-y-3">
+            <div className="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center"><BarChart3 className="h-5 w-5 text-blue-400" /></div>
+            <h3 className="text-2xl font-bold">Watch your estimated SAT score climb</h3>
+            <p className="text-muted-foreground leading-relaxed">Track your progress session by session: 1050 → 1150 → 1250 → 1350. Real data, timed practice, and pacing instincts for test day.</p>
+          </div>
+          <BrowserFrame title="StudentNest AI · SAT Analytics" className="shadow-xl"><MockupAnalytics /></BrowserFrame>
         </div>
       </div>
 

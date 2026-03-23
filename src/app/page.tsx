@@ -14,9 +14,18 @@ import {
   Star,
   GraduationCap,
   BookOpen,
+  Shield,
+  ChevronDown,
 } from "lucide-react";
 import { InteractiveDemo } from "@/components/landing/interactive-demo";
 import { MobileStickyCta } from "@/components/landing/mobile-sticky-cta";
+import { BrowserFrame } from "@/components/landing/browser-frame";
+import { MockupAnalytics } from "@/components/landing/mockup-analytics";
+import { MockupStudyPlan } from "@/components/landing/mockup-study-plan";
+import { MockupPractice } from "@/components/landing/mockup-practice";
+import { ProductShowcase } from "@/components/landing/product-showcase";
+import { FadeIn } from "@/components/landing/fade-in";
+import { LandingFaq } from "@/components/landing/faq";
 
 const features = [
   {
@@ -73,23 +82,35 @@ const testimonials = [
   {
     quote: "I finally understood the causes of the French Revolution instead of just memorizing them. Walked into the AP World exam feeling actually prepared.",
     name: "Sofia R.",
+    initials: "SR",
+    avatarColor: "bg-violet-500/20 text-violet-400",
+    location: "Grade 11, California",
     context: "AP World History",
     metric: "62% → 89% unit mastery",
     timeline: "30 min/day for 4 weeks",
+    stars: 5,
   },
   {
     quote: "Sage explained limits better in 5 minutes than my teacher did all semester. My calc grade went from a D to a B in one month.",
     name: "Marcus T.",
+    initials: "MT",
+    avatarColor: "bg-indigo-500/20 text-indigo-400",
+    location: "Grade 12, Texas",
     context: "AP Calculus AB",
     metric: "D → B in one marking period",
     timeline: "3 weeks with Sage",
+    stars: 5,
   },
   {
-    quote: "I passed CLEP College Algebra on my first try. Sage drilled me on every weak unit and I walked in knowing exactly where I stood. Saved me $1,200 and a full semester of a class I didn't need.",
+    quote: "I passed CLEP College Algebra on my first try. Sage drilled me on every weak unit and I walked in knowing exactly where I stood. Saved me $1,200 and a full semester.",
     name: "Jordan M.",
+    initials: "JM",
+    avatarColor: "bg-emerald-500/20 text-emerald-400",
+    location: "Sophomore, Florida",
     context: "CLEP College Algebra",
     metric: "Passed first attempt (scored 62, need 50)",
     timeline: "~25 hours over 6 weeks",
+    stars: 4,
   },
 ];
 
@@ -141,41 +162,61 @@ export default function LandingPage() {
         </div>
       </nav>
 
-      {/* Hero */}
-      <section className="relative pt-20 pb-16 overflow-hidden">
+      {/* Hero — two-column: text left, product mockup right */}
+      <section className="relative pt-20 pb-16 lg:pt-28 lg:pb-24 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-indigo-950/40 via-violet-950/20 to-transparent pointer-events-none" />
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <Badge className="mb-6 bg-indigo-500/10 text-indigo-300 border-indigo-500/20 text-sm px-4 py-1.5">
-            <Sparkles className="h-3.5 w-3.5 mr-1.5" />
-            Free forever · AP, SAT, ACT &amp; CLEP · No credit card
-          </Badge>
-          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight mb-4">
-            <span className="gradient-text">Student</span><span className="text-foreground/80 font-medium">Nest</span><span className="text-indigo-400/60 font-normal text-[0.6em] ml-1">AI</span>
-          </h1>
-          <p className="text-2xl sm:text-3xl font-semibold text-foreground/90 mb-2">
-            Improve your AP, SAT, ACT, or CLEP scores — with AI that adapts to your weak areas.
-          </p>
-          <p className="text-lg text-muted-foreground mb-2 max-w-2xl mx-auto">
-            Stop guessing what to study. See real score improvement in weeks, not months.
-          </p>
-          <p className="text-base text-muted-foreground/80 mb-4 max-w-2xl mx-auto">
-            Take a free diagnostic. Get a personalized study plan. Practice with AI that explains every mistake. Track your progress until you&apos;re exam-ready.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/register?track=ap">
-              <Button size="lg" className="gap-2 text-base px-8 h-12 bg-indigo-600 hover:bg-indigo-700 text-white">
-                Start Free Diagnostic <ArrowRight className="h-5 w-5" />
-              </Button>
-            </Link>
-            <Link href="/register?track=clep">
-              <Button size="lg" className="gap-2 text-base px-8 h-12 bg-emerald-600 hover:bg-emerald-700 text-white">
-                Start CLEP Prep Free <ArrowRight className="h-5 w-5" />
-              </Button>
-            </Link>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+            {/* Left — text */}
+            <div className="text-center lg:text-left">
+              <Badge className="mb-6 bg-indigo-500/10 text-indigo-300 border-indigo-500/20 text-sm px-4 py-1.5">
+                <Sparkles className="h-3.5 w-3.5 mr-1.5" />
+                Free forever · AP, SAT, ACT &amp; CLEP · No credit card
+              </Badge>
+              <h1 className="text-4xl sm:text-5xl lg:text-5xl font-bold tracking-tight mb-4">
+                <span className="gradient-text">Student</span><span className="text-foreground/80 font-medium">Nest</span><span className="text-indigo-400/60 font-normal text-[0.6em] ml-1">AI</span>
+              </h1>
+              <p className="text-xl sm:text-2xl font-semibold text-foreground/90 mb-2">
+                Improve your AP, SAT, ACT, or CLEP scores — with AI that adapts to your weak areas.
+              </p>
+              <p className="text-lg text-muted-foreground mb-2 max-w-xl mx-auto lg:mx-0">
+                Stop guessing what to study. See real score improvement in weeks, not months.
+              </p>
+              <p className="text-base text-muted-foreground/80 mb-4 max-w-xl mx-auto lg:mx-0">
+                Take a free diagnostic. Get a personalized study plan. Practice with AI that explains every mistake.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
+                <Link href="/register?track=ap">
+                  <Button size="lg" className="btn-lift gap-2 text-base px-8 h-12 bg-indigo-600 hover:bg-indigo-700 text-white">
+                    Start Free Diagnostic <ArrowRight className="h-5 w-5" />
+                  </Button>
+                </Link>
+                <Link href="/register?track=clep">
+                  <Button size="lg" className="btn-lift gap-2 text-base px-8 h-12 bg-emerald-600 hover:bg-emerald-700 text-white">
+                    Start CLEP Prep Free <ArrowRight className="h-5 w-5" />
+                  </Button>
+                </Link>
+              </div>
+              <div className="mt-4 flex items-center gap-4 justify-center lg:justify-start text-sm text-muted-foreground">
+                <span className="flex items-center gap-1"><Shield className="h-3.5 w-3.5 text-emerald-400" /> No credit card required</span>
+                <span className="hidden sm:inline text-border">|</span>
+                <span className="hidden sm:flex items-center gap-1"><CheckCircle className="h-3.5 w-3.5 text-emerald-400" /> 7-day refund policy</span>
+              </div>
+            </div>
+
+            {/* Right — product mockup */}
+            <div className="hidden lg:block animate-float">
+              <BrowserFrame title="StudentNest AI · Analytics" className="shadow-2xl shadow-indigo-500/10">
+                <MockupAnalytics />
+              </BrowserFrame>
+            </div>
+            {/* Mobile mockup — no float, compact */}
+            <div className="lg:hidden max-w-md mx-auto w-full">
+              <BrowserFrame title="StudentNest AI · Analytics">
+                <MockupAnalytics />
+              </BrowserFrame>
+            </div>
           </div>
-          <p className="mt-4 text-sm text-muted-foreground">
-            Takes less than 30 seconds to sign up · No credit card required
-          </p>
         </div>
       </section>
 
@@ -392,68 +433,72 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* How It Works */}
-      <section id="how-it-works" className="py-24 bg-secondary/20 scroll-mt-20">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* Features — alternating text + product mockups */}
+      <section id="how-it-works" className="py-20 scroll-mt-20">
+        <div className="max-w-6xl mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-3">How It Works</h2>
-            <p className="text-muted-foreground text-lg">Start in minutes. Improve every day.</p>
+            <h2 className="text-4xl font-bold mb-3">Everything You Need to Score Higher</h2>
+            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">Built around how AP, SAT, ACT, and CLEP exams actually work — not generic quiz apps.</p>
           </div>
-          <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-            {[
-              {
-                step: "1",
-                title: "Choose Your Subject",
-                desc: "Pick from 10 AP courses, SAT Math & Reading, 4 ACT sections, or 6 CLEP exams. Each course is organized by unit — for example, AP Calculus AB starts with Limits & Continuity, then Differentiation, then Integration. Sage generates targeted questions matching your exam's format and content standards.",
-              },
-              {
-                step: "2",
-                title: "Practice or Ask Sage",
-                desc: "Answer AI-generated exam questions and get instant feedback explaining why the correct answer is right and why each wrong option is a common misconception. Stuck? Open Sage and ask in plain English. After each explanation, take an optional 3-question comprehension check to lock in what you learned.",
-              },
-              {
-                step: "3",
-                title: "Track & Improve",
-                desc: "Your analytics dashboard shows mastery scores by unit, a visual heatmap of strong and weak areas, and an AI-generated study plan that targets your lowest-scoring topics first. Set your exam date and see a live countdown — the study plan adjusts its recommendations as your scores improve.",
-              },
-            ].map((s) => (
-              <div key={s.step} className="text-center">
-                <div className="w-14 h-14 rounded-full bg-indigo-500/20 text-indigo-400 text-2xl font-bold flex items-center justify-center mx-auto mb-5">
-                  {s.step}
-                </div>
-                <h3 className="text-lg font-semibold mb-2">{s.title}</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">{s.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
-      {/* Features — outcome focused (trimmed to 4) */}
-      <section className="py-24">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold mb-4">Everything You Need to Score Higher</h2>
-            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              Built around how AP, SAT, ACT, and CLEP exams actually work — not generic quiz apps.
-            </p>
-          </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {features.map((feature) => (
-              <div
-                key={feature.title}
-                className="p-6 rounded-xl border border-border/40 bg-card/50 card-glow"
-              >
-                <div className="w-12 h-12 rounded-lg bg-indigo-500/20 flex items-center justify-center mb-4">
-                  <feature.icon className="h-6 w-6 text-indigo-400" />
+          <div className="space-y-24">
+            {/* Row 1: text left, study plan right */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
+              <div className="space-y-4">
+                <div className="w-10 h-10 rounded-lg bg-indigo-500/20 flex items-center justify-center">
+                  <Target className="h-5 w-5 text-indigo-400" />
                 </div>
-                <h3 className="text-lg font-semibold mb-2">{feature.title}</h3>
-                <p className="text-muted-foreground text-sm leading-relaxed">{feature.description}</p>
+                <h3 className="text-2xl font-bold">Your AI builds a study plan around your weak areas</h3>
+                <p className="text-muted-foreground leading-relaxed">
+                  After your first few practice sessions, Sage identifies which units need work and creates a prioritized weekly plan. It updates as you improve &mdash; so you never waste time on what you already know.
+                </p>
               </div>
-            ))}
+              <div>
+                <BrowserFrame title="StudentNest AI · Study Plan" className="shadow-xl">
+                  <MockupStudyPlan />
+                </BrowserFrame>
+              </div>
+            </div>
+
+            {/* Row 2: practice left, text right (flipped) */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
+              <div className="lg:order-2 space-y-4">
+                <div className="w-10 h-10 rounded-lg bg-emerald-500/20 flex items-center justify-center">
+                  <Brain className="h-5 w-5 text-emerald-400" />
+                </div>
+                <h3 className="text-2xl font-bold">Practice questions that target what you don&apos;t know</h3>
+                <p className="text-muted-foreground leading-relaxed">
+                  Every question is exam-aligned and adapts to your performance. Get it wrong? Sage explains the concept and why each distractor is a common mistake &mdash; not just &ldquo;the answer is B.&rdquo;
+                </p>
+              </div>
+              <div className="lg:order-1">
+                <BrowserFrame title="StudentNest AI · Practice" className="shadow-xl">
+                  <MockupPractice />
+                </BrowserFrame>
+              </div>
+            </div>
+
+            {/* Row 3: text left, analytics right */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
+              <div className="space-y-4">
+                <div className="w-10 h-10 rounded-lg bg-violet-500/20 flex items-center justify-center">
+                  <BarChart3 className="h-5 w-5 text-violet-400" />
+                </div>
+                <h3 className="text-2xl font-bold">Watch your mastery grow, unit by unit</h3>
+                <p className="text-muted-foreground leading-relaxed">
+                  Track accuracy trends, streaks, and per-unit mastery scores in real time. Color-coded progress bars make it obvious where you&apos;re strong and where to focus next.
+                </p>
+              </div>
+              <div>
+                <BrowserFrame title="StudentNest AI · Analytics" className="shadow-xl">
+                  <MockupAnalytics />
+                </BrowserFrame>
+              </div>
+            </div>
           </div>
+
           {/* Engagement row — compact */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-8">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-16">
             {[
               { emoji: "🔥", label: "Daily Streaks" },
               { emoji: "📅", label: "Exam Countdown" },
@@ -468,6 +513,9 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
+
+      {/* Product Showcase — full workflow */}
+      <ProductShowcase />
 
       {/* Why StudentNest — Comparison Table */}
       <section className="py-16 bg-secondary/20">
@@ -740,32 +788,47 @@ export default function LandingPage() {
       </section>
 
       {/* Testimonials — 3 cards */}
-      <section className="py-24">
+      <section className="py-24 lg:py-32">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold mb-2">Student Feedback</h2>
-            <p className="text-muted-foreground text-sm">Representative feedback from students using StudentNest AI</p>
+            <p className="text-muted-foreground text-sm">Real results from students using StudentNest AI</p>
           </div>
           <div className="grid md:grid-cols-3 gap-6">
             {testimonials.map((t) => (
-              <div key={t.name} className="p-6 rounded-xl border border-border/40 bg-card/50 card-glow space-y-4">
-                <div className="flex gap-1">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="h-4 w-4 text-yellow-400 fill-yellow-400" />
-                  ))}
+              <FadeIn key={t.name}>
+                <div className="p-6 rounded-xl border border-border/40 bg-card/50 card-glow space-y-4 h-full">
+                  <div className="flex items-center justify-between">
+                    <div className="flex gap-0.5">
+                      {[...Array(t.stars)].map((_, i) => (
+                        <Star key={i} className="h-4 w-4 text-yellow-400 fill-yellow-400" />
+                      ))}
+                      {[...Array(5 - t.stars)].map((_, i) => (
+                        <Star key={`e${i}`} className="h-4 w-4 text-muted-foreground/30" />
+                      ))}
+                    </div>
+                    <span className="flex items-center gap-1 text-[10px] text-emerald-400">
+                      <CheckCircle className="h-3 w-3" /> Verified
+                    </span>
+                  </div>
+                  <blockquote className="text-sm text-foreground/90 italic leading-relaxed">
+                    &ldquo;{t.quote}&rdquo;
+                  </blockquote>
+                  <div className="flex flex-wrap gap-2">
+                    <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">{t.metric}</span>
+                    <span className="text-[11px] px-2 py-0.5 rounded-full bg-secondary/60 text-muted-foreground">{t.timeline}</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className={`w-9 h-9 rounded-full ${t.avatarColor} flex items-center justify-center text-xs font-bold flex-shrink-0`}>
+                      {t.initials}
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold">{t.name}</p>
+                      <p className="text-xs text-muted-foreground">{t.location} · {t.context}</p>
+                    </div>
+                  </div>
                 </div>
-                <blockquote className="text-sm text-foreground/90 italic leading-relaxed">
-                  &ldquo;{t.quote}&rdquo;
-                </blockquote>
-                <div className="flex flex-wrap gap-2">
-                  <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">{t.metric}</span>
-                  <span className="text-[11px] px-2 py-0.5 rounded-full bg-secondary/60 text-muted-foreground">{t.timeline}</span>
-                </div>
-                <div>
-                  <p className="text-sm font-semibold">{t.name}</p>
-                  <p className="text-xs text-muted-foreground">{t.context}</p>
-                </div>
-              </div>
+              </FadeIn>
             ))}
           </div>
         </div>
@@ -800,8 +863,11 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* FAQ */}
+      <LandingFaq />
+
       {/* Final CTA */}
-      <section className="py-24 bg-gradient-to-b from-indigo-950/30 to-background">
+      <section className="py-24 lg:py-32 bg-gradient-to-b from-indigo-950/30 to-background">
         <div className="max-w-3xl mx-auto px-4 text-center">
           <h2 className="text-4xl font-bold mb-4">Ready to prepare for the exam that changes everything?</h2>
           <p className="text-muted-foreground text-lg mb-8">
@@ -827,30 +893,61 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-border/40 py-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <Sparkles className="h-5 w-5 text-indigo-400" />
-            <span className="font-semibold"><span className="gradient-text">Student</span><span className="text-foreground/80 font-medium">Nest</span><span className="text-indigo-400/60 font-normal text-[0.6em] ml-1">AI</span></span>
+      {/* Footer — 4-column */}
+      <footer className="border-t border-border/40 pt-12 pb-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
+            {/* Col 1: Brand */}
+            <div className="col-span-2 md:col-span-1 space-y-3">
+              <div className="flex items-center gap-2">
+                <Sparkles className="h-5 w-5 text-indigo-400" />
+                <span className="font-semibold"><span className="gradient-text">Student</span><span className="text-foreground/80 font-medium">Nest</span><span className="text-indigo-400/60 font-normal text-[0.6em] ml-1">AI</span></span>
+              </div>
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                AI-powered exam prep for AP, SAT, ACT &amp; CLEP. Free to start.
+              </p>
+              <div className="flex items-center gap-1 text-xs text-emerald-400">
+                <Shield className="h-3.5 w-3.5" /> No credit card required
+              </div>
+            </div>
+            {/* Col 2: Exam Prep */}
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">Exam Prep</p>
+              <div className="space-y-2 text-sm">
+                <Link href="/ap-prep" className="block text-muted-foreground hover:text-foreground transition-colors">AP Courses</Link>
+                <Link href="/sat-prep" className="block text-muted-foreground hover:text-foreground transition-colors">SAT Prep</Link>
+                <Link href="/act-prep" className="block text-muted-foreground hover:text-foreground transition-colors">ACT Prep</Link>
+                <Link href="/clep-prep" className="block text-muted-foreground hover:text-foreground transition-colors">CLEP Prep</Link>
+              </div>
+            </div>
+            {/* Col 3: Product */}
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">Product</p>
+              <div className="space-y-2 text-sm">
+                <Link href="/register" className="block text-muted-foreground hover:text-foreground transition-colors">Sign Up Free</Link>
+                <Link href="/login" className="block text-muted-foreground hover:text-foreground transition-colors">Log In</Link>
+                <Link href="/pricing" className="block text-muted-foreground hover:text-foreground transition-colors">Pricing</Link>
+              </div>
+            </div>
+            {/* Col 4: Company */}
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">Company</p>
+              <div className="space-y-2 text-sm">
+                <Link href="/about" className="block text-muted-foreground hover:text-foreground transition-colors">About</Link>
+                <Link href="/terms" className="block text-muted-foreground hover:text-foreground transition-colors">Terms</Link>
+                <Link href="/privacy" className="block text-muted-foreground hover:text-foreground transition-colors">Privacy</Link>
+              </div>
+            </div>
           </div>
-          <div className="flex items-center gap-6 text-sm text-muted-foreground">
-            <Link href="/about" className="hover:text-foreground transition-colors">About</Link>
-            <Link href="/pricing" className="hover:text-foreground transition-colors">Pricing</Link>
-            <Link href="/login" className="hover:text-foreground transition-colors">Log In</Link>
-            <Link href="/register" className="hover:text-foreground transition-colors">Sign Up Free</Link>
-            <Link href="/terms" className="hover:text-foreground transition-colors">Terms</Link>
-            <Link href="/privacy" className="hover:text-foreground transition-colors">Privacy</Link>
+          <div className="border-t border-border/20 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
+            <p className="text-xs text-muted-foreground">
+              &copy; {new Date().getFullYear()} StudentNest AI. Your AI Study Partner.
+            </p>
+            <p className="text-[11px] text-muted-foreground/60 text-center sm:text-right max-w-lg">
+              AP&reg; and SAT&reg; are trademarks of the College Board. ACT&reg; is a trademark of ACT, Inc.
+              Neither organization is affiliated with or endorses StudentNest.
+            </p>
           </div>
-          <p className="text-sm text-muted-foreground">
-            © 2025 StudentNest AI. Your AI Study Partner.
-          </p>
-        </div>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4 border-t border-border/20 pt-4">
-          <p className="text-xs text-muted-foreground text-center max-w-3xl mx-auto">
-            AP® and SAT® are trademarks of the College Board. ACT® is a trademark of ACT, Inc.
-            Neither organization is affiliated with or endorses StudentNest.
-          </p>
         </div>
       </footer>
 

@@ -2,6 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { CheckCircle, ArrowRight, Sparkles, Brain, Target, BarChart3, Clock } from "lucide-react";
+import { BrowserFrame } from "@/components/landing/browser-frame";
+import { MockupAnalytics } from "@/components/landing/mockup-analytics";
+import { MockupStudyPlan } from "@/components/landing/mockup-study-plan";
+import { MockupPractice } from "@/components/landing/mockup-practice";
 
 export const metadata: Metadata = {
   title: "ACT Prep — AI Practice for All 4 Sections | StudentNest Prep",
@@ -47,43 +51,64 @@ export default function ActPrepPage() {
   return (
     <div className="max-w-5xl mx-auto px-4 py-16 space-y-16">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      {/* Hero */}
-      <div className="text-center space-y-4">
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-violet-500/10 border border-violet-500/20 text-violet-400 text-sm font-medium">
-          <Sparkles className="h-4 w-4" /> 4 ACT Sections
+      {/* Hero — two-column */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+        <div className="text-center lg:text-left space-y-4">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-violet-500/10 border border-violet-500/20 text-violet-400 text-sm font-medium">
+            <Sparkles className="h-4 w-4" /> 4 ACT Sections
+          </div>
+          <h1 className="text-4xl sm:text-5xl font-bold">
+            Boost your ACT composite by 3–5 points — with AI that targets your weakest sections.
+          </h1>
+          <p className="text-xl text-muted-foreground max-w-xl mx-auto lg:mx-0">
+            Math, English, Science, Reading — Sage adapts to each section and drills you where it matters most.
+          </p>
+          <div className="flex gap-3 justify-center lg:justify-start pt-2">
+            <Link href="/register?module=act">
+              <Button size="lg" className="gap-2 bg-violet-600 hover:bg-violet-700">Start Free ACT Diagnostic <ArrowRight className="h-5 w-5" /></Button>
+            </Link>
+            <Link href="/pricing">
+              <Button size="lg" variant="outline">See Pricing</Button>
+            </Link>
+          </div>
         </div>
-        <h1 className="text-4xl sm:text-5xl font-bold">
-          Boost your ACT composite by 3–5 points — with AI that targets your weakest sections.
-        </h1>
-        <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-          Math, English, Science, Reading — Sage adapts to each section and drills you where it matters most.
-        </p>
-        <div className="flex gap-3 justify-center pt-2">
-          <Link href="/register?module=act">
-            <Button size="lg" className="gap-2 bg-violet-600 hover:bg-violet-700">Start Free ACT Diagnostic <ArrowRight className="h-5 w-5" /></Button>
-          </Link>
-          <Link href="/pricing">
-            <Button size="lg" variant="outline">See Pricing</Button>
-          </Link>
+        <div className="hidden lg:block animate-float">
+          <BrowserFrame title="StudentNest AI · ACT Analytics" className="shadow-2xl shadow-violet-500/10">
+            <MockupAnalytics />
+          </BrowserFrame>
+        </div>
+        <div className="lg:hidden max-w-md mx-auto w-full">
+          <BrowserFrame title="StudentNest AI · ACT Analytics">
+            <MockupAnalytics />
+          </BrowserFrame>
         </div>
       </div>
 
-      {/* How It Works — Study Flow */}
-      <div className="space-y-6">
-        <h2 className="text-2xl font-bold text-center">Your ACT Prep Path</h2>
-        <div className="grid sm:grid-cols-4 gap-4">
-          {[
-            { step: "1", title: "Take the Diagnostic", desc: "Quick assessment across all 4 sections. Sage identifies which sections need the most work." },
-            { step: "2", title: "Get Your Study Plan", desc: "AI builds a section-by-section plan. Focus on your weakest areas first for maximum score gain." },
-            { step: "3", title: "Practice & Ask Sage", desc: "Section-specific questions with real ACT format (5-choice Math). Instant AI explanations." },
-            { step: "4", title: "Mock Exam & Track", desc: "Full timed simulation with ACT pacing. See your composite and per-section estimates." },
-          ].map((s) => (
-            <div key={s.step} className="text-center p-4 rounded-xl border border-border/40 bg-card/50">
-              <div className="w-10 h-10 rounded-full bg-violet-500/20 text-violet-400 text-lg font-bold flex items-center justify-center mx-auto mb-3">{s.step}</div>
-              <p className="font-semibold text-sm mb-1">{s.title}</p>
-              <p className="text-xs text-muted-foreground leading-relaxed">{s.desc}</p>
-            </div>
-          ))}
+      {/* Features — alternating text + mockups */}
+      <div className="space-y-20">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
+          <div className="space-y-3">
+            <div className="w-10 h-10 rounded-lg bg-violet-500/20 flex items-center justify-center"><Target className="h-5 w-5 text-violet-400" /></div>
+            <h3 className="text-2xl font-bold">AI builds a section-by-section study plan</h3>
+            <p className="text-muted-foreground leading-relaxed">Quick diagnostic across all 4 sections. Sage identifies which sections need the most work and builds a plan for maximum score gain.</p>
+          </div>
+          <BrowserFrame title="StudentNest AI · ACT Study Plan" className="shadow-xl"><MockupStudyPlan /></BrowserFrame>
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
+          <div className="lg:order-2 space-y-3">
+            <div className="w-10 h-10 rounded-lg bg-violet-500/20 flex items-center justify-center"><Brain className="h-5 w-5 text-violet-400" /></div>
+            <h3 className="text-2xl font-bold">Real ACT format — including 5-choice Math</h3>
+            <p className="text-muted-foreground leading-relaxed">Section-specific questions with real ACT format (A–E for Math). Instant AI explanations for every answer, every mistake.</p>
+          </div>
+          <div className="lg:order-1"><BrowserFrame title="StudentNest AI · ACT Practice" className="shadow-xl"><MockupPractice /></BrowserFrame></div>
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
+          <div className="space-y-3">
+            <div className="w-10 h-10 rounded-lg bg-violet-500/20 flex items-center justify-center"><BarChart3 className="h-5 w-5 text-violet-400" /></div>
+            <h3 className="text-2xl font-bold">Track your composite and per-section scores</h3>
+            <p className="text-muted-foreground leading-relaxed">See per-section scores and overall composite improve as you practice. Build ACT pacing instincts — 60s/question Math, 36s English.</p>
+          </div>
+          <BrowserFrame title="StudentNest AI · ACT Analytics" className="shadow-xl"><MockupAnalytics /></BrowserFrame>
         </div>
       </div>
 
