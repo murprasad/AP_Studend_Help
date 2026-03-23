@@ -23,15 +23,13 @@ export async function POST(req: NextRequest) {
     .map((u) => u.name.replace(/^Unit \d+: /, ""))
     .join(", ");
 
-  const skills =
-    course === "AP_WORLD_HISTORY"
-      ? "Causation, Comparison, CCOT, Contextualization"
-      : course === "AP_PHYSICS_1"
-      ? "Modeling, Math Routines, Experimental Design"
-      : "Computational Thinking, Algorithm Analysis, Abstraction";
+  const skills = courseConfig.skillCodes?.join(", ") || "Conceptual Understanding, Application, Analysis, Evaluation";
 
-  const visualBreakdownInstruction =
-    course === "AP_PHYSICS_1"
+  const isMathCourse = ["AP_PHYSICS_1", "AP_CALCULUS_AB", "AP_CALCULUS_BC", "AP_STATISTICS",
+    "CLEP_COLLEGE_ALGEBRA", "CLEP_CALCULUS", "CLEP_PRECALCULUS", "CLEP_COLLEGE_MATH",
+    "SAT_MATH", "ACT_MATH"].includes(course);
+
+  const visualBreakdownInstruction = isMathCourse
       ? "Use a markdown table, numbered steps, or bullet comparison. For CALCULATION problems, always show: **Given** (list known values + units) → **Equation** (write the formula) → **Substitution** (plug in numbers) → **Answer** (value + correct units). For conceptual questions, use bullet comparisons or a mermaid flowchart."
       : "Use a markdown table, numbered steps, or bullet comparison. For causal chains or sequential processes, you may use a mermaid flowchart block.";
 

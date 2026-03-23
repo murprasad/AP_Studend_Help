@@ -1,15 +1,17 @@
-name: Seed Question Bank (One-Time)
+name: Seed Question Bank
 
-# Manual trigger only — run this once to get all units to green (≥ 8 questions).
-# ~120 iterations × 8 questions = up to 960 questions across all 109 units.
-# Expected runtime: ~90 minutes.
+# Runs daily at 2 AM UTC to fill empty course units.
+# Also available as manual trigger for immediate seeding.
+# Stops early when all units have ≥ 8 questions.
 on:
+  schedule:
+    - cron: '0 2 * * *'   # daily at 2 AM UTC
   workflow_dispatch:
     inputs:
       iterations:
-        description: 'Number of batches to run (default 120, each adds 8 questions)'
+        description: 'Number of batches to run (default 60, each adds up to 8 questions)'
         required: false
-        default: '120'
+        default: '60'
       questions_per_batch:
         description: 'Questions per batch (max 10, keep ≤ 8 to avoid CF timeout)'
         required: false
@@ -18,30 +20,33 @@ on:
 jobs:
   seed:
     runs-on: ubuntu-latest
-    timeout-minutes: 150
+    timeout-minutes: 120
     steps:
       - name: Seed question bank
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
         run: |
-          ITERATIONS=${{ github.event.inputs.iterations || 120 }}
+          ITERATIONS=${{ github.event.inputs.iterations || 60 }}
           QPB=${{ github.event.inputs.questions_per_batch || 8 }}
           success=0
           failed=0
           total_generated=0
+          consecutive_empty=0
 
           echo "Starting seed: $ITERATIONS iterations × $QPB questions each"
-          echo "Target: up to $((ITERATIONS * QPB)) new questions"
+          echo "Target: fill all empty CLEP/AP/SAT/ACT course units"
 
           for i in $(seq 1 $ITERATIONS); do
             response=$(curl -s -w "\n%{http_code}" -X POST \
               "https://studentnest.ai/api/cron/auto-populate?limit=${QPB}" \
-              -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+              -H "Authorization: Bearer ${CRON_SECRET}" \
               -H "Content-Type: application/json" \
               --max-time 90)
             body=$(echo "$response" | head -n -1)
             status=$(echo "$response" | tail -n 1)
 
             if [ "$status" = "401" ]; then
-              echo "❌ 401 Unauthorized — stopping."
+              echo "❌ 401 Unauthorized — CRON_SECRET mismatch. Stopping."
               exit 1
             fi
 
@@ -50,21 +55,32 @@ jobs:
               total_generated=$((total_generated + generated))
               success=$((success + 1))
               echo "[$i/$ITERATIONS] ✅ +${generated} questions (total: $total_generated)"
+
+              if [ "$generated" = "0" ]; then
+                consecutive_empty=$((consecutive_empty + 1))
+              else
+                consecutive_empty=0
+              fi
             else
               failed=$((failed + 1))
-              echo "[$i/$ITERATIONS] ⚠️  status $status — $body"
+              consecutive_empty=0
+              echo "[$i/$ITERATIONS] ⚠️  status $status"
             fi
 
-            # Check if bank is fully seeded (all units have enough — server returns skipped=all)
-            skipped=$(echo "$body" | grep -o '"skipped":[0-9]*' | grep -o '[0-9]*' || echo 0)
+            # Stop early if bank is fully seeded (3 consecutive empty results)
             processed=$(echo "$body" | grep -o '"processed":[0-9]*' | grep -o '[0-9]*' || echo 1)
             if [ "$processed" = "0" ] && [ "$status" = "200" ]; then
               echo "🎉 All units are fully seeded — stopping early at iteration $i"
               break
             fi
 
-            # Small delay between calls to respect Groq rate limits
-            sleep 5
+            if [ "$consecutive_empty" -ge 3 ]; then
+              echo "🎉 3 consecutive empty batches — bank appears full. Stopping."
+              break
+            fi
+
+            # Rate limit delay
+            sleep 8
           done
 
           echo ""
@@ -73,7 +89,7 @@ jobs:
           echo "Failed batches     : $failed"
           echo "Total questions    : $total_generated"
 
-          if [ "$success" -gt 0 ]; then
+          if [ "$success" -gt 0 ] || [ "$consecutive_empty" -ge 3 ]; then
             exit 0
           else
             exit 1

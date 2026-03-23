@@ -2,7 +2,7 @@
 /**
  * integration-tests.js
  * Runs authenticated integration tests against the live production site.
- * Calls /api/test/practice-check (CRON_SECRET-gated) to verify all 16 courses
+ * Calls /api/test/practice-check (CRON_SECRET-gated) to verify all 50 courses
  * have questions available and AI generation is functioning.
  *
  * Usage: node scripts/integration-tests.js [--base-url https://studentnest.ai]
@@ -63,8 +63,8 @@ async function run() {
     return { passed: 0, warned: 1, failed: 0, results: [], skipped: true };
   }
 
-  // ── 1. Practice coverage check (all 16 courses) ──────────────────────────────
-  section("1. Practice question coverage (all 16 courses)");
+  // ── 1. Practice coverage check (all courses) ────────────────────────────────
+  section("1. Practice question coverage (all courses)");
 
   let coverageData = null;
   try {

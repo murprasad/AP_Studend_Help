@@ -37,10 +37,7 @@ const AP_COURSE_GROUPS = [
 
 const CLEP_COURSE_GROUP = {
   label: "CLEP Prep",
-  keys: [
-    "CLEP_COLLEGE_ALGEBRA", "CLEP_COLLEGE_COMPOSITION", "CLEP_INTRO_PSYCHOLOGY",
-    "CLEP_PRINCIPLES_OF_MARKETING", "CLEP_PRINCIPLES_OF_MANAGEMENT", "CLEP_INTRODUCTORY_SOCIOLOGY",
-  ] as ApCourse[],
+  keys: (Object.keys(COURSE_REGISTRY) as ApCourse[]).filter(k => (k as string).startsWith("CLEP_")),
 };
 
 export default function OnboardingPage() {

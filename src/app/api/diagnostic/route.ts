@@ -3,8 +3,9 @@ import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import { ApCourse, ApUnit } from "@prisma/client"
-import { COURSE_REGISTRY, VALID_AP_COURSES, getCourseTrack } from "@/lib/courses"
+import { COURSE_REGISTRY, VALID_AP_COURSES, getCourseModule } from "@/lib/courses"
 import { COURSE_UNITS } from "@/lib/utils"
+import { generateQuestion } from "@/lib/ai"
 
 export const dynamic = "force-dynamic"
 
@@ -18,7 +19,8 @@ export async function POST(req: NextRequest) {
   }
 
   const userTrack = session.user.track ?? "ap"
-  if (getCourseTrack(course as ApCourse) !== userTrack) {
+  const courseModule = getCourseModule(course as ApCourse)
+  if (courseModule !== userTrack) {
     return NextResponse.json(
       { error: "This course is not available on your current track." },
       { status: 403 }
@@ -39,8 +41,35 @@ export async function POST(req: NextRequest) {
     if (q) questionsByUnit.push(q)
   }
 
+  // On-demand AI generation for units with no questions (CLEP courses especially)
+  if (questionsByUnit.length < selectedUnits.length) {
+    const missingUnits = selectedUnits.filter(u => !questionsByUnit.find(q => q.unit === u))
+    const genPromises = missingUnits.slice(0, 5).map(async (unit) => {
+      try {
+        const generated = await Promise.race([
+          generateQuestion(unit, "MEDIUM", "MCQ", undefined, course as ApCourse, "FREE", undefined, true),
+          new Promise<null>((_, reject) => setTimeout(() => reject(new Error("timeout")), 15000)),
+        ])
+        if (generated && typeof generated === "object" && "questionText" in generated) {
+          const q = generated as { questionText: string; options: unknown; correctAnswer: string; explanation: string; topic?: string; subtopic?: string; stimulus?: string }
+          const saved = await prisma.question.create({
+            data: {
+              course: course as ApCourse, unit, difficulty: "MEDIUM", questionType: "MCQ",
+              questionText: q.questionText, options: q.options as object ?? {}, correctAnswer: q.correctAnswer,
+              explanation: q.explanation, topic: q.topic ?? "", subtopic: q.subtopic ?? null,
+              stimulus: q.stimulus ?? null, isAiGenerated: true, isApproved: true,
+            },
+            select: { id: true, unit: true },
+          })
+          questionsByUnit.push(saved)
+        }
+      } catch { /* skip this unit — diagnostic will just have fewer questions */ }
+    })
+    await Promise.allSettled(genPromises)
+  }
+
   if (questionsByUnit.length === 0) {
-    return NextResponse.json({ error: "No questions available for diagnostic" }, { status: 400 })
+    return NextResponse.json({ error: "No questions available for diagnostic. Please try again in a moment." }, { status: 400 })
   }
 
   // Create a diagnostic practice session

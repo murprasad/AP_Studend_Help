@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   description: "Learn how StudentNest Prep uses active recall, spaced repetition, and AI tutoring to help students score higher on AP, SAT, ACT & CLEP exams.",
   openGraph: {
     title: "About | StudentNest Prep",
-    description: "AI-powered exam prep built on learning science. 22 courses, free to start.",
+    description: "AI-powered exam prep built on learning science. 50 courses, free to start.",
   },
 };
 import { Globe, Mail, Target, Heart, Sparkles, Lightbulb, LayoutDashboard, GraduationCap } from "lucide-react";
@@ -36,13 +36,45 @@ const COURSES = [
   { name: "ACT English",                    category: "ACT Prep",     color: "bg-amber-500/10 text-amber-600 dark:text-amber-300 border-amber-500/20", desc: "Grammar, sentence structure, rhetorical skills" },
   { name: "ACT Science",                    category: "ACT Prep",     color: "bg-green-500/10 text-green-600 dark:text-green-300 border-green-500/20", desc: "Data interpretation, research summaries" },
   { name: "ACT Reading",                    category: "ACT Prep",     color: "bg-teal-500/10 text-teal-600 dark:text-teal-300 border-teal-500/20", desc: "Literary, social science, humanities passages" },
-  // CLEP — College Credit
-  { name: "CLEP College Algebra",           category: "CLEP (College Credit)", color: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-300 border-emerald-500/20", desc: "Equations, inequalities, functions, graphing" },
-  { name: "CLEP College Composition",       category: "CLEP (College Credit)", color: "bg-teal-500/10 text-teal-600 dark:text-teal-300 border-teal-500/20", desc: "Thesis, argument, rhetoric, research writing" },
-  { name: "CLEP Introductory Psychology",   category: "CLEP (College Credit)", color: "bg-green-500/10 text-green-600 dark:text-green-300 border-green-500/20", desc: "Behavior, cognition, development, disorders" },
-  { name: "CLEP Principles of Marketing",   category: "CLEP (College Credit)", color: "bg-lime-500/10 text-lime-600 dark:text-lime-300 border-lime-500/20", desc: "Market strategy, consumer behavior, pricing" },
-  { name: "CLEP Principles of Management",  category: "CLEP (College Credit)", color: "bg-emerald-500/10 text-emerald-500 dark:text-emerald-400 border-emerald-500/20", desc: "Leadership, planning, organization, control" },
-  { name: "CLEP Introductory Sociology",    category: "CLEP (College Credit)", color: "bg-cyan-500/10 text-cyan-600 dark:text-cyan-300 border-cyan-500/20", desc: "Social structures, culture, institutions" },
+  // CLEP — Composition & Literature
+  { name: "CLEP American Literature",                category: "CLEP (College Credit)", color: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-300 border-emerald-500/20", desc: "Colonial to contemporary American literary works" },
+  { name: "CLEP Analyzing & Interpreting Lit",       category: "CLEP (College Credit)", color: "bg-teal-500/10 text-teal-600 dark:text-teal-300 border-teal-500/20", desc: "Close reading of prose, poetry, drama" },
+  { name: "CLEP College Composition",                category: "CLEP (College Credit)", color: "bg-green-500/10 text-green-600 dark:text-green-300 border-green-500/20", desc: "Thesis, argument, rhetoric, research writing" },
+  { name: "CLEP College Composition Modular",        category: "CLEP (College Credit)", color: "bg-emerald-500/10 text-emerald-500 dark:text-emerald-400 border-emerald-500/20", desc: "Rhetorical analysis, synthesis, argumentation" },
+  { name: "CLEP English Literature",                 category: "CLEP (College Credit)", color: "bg-teal-500/10 text-teal-600 dark:text-teal-300 border-teal-500/20", desc: "British literature from Beowulf to modern" },
+  { name: "CLEP Humanities",                         category: "CLEP (College Credit)", color: "bg-green-500/10 text-green-600 dark:text-green-300 border-green-500/20", desc: "Literature, art, music, philosophy" },
+  // CLEP — History & Social Sciences
+  { name: "CLEP American Government",                category: "CLEP (College Credit)", color: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-300 border-emerald-500/20", desc: "US government structure, civil rights" },
+  { name: "CLEP US History I",                       category: "CLEP (College Credit)", color: "bg-teal-500/10 text-teal-600 dark:text-teal-300 border-teal-500/20", desc: "Colonial era through Reconstruction" },
+  { name: "CLEP US History II",                      category: "CLEP (College Credit)", color: "bg-green-500/10 text-green-600 dark:text-green-300 border-green-500/20", desc: "Reconstruction to present" },
+  { name: "CLEP Human Growth & Development",         category: "CLEP (College Credit)", color: "bg-emerald-500/10 text-emerald-500 dark:text-emerald-400 border-emerald-500/20", desc: "Lifespan development from birth to death" },
+  { name: "CLEP Educational Psychology",             category: "CLEP (College Credit)", color: "bg-teal-500/10 text-teal-600 dark:text-teal-300 border-teal-500/20", desc: "Learning theories, motivation, assessment" },
+  { name: "CLEP Introductory Psychology",            category: "CLEP (College Credit)", color: "bg-green-500/10 text-green-600 dark:text-green-300 border-green-500/20", desc: "Behavior, cognition, development, disorders" },
+  { name: "CLEP Introductory Sociology",             category: "CLEP (College Credit)", color: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-300 border-emerald-500/20", desc: "Social structures, culture, institutions" },
+  { name: "CLEP Macroeconomics",                     category: "CLEP (College Credit)", color: "bg-teal-500/10 text-teal-600 dark:text-teal-300 border-teal-500/20", desc: "GDP, fiscal/monetary policy, international trade" },
+  { name: "CLEP Microeconomics",                     category: "CLEP (College Credit)", color: "bg-green-500/10 text-green-600 dark:text-green-300 border-green-500/20", desc: "Supply/demand, market structures, elasticity" },
+  { name: "CLEP Social Sciences & History",          category: "CLEP (College Credit)", color: "bg-emerald-500/10 text-emerald-500 dark:text-emerald-400 border-emerald-500/20", desc: "Cross-disciplinary history, econ, geography" },
+  { name: "CLEP Western Civilization I",             category: "CLEP (College Credit)", color: "bg-teal-500/10 text-teal-600 dark:text-teal-300 border-teal-500/20", desc: "Ancient Near East through early modern Europe" },
+  { name: "CLEP Western Civilization II",            category: "CLEP (College Credit)", color: "bg-green-500/10 text-green-600 dark:text-green-300 border-green-500/20", desc: "Enlightenment to present" },
+  // CLEP — Science & Mathematics
+  { name: "CLEP Biology",                            category: "CLEP (College Credit)", color: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-300 border-emerald-500/20", desc: "Cell biology, genetics, evolution, ecology" },
+  { name: "CLEP Calculus",                           category: "CLEP (College Credit)", color: "bg-teal-500/10 text-teal-600 dark:text-teal-300 border-teal-500/20", desc: "Limits, derivatives, integrals, applications" },
+  { name: "CLEP Chemistry",                          category: "CLEP (College Credit)", color: "bg-green-500/10 text-green-600 dark:text-green-300 border-green-500/20", desc: "Atomic structure, bonding, reactions, thermo" },
+  { name: "CLEP College Algebra",                    category: "CLEP (College Credit)", color: "bg-emerald-500/10 text-emerald-500 dark:text-emerald-400 border-emerald-500/20", desc: "Equations, inequalities, functions, graphing" },
+  { name: "CLEP College Mathematics",                category: "CLEP (College Credit)", color: "bg-teal-500/10 text-teal-600 dark:text-teal-300 border-teal-500/20", desc: "Sets, logic, probability, geometry" },
+  { name: "CLEP Natural Sciences",                   category: "CLEP (College Credit)", color: "bg-green-500/10 text-green-600 dark:text-green-300 border-green-500/20", desc: "Biology, physics, earth science, chemistry" },
+  { name: "CLEP Precalculus",                        category: "CLEP (College Credit)", color: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-300 border-emerald-500/20", desc: "Algebra, trigonometry, analytic geometry" },
+  // CLEP — Business
+  { name: "CLEP Financial Accounting",               category: "CLEP (College Credit)", color: "bg-teal-500/10 text-teal-600 dark:text-teal-300 border-teal-500/20", desc: "Journal entries, financial statements, GAAP" },
+  { name: "CLEP Information Systems",                category: "CLEP (College Credit)", color: "bg-green-500/10 text-green-600 dark:text-green-300 border-green-500/20", desc: "IS fundamentals, databases, networks, SDLC" },
+  { name: "CLEP Introductory Business Law",          category: "CLEP (College Credit)", color: "bg-emerald-500/10 text-emerald-500 dark:text-emerald-400 border-emerald-500/20", desc: "Contracts, torts, business organizations" },
+  { name: "CLEP Principles of Management",           category: "CLEP (College Credit)", color: "bg-teal-500/10 text-teal-600 dark:text-teal-300 border-teal-500/20", desc: "Leadership, planning, organization, control" },
+  { name: "CLEP Principles of Marketing",            category: "CLEP (College Credit)", color: "bg-green-500/10 text-green-600 dark:text-green-300 border-green-500/20", desc: "Market strategy, consumer behavior, pricing" },
+  // CLEP — World Languages
+  { name: "CLEP French (Levels 1 & 2)",              category: "CLEP (College Credit)", color: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-300 border-emerald-500/20", desc: "Reading, grammar, vocabulary, culture" },
+  { name: "CLEP German (Levels 1 & 2)",              category: "CLEP (College Credit)", color: "bg-teal-500/10 text-teal-600 dark:text-teal-300 border-teal-500/20", desc: "Reading, grammar, vocabulary, culture" },
+  { name: "CLEP Spanish (Levels 1 & 2)",             category: "CLEP (College Credit)", color: "bg-green-500/10 text-green-600 dark:text-green-300 border-green-500/20", desc: "Reading, grammar, vocabulary, culture" },
+  { name: "CLEP Spanish with Writing",               category: "CLEP (College Credit)", color: "bg-emerald-500/10 text-emerald-500 dark:text-emerald-400 border-emerald-500/20", desc: "Advanced grammar, error identification, essays" },
 ];
 
 const COURSE_CATEGORIES = Array.from(new Set(COURSES.map((c) => c.category)));
@@ -256,8 +288,8 @@ export default function AboutPage() {
         <h2 className="text-xl font-bold">In Beta</h2>
         <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
           {[
-            { value: "22",   label: "Courses covered" },
-            { value: "6",    label: "CLEP exams (college credit)" },
+            { value: "50",   label: "Courses covered" },
+            { value: "34",   label: "CLEP exams (college credit)" },
             { value: "24/7", label: "AI tutor availability" },
             { value: "Free", label: "To start, forever" },
             { value: "$9.99", label: "Premium per module/mo ($79.99/yr)" },
@@ -280,7 +312,7 @@ export default function AboutPage() {
         <div className="grid sm:grid-cols-2 gap-3 text-left">
           {[
             { icon: GraduationCap, color: "text-emerald-400", bg: "bg-emerald-500/10", title: "Per-Module Stripe Subscriptions", desc: "Independent $9.99/mo subscriptions for AP, SAT, ACT, and CLEP. Subscribe to exactly the modules you need. Cancel or reactivate each independently." },
-            { icon: LayoutDashboard, color: "text-indigo-400", bg: "bg-indigo-500/10", title: "Module-Locked Sidebar", desc: "Sign up from /ap-prep → see only AP courses. SAT → only SAT. No more seeing all 22 courses — focused experience from day one." },
+            { icon: LayoutDashboard, color: "text-indigo-400", bg: "bg-indigo-500/10", title: "Module-Locked Sidebar", desc: "Sign up from /ap-prep → see only AP courses. SAT → only SAT. No more seeing all 50 courses — focused experience from day one." },
             { icon: Sparkles, color: "text-violet-400", bg: "bg-violet-500/10", title: "SEO & Content Overhaul", desc: "JSON-LD structured data, OG images, XML sitemap, 4 dedicated prep landing pages with study flows, outcome messaging, and parent trust sections." },
             { icon: Target, color: "text-teal-400", bg: "bg-teal-500/10", title: "Outcome-Driven Copy", desc: "Every page now leads with results: score improvements, prep timelines, cost savings. Comparison tables vs tutors and ChatGPT on pricing page." },
           ].map(({ icon: Icon, color, bg, title, desc }) => (
@@ -307,7 +339,7 @@ export default function AboutPage() {
         <div className="grid sm:grid-cols-2 gap-3 text-left">
           {[
             { icon: GraduationCap, color: "text-emerald-400", bg: "bg-emerald-500/10", title: "CLEP vs AP/SAT/ACT Tracks",      desc: "Students now choose their path — 'Start AP/SAT/ACT Prep' or 'Start CLEP Prep' — from the landing page. The chosen track is remembered across sessions via localStorage." },
-            { icon: LayoutDashboard, color: "text-indigo-400", bg: "bg-indigo-500/10", title: "Track-Filtered Onboarding",      desc: "Onboarding Step 1 now shows only the 6 CLEP courses (emerald accent) or the 16 AP/SAT/ACT courses based on the student's chosen track. No more AP-world for college students." },
+            { icon: LayoutDashboard, color: "text-indigo-400", bg: "bg-indigo-500/10", title: "Track-Filtered Onboarding",      desc: "Onboarding Step 1 now shows only CLEP courses (emerald accent) or the 16 AP/SAT/ACT courses based on the student's chosen track. No more AP-world for college students." },
             { icon: Sparkles,      color: "text-teal-400",    bg: "bg-teal-500/10",    title: "Track-Filtered Sidebar",         desc: "The sidebar course switcher shows only CLEP groups (for CLEP-track users) or only AP/SAT/ACT groups. A 'Switch to...' link is always visible as an escape hatch." },
             { icon: LayoutDashboard, color: "text-violet-400", bg: "bg-violet-500/10", title: "Smart Course Defaults",          desc: "First-time CLEP-track users default to CLEP College Algebra instead of AP World History. Existing users see zero change — their stored course is preserved." },
             { icon: Sparkles,      color: "text-emerald-400", bg: "bg-emerald-500/10", title: "Track-Aware Register Page",      desc: "The registration page subtitle dynamically reflects the student's chosen track — 'Start earning college credit' for CLEP, 'Start your AP exam journey' for AP/SAT/ACT." },
@@ -330,11 +362,11 @@ export default function AboutPage() {
         <div className="text-center space-y-1">
           <Badge className="bg-border/60 text-muted-foreground border-border/40 text-xs font-semibold mb-2">Beta 1.15</Badge>
           <h2 className="text-xl font-bold">What&apos;s New in Beta 1.15</h2>
-          <p className="text-sm text-muted-foreground">CLEP college-credit prep arrives — 6 CLEP exams with full AI tutoring, practice, and mastery tracking. Save up to $2,400 in tuition per exam.</p>
+          <p className="text-sm text-muted-foreground">CLEP college-credit prep arrives — 34 CLEP exams with full AI tutoring, practice, and mastery tracking. Save up to $2,400 in tuition per exam.</p>
         </div>
         <div className="grid sm:grid-cols-2 gap-3 text-left">
           {[
-            { icon: GraduationCap, color: "text-emerald-400", bg: "bg-emerald-500/10", title: "6 CLEP Exams Added",             desc: "College Algebra, College Composition, Introductory Psychology, Principles of Marketing, Principles of Management, and Introductory Sociology — each with 5 units and full AI support." },
+            { icon: GraduationCap, color: "text-emerald-400", bg: "bg-emerald-500/10", title: "34 CLEP Exams — Full Catalog",   desc: "All 34 official CLEP exams across 5 domains: Composition & Literature, History & Social Sciences, Science & Mathematics, Business, and World Languages — each with 5 units and full AI support." },
             { icon: Sparkles,      color: "text-indigo-400",  bg: "bg-indigo-500/10",  title: "Sage Tutors CLEP Content",       desc: "The same AI that explains AP topics now handles CLEP subject matter — with resources from OpenStax, Khan Academy, and Wikipedia." },
             { icon: LayoutDashboard, color: "text-teal-400",  bg: "bg-teal-500/10",    title: "Separate Sidebar Section",      desc: "CLEP courses appear as a dedicated 'CLEP Prep' tab in the course switcher, fully isolated from AP/SAT/ACT content." },
             { icon: Sparkles,      color: "text-violet-400",  bg: "bg-violet-500/10",  title: "Legal & Copyright-Safe",        desc: "All CLEP practice questions are original AI-generated content. Resources are from openly licensed sources (OpenStax CC BY, Khan Academy, Wikipedia). CLEP® is a trademark of College Board, which does not endorse this platform." },

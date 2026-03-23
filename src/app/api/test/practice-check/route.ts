@@ -2,7 +2,7 @@
  * GET /api/test/practice-check
  *
  * CRON_SECRET-gated integration test endpoint.
- * Checks question availability for all 16 courses using efficient groupBy queries.
+ * Checks question availability for all courses using efficient groupBy queries.
  * Used by scripts/integration-tests.js in the release pipeline.
  */
 import { NextRequest, NextResponse } from "next/server";

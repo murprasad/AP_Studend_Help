@@ -2,33 +2,34 @@ name: Auto-Populate Question Bank
 
 on:
   schedule:
-    - cron: '0 */6 * * *'   # every 6 hours
+    - cron: '0 */4 * * *'   # every 4 hours
   workflow_dispatch:          # manual trigger from GitHub Actions UI
 
 jobs:
   auto-populate:
     runs-on: ubuntu-latest
     steps:
-      - name: Trigger auto-populate (6 batches × 5 questions)
+      - name: Trigger auto-populate (10 batches × 5 questions)
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
         run: |
           # CF Pages has a ~100s HTTP timeout. Each call generates up to 5 questions
           # (~8s each = ~40s total), well within the limit.
-          # Loop 6 times to generate up to 30 questions per workflow run.
-          BATCHES=6
-          BATCH_DELAY=10  # seconds between batches (let CF recover)
+          # Loop 10 times to generate up to 50 questions per workflow run.
+          BATCHES=10
+          BATCH_DELAY=8  # seconds between batches (respect Groq rate limits)
           any_success=false
+          total_generated=0
 
           for batch in $(seq 1 $BATCHES); do
             echo "--- Batch $batch of $BATCHES ---"
             response=$(curl -s -w "\n%{http_code}" -X POST \
               https://studentnest.ai/api/cron/auto-populate \
-              -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+              -H "Authorization: Bearer ${CRON_SECRET}" \
               -H "Content-Type: application/json" \
               --max-time 90)
             body=$(echo "$response" | head -n -1)
             status=$(echo "$response" | tail -n 1)
-            echo "HTTP Status: $status"
-            echo "Response: $body"
 
             if [ "$status" = "401" ]; then
               echo "❌ 401 Unauthorized — CRON_SECRET mismatch. Stopping."
@@ -36,10 +37,19 @@ jobs:
             fi
 
             if [ "$status" = "200" ]; then
-              echo "✅ Batch $batch succeeded"
+              generated=$(echo "$body" | grep -o '"generated":[0-9]*' | grep -o '[0-9]*' || echo 0)
+              total_generated=$((total_generated + generated))
+              echo "✅ Batch $batch: +${generated} questions (total: $total_generated)"
               any_success=true
+
+              # Stop if nothing left to generate
+              processed=$(echo "$body" | grep -o '"processed":[0-9]*' | grep -o '[0-9]*' || echo 1)
+              if [ "$processed" = "0" ]; then
+                echo "🎉 All units at target — stopping early"
+                break
+              fi
             else
-              echo "⚠️  Batch $batch got status $status — continuing remaining batches"
+              echo "⚠️  Batch $batch got status $status — continuing"
             fi
 
             if [ "$batch" -lt "$BATCHES" ]; then
@@ -47,8 +57,10 @@ jobs:
             fi
           done
 
+          echo ""
+          echo "═══ Auto-populate complete: $total_generated questions generated ═══"
+
           if [ "$any_success" = "true" ]; then
-            echo "✅ At least one batch succeeded"
             exit 0
           else
             echo "❌ All batches failed"

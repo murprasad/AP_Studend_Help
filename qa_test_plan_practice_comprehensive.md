@@ -50,6 +50,34 @@ For each course, verify a Quick Practice session starts and loads questions with
 | 25 | CLEP_PRINCIPLES_OF_MARKETING | ALL | ALL | MCQ | ✅ Session starts |
 | 26 | CLEP_PRINCIPLES_OF_MANAGEMENT | ALL | ALL | MCQ | ✅ Session starts |
 | 27 | CLEP_INTRODUCTORY_SOCIOLOGY | ALL | ALL | MCQ | ✅ Session starts |
+| 28 | CLEP_AMERICAN_GOVERNMENT | ALL | ALL | MCQ | ✅ Session starts |
+| 29 | CLEP_MACROECONOMICS | ALL | ALL | MCQ | ✅ Session starts |
+| 30 | CLEP_MICROECONOMICS | ALL | ALL | MCQ | ✅ Session starts |
+| 31 | CLEP_BIOLOGY | ALL | ALL | MCQ | ✅ Session starts |
+| 32 | CLEP_US_HISTORY_1 | ALL | ALL | MCQ | ✅ Session starts |
+| 33 | CLEP_US_HISTORY_2 | ALL | ALL | MCQ | ✅ Session starts |
+| 34 | CLEP_HUMAN_GROWTH_DEV | ALL | ALL | MCQ | ✅ Session starts |
+| 35 | CLEP_CALCULUS | ALL | ALL | MCQ | ✅ Session starts |
+| 36 | CLEP_CHEMISTRY | ALL | ALL | MCQ | ✅ Session starts |
+| 37 | CLEP_FINANCIAL_ACCOUNTING | ALL | ALL | MCQ | ✅ Session starts |
+| 38 | CLEP_AMERICAN_LITERATURE | ALL | ALL | MCQ | ✅ Session starts |
+| 39 | CLEP_ANALYZING_INTERPRETING_LIT | ALL | ALL | MCQ | ✅ Session starts |
+| 40 | CLEP_COLLEGE_COMP_MODULAR | ALL | ALL | MCQ | ✅ Session starts |
+| 41 | CLEP_ENGLISH_LITERATURE | ALL | ALL | MCQ | ✅ Session starts |
+| 42 | CLEP_HUMANITIES | ALL | ALL | MCQ | ✅ Session starts |
+| 43 | CLEP_EDUCATIONAL_PSYCHOLOGY | ALL | ALL | MCQ | ✅ Session starts |
+| 44 | CLEP_SOCIAL_SCIENCES_HISTORY | ALL | ALL | MCQ | ✅ Session starts |
+| 45 | CLEP_WESTERN_CIV_1 | ALL | ALL | MCQ | ✅ Session starts |
+| 46 | CLEP_WESTERN_CIV_2 | ALL | ALL | MCQ | ✅ Session starts |
+| 47 | CLEP_COLLEGE_MATH | ALL | ALL | MCQ | ✅ Session starts |
+| 48 | CLEP_NATURAL_SCIENCES | ALL | ALL | MCQ | ✅ Session starts |
+| 49 | CLEP_PRECALCULUS | ALL | ALL | MCQ | ✅ Session starts |
+| 50 | CLEP_INFORMATION_SYSTEMS | ALL | ALL | MCQ | ✅ Session starts |
+| 51 | CLEP_BUSINESS_LAW | ALL | ALL | MCQ | ✅ Session starts |
+| 52 | CLEP_FRENCH | ALL | ALL | MCQ | ✅ Session starts |
+| 53 | CLEP_GERMAN | ALL | ALL | MCQ | ✅ Session starts |
+| 54 | CLEP_SPANISH | ALL | ALL | MCQ | ✅ Session starts |
+| 55 | CLEP_SPANISH_WRITING | ALL | ALL | MCQ | ✅ Session starts |
 
 > **Note for CLEP tests:** Requires admin toggle `clep_enabled = "true"` at `/admin/manage?tab=config`. CLEP courses are MCQ-only (no FRQ/SAQ/DBQ).
 
@@ -273,6 +301,34 @@ For each course, run this full flow once:
 | CLEP_PRINCIPLES_OF_MARKETING | |
 | CLEP_PRINCIPLES_OF_MANAGEMENT | |
 | CLEP_INTRODUCTORY_SOCIOLOGY | |
+| CLEP_AMERICAN_GOVERNMENT | |
+| CLEP_MACROECONOMICS | |
+| CLEP_MICROECONOMICS | |
+| CLEP_BIOLOGY | |
+| CLEP_US_HISTORY_1 | |
+| CLEP_US_HISTORY_2 | |
+| CLEP_HUMAN_GROWTH_DEV | |
+| CLEP_CALCULUS | |
+| CLEP_CHEMISTRY | |
+| CLEP_FINANCIAL_ACCOUNTING | |
+| CLEP_AMERICAN_LITERATURE | |
+| CLEP_ANALYZING_INTERPRETING_LIT | |
+| CLEP_COLLEGE_COMP_MODULAR | |
+| CLEP_ENGLISH_LITERATURE | |
+| CLEP_HUMANITIES | |
+| CLEP_EDUCATIONAL_PSYCHOLOGY | |
+| CLEP_SOCIAL_SCIENCES_HISTORY | |
+| CLEP_WESTERN_CIV_1 | |
+| CLEP_WESTERN_CIV_2 | |
+| CLEP_COLLEGE_MATH | |
+| CLEP_NATURAL_SCIENCES | |
+| CLEP_PRECALCULUS | |
+| CLEP_INFORMATION_SYSTEMS | |
+| CLEP_BUSINESS_LAW | |
+| CLEP_FRENCH | |
+| CLEP_GERMAN | |
+| CLEP_SPANISH | |
+| CLEP_SPANISH_WRITING | |
 
 ---
 
@@ -288,18 +344,18 @@ For each course, run this full flow once:
 
 4. Set `clep_enabled = "true"` (admin config)
 5. Reload sidebar
-**Expected:** "CLEP Prep" tab/group IS visible with 6 CLEP courses in emerald accent color
+**Expected:** "CLEP Prep" tab/group IS visible with 34 CLEP courses in emerald accent color
 
 ### TC-CLEP-02: Landing Page CLEP Section
 1. Visit `/` (landing page) while NOT logged in
 **Expected:**
 - CLEP section visible below AP/SAT/ACT curriculum section
 - Emerald/teal color scheme (distinct from indigo AP section)
-- 6 CLEP exam cards displayed with savings callout (e.g. "Saves ~$1,200")
+- 34 CLEP exam cards displayed with savings callout (e.g. "Saves ~$1,200")
 - CLEP® trademark disclaimer visible at bottom of section
 - "Start CLEP Prep Free" CTA links to `/register?track=clep` (Beta 2.0: has track param)
 - "Start AP/SAT/ACT Prep" hero CTA links to `/register?track=ap` (Beta 2.0: has track param)
-- Course count badge shows "22 courses" (not 16)
+- Course count badge shows "50 courses" (16 AP/SAT/ACT + 34 CLEP)
 
 ### TC-CLEP-03: CLEP College Algebra — Full Practice Flow
 1. Enable `clep_enabled = "true"`
@@ -333,6 +389,118 @@ Same as TC-CLEP-03 but for CLEP_PRINCIPLES_OF_MANAGEMENT.
 ### TC-CLEP-08: CLEP Introductory Sociology — Full Practice Flow
 Same as TC-CLEP-03 but for CLEP_INTRODUCTORY_SOCIOLOGY.
 **Expected:** Questions cover sociological perspective, culture, social stratification.
+
+### TC-CLEP-08a: CLEP American Government — Full Practice Flow
+Same as TC-CLEP-03 but for CLEP_AMERICAN_GOVERNMENT.
+**Expected:** Questions cover institutions, political parties, civil liberties, public policy.
+
+### TC-CLEP-08b: CLEP Macroeconomics — Full Practice Flow
+Same as TC-CLEP-03 but for CLEP_MACROECONOMICS.
+**Expected:** Questions cover GDP, inflation, unemployment, fiscal/monetary policy, international trade.
+
+### TC-CLEP-08c: CLEP Microeconomics — Full Practice Flow
+Same as TC-CLEP-03 but for CLEP_MICROECONOMICS.
+**Expected:** Questions cover supply/demand, elasticity, market structures, factor markets.
+
+### TC-CLEP-08d: CLEP Biology — Full Practice Flow
+Same as TC-CLEP-03 but for CLEP_BIOLOGY.
+**Expected:** Questions cover molecular/cellular biology, genetics, evolution, ecology, organismal biology.
+
+### TC-CLEP-08e: CLEP US History I — Full Practice Flow
+Same as TC-CLEP-03 but for CLEP_US_HISTORY_1.
+**Expected:** Questions cover colonization through Reconstruction (pre-1877).
+
+### TC-CLEP-08f: CLEP US History II — Full Practice Flow
+Same as TC-CLEP-03 but for CLEP_US_HISTORY_2.
+**Expected:** Questions cover Reconstruction through present (post-1877).
+
+### TC-CLEP-08g: CLEP Human Growth and Development — Full Practice Flow
+Same as TC-CLEP-03 but for CLEP_HUMAN_GROWTH_DEV.
+**Expected:** Questions cover lifespan development, cognitive development, social/personality development.
+
+### TC-CLEP-08h: CLEP Calculus — Full Practice Flow
+Same as TC-CLEP-03 but for CLEP_CALCULUS.
+**Expected:** Questions cover limits, derivatives, integrals, fundamental theorem of calculus.
+
+### TC-CLEP-08i: CLEP Chemistry — Full Practice Flow
+Same as TC-CLEP-03 but for CLEP_CHEMISTRY.
+**Expected:** Questions cover atomic structure, bonding, stoichiometry, thermodynamics, equilibrium.
+
+### TC-CLEP-08j: CLEP Financial Accounting — Full Practice Flow
+Same as TC-CLEP-03 but for CLEP_FINANCIAL_ACCOUNTING.
+**Expected:** Questions cover financial statements, journal entries, assets, liabilities, equity.
+
+### TC-CLEP-08k: CLEP American Literature — Full Practice Flow
+Same as TC-CLEP-03 but for CLEP_AMERICAN_LITERATURE.
+**Expected:** Questions cover colonial to contemporary American literary works, authors, movements.
+
+### TC-CLEP-08l: CLEP Analyzing and Interpreting Literature — Full Practice Flow
+Same as TC-CLEP-03 but for CLEP_ANALYZING_INTERPRETING_LIT.
+**Expected:** Questions cover literary analysis, poetry, prose, drama interpretation.
+
+### TC-CLEP-08m: CLEP College Composition Modular — Full Practice Flow
+Same as TC-CLEP-03 but for CLEP_COLLEGE_COMP_MODULAR.
+**Expected:** Questions cover rhetorical analysis, argumentation, research skills, conventions of writing.
+
+### TC-CLEP-08n: CLEP English Literature — Full Practice Flow
+Same as TC-CLEP-03 but for CLEP_ENGLISH_LITERATURE.
+**Expected:** Questions cover British literary works from medieval to contemporary periods.
+
+### TC-CLEP-08o: CLEP Humanities — Full Practice Flow
+Same as TC-CLEP-03 but for CLEP_HUMANITIES.
+**Expected:** Questions cover literature, art, music, philosophy, performing arts across cultures.
+
+### TC-CLEP-08p: CLEP Educational Psychology — Full Practice Flow
+Same as TC-CLEP-03 but for CLEP_EDUCATIONAL_PSYCHOLOGY.
+**Expected:** Questions cover learning theories, cognitive development, motivation, assessment, classroom management.
+
+### TC-CLEP-08q: CLEP Social Sciences and History — Full Practice Flow
+Same as TC-CLEP-03 but for CLEP_SOCIAL_SCIENCES_HISTORY.
+**Expected:** Questions cover history, political science, economics, sociology, anthropology, geography.
+
+### TC-CLEP-08r: CLEP Western Civilization I — Full Practice Flow
+Same as TC-CLEP-03 but for CLEP_WESTERN_CIV_1.
+**Expected:** Questions cover ancient Near East through 1648 (Renaissance, Reformation).
+
+### TC-CLEP-08s: CLEP Western Civilization II — Full Practice Flow
+Same as TC-CLEP-03 but for CLEP_WESTERN_CIV_2.
+**Expected:** Questions cover 1648 to present (Enlightenment, revolutions, modern era).
+
+### TC-CLEP-08t: CLEP College Mathematics — Full Practice Flow
+Same as TC-CLEP-03 but for CLEP_COLLEGE_MATH.
+**Expected:** Questions cover sets, logic, real number system, functions, probability, statistics.
+
+### TC-CLEP-08u: CLEP Natural Sciences — Full Practice Flow
+Same as TC-CLEP-03 but for CLEP_NATURAL_SCIENCES.
+**Expected:** Questions cover biological and physical sciences (biology, chemistry, physics, earth science).
+
+### TC-CLEP-08v: CLEP Precalculus — Full Practice Flow
+Same as TC-CLEP-03 but for CLEP_PRECALCULUS.
+**Expected:** Questions cover algebraic expressions, trigonometry, analytic geometry, functions.
+
+### TC-CLEP-08w: CLEP Information Systems — Full Practice Flow
+Same as TC-CLEP-03 but for CLEP_INFORMATION_SYSTEMS.
+**Expected:** Questions cover information systems concepts, hardware, software, databases, networking.
+
+### TC-CLEP-08x: CLEP Business Law — Full Practice Flow
+Same as TC-CLEP-03 but for CLEP_BUSINESS_LAW.
+**Expected:** Questions cover contracts, torts, agency, business organizations, legal environment.
+
+### TC-CLEP-08y: CLEP French — Full Practice Flow
+Same as TC-CLEP-03 but for CLEP_FRENCH.
+**Expected:** Questions cover French reading comprehension, grammar, vocabulary.
+
+### TC-CLEP-08z: CLEP German — Full Practice Flow
+Same as TC-CLEP-03 but for CLEP_GERMAN.
+**Expected:** Questions cover German reading comprehension, grammar, vocabulary.
+
+### TC-CLEP-08aa: CLEP Spanish — Full Practice Flow
+Same as TC-CLEP-03 but for CLEP_SPANISH.
+**Expected:** Questions cover Spanish reading comprehension, grammar, vocabulary.
+
+### TC-CLEP-08ab: CLEP Spanish with Writing — Full Practice Flow
+Same as TC-CLEP-03 but for CLEP_SPANISH_WRITING.
+**Expected:** Questions cover Spanish reading, grammar, vocabulary, and writing skills.
 
 ### TC-CLEP-09: CLEP AI Generation (Empty Bank)
 1. With `clep_enabled = "true"` and `ai_generation_enabled = "true"`
@@ -369,16 +537,16 @@ Same as TC-CLEP-03 but for CLEP_INTRODUCTORY_SOCIOLOGY.
 ### TC-CLEP-13: Pricing Page — Premium Includes CLEP
 1. Visit `/pricing`
 **Expected:**
-- Premium tier feature list includes "All 6 CLEP exam courses (earn college credit)"
+- Premium tier feature list includes "All 34 CLEP exam courses (earn college credit)"
 - Free tier shows "All 16 AP/SAT/ACT courses" (no CLEP on free tier)
 - Billing toggle (Monthly/Annual) works — CLEP mention visible in both states
 
 ### TC-CLEP-14: About Page — CLEP Courses Listed
 1. Visit `/about`
 **Expected:**
-- "What We Cover" section shows 22 courses total
+- "What We Cover" section shows 50 courses total (16 AP/SAT/ACT + 34 CLEP)
 - "CLEP (College Credit)" category visible with emerald text color
-- All 6 CLEP exams listed in the grid
+- All 34 CLEP exams listed in the grid
 - CLEP® trademark disclaimer visible in footer section
 - Version badge shows "Beta 2.0" (updated from 1.15)
 
@@ -418,7 +586,7 @@ Same as TC-CLEP-03 but for CLEP_INTRODUCTORY_SOCIOLOGY.
 1. Register as new user with `?track=clep`
 2. Complete registration → land on `/onboarding`
 **Expected:**
-- Step 1 shows **only 6 CLEP courses** (no AP/SAT/ACT courses visible)
+- Step 1 shows **only 34 CLEP courses** (no AP/SAT/ACT courses visible)
 - Course buttons use emerald accent (border-emerald-500) when selected
 - Continue button is emerald-colored
 - "Preparing for AP/SAT/ACT? Switch to AP/SAT/ACT prep →" link visible below grid
@@ -448,7 +616,7 @@ Same as TC-CLEP-03 but for CLEP_INTRODUCTORY_SOCIOLOGY.
 2. Open sidebar course switcher dropdown
 **Expected:**
 - Dropdown tabs show only "CLEP" (no AP, SAT, ACT tabs)
-- 6 CLEP courses listed in the dropdown
+- 34 CLEP courses listed in the dropdown
 - "Switch to AP/SAT/ACT prep →" text link visible below dropdown
 - Emerald accent on active CLEP tab
 
@@ -463,7 +631,7 @@ Same as TC-CLEP-03 but for CLEP_INTRODUCTORY_SOCIOLOGY.
 ### TC-TRACK-08: Sidebar — Switch Track Link Works
 1. On AP-track sidebar, click "Switch to CLEP prep →"
 **Expected:**
-- Dropdown immediately shows only CLEP tab and 6 CLEP courses
+- Dropdown immediately shows only CLEP tab and 34 CLEP courses
 - Link changes to "Switch to AP/SAT/ACT prep →"
 - `localStorage["ap_track"]` updated to `"clep"`
 
@@ -508,7 +676,7 @@ Same as TC-CLEP-03 but for CLEP_INTRODUCTORY_SOCIOLOGY.
 1. User is on AP track; dropdown shows AP tab active
 2. Click "Switch to CLEP prep →" in sidebar
 **Expected:**
-- Dropdown immediately shows CLEP tab active with 6 CLEP courses
+- Dropdown immediately shows CLEP tab active with 34 CLEP courses
 - NO state where dropdown is open but empty (previously: activeGroup="AP Courses" but COURSE_GROUPS=[CLEP_GROUP] → no courses shown)
 - This is the Bug Fix from Beta 2.0 gap analysis
 
@@ -576,7 +744,7 @@ Inspect network request after wrong MCQ answer
 **P2 (nice to have):**
 - Full Section 3 (FRQ flows)
 - Full Section 7 (premium restriction flows)
-- Full Section 8 per-course matrix (including 6 CLEP courses)
+- Full Section 8 per-course matrix (including 34 CLEP courses)
 - TC-CLEP-12 (flag-off course access guard)
 - TC-TRACK-12 (CLEP flag off + CLEP track fallback)
 
@@ -1637,7 +1805,7 @@ Integration tests: not run (CRON_SECRET not set or tests skipped)
 - [ ] Landing page "Start CLEP Prep" → `/register?track=clep` (verify URL)
 - [ ] Register page: arrive via `?track=clep` → CardDescription shows CLEP text
 - [ ] Register page: arrive via `?track=ap` → CardDescription shows AP text
-- [ ] Onboarding with `track=clep` + `clep_enabled=true` → only 6 CLEP courses shown
+- [ ] Onboarding with `track=clep` + `clep_enabled=true` → only 34 CLEP courses shown
 - [ ] Onboarding with `track=ap` → 16 AP/SAT/ACT courses, no CLEP
 - [ ] Sidebar with `track=clep` → only CLEP tab; sidebar with `track=ap` → only AP/SAT/ACT tabs
 - [x] Sidebar "Change track" button REMOVED (Beta 2.1 — track is DB-enforced, no client toggle)
@@ -1815,7 +1983,7 @@ prevent cross-track API calls. The client-side "Change track" button is removed.
 1. Log in and reach onboarding step 1
 
 **Expected:**
-- Course list shows only 6 CLEP courses
+- Course list shows only 34 CLEP courses
 - No AP/SAT/ACT courses in step 1 list
 - No localStorage dependency for track (DevTools → Application → Local Storage — no `ap_track` key)
 
@@ -1909,6 +2077,34 @@ Integration tests: 21 passed, 12 warnings, 0 failed
   ⚠️ CLEP_PRINCIPLES_OF_MARKETING — 0 questions — AI will generate on first session
   ⚠️ CLEP_PRINCIPLES_OF_MANAGEMENT — 0 questions — AI will generate on first session
   ⚠️ CLEP_INTRODUCTORY_SOCIOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_AMERICAN_GOVERNMENT — 0 questions — AI will generate on first session
+  ⚠️ CLEP_MACROECONOMICS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_MICROECONOMICS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_BIOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_US_HISTORY_1 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_US_HISTORY_2 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_HUMAN_GROWTH_DEV — 0 questions — AI will generate on first session
+  ⚠️ CLEP_CALCULUS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_CHEMISTRY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_FINANCIAL_ACCOUNTING — 0 questions — AI will generate on first session
+  ⚠️ CLEP_AMERICAN_LITERATURE — 0 questions — AI will generate on first session
+  ⚠️ CLEP_ANALYZING_INTERPRETING_LIT — 0 questions — AI will generate on first session
+  ⚠️ CLEP_COLLEGE_COMP_MODULAR — 0 questions — AI will generate on first session
+  ⚠️ CLEP_ENGLISH_LITERATURE — 0 questions — AI will generate on first session
+  ⚠️ CLEP_HUMANITIES — 0 questions — AI will generate on first session
+  ⚠️ CLEP_EDUCATIONAL_PSYCHOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SOCIAL_SCIENCES_HISTORY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_WESTERN_CIV_1 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_WESTERN_CIV_2 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_COLLEGE_MATH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_NATURAL_SCIENCES — 0 questions — AI will generate on first session
+  ⚠️ CLEP_PRECALCULUS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_INFORMATION_SYSTEMS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_BUSINESS_LAW — 0 questions — AI will generate on first session
+  ⚠️ CLEP_FRENCH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_GERMAN — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SPANISH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SPANISH_WRITING — 0 questions — AI will generate on first session
   ✅ AP World History: Modern FRQ — 5 questions
   ✅ AP Computer Science Principles FRQ — 6 questions
   ⚠️ AP Physics 1: Algebra-Based FRQ — 0 FRQ questions — AI will generate on first session
@@ -1939,13 +2135,41 @@ Integration tests: 21 passed, 12 warnings, 0 failed
 - [ ] ACT_SCIENCE MCQ — session starts
 - [ ] ACT_READING MCQ — session starts
 
-**Practice — CLEP (6 courses, CLEP-track user + clep_enabled=true):**
+**Practice — CLEP (34 courses, CLEP-track user + clep_enabled=true):**
 - [ ] CLEP_COLLEGE_ALGEBRA MCQ — session starts
 - [ ] CLEP_COLLEGE_COMPOSITION MCQ — session starts
 - [ ] CLEP_INTRO_PSYCHOLOGY MCQ — session starts
 - [ ] CLEP_PRINCIPLES_OF_MARKETING MCQ — session starts
 - [ ] CLEP_PRINCIPLES_OF_MANAGEMENT MCQ — session starts
 - [ ] CLEP_INTRODUCTORY_SOCIOLOGY MCQ — session starts
+- [ ] CLEP_AMERICAN_GOVERNMENT MCQ — session starts
+- [ ] CLEP_MACROECONOMICS MCQ — session starts
+- [ ] CLEP_MICROECONOMICS MCQ — session starts
+- [ ] CLEP_BIOLOGY MCQ — session starts
+- [ ] CLEP_US_HISTORY_1 MCQ — session starts
+- [ ] CLEP_US_HISTORY_2 MCQ — session starts
+- [ ] CLEP_HUMAN_GROWTH_DEV MCQ — session starts
+- [ ] CLEP_CALCULUS MCQ — session starts
+- [ ] CLEP_CHEMISTRY MCQ — session starts
+- [ ] CLEP_FINANCIAL_ACCOUNTING MCQ — session starts
+- [ ] CLEP_AMERICAN_LITERATURE MCQ — session starts
+- [ ] CLEP_ANALYZING_INTERPRETING_LIT MCQ — session starts
+- [ ] CLEP_COLLEGE_COMP_MODULAR MCQ — session starts
+- [ ] CLEP_ENGLISH_LITERATURE MCQ — session starts
+- [ ] CLEP_HUMANITIES MCQ — session starts
+- [ ] CLEP_EDUCATIONAL_PSYCHOLOGY MCQ — session starts
+- [ ] CLEP_SOCIAL_SCIENCES_HISTORY MCQ — session starts
+- [ ] CLEP_WESTERN_CIV_1 MCQ — session starts
+- [ ] CLEP_WESTERN_CIV_2 MCQ — session starts
+- [ ] CLEP_COLLEGE_MATH MCQ — session starts
+- [ ] CLEP_NATURAL_SCIENCES MCQ — session starts
+- [ ] CLEP_PRECALCULUS MCQ — session starts
+- [ ] CLEP_INFORMATION_SYSTEMS MCQ — session starts
+- [ ] CLEP_BUSINESS_LAW MCQ — session starts
+- [ ] CLEP_FRENCH MCQ — session starts
+- [ ] CLEP_GERMAN MCQ — session starts
+- [ ] CLEP_SPANISH MCQ — session starts
+- [ ] CLEP_SPANISH_WRITING MCQ — session starts
 
 **Track enforcement (DB-backed — Beta 2.1):**
 - [ ] Register at `/register?track=clep` → DB `User.track = "clep"`
@@ -2052,6 +2276,34 @@ Integration tests: 21 passed, 12 warnings, 0 failed
   ⚠️ CLEP_PRINCIPLES_OF_MARKETING — 0 questions — AI will generate on first session
   ⚠️ CLEP_PRINCIPLES_OF_MANAGEMENT — 0 questions — AI will generate on first session
   ⚠️ CLEP_INTRODUCTORY_SOCIOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_AMERICAN_GOVERNMENT — 0 questions — AI will generate on first session
+  ⚠️ CLEP_MACROECONOMICS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_MICROECONOMICS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_BIOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_US_HISTORY_1 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_US_HISTORY_2 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_HUMAN_GROWTH_DEV — 0 questions — AI will generate on first session
+  ⚠️ CLEP_CALCULUS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_CHEMISTRY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_FINANCIAL_ACCOUNTING — 0 questions — AI will generate on first session
+  ⚠️ CLEP_AMERICAN_LITERATURE — 0 questions — AI will generate on first session
+  ⚠️ CLEP_ANALYZING_INTERPRETING_LIT — 0 questions — AI will generate on first session
+  ⚠️ CLEP_COLLEGE_COMP_MODULAR — 0 questions — AI will generate on first session
+  ⚠️ CLEP_ENGLISH_LITERATURE — 0 questions — AI will generate on first session
+  ⚠️ CLEP_HUMANITIES — 0 questions — AI will generate on first session
+  ⚠️ CLEP_EDUCATIONAL_PSYCHOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SOCIAL_SCIENCES_HISTORY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_WESTERN_CIV_1 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_WESTERN_CIV_2 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_COLLEGE_MATH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_NATURAL_SCIENCES — 0 questions — AI will generate on first session
+  ⚠️ CLEP_PRECALCULUS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_INFORMATION_SYSTEMS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_BUSINESS_LAW — 0 questions — AI will generate on first session
+  ⚠️ CLEP_FRENCH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_GERMAN — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SPANISH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SPANISH_WRITING — 0 questions — AI will generate on first session
   ✅ AP World History: Modern FRQ — 5 questions
   ✅ AP Computer Science Principles FRQ — 6 questions
   ⚠️ AP Physics 1: Algebra-Based FRQ — 0 FRQ questions — AI will generate on first session
@@ -2082,13 +2334,41 @@ Integration tests: 21 passed, 12 warnings, 0 failed
 - [ ] ACT_SCIENCE MCQ — session starts
 - [ ] ACT_READING MCQ — session starts
 
-**Practice — CLEP (6 courses, CLEP-track user + clep_enabled=true):**
+**Practice — CLEP (34 courses, CLEP-track user + clep_enabled=true):**
 - [ ] CLEP_COLLEGE_ALGEBRA MCQ — session starts
 - [ ] CLEP_COLLEGE_COMPOSITION MCQ — session starts
 - [ ] CLEP_INTRO_PSYCHOLOGY MCQ — session starts
 - [ ] CLEP_PRINCIPLES_OF_MARKETING MCQ — session starts
 - [ ] CLEP_PRINCIPLES_OF_MANAGEMENT MCQ — session starts
 - [ ] CLEP_INTRODUCTORY_SOCIOLOGY MCQ — session starts
+- [ ] CLEP_AMERICAN_GOVERNMENT MCQ — session starts
+- [ ] CLEP_MACROECONOMICS MCQ — session starts
+- [ ] CLEP_MICROECONOMICS MCQ — session starts
+- [ ] CLEP_BIOLOGY MCQ — session starts
+- [ ] CLEP_US_HISTORY_1 MCQ — session starts
+- [ ] CLEP_US_HISTORY_2 MCQ — session starts
+- [ ] CLEP_HUMAN_GROWTH_DEV MCQ — session starts
+- [ ] CLEP_CALCULUS MCQ — session starts
+- [ ] CLEP_CHEMISTRY MCQ — session starts
+- [ ] CLEP_FINANCIAL_ACCOUNTING MCQ — session starts
+- [ ] CLEP_AMERICAN_LITERATURE MCQ — session starts
+- [ ] CLEP_ANALYZING_INTERPRETING_LIT MCQ — session starts
+- [ ] CLEP_COLLEGE_COMP_MODULAR MCQ — session starts
+- [ ] CLEP_ENGLISH_LITERATURE MCQ — session starts
+- [ ] CLEP_HUMANITIES MCQ — session starts
+- [ ] CLEP_EDUCATIONAL_PSYCHOLOGY MCQ — session starts
+- [ ] CLEP_SOCIAL_SCIENCES_HISTORY MCQ — session starts
+- [ ] CLEP_WESTERN_CIV_1 MCQ — session starts
+- [ ] CLEP_WESTERN_CIV_2 MCQ — session starts
+- [ ] CLEP_COLLEGE_MATH MCQ — session starts
+- [ ] CLEP_NATURAL_SCIENCES MCQ — session starts
+- [ ] CLEP_PRECALCULUS MCQ — session starts
+- [ ] CLEP_INFORMATION_SYSTEMS MCQ — session starts
+- [ ] CLEP_BUSINESS_LAW MCQ — session starts
+- [ ] CLEP_FRENCH MCQ — session starts
+- [ ] CLEP_GERMAN MCQ — session starts
+- [ ] CLEP_SPANISH MCQ — session starts
+- [ ] CLEP_SPANISH_WRITING MCQ — session starts
 
 **Track enforcement (DB-backed — Beta 2.1):**
 - [ ] Register at `/register?track=clep` → DB `User.track = "clep"`
@@ -2195,6 +2475,34 @@ Integration tests: 21 passed, 12 warnings, 0 failed
   ⚠️ CLEP_PRINCIPLES_OF_MARKETING — 0 questions — AI will generate on first session
   ⚠️ CLEP_PRINCIPLES_OF_MANAGEMENT — 0 questions — AI will generate on first session
   ⚠️ CLEP_INTRODUCTORY_SOCIOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_AMERICAN_GOVERNMENT — 0 questions — AI will generate on first session
+  ⚠️ CLEP_MACROECONOMICS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_MICROECONOMICS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_BIOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_US_HISTORY_1 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_US_HISTORY_2 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_HUMAN_GROWTH_DEV — 0 questions — AI will generate on first session
+  ⚠️ CLEP_CALCULUS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_CHEMISTRY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_FINANCIAL_ACCOUNTING — 0 questions — AI will generate on first session
+  ⚠️ CLEP_AMERICAN_LITERATURE — 0 questions — AI will generate on first session
+  ⚠️ CLEP_ANALYZING_INTERPRETING_LIT — 0 questions — AI will generate on first session
+  ⚠️ CLEP_COLLEGE_COMP_MODULAR — 0 questions — AI will generate on first session
+  ⚠️ CLEP_ENGLISH_LITERATURE — 0 questions — AI will generate on first session
+  ⚠️ CLEP_HUMANITIES — 0 questions — AI will generate on first session
+  ⚠️ CLEP_EDUCATIONAL_PSYCHOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SOCIAL_SCIENCES_HISTORY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_WESTERN_CIV_1 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_WESTERN_CIV_2 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_COLLEGE_MATH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_NATURAL_SCIENCES — 0 questions — AI will generate on first session
+  ⚠️ CLEP_PRECALCULUS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_INFORMATION_SYSTEMS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_BUSINESS_LAW — 0 questions — AI will generate on first session
+  ⚠️ CLEP_FRENCH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_GERMAN — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SPANISH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SPANISH_WRITING — 0 questions — AI will generate on first session
   ✅ AP World History: Modern FRQ — 5 questions
   ✅ AP Computer Science Principles FRQ — 6 questions
   ⚠️ AP Physics 1: Algebra-Based FRQ — 0 FRQ questions — AI will generate on first session
@@ -2225,13 +2533,41 @@ Integration tests: 21 passed, 12 warnings, 0 failed
 - [ ] ACT_SCIENCE MCQ — session starts
 - [ ] ACT_READING MCQ — session starts
 
-**Practice — CLEP (6 courses, CLEP-track user + clep_enabled=true):**
+**Practice — CLEP (34 courses, CLEP-track user + clep_enabled=true):**
 - [ ] CLEP_COLLEGE_ALGEBRA MCQ — session starts
 - [ ] CLEP_COLLEGE_COMPOSITION MCQ — session starts
 - [ ] CLEP_INTRO_PSYCHOLOGY MCQ — session starts
 - [ ] CLEP_PRINCIPLES_OF_MARKETING MCQ — session starts
 - [ ] CLEP_PRINCIPLES_OF_MANAGEMENT MCQ — session starts
 - [ ] CLEP_INTRODUCTORY_SOCIOLOGY MCQ — session starts
+- [ ] CLEP_AMERICAN_GOVERNMENT MCQ — session starts
+- [ ] CLEP_MACROECONOMICS MCQ — session starts
+- [ ] CLEP_MICROECONOMICS MCQ — session starts
+- [ ] CLEP_BIOLOGY MCQ — session starts
+- [ ] CLEP_US_HISTORY_1 MCQ — session starts
+- [ ] CLEP_US_HISTORY_2 MCQ — session starts
+- [ ] CLEP_HUMAN_GROWTH_DEV MCQ — session starts
+- [ ] CLEP_CALCULUS MCQ — session starts
+- [ ] CLEP_CHEMISTRY MCQ — session starts
+- [ ] CLEP_FINANCIAL_ACCOUNTING MCQ — session starts
+- [ ] CLEP_AMERICAN_LITERATURE MCQ — session starts
+- [ ] CLEP_ANALYZING_INTERPRETING_LIT MCQ — session starts
+- [ ] CLEP_COLLEGE_COMP_MODULAR MCQ — session starts
+- [ ] CLEP_ENGLISH_LITERATURE MCQ — session starts
+- [ ] CLEP_HUMANITIES MCQ — session starts
+- [ ] CLEP_EDUCATIONAL_PSYCHOLOGY MCQ — session starts
+- [ ] CLEP_SOCIAL_SCIENCES_HISTORY MCQ — session starts
+- [ ] CLEP_WESTERN_CIV_1 MCQ — session starts
+- [ ] CLEP_WESTERN_CIV_2 MCQ — session starts
+- [ ] CLEP_COLLEGE_MATH MCQ — session starts
+- [ ] CLEP_NATURAL_SCIENCES MCQ — session starts
+- [ ] CLEP_PRECALCULUS MCQ — session starts
+- [ ] CLEP_INFORMATION_SYSTEMS MCQ — session starts
+- [ ] CLEP_BUSINESS_LAW MCQ — session starts
+- [ ] CLEP_FRENCH MCQ — session starts
+- [ ] CLEP_GERMAN MCQ — session starts
+- [ ] CLEP_SPANISH MCQ — session starts
+- [ ] CLEP_SPANISH_WRITING MCQ — session starts
 
 **Track enforcement (DB-backed — Beta 2.1):**
 - [ ] Register at `/register?track=clep` → DB `User.track = "clep"`
@@ -2331,7 +2667,7 @@ Result: [ ] Pass / [ ] Fail
 GET /api/user after ?track=clep registration. Expected: user.track = clep.
 Result: [ ] Pass / [ ] Fail
 
-#### TC-VIS-17: Onboarding - CLEP sees only 6 CLEP courses
+#### TC-VIS-17: Onboarding - CLEP sees only 34 CLEP courses
 Expected: Only CLEP Prep group with 6 courses. No AP/SAT/ACT groups or courses.
 Result: [ ] Pass / [ ] Fail
 
@@ -2468,6 +2804,34 @@ Integration tests: 21 passed, 12 warnings, 0 failed
   ⚠️ CLEP_PRINCIPLES_OF_MARKETING — 0 questions — AI will generate on first session
   ⚠️ CLEP_PRINCIPLES_OF_MANAGEMENT — 0 questions — AI will generate on first session
   ⚠️ CLEP_INTRODUCTORY_SOCIOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_AMERICAN_GOVERNMENT — 0 questions — AI will generate on first session
+  ⚠️ CLEP_MACROECONOMICS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_MICROECONOMICS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_BIOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_US_HISTORY_1 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_US_HISTORY_2 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_HUMAN_GROWTH_DEV — 0 questions — AI will generate on first session
+  ⚠️ CLEP_CALCULUS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_CHEMISTRY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_FINANCIAL_ACCOUNTING — 0 questions — AI will generate on first session
+  ⚠️ CLEP_AMERICAN_LITERATURE — 0 questions — AI will generate on first session
+  ⚠️ CLEP_ANALYZING_INTERPRETING_LIT — 0 questions — AI will generate on first session
+  ⚠️ CLEP_COLLEGE_COMP_MODULAR — 0 questions — AI will generate on first session
+  ⚠️ CLEP_ENGLISH_LITERATURE — 0 questions — AI will generate on first session
+  ⚠️ CLEP_HUMANITIES — 0 questions — AI will generate on first session
+  ⚠️ CLEP_EDUCATIONAL_PSYCHOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SOCIAL_SCIENCES_HISTORY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_WESTERN_CIV_1 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_WESTERN_CIV_2 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_COLLEGE_MATH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_NATURAL_SCIENCES — 0 questions — AI will generate on first session
+  ⚠️ CLEP_PRECALCULUS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_INFORMATION_SYSTEMS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_BUSINESS_LAW — 0 questions — AI will generate on first session
+  ⚠️ CLEP_FRENCH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_GERMAN — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SPANISH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SPANISH_WRITING — 0 questions — AI will generate on first session
   ✅ AP World History: Modern FRQ — 5 questions
   ✅ AP Computer Science Principles FRQ — 6 questions
   ⚠️ AP Physics 1: Algebra-Based FRQ — 0 FRQ questions — AI will generate on first session
@@ -2498,13 +2862,41 @@ Integration tests: 21 passed, 12 warnings, 0 failed
 - [ ] ACT_SCIENCE MCQ — session starts
 - [ ] ACT_READING MCQ — session starts
 
-**Practice — CLEP (6 courses, CLEP-track user + clep_enabled=true):**
+**Practice — CLEP (34 courses, CLEP-track user + clep_enabled=true):**
 - [ ] CLEP_COLLEGE_ALGEBRA MCQ — session starts
 - [ ] CLEP_COLLEGE_COMPOSITION MCQ — session starts
 - [ ] CLEP_INTRO_PSYCHOLOGY MCQ — session starts
 - [ ] CLEP_PRINCIPLES_OF_MARKETING MCQ — session starts
 - [ ] CLEP_PRINCIPLES_OF_MANAGEMENT MCQ — session starts
 - [ ] CLEP_INTRODUCTORY_SOCIOLOGY MCQ — session starts
+- [ ] CLEP_AMERICAN_GOVERNMENT MCQ — session starts
+- [ ] CLEP_MACROECONOMICS MCQ — session starts
+- [ ] CLEP_MICROECONOMICS MCQ — session starts
+- [ ] CLEP_BIOLOGY MCQ — session starts
+- [ ] CLEP_US_HISTORY_1 MCQ — session starts
+- [ ] CLEP_US_HISTORY_2 MCQ — session starts
+- [ ] CLEP_HUMAN_GROWTH_DEV MCQ — session starts
+- [ ] CLEP_CALCULUS MCQ — session starts
+- [ ] CLEP_CHEMISTRY MCQ — session starts
+- [ ] CLEP_FINANCIAL_ACCOUNTING MCQ — session starts
+- [ ] CLEP_AMERICAN_LITERATURE MCQ — session starts
+- [ ] CLEP_ANALYZING_INTERPRETING_LIT MCQ — session starts
+- [ ] CLEP_COLLEGE_COMP_MODULAR MCQ — session starts
+- [ ] CLEP_ENGLISH_LITERATURE MCQ — session starts
+- [ ] CLEP_HUMANITIES MCQ — session starts
+- [ ] CLEP_EDUCATIONAL_PSYCHOLOGY MCQ — session starts
+- [ ] CLEP_SOCIAL_SCIENCES_HISTORY MCQ — session starts
+- [ ] CLEP_WESTERN_CIV_1 MCQ — session starts
+- [ ] CLEP_WESTERN_CIV_2 MCQ — session starts
+- [ ] CLEP_COLLEGE_MATH MCQ — session starts
+- [ ] CLEP_NATURAL_SCIENCES MCQ — session starts
+- [ ] CLEP_PRECALCULUS MCQ — session starts
+- [ ] CLEP_INFORMATION_SYSTEMS MCQ — session starts
+- [ ] CLEP_BUSINESS_LAW MCQ — session starts
+- [ ] CLEP_FRENCH MCQ — session starts
+- [ ] CLEP_GERMAN MCQ — session starts
+- [ ] CLEP_SPANISH MCQ — session starts
+- [ ] CLEP_SPANISH_WRITING MCQ — session starts
 
 **Track enforcement (DB-backed — Beta 2.1):**
 - [ ] Register at `/register?track=clep` → DB `User.track = "clep"`
@@ -2611,6 +3003,34 @@ Integration tests: 24 passed, 9 warnings, 0 failed
   ⚠️ CLEP_PRINCIPLES_OF_MARKETING — 0 questions — AI will generate on first session
   ⚠️ CLEP_PRINCIPLES_OF_MANAGEMENT — 0 questions — AI will generate on first session
   ⚠️ CLEP_INTRODUCTORY_SOCIOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_AMERICAN_GOVERNMENT — 0 questions — AI will generate on first session
+  ⚠️ CLEP_MACROECONOMICS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_MICROECONOMICS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_BIOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_US_HISTORY_1 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_US_HISTORY_2 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_HUMAN_GROWTH_DEV — 0 questions — AI will generate on first session
+  ⚠️ CLEP_CALCULUS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_CHEMISTRY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_FINANCIAL_ACCOUNTING — 0 questions — AI will generate on first session
+  ⚠️ CLEP_AMERICAN_LITERATURE — 0 questions — AI will generate on first session
+  ⚠️ CLEP_ANALYZING_INTERPRETING_LIT — 0 questions — AI will generate on first session
+  ⚠️ CLEP_COLLEGE_COMP_MODULAR — 0 questions — AI will generate on first session
+  ⚠️ CLEP_ENGLISH_LITERATURE — 0 questions — AI will generate on first session
+  ⚠️ CLEP_HUMANITIES — 0 questions — AI will generate on first session
+  ⚠️ CLEP_EDUCATIONAL_PSYCHOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SOCIAL_SCIENCES_HISTORY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_WESTERN_CIV_1 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_WESTERN_CIV_2 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_COLLEGE_MATH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_NATURAL_SCIENCES — 0 questions — AI will generate on first session
+  ⚠️ CLEP_PRECALCULUS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_INFORMATION_SYSTEMS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_BUSINESS_LAW — 0 questions — AI will generate on first session
+  ⚠️ CLEP_FRENCH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_GERMAN — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SPANISH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SPANISH_WRITING — 0 questions — AI will generate on first session
   ✅ AP World History: Modern FRQ — 5 questions
   ✅ AP Computer Science Principles FRQ — 6 questions
   ⚠️ AP Physics 1: Algebra-Based FRQ — 0 FRQ questions — AI will generate on first session
@@ -2641,13 +3061,41 @@ Integration tests: 24 passed, 9 warnings, 0 failed
 - [ ] ACT_SCIENCE MCQ — session starts
 - [ ] ACT_READING MCQ — session starts
 
-**Practice — CLEP (6 courses, CLEP-track user + clep_enabled=true):**
+**Practice — CLEP (34 courses, CLEP-track user + clep_enabled=true):**
 - [ ] CLEP_COLLEGE_ALGEBRA MCQ — session starts
 - [ ] CLEP_COLLEGE_COMPOSITION MCQ — session starts
 - [ ] CLEP_INTRO_PSYCHOLOGY MCQ — session starts
 - [ ] CLEP_PRINCIPLES_OF_MARKETING MCQ — session starts
 - [ ] CLEP_PRINCIPLES_OF_MANAGEMENT MCQ — session starts
 - [ ] CLEP_INTRODUCTORY_SOCIOLOGY MCQ — session starts
+- [ ] CLEP_AMERICAN_GOVERNMENT MCQ — session starts
+- [ ] CLEP_MACROECONOMICS MCQ — session starts
+- [ ] CLEP_MICROECONOMICS MCQ — session starts
+- [ ] CLEP_BIOLOGY MCQ — session starts
+- [ ] CLEP_US_HISTORY_1 MCQ — session starts
+- [ ] CLEP_US_HISTORY_2 MCQ — session starts
+- [ ] CLEP_HUMAN_GROWTH_DEV MCQ — session starts
+- [ ] CLEP_CALCULUS MCQ — session starts
+- [ ] CLEP_CHEMISTRY MCQ — session starts
+- [ ] CLEP_FINANCIAL_ACCOUNTING MCQ — session starts
+- [ ] CLEP_AMERICAN_LITERATURE MCQ — session starts
+- [ ] CLEP_ANALYZING_INTERPRETING_LIT MCQ — session starts
+- [ ] CLEP_COLLEGE_COMP_MODULAR MCQ — session starts
+- [ ] CLEP_ENGLISH_LITERATURE MCQ — session starts
+- [ ] CLEP_HUMANITIES MCQ — session starts
+- [ ] CLEP_EDUCATIONAL_PSYCHOLOGY MCQ — session starts
+- [ ] CLEP_SOCIAL_SCIENCES_HISTORY MCQ — session starts
+- [ ] CLEP_WESTERN_CIV_1 MCQ — session starts
+- [ ] CLEP_WESTERN_CIV_2 MCQ — session starts
+- [ ] CLEP_COLLEGE_MATH MCQ — session starts
+- [ ] CLEP_NATURAL_SCIENCES MCQ — session starts
+- [ ] CLEP_PRECALCULUS MCQ — session starts
+- [ ] CLEP_INFORMATION_SYSTEMS MCQ — session starts
+- [ ] CLEP_BUSINESS_LAW MCQ — session starts
+- [ ] CLEP_FRENCH MCQ — session starts
+- [ ] CLEP_GERMAN MCQ — session starts
+- [ ] CLEP_SPANISH MCQ — session starts
+- [ ] CLEP_SPANISH_WRITING MCQ — session starts
 
 **Track enforcement (DB-backed — Beta 2.1):**
 - [ ] Register at `/register?track=clep` → DB `User.track = "clep"`
@@ -2754,6 +3202,34 @@ Integration tests: 24 passed, 9 warnings, 0 failed
   ⚠️ CLEP_PRINCIPLES_OF_MARKETING — 0 questions — AI will generate on first session
   ⚠️ CLEP_PRINCIPLES_OF_MANAGEMENT — 0 questions — AI will generate on first session
   ⚠️ CLEP_INTRODUCTORY_SOCIOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_AMERICAN_GOVERNMENT — 0 questions — AI will generate on first session
+  ⚠️ CLEP_MACROECONOMICS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_MICROECONOMICS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_BIOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_US_HISTORY_1 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_US_HISTORY_2 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_HUMAN_GROWTH_DEV — 0 questions — AI will generate on first session
+  ⚠️ CLEP_CALCULUS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_CHEMISTRY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_FINANCIAL_ACCOUNTING — 0 questions — AI will generate on first session
+  ⚠️ CLEP_AMERICAN_LITERATURE — 0 questions — AI will generate on first session
+  ⚠️ CLEP_ANALYZING_INTERPRETING_LIT — 0 questions — AI will generate on first session
+  ⚠️ CLEP_COLLEGE_COMP_MODULAR — 0 questions — AI will generate on first session
+  ⚠️ CLEP_ENGLISH_LITERATURE — 0 questions — AI will generate on first session
+  ⚠️ CLEP_HUMANITIES — 0 questions — AI will generate on first session
+  ⚠️ CLEP_EDUCATIONAL_PSYCHOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SOCIAL_SCIENCES_HISTORY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_WESTERN_CIV_1 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_WESTERN_CIV_2 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_COLLEGE_MATH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_NATURAL_SCIENCES — 0 questions — AI will generate on first session
+  ⚠️ CLEP_PRECALCULUS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_INFORMATION_SYSTEMS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_BUSINESS_LAW — 0 questions — AI will generate on first session
+  ⚠️ CLEP_FRENCH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_GERMAN — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SPANISH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SPANISH_WRITING — 0 questions — AI will generate on first session
   ✅ AP World History: Modern FRQ — 5 questions
   ✅ AP Computer Science Principles FRQ — 6 questions
   ⚠️ AP Physics 1: Algebra-Based FRQ — 0 FRQ questions — AI will generate on first session
@@ -2784,13 +3260,41 @@ Integration tests: 24 passed, 9 warnings, 0 failed
 - [ ] ACT_SCIENCE MCQ — session starts
 - [ ] ACT_READING MCQ — session starts
 
-**Practice — CLEP (6 courses, CLEP-track user + clep_enabled=true):**
+**Practice — CLEP (34 courses, CLEP-track user + clep_enabled=true):**
 - [ ] CLEP_COLLEGE_ALGEBRA MCQ — session starts
 - [ ] CLEP_COLLEGE_COMPOSITION MCQ — session starts
 - [ ] CLEP_INTRO_PSYCHOLOGY MCQ — session starts
 - [ ] CLEP_PRINCIPLES_OF_MARKETING MCQ — session starts
 - [ ] CLEP_PRINCIPLES_OF_MANAGEMENT MCQ — session starts
 - [ ] CLEP_INTRODUCTORY_SOCIOLOGY MCQ — session starts
+- [ ] CLEP_AMERICAN_GOVERNMENT MCQ — session starts
+- [ ] CLEP_MACROECONOMICS MCQ — session starts
+- [ ] CLEP_MICROECONOMICS MCQ — session starts
+- [ ] CLEP_BIOLOGY MCQ — session starts
+- [ ] CLEP_US_HISTORY_1 MCQ — session starts
+- [ ] CLEP_US_HISTORY_2 MCQ — session starts
+- [ ] CLEP_HUMAN_GROWTH_DEV MCQ — session starts
+- [ ] CLEP_CALCULUS MCQ — session starts
+- [ ] CLEP_CHEMISTRY MCQ — session starts
+- [ ] CLEP_FINANCIAL_ACCOUNTING MCQ — session starts
+- [ ] CLEP_AMERICAN_LITERATURE MCQ — session starts
+- [ ] CLEP_ANALYZING_INTERPRETING_LIT MCQ — session starts
+- [ ] CLEP_COLLEGE_COMP_MODULAR MCQ — session starts
+- [ ] CLEP_ENGLISH_LITERATURE MCQ — session starts
+- [ ] CLEP_HUMANITIES MCQ — session starts
+- [ ] CLEP_EDUCATIONAL_PSYCHOLOGY MCQ — session starts
+- [ ] CLEP_SOCIAL_SCIENCES_HISTORY MCQ — session starts
+- [ ] CLEP_WESTERN_CIV_1 MCQ — session starts
+- [ ] CLEP_WESTERN_CIV_2 MCQ — session starts
+- [ ] CLEP_COLLEGE_MATH MCQ — session starts
+- [ ] CLEP_NATURAL_SCIENCES MCQ — session starts
+- [ ] CLEP_PRECALCULUS MCQ — session starts
+- [ ] CLEP_INFORMATION_SYSTEMS MCQ — session starts
+- [ ] CLEP_BUSINESS_LAW MCQ — session starts
+- [ ] CLEP_FRENCH MCQ — session starts
+- [ ] CLEP_GERMAN MCQ — session starts
+- [ ] CLEP_SPANISH MCQ — session starts
+- [ ] CLEP_SPANISH_WRITING MCQ — session starts
 
 **Track enforcement (DB-backed — Beta 2.1):**
 - [ ] Register at `/register?track=clep` → DB `User.track = "clep"`
@@ -2897,6 +3401,34 @@ Integration tests: 24 passed, 9 warnings, 0 failed
   ⚠️ CLEP_PRINCIPLES_OF_MARKETING — 0 questions — AI will generate on first session
   ⚠️ CLEP_PRINCIPLES_OF_MANAGEMENT — 0 questions — AI will generate on first session
   ⚠️ CLEP_INTRODUCTORY_SOCIOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_AMERICAN_GOVERNMENT — 0 questions — AI will generate on first session
+  ⚠️ CLEP_MACROECONOMICS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_MICROECONOMICS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_BIOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_US_HISTORY_1 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_US_HISTORY_2 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_HUMAN_GROWTH_DEV — 0 questions — AI will generate on first session
+  ⚠️ CLEP_CALCULUS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_CHEMISTRY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_FINANCIAL_ACCOUNTING — 0 questions — AI will generate on first session
+  ⚠️ CLEP_AMERICAN_LITERATURE — 0 questions — AI will generate on first session
+  ⚠️ CLEP_ANALYZING_INTERPRETING_LIT — 0 questions — AI will generate on first session
+  ⚠️ CLEP_COLLEGE_COMP_MODULAR — 0 questions — AI will generate on first session
+  ⚠️ CLEP_ENGLISH_LITERATURE — 0 questions — AI will generate on first session
+  ⚠️ CLEP_HUMANITIES — 0 questions — AI will generate on first session
+  ⚠️ CLEP_EDUCATIONAL_PSYCHOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SOCIAL_SCIENCES_HISTORY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_WESTERN_CIV_1 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_WESTERN_CIV_2 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_COLLEGE_MATH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_NATURAL_SCIENCES — 0 questions — AI will generate on first session
+  ⚠️ CLEP_PRECALCULUS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_INFORMATION_SYSTEMS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_BUSINESS_LAW — 0 questions — AI will generate on first session
+  ⚠️ CLEP_FRENCH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_GERMAN — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SPANISH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SPANISH_WRITING — 0 questions — AI will generate on first session
   ✅ AP World History: Modern FRQ — 5 questions
   ✅ AP Computer Science Principles FRQ — 6 questions
   ⚠️ AP Physics 1: Algebra-Based FRQ — 0 FRQ questions — AI will generate on first session
@@ -2927,13 +3459,41 @@ Integration tests: 24 passed, 9 warnings, 0 failed
 - [ ] ACT_SCIENCE MCQ — session starts
 - [ ] ACT_READING MCQ — session starts
 
-**Practice — CLEP (6 courses, CLEP-track user + clep_enabled=true):**
+**Practice — CLEP (34 courses, CLEP-track user + clep_enabled=true):**
 - [ ] CLEP_COLLEGE_ALGEBRA MCQ — session starts
 - [ ] CLEP_COLLEGE_COMPOSITION MCQ — session starts
 - [ ] CLEP_INTRO_PSYCHOLOGY MCQ — session starts
 - [ ] CLEP_PRINCIPLES_OF_MARKETING MCQ — session starts
 - [ ] CLEP_PRINCIPLES_OF_MANAGEMENT MCQ — session starts
 - [ ] CLEP_INTRODUCTORY_SOCIOLOGY MCQ — session starts
+- [ ] CLEP_AMERICAN_GOVERNMENT MCQ — session starts
+- [ ] CLEP_MACROECONOMICS MCQ — session starts
+- [ ] CLEP_MICROECONOMICS MCQ — session starts
+- [ ] CLEP_BIOLOGY MCQ — session starts
+- [ ] CLEP_US_HISTORY_1 MCQ — session starts
+- [ ] CLEP_US_HISTORY_2 MCQ — session starts
+- [ ] CLEP_HUMAN_GROWTH_DEV MCQ — session starts
+- [ ] CLEP_CALCULUS MCQ — session starts
+- [ ] CLEP_CHEMISTRY MCQ — session starts
+- [ ] CLEP_FINANCIAL_ACCOUNTING MCQ — session starts
+- [ ] CLEP_AMERICAN_LITERATURE MCQ — session starts
+- [ ] CLEP_ANALYZING_INTERPRETING_LIT MCQ — session starts
+- [ ] CLEP_COLLEGE_COMP_MODULAR MCQ — session starts
+- [ ] CLEP_ENGLISH_LITERATURE MCQ — session starts
+- [ ] CLEP_HUMANITIES MCQ — session starts
+- [ ] CLEP_EDUCATIONAL_PSYCHOLOGY MCQ — session starts
+- [ ] CLEP_SOCIAL_SCIENCES_HISTORY MCQ — session starts
+- [ ] CLEP_WESTERN_CIV_1 MCQ — session starts
+- [ ] CLEP_WESTERN_CIV_2 MCQ — session starts
+- [ ] CLEP_COLLEGE_MATH MCQ — session starts
+- [ ] CLEP_NATURAL_SCIENCES MCQ — session starts
+- [ ] CLEP_PRECALCULUS MCQ — session starts
+- [ ] CLEP_INFORMATION_SYSTEMS MCQ — session starts
+- [ ] CLEP_BUSINESS_LAW MCQ — session starts
+- [ ] CLEP_FRENCH MCQ — session starts
+- [ ] CLEP_GERMAN MCQ — session starts
+- [ ] CLEP_SPANISH MCQ — session starts
+- [ ] CLEP_SPANISH_WRITING MCQ — session starts
 
 **Track enforcement (DB-backed — Beta 2.1):**
 - [ ] Register at `/register?track=clep` → DB `User.track = "clep"`
@@ -3040,6 +3600,34 @@ Integration tests: 24 passed, 9 warnings, 0 failed
   ⚠️ CLEP_PRINCIPLES_OF_MARKETING — 0 questions — AI will generate on first session
   ⚠️ CLEP_PRINCIPLES_OF_MANAGEMENT — 0 questions — AI will generate on first session
   ⚠️ CLEP_INTRODUCTORY_SOCIOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_AMERICAN_GOVERNMENT — 0 questions — AI will generate on first session
+  ⚠️ CLEP_MACROECONOMICS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_MICROECONOMICS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_BIOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_US_HISTORY_1 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_US_HISTORY_2 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_HUMAN_GROWTH_DEV — 0 questions — AI will generate on first session
+  ⚠️ CLEP_CALCULUS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_CHEMISTRY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_FINANCIAL_ACCOUNTING — 0 questions — AI will generate on first session
+  ⚠️ CLEP_AMERICAN_LITERATURE — 0 questions — AI will generate on first session
+  ⚠️ CLEP_ANALYZING_INTERPRETING_LIT — 0 questions — AI will generate on first session
+  ⚠️ CLEP_COLLEGE_COMP_MODULAR — 0 questions — AI will generate on first session
+  ⚠️ CLEP_ENGLISH_LITERATURE — 0 questions — AI will generate on first session
+  ⚠️ CLEP_HUMANITIES — 0 questions — AI will generate on first session
+  ⚠️ CLEP_EDUCATIONAL_PSYCHOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SOCIAL_SCIENCES_HISTORY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_WESTERN_CIV_1 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_WESTERN_CIV_2 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_COLLEGE_MATH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_NATURAL_SCIENCES — 0 questions — AI will generate on first session
+  ⚠️ CLEP_PRECALCULUS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_INFORMATION_SYSTEMS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_BUSINESS_LAW — 0 questions — AI will generate on first session
+  ⚠️ CLEP_FRENCH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_GERMAN — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SPANISH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SPANISH_WRITING — 0 questions — AI will generate on first session
   ✅ AP World History: Modern FRQ — 5 questions
   ✅ AP Computer Science Principles FRQ — 6 questions
   ⚠️ AP Physics 1: Algebra-Based FRQ — 0 FRQ questions — AI will generate on first session
@@ -3070,13 +3658,41 @@ Integration tests: 24 passed, 9 warnings, 0 failed
 - [ ] ACT_SCIENCE MCQ — session starts
 - [ ] ACT_READING MCQ — session starts
 
-**Practice — CLEP (6 courses, CLEP-track user + clep_enabled=true):**
+**Practice — CLEP (34 courses, CLEP-track user + clep_enabled=true):**
 - [ ] CLEP_COLLEGE_ALGEBRA MCQ — session starts
 - [ ] CLEP_COLLEGE_COMPOSITION MCQ — session starts
 - [ ] CLEP_INTRO_PSYCHOLOGY MCQ — session starts
 - [ ] CLEP_PRINCIPLES_OF_MARKETING MCQ — session starts
 - [ ] CLEP_PRINCIPLES_OF_MANAGEMENT MCQ — session starts
 - [ ] CLEP_INTRODUCTORY_SOCIOLOGY MCQ — session starts
+- [ ] CLEP_AMERICAN_GOVERNMENT MCQ — session starts
+- [ ] CLEP_MACROECONOMICS MCQ — session starts
+- [ ] CLEP_MICROECONOMICS MCQ — session starts
+- [ ] CLEP_BIOLOGY MCQ — session starts
+- [ ] CLEP_US_HISTORY_1 MCQ — session starts
+- [ ] CLEP_US_HISTORY_2 MCQ — session starts
+- [ ] CLEP_HUMAN_GROWTH_DEV MCQ — session starts
+- [ ] CLEP_CALCULUS MCQ — session starts
+- [ ] CLEP_CHEMISTRY MCQ — session starts
+- [ ] CLEP_FINANCIAL_ACCOUNTING MCQ — session starts
+- [ ] CLEP_AMERICAN_LITERATURE MCQ — session starts
+- [ ] CLEP_ANALYZING_INTERPRETING_LIT MCQ — session starts
+- [ ] CLEP_COLLEGE_COMP_MODULAR MCQ — session starts
+- [ ] CLEP_ENGLISH_LITERATURE MCQ — session starts
+- [ ] CLEP_HUMANITIES MCQ — session starts
+- [ ] CLEP_EDUCATIONAL_PSYCHOLOGY MCQ — session starts
+- [ ] CLEP_SOCIAL_SCIENCES_HISTORY MCQ — session starts
+- [ ] CLEP_WESTERN_CIV_1 MCQ — session starts
+- [ ] CLEP_WESTERN_CIV_2 MCQ — session starts
+- [ ] CLEP_COLLEGE_MATH MCQ — session starts
+- [ ] CLEP_NATURAL_SCIENCES MCQ — session starts
+- [ ] CLEP_PRECALCULUS MCQ — session starts
+- [ ] CLEP_INFORMATION_SYSTEMS MCQ — session starts
+- [ ] CLEP_BUSINESS_LAW MCQ — session starts
+- [ ] CLEP_FRENCH MCQ — session starts
+- [ ] CLEP_GERMAN MCQ — session starts
+- [ ] CLEP_SPANISH MCQ — session starts
+- [ ] CLEP_SPANISH_WRITING MCQ — session starts
 
 **Track enforcement (DB-backed — Beta 2.1):**
 - [ ] Register at `/register?track=clep` → DB `User.track = "clep"`
@@ -3183,6 +3799,34 @@ Integration tests: 24 passed, 9 warnings, 0 failed
   ⚠️ CLEP_PRINCIPLES_OF_MARKETING — 0 questions — AI will generate on first session
   ⚠️ CLEP_PRINCIPLES_OF_MANAGEMENT — 0 questions — AI will generate on first session
   ⚠️ CLEP_INTRODUCTORY_SOCIOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_AMERICAN_GOVERNMENT — 0 questions — AI will generate on first session
+  ⚠️ CLEP_MACROECONOMICS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_MICROECONOMICS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_BIOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_US_HISTORY_1 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_US_HISTORY_2 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_HUMAN_GROWTH_DEV — 0 questions — AI will generate on first session
+  ⚠️ CLEP_CALCULUS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_CHEMISTRY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_FINANCIAL_ACCOUNTING — 0 questions — AI will generate on first session
+  ⚠️ CLEP_AMERICAN_LITERATURE — 0 questions — AI will generate on first session
+  ⚠️ CLEP_ANALYZING_INTERPRETING_LIT — 0 questions — AI will generate on first session
+  ⚠️ CLEP_COLLEGE_COMP_MODULAR — 0 questions — AI will generate on first session
+  ⚠️ CLEP_ENGLISH_LITERATURE — 0 questions — AI will generate on first session
+  ⚠️ CLEP_HUMANITIES — 0 questions — AI will generate on first session
+  ⚠️ CLEP_EDUCATIONAL_PSYCHOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SOCIAL_SCIENCES_HISTORY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_WESTERN_CIV_1 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_WESTERN_CIV_2 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_COLLEGE_MATH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_NATURAL_SCIENCES — 0 questions — AI will generate on first session
+  ⚠️ CLEP_PRECALCULUS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_INFORMATION_SYSTEMS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_BUSINESS_LAW — 0 questions — AI will generate on first session
+  ⚠️ CLEP_FRENCH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_GERMAN — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SPANISH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SPANISH_WRITING — 0 questions — AI will generate on first session
   ✅ AP World History: Modern FRQ — 5 questions
   ✅ AP Computer Science Principles FRQ — 6 questions
   ⚠️ AP Physics 1: Algebra-Based FRQ — 0 FRQ questions — AI will generate on first session
@@ -3213,13 +3857,41 @@ Integration tests: 24 passed, 9 warnings, 0 failed
 - [ ] ACT_SCIENCE MCQ — session starts
 - [ ] ACT_READING MCQ — session starts
 
-**Practice — CLEP (6 courses, CLEP-track user + clep_enabled=true):**
+**Practice — CLEP (34 courses, CLEP-track user + clep_enabled=true):**
 - [ ] CLEP_COLLEGE_ALGEBRA MCQ — session starts
 - [ ] CLEP_COLLEGE_COMPOSITION MCQ — session starts
 - [ ] CLEP_INTRO_PSYCHOLOGY MCQ — session starts
 - [ ] CLEP_PRINCIPLES_OF_MARKETING MCQ — session starts
 - [ ] CLEP_PRINCIPLES_OF_MANAGEMENT MCQ — session starts
 - [ ] CLEP_INTRODUCTORY_SOCIOLOGY MCQ — session starts
+- [ ] CLEP_AMERICAN_GOVERNMENT MCQ — session starts
+- [ ] CLEP_MACROECONOMICS MCQ — session starts
+- [ ] CLEP_MICROECONOMICS MCQ — session starts
+- [ ] CLEP_BIOLOGY MCQ — session starts
+- [ ] CLEP_US_HISTORY_1 MCQ — session starts
+- [ ] CLEP_US_HISTORY_2 MCQ — session starts
+- [ ] CLEP_HUMAN_GROWTH_DEV MCQ — session starts
+- [ ] CLEP_CALCULUS MCQ — session starts
+- [ ] CLEP_CHEMISTRY MCQ — session starts
+- [ ] CLEP_FINANCIAL_ACCOUNTING MCQ — session starts
+- [ ] CLEP_AMERICAN_LITERATURE MCQ — session starts
+- [ ] CLEP_ANALYZING_INTERPRETING_LIT MCQ — session starts
+- [ ] CLEP_COLLEGE_COMP_MODULAR MCQ — session starts
+- [ ] CLEP_ENGLISH_LITERATURE MCQ — session starts
+- [ ] CLEP_HUMANITIES MCQ — session starts
+- [ ] CLEP_EDUCATIONAL_PSYCHOLOGY MCQ — session starts
+- [ ] CLEP_SOCIAL_SCIENCES_HISTORY MCQ — session starts
+- [ ] CLEP_WESTERN_CIV_1 MCQ — session starts
+- [ ] CLEP_WESTERN_CIV_2 MCQ — session starts
+- [ ] CLEP_COLLEGE_MATH MCQ — session starts
+- [ ] CLEP_NATURAL_SCIENCES MCQ — session starts
+- [ ] CLEP_PRECALCULUS MCQ — session starts
+- [ ] CLEP_INFORMATION_SYSTEMS MCQ — session starts
+- [ ] CLEP_BUSINESS_LAW MCQ — session starts
+- [ ] CLEP_FRENCH MCQ — session starts
+- [ ] CLEP_GERMAN MCQ — session starts
+- [ ] CLEP_SPANISH MCQ — session starts
+- [ ] CLEP_SPANISH_WRITING MCQ — session starts
 
 **Track enforcement (DB-backed — Beta 2.1):**
 - [ ] Register at `/register?track=clep` → DB `User.track = "clep"`
@@ -3326,6 +3998,34 @@ Integration tests: 24 passed, 9 warnings, 0 failed
   ⚠️ CLEP_PRINCIPLES_OF_MARKETING — 0 questions — AI will generate on first session
   ⚠️ CLEP_PRINCIPLES_OF_MANAGEMENT — 0 questions — AI will generate on first session
   ⚠️ CLEP_INTRODUCTORY_SOCIOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_AMERICAN_GOVERNMENT — 0 questions — AI will generate on first session
+  ⚠️ CLEP_MACROECONOMICS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_MICROECONOMICS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_BIOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_US_HISTORY_1 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_US_HISTORY_2 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_HUMAN_GROWTH_DEV — 0 questions — AI will generate on first session
+  ⚠️ CLEP_CALCULUS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_CHEMISTRY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_FINANCIAL_ACCOUNTING — 0 questions — AI will generate on first session
+  ⚠️ CLEP_AMERICAN_LITERATURE — 0 questions — AI will generate on first session
+  ⚠️ CLEP_ANALYZING_INTERPRETING_LIT — 0 questions — AI will generate on first session
+  ⚠️ CLEP_COLLEGE_COMP_MODULAR — 0 questions — AI will generate on first session
+  ⚠️ CLEP_ENGLISH_LITERATURE — 0 questions — AI will generate on first session
+  ⚠️ CLEP_HUMANITIES — 0 questions — AI will generate on first session
+  ⚠️ CLEP_EDUCATIONAL_PSYCHOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SOCIAL_SCIENCES_HISTORY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_WESTERN_CIV_1 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_WESTERN_CIV_2 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_COLLEGE_MATH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_NATURAL_SCIENCES — 0 questions — AI will generate on first session
+  ⚠️ CLEP_PRECALCULUS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_INFORMATION_SYSTEMS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_BUSINESS_LAW — 0 questions — AI will generate on first session
+  ⚠️ CLEP_FRENCH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_GERMAN — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SPANISH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SPANISH_WRITING — 0 questions — AI will generate on first session
   ✅ AP World History: Modern FRQ — 5 questions
   ✅ AP Computer Science Principles FRQ — 6 questions
   ⚠️ AP Physics 1: Algebra-Based FRQ — 0 FRQ questions — AI will generate on first session
@@ -3356,13 +4056,41 @@ Integration tests: 24 passed, 9 warnings, 0 failed
 - [ ] ACT_SCIENCE MCQ — session starts
 - [ ] ACT_READING MCQ — session starts
 
-**Practice — CLEP (6 courses, CLEP-track user + clep_enabled=true):**
+**Practice — CLEP (34 courses, CLEP-track user + clep_enabled=true):**
 - [ ] CLEP_COLLEGE_ALGEBRA MCQ — session starts
 - [ ] CLEP_COLLEGE_COMPOSITION MCQ — session starts
 - [ ] CLEP_INTRO_PSYCHOLOGY MCQ — session starts
 - [ ] CLEP_PRINCIPLES_OF_MARKETING MCQ — session starts
 - [ ] CLEP_PRINCIPLES_OF_MANAGEMENT MCQ — session starts
 - [ ] CLEP_INTRODUCTORY_SOCIOLOGY MCQ — session starts
+- [ ] CLEP_AMERICAN_GOVERNMENT MCQ — session starts
+- [ ] CLEP_MACROECONOMICS MCQ — session starts
+- [ ] CLEP_MICROECONOMICS MCQ — session starts
+- [ ] CLEP_BIOLOGY MCQ — session starts
+- [ ] CLEP_US_HISTORY_1 MCQ — session starts
+- [ ] CLEP_US_HISTORY_2 MCQ — session starts
+- [ ] CLEP_HUMAN_GROWTH_DEV MCQ — session starts
+- [ ] CLEP_CALCULUS MCQ — session starts
+- [ ] CLEP_CHEMISTRY MCQ — session starts
+- [ ] CLEP_FINANCIAL_ACCOUNTING MCQ — session starts
+- [ ] CLEP_AMERICAN_LITERATURE MCQ — session starts
+- [ ] CLEP_ANALYZING_INTERPRETING_LIT MCQ — session starts
+- [ ] CLEP_COLLEGE_COMP_MODULAR MCQ — session starts
+- [ ] CLEP_ENGLISH_LITERATURE MCQ — session starts
+- [ ] CLEP_HUMANITIES MCQ — session starts
+- [ ] CLEP_EDUCATIONAL_PSYCHOLOGY MCQ — session starts
+- [ ] CLEP_SOCIAL_SCIENCES_HISTORY MCQ — session starts
+- [ ] CLEP_WESTERN_CIV_1 MCQ — session starts
+- [ ] CLEP_WESTERN_CIV_2 MCQ — session starts
+- [ ] CLEP_COLLEGE_MATH MCQ — session starts
+- [ ] CLEP_NATURAL_SCIENCES MCQ — session starts
+- [ ] CLEP_PRECALCULUS MCQ — session starts
+- [ ] CLEP_INFORMATION_SYSTEMS MCQ — session starts
+- [ ] CLEP_BUSINESS_LAW MCQ — session starts
+- [ ] CLEP_FRENCH MCQ — session starts
+- [ ] CLEP_GERMAN MCQ — session starts
+- [ ] CLEP_SPANISH MCQ — session starts
+- [ ] CLEP_SPANISH_WRITING MCQ — session starts
 
 **Track enforcement (DB-backed — Beta 2.1):**
 - [ ] Register at `/register?track=clep` → DB `User.track = "clep"`
@@ -3469,6 +4197,34 @@ Integration tests: 24 passed, 9 warnings, 0 failed
   ⚠️ CLEP_PRINCIPLES_OF_MARKETING — 0 questions — AI will generate on first session
   ⚠️ CLEP_PRINCIPLES_OF_MANAGEMENT — 0 questions — AI will generate on first session
   ⚠️ CLEP_INTRODUCTORY_SOCIOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_AMERICAN_GOVERNMENT — 0 questions — AI will generate on first session
+  ⚠️ CLEP_MACROECONOMICS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_MICROECONOMICS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_BIOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_US_HISTORY_1 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_US_HISTORY_2 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_HUMAN_GROWTH_DEV — 0 questions — AI will generate on first session
+  ⚠️ CLEP_CALCULUS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_CHEMISTRY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_FINANCIAL_ACCOUNTING — 0 questions — AI will generate on first session
+  ⚠️ CLEP_AMERICAN_LITERATURE — 0 questions — AI will generate on first session
+  ⚠️ CLEP_ANALYZING_INTERPRETING_LIT — 0 questions — AI will generate on first session
+  ⚠️ CLEP_COLLEGE_COMP_MODULAR — 0 questions — AI will generate on first session
+  ⚠️ CLEP_ENGLISH_LITERATURE — 0 questions — AI will generate on first session
+  ⚠️ CLEP_HUMANITIES — 0 questions — AI will generate on first session
+  ⚠️ CLEP_EDUCATIONAL_PSYCHOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SOCIAL_SCIENCES_HISTORY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_WESTERN_CIV_1 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_WESTERN_CIV_2 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_COLLEGE_MATH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_NATURAL_SCIENCES — 0 questions — AI will generate on first session
+  ⚠️ CLEP_PRECALCULUS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_INFORMATION_SYSTEMS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_BUSINESS_LAW — 0 questions — AI will generate on first session
+  ⚠️ CLEP_FRENCH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_GERMAN — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SPANISH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SPANISH_WRITING — 0 questions — AI will generate on first session
   ✅ AP World History: Modern FRQ — 5 questions
   ✅ AP Computer Science Principles FRQ — 6 questions
   ⚠️ AP Physics 1: Algebra-Based FRQ — 0 FRQ questions — AI will generate on first session
@@ -3499,13 +4255,41 @@ Integration tests: 24 passed, 9 warnings, 0 failed
 - [ ] ACT_SCIENCE MCQ — session starts
 - [ ] ACT_READING MCQ — session starts
 
-**Practice — CLEP (6 courses, CLEP-track user + clep_enabled=true):**
+**Practice — CLEP (34 courses, CLEP-track user + clep_enabled=true):**
 - [ ] CLEP_COLLEGE_ALGEBRA MCQ — session starts
 - [ ] CLEP_COLLEGE_COMPOSITION MCQ — session starts
 - [ ] CLEP_INTRO_PSYCHOLOGY MCQ — session starts
 - [ ] CLEP_PRINCIPLES_OF_MARKETING MCQ — session starts
 - [ ] CLEP_PRINCIPLES_OF_MANAGEMENT MCQ — session starts
 - [ ] CLEP_INTRODUCTORY_SOCIOLOGY MCQ — session starts
+- [ ] CLEP_AMERICAN_GOVERNMENT MCQ — session starts
+- [ ] CLEP_MACROECONOMICS MCQ — session starts
+- [ ] CLEP_MICROECONOMICS MCQ — session starts
+- [ ] CLEP_BIOLOGY MCQ — session starts
+- [ ] CLEP_US_HISTORY_1 MCQ — session starts
+- [ ] CLEP_US_HISTORY_2 MCQ — session starts
+- [ ] CLEP_HUMAN_GROWTH_DEV MCQ — session starts
+- [ ] CLEP_CALCULUS MCQ — session starts
+- [ ] CLEP_CHEMISTRY MCQ — session starts
+- [ ] CLEP_FINANCIAL_ACCOUNTING MCQ — session starts
+- [ ] CLEP_AMERICAN_LITERATURE MCQ — session starts
+- [ ] CLEP_ANALYZING_INTERPRETING_LIT MCQ — session starts
+- [ ] CLEP_COLLEGE_COMP_MODULAR MCQ — session starts
+- [ ] CLEP_ENGLISH_LITERATURE MCQ — session starts
+- [ ] CLEP_HUMANITIES MCQ — session starts
+- [ ] CLEP_EDUCATIONAL_PSYCHOLOGY MCQ — session starts
+- [ ] CLEP_SOCIAL_SCIENCES_HISTORY MCQ — session starts
+- [ ] CLEP_WESTERN_CIV_1 MCQ — session starts
+- [ ] CLEP_WESTERN_CIV_2 MCQ — session starts
+- [ ] CLEP_COLLEGE_MATH MCQ — session starts
+- [ ] CLEP_NATURAL_SCIENCES MCQ — session starts
+- [ ] CLEP_PRECALCULUS MCQ — session starts
+- [ ] CLEP_INFORMATION_SYSTEMS MCQ — session starts
+- [ ] CLEP_BUSINESS_LAW MCQ — session starts
+- [ ] CLEP_FRENCH MCQ — session starts
+- [ ] CLEP_GERMAN MCQ — session starts
+- [ ] CLEP_SPANISH MCQ — session starts
+- [ ] CLEP_SPANISH_WRITING MCQ — session starts
 
 **Track enforcement (DB-backed — Beta 2.1):**
 - [ ] Register at `/register?track=clep` → DB `User.track = "clep"`
@@ -3612,6 +4396,34 @@ Integration tests: 26 passed, 7 warnings, 0 failed
   ⚠️ CLEP_PRINCIPLES_OF_MARKETING — 0 questions — AI will generate on first session
   ⚠️ CLEP_PRINCIPLES_OF_MANAGEMENT — 0 questions — AI will generate on first session
   ⚠️ CLEP_INTRODUCTORY_SOCIOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_AMERICAN_GOVERNMENT — 0 questions — AI will generate on first session
+  ⚠️ CLEP_MACROECONOMICS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_MICROECONOMICS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_BIOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_US_HISTORY_1 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_US_HISTORY_2 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_HUMAN_GROWTH_DEV — 0 questions — AI will generate on first session
+  ⚠️ CLEP_CALCULUS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_CHEMISTRY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_FINANCIAL_ACCOUNTING — 0 questions — AI will generate on first session
+  ⚠️ CLEP_AMERICAN_LITERATURE — 0 questions — AI will generate on first session
+  ⚠️ CLEP_ANALYZING_INTERPRETING_LIT — 0 questions — AI will generate on first session
+  ⚠️ CLEP_COLLEGE_COMP_MODULAR — 0 questions — AI will generate on first session
+  ⚠️ CLEP_ENGLISH_LITERATURE — 0 questions — AI will generate on first session
+  ⚠️ CLEP_HUMANITIES — 0 questions — AI will generate on first session
+  ⚠️ CLEP_EDUCATIONAL_PSYCHOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SOCIAL_SCIENCES_HISTORY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_WESTERN_CIV_1 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_WESTERN_CIV_2 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_COLLEGE_MATH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_NATURAL_SCIENCES — 0 questions — AI will generate on first session
+  ⚠️ CLEP_PRECALCULUS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_INFORMATION_SYSTEMS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_BUSINESS_LAW — 0 questions — AI will generate on first session
+  ⚠️ CLEP_FRENCH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_GERMAN — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SPANISH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SPANISH_WRITING — 0 questions — AI will generate on first session
   ✅ AP World History: Modern FRQ — 5 questions
   ✅ AP Computer Science Principles FRQ — 6 questions
   ⚠️ AP Physics 1: Algebra-Based FRQ — 0 FRQ questions — AI will generate on first session
@@ -3642,13 +4454,41 @@ Integration tests: 26 passed, 7 warnings, 0 failed
 - [ ] ACT_SCIENCE MCQ — session starts
 - [ ] ACT_READING MCQ — session starts
 
-**Practice — CLEP (6 courses, CLEP-track user + clep_enabled=true):**
+**Practice — CLEP (34 courses, CLEP-track user + clep_enabled=true):**
 - [ ] CLEP_COLLEGE_ALGEBRA MCQ — session starts
 - [ ] CLEP_COLLEGE_COMPOSITION MCQ — session starts
 - [ ] CLEP_INTRO_PSYCHOLOGY MCQ — session starts
 - [ ] CLEP_PRINCIPLES_OF_MARKETING MCQ — session starts
 - [ ] CLEP_PRINCIPLES_OF_MANAGEMENT MCQ — session starts
 - [ ] CLEP_INTRODUCTORY_SOCIOLOGY MCQ — session starts
+- [ ] CLEP_AMERICAN_GOVERNMENT MCQ — session starts
+- [ ] CLEP_MACROECONOMICS MCQ — session starts
+- [ ] CLEP_MICROECONOMICS MCQ — session starts
+- [ ] CLEP_BIOLOGY MCQ — session starts
+- [ ] CLEP_US_HISTORY_1 MCQ — session starts
+- [ ] CLEP_US_HISTORY_2 MCQ — session starts
+- [ ] CLEP_HUMAN_GROWTH_DEV MCQ — session starts
+- [ ] CLEP_CALCULUS MCQ — session starts
+- [ ] CLEP_CHEMISTRY MCQ — session starts
+- [ ] CLEP_FINANCIAL_ACCOUNTING MCQ — session starts
+- [ ] CLEP_AMERICAN_LITERATURE MCQ — session starts
+- [ ] CLEP_ANALYZING_INTERPRETING_LIT MCQ — session starts
+- [ ] CLEP_COLLEGE_COMP_MODULAR MCQ — session starts
+- [ ] CLEP_ENGLISH_LITERATURE MCQ — session starts
+- [ ] CLEP_HUMANITIES MCQ — session starts
+- [ ] CLEP_EDUCATIONAL_PSYCHOLOGY MCQ — session starts
+- [ ] CLEP_SOCIAL_SCIENCES_HISTORY MCQ — session starts
+- [ ] CLEP_WESTERN_CIV_1 MCQ — session starts
+- [ ] CLEP_WESTERN_CIV_2 MCQ — session starts
+- [ ] CLEP_COLLEGE_MATH MCQ — session starts
+- [ ] CLEP_NATURAL_SCIENCES MCQ — session starts
+- [ ] CLEP_PRECALCULUS MCQ — session starts
+- [ ] CLEP_INFORMATION_SYSTEMS MCQ — session starts
+- [ ] CLEP_BUSINESS_LAW MCQ — session starts
+- [ ] CLEP_FRENCH MCQ — session starts
+- [ ] CLEP_GERMAN MCQ — session starts
+- [ ] CLEP_SPANISH MCQ — session starts
+- [ ] CLEP_SPANISH_WRITING MCQ — session starts
 
 **Track enforcement (DB-backed — Beta 2.1):**
 - [ ] Register at `/register?track=clep` → DB `User.track = "clep"`
@@ -3755,6 +4595,34 @@ Integration tests: 26 passed, 7 warnings, 0 failed
   ⚠️ CLEP_PRINCIPLES_OF_MARKETING — 0 questions — AI will generate on first session
   ⚠️ CLEP_PRINCIPLES_OF_MANAGEMENT — 0 questions — AI will generate on first session
   ⚠️ CLEP_INTRODUCTORY_SOCIOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_AMERICAN_GOVERNMENT — 0 questions — AI will generate on first session
+  ⚠️ CLEP_MACROECONOMICS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_MICROECONOMICS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_BIOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_US_HISTORY_1 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_US_HISTORY_2 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_HUMAN_GROWTH_DEV — 0 questions — AI will generate on first session
+  ⚠️ CLEP_CALCULUS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_CHEMISTRY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_FINANCIAL_ACCOUNTING — 0 questions — AI will generate on first session
+  ⚠️ CLEP_AMERICAN_LITERATURE — 0 questions — AI will generate on first session
+  ⚠️ CLEP_ANALYZING_INTERPRETING_LIT — 0 questions — AI will generate on first session
+  ⚠️ CLEP_COLLEGE_COMP_MODULAR — 0 questions — AI will generate on first session
+  ⚠️ CLEP_ENGLISH_LITERATURE — 0 questions — AI will generate on first session
+  ⚠️ CLEP_HUMANITIES — 0 questions — AI will generate on first session
+  ⚠️ CLEP_EDUCATIONAL_PSYCHOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SOCIAL_SCIENCES_HISTORY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_WESTERN_CIV_1 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_WESTERN_CIV_2 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_COLLEGE_MATH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_NATURAL_SCIENCES — 0 questions — AI will generate on first session
+  ⚠️ CLEP_PRECALCULUS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_INFORMATION_SYSTEMS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_BUSINESS_LAW — 0 questions — AI will generate on first session
+  ⚠️ CLEP_FRENCH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_GERMAN — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SPANISH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SPANISH_WRITING — 0 questions — AI will generate on first session
   ✅ AP World History: Modern FRQ — 5 questions
   ✅ AP Computer Science Principles FRQ — 6 questions
   ⚠️ AP Physics 1: Algebra-Based FRQ — 0 FRQ questions — AI will generate on first session
@@ -3785,13 +4653,41 @@ Integration tests: 26 passed, 7 warnings, 0 failed
 - [ ] ACT_SCIENCE MCQ — session starts
 - [ ] ACT_READING MCQ — session starts
 
-**Practice — CLEP (6 courses, CLEP-track user + clep_enabled=true):**
+**Practice — CLEP (34 courses, CLEP-track user + clep_enabled=true):**
 - [ ] CLEP_COLLEGE_ALGEBRA MCQ — session starts
 - [ ] CLEP_COLLEGE_COMPOSITION MCQ — session starts
 - [ ] CLEP_INTRO_PSYCHOLOGY MCQ — session starts
 - [ ] CLEP_PRINCIPLES_OF_MARKETING MCQ — session starts
 - [ ] CLEP_PRINCIPLES_OF_MANAGEMENT MCQ — session starts
 - [ ] CLEP_INTRODUCTORY_SOCIOLOGY MCQ — session starts
+- [ ] CLEP_AMERICAN_GOVERNMENT MCQ — session starts
+- [ ] CLEP_MACROECONOMICS MCQ — session starts
+- [ ] CLEP_MICROECONOMICS MCQ — session starts
+- [ ] CLEP_BIOLOGY MCQ — session starts
+- [ ] CLEP_US_HISTORY_1 MCQ — session starts
+- [ ] CLEP_US_HISTORY_2 MCQ — session starts
+- [ ] CLEP_HUMAN_GROWTH_DEV MCQ — session starts
+- [ ] CLEP_CALCULUS MCQ — session starts
+- [ ] CLEP_CHEMISTRY MCQ — session starts
+- [ ] CLEP_FINANCIAL_ACCOUNTING MCQ — session starts
+- [ ] CLEP_AMERICAN_LITERATURE MCQ — session starts
+- [ ] CLEP_ANALYZING_INTERPRETING_LIT MCQ — session starts
+- [ ] CLEP_COLLEGE_COMP_MODULAR MCQ — session starts
+- [ ] CLEP_ENGLISH_LITERATURE MCQ — session starts
+- [ ] CLEP_HUMANITIES MCQ — session starts
+- [ ] CLEP_EDUCATIONAL_PSYCHOLOGY MCQ — session starts
+- [ ] CLEP_SOCIAL_SCIENCES_HISTORY MCQ — session starts
+- [ ] CLEP_WESTERN_CIV_1 MCQ — session starts
+- [ ] CLEP_WESTERN_CIV_2 MCQ — session starts
+- [ ] CLEP_COLLEGE_MATH MCQ — session starts
+- [ ] CLEP_NATURAL_SCIENCES MCQ — session starts
+- [ ] CLEP_PRECALCULUS MCQ — session starts
+- [ ] CLEP_INFORMATION_SYSTEMS MCQ — session starts
+- [ ] CLEP_BUSINESS_LAW MCQ — session starts
+- [ ] CLEP_FRENCH MCQ — session starts
+- [ ] CLEP_GERMAN MCQ — session starts
+- [ ] CLEP_SPANISH MCQ — session starts
+- [ ] CLEP_SPANISH_WRITING MCQ — session starts
 
 **Track enforcement (DB-backed — Beta 2.1):**
 - [ ] Register at `/register?track=clep` → DB `User.track = "clep"`
@@ -3901,6 +4797,34 @@ Integration tests: 28 passed, 7 warnings, 0 failed
   ⚠️ CLEP_PRINCIPLES_OF_MARKETING — 0 questions — AI will generate on first session
   ⚠️ CLEP_PRINCIPLES_OF_MANAGEMENT — 0 questions — AI will generate on first session
   ⚠️ CLEP_INTRODUCTORY_SOCIOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_AMERICAN_GOVERNMENT — 0 questions — AI will generate on first session
+  ⚠️ CLEP_MACROECONOMICS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_MICROECONOMICS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_BIOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_US_HISTORY_1 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_US_HISTORY_2 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_HUMAN_GROWTH_DEV — 0 questions — AI will generate on first session
+  ⚠️ CLEP_CALCULUS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_CHEMISTRY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_FINANCIAL_ACCOUNTING — 0 questions — AI will generate on first session
+  ⚠️ CLEP_AMERICAN_LITERATURE — 0 questions — AI will generate on first session
+  ⚠️ CLEP_ANALYZING_INTERPRETING_LIT — 0 questions — AI will generate on first session
+  ⚠️ CLEP_COLLEGE_COMP_MODULAR — 0 questions — AI will generate on first session
+  ⚠️ CLEP_ENGLISH_LITERATURE — 0 questions — AI will generate on first session
+  ⚠️ CLEP_HUMANITIES — 0 questions — AI will generate on first session
+  ⚠️ CLEP_EDUCATIONAL_PSYCHOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SOCIAL_SCIENCES_HISTORY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_WESTERN_CIV_1 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_WESTERN_CIV_2 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_COLLEGE_MATH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_NATURAL_SCIENCES — 0 questions — AI will generate on first session
+  ⚠️ CLEP_PRECALCULUS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_INFORMATION_SYSTEMS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_BUSINESS_LAW — 0 questions — AI will generate on first session
+  ⚠️ CLEP_FRENCH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_GERMAN — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SPANISH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SPANISH_WRITING — 0 questions — AI will generate on first session
   ✅ AP World History: Modern FRQ — 5 questions
   ✅ AP Computer Science Principles FRQ — 6 questions
   ⚠️ AP Physics 1: Algebra-Based FRQ — 0 FRQ questions — AI will generate on first session
@@ -3933,13 +4857,41 @@ Integration tests: 28 passed, 7 warnings, 0 failed
 - [ ] ACT_SCIENCE MCQ — session starts
 - [ ] ACT_READING MCQ — session starts
 
-**Practice — CLEP (6 courses, CLEP-track user + clep_enabled=true):**
+**Practice — CLEP (34 courses, CLEP-track user + clep_enabled=true):**
 - [ ] CLEP_COLLEGE_ALGEBRA MCQ — session starts
 - [ ] CLEP_COLLEGE_COMPOSITION MCQ — session starts
 - [ ] CLEP_INTRO_PSYCHOLOGY MCQ — session starts
 - [ ] CLEP_PRINCIPLES_OF_MARKETING MCQ — session starts
 - [ ] CLEP_PRINCIPLES_OF_MANAGEMENT MCQ — session starts
 - [ ] CLEP_INTRODUCTORY_SOCIOLOGY MCQ — session starts
+- [ ] CLEP_AMERICAN_GOVERNMENT MCQ — session starts
+- [ ] CLEP_MACROECONOMICS MCQ — session starts
+- [ ] CLEP_MICROECONOMICS MCQ — session starts
+- [ ] CLEP_BIOLOGY MCQ — session starts
+- [ ] CLEP_US_HISTORY_1 MCQ — session starts
+- [ ] CLEP_US_HISTORY_2 MCQ — session starts
+- [ ] CLEP_HUMAN_GROWTH_DEV MCQ — session starts
+- [ ] CLEP_CALCULUS MCQ — session starts
+- [ ] CLEP_CHEMISTRY MCQ — session starts
+- [ ] CLEP_FINANCIAL_ACCOUNTING MCQ — session starts
+- [ ] CLEP_AMERICAN_LITERATURE MCQ — session starts
+- [ ] CLEP_ANALYZING_INTERPRETING_LIT MCQ — session starts
+- [ ] CLEP_COLLEGE_COMP_MODULAR MCQ — session starts
+- [ ] CLEP_ENGLISH_LITERATURE MCQ — session starts
+- [ ] CLEP_HUMANITIES MCQ — session starts
+- [ ] CLEP_EDUCATIONAL_PSYCHOLOGY MCQ — session starts
+- [ ] CLEP_SOCIAL_SCIENCES_HISTORY MCQ — session starts
+- [ ] CLEP_WESTERN_CIV_1 MCQ — session starts
+- [ ] CLEP_WESTERN_CIV_2 MCQ — session starts
+- [ ] CLEP_COLLEGE_MATH MCQ — session starts
+- [ ] CLEP_NATURAL_SCIENCES MCQ — session starts
+- [ ] CLEP_PRECALCULUS MCQ — session starts
+- [ ] CLEP_INFORMATION_SYSTEMS MCQ — session starts
+- [ ] CLEP_BUSINESS_LAW MCQ — session starts
+- [ ] CLEP_FRENCH MCQ — session starts
+- [ ] CLEP_GERMAN MCQ — session starts
+- [ ] CLEP_SPANISH MCQ — session starts
+- [ ] CLEP_SPANISH_WRITING MCQ — session starts
 
 **Track enforcement (DB-backed — Beta 2.1):**
 - [ ] Register at `/register?track=clep` → DB `User.track = "clep"`
@@ -4068,6 +5020,34 @@ Integration tests: 28 passed, 7 warnings, 0 failed
   ⚠️ CLEP_PRINCIPLES_OF_MARKETING — 0 questions — AI will generate on first session
   ⚠️ CLEP_PRINCIPLES_OF_MANAGEMENT — 0 questions — AI will generate on first session
   ⚠️ CLEP_INTRODUCTORY_SOCIOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_AMERICAN_GOVERNMENT — 0 questions — AI will generate on first session
+  ⚠️ CLEP_MACROECONOMICS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_MICROECONOMICS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_BIOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_US_HISTORY_1 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_US_HISTORY_2 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_HUMAN_GROWTH_DEV — 0 questions — AI will generate on first session
+  ⚠️ CLEP_CALCULUS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_CHEMISTRY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_FINANCIAL_ACCOUNTING — 0 questions — AI will generate on first session
+  ⚠️ CLEP_AMERICAN_LITERATURE — 0 questions — AI will generate on first session
+  ⚠️ CLEP_ANALYZING_INTERPRETING_LIT — 0 questions — AI will generate on first session
+  ⚠️ CLEP_COLLEGE_COMP_MODULAR — 0 questions — AI will generate on first session
+  ⚠️ CLEP_ENGLISH_LITERATURE — 0 questions — AI will generate on first session
+  ⚠️ CLEP_HUMANITIES — 0 questions — AI will generate on first session
+  ⚠️ CLEP_EDUCATIONAL_PSYCHOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SOCIAL_SCIENCES_HISTORY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_WESTERN_CIV_1 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_WESTERN_CIV_2 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_COLLEGE_MATH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_NATURAL_SCIENCES — 0 questions — AI will generate on first session
+  ⚠️ CLEP_PRECALCULUS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_INFORMATION_SYSTEMS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_BUSINESS_LAW — 0 questions — AI will generate on first session
+  ⚠️ CLEP_FRENCH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_GERMAN — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SPANISH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SPANISH_WRITING — 0 questions — AI will generate on first session
   ✅ AP World History: Modern FRQ — 5 questions
   ✅ AP Computer Science Principles FRQ — 6 questions
   ⚠️ AP Physics 1: Algebra-Based FRQ — 0 FRQ questions — AI will generate on first session
@@ -4100,13 +5080,41 @@ Integration tests: 28 passed, 7 warnings, 0 failed
 - [ ] ACT_SCIENCE MCQ — session starts
 - [ ] ACT_READING MCQ — session starts
 
-**Practice — CLEP (6 courses, CLEP-track user + clep_enabled=true):**
+**Practice — CLEP (34 courses, CLEP-track user + clep_enabled=true):**
 - [ ] CLEP_COLLEGE_ALGEBRA MCQ — session starts
 - [ ] CLEP_COLLEGE_COMPOSITION MCQ — session starts
 - [ ] CLEP_INTRO_PSYCHOLOGY MCQ — session starts
 - [ ] CLEP_PRINCIPLES_OF_MARKETING MCQ — session starts
 - [ ] CLEP_PRINCIPLES_OF_MANAGEMENT MCQ — session starts
 - [ ] CLEP_INTRODUCTORY_SOCIOLOGY MCQ — session starts
+- [ ] CLEP_AMERICAN_GOVERNMENT MCQ — session starts
+- [ ] CLEP_MACROECONOMICS MCQ — session starts
+- [ ] CLEP_MICROECONOMICS MCQ — session starts
+- [ ] CLEP_BIOLOGY MCQ — session starts
+- [ ] CLEP_US_HISTORY_1 MCQ — session starts
+- [ ] CLEP_US_HISTORY_2 MCQ — session starts
+- [ ] CLEP_HUMAN_GROWTH_DEV MCQ — session starts
+- [ ] CLEP_CALCULUS MCQ — session starts
+- [ ] CLEP_CHEMISTRY MCQ — session starts
+- [ ] CLEP_FINANCIAL_ACCOUNTING MCQ — session starts
+- [ ] CLEP_AMERICAN_LITERATURE MCQ — session starts
+- [ ] CLEP_ANALYZING_INTERPRETING_LIT MCQ — session starts
+- [ ] CLEP_COLLEGE_COMP_MODULAR MCQ — session starts
+- [ ] CLEP_ENGLISH_LITERATURE MCQ — session starts
+- [ ] CLEP_HUMANITIES MCQ — session starts
+- [ ] CLEP_EDUCATIONAL_PSYCHOLOGY MCQ — session starts
+- [ ] CLEP_SOCIAL_SCIENCES_HISTORY MCQ — session starts
+- [ ] CLEP_WESTERN_CIV_1 MCQ — session starts
+- [ ] CLEP_WESTERN_CIV_2 MCQ — session starts
+- [ ] CLEP_COLLEGE_MATH MCQ — session starts
+- [ ] CLEP_NATURAL_SCIENCES MCQ — session starts
+- [ ] CLEP_PRECALCULUS MCQ — session starts
+- [ ] CLEP_INFORMATION_SYSTEMS MCQ — session starts
+- [ ] CLEP_BUSINESS_LAW MCQ — session starts
+- [ ] CLEP_FRENCH MCQ — session starts
+- [ ] CLEP_GERMAN MCQ — session starts
+- [ ] CLEP_SPANISH MCQ — session starts
+- [ ] CLEP_SPANISH_WRITING MCQ — session starts
 
 **Track enforcement (DB-backed — Beta 2.1):**
 - [ ] Register at `/register?track=clep` → DB `User.track = "clep"`
@@ -4235,6 +5243,34 @@ Integration tests: 28 passed, 7 warnings, 0 failed
   ⚠️ CLEP_PRINCIPLES_OF_MARKETING — 0 questions — AI will generate on first session
   ⚠️ CLEP_PRINCIPLES_OF_MANAGEMENT — 0 questions — AI will generate on first session
   ⚠️ CLEP_INTRODUCTORY_SOCIOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_AMERICAN_GOVERNMENT — 0 questions — AI will generate on first session
+  ⚠️ CLEP_MACROECONOMICS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_MICROECONOMICS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_BIOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_US_HISTORY_1 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_US_HISTORY_2 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_HUMAN_GROWTH_DEV — 0 questions — AI will generate on first session
+  ⚠️ CLEP_CALCULUS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_CHEMISTRY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_FINANCIAL_ACCOUNTING — 0 questions — AI will generate on first session
+  ⚠️ CLEP_AMERICAN_LITERATURE — 0 questions — AI will generate on first session
+  ⚠️ CLEP_ANALYZING_INTERPRETING_LIT — 0 questions — AI will generate on first session
+  ⚠️ CLEP_COLLEGE_COMP_MODULAR — 0 questions — AI will generate on first session
+  ⚠️ CLEP_ENGLISH_LITERATURE — 0 questions — AI will generate on first session
+  ⚠️ CLEP_HUMANITIES — 0 questions — AI will generate on first session
+  ⚠️ CLEP_EDUCATIONAL_PSYCHOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SOCIAL_SCIENCES_HISTORY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_WESTERN_CIV_1 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_WESTERN_CIV_2 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_COLLEGE_MATH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_NATURAL_SCIENCES — 0 questions — AI will generate on first session
+  ⚠️ CLEP_PRECALCULUS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_INFORMATION_SYSTEMS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_BUSINESS_LAW — 0 questions — AI will generate on first session
+  ⚠️ CLEP_FRENCH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_GERMAN — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SPANISH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SPANISH_WRITING — 0 questions — AI will generate on first session
   ✅ AP World History: Modern FRQ — 5 questions
   ✅ AP Computer Science Principles FRQ — 6 questions
   ⚠️ AP Physics 1: Algebra-Based FRQ — 0 FRQ questions — AI will generate on first session
@@ -4267,13 +5303,41 @@ Integration tests: 28 passed, 7 warnings, 0 failed
 - [ ] ACT_SCIENCE MCQ — session starts
 - [ ] ACT_READING MCQ — session starts
 
-**Practice — CLEP (6 courses, CLEP-track user + clep_enabled=true):**
+**Practice — CLEP (34 courses, CLEP-track user + clep_enabled=true):**
 - [ ] CLEP_COLLEGE_ALGEBRA MCQ — session starts
 - [ ] CLEP_COLLEGE_COMPOSITION MCQ — session starts
 - [ ] CLEP_INTRO_PSYCHOLOGY MCQ — session starts
 - [ ] CLEP_PRINCIPLES_OF_MARKETING MCQ — session starts
 - [ ] CLEP_PRINCIPLES_OF_MANAGEMENT MCQ — session starts
 - [ ] CLEP_INTRODUCTORY_SOCIOLOGY MCQ — session starts
+- [ ] CLEP_AMERICAN_GOVERNMENT MCQ — session starts
+- [ ] CLEP_MACROECONOMICS MCQ — session starts
+- [ ] CLEP_MICROECONOMICS MCQ — session starts
+- [ ] CLEP_BIOLOGY MCQ — session starts
+- [ ] CLEP_US_HISTORY_1 MCQ — session starts
+- [ ] CLEP_US_HISTORY_2 MCQ — session starts
+- [ ] CLEP_HUMAN_GROWTH_DEV MCQ — session starts
+- [ ] CLEP_CALCULUS MCQ — session starts
+- [ ] CLEP_CHEMISTRY MCQ — session starts
+- [ ] CLEP_FINANCIAL_ACCOUNTING MCQ — session starts
+- [ ] CLEP_AMERICAN_LITERATURE MCQ — session starts
+- [ ] CLEP_ANALYZING_INTERPRETING_LIT MCQ — session starts
+- [ ] CLEP_COLLEGE_COMP_MODULAR MCQ — session starts
+- [ ] CLEP_ENGLISH_LITERATURE MCQ — session starts
+- [ ] CLEP_HUMANITIES MCQ — session starts
+- [ ] CLEP_EDUCATIONAL_PSYCHOLOGY MCQ — session starts
+- [ ] CLEP_SOCIAL_SCIENCES_HISTORY MCQ — session starts
+- [ ] CLEP_WESTERN_CIV_1 MCQ — session starts
+- [ ] CLEP_WESTERN_CIV_2 MCQ — session starts
+- [ ] CLEP_COLLEGE_MATH MCQ — session starts
+- [ ] CLEP_NATURAL_SCIENCES MCQ — session starts
+- [ ] CLEP_PRECALCULUS MCQ — session starts
+- [ ] CLEP_INFORMATION_SYSTEMS MCQ — session starts
+- [ ] CLEP_BUSINESS_LAW MCQ — session starts
+- [ ] CLEP_FRENCH MCQ — session starts
+- [ ] CLEP_GERMAN MCQ — session starts
+- [ ] CLEP_SPANISH MCQ — session starts
+- [ ] CLEP_SPANISH_WRITING MCQ — session starts
 
 **Track enforcement (DB-backed — Beta 2.1):**
 - [ ] Register at `/register?track=clep` → DB `User.track = "clep"`
@@ -4402,6 +5466,34 @@ Integration tests: 26 passed, 11 warnings, 0 failed
   ⚠️ CLEP_PRINCIPLES_OF_MARKETING — 0 questions — AI will generate on first session
   ⚠️ CLEP_PRINCIPLES_OF_MANAGEMENT — 0 questions — AI will generate on first session
   ⚠️ CLEP_INTRODUCTORY_SOCIOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_AMERICAN_GOVERNMENT — 0 questions — AI will generate on first session
+  ⚠️ CLEP_MACROECONOMICS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_MICROECONOMICS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_BIOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_US_HISTORY_1 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_US_HISTORY_2 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_HUMAN_GROWTH_DEV — 0 questions — AI will generate on first session
+  ⚠️ CLEP_CALCULUS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_CHEMISTRY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_FINANCIAL_ACCOUNTING — 0 questions — AI will generate on first session
+  ⚠️ CLEP_AMERICAN_LITERATURE — 0 questions — AI will generate on first session
+  ⚠️ CLEP_ANALYZING_INTERPRETING_LIT — 0 questions — AI will generate on first session
+  ⚠️ CLEP_COLLEGE_COMP_MODULAR — 0 questions — AI will generate on first session
+  ⚠️ CLEP_ENGLISH_LITERATURE — 0 questions — AI will generate on first session
+  ⚠️ CLEP_HUMANITIES — 0 questions — AI will generate on first session
+  ⚠️ CLEP_EDUCATIONAL_PSYCHOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SOCIAL_SCIENCES_HISTORY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_WESTERN_CIV_1 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_WESTERN_CIV_2 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_COLLEGE_MATH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_NATURAL_SCIENCES — 0 questions — AI will generate on first session
+  ⚠️ CLEP_PRECALCULUS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_INFORMATION_SYSTEMS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_BUSINESS_LAW — 0 questions — AI will generate on first session
+  ⚠️ CLEP_FRENCH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_GERMAN — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SPANISH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SPANISH_WRITING — 0 questions — AI will generate on first session
   ✅ AP World History: Modern FRQ — 5 questions
   ✅ AP Computer Science Principles FRQ — 6 questions
   ⚠️ AP Physics 1: Algebra-Based FRQ — 0 FRQ questions — AI will generate on first session
@@ -4436,13 +5528,41 @@ Integration tests: 26 passed, 11 warnings, 0 failed
 - [ ] ACT_SCIENCE MCQ — session starts
 - [ ] ACT_READING MCQ — session starts
 
-**Practice — CLEP (6 courses, CLEP-track user + clep_enabled=true):**
+**Practice — CLEP (34 courses, CLEP-track user + clep_enabled=true):**
 - [ ] CLEP_COLLEGE_ALGEBRA MCQ — session starts
 - [ ] CLEP_COLLEGE_COMPOSITION MCQ — session starts
 - [ ] CLEP_INTRO_PSYCHOLOGY MCQ — session starts
 - [ ] CLEP_PRINCIPLES_OF_MARKETING MCQ — session starts
 - [ ] CLEP_PRINCIPLES_OF_MANAGEMENT MCQ — session starts
 - [ ] CLEP_INTRODUCTORY_SOCIOLOGY MCQ — session starts
+- [ ] CLEP_AMERICAN_GOVERNMENT MCQ — session starts
+- [ ] CLEP_MACROECONOMICS MCQ — session starts
+- [ ] CLEP_MICROECONOMICS MCQ — session starts
+- [ ] CLEP_BIOLOGY MCQ — session starts
+- [ ] CLEP_US_HISTORY_1 MCQ — session starts
+- [ ] CLEP_US_HISTORY_2 MCQ — session starts
+- [ ] CLEP_HUMAN_GROWTH_DEV MCQ — session starts
+- [ ] CLEP_CALCULUS MCQ — session starts
+- [ ] CLEP_CHEMISTRY MCQ — session starts
+- [ ] CLEP_FINANCIAL_ACCOUNTING MCQ — session starts
+- [ ] CLEP_AMERICAN_LITERATURE MCQ — session starts
+- [ ] CLEP_ANALYZING_INTERPRETING_LIT MCQ — session starts
+- [ ] CLEP_COLLEGE_COMP_MODULAR MCQ — session starts
+- [ ] CLEP_ENGLISH_LITERATURE MCQ — session starts
+- [ ] CLEP_HUMANITIES MCQ — session starts
+- [ ] CLEP_EDUCATIONAL_PSYCHOLOGY MCQ — session starts
+- [ ] CLEP_SOCIAL_SCIENCES_HISTORY MCQ — session starts
+- [ ] CLEP_WESTERN_CIV_1 MCQ — session starts
+- [ ] CLEP_WESTERN_CIV_2 MCQ — session starts
+- [ ] CLEP_COLLEGE_MATH MCQ — session starts
+- [ ] CLEP_NATURAL_SCIENCES MCQ — session starts
+- [ ] CLEP_PRECALCULUS MCQ — session starts
+- [ ] CLEP_INFORMATION_SYSTEMS MCQ — session starts
+- [ ] CLEP_BUSINESS_LAW MCQ — session starts
+- [ ] CLEP_FRENCH MCQ — session starts
+- [ ] CLEP_GERMAN MCQ — session starts
+- [ ] CLEP_SPANISH MCQ — session starts
+- [ ] CLEP_SPANISH_WRITING MCQ — session starts
 
 **Track enforcement (DB-backed — Beta 2.1):**
 - [ ] Register at `/register?track=clep` → DB `User.track = "clep"`
@@ -4571,6 +5691,34 @@ Integration tests: 28 passed, 7 warnings, 0 failed
   ⚠️ CLEP_PRINCIPLES_OF_MARKETING — 0 questions — AI will generate on first session
   ⚠️ CLEP_PRINCIPLES_OF_MANAGEMENT — 0 questions — AI will generate on first session
   ⚠️ CLEP_INTRODUCTORY_SOCIOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_AMERICAN_GOVERNMENT — 0 questions — AI will generate on first session
+  ⚠️ CLEP_MACROECONOMICS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_MICROECONOMICS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_BIOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_US_HISTORY_1 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_US_HISTORY_2 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_HUMAN_GROWTH_DEV — 0 questions — AI will generate on first session
+  ⚠️ CLEP_CALCULUS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_CHEMISTRY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_FINANCIAL_ACCOUNTING — 0 questions — AI will generate on first session
+  ⚠️ CLEP_AMERICAN_LITERATURE — 0 questions — AI will generate on first session
+  ⚠️ CLEP_ANALYZING_INTERPRETING_LIT — 0 questions — AI will generate on first session
+  ⚠️ CLEP_COLLEGE_COMP_MODULAR — 0 questions — AI will generate on first session
+  ⚠️ CLEP_ENGLISH_LITERATURE — 0 questions — AI will generate on first session
+  ⚠️ CLEP_HUMANITIES — 0 questions — AI will generate on first session
+  ⚠️ CLEP_EDUCATIONAL_PSYCHOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SOCIAL_SCIENCES_HISTORY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_WESTERN_CIV_1 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_WESTERN_CIV_2 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_COLLEGE_MATH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_NATURAL_SCIENCES — 0 questions — AI will generate on first session
+  ⚠️ CLEP_PRECALCULUS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_INFORMATION_SYSTEMS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_BUSINESS_LAW — 0 questions — AI will generate on first session
+  ⚠️ CLEP_FRENCH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_GERMAN — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SPANISH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SPANISH_WRITING — 0 questions — AI will generate on first session
   ✅ AP World History: Modern FRQ — 5 questions
   ✅ AP Computer Science Principles FRQ — 6 questions
   ⚠️ AP Physics 1: Algebra-Based FRQ — 0 FRQ questions — AI will generate on first session
@@ -4603,13 +5751,41 @@ Integration tests: 28 passed, 7 warnings, 0 failed
 - [ ] ACT_SCIENCE MCQ — session starts
 - [ ] ACT_READING MCQ — session starts
 
-**Practice — CLEP (6 courses, CLEP-track user + clep_enabled=true):**
+**Practice — CLEP (34 courses, CLEP-track user + clep_enabled=true):**
 - [ ] CLEP_COLLEGE_ALGEBRA MCQ — session starts
 - [ ] CLEP_COLLEGE_COMPOSITION MCQ — session starts
 - [ ] CLEP_INTRO_PSYCHOLOGY MCQ — session starts
 - [ ] CLEP_PRINCIPLES_OF_MARKETING MCQ — session starts
 - [ ] CLEP_PRINCIPLES_OF_MANAGEMENT MCQ — session starts
 - [ ] CLEP_INTRODUCTORY_SOCIOLOGY MCQ — session starts
+- [ ] CLEP_AMERICAN_GOVERNMENT MCQ — session starts
+- [ ] CLEP_MACROECONOMICS MCQ — session starts
+- [ ] CLEP_MICROECONOMICS MCQ — session starts
+- [ ] CLEP_BIOLOGY MCQ — session starts
+- [ ] CLEP_US_HISTORY_1 MCQ — session starts
+- [ ] CLEP_US_HISTORY_2 MCQ — session starts
+- [ ] CLEP_HUMAN_GROWTH_DEV MCQ — session starts
+- [ ] CLEP_CALCULUS MCQ — session starts
+- [ ] CLEP_CHEMISTRY MCQ — session starts
+- [ ] CLEP_FINANCIAL_ACCOUNTING MCQ — session starts
+- [ ] CLEP_AMERICAN_LITERATURE MCQ — session starts
+- [ ] CLEP_ANALYZING_INTERPRETING_LIT MCQ — session starts
+- [ ] CLEP_COLLEGE_COMP_MODULAR MCQ — session starts
+- [ ] CLEP_ENGLISH_LITERATURE MCQ — session starts
+- [ ] CLEP_HUMANITIES MCQ — session starts
+- [ ] CLEP_EDUCATIONAL_PSYCHOLOGY MCQ — session starts
+- [ ] CLEP_SOCIAL_SCIENCES_HISTORY MCQ — session starts
+- [ ] CLEP_WESTERN_CIV_1 MCQ — session starts
+- [ ] CLEP_WESTERN_CIV_2 MCQ — session starts
+- [ ] CLEP_COLLEGE_MATH MCQ — session starts
+- [ ] CLEP_NATURAL_SCIENCES MCQ — session starts
+- [ ] CLEP_PRECALCULUS MCQ — session starts
+- [ ] CLEP_INFORMATION_SYSTEMS MCQ — session starts
+- [ ] CLEP_BUSINESS_LAW MCQ — session starts
+- [ ] CLEP_FRENCH MCQ — session starts
+- [ ] CLEP_GERMAN MCQ — session starts
+- [ ] CLEP_SPANISH MCQ — session starts
+- [ ] CLEP_SPANISH_WRITING MCQ — session starts
 
 **Track enforcement (DB-backed — Beta 2.1):**
 - [ ] Register at `/register?track=clep` → DB `User.track = "clep"`
@@ -4738,6 +5914,34 @@ Integration tests: 28 passed, 7 warnings, 0 failed
   ⚠️ CLEP_PRINCIPLES_OF_MARKETING — 0 questions — AI will generate on first session
   ⚠️ CLEP_PRINCIPLES_OF_MANAGEMENT — 0 questions — AI will generate on first session
   ⚠️ CLEP_INTRODUCTORY_SOCIOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_AMERICAN_GOVERNMENT — 0 questions — AI will generate on first session
+  ⚠️ CLEP_MACROECONOMICS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_MICROECONOMICS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_BIOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_US_HISTORY_1 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_US_HISTORY_2 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_HUMAN_GROWTH_DEV — 0 questions — AI will generate on first session
+  ⚠️ CLEP_CALCULUS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_CHEMISTRY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_FINANCIAL_ACCOUNTING — 0 questions — AI will generate on first session
+  ⚠️ CLEP_AMERICAN_LITERATURE — 0 questions — AI will generate on first session
+  ⚠️ CLEP_ANALYZING_INTERPRETING_LIT — 0 questions — AI will generate on first session
+  ⚠️ CLEP_COLLEGE_COMP_MODULAR — 0 questions — AI will generate on first session
+  ⚠️ CLEP_ENGLISH_LITERATURE — 0 questions — AI will generate on first session
+  ⚠️ CLEP_HUMANITIES — 0 questions — AI will generate on first session
+  ⚠️ CLEP_EDUCATIONAL_PSYCHOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SOCIAL_SCIENCES_HISTORY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_WESTERN_CIV_1 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_WESTERN_CIV_2 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_COLLEGE_MATH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_NATURAL_SCIENCES — 0 questions — AI will generate on first session
+  ⚠️ CLEP_PRECALCULUS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_INFORMATION_SYSTEMS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_BUSINESS_LAW — 0 questions — AI will generate on first session
+  ⚠️ CLEP_FRENCH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_GERMAN — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SPANISH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SPANISH_WRITING — 0 questions — AI will generate on first session
   ✅ AP World History: Modern FRQ — 5 questions
   ✅ AP Computer Science Principles FRQ — 6 questions
   ⚠️ AP Physics 1: Algebra-Based FRQ — 0 FRQ questions — AI will generate on first session
@@ -4770,13 +5974,41 @@ Integration tests: 28 passed, 7 warnings, 0 failed
 - [ ] ACT_SCIENCE MCQ — session starts
 - [ ] ACT_READING MCQ — session starts
 
-**Practice — CLEP (6 courses, CLEP-track user + clep_enabled=true):**
+**Practice — CLEP (34 courses, CLEP-track user + clep_enabled=true):**
 - [ ] CLEP_COLLEGE_ALGEBRA MCQ — session starts
 - [ ] CLEP_COLLEGE_COMPOSITION MCQ — session starts
 - [ ] CLEP_INTRO_PSYCHOLOGY MCQ — session starts
 - [ ] CLEP_PRINCIPLES_OF_MARKETING MCQ — session starts
 - [ ] CLEP_PRINCIPLES_OF_MANAGEMENT MCQ — session starts
 - [ ] CLEP_INTRODUCTORY_SOCIOLOGY MCQ — session starts
+- [ ] CLEP_AMERICAN_GOVERNMENT MCQ — session starts
+- [ ] CLEP_MACROECONOMICS MCQ — session starts
+- [ ] CLEP_MICROECONOMICS MCQ — session starts
+- [ ] CLEP_BIOLOGY MCQ — session starts
+- [ ] CLEP_US_HISTORY_1 MCQ — session starts
+- [ ] CLEP_US_HISTORY_2 MCQ — session starts
+- [ ] CLEP_HUMAN_GROWTH_DEV MCQ — session starts
+- [ ] CLEP_CALCULUS MCQ — session starts
+- [ ] CLEP_CHEMISTRY MCQ — session starts
+- [ ] CLEP_FINANCIAL_ACCOUNTING MCQ — session starts
+- [ ] CLEP_AMERICAN_LITERATURE MCQ — session starts
+- [ ] CLEP_ANALYZING_INTERPRETING_LIT MCQ — session starts
+- [ ] CLEP_COLLEGE_COMP_MODULAR MCQ — session starts
+- [ ] CLEP_ENGLISH_LITERATURE MCQ — session starts
+- [ ] CLEP_HUMANITIES MCQ — session starts
+- [ ] CLEP_EDUCATIONAL_PSYCHOLOGY MCQ — session starts
+- [ ] CLEP_SOCIAL_SCIENCES_HISTORY MCQ — session starts
+- [ ] CLEP_WESTERN_CIV_1 MCQ — session starts
+- [ ] CLEP_WESTERN_CIV_2 MCQ — session starts
+- [ ] CLEP_COLLEGE_MATH MCQ — session starts
+- [ ] CLEP_NATURAL_SCIENCES MCQ — session starts
+- [ ] CLEP_PRECALCULUS MCQ — session starts
+- [ ] CLEP_INFORMATION_SYSTEMS MCQ — session starts
+- [ ] CLEP_BUSINESS_LAW MCQ — session starts
+- [ ] CLEP_FRENCH MCQ — session starts
+- [ ] CLEP_GERMAN MCQ — session starts
+- [ ] CLEP_SPANISH MCQ — session starts
+- [ ] CLEP_SPANISH_WRITING MCQ — session starts
 
 **Track enforcement (DB-backed — Beta 2.1):**
 - [ ] Register at `/register?track=clep` → DB `User.track = "clep"`
@@ -4905,6 +6137,34 @@ Integration tests: 28 passed, 7 warnings, 0 failed
   ⚠️ CLEP_PRINCIPLES_OF_MARKETING — 0 questions — AI will generate on first session
   ⚠️ CLEP_PRINCIPLES_OF_MANAGEMENT — 0 questions — AI will generate on first session
   ⚠️ CLEP_INTRODUCTORY_SOCIOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_AMERICAN_GOVERNMENT — 0 questions — AI will generate on first session
+  ⚠️ CLEP_MACROECONOMICS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_MICROECONOMICS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_BIOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_US_HISTORY_1 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_US_HISTORY_2 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_HUMAN_GROWTH_DEV — 0 questions — AI will generate on first session
+  ⚠️ CLEP_CALCULUS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_CHEMISTRY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_FINANCIAL_ACCOUNTING — 0 questions — AI will generate on first session
+  ⚠️ CLEP_AMERICAN_LITERATURE — 0 questions — AI will generate on first session
+  ⚠️ CLEP_ANALYZING_INTERPRETING_LIT — 0 questions — AI will generate on first session
+  ⚠️ CLEP_COLLEGE_COMP_MODULAR — 0 questions — AI will generate on first session
+  ⚠️ CLEP_ENGLISH_LITERATURE — 0 questions — AI will generate on first session
+  ⚠️ CLEP_HUMANITIES — 0 questions — AI will generate on first session
+  ⚠️ CLEP_EDUCATIONAL_PSYCHOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SOCIAL_SCIENCES_HISTORY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_WESTERN_CIV_1 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_WESTERN_CIV_2 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_COLLEGE_MATH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_NATURAL_SCIENCES — 0 questions — AI will generate on first session
+  ⚠️ CLEP_PRECALCULUS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_INFORMATION_SYSTEMS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_BUSINESS_LAW — 0 questions — AI will generate on first session
+  ⚠️ CLEP_FRENCH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_GERMAN — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SPANISH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SPANISH_WRITING — 0 questions — AI will generate on first session
   ✅ AP World History: Modern FRQ — 5 questions
   ✅ AP Computer Science Principles FRQ — 6 questions
   ⚠️ AP Physics 1: Algebra-Based FRQ — 0 FRQ questions — AI will generate on first session
@@ -4937,13 +6197,41 @@ Integration tests: 28 passed, 7 warnings, 0 failed
 - [ ] ACT_SCIENCE MCQ — session starts
 - [ ] ACT_READING MCQ — session starts
 
-**Practice — CLEP (6 courses, CLEP-track user + clep_enabled=true):**
+**Practice — CLEP (34 courses, CLEP-track user + clep_enabled=true):**
 - [ ] CLEP_COLLEGE_ALGEBRA MCQ — session starts
 - [ ] CLEP_COLLEGE_COMPOSITION MCQ — session starts
 - [ ] CLEP_INTRO_PSYCHOLOGY MCQ — session starts
 - [ ] CLEP_PRINCIPLES_OF_MARKETING MCQ — session starts
 - [ ] CLEP_PRINCIPLES_OF_MANAGEMENT MCQ — session starts
 - [ ] CLEP_INTRODUCTORY_SOCIOLOGY MCQ — session starts
+- [ ] CLEP_AMERICAN_GOVERNMENT MCQ — session starts
+- [ ] CLEP_MACROECONOMICS MCQ — session starts
+- [ ] CLEP_MICROECONOMICS MCQ — session starts
+- [ ] CLEP_BIOLOGY MCQ — session starts
+- [ ] CLEP_US_HISTORY_1 MCQ — session starts
+- [ ] CLEP_US_HISTORY_2 MCQ — session starts
+- [ ] CLEP_HUMAN_GROWTH_DEV MCQ — session starts
+- [ ] CLEP_CALCULUS MCQ — session starts
+- [ ] CLEP_CHEMISTRY MCQ — session starts
+- [ ] CLEP_FINANCIAL_ACCOUNTING MCQ — session starts
+- [ ] CLEP_AMERICAN_LITERATURE MCQ — session starts
+- [ ] CLEP_ANALYZING_INTERPRETING_LIT MCQ — session starts
+- [ ] CLEP_COLLEGE_COMP_MODULAR MCQ — session starts
+- [ ] CLEP_ENGLISH_LITERATURE MCQ — session starts
+- [ ] CLEP_HUMANITIES MCQ — session starts
+- [ ] CLEP_EDUCATIONAL_PSYCHOLOGY MCQ — session starts
+- [ ] CLEP_SOCIAL_SCIENCES_HISTORY MCQ — session starts
+- [ ] CLEP_WESTERN_CIV_1 MCQ — session starts
+- [ ] CLEP_WESTERN_CIV_2 MCQ — session starts
+- [ ] CLEP_COLLEGE_MATH MCQ — session starts
+- [ ] CLEP_NATURAL_SCIENCES MCQ — session starts
+- [ ] CLEP_PRECALCULUS MCQ — session starts
+- [ ] CLEP_INFORMATION_SYSTEMS MCQ — session starts
+- [ ] CLEP_BUSINESS_LAW MCQ — session starts
+- [ ] CLEP_FRENCH MCQ — session starts
+- [ ] CLEP_GERMAN MCQ — session starts
+- [ ] CLEP_SPANISH MCQ — session starts
+- [ ] CLEP_SPANISH_WRITING MCQ — session starts
 
 **Track enforcement (DB-backed — Beta 2.1):**
 - [ ] Register at `/register?track=clep` → DB `User.track = "clep"`
@@ -5072,6 +6360,34 @@ Integration tests: 28 passed, 7 warnings, 0 failed
   ⚠️ CLEP_PRINCIPLES_OF_MARKETING — 0 questions — AI will generate on first session
   ⚠️ CLEP_PRINCIPLES_OF_MANAGEMENT — 0 questions — AI will generate on first session
   ⚠️ CLEP_INTRODUCTORY_SOCIOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_AMERICAN_GOVERNMENT — 0 questions — AI will generate on first session
+  ⚠️ CLEP_MACROECONOMICS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_MICROECONOMICS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_BIOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_US_HISTORY_1 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_US_HISTORY_2 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_HUMAN_GROWTH_DEV — 0 questions — AI will generate on first session
+  ⚠️ CLEP_CALCULUS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_CHEMISTRY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_FINANCIAL_ACCOUNTING — 0 questions — AI will generate on first session
+  ⚠️ CLEP_AMERICAN_LITERATURE — 0 questions — AI will generate on first session
+  ⚠️ CLEP_ANALYZING_INTERPRETING_LIT — 0 questions — AI will generate on first session
+  ⚠️ CLEP_COLLEGE_COMP_MODULAR — 0 questions — AI will generate on first session
+  ⚠️ CLEP_ENGLISH_LITERATURE — 0 questions — AI will generate on first session
+  ⚠️ CLEP_HUMANITIES — 0 questions — AI will generate on first session
+  ⚠️ CLEP_EDUCATIONAL_PSYCHOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SOCIAL_SCIENCES_HISTORY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_WESTERN_CIV_1 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_WESTERN_CIV_2 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_COLLEGE_MATH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_NATURAL_SCIENCES — 0 questions — AI will generate on first session
+  ⚠️ CLEP_PRECALCULUS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_INFORMATION_SYSTEMS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_BUSINESS_LAW — 0 questions — AI will generate on first session
+  ⚠️ CLEP_FRENCH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_GERMAN — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SPANISH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SPANISH_WRITING — 0 questions — AI will generate on first session
   ✅ AP World History: Modern FRQ — 5 questions
   ✅ AP Computer Science Principles FRQ — 6 questions
   ⚠️ AP Physics 1: Algebra-Based FRQ — 0 FRQ questions — AI will generate on first session
@@ -5104,13 +6420,41 @@ Integration tests: 28 passed, 7 warnings, 0 failed
 - [ ] ACT_SCIENCE MCQ — session starts
 - [ ] ACT_READING MCQ — session starts
 
-**Practice — CLEP (6 courses, CLEP-track user + clep_enabled=true):**
+**Practice — CLEP (34 courses, CLEP-track user + clep_enabled=true):**
 - [ ] CLEP_COLLEGE_ALGEBRA MCQ — session starts
 - [ ] CLEP_COLLEGE_COMPOSITION MCQ — session starts
 - [ ] CLEP_INTRO_PSYCHOLOGY MCQ — session starts
 - [ ] CLEP_PRINCIPLES_OF_MARKETING MCQ — session starts
 - [ ] CLEP_PRINCIPLES_OF_MANAGEMENT MCQ — session starts
 - [ ] CLEP_INTRODUCTORY_SOCIOLOGY MCQ — session starts
+- [ ] CLEP_AMERICAN_GOVERNMENT MCQ — session starts
+- [ ] CLEP_MACROECONOMICS MCQ — session starts
+- [ ] CLEP_MICROECONOMICS MCQ — session starts
+- [ ] CLEP_BIOLOGY MCQ — session starts
+- [ ] CLEP_US_HISTORY_1 MCQ — session starts
+- [ ] CLEP_US_HISTORY_2 MCQ — session starts
+- [ ] CLEP_HUMAN_GROWTH_DEV MCQ — session starts
+- [ ] CLEP_CALCULUS MCQ — session starts
+- [ ] CLEP_CHEMISTRY MCQ — session starts
+- [ ] CLEP_FINANCIAL_ACCOUNTING MCQ — session starts
+- [ ] CLEP_AMERICAN_LITERATURE MCQ — session starts
+- [ ] CLEP_ANALYZING_INTERPRETING_LIT MCQ — session starts
+- [ ] CLEP_COLLEGE_COMP_MODULAR MCQ — session starts
+- [ ] CLEP_ENGLISH_LITERATURE MCQ — session starts
+- [ ] CLEP_HUMANITIES MCQ — session starts
+- [ ] CLEP_EDUCATIONAL_PSYCHOLOGY MCQ — session starts
+- [ ] CLEP_SOCIAL_SCIENCES_HISTORY MCQ — session starts
+- [ ] CLEP_WESTERN_CIV_1 MCQ — session starts
+- [ ] CLEP_WESTERN_CIV_2 MCQ — session starts
+- [ ] CLEP_COLLEGE_MATH MCQ — session starts
+- [ ] CLEP_NATURAL_SCIENCES MCQ — session starts
+- [ ] CLEP_PRECALCULUS MCQ — session starts
+- [ ] CLEP_INFORMATION_SYSTEMS MCQ — session starts
+- [ ] CLEP_BUSINESS_LAW MCQ — session starts
+- [ ] CLEP_FRENCH MCQ — session starts
+- [ ] CLEP_GERMAN MCQ — session starts
+- [ ] CLEP_SPANISH MCQ — session starts
+- [ ] CLEP_SPANISH_WRITING MCQ — session starts
 
 **Track enforcement (DB-backed — Beta 2.1):**
 - [ ] Register at `/register?track=clep` → DB `User.track = "clep"`
@@ -5239,6 +6583,34 @@ Integration tests: 28 passed, 7 warnings, 0 failed
   ⚠️ CLEP_PRINCIPLES_OF_MARKETING — 0 questions — AI will generate on first session
   ⚠️ CLEP_PRINCIPLES_OF_MANAGEMENT — 0 questions — AI will generate on first session
   ⚠️ CLEP_INTRODUCTORY_SOCIOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_AMERICAN_GOVERNMENT — 0 questions — AI will generate on first session
+  ⚠️ CLEP_MACROECONOMICS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_MICROECONOMICS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_BIOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_US_HISTORY_1 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_US_HISTORY_2 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_HUMAN_GROWTH_DEV — 0 questions — AI will generate on first session
+  ⚠️ CLEP_CALCULUS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_CHEMISTRY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_FINANCIAL_ACCOUNTING — 0 questions — AI will generate on first session
+  ⚠️ CLEP_AMERICAN_LITERATURE — 0 questions — AI will generate on first session
+  ⚠️ CLEP_ANALYZING_INTERPRETING_LIT — 0 questions — AI will generate on first session
+  ⚠️ CLEP_COLLEGE_COMP_MODULAR — 0 questions — AI will generate on first session
+  ⚠️ CLEP_ENGLISH_LITERATURE — 0 questions — AI will generate on first session
+  ⚠️ CLEP_HUMANITIES — 0 questions — AI will generate on first session
+  ⚠️ CLEP_EDUCATIONAL_PSYCHOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SOCIAL_SCIENCES_HISTORY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_WESTERN_CIV_1 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_WESTERN_CIV_2 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_COLLEGE_MATH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_NATURAL_SCIENCES — 0 questions — AI will generate on first session
+  ⚠️ CLEP_PRECALCULUS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_INFORMATION_SYSTEMS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_BUSINESS_LAW — 0 questions — AI will generate on first session
+  ⚠️ CLEP_FRENCH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_GERMAN — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SPANISH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SPANISH_WRITING — 0 questions — AI will generate on first session
   ✅ AP World History: Modern FRQ — 5 questions
   ✅ AP Computer Science Principles FRQ — 6 questions
   ⚠️ AP Physics 1: Algebra-Based FRQ — 0 FRQ questions — AI will generate on first session
@@ -5271,13 +6643,41 @@ Integration tests: 28 passed, 7 warnings, 0 failed
 - [ ] ACT_SCIENCE MCQ — session starts
 - [ ] ACT_READING MCQ — session starts
 
-**Practice — CLEP (6 courses, CLEP-track user + clep_enabled=true):**
+**Practice — CLEP (34 courses, CLEP-track user + clep_enabled=true):**
 - [ ] CLEP_COLLEGE_ALGEBRA MCQ — session starts
 - [ ] CLEP_COLLEGE_COMPOSITION MCQ — session starts
 - [ ] CLEP_INTRO_PSYCHOLOGY MCQ — session starts
 - [ ] CLEP_PRINCIPLES_OF_MARKETING MCQ — session starts
 - [ ] CLEP_PRINCIPLES_OF_MANAGEMENT MCQ — session starts
 - [ ] CLEP_INTRODUCTORY_SOCIOLOGY MCQ — session starts
+- [ ] CLEP_AMERICAN_GOVERNMENT MCQ — session starts
+- [ ] CLEP_MACROECONOMICS MCQ — session starts
+- [ ] CLEP_MICROECONOMICS MCQ — session starts
+- [ ] CLEP_BIOLOGY MCQ — session starts
+- [ ] CLEP_US_HISTORY_1 MCQ — session starts
+- [ ] CLEP_US_HISTORY_2 MCQ — session starts
+- [ ] CLEP_HUMAN_GROWTH_DEV MCQ — session starts
+- [ ] CLEP_CALCULUS MCQ — session starts
+- [ ] CLEP_CHEMISTRY MCQ — session starts
+- [ ] CLEP_FINANCIAL_ACCOUNTING MCQ — session starts
+- [ ] CLEP_AMERICAN_LITERATURE MCQ — session starts
+- [ ] CLEP_ANALYZING_INTERPRETING_LIT MCQ — session starts
+- [ ] CLEP_COLLEGE_COMP_MODULAR MCQ — session starts
+- [ ] CLEP_ENGLISH_LITERATURE MCQ — session starts
+- [ ] CLEP_HUMANITIES MCQ — session starts
+- [ ] CLEP_EDUCATIONAL_PSYCHOLOGY MCQ — session starts
+- [ ] CLEP_SOCIAL_SCIENCES_HISTORY MCQ — session starts
+- [ ] CLEP_WESTERN_CIV_1 MCQ — session starts
+- [ ] CLEP_WESTERN_CIV_2 MCQ — session starts
+- [ ] CLEP_COLLEGE_MATH MCQ — session starts
+- [ ] CLEP_NATURAL_SCIENCES MCQ — session starts
+- [ ] CLEP_PRECALCULUS MCQ — session starts
+- [ ] CLEP_INFORMATION_SYSTEMS MCQ — session starts
+- [ ] CLEP_BUSINESS_LAW MCQ — session starts
+- [ ] CLEP_FRENCH MCQ — session starts
+- [ ] CLEP_GERMAN MCQ — session starts
+- [ ] CLEP_SPANISH MCQ — session starts
+- [ ] CLEP_SPANISH_WRITING MCQ — session starts
 
 **Track enforcement (DB-backed — Beta 2.1):**
 - [ ] Register at `/register?track=clep` → DB `User.track = "clep"`
@@ -5406,6 +6806,34 @@ Integration tests: 28 passed, 7 warnings, 0 failed
   ⚠️ CLEP_PRINCIPLES_OF_MARKETING — 0 questions — AI will generate on first session
   ⚠️ CLEP_PRINCIPLES_OF_MANAGEMENT — 0 questions — AI will generate on first session
   ⚠️ CLEP_INTRODUCTORY_SOCIOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_AMERICAN_GOVERNMENT — 0 questions — AI will generate on first session
+  ⚠️ CLEP_MACROECONOMICS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_MICROECONOMICS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_BIOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_US_HISTORY_1 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_US_HISTORY_2 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_HUMAN_GROWTH_DEV — 0 questions — AI will generate on first session
+  ⚠️ CLEP_CALCULUS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_CHEMISTRY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_FINANCIAL_ACCOUNTING — 0 questions — AI will generate on first session
+  ⚠️ CLEP_AMERICAN_LITERATURE — 0 questions — AI will generate on first session
+  ⚠️ CLEP_ANALYZING_INTERPRETING_LIT — 0 questions — AI will generate on first session
+  ⚠️ CLEP_COLLEGE_COMP_MODULAR — 0 questions — AI will generate on first session
+  ⚠️ CLEP_ENGLISH_LITERATURE — 0 questions — AI will generate on first session
+  ⚠️ CLEP_HUMANITIES — 0 questions — AI will generate on first session
+  ⚠️ CLEP_EDUCATIONAL_PSYCHOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SOCIAL_SCIENCES_HISTORY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_WESTERN_CIV_1 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_WESTERN_CIV_2 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_COLLEGE_MATH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_NATURAL_SCIENCES — 0 questions — AI will generate on first session
+  ⚠️ CLEP_PRECALCULUS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_INFORMATION_SYSTEMS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_BUSINESS_LAW — 0 questions — AI will generate on first session
+  ⚠️ CLEP_FRENCH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_GERMAN — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SPANISH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SPANISH_WRITING — 0 questions — AI will generate on first session
   ✅ AP World History: Modern FRQ — 5 questions
   ✅ AP Computer Science Principles FRQ — 6 questions
   ⚠️ AP Physics 1: Algebra-Based FRQ — 0 FRQ questions — AI will generate on first session
@@ -5438,13 +6866,41 @@ Integration tests: 28 passed, 7 warnings, 0 failed
 - [ ] ACT_SCIENCE MCQ — session starts
 - [ ] ACT_READING MCQ — session starts
 
-**Practice — CLEP (6 courses, CLEP-track user + clep_enabled=true):**
+**Practice — CLEP (34 courses, CLEP-track user + clep_enabled=true):**
 - [ ] CLEP_COLLEGE_ALGEBRA MCQ — session starts
 - [ ] CLEP_COLLEGE_COMPOSITION MCQ — session starts
 - [ ] CLEP_INTRO_PSYCHOLOGY MCQ — session starts
 - [ ] CLEP_PRINCIPLES_OF_MARKETING MCQ — session starts
 - [ ] CLEP_PRINCIPLES_OF_MANAGEMENT MCQ — session starts
 - [ ] CLEP_INTRODUCTORY_SOCIOLOGY MCQ — session starts
+- [ ] CLEP_AMERICAN_GOVERNMENT MCQ — session starts
+- [ ] CLEP_MACROECONOMICS MCQ — session starts
+- [ ] CLEP_MICROECONOMICS MCQ — session starts
+- [ ] CLEP_BIOLOGY MCQ — session starts
+- [ ] CLEP_US_HISTORY_1 MCQ — session starts
+- [ ] CLEP_US_HISTORY_2 MCQ — session starts
+- [ ] CLEP_HUMAN_GROWTH_DEV MCQ — session starts
+- [ ] CLEP_CALCULUS MCQ — session starts
+- [ ] CLEP_CHEMISTRY MCQ — session starts
+- [ ] CLEP_FINANCIAL_ACCOUNTING MCQ — session starts
+- [ ] CLEP_AMERICAN_LITERATURE MCQ — session starts
+- [ ] CLEP_ANALYZING_INTERPRETING_LIT MCQ — session starts
+- [ ] CLEP_COLLEGE_COMP_MODULAR MCQ — session starts
+- [ ] CLEP_ENGLISH_LITERATURE MCQ — session starts
+- [ ] CLEP_HUMANITIES MCQ — session starts
+- [ ] CLEP_EDUCATIONAL_PSYCHOLOGY MCQ — session starts
+- [ ] CLEP_SOCIAL_SCIENCES_HISTORY MCQ — session starts
+- [ ] CLEP_WESTERN_CIV_1 MCQ — session starts
+- [ ] CLEP_WESTERN_CIV_2 MCQ — session starts
+- [ ] CLEP_COLLEGE_MATH MCQ — session starts
+- [ ] CLEP_NATURAL_SCIENCES MCQ — session starts
+- [ ] CLEP_PRECALCULUS MCQ — session starts
+- [ ] CLEP_INFORMATION_SYSTEMS MCQ — session starts
+- [ ] CLEP_BUSINESS_LAW MCQ — session starts
+- [ ] CLEP_FRENCH MCQ — session starts
+- [ ] CLEP_GERMAN MCQ — session starts
+- [ ] CLEP_SPANISH MCQ — session starts
+- [ ] CLEP_SPANISH_WRITING MCQ — session starts
 
 **Track enforcement (DB-backed — Beta 2.1):**
 - [ ] Register at `/register?track=clep` → DB `User.track = "clep"`
@@ -5573,6 +7029,34 @@ Integration tests: 28 passed, 7 warnings, 0 failed
   ⚠️ CLEP_PRINCIPLES_OF_MARKETING — 0 questions — AI will generate on first session
   ⚠️ CLEP_PRINCIPLES_OF_MANAGEMENT — 0 questions — AI will generate on first session
   ⚠️ CLEP_INTRODUCTORY_SOCIOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_AMERICAN_GOVERNMENT — 0 questions — AI will generate on first session
+  ⚠️ CLEP_MACROECONOMICS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_MICROECONOMICS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_BIOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_US_HISTORY_1 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_US_HISTORY_2 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_HUMAN_GROWTH_DEV — 0 questions — AI will generate on first session
+  ⚠️ CLEP_CALCULUS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_CHEMISTRY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_FINANCIAL_ACCOUNTING — 0 questions — AI will generate on first session
+  ⚠️ CLEP_AMERICAN_LITERATURE — 0 questions — AI will generate on first session
+  ⚠️ CLEP_ANALYZING_INTERPRETING_LIT — 0 questions — AI will generate on first session
+  ⚠️ CLEP_COLLEGE_COMP_MODULAR — 0 questions — AI will generate on first session
+  ⚠️ CLEP_ENGLISH_LITERATURE — 0 questions — AI will generate on first session
+  ⚠️ CLEP_HUMANITIES — 0 questions — AI will generate on first session
+  ⚠️ CLEP_EDUCATIONAL_PSYCHOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SOCIAL_SCIENCES_HISTORY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_WESTERN_CIV_1 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_WESTERN_CIV_2 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_COLLEGE_MATH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_NATURAL_SCIENCES — 0 questions — AI will generate on first session
+  ⚠️ CLEP_PRECALCULUS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_INFORMATION_SYSTEMS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_BUSINESS_LAW — 0 questions — AI will generate on first session
+  ⚠️ CLEP_FRENCH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_GERMAN — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SPANISH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SPANISH_WRITING — 0 questions — AI will generate on first session
   ✅ AP World History: Modern FRQ — 5 questions
   ✅ AP Computer Science Principles FRQ — 6 questions
   ⚠️ AP Physics 1: Algebra-Based FRQ — 0 FRQ questions — AI will generate on first session
@@ -5605,13 +7089,41 @@ Integration tests: 28 passed, 7 warnings, 0 failed
 - [ ] ACT_SCIENCE MCQ — session starts
 - [ ] ACT_READING MCQ — session starts
 
-**Practice — CLEP (6 courses, CLEP-track user + clep_enabled=true):**
+**Practice — CLEP (34 courses, CLEP-track user + clep_enabled=true):**
 - [ ] CLEP_COLLEGE_ALGEBRA MCQ — session starts
 - [ ] CLEP_COLLEGE_COMPOSITION MCQ — session starts
 - [ ] CLEP_INTRO_PSYCHOLOGY MCQ — session starts
 - [ ] CLEP_PRINCIPLES_OF_MARKETING MCQ — session starts
 - [ ] CLEP_PRINCIPLES_OF_MANAGEMENT MCQ — session starts
 - [ ] CLEP_INTRODUCTORY_SOCIOLOGY MCQ — session starts
+- [ ] CLEP_AMERICAN_GOVERNMENT MCQ — session starts
+- [ ] CLEP_MACROECONOMICS MCQ — session starts
+- [ ] CLEP_MICROECONOMICS MCQ — session starts
+- [ ] CLEP_BIOLOGY MCQ — session starts
+- [ ] CLEP_US_HISTORY_1 MCQ — session starts
+- [ ] CLEP_US_HISTORY_2 MCQ — session starts
+- [ ] CLEP_HUMAN_GROWTH_DEV MCQ — session starts
+- [ ] CLEP_CALCULUS MCQ — session starts
+- [ ] CLEP_CHEMISTRY MCQ — session starts
+- [ ] CLEP_FINANCIAL_ACCOUNTING MCQ — session starts
+- [ ] CLEP_AMERICAN_LITERATURE MCQ — session starts
+- [ ] CLEP_ANALYZING_INTERPRETING_LIT MCQ — session starts
+- [ ] CLEP_COLLEGE_COMP_MODULAR MCQ — session starts
+- [ ] CLEP_ENGLISH_LITERATURE MCQ — session starts
+- [ ] CLEP_HUMANITIES MCQ — session starts
+- [ ] CLEP_EDUCATIONAL_PSYCHOLOGY MCQ — session starts
+- [ ] CLEP_SOCIAL_SCIENCES_HISTORY MCQ — session starts
+- [ ] CLEP_WESTERN_CIV_1 MCQ — session starts
+- [ ] CLEP_WESTERN_CIV_2 MCQ — session starts
+- [ ] CLEP_COLLEGE_MATH MCQ — session starts
+- [ ] CLEP_NATURAL_SCIENCES MCQ — session starts
+- [ ] CLEP_PRECALCULUS MCQ — session starts
+- [ ] CLEP_INFORMATION_SYSTEMS MCQ — session starts
+- [ ] CLEP_BUSINESS_LAW MCQ — session starts
+- [ ] CLEP_FRENCH MCQ — session starts
+- [ ] CLEP_GERMAN MCQ — session starts
+- [ ] CLEP_SPANISH MCQ — session starts
+- [ ] CLEP_SPANISH_WRITING MCQ — session starts
 
 **Track enforcement (DB-backed — Beta 2.1):**
 - [ ] Register at `/register?track=clep` → DB `User.track = "clep"`
@@ -5740,6 +7252,34 @@ Integration tests: 29 passed, 6 warnings, 0 failed
   ⚠️ CLEP_PRINCIPLES_OF_MARKETING — 0 questions — AI will generate on first session
   ⚠️ CLEP_PRINCIPLES_OF_MANAGEMENT — 0 questions — AI will generate on first session
   ⚠️ CLEP_INTRODUCTORY_SOCIOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_AMERICAN_GOVERNMENT — 0 questions — AI will generate on first session
+  ⚠️ CLEP_MACROECONOMICS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_MICROECONOMICS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_BIOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_US_HISTORY_1 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_US_HISTORY_2 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_HUMAN_GROWTH_DEV — 0 questions — AI will generate on first session
+  ⚠️ CLEP_CALCULUS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_CHEMISTRY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_FINANCIAL_ACCOUNTING — 0 questions — AI will generate on first session
+  ⚠️ CLEP_AMERICAN_LITERATURE — 0 questions — AI will generate on first session
+  ⚠️ CLEP_ANALYZING_INTERPRETING_LIT — 0 questions — AI will generate on first session
+  ⚠️ CLEP_COLLEGE_COMP_MODULAR — 0 questions — AI will generate on first session
+  ⚠️ CLEP_ENGLISH_LITERATURE — 0 questions — AI will generate on first session
+  ⚠️ CLEP_HUMANITIES — 0 questions — AI will generate on first session
+  ⚠️ CLEP_EDUCATIONAL_PSYCHOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SOCIAL_SCIENCES_HISTORY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_WESTERN_CIV_1 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_WESTERN_CIV_2 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_COLLEGE_MATH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_NATURAL_SCIENCES — 0 questions — AI will generate on first session
+  ⚠️ CLEP_PRECALCULUS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_INFORMATION_SYSTEMS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_BUSINESS_LAW — 0 questions — AI will generate on first session
+  ⚠️ CLEP_FRENCH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_GERMAN — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SPANISH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SPANISH_WRITING — 0 questions — AI will generate on first session
   ✅ AP World History: Modern FRQ — 5 questions
   ✅ AP Computer Science Principles FRQ — 6 questions
   ⚠️ AP Physics 1: Algebra-Based FRQ — 0 FRQ questions — AI will generate on first session
@@ -5772,13 +7312,41 @@ Integration tests: 29 passed, 6 warnings, 0 failed
 - [ ] ACT_SCIENCE MCQ — session starts
 - [ ] ACT_READING MCQ — session starts
 
-**Practice — CLEP (6 courses, CLEP-track user + clep_enabled=true):**
+**Practice — CLEP (34 courses, CLEP-track user + clep_enabled=true):**
 - [ ] CLEP_COLLEGE_ALGEBRA MCQ — session starts
 - [ ] CLEP_COLLEGE_COMPOSITION MCQ — session starts
 - [ ] CLEP_INTRO_PSYCHOLOGY MCQ — session starts
 - [ ] CLEP_PRINCIPLES_OF_MARKETING MCQ — session starts
 - [ ] CLEP_PRINCIPLES_OF_MANAGEMENT MCQ — session starts
 - [ ] CLEP_INTRODUCTORY_SOCIOLOGY MCQ — session starts
+- [ ] CLEP_AMERICAN_GOVERNMENT MCQ — session starts
+- [ ] CLEP_MACROECONOMICS MCQ — session starts
+- [ ] CLEP_MICROECONOMICS MCQ — session starts
+- [ ] CLEP_BIOLOGY MCQ — session starts
+- [ ] CLEP_US_HISTORY_1 MCQ — session starts
+- [ ] CLEP_US_HISTORY_2 MCQ — session starts
+- [ ] CLEP_HUMAN_GROWTH_DEV MCQ — session starts
+- [ ] CLEP_CALCULUS MCQ — session starts
+- [ ] CLEP_CHEMISTRY MCQ — session starts
+- [ ] CLEP_FINANCIAL_ACCOUNTING MCQ — session starts
+- [ ] CLEP_AMERICAN_LITERATURE MCQ — session starts
+- [ ] CLEP_ANALYZING_INTERPRETING_LIT MCQ — session starts
+- [ ] CLEP_COLLEGE_COMP_MODULAR MCQ — session starts
+- [ ] CLEP_ENGLISH_LITERATURE MCQ — session starts
+- [ ] CLEP_HUMANITIES MCQ — session starts
+- [ ] CLEP_EDUCATIONAL_PSYCHOLOGY MCQ — session starts
+- [ ] CLEP_SOCIAL_SCIENCES_HISTORY MCQ — session starts
+- [ ] CLEP_WESTERN_CIV_1 MCQ — session starts
+- [ ] CLEP_WESTERN_CIV_2 MCQ — session starts
+- [ ] CLEP_COLLEGE_MATH MCQ — session starts
+- [ ] CLEP_NATURAL_SCIENCES MCQ — session starts
+- [ ] CLEP_PRECALCULUS MCQ — session starts
+- [ ] CLEP_INFORMATION_SYSTEMS MCQ — session starts
+- [ ] CLEP_BUSINESS_LAW MCQ — session starts
+- [ ] CLEP_FRENCH MCQ — session starts
+- [ ] CLEP_GERMAN MCQ — session starts
+- [ ] CLEP_SPANISH MCQ — session starts
+- [ ] CLEP_SPANISH_WRITING MCQ — session starts
 
 **Track enforcement (DB-backed — Beta 2.1):**
 - [ ] Register at `/register?track=clep` → DB `User.track = "clep"`
@@ -5907,6 +7475,34 @@ Integration tests: 29 passed, 6 warnings, 0 failed
   ⚠️ CLEP_PRINCIPLES_OF_MARKETING — 0 questions — AI will generate on first session
   ⚠️ CLEP_PRINCIPLES_OF_MANAGEMENT — 0 questions — AI will generate on first session
   ⚠️ CLEP_INTRODUCTORY_SOCIOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_AMERICAN_GOVERNMENT — 0 questions — AI will generate on first session
+  ⚠️ CLEP_MACROECONOMICS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_MICROECONOMICS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_BIOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_US_HISTORY_1 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_US_HISTORY_2 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_HUMAN_GROWTH_DEV — 0 questions — AI will generate on first session
+  ⚠️ CLEP_CALCULUS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_CHEMISTRY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_FINANCIAL_ACCOUNTING — 0 questions — AI will generate on first session
+  ⚠️ CLEP_AMERICAN_LITERATURE — 0 questions — AI will generate on first session
+  ⚠️ CLEP_ANALYZING_INTERPRETING_LIT — 0 questions — AI will generate on first session
+  ⚠️ CLEP_COLLEGE_COMP_MODULAR — 0 questions — AI will generate on first session
+  ⚠️ CLEP_ENGLISH_LITERATURE — 0 questions — AI will generate on first session
+  ⚠️ CLEP_HUMANITIES — 0 questions — AI will generate on first session
+  ⚠️ CLEP_EDUCATIONAL_PSYCHOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SOCIAL_SCIENCES_HISTORY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_WESTERN_CIV_1 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_WESTERN_CIV_2 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_COLLEGE_MATH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_NATURAL_SCIENCES — 0 questions — AI will generate on first session
+  ⚠️ CLEP_PRECALCULUS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_INFORMATION_SYSTEMS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_BUSINESS_LAW — 0 questions — AI will generate on first session
+  ⚠️ CLEP_FRENCH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_GERMAN — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SPANISH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SPANISH_WRITING — 0 questions — AI will generate on first session
   ✅ AP World History: Modern FRQ — 5 questions
   ✅ AP Computer Science Principles FRQ — 6 questions
   ⚠️ AP Physics 1: Algebra-Based FRQ — 0 FRQ questions — AI will generate on first session
@@ -5939,13 +7535,41 @@ Integration tests: 29 passed, 6 warnings, 0 failed
 - [ ] ACT_SCIENCE MCQ — session starts
 - [ ] ACT_READING MCQ — session starts
 
-**Practice — CLEP (6 courses, CLEP-track user + clep_enabled=true):**
+**Practice — CLEP (34 courses, CLEP-track user + clep_enabled=true):**
 - [ ] CLEP_COLLEGE_ALGEBRA MCQ — session starts
 - [ ] CLEP_COLLEGE_COMPOSITION MCQ — session starts
 - [ ] CLEP_INTRO_PSYCHOLOGY MCQ — session starts
 - [ ] CLEP_PRINCIPLES_OF_MARKETING MCQ — session starts
 - [ ] CLEP_PRINCIPLES_OF_MANAGEMENT MCQ — session starts
 - [ ] CLEP_INTRODUCTORY_SOCIOLOGY MCQ — session starts
+- [ ] CLEP_AMERICAN_GOVERNMENT MCQ — session starts
+- [ ] CLEP_MACROECONOMICS MCQ — session starts
+- [ ] CLEP_MICROECONOMICS MCQ — session starts
+- [ ] CLEP_BIOLOGY MCQ — session starts
+- [ ] CLEP_US_HISTORY_1 MCQ — session starts
+- [ ] CLEP_US_HISTORY_2 MCQ — session starts
+- [ ] CLEP_HUMAN_GROWTH_DEV MCQ — session starts
+- [ ] CLEP_CALCULUS MCQ — session starts
+- [ ] CLEP_CHEMISTRY MCQ — session starts
+- [ ] CLEP_FINANCIAL_ACCOUNTING MCQ — session starts
+- [ ] CLEP_AMERICAN_LITERATURE MCQ — session starts
+- [ ] CLEP_ANALYZING_INTERPRETING_LIT MCQ — session starts
+- [ ] CLEP_COLLEGE_COMP_MODULAR MCQ — session starts
+- [ ] CLEP_ENGLISH_LITERATURE MCQ — session starts
+- [ ] CLEP_HUMANITIES MCQ — session starts
+- [ ] CLEP_EDUCATIONAL_PSYCHOLOGY MCQ — session starts
+- [ ] CLEP_SOCIAL_SCIENCES_HISTORY MCQ — session starts
+- [ ] CLEP_WESTERN_CIV_1 MCQ — session starts
+- [ ] CLEP_WESTERN_CIV_2 MCQ — session starts
+- [ ] CLEP_COLLEGE_MATH MCQ — session starts
+- [ ] CLEP_NATURAL_SCIENCES MCQ — session starts
+- [ ] CLEP_PRECALCULUS MCQ — session starts
+- [ ] CLEP_INFORMATION_SYSTEMS MCQ — session starts
+- [ ] CLEP_BUSINESS_LAW MCQ — session starts
+- [ ] CLEP_FRENCH MCQ — session starts
+- [ ] CLEP_GERMAN MCQ — session starts
+- [ ] CLEP_SPANISH MCQ — session starts
+- [ ] CLEP_SPANISH_WRITING MCQ — session starts
 
 **Track enforcement (DB-backed — Beta 2.1):**
 - [ ] Register at `/register?track=clep` → DB `User.track = "clep"`
@@ -6074,6 +7698,34 @@ Integration tests: 29 passed, 6 warnings, 0 failed
   ⚠️ CLEP_PRINCIPLES_OF_MARKETING — 0 questions — AI will generate on first session
   ⚠️ CLEP_PRINCIPLES_OF_MANAGEMENT — 0 questions — AI will generate on first session
   ⚠️ CLEP_INTRODUCTORY_SOCIOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_AMERICAN_GOVERNMENT — 0 questions — AI will generate on first session
+  ⚠️ CLEP_MACROECONOMICS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_MICROECONOMICS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_BIOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_US_HISTORY_1 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_US_HISTORY_2 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_HUMAN_GROWTH_DEV — 0 questions — AI will generate on first session
+  ⚠️ CLEP_CALCULUS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_CHEMISTRY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_FINANCIAL_ACCOUNTING — 0 questions — AI will generate on first session
+  ⚠️ CLEP_AMERICAN_LITERATURE — 0 questions — AI will generate on first session
+  ⚠️ CLEP_ANALYZING_INTERPRETING_LIT — 0 questions — AI will generate on first session
+  ⚠️ CLEP_COLLEGE_COMP_MODULAR — 0 questions — AI will generate on first session
+  ⚠️ CLEP_ENGLISH_LITERATURE — 0 questions — AI will generate on first session
+  ⚠️ CLEP_HUMANITIES — 0 questions — AI will generate on first session
+  ⚠️ CLEP_EDUCATIONAL_PSYCHOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SOCIAL_SCIENCES_HISTORY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_WESTERN_CIV_1 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_WESTERN_CIV_2 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_COLLEGE_MATH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_NATURAL_SCIENCES — 0 questions — AI will generate on first session
+  ⚠️ CLEP_PRECALCULUS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_INFORMATION_SYSTEMS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_BUSINESS_LAW — 0 questions — AI will generate on first session
+  ⚠️ CLEP_FRENCH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_GERMAN — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SPANISH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SPANISH_WRITING — 0 questions — AI will generate on first session
   ✅ AP World History: Modern FRQ — 5 questions
   ✅ AP Computer Science Principles FRQ — 6 questions
   ⚠️ AP Physics 1: Algebra-Based FRQ — 0 FRQ questions — AI will generate on first session
@@ -6106,13 +7758,41 @@ Integration tests: 29 passed, 6 warnings, 0 failed
 - [ ] ACT_SCIENCE MCQ — session starts
 - [ ] ACT_READING MCQ — session starts
 
-**Practice — CLEP (6 courses, CLEP-track user + clep_enabled=true):**
+**Practice — CLEP (34 courses, CLEP-track user + clep_enabled=true):**
 - [ ] CLEP_COLLEGE_ALGEBRA MCQ — session starts
 - [ ] CLEP_COLLEGE_COMPOSITION MCQ — session starts
 - [ ] CLEP_INTRO_PSYCHOLOGY MCQ — session starts
 - [ ] CLEP_PRINCIPLES_OF_MARKETING MCQ — session starts
 - [ ] CLEP_PRINCIPLES_OF_MANAGEMENT MCQ — session starts
 - [ ] CLEP_INTRODUCTORY_SOCIOLOGY MCQ — session starts
+- [ ] CLEP_AMERICAN_GOVERNMENT MCQ — session starts
+- [ ] CLEP_MACROECONOMICS MCQ — session starts
+- [ ] CLEP_MICROECONOMICS MCQ — session starts
+- [ ] CLEP_BIOLOGY MCQ — session starts
+- [ ] CLEP_US_HISTORY_1 MCQ — session starts
+- [ ] CLEP_US_HISTORY_2 MCQ — session starts
+- [ ] CLEP_HUMAN_GROWTH_DEV MCQ — session starts
+- [ ] CLEP_CALCULUS MCQ — session starts
+- [ ] CLEP_CHEMISTRY MCQ — session starts
+- [ ] CLEP_FINANCIAL_ACCOUNTING MCQ — session starts
+- [ ] CLEP_AMERICAN_LITERATURE MCQ — session starts
+- [ ] CLEP_ANALYZING_INTERPRETING_LIT MCQ — session starts
+- [ ] CLEP_COLLEGE_COMP_MODULAR MCQ — session starts
+- [ ] CLEP_ENGLISH_LITERATURE MCQ — session starts
+- [ ] CLEP_HUMANITIES MCQ — session starts
+- [ ] CLEP_EDUCATIONAL_PSYCHOLOGY MCQ — session starts
+- [ ] CLEP_SOCIAL_SCIENCES_HISTORY MCQ — session starts
+- [ ] CLEP_WESTERN_CIV_1 MCQ — session starts
+- [ ] CLEP_WESTERN_CIV_2 MCQ — session starts
+- [ ] CLEP_COLLEGE_MATH MCQ — session starts
+- [ ] CLEP_NATURAL_SCIENCES MCQ — session starts
+- [ ] CLEP_PRECALCULUS MCQ — session starts
+- [ ] CLEP_INFORMATION_SYSTEMS MCQ — session starts
+- [ ] CLEP_BUSINESS_LAW MCQ — session starts
+- [ ] CLEP_FRENCH MCQ — session starts
+- [ ] CLEP_GERMAN MCQ — session starts
+- [ ] CLEP_SPANISH MCQ — session starts
+- [ ] CLEP_SPANISH_WRITING MCQ — session starts
 
 **Track enforcement (DB-backed — Beta 2.1):**
 - [ ] Register at `/register?track=clep` → DB `User.track = "clep"`
@@ -6241,6 +7921,34 @@ Integration tests: 29 passed, 6 warnings, 0 failed
   ⚠️ CLEP_PRINCIPLES_OF_MARKETING — 0 questions — AI will generate on first session
   ⚠️ CLEP_PRINCIPLES_OF_MANAGEMENT — 0 questions — AI will generate on first session
   ⚠️ CLEP_INTRODUCTORY_SOCIOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_AMERICAN_GOVERNMENT — 0 questions — AI will generate on first session
+  ⚠️ CLEP_MACROECONOMICS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_MICROECONOMICS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_BIOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_US_HISTORY_1 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_US_HISTORY_2 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_HUMAN_GROWTH_DEV — 0 questions — AI will generate on first session
+  ⚠️ CLEP_CALCULUS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_CHEMISTRY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_FINANCIAL_ACCOUNTING — 0 questions — AI will generate on first session
+  ⚠️ CLEP_AMERICAN_LITERATURE — 0 questions — AI will generate on first session
+  ⚠️ CLEP_ANALYZING_INTERPRETING_LIT — 0 questions — AI will generate on first session
+  ⚠️ CLEP_COLLEGE_COMP_MODULAR — 0 questions — AI will generate on first session
+  ⚠️ CLEP_ENGLISH_LITERATURE — 0 questions — AI will generate on first session
+  ⚠️ CLEP_HUMANITIES — 0 questions — AI will generate on first session
+  ⚠️ CLEP_EDUCATIONAL_PSYCHOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SOCIAL_SCIENCES_HISTORY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_WESTERN_CIV_1 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_WESTERN_CIV_2 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_COLLEGE_MATH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_NATURAL_SCIENCES — 0 questions — AI will generate on first session
+  ⚠️ CLEP_PRECALCULUS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_INFORMATION_SYSTEMS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_BUSINESS_LAW — 0 questions — AI will generate on first session
+  ⚠️ CLEP_FRENCH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_GERMAN — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SPANISH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SPANISH_WRITING — 0 questions — AI will generate on first session
   ✅ AP World History: Modern FRQ — 5 questions
   ✅ AP Computer Science Principles FRQ — 6 questions
   ⚠️ AP Physics 1: Algebra-Based FRQ — 0 FRQ questions — AI will generate on first session
@@ -6273,13 +7981,41 @@ Integration tests: 29 passed, 6 warnings, 0 failed
 - [ ] ACT_SCIENCE MCQ — session starts
 - [ ] ACT_READING MCQ — session starts
 
-**Practice — CLEP (6 courses, CLEP-track user + clep_enabled=true):**
+**Practice — CLEP (34 courses, CLEP-track user + clep_enabled=true):**
 - [ ] CLEP_COLLEGE_ALGEBRA MCQ — session starts
 - [ ] CLEP_COLLEGE_COMPOSITION MCQ — session starts
 - [ ] CLEP_INTRO_PSYCHOLOGY MCQ — session starts
 - [ ] CLEP_PRINCIPLES_OF_MARKETING MCQ — session starts
 - [ ] CLEP_PRINCIPLES_OF_MANAGEMENT MCQ — session starts
 - [ ] CLEP_INTRODUCTORY_SOCIOLOGY MCQ — session starts
+- [ ] CLEP_AMERICAN_GOVERNMENT MCQ — session starts
+- [ ] CLEP_MACROECONOMICS MCQ — session starts
+- [ ] CLEP_MICROECONOMICS MCQ — session starts
+- [ ] CLEP_BIOLOGY MCQ — session starts
+- [ ] CLEP_US_HISTORY_1 MCQ — session starts
+- [ ] CLEP_US_HISTORY_2 MCQ — session starts
+- [ ] CLEP_HUMAN_GROWTH_DEV MCQ — session starts
+- [ ] CLEP_CALCULUS MCQ — session starts
+- [ ] CLEP_CHEMISTRY MCQ — session starts
+- [ ] CLEP_FINANCIAL_ACCOUNTING MCQ — session starts
+- [ ] CLEP_AMERICAN_LITERATURE MCQ — session starts
+- [ ] CLEP_ANALYZING_INTERPRETING_LIT MCQ — session starts
+- [ ] CLEP_COLLEGE_COMP_MODULAR MCQ — session starts
+- [ ] CLEP_ENGLISH_LITERATURE MCQ — session starts
+- [ ] CLEP_HUMANITIES MCQ — session starts
+- [ ] CLEP_EDUCATIONAL_PSYCHOLOGY MCQ — session starts
+- [ ] CLEP_SOCIAL_SCIENCES_HISTORY MCQ — session starts
+- [ ] CLEP_WESTERN_CIV_1 MCQ — session starts
+- [ ] CLEP_WESTERN_CIV_2 MCQ — session starts
+- [ ] CLEP_COLLEGE_MATH MCQ — session starts
+- [ ] CLEP_NATURAL_SCIENCES MCQ — session starts
+- [ ] CLEP_PRECALCULUS MCQ — session starts
+- [ ] CLEP_INFORMATION_SYSTEMS MCQ — session starts
+- [ ] CLEP_BUSINESS_LAW MCQ — session starts
+- [ ] CLEP_FRENCH MCQ — session starts
+- [ ] CLEP_GERMAN MCQ — session starts
+- [ ] CLEP_SPANISH MCQ — session starts
+- [ ] CLEP_SPANISH_WRITING MCQ — session starts
 
 **Track enforcement (DB-backed — Beta 2.1):**
 - [ ] Register at `/register?track=clep` → DB `User.track = "clep"`
@@ -6408,6 +8144,34 @@ Integration tests: 29 passed, 6 warnings, 0 failed
   ⚠️ CLEP_PRINCIPLES_OF_MARKETING — 0 questions — AI will generate on first session
   ⚠️ CLEP_PRINCIPLES_OF_MANAGEMENT — 0 questions — AI will generate on first session
   ⚠️ CLEP_INTRODUCTORY_SOCIOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_AMERICAN_GOVERNMENT — 0 questions — AI will generate on first session
+  ⚠️ CLEP_MACROECONOMICS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_MICROECONOMICS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_BIOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_US_HISTORY_1 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_US_HISTORY_2 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_HUMAN_GROWTH_DEV — 0 questions — AI will generate on first session
+  ⚠️ CLEP_CALCULUS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_CHEMISTRY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_FINANCIAL_ACCOUNTING — 0 questions — AI will generate on first session
+  ⚠️ CLEP_AMERICAN_LITERATURE — 0 questions — AI will generate on first session
+  ⚠️ CLEP_ANALYZING_INTERPRETING_LIT — 0 questions — AI will generate on first session
+  ⚠️ CLEP_COLLEGE_COMP_MODULAR — 0 questions — AI will generate on first session
+  ⚠️ CLEP_ENGLISH_LITERATURE — 0 questions — AI will generate on first session
+  ⚠️ CLEP_HUMANITIES — 0 questions — AI will generate on first session
+  ⚠️ CLEP_EDUCATIONAL_PSYCHOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SOCIAL_SCIENCES_HISTORY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_WESTERN_CIV_1 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_WESTERN_CIV_2 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_COLLEGE_MATH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_NATURAL_SCIENCES — 0 questions — AI will generate on first session
+  ⚠️ CLEP_PRECALCULUS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_INFORMATION_SYSTEMS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_BUSINESS_LAW — 0 questions — AI will generate on first session
+  ⚠️ CLEP_FRENCH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_GERMAN — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SPANISH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SPANISH_WRITING — 0 questions — AI will generate on first session
   ✅ AP World History: Modern FRQ — 5 questions
   ✅ AP Computer Science Principles FRQ — 6 questions
   ⚠️ AP Physics 1: Algebra-Based FRQ — 0 FRQ questions — AI will generate on first session
@@ -6440,13 +8204,41 @@ Integration tests: 29 passed, 6 warnings, 0 failed
 - [ ] ACT_SCIENCE MCQ — session starts
 - [ ] ACT_READING MCQ — session starts
 
-**Practice — CLEP (6 courses, CLEP-track user + clep_enabled=true):**
+**Practice — CLEP (34 courses, CLEP-track user + clep_enabled=true):**
 - [ ] CLEP_COLLEGE_ALGEBRA MCQ — session starts
 - [ ] CLEP_COLLEGE_COMPOSITION MCQ — session starts
 - [ ] CLEP_INTRO_PSYCHOLOGY MCQ — session starts
 - [ ] CLEP_PRINCIPLES_OF_MARKETING MCQ — session starts
 - [ ] CLEP_PRINCIPLES_OF_MANAGEMENT MCQ — session starts
 - [ ] CLEP_INTRODUCTORY_SOCIOLOGY MCQ — session starts
+- [ ] CLEP_AMERICAN_GOVERNMENT MCQ — session starts
+- [ ] CLEP_MACROECONOMICS MCQ — session starts
+- [ ] CLEP_MICROECONOMICS MCQ — session starts
+- [ ] CLEP_BIOLOGY MCQ — session starts
+- [ ] CLEP_US_HISTORY_1 MCQ — session starts
+- [ ] CLEP_US_HISTORY_2 MCQ — session starts
+- [ ] CLEP_HUMAN_GROWTH_DEV MCQ — session starts
+- [ ] CLEP_CALCULUS MCQ — session starts
+- [ ] CLEP_CHEMISTRY MCQ — session starts
+- [ ] CLEP_FINANCIAL_ACCOUNTING MCQ — session starts
+- [ ] CLEP_AMERICAN_LITERATURE MCQ — session starts
+- [ ] CLEP_ANALYZING_INTERPRETING_LIT MCQ — session starts
+- [ ] CLEP_COLLEGE_COMP_MODULAR MCQ — session starts
+- [ ] CLEP_ENGLISH_LITERATURE MCQ — session starts
+- [ ] CLEP_HUMANITIES MCQ — session starts
+- [ ] CLEP_EDUCATIONAL_PSYCHOLOGY MCQ — session starts
+- [ ] CLEP_SOCIAL_SCIENCES_HISTORY MCQ — session starts
+- [ ] CLEP_WESTERN_CIV_1 MCQ — session starts
+- [ ] CLEP_WESTERN_CIV_2 MCQ — session starts
+- [ ] CLEP_COLLEGE_MATH MCQ — session starts
+- [ ] CLEP_NATURAL_SCIENCES MCQ — session starts
+- [ ] CLEP_PRECALCULUS MCQ — session starts
+- [ ] CLEP_INFORMATION_SYSTEMS MCQ — session starts
+- [ ] CLEP_BUSINESS_LAW MCQ — session starts
+- [ ] CLEP_FRENCH MCQ — session starts
+- [ ] CLEP_GERMAN MCQ — session starts
+- [ ] CLEP_SPANISH MCQ — session starts
+- [ ] CLEP_SPANISH_WRITING MCQ — session starts
 
 **Track enforcement (DB-backed — Beta 2.1):**
 - [ ] Register at `/register?track=clep` → DB `User.track = "clep"`
@@ -6575,6 +8367,34 @@ Integration tests: 29 passed, 6 warnings, 0 failed
   ⚠️ CLEP_PRINCIPLES_OF_MARKETING — 0 questions — AI will generate on first session
   ⚠️ CLEP_PRINCIPLES_OF_MANAGEMENT — 0 questions — AI will generate on first session
   ⚠️ CLEP_INTRODUCTORY_SOCIOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_AMERICAN_GOVERNMENT — 0 questions — AI will generate on first session
+  ⚠️ CLEP_MACROECONOMICS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_MICROECONOMICS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_BIOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_US_HISTORY_1 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_US_HISTORY_2 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_HUMAN_GROWTH_DEV — 0 questions — AI will generate on first session
+  ⚠️ CLEP_CALCULUS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_CHEMISTRY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_FINANCIAL_ACCOUNTING — 0 questions — AI will generate on first session
+  ⚠️ CLEP_AMERICAN_LITERATURE — 0 questions — AI will generate on first session
+  ⚠️ CLEP_ANALYZING_INTERPRETING_LIT — 0 questions — AI will generate on first session
+  ⚠️ CLEP_COLLEGE_COMP_MODULAR — 0 questions — AI will generate on first session
+  ⚠️ CLEP_ENGLISH_LITERATURE — 0 questions — AI will generate on first session
+  ⚠️ CLEP_HUMANITIES — 0 questions — AI will generate on first session
+  ⚠️ CLEP_EDUCATIONAL_PSYCHOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SOCIAL_SCIENCES_HISTORY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_WESTERN_CIV_1 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_WESTERN_CIV_2 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_COLLEGE_MATH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_NATURAL_SCIENCES — 0 questions — AI will generate on first session
+  ⚠️ CLEP_PRECALCULUS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_INFORMATION_SYSTEMS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_BUSINESS_LAW — 0 questions — AI will generate on first session
+  ⚠️ CLEP_FRENCH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_GERMAN — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SPANISH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SPANISH_WRITING — 0 questions — AI will generate on first session
   ✅ AP World History: Modern FRQ — 5 questions
   ✅ AP Computer Science Principles FRQ — 6 questions
   ⚠️ AP Physics 1: Algebra-Based FRQ — 0 FRQ questions — AI will generate on first session
@@ -6607,13 +8427,41 @@ Integration tests: 29 passed, 6 warnings, 0 failed
 - [ ] ACT_SCIENCE MCQ — session starts
 - [ ] ACT_READING MCQ — session starts
 
-**Practice — CLEP (6 courses, CLEP-track user + clep_enabled=true):**
+**Practice — CLEP (34 courses, CLEP-track user + clep_enabled=true):**
 - [ ] CLEP_COLLEGE_ALGEBRA MCQ — session starts
 - [ ] CLEP_COLLEGE_COMPOSITION MCQ — session starts
 - [ ] CLEP_INTRO_PSYCHOLOGY MCQ — session starts
 - [ ] CLEP_PRINCIPLES_OF_MARKETING MCQ — session starts
 - [ ] CLEP_PRINCIPLES_OF_MANAGEMENT MCQ — session starts
 - [ ] CLEP_INTRODUCTORY_SOCIOLOGY MCQ — session starts
+- [ ] CLEP_AMERICAN_GOVERNMENT MCQ — session starts
+- [ ] CLEP_MACROECONOMICS MCQ — session starts
+- [ ] CLEP_MICROECONOMICS MCQ — session starts
+- [ ] CLEP_BIOLOGY MCQ — session starts
+- [ ] CLEP_US_HISTORY_1 MCQ — session starts
+- [ ] CLEP_US_HISTORY_2 MCQ — session starts
+- [ ] CLEP_HUMAN_GROWTH_DEV MCQ — session starts
+- [ ] CLEP_CALCULUS MCQ — session starts
+- [ ] CLEP_CHEMISTRY MCQ — session starts
+- [ ] CLEP_FINANCIAL_ACCOUNTING MCQ — session starts
+- [ ] CLEP_AMERICAN_LITERATURE MCQ — session starts
+- [ ] CLEP_ANALYZING_INTERPRETING_LIT MCQ — session starts
+- [ ] CLEP_COLLEGE_COMP_MODULAR MCQ — session starts
+- [ ] CLEP_ENGLISH_LITERATURE MCQ — session starts
+- [ ] CLEP_HUMANITIES MCQ — session starts
+- [ ] CLEP_EDUCATIONAL_PSYCHOLOGY MCQ — session starts
+- [ ] CLEP_SOCIAL_SCIENCES_HISTORY MCQ — session starts
+- [ ] CLEP_WESTERN_CIV_1 MCQ — session starts
+- [ ] CLEP_WESTERN_CIV_2 MCQ — session starts
+- [ ] CLEP_COLLEGE_MATH MCQ — session starts
+- [ ] CLEP_NATURAL_SCIENCES MCQ — session starts
+- [ ] CLEP_PRECALCULUS MCQ — session starts
+- [ ] CLEP_INFORMATION_SYSTEMS MCQ — session starts
+- [ ] CLEP_BUSINESS_LAW MCQ — session starts
+- [ ] CLEP_FRENCH MCQ — session starts
+- [ ] CLEP_GERMAN MCQ — session starts
+- [ ] CLEP_SPANISH MCQ — session starts
+- [ ] CLEP_SPANISH_WRITING MCQ — session starts
 
 **Track enforcement (DB-backed — Beta 2.1):**
 - [ ] Register at `/register?track=clep` → DB `User.track = "clep"`
@@ -6742,6 +8590,34 @@ Integration tests: 29 passed, 6 warnings, 0 failed
   ⚠️ CLEP_PRINCIPLES_OF_MARKETING — 0 questions — AI will generate on first session
   ⚠️ CLEP_PRINCIPLES_OF_MANAGEMENT — 0 questions — AI will generate on first session
   ⚠️ CLEP_INTRODUCTORY_SOCIOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_AMERICAN_GOVERNMENT — 0 questions — AI will generate on first session
+  ⚠️ CLEP_MACROECONOMICS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_MICROECONOMICS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_BIOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_US_HISTORY_1 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_US_HISTORY_2 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_HUMAN_GROWTH_DEV — 0 questions — AI will generate on first session
+  ⚠️ CLEP_CALCULUS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_CHEMISTRY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_FINANCIAL_ACCOUNTING — 0 questions — AI will generate on first session
+  ⚠️ CLEP_AMERICAN_LITERATURE — 0 questions — AI will generate on first session
+  ⚠️ CLEP_ANALYZING_INTERPRETING_LIT — 0 questions — AI will generate on first session
+  ⚠️ CLEP_COLLEGE_COMP_MODULAR — 0 questions — AI will generate on first session
+  ⚠️ CLEP_ENGLISH_LITERATURE — 0 questions — AI will generate on first session
+  ⚠️ CLEP_HUMANITIES — 0 questions — AI will generate on first session
+  ⚠️ CLEP_EDUCATIONAL_PSYCHOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SOCIAL_SCIENCES_HISTORY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_WESTERN_CIV_1 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_WESTERN_CIV_2 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_COLLEGE_MATH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_NATURAL_SCIENCES — 0 questions — AI will generate on first session
+  ⚠️ CLEP_PRECALCULUS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_INFORMATION_SYSTEMS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_BUSINESS_LAW — 0 questions — AI will generate on first session
+  ⚠️ CLEP_FRENCH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_GERMAN — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SPANISH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SPANISH_WRITING — 0 questions — AI will generate on first session
   ✅ AP World History: Modern FRQ — 5 questions
   ✅ AP Computer Science Principles FRQ — 6 questions
   ⚠️ AP Physics 1: Algebra-Based FRQ — 0 FRQ questions — AI will generate on first session
@@ -6774,13 +8650,41 @@ Integration tests: 29 passed, 6 warnings, 0 failed
 - [ ] ACT_SCIENCE MCQ — session starts
 - [ ] ACT_READING MCQ — session starts
 
-**Practice — CLEP (6 courses, CLEP-track user + clep_enabled=true):**
+**Practice — CLEP (34 courses, CLEP-track user + clep_enabled=true):**
 - [ ] CLEP_COLLEGE_ALGEBRA MCQ — session starts
 - [ ] CLEP_COLLEGE_COMPOSITION MCQ — session starts
 - [ ] CLEP_INTRO_PSYCHOLOGY MCQ — session starts
 - [ ] CLEP_PRINCIPLES_OF_MARKETING MCQ — session starts
 - [ ] CLEP_PRINCIPLES_OF_MANAGEMENT MCQ — session starts
 - [ ] CLEP_INTRODUCTORY_SOCIOLOGY MCQ — session starts
+- [ ] CLEP_AMERICAN_GOVERNMENT MCQ — session starts
+- [ ] CLEP_MACROECONOMICS MCQ — session starts
+- [ ] CLEP_MICROECONOMICS MCQ — session starts
+- [ ] CLEP_BIOLOGY MCQ — session starts
+- [ ] CLEP_US_HISTORY_1 MCQ — session starts
+- [ ] CLEP_US_HISTORY_2 MCQ — session starts
+- [ ] CLEP_HUMAN_GROWTH_DEV MCQ — session starts
+- [ ] CLEP_CALCULUS MCQ — session starts
+- [ ] CLEP_CHEMISTRY MCQ — session starts
+- [ ] CLEP_FINANCIAL_ACCOUNTING MCQ — session starts
+- [ ] CLEP_AMERICAN_LITERATURE MCQ — session starts
+- [ ] CLEP_ANALYZING_INTERPRETING_LIT MCQ — session starts
+- [ ] CLEP_COLLEGE_COMP_MODULAR MCQ — session starts
+- [ ] CLEP_ENGLISH_LITERATURE MCQ — session starts
+- [ ] CLEP_HUMANITIES MCQ — session starts
+- [ ] CLEP_EDUCATIONAL_PSYCHOLOGY MCQ — session starts
+- [ ] CLEP_SOCIAL_SCIENCES_HISTORY MCQ — session starts
+- [ ] CLEP_WESTERN_CIV_1 MCQ — session starts
+- [ ] CLEP_WESTERN_CIV_2 MCQ — session starts
+- [ ] CLEP_COLLEGE_MATH MCQ — session starts
+- [ ] CLEP_NATURAL_SCIENCES MCQ — session starts
+- [ ] CLEP_PRECALCULUS MCQ — session starts
+- [ ] CLEP_INFORMATION_SYSTEMS MCQ — session starts
+- [ ] CLEP_BUSINESS_LAW MCQ — session starts
+- [ ] CLEP_FRENCH MCQ — session starts
+- [ ] CLEP_GERMAN MCQ — session starts
+- [ ] CLEP_SPANISH MCQ — session starts
+- [ ] CLEP_SPANISH_WRITING MCQ — session starts
 
 **Track enforcement (DB-backed — Beta 2.1):**
 - [ ] Register at `/register?track=clep` → DB `User.track = "clep"`
@@ -6909,6 +8813,34 @@ Integration tests: 29 passed, 6 warnings, 0 failed
   ⚠️ CLEP_PRINCIPLES_OF_MARKETING — 0 questions — AI will generate on first session
   ⚠️ CLEP_PRINCIPLES_OF_MANAGEMENT — 0 questions — AI will generate on first session
   ⚠️ CLEP_INTRODUCTORY_SOCIOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_AMERICAN_GOVERNMENT — 0 questions — AI will generate on first session
+  ⚠️ CLEP_MACROECONOMICS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_MICROECONOMICS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_BIOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_US_HISTORY_1 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_US_HISTORY_2 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_HUMAN_GROWTH_DEV — 0 questions — AI will generate on first session
+  ⚠️ CLEP_CALCULUS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_CHEMISTRY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_FINANCIAL_ACCOUNTING — 0 questions — AI will generate on first session
+  ⚠️ CLEP_AMERICAN_LITERATURE — 0 questions — AI will generate on first session
+  ⚠️ CLEP_ANALYZING_INTERPRETING_LIT — 0 questions — AI will generate on first session
+  ⚠️ CLEP_COLLEGE_COMP_MODULAR — 0 questions — AI will generate on first session
+  ⚠️ CLEP_ENGLISH_LITERATURE — 0 questions — AI will generate on first session
+  ⚠️ CLEP_HUMANITIES — 0 questions — AI will generate on first session
+  ⚠️ CLEP_EDUCATIONAL_PSYCHOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SOCIAL_SCIENCES_HISTORY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_WESTERN_CIV_1 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_WESTERN_CIV_2 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_COLLEGE_MATH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_NATURAL_SCIENCES — 0 questions — AI will generate on first session
+  ⚠️ CLEP_PRECALCULUS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_INFORMATION_SYSTEMS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_BUSINESS_LAW — 0 questions — AI will generate on first session
+  ⚠️ CLEP_FRENCH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_GERMAN — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SPANISH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SPANISH_WRITING — 0 questions — AI will generate on first session
   ✅ AP World History: Modern FRQ — 5 questions
   ✅ AP Computer Science Principles FRQ — 6 questions
   ⚠️ AP Physics 1: Algebra-Based FRQ — 0 FRQ questions — AI will generate on first session
@@ -6941,13 +8873,41 @@ Integration tests: 29 passed, 6 warnings, 0 failed
 - [ ] ACT_SCIENCE MCQ — session starts
 - [ ] ACT_READING MCQ — session starts
 
-**Practice — CLEP (6 courses, CLEP-track user + clep_enabled=true):**
+**Practice — CLEP (34 courses, CLEP-track user + clep_enabled=true):**
 - [ ] CLEP_COLLEGE_ALGEBRA MCQ — session starts
 - [ ] CLEP_COLLEGE_COMPOSITION MCQ — session starts
 - [ ] CLEP_INTRO_PSYCHOLOGY MCQ — session starts
 - [ ] CLEP_PRINCIPLES_OF_MARKETING MCQ — session starts
 - [ ] CLEP_PRINCIPLES_OF_MANAGEMENT MCQ — session starts
 - [ ] CLEP_INTRODUCTORY_SOCIOLOGY MCQ — session starts
+- [ ] CLEP_AMERICAN_GOVERNMENT MCQ — session starts
+- [ ] CLEP_MACROECONOMICS MCQ — session starts
+- [ ] CLEP_MICROECONOMICS MCQ — session starts
+- [ ] CLEP_BIOLOGY MCQ — session starts
+- [ ] CLEP_US_HISTORY_1 MCQ — session starts
+- [ ] CLEP_US_HISTORY_2 MCQ — session starts
+- [ ] CLEP_HUMAN_GROWTH_DEV MCQ — session starts
+- [ ] CLEP_CALCULUS MCQ — session starts
+- [ ] CLEP_CHEMISTRY MCQ — session starts
+- [ ] CLEP_FINANCIAL_ACCOUNTING MCQ — session starts
+- [ ] CLEP_AMERICAN_LITERATURE MCQ — session starts
+- [ ] CLEP_ANALYZING_INTERPRETING_LIT MCQ — session starts
+- [ ] CLEP_COLLEGE_COMP_MODULAR MCQ — session starts
+- [ ] CLEP_ENGLISH_LITERATURE MCQ — session starts
+- [ ] CLEP_HUMANITIES MCQ — session starts
+- [ ] CLEP_EDUCATIONAL_PSYCHOLOGY MCQ — session starts
+- [ ] CLEP_SOCIAL_SCIENCES_HISTORY MCQ — session starts
+- [ ] CLEP_WESTERN_CIV_1 MCQ — session starts
+- [ ] CLEP_WESTERN_CIV_2 MCQ — session starts
+- [ ] CLEP_COLLEGE_MATH MCQ — session starts
+- [ ] CLEP_NATURAL_SCIENCES MCQ — session starts
+- [ ] CLEP_PRECALCULUS MCQ — session starts
+- [ ] CLEP_INFORMATION_SYSTEMS MCQ — session starts
+- [ ] CLEP_BUSINESS_LAW MCQ — session starts
+- [ ] CLEP_FRENCH MCQ — session starts
+- [ ] CLEP_GERMAN MCQ — session starts
+- [ ] CLEP_SPANISH MCQ — session starts
+- [ ] CLEP_SPANISH_WRITING MCQ — session starts
 
 **Track enforcement (DB-backed — Beta 2.1):**
 - [ ] Register at `/register?track=clep` → DB `User.track = "clep"`
@@ -7076,6 +9036,34 @@ Integration tests: 29 passed, 6 warnings, 0 failed
   ⚠️ CLEP_PRINCIPLES_OF_MARKETING — 0 questions — AI will generate on first session
   ⚠️ CLEP_PRINCIPLES_OF_MANAGEMENT — 0 questions — AI will generate on first session
   ⚠️ CLEP_INTRODUCTORY_SOCIOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_AMERICAN_GOVERNMENT — 0 questions — AI will generate on first session
+  ⚠️ CLEP_MACROECONOMICS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_MICROECONOMICS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_BIOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_US_HISTORY_1 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_US_HISTORY_2 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_HUMAN_GROWTH_DEV — 0 questions — AI will generate on first session
+  ⚠️ CLEP_CALCULUS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_CHEMISTRY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_FINANCIAL_ACCOUNTING — 0 questions — AI will generate on first session
+  ⚠️ CLEP_AMERICAN_LITERATURE — 0 questions — AI will generate on first session
+  ⚠️ CLEP_ANALYZING_INTERPRETING_LIT — 0 questions — AI will generate on first session
+  ⚠️ CLEP_COLLEGE_COMP_MODULAR — 0 questions — AI will generate on first session
+  ⚠️ CLEP_ENGLISH_LITERATURE — 0 questions — AI will generate on first session
+  ⚠️ CLEP_HUMANITIES — 0 questions — AI will generate on first session
+  ⚠️ CLEP_EDUCATIONAL_PSYCHOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SOCIAL_SCIENCES_HISTORY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_WESTERN_CIV_1 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_WESTERN_CIV_2 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_COLLEGE_MATH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_NATURAL_SCIENCES — 0 questions — AI will generate on first session
+  ⚠️ CLEP_PRECALCULUS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_INFORMATION_SYSTEMS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_BUSINESS_LAW — 0 questions — AI will generate on first session
+  ⚠️ CLEP_FRENCH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_GERMAN — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SPANISH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SPANISH_WRITING — 0 questions — AI will generate on first session
   ✅ AP World History: Modern FRQ — 5 questions
   ✅ AP Computer Science Principles FRQ — 6 questions
   ⚠️ AP Physics 1: Algebra-Based FRQ — 0 FRQ questions — AI will generate on first session
@@ -7108,13 +9096,1588 @@ Integration tests: 29 passed, 6 warnings, 0 failed
 - [ ] ACT_SCIENCE MCQ — session starts
 - [ ] ACT_READING MCQ — session starts
 
-**Practice — CLEP (6 courses, CLEP-track user + clep_enabled=true):**
+**Practice — CLEP (34 courses, CLEP-track user + clep_enabled=true):**
 - [ ] CLEP_COLLEGE_ALGEBRA MCQ — session starts
 - [ ] CLEP_COLLEGE_COMPOSITION MCQ — session starts
 - [ ] CLEP_INTRO_PSYCHOLOGY MCQ — session starts
 - [ ] CLEP_PRINCIPLES_OF_MARKETING MCQ — session starts
 - [ ] CLEP_PRINCIPLES_OF_MANAGEMENT MCQ — session starts
 - [ ] CLEP_INTRODUCTORY_SOCIOLOGY MCQ — session starts
+- [ ] CLEP_AMERICAN_GOVERNMENT MCQ — session starts
+- [ ] CLEP_MACROECONOMICS MCQ — session starts
+- [ ] CLEP_MICROECONOMICS MCQ — session starts
+- [ ] CLEP_BIOLOGY MCQ — session starts
+- [ ] CLEP_US_HISTORY_1 MCQ — session starts
+- [ ] CLEP_US_HISTORY_2 MCQ — session starts
+- [ ] CLEP_HUMAN_GROWTH_DEV MCQ — session starts
+- [ ] CLEP_CALCULUS MCQ — session starts
+- [ ] CLEP_CHEMISTRY MCQ — session starts
+- [ ] CLEP_FINANCIAL_ACCOUNTING MCQ — session starts
+- [ ] CLEP_AMERICAN_LITERATURE MCQ — session starts
+- [ ] CLEP_ANALYZING_INTERPRETING_LIT MCQ — session starts
+- [ ] CLEP_COLLEGE_COMP_MODULAR MCQ — session starts
+- [ ] CLEP_ENGLISH_LITERATURE MCQ — session starts
+- [ ] CLEP_HUMANITIES MCQ — session starts
+- [ ] CLEP_EDUCATIONAL_PSYCHOLOGY MCQ — session starts
+- [ ] CLEP_SOCIAL_SCIENCES_HISTORY MCQ — session starts
+- [ ] CLEP_WESTERN_CIV_1 MCQ — session starts
+- [ ] CLEP_WESTERN_CIV_2 MCQ — session starts
+- [ ] CLEP_COLLEGE_MATH MCQ — session starts
+- [ ] CLEP_NATURAL_SCIENCES MCQ — session starts
+- [ ] CLEP_PRECALCULUS MCQ — session starts
+- [ ] CLEP_INFORMATION_SYSTEMS MCQ — session starts
+- [ ] CLEP_BUSINESS_LAW MCQ — session starts
+- [ ] CLEP_FRENCH MCQ — session starts
+- [ ] CLEP_GERMAN MCQ — session starts
+- [ ] CLEP_SPANISH MCQ — session starts
+- [ ] CLEP_SPANISH_WRITING MCQ — session starts
+
+**Track enforcement (DB-backed — Beta 2.1):**
+- [ ] Register at `/register?track=clep` → DB `User.track = "clep"`
+- [ ] Register at `/register?track=ap` → DB `User.track = "ap"`
+- [ ] Register (no param) → DB `User.track = "ap"` (default)
+- [ ] AP user: POST `/api/practice { course: "CLEP_COLLEGE_ALGEBRA" }` → 403
+- [ ] AP user: POST `/api/diagnostic { course: "CLEP_INTRO_PSYCHOLOGY" }` → 403
+- [ ] CLEP user: POST `/api/practice { course: "AP_WORLD_HISTORY" }` → 403
+- [ ] CLEP user: POST `/api/diagnostic { course: "AP_US_HISTORY" }` → 403
+- [ ] AP user: normal AP course practice → no 403 (200 OK)
+- [ ] Sidebar: no "Change track" button visible for any user
+- [ ] Sidebar: CLEP user sees only CLEP courses (reads from DB, not localStorage)
+- [ ] Sidebar: AP user sees AP/SAT/ACT courses (DB wins even if localStorage says "clep")
+- [ ] Onboarding: CLEP user sees only CLEP courses without localStorage dependency
+- [ ] `/api/user` response includes `user.track` field
+- [ ] Session JWT includes `track` field after login
+
+**Auth — login & registration:**
+- [ ] New credential registration → email verification sent (or auto-verified in dev)
+- [ ] Login with correct credentials → redirected to /dashboard or /onboarding
+- [ ] Login with wrong password → error toast shown, no redirect
+- [ ] Google OAuth sign-in button visible (when GOOGLE_CLIENT_ID configured)
+- [ ] Unverified email login → error "Please verify your email"
+
+**Student experience:**
+- [ ] Wrong MCQ answer → knowledge-check mini-quiz appears (count=1, within 15s)
+- [ ] Correct MCQ answer → "Go deeper with Sage →" teal pill visible
+- [ ] Ask Sage from practice → "Continue Practice" banner visible on Sage page
+- [ ] "Continue Practice" → returns to exact question position (no progress lost)
+- [ ] Session completes → summary screen with accuracy %, XP earned, AP score estimate
+- [ ] No 500 errors or blank screens during any flow above
+
+**PWA:**
+- [ ] On mobile Chrome: "Add to Home Screen" prompt appears (or menu option works)
+- [ ] Installed PWA launches in standalone mode (no browser chrome)
+- [ ] App loads from home screen without internet (cached shell)
+
+**AI & Sage:**
+- [ ] Sage answers a question within 15s
+- [ ] Sage response includes 5 sections (Core Concept, Visual Breakdown, How AP Asks, Common Traps, Memory Hook)
+- [ ] Follow-up chips appear and clicking one pre-fills the input
+
+
+---
+
+## Release Log — v2.4.0 (2026-03-23)
+
+**Deployed:** Mon, 23 Mar 2026 02:08:21 GMT
+**Version:** 2.4.0
+
+### Changes in this release
+- feat: Beta 2.4 — context-aware Sage chatbot, dashboard UX polish, Contact/Blog/FAQ pages
+- feat: landing page mockups, FAQ, rich footer, fade-in animations, testimonial avatars
+- feat: Beta 2.3 — per-module Stripe subscriptions, SEO overhaul, content optimization, daily goals
+- fix: parallelize study plan queries + add 20s AI timeout to prevent CF Workers failure
+- fix: reduce analytics to 5 queries (was 12) — fetch all sessions once, derive rest in-memory
+- fix: parallelize analytics queries to prevent CF Workers timeout, add force-dynamic to study-plan
+- feat: add weekly study schedules, score targets, How It Works nav link
+- fix: deploy email script loads .env automatically when RESEND_API_KEY not in environment
+- chore: bump to Beta 2.2 — deploy email pipeline, StudentNest AI branding
+- feat: add automatic deployment notification email to pages:deploy pipeline
+
+### Automated smoke tests
+```
+Smoke tests: 14 passed, 1 warnings, 0 failed
+  ✅ GET /
+  ✅ GET /pricing
+  ✅ GET /about
+  ✅ GET /login
+  ✅ GET /register
+  ⚠️ GET /api/ai/status — This operation was aborted
+  ✅ GET /api/feature-flags
+  ✅ POST /api/practice
+  ✅ POST /api/ai/tutor/knowledge-check
+  ✅ GET /api/analytics
+  ✅ GET /api/user
+  ✅ Feature flags latency
+  ✅ Analytics latency
+  ✅ Study plan latency
+  ✅ POST /api/ai/tutor/knowledge-check (bad input)
+```
+
+### Functional tests (authenticated regression suite)
+```
+Functional tests: 13 passed, 1 warnings, 0 failed (6.2s)
+  ✅ Test user created — userId=cmn2jqnv...
+  ✅ A1. User profile — track=ap
+  ✅ A2a. Create practice session — sessionId=cmn2jqor... 3 questions
+  ✅ A2b. Submit answer — isCorrect=false, explanation=171ch
+  ✅ A2c. Complete session — accuracy=0%, xp=0
+  ✅ A3. Analytics — totalAnswered=1, mastery units=9
+  ✅ A4. Study Plan GET — plan=null (expected for new user)
+  ✅ A5. Auth guards — unauthenticated requests correctly blocked
+  ⚠️ B1. AI Tutor — answer too short or missing
+  ✅ B2. Knowledge Check gen — 1 question(s) generated
+  ✅ B3. Knowledge Check submit — score=1/1
+  ✅ C1. Multi-course analytics — 5/5 courses returned 200
+  ✅ C2. Multi-course study plan — 4/4 courses returned 200
+  ✅ C3. Invalid course rejected — analytics returned 400
+```
+
+### Integration tests (practice coverage — all 22 courses)
+```
+Integration tests: 29 passed, 6 warnings, 0 failed
+  Total questions: 612 | Courses: 18 green, 0 yellow, 4 red
+  ✅ AI generation enabled — students will get questions even for thin courses
+  ✅ AP_WORLD_HISTORY — 67 MCQ questions
+  ✅ AP_COMPUTER_SCIENCE_PRINCIPLES — 35 MCQ questions
+  ✅ AP_PHYSICS_1 — 55 MCQ questions
+  ✅ AP_CALCULUS_AB — 42 MCQ questions
+  ✅ AP_CALCULUS_BC — 17 MCQ questions
+  ✅ AP_STATISTICS — 22 MCQ questions
+  ✅ AP_CHEMISTRY — 16 MCQ questions
+  ✅ AP_BIOLOGY — 36 MCQ questions
+  ✅ AP_US_HISTORY — 28 MCQ questions
+  ✅ AP_PSYCHOLOGY — 34 MCQ questions
+  ✅ SAT_MATH — 45 MCQ questions
+  ✅ SAT_READING_WRITING — 40 MCQ questions
+  ✅ ACT_MATH — 40 MCQ questions
+  ✅ ACT_ENGLISH — 24 MCQ questions
+  ✅ ACT_SCIENCE — 26 MCQ questions
+  ✅ ACT_READING — 32 MCQ questions
+  ✅ CLEP_COLLEGE_ALGEBRA — 9 MCQ questions
+  ✅ CLEP_COLLEGE_COMPOSITION — 6 MCQ questions
+  ⚠️ CLEP_INTRO_PSYCHOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_PRINCIPLES_OF_MARKETING — 0 questions — AI will generate on first session
+  ⚠️ CLEP_PRINCIPLES_OF_MANAGEMENT — 0 questions — AI will generate on first session
+  ⚠️ CLEP_INTRODUCTORY_SOCIOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_AMERICAN_GOVERNMENT — 0 questions — AI will generate on first session
+  ⚠️ CLEP_MACROECONOMICS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_MICROECONOMICS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_BIOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_US_HISTORY_1 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_US_HISTORY_2 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_HUMAN_GROWTH_DEV — 0 questions — AI will generate on first session
+  ⚠️ CLEP_CALCULUS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_CHEMISTRY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_FINANCIAL_ACCOUNTING — 0 questions — AI will generate on first session
+  ⚠️ CLEP_AMERICAN_LITERATURE — 0 questions — AI will generate on first session
+  ⚠️ CLEP_ANALYZING_INTERPRETING_LIT — 0 questions — AI will generate on first session
+  ⚠️ CLEP_COLLEGE_COMP_MODULAR — 0 questions — AI will generate on first session
+  ⚠️ CLEP_ENGLISH_LITERATURE — 0 questions — AI will generate on first session
+  ⚠️ CLEP_HUMANITIES — 0 questions — AI will generate on first session
+  ⚠️ CLEP_EDUCATIONAL_PSYCHOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SOCIAL_SCIENCES_HISTORY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_WESTERN_CIV_1 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_WESTERN_CIV_2 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_COLLEGE_MATH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_NATURAL_SCIENCES — 0 questions — AI will generate on first session
+  ⚠️ CLEP_PRECALCULUS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_INFORMATION_SYSTEMS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_BUSINESS_LAW — 0 questions — AI will generate on first session
+  ⚠️ CLEP_FRENCH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_GERMAN — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SPANISH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SPANISH_WRITING — 0 questions — AI will generate on first session
+  ✅ AP World History: Modern FRQ — 5 questions
+  ✅ AP Computer Science Principles FRQ — 6 questions
+  ⚠️ AP Physics 1: Algebra-Based FRQ — 0 FRQ questions — AI will generate on first session
+  ✅ AP Calculus AB FRQ — 9 questions
+  ✅ AP Calculus BC FRQ — 1 questions
+  ⚠️ AP Statistics FRQ — 0 FRQ questions — AI will generate on first session
+  ✅ AP Chemistry FRQ — 1 questions
+  ✅ AP Biology FRQ — 2 questions
+  ✅ AP US History FRQ — 6 questions
+  ✅ AP Psychology FRQ — 8 questions
+  ✅ Analytics API — 22/22 courses responding (all 401 auth guard — healthy)
+  ✅ Study Plan API — 22/22 courses responding (all 401 auth guard — healthy)
+```
+
+### Manual P0 checklist (fill in before marking release complete)
+**Practice — AP/SAT/ACT (16 courses, AP-track user):**
+- [ ] AP_WORLD_HISTORY MCQ — ALL units, ALL difficulty → session starts, questions load
+- [ ] AP_US_HISTORY MCQ — session starts
+- [ ] AP_COMPUTER_SCIENCE_PRINCIPLES MCQ — session starts
+- [ ] AP_PHYSICS_1 MCQ + FRQ — both session types start within 30s
+- [ ] AP_CALCULUS_AB MCQ — session starts
+- [ ] AP_STATISTICS MCQ — session starts
+- [ ] AP_CHEMISTRY MCQ — session starts
+- [ ] AP_BIOLOGY MCQ — session starts
+- [ ] AP_PSYCHOLOGY MCQ — session starts
+- [ ] SAT_MATH MCQ — session starts
+- [ ] SAT_READING_WRITING MCQ — session starts
+- [ ] ACT_MATH MCQ — session starts, verify 5 answer choices (A-E not A-D)
+- [ ] ACT_ENGLISH MCQ — session starts
+- [ ] ACT_SCIENCE MCQ — session starts
+- [ ] ACT_READING MCQ — session starts
+
+**Practice — CLEP (34 courses, CLEP-track user + clep_enabled=true):**
+- [ ] CLEP_COLLEGE_ALGEBRA MCQ — session starts
+- [ ] CLEP_COLLEGE_COMPOSITION MCQ — session starts
+- [ ] CLEP_INTRO_PSYCHOLOGY MCQ — session starts
+- [ ] CLEP_PRINCIPLES_OF_MARKETING MCQ — session starts
+- [ ] CLEP_PRINCIPLES_OF_MANAGEMENT MCQ — session starts
+- [ ] CLEP_INTRODUCTORY_SOCIOLOGY MCQ — session starts
+- [ ] CLEP_AMERICAN_GOVERNMENT MCQ — session starts
+- [ ] CLEP_MACROECONOMICS MCQ — session starts
+- [ ] CLEP_MICROECONOMICS MCQ — session starts
+- [ ] CLEP_BIOLOGY MCQ — session starts
+- [ ] CLEP_US_HISTORY_1 MCQ — session starts
+- [ ] CLEP_US_HISTORY_2 MCQ — session starts
+- [ ] CLEP_HUMAN_GROWTH_DEV MCQ — session starts
+- [ ] CLEP_CALCULUS MCQ — session starts
+- [ ] CLEP_CHEMISTRY MCQ — session starts
+- [ ] CLEP_FINANCIAL_ACCOUNTING MCQ — session starts
+- [ ] CLEP_AMERICAN_LITERATURE MCQ — session starts
+- [ ] CLEP_ANALYZING_INTERPRETING_LIT MCQ — session starts
+- [ ] CLEP_COLLEGE_COMP_MODULAR MCQ — session starts
+- [ ] CLEP_ENGLISH_LITERATURE MCQ — session starts
+- [ ] CLEP_HUMANITIES MCQ — session starts
+- [ ] CLEP_EDUCATIONAL_PSYCHOLOGY MCQ — session starts
+- [ ] CLEP_SOCIAL_SCIENCES_HISTORY MCQ — session starts
+- [ ] CLEP_WESTERN_CIV_1 MCQ — session starts
+- [ ] CLEP_WESTERN_CIV_2 MCQ — session starts
+- [ ] CLEP_COLLEGE_MATH MCQ — session starts
+- [ ] CLEP_NATURAL_SCIENCES MCQ — session starts
+- [ ] CLEP_PRECALCULUS MCQ — session starts
+- [ ] CLEP_INFORMATION_SYSTEMS MCQ — session starts
+- [ ] CLEP_BUSINESS_LAW MCQ — session starts
+- [ ] CLEP_FRENCH MCQ — session starts
+- [ ] CLEP_GERMAN MCQ — session starts
+- [ ] CLEP_SPANISH MCQ — session starts
+- [ ] CLEP_SPANISH_WRITING MCQ — session starts
+
+**Track enforcement (DB-backed — Beta 2.1):**
+- [ ] Register at `/register?track=clep` → DB `User.track = "clep"`
+- [ ] Register at `/register?track=ap` → DB `User.track = "ap"`
+- [ ] Register (no param) → DB `User.track = "ap"` (default)
+- [ ] AP user: POST `/api/practice { course: "CLEP_COLLEGE_ALGEBRA" }` → 403
+- [ ] AP user: POST `/api/diagnostic { course: "CLEP_INTRO_PSYCHOLOGY" }` → 403
+- [ ] CLEP user: POST `/api/practice { course: "AP_WORLD_HISTORY" }` → 403
+- [ ] CLEP user: POST `/api/diagnostic { course: "AP_US_HISTORY" }` → 403
+- [ ] AP user: normal AP course practice → no 403 (200 OK)
+- [ ] Sidebar: no "Change track" button visible for any user
+- [ ] Sidebar: CLEP user sees only CLEP courses (reads from DB, not localStorage)
+- [ ] Sidebar: AP user sees AP/SAT/ACT courses (DB wins even if localStorage says "clep")
+- [ ] Onboarding: CLEP user sees only CLEP courses without localStorage dependency
+- [ ] `/api/user` response includes `user.track` field
+- [ ] Session JWT includes `track` field after login
+
+**Auth — login & registration:**
+- [ ] New credential registration → email verification sent (or auto-verified in dev)
+- [ ] Login with correct credentials → redirected to /dashboard or /onboarding
+- [ ] Login with wrong password → error toast shown, no redirect
+- [ ] Google OAuth sign-in button visible (when GOOGLE_CLIENT_ID configured)
+- [ ] Unverified email login → error "Please verify your email"
+
+**Student experience:**
+- [ ] Wrong MCQ answer → knowledge-check mini-quiz appears (count=1, within 15s)
+- [ ] Correct MCQ answer → "Go deeper with Sage →" teal pill visible
+- [ ] Ask Sage from practice → "Continue Practice" banner visible on Sage page
+- [ ] "Continue Practice" → returns to exact question position (no progress lost)
+- [ ] Session completes → summary screen with accuracy %, XP earned, AP score estimate
+- [ ] No 500 errors or blank screens during any flow above
+
+**PWA:**
+- [ ] On mobile Chrome: "Add to Home Screen" prompt appears (or menu option works)
+- [ ] Installed PWA launches in standalone mode (no browser chrome)
+- [ ] App loads from home screen without internet (cached shell)
+
+**AI & Sage:**
+- [ ] Sage answers a question within 15s
+- [ ] Sage response includes 5 sections (Core Concept, Visual Breakdown, How AP Asks, Common Traps, Memory Hook)
+- [ ] Follow-up chips appear and clicking one pre-fills the input
+
+
+---
+
+## Release Log — v2.4.0 (2026-03-23)
+
+**Deployed:** Mon, 23 Mar 2026 02:45:22 GMT
+**Version:** 2.4.0
+
+### Changes in this release
+- feat: Beta 2.4 — context-aware Sage chatbot, dashboard UX polish, Contact/Blog/FAQ pages
+- feat: landing page mockups, FAQ, rich footer, fade-in animations, testimonial avatars
+- feat: Beta 2.3 — per-module Stripe subscriptions, SEO overhaul, content optimization, daily goals
+- fix: parallelize study plan queries + add 20s AI timeout to prevent CF Workers failure
+- fix: reduce analytics to 5 queries (was 12) — fetch all sessions once, derive rest in-memory
+- fix: parallelize analytics queries to prevent CF Workers timeout, add force-dynamic to study-plan
+- feat: add weekly study schedules, score targets, How It Works nav link
+- fix: deploy email script loads .env automatically when RESEND_API_KEY not in environment
+- chore: bump to Beta 2.2 — deploy email pipeline, StudentNest AI branding
+- feat: add automatic deployment notification email to pages:deploy pipeline
+
+### Automated smoke tests
+```
+Smoke tests: 14 passed, 1 warnings, 0 failed
+  ✅ GET /
+  ✅ GET /pricing
+  ✅ GET /about
+  ✅ GET /login
+  ✅ GET /register
+  ⚠️ GET /api/ai/status — This operation was aborted
+  ✅ GET /api/feature-flags
+  ✅ POST /api/practice
+  ✅ POST /api/ai/tutor/knowledge-check
+  ✅ GET /api/analytics
+  ✅ GET /api/user
+  ✅ Feature flags latency
+  ✅ Analytics latency
+  ✅ Study plan latency
+  ✅ POST /api/ai/tutor/knowledge-check (bad input)
+```
+
+### Functional tests (authenticated regression suite)
+```
+Functional tests: 13 passed, 1 warnings, 0 failed (6.2s)
+  ✅ Test user created — userId=cmn2l2a0...
+  ✅ A1. User profile — track=ap
+  ✅ A2a. Create practice session — sessionId=cmn2l2ar... 3 questions
+  ✅ A2b. Submit answer — isCorrect=false, explanation=762ch
+  ✅ A2c. Complete session — accuracy=0%, xp=0
+  ✅ A3. Analytics — totalAnswered=1, mastery units=9
+  ✅ A4. Study Plan GET — plan=null (expected for new user)
+  ✅ A5. Auth guards — unauthenticated requests correctly blocked
+  ⚠️ B1. AI Tutor — answer too short or missing
+  ✅ B2. Knowledge Check gen — 1 question(s) generated
+  ✅ B3. Knowledge Check submit — score=1/1
+  ✅ C1. Multi-course analytics — 5/5 courses returned 200
+  ✅ C2. Multi-course study plan — 4/4 courses returned 200
+  ✅ C3. Invalid course rejected — analytics returned 400
+```
+
+### Integration tests (practice coverage — all 22 courses)
+```
+Integration tests: 29 passed, 6 warnings, 0 failed
+  Total questions: 622 | Courses: 18 green, 0 yellow, 4 red
+  ✅ AI generation enabled — students will get questions even for thin courses
+  ✅ AP_WORLD_HISTORY — 67 MCQ questions
+  ✅ AP_COMPUTER_SCIENCE_PRINCIPLES — 35 MCQ questions
+  ✅ AP_PHYSICS_1 — 55 MCQ questions
+  ✅ AP_CALCULUS_AB — 42 MCQ questions
+  ✅ AP_CALCULUS_BC — 17 MCQ questions
+  ✅ AP_STATISTICS — 22 MCQ questions
+  ✅ AP_CHEMISTRY — 16 MCQ questions
+  ✅ AP_BIOLOGY — 36 MCQ questions
+  ✅ AP_US_HISTORY — 28 MCQ questions
+  ✅ AP_PSYCHOLOGY — 34 MCQ questions
+  ✅ SAT_MATH — 45 MCQ questions
+  ✅ SAT_READING_WRITING — 40 MCQ questions
+  ✅ ACT_MATH — 40 MCQ questions
+  ✅ ACT_ENGLISH — 24 MCQ questions
+  ✅ ACT_SCIENCE — 26 MCQ questions
+  ✅ ACT_READING — 32 MCQ questions
+  ✅ CLEP_COLLEGE_ALGEBRA — 9 MCQ questions
+  ✅ CLEP_COLLEGE_COMPOSITION — 16 MCQ questions
+  ⚠️ CLEP_INTRO_PSYCHOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_PRINCIPLES_OF_MARKETING — 0 questions — AI will generate on first session
+  ⚠️ CLEP_PRINCIPLES_OF_MANAGEMENT — 0 questions — AI will generate on first session
+  ⚠️ CLEP_INTRODUCTORY_SOCIOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_AMERICAN_GOVERNMENT — 0 questions — AI will generate on first session
+  ⚠️ CLEP_MACROECONOMICS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_MICROECONOMICS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_BIOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_US_HISTORY_1 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_US_HISTORY_2 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_HUMAN_GROWTH_DEV — 0 questions — AI will generate on first session
+  ⚠️ CLEP_CALCULUS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_CHEMISTRY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_FINANCIAL_ACCOUNTING — 0 questions — AI will generate on first session
+  ⚠️ CLEP_AMERICAN_LITERATURE — 0 questions — AI will generate on first session
+  ⚠️ CLEP_ANALYZING_INTERPRETING_LIT — 0 questions — AI will generate on first session
+  ⚠️ CLEP_COLLEGE_COMP_MODULAR — 0 questions — AI will generate on first session
+  ⚠️ CLEP_ENGLISH_LITERATURE — 0 questions — AI will generate on first session
+  ⚠️ CLEP_HUMANITIES — 0 questions — AI will generate on first session
+  ⚠️ CLEP_EDUCATIONAL_PSYCHOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SOCIAL_SCIENCES_HISTORY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_WESTERN_CIV_1 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_WESTERN_CIV_2 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_COLLEGE_MATH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_NATURAL_SCIENCES — 0 questions — AI will generate on first session
+  ⚠️ CLEP_PRECALCULUS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_INFORMATION_SYSTEMS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_BUSINESS_LAW — 0 questions — AI will generate on first session
+  ⚠️ CLEP_FRENCH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_GERMAN — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SPANISH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SPANISH_WRITING — 0 questions — AI will generate on first session
+  ✅ AP World History: Modern FRQ — 5 questions
+  ✅ AP Computer Science Principles FRQ — 6 questions
+  ⚠️ AP Physics 1: Algebra-Based FRQ — 0 FRQ questions — AI will generate on first session
+  ✅ AP Calculus AB FRQ — 9 questions
+  ✅ AP Calculus BC FRQ — 1 questions
+  ⚠️ AP Statistics FRQ — 0 FRQ questions — AI will generate on first session
+  ✅ AP Chemistry FRQ — 1 questions
+  ✅ AP Biology FRQ — 2 questions
+  ✅ AP US History FRQ — 6 questions
+  ✅ AP Psychology FRQ — 8 questions
+  ✅ Analytics API — 22/22 courses responding (all 401 auth guard — healthy)
+  ✅ Study Plan API — 22/22 courses responding (all 401 auth guard — healthy)
+```
+
+### Manual P0 checklist (fill in before marking release complete)
+**Practice — AP/SAT/ACT (16 courses, AP-track user):**
+- [ ] AP_WORLD_HISTORY MCQ — ALL units, ALL difficulty → session starts, questions load
+- [ ] AP_US_HISTORY MCQ — session starts
+- [ ] AP_COMPUTER_SCIENCE_PRINCIPLES MCQ — session starts
+- [ ] AP_PHYSICS_1 MCQ + FRQ — both session types start within 30s
+- [ ] AP_CALCULUS_AB MCQ — session starts
+- [ ] AP_STATISTICS MCQ — session starts
+- [ ] AP_CHEMISTRY MCQ — session starts
+- [ ] AP_BIOLOGY MCQ — session starts
+- [ ] AP_PSYCHOLOGY MCQ — session starts
+- [ ] SAT_MATH MCQ — session starts
+- [ ] SAT_READING_WRITING MCQ — session starts
+- [ ] ACT_MATH MCQ — session starts, verify 5 answer choices (A-E not A-D)
+- [ ] ACT_ENGLISH MCQ — session starts
+- [ ] ACT_SCIENCE MCQ — session starts
+- [ ] ACT_READING MCQ — session starts
+
+**Practice — CLEP (34 courses, CLEP-track user + clep_enabled=true):**
+- [ ] CLEP_COLLEGE_ALGEBRA MCQ — session starts
+- [ ] CLEP_COLLEGE_COMPOSITION MCQ — session starts
+- [ ] CLEP_INTRO_PSYCHOLOGY MCQ — session starts
+- [ ] CLEP_PRINCIPLES_OF_MARKETING MCQ — session starts
+- [ ] CLEP_PRINCIPLES_OF_MANAGEMENT MCQ — session starts
+- [ ] CLEP_INTRODUCTORY_SOCIOLOGY MCQ — session starts
+- [ ] CLEP_AMERICAN_GOVERNMENT MCQ — session starts
+- [ ] CLEP_MACROECONOMICS MCQ — session starts
+- [ ] CLEP_MICROECONOMICS MCQ — session starts
+- [ ] CLEP_BIOLOGY MCQ — session starts
+- [ ] CLEP_US_HISTORY_1 MCQ — session starts
+- [ ] CLEP_US_HISTORY_2 MCQ — session starts
+- [ ] CLEP_HUMAN_GROWTH_DEV MCQ — session starts
+- [ ] CLEP_CALCULUS MCQ — session starts
+- [ ] CLEP_CHEMISTRY MCQ — session starts
+- [ ] CLEP_FINANCIAL_ACCOUNTING MCQ — session starts
+- [ ] CLEP_AMERICAN_LITERATURE MCQ — session starts
+- [ ] CLEP_ANALYZING_INTERPRETING_LIT MCQ — session starts
+- [ ] CLEP_COLLEGE_COMP_MODULAR MCQ — session starts
+- [ ] CLEP_ENGLISH_LITERATURE MCQ — session starts
+- [ ] CLEP_HUMANITIES MCQ — session starts
+- [ ] CLEP_EDUCATIONAL_PSYCHOLOGY MCQ — session starts
+- [ ] CLEP_SOCIAL_SCIENCES_HISTORY MCQ — session starts
+- [ ] CLEP_WESTERN_CIV_1 MCQ — session starts
+- [ ] CLEP_WESTERN_CIV_2 MCQ — session starts
+- [ ] CLEP_COLLEGE_MATH MCQ — session starts
+- [ ] CLEP_NATURAL_SCIENCES MCQ — session starts
+- [ ] CLEP_PRECALCULUS MCQ — session starts
+- [ ] CLEP_INFORMATION_SYSTEMS MCQ — session starts
+- [ ] CLEP_BUSINESS_LAW MCQ — session starts
+- [ ] CLEP_FRENCH MCQ — session starts
+- [ ] CLEP_GERMAN MCQ — session starts
+- [ ] CLEP_SPANISH MCQ — session starts
+- [ ] CLEP_SPANISH_WRITING MCQ — session starts
+
+**Track enforcement (DB-backed — Beta 2.1):**
+- [ ] Register at `/register?track=clep` → DB `User.track = "clep"`
+- [ ] Register at `/register?track=ap` → DB `User.track = "ap"`
+- [ ] Register (no param) → DB `User.track = "ap"` (default)
+- [ ] AP user: POST `/api/practice { course: "CLEP_COLLEGE_ALGEBRA" }` → 403
+- [ ] AP user: POST `/api/diagnostic { course: "CLEP_INTRO_PSYCHOLOGY" }` → 403
+- [ ] CLEP user: POST `/api/practice { course: "AP_WORLD_HISTORY" }` → 403
+- [ ] CLEP user: POST `/api/diagnostic { course: "AP_US_HISTORY" }` → 403
+- [ ] AP user: normal AP course practice → no 403 (200 OK)
+- [ ] Sidebar: no "Change track" button visible for any user
+- [ ] Sidebar: CLEP user sees only CLEP courses (reads from DB, not localStorage)
+- [ ] Sidebar: AP user sees AP/SAT/ACT courses (DB wins even if localStorage says "clep")
+- [ ] Onboarding: CLEP user sees only CLEP courses without localStorage dependency
+- [ ] `/api/user` response includes `user.track` field
+- [ ] Session JWT includes `track` field after login
+
+**Auth — login & registration:**
+- [ ] New credential registration → email verification sent (or auto-verified in dev)
+- [ ] Login with correct credentials → redirected to /dashboard or /onboarding
+- [ ] Login with wrong password → error toast shown, no redirect
+- [ ] Google OAuth sign-in button visible (when GOOGLE_CLIENT_ID configured)
+- [ ] Unverified email login → error "Please verify your email"
+
+**Student experience:**
+- [ ] Wrong MCQ answer → knowledge-check mini-quiz appears (count=1, within 15s)
+- [ ] Correct MCQ answer → "Go deeper with Sage →" teal pill visible
+- [ ] Ask Sage from practice → "Continue Practice" banner visible on Sage page
+- [ ] "Continue Practice" → returns to exact question position (no progress lost)
+- [ ] Session completes → summary screen with accuracy %, XP earned, AP score estimate
+- [ ] No 500 errors or blank screens during any flow above
+
+**PWA:**
+- [ ] On mobile Chrome: "Add to Home Screen" prompt appears (or menu option works)
+- [ ] Installed PWA launches in standalone mode (no browser chrome)
+- [ ] App loads from home screen without internet (cached shell)
+
+**AI & Sage:**
+- [ ] Sage answers a question within 15s
+- [ ] Sage response includes 5 sections (Core Concept, Visual Breakdown, How AP Asks, Common Traps, Memory Hook)
+- [ ] Follow-up chips appear and clicking one pre-fills the input
+
+
+---
+
+## Release Log — v2.4.0 (2026-03-23)
+
+**Deployed:** Mon, 23 Mar 2026 12:35:17 GMT
+**Version:** 2.4.0
+
+### Changes in this release
+- feat: Beta 2.4 — context-aware Sage chatbot, dashboard UX polish, Contact/Blog/FAQ pages
+- feat: landing page mockups, FAQ, rich footer, fade-in animations, testimonial avatars
+- feat: Beta 2.3 — per-module Stripe subscriptions, SEO overhaul, content optimization, daily goals
+- fix: parallelize study plan queries + add 20s AI timeout to prevent CF Workers failure
+- fix: reduce analytics to 5 queries (was 12) — fetch all sessions once, derive rest in-memory
+- fix: parallelize analytics queries to prevent CF Workers timeout, add force-dynamic to study-plan
+- feat: add weekly study schedules, score targets, How It Works nav link
+- fix: deploy email script loads .env automatically when RESEND_API_KEY not in environment
+- chore: bump to Beta 2.2 — deploy email pipeline, StudentNest AI branding
+- feat: add automatic deployment notification email to pages:deploy pipeline
+
+### Automated smoke tests
+```
+Smoke tests: 14 passed, 1 warnings, 0 failed
+  ✅ GET /
+  ✅ GET /pricing
+  ✅ GET /about
+  ✅ GET /login
+  ✅ GET /register
+  ⚠️ GET /api/ai/status — This operation was aborted
+  ✅ GET /api/feature-flags
+  ✅ POST /api/practice
+  ✅ POST /api/ai/tutor/knowledge-check
+  ✅ GET /api/analytics
+  ✅ GET /api/user
+  ✅ Feature flags latency
+  ✅ Analytics latency
+  ✅ Study plan latency
+  ✅ POST /api/ai/tutor/knowledge-check (bad input)
+```
+
+### Functional tests (authenticated regression suite)
+```
+Functional tests: 13 passed, 1 warnings, 0 failed (6.6s)
+  ✅ Test user created — userId=cmn364w7...
+  ✅ A1. User profile — track=ap
+  ✅ A2a. Create practice session — sessionId=cmn364x2... 3 questions
+  ✅ A2b. Submit answer — isCorrect=false, explanation=754ch
+  ✅ A2c. Complete session — accuracy=0%, xp=0
+  ✅ A3. Analytics — totalAnswered=1, mastery units=9
+  ✅ A4. Study Plan GET — plan=null (expected for new user)
+  ✅ A5. Auth guards — unauthenticated requests correctly blocked
+  ⚠️ B1. AI Tutor — answer too short or missing
+  ✅ B2. Knowledge Check gen — 1 question(s) generated
+  ✅ B3. Knowledge Check submit — score=1/1
+  ✅ C1. Multi-course analytics — 5/5 courses returned 200
+  ✅ C2. Multi-course study plan — 4/4 courses returned 200
+  ✅ C3. Invalid course rejected — analytics returned 400
+```
+
+### Integration tests (practice coverage — all 50 courses)
+```
+Integration tests: 30 passed, 33 warnings, 0 failed
+  Total questions: 629 | Courses: 19 green, 0 yellow, 31 red
+  ✅ AI generation enabled — students will get questions even for thin courses
+  ✅ AP_WORLD_HISTORY — 67 MCQ questions
+  ✅ AP_COMPUTER_SCIENCE_PRINCIPLES — 35 MCQ questions
+  ✅ AP_PHYSICS_1 — 55 MCQ questions
+  ✅ AP_CALCULUS_AB — 42 MCQ questions
+  ✅ AP_CALCULUS_BC — 17 MCQ questions
+  ✅ AP_STATISTICS — 22 MCQ questions
+  ✅ AP_CHEMISTRY — 16 MCQ questions
+  ✅ AP_BIOLOGY — 36 MCQ questions
+  ✅ AP_US_HISTORY — 28 MCQ questions
+  ✅ AP_PSYCHOLOGY — 34 MCQ questions
+  ✅ SAT_MATH — 45 MCQ questions
+  ✅ SAT_READING_WRITING — 40 MCQ questions
+  ✅ ACT_MATH — 40 MCQ questions
+  ✅ ACT_ENGLISH — 24 MCQ questions
+  ✅ ACT_SCIENCE — 26 MCQ questions
+  ✅ ACT_READING — 32 MCQ questions
+  ✅ CLEP_COLLEGE_ALGEBRA — 11 MCQ questions
+  ✅ CLEP_COLLEGE_COMPOSITION — 16 MCQ questions
+  ✅ CLEP_INTRO_PSYCHOLOGY — 5 MCQ questions
+  ⚠️ CLEP_PRINCIPLES_OF_MARKETING — 0 questions — AI will generate on first session
+  ⚠️ CLEP_PRINCIPLES_OF_MANAGEMENT — 0 questions — AI will generate on first session
+  ⚠️ CLEP_INTRODUCTORY_SOCIOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_AMERICAN_GOVERNMENT — 0 questions — AI will generate on first session
+  ⚠️ CLEP_MACROECONOMICS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_MICROECONOMICS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_BIOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_US_HISTORY_1 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_US_HISTORY_2 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_HUMAN_GROWTH_DEV — 0 questions — AI will generate on first session
+  ⚠️ CLEP_CALCULUS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_CHEMISTRY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_FINANCIAL_ACCOUNTING — 0 questions — AI will generate on first session
+  ⚠️ CLEP_AMERICAN_LITERATURE — 0 questions — AI will generate on first session
+  ⚠️ CLEP_ANALYZING_INTERPRETING_LIT — 0 questions — AI will generate on first session
+  ⚠️ CLEP_COLLEGE_COMP_MODULAR — 0 questions — AI will generate on first session
+  ⚠️ CLEP_ENGLISH_LITERATURE — 0 questions — AI will generate on first session
+  ⚠️ CLEP_HUMANITIES — 0 questions — AI will generate on first session
+  ⚠️ CLEP_FRENCH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_GERMAN — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SPANISH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SPANISH_WRITING — 0 questions — AI will generate on first session
+  ⚠️ CLEP_EDUCATIONAL_PSYCHOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SOCIAL_SCIENCES_HISTORY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_WESTERN_CIV_1 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_WESTERN_CIV_2 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_COLLEGE_MATH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_NATURAL_SCIENCES — 0 questions — AI will generate on first session
+  ⚠️ CLEP_PRECALCULUS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_INFORMATION_SYSTEMS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_BUSINESS_LAW — 0 questions — AI will generate on first session
+  ✅ AP World History: Modern FRQ — 5 questions
+  ✅ AP Computer Science Principles FRQ — 6 questions
+  ⚠️ AP Physics 1: Algebra-Based FRQ — 0 FRQ questions — AI will generate on first session
+  ✅ AP Calculus AB FRQ — 9 questions
+  ✅ AP Calculus BC FRQ — 1 questions
+  ⚠️ AP Statistics FRQ — 0 FRQ questions — AI will generate on first session
+  ✅ AP Chemistry FRQ — 1 questions
+  ✅ AP Biology FRQ — 2 questions
+  ✅ AP US History FRQ — 6 questions
+  ✅ AP Psychology FRQ — 8 questions
+  ✅ Analytics API — 50/50 courses responding (all 401 auth guard — healthy)
+  ✅ Study Plan API — 50/50 courses responding (all 401 auth guard — healthy)
+```
+
+### Manual P0 checklist (fill in before marking release complete)
+**Practice — AP/SAT/ACT (16 courses, AP-track user):**
+- [ ] AP_WORLD_HISTORY MCQ — ALL units, ALL difficulty → session starts, questions load
+- [ ] AP_US_HISTORY MCQ — session starts
+- [ ] AP_COMPUTER_SCIENCE_PRINCIPLES MCQ — session starts
+- [ ] AP_PHYSICS_1 MCQ + FRQ — both session types start within 30s
+- [ ] AP_CALCULUS_AB MCQ — session starts
+- [ ] AP_STATISTICS MCQ — session starts
+- [ ] AP_CHEMISTRY MCQ — session starts
+- [ ] AP_BIOLOGY MCQ — session starts
+- [ ] AP_PSYCHOLOGY MCQ — session starts
+- [ ] SAT_MATH MCQ — session starts
+- [ ] SAT_READING_WRITING MCQ — session starts
+- [ ] ACT_MATH MCQ — session starts, verify 5 answer choices (A-E not A-D)
+- [ ] ACT_ENGLISH MCQ — session starts
+- [ ] ACT_SCIENCE MCQ — session starts
+- [ ] ACT_READING MCQ — session starts
+
+**Practice — CLEP (34 courses, CLEP-track user + clep_enabled=true):**
+- [ ] CLEP_COLLEGE_ALGEBRA MCQ — session starts
+- [ ] CLEP_COLLEGE_COMPOSITION MCQ — session starts
+- [ ] CLEP_INTRO_PSYCHOLOGY MCQ — session starts
+- [ ] CLEP_PRINCIPLES_OF_MARKETING MCQ — session starts
+- [ ] CLEP_PRINCIPLES_OF_MANAGEMENT MCQ — session starts
+- [ ] CLEP_INTRODUCTORY_SOCIOLOGY MCQ — session starts
+- [ ] CLEP_AMERICAN_GOVERNMENT MCQ — session starts
+- [ ] CLEP_MACROECONOMICS MCQ — session starts
+- [ ] CLEP_BIOLOGY MCQ — session starts
+- [ ] CLEP_CALCULUS MCQ — session starts
+- [ ] CLEP_CHEMISTRY MCQ — session starts
+- [ ] CLEP_FINANCIAL_ACCOUNTING MCQ — session starts
+- [ ] CLEP_AMERICAN_LITERATURE MCQ — session starts
+- [ ] CLEP_ENGLISH_LITERATURE MCQ — session starts
+- [ ] CLEP_HUMANITIES MCQ — session starts
+- [ ] CLEP_WESTERN_CIV_1 MCQ — session starts
+- [ ] CLEP_COLLEGE_MATH MCQ — session starts
+- [ ] CLEP_PRECALCULUS MCQ — session starts
+- [ ] CLEP_BUSINESS_LAW MCQ — session starts
+- [ ] CLEP_SPANISH MCQ — session starts
+
+**Track enforcement (DB-backed — Beta 2.1):**
+- [ ] Register at `/register?track=clep` → DB `User.track = "clep"`
+- [ ] Register at `/register?track=ap` → DB `User.track = "ap"`
+- [ ] Register (no param) → DB `User.track = "ap"` (default)
+- [ ] AP user: POST `/api/practice { course: "CLEP_COLLEGE_ALGEBRA" }` → 403
+- [ ] AP user: POST `/api/diagnostic { course: "CLEP_INTRO_PSYCHOLOGY" }` → 403
+- [ ] CLEP user: POST `/api/practice { course: "AP_WORLD_HISTORY" }` → 403
+- [ ] CLEP user: POST `/api/diagnostic { course: "AP_US_HISTORY" }` → 403
+- [ ] AP user: normal AP course practice → no 403 (200 OK)
+- [ ] Sidebar: no "Change track" button visible for any user
+- [ ] Sidebar: CLEP user sees only CLEP courses (reads from DB, not localStorage)
+- [ ] Sidebar: AP user sees AP/SAT/ACT courses (DB wins even if localStorage says "clep")
+- [ ] Onboarding: CLEP user sees only CLEP courses without localStorage dependency
+- [ ] `/api/user` response includes `user.track` field
+- [ ] Session JWT includes `track` field after login
+
+**Auth — login & registration:**
+- [ ] New credential registration → email verification sent (or auto-verified in dev)
+- [ ] Login with correct credentials → redirected to /dashboard or /onboarding
+- [ ] Login with wrong password → error toast shown, no redirect
+- [ ] Google OAuth sign-in button visible (when GOOGLE_CLIENT_ID configured)
+- [ ] Unverified email login → error "Please verify your email"
+
+**Student experience:**
+- [ ] Wrong MCQ answer → knowledge-check mini-quiz appears (count=1, within 15s)
+- [ ] Correct MCQ answer → "Go deeper with Sage →" teal pill visible
+- [ ] Ask Sage from practice → "Continue Practice" banner visible on Sage page
+- [ ] "Continue Practice" → returns to exact question position (no progress lost)
+- [ ] Session completes → summary screen with accuracy %, XP earned, AP score estimate
+- [ ] No 500 errors or blank screens during any flow above
+
+**PWA:**
+- [ ] On mobile Chrome: "Add to Home Screen" prompt appears (or menu option works)
+- [ ] Installed PWA launches in standalone mode (no browser chrome)
+- [ ] App loads from home screen without internet (cached shell)
+
+**AI & Sage:**
+- [ ] Sage answers a question within 15s
+- [ ] Sage response includes 5 sections (Core Concept, Visual Breakdown, How AP Asks, Common Traps, Memory Hook)
+- [ ] Follow-up chips appear and clicking one pre-fills the input
+
+
+---
+
+## Release Log — v2.4.0 (2026-03-23)
+
+**Deployed:** Mon, 23 Mar 2026 13:28:44 GMT
+**Version:** 2.4.0
+
+### Changes in this release
+- feat: Beta 2.4 — context-aware Sage chatbot, dashboard UX polish, Contact/Blog/FAQ pages
+- feat: landing page mockups, FAQ, rich footer, fade-in animations, testimonial avatars
+- feat: Beta 2.3 — per-module Stripe subscriptions, SEO overhaul, content optimization, daily goals
+- fix: parallelize study plan queries + add 20s AI timeout to prevent CF Workers failure
+- fix: reduce analytics to 5 queries (was 12) — fetch all sessions once, derive rest in-memory
+- fix: parallelize analytics queries to prevent CF Workers timeout, add force-dynamic to study-plan
+- feat: add weekly study schedules, score targets, How It Works nav link
+- fix: deploy email script loads .env automatically when RESEND_API_KEY not in environment
+- chore: bump to Beta 2.2 — deploy email pipeline, StudentNest AI branding
+- feat: add automatic deployment notification email to pages:deploy pipeline
+
+### Automated smoke tests
+```
+Smoke tests: 14 passed, 1 warnings, 0 failed
+  ✅ GET /
+  ✅ GET /pricing
+  ✅ GET /about
+  ✅ GET /login
+  ✅ GET /register
+  ⚠️ GET /api/ai/status — This operation was aborted
+  ✅ GET /api/feature-flags
+  ✅ POST /api/practice
+  ✅ POST /api/ai/tutor/knowledge-check
+  ✅ GET /api/analytics
+  ✅ GET /api/user
+  ✅ Feature flags latency
+  ✅ Analytics latency
+  ✅ Study plan latency
+  ✅ POST /api/ai/tutor/knowledge-check (bad input)
+```
+
+### Functional tests (authenticated regression suite)
+```
+Functional tests: 13 passed, 1 warnings, 0 failed (5.6s)
+  ✅ Test user created — userId=cmn381n6...
+  ✅ A1. User profile — track=ap
+  ✅ A2a. Create practice session — sessionId=cmn381nu... 3 questions
+  ✅ A2b. Submit answer — isCorrect=false, explanation=211ch
+  ✅ A2c. Complete session — accuracy=0%, xp=0
+  ✅ A3. Analytics — totalAnswered=1, mastery units=9
+  ✅ A4. Study Plan GET — plan=null (expected for new user)
+  ✅ A5. Auth guards — unauthenticated requests correctly blocked
+  ⚠️ B1. AI Tutor — answer too short or missing
+  ✅ B2. Knowledge Check gen — 1 question(s) generated
+  ✅ B3. Knowledge Check submit — score=1/1
+  ✅ C1. Multi-course analytics — 5/5 courses returned 200
+  ✅ C2. Multi-course study plan — 4/4 courses returned 200
+  ✅ C3. Invalid course rejected — analytics returned 400
+```
+
+### Integration tests (practice coverage — all 50 courses)
+```
+Integration tests: 30 passed, 33 warnings, 0 failed
+  Total questions: 648 | Courses: 19 green, 2 yellow, 29 red
+  ✅ AI generation enabled — students will get questions even for thin courses
+  ✅ AP_WORLD_HISTORY — 67 MCQ questions
+  ✅ AP_COMPUTER_SCIENCE_PRINCIPLES — 35 MCQ questions
+  ✅ AP_PHYSICS_1 — 55 MCQ questions
+  ✅ AP_CALCULUS_AB — 42 MCQ questions
+  ✅ AP_CALCULUS_BC — 17 MCQ questions
+  ✅ AP_STATISTICS — 22 MCQ questions
+  ✅ AP_CHEMISTRY — 16 MCQ questions
+  ✅ AP_BIOLOGY — 36 MCQ questions
+  ✅ AP_US_HISTORY — 28 MCQ questions
+  ✅ AP_PSYCHOLOGY — 34 MCQ questions
+  ✅ SAT_MATH — 45 MCQ questions
+  ✅ SAT_READING_WRITING — 40 MCQ questions
+  ✅ ACT_MATH — 40 MCQ questions
+  ✅ ACT_ENGLISH — 24 MCQ questions
+  ✅ ACT_SCIENCE — 26 MCQ questions
+  ✅ ACT_READING — 32 MCQ questions
+  ✅ CLEP_COLLEGE_ALGEBRA — 11 MCQ questions
+  ✅ CLEP_COLLEGE_COMPOSITION — 16 MCQ questions
+  ✅ CLEP_INTRO_PSYCHOLOGY — 20 MCQ questions
+  ⚠️ CLEP_PRINCIPLES_OF_MARKETING — only 3 questions
+  ⚠️ CLEP_PRINCIPLES_OF_MANAGEMENT — 0 questions — AI will generate on first session
+  ⚠️ CLEP_INTRODUCTORY_SOCIOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_AMERICAN_GOVERNMENT — 0 questions — AI will generate on first session
+  ⚠️ CLEP_MACROECONOMICS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_MICROECONOMICS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_BIOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_US_HISTORY_1 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_US_HISTORY_2 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_HUMAN_GROWTH_DEV — only 1 questions
+  ⚠️ CLEP_CALCULUS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_CHEMISTRY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_FINANCIAL_ACCOUNTING — 0 questions — AI will generate on first session
+  ⚠️ CLEP_AMERICAN_LITERATURE — 0 questions — AI will generate on first session
+  ⚠️ CLEP_ANALYZING_INTERPRETING_LIT — 0 questions — AI will generate on first session
+  ⚠️ CLEP_COLLEGE_COMP_MODULAR — 0 questions — AI will generate on first session
+  ⚠️ CLEP_ENGLISH_LITERATURE — 0 questions — AI will generate on first session
+  ⚠️ CLEP_HUMANITIES — 0 questions — AI will generate on first session
+  ⚠️ CLEP_FRENCH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_GERMAN — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SPANISH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SPANISH_WRITING — 0 questions — AI will generate on first session
+  ⚠️ CLEP_EDUCATIONAL_PSYCHOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SOCIAL_SCIENCES_HISTORY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_WESTERN_CIV_1 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_WESTERN_CIV_2 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_COLLEGE_MATH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_NATURAL_SCIENCES — 0 questions — AI will generate on first session
+  ⚠️ CLEP_PRECALCULUS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_INFORMATION_SYSTEMS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_BUSINESS_LAW — 0 questions — AI will generate on first session
+  ✅ AP World History: Modern FRQ — 5 questions
+  ✅ AP Computer Science Principles FRQ — 6 questions
+  ⚠️ AP Physics 1: Algebra-Based FRQ — 0 FRQ questions — AI will generate on first session
+  ✅ AP Calculus AB FRQ — 9 questions
+  ✅ AP Calculus BC FRQ — 1 questions
+  ⚠️ AP Statistics FRQ — 0 FRQ questions — AI will generate on first session
+  ✅ AP Chemistry FRQ — 1 questions
+  ✅ AP Biology FRQ — 2 questions
+  ✅ AP US History FRQ — 6 questions
+  ✅ AP Psychology FRQ — 8 questions
+  ✅ Analytics API — 50/50 courses responding (all 401 auth guard — healthy)
+  ✅ Study Plan API — 50/50 courses responding (all 401 auth guard — healthy)
+```
+
+### Manual P0 checklist (fill in before marking release complete)
+**Practice — AP/SAT/ACT (16 courses, AP-track user):**
+- [ ] AP_WORLD_HISTORY MCQ — ALL units, ALL difficulty → session starts, questions load
+- [ ] AP_US_HISTORY MCQ — session starts
+- [ ] AP_COMPUTER_SCIENCE_PRINCIPLES MCQ — session starts
+- [ ] AP_PHYSICS_1 MCQ + FRQ — both session types start within 30s
+- [ ] AP_CALCULUS_AB MCQ — session starts
+- [ ] AP_STATISTICS MCQ — session starts
+- [ ] AP_CHEMISTRY MCQ — session starts
+- [ ] AP_BIOLOGY MCQ — session starts
+- [ ] AP_PSYCHOLOGY MCQ — session starts
+- [ ] SAT_MATH MCQ — session starts
+- [ ] SAT_READING_WRITING MCQ — session starts
+- [ ] ACT_MATH MCQ — session starts, verify 5 answer choices (A-E not A-D)
+- [ ] ACT_ENGLISH MCQ — session starts
+- [ ] ACT_SCIENCE MCQ — session starts
+- [ ] ACT_READING MCQ — session starts
+
+**Practice — CLEP (34 courses, CLEP-track user + clep_enabled=true):**
+- [ ] CLEP_COLLEGE_ALGEBRA MCQ — session starts
+- [ ] CLEP_COLLEGE_COMPOSITION MCQ — session starts
+- [ ] CLEP_INTRO_PSYCHOLOGY MCQ — session starts
+- [ ] CLEP_PRINCIPLES_OF_MARKETING MCQ — session starts
+- [ ] CLEP_PRINCIPLES_OF_MANAGEMENT MCQ — session starts
+- [ ] CLEP_INTRODUCTORY_SOCIOLOGY MCQ — session starts
+- [ ] CLEP_AMERICAN_GOVERNMENT MCQ — session starts
+- [ ] CLEP_MACROECONOMICS MCQ — session starts
+- [ ] CLEP_BIOLOGY MCQ — session starts
+- [ ] CLEP_CALCULUS MCQ — session starts
+- [ ] CLEP_CHEMISTRY MCQ — session starts
+- [ ] CLEP_FINANCIAL_ACCOUNTING MCQ — session starts
+- [ ] CLEP_AMERICAN_LITERATURE MCQ — session starts
+- [ ] CLEP_ENGLISH_LITERATURE MCQ — session starts
+- [ ] CLEP_HUMANITIES MCQ — session starts
+- [ ] CLEP_WESTERN_CIV_1 MCQ — session starts
+- [ ] CLEP_COLLEGE_MATH MCQ — session starts
+- [ ] CLEP_PRECALCULUS MCQ — session starts
+- [ ] CLEP_BUSINESS_LAW MCQ — session starts
+- [ ] CLEP_SPANISH MCQ — session starts
+- [ ] CLEP_MICROECONOMICS MCQ — session starts
+- [ ] CLEP_US_HISTORY_1 MCQ — session starts
+- [ ] CLEP_US_HISTORY_2 MCQ — session starts
+- [ ] CLEP_HUMAN_GROWTH_DEV MCQ — session starts
+- [ ] CLEP_ANALYZING_INTERPRETING_LIT MCQ — session starts
+- [ ] CLEP_COLLEGE_COMP_MODULAR MCQ — session starts
+- [ ] CLEP_EDUCATIONAL_PSYCHOLOGY MCQ — session starts
+- [ ] CLEP_SOCIAL_SCIENCES_HISTORY MCQ — session starts
+- [ ] CLEP_WESTERN_CIV_2 MCQ — session starts
+- [ ] CLEP_NATURAL_SCIENCES MCQ — session starts
+- [ ] CLEP_INFORMATION_SYSTEMS MCQ — session starts
+- [ ] CLEP_FRENCH MCQ — session starts
+- [ ] CLEP_GERMAN MCQ — session starts
+- [ ] CLEP_SPANISH_WRITING MCQ — session starts
+
+**Track enforcement (DB-backed — Beta 2.1):**
+- [ ] Register at `/register?track=clep` → DB `User.track = "clep"`
+- [ ] Register at `/register?track=ap` → DB `User.track = "ap"`
+- [ ] Register (no param) → DB `User.track = "ap"` (default)
+- [ ] AP user: POST `/api/practice { course: "CLEP_COLLEGE_ALGEBRA" }` → 403
+- [ ] AP user: POST `/api/diagnostic { course: "CLEP_INTRO_PSYCHOLOGY" }` → 403
+- [ ] CLEP user: POST `/api/practice { course: "AP_WORLD_HISTORY" }` → 403
+- [ ] CLEP user: POST `/api/diagnostic { course: "AP_US_HISTORY" }` → 403
+- [ ] AP user: normal AP course practice → no 403 (200 OK)
+- [ ] Sidebar: no "Change track" button visible for any user
+- [ ] Sidebar: CLEP user sees only CLEP courses (reads from DB, not localStorage)
+- [ ] Sidebar: AP user sees AP/SAT/ACT courses (DB wins even if localStorage says "clep")
+- [ ] Onboarding: CLEP user sees only CLEP courses without localStorage dependency
+- [ ] `/api/user` response includes `user.track` field
+- [ ] Session JWT includes `track` field after login
+
+**Auth — login & registration:**
+- [ ] New credential registration → email verification sent (or auto-verified in dev)
+- [ ] Login with correct credentials → redirected to /dashboard or /onboarding
+- [ ] Login with wrong password → error toast shown, no redirect
+- [ ] Google OAuth sign-in button visible (when GOOGLE_CLIENT_ID configured)
+- [ ] Unverified email login → error "Please verify your email"
+
+**Student experience:**
+- [ ] Wrong MCQ answer → knowledge-check mini-quiz appears (count=1, within 15s)
+- [ ] Correct MCQ answer → "Go deeper with Sage →" teal pill visible
+- [ ] Ask Sage from practice → "Continue Practice" banner visible on Sage page
+- [ ] "Continue Practice" → returns to exact question position (no progress lost)
+- [ ] Session completes → summary screen with accuracy %, XP earned, AP score estimate
+- [ ] No 500 errors or blank screens during any flow above
+
+**PWA:**
+- [ ] On mobile Chrome: "Add to Home Screen" prompt appears (or menu option works)
+- [ ] Installed PWA launches in standalone mode (no browser chrome)
+- [ ] App loads from home screen without internet (cached shell)
+
+**AI & Sage:**
+- [ ] Sage answers a question within 15s
+- [ ] Sage response includes 5 sections (Core Concept, Visual Breakdown, How AP Asks, Common Traps, Memory Hook)
+- [ ] Follow-up chips appear and clicking one pre-fills the input
+
+
+---
+
+## Release Log — v2.4.0 (2026-03-23)
+
+**Deployed:** Mon, 23 Mar 2026 13:34:45 GMT
+**Version:** 2.4.0
+
+### Changes in this release
+- feat: Beta 2.4 — context-aware Sage chatbot, dashboard UX polish, Contact/Blog/FAQ pages
+- feat: landing page mockups, FAQ, rich footer, fade-in animations, testimonial avatars
+- feat: Beta 2.3 — per-module Stripe subscriptions, SEO overhaul, content optimization, daily goals
+- fix: parallelize study plan queries + add 20s AI timeout to prevent CF Workers failure
+- fix: reduce analytics to 5 queries (was 12) — fetch all sessions once, derive rest in-memory
+- fix: parallelize analytics queries to prevent CF Workers timeout, add force-dynamic to study-plan
+- feat: add weekly study schedules, score targets, How It Works nav link
+- fix: deploy email script loads .env automatically when RESEND_API_KEY not in environment
+- chore: bump to Beta 2.2 — deploy email pipeline, StudentNest AI branding
+- feat: add automatic deployment notification email to pages:deploy pipeline
+
+### Automated smoke tests
+```
+Smoke tests: 14 passed, 1 warnings, 0 failed
+  ✅ GET /
+  ✅ GET /pricing
+  ✅ GET /about
+  ✅ GET /login
+  ✅ GET /register
+  ⚠️ GET /api/ai/status — This operation was aborted
+  ✅ GET /api/feature-flags
+  ✅ POST /api/practice
+  ✅ POST /api/ai/tutor/knowledge-check
+  ✅ GET /api/analytics
+  ✅ GET /api/user
+  ✅ Feature flags latency
+  ✅ Analytics latency
+  ✅ Study plan latency
+  ✅ POST /api/ai/tutor/knowledge-check (bad input)
+```
+
+### Functional tests (authenticated regression suite)
+```
+Functional tests: 13 passed, 1 warnings, 0 failed (6.7s)
+  ✅ Test user created — userId=cmn389dk...
+  ✅ A1. User profile — track=ap
+  ✅ A2a. Create practice session — sessionId=cmn389eb... 3 questions
+  ✅ A2b. Submit answer — isCorrect=false, explanation=195ch
+  ✅ A2c. Complete session — accuracy=0%, xp=0
+  ✅ A3. Analytics — totalAnswered=1, mastery units=9
+  ✅ A4. Study Plan GET — plan=null (expected for new user)
+  ✅ A5. Auth guards — unauthenticated requests correctly blocked
+  ⚠️ B1. AI Tutor — answer too short or missing
+  ✅ B2. Knowledge Check gen — 1 question(s) generated
+  ✅ B3. Knowledge Check submit — score=1/1
+  ✅ C1. Multi-course analytics — 5/5 courses returned 200
+  ✅ C2. Multi-course study plan — 4/4 courses returned 200
+  ✅ C3. Invalid course rejected — analytics returned 400
+```
+
+### Integration tests (practice coverage — all 50 courses)
+```
+Integration tests: 30 passed, 33 warnings, 0 failed
+  Total questions: 648 | Courses: 19 green, 2 yellow, 29 red
+  ✅ AI generation enabled — students will get questions even for thin courses
+  ✅ AP_WORLD_HISTORY — 67 MCQ questions
+  ✅ AP_COMPUTER_SCIENCE_PRINCIPLES — 35 MCQ questions
+  ✅ AP_PHYSICS_1 — 55 MCQ questions
+  ✅ AP_CALCULUS_AB — 42 MCQ questions
+  ✅ AP_CALCULUS_BC — 17 MCQ questions
+  ✅ AP_STATISTICS — 22 MCQ questions
+  ✅ AP_CHEMISTRY — 16 MCQ questions
+  ✅ AP_BIOLOGY — 36 MCQ questions
+  ✅ AP_US_HISTORY — 28 MCQ questions
+  ✅ AP_PSYCHOLOGY — 34 MCQ questions
+  ✅ SAT_MATH — 45 MCQ questions
+  ✅ SAT_READING_WRITING — 40 MCQ questions
+  ✅ ACT_MATH — 40 MCQ questions
+  ✅ ACT_ENGLISH — 24 MCQ questions
+  ✅ ACT_SCIENCE — 26 MCQ questions
+  ✅ ACT_READING — 32 MCQ questions
+  ✅ CLEP_COLLEGE_ALGEBRA — 11 MCQ questions
+  ✅ CLEP_COLLEGE_COMPOSITION — 16 MCQ questions
+  ✅ CLEP_INTRO_PSYCHOLOGY — 20 MCQ questions
+  ⚠️ CLEP_PRINCIPLES_OF_MARKETING — only 3 questions
+  ⚠️ CLEP_PRINCIPLES_OF_MANAGEMENT — 0 questions — AI will generate on first session
+  ⚠️ CLEP_INTRODUCTORY_SOCIOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_AMERICAN_GOVERNMENT — 0 questions — AI will generate on first session
+  ⚠️ CLEP_MACROECONOMICS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_MICROECONOMICS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_BIOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_US_HISTORY_1 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_US_HISTORY_2 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_HUMAN_GROWTH_DEV — only 1 questions
+  ⚠️ CLEP_CALCULUS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_CHEMISTRY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_FINANCIAL_ACCOUNTING — 0 questions — AI will generate on first session
+  ⚠️ CLEP_AMERICAN_LITERATURE — 0 questions — AI will generate on first session
+  ⚠️ CLEP_ANALYZING_INTERPRETING_LIT — 0 questions — AI will generate on first session
+  ⚠️ CLEP_COLLEGE_COMP_MODULAR — 0 questions — AI will generate on first session
+  ⚠️ CLEP_ENGLISH_LITERATURE — 0 questions — AI will generate on first session
+  ⚠️ CLEP_HUMANITIES — 0 questions — AI will generate on first session
+  ⚠️ CLEP_FRENCH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_GERMAN — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SPANISH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SPANISH_WRITING — 0 questions — AI will generate on first session
+  ⚠️ CLEP_EDUCATIONAL_PSYCHOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SOCIAL_SCIENCES_HISTORY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_WESTERN_CIV_1 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_WESTERN_CIV_2 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_COLLEGE_MATH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_NATURAL_SCIENCES — 0 questions — AI will generate on first session
+  ⚠️ CLEP_PRECALCULUS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_INFORMATION_SYSTEMS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_BUSINESS_LAW — 0 questions — AI will generate on first session
+  ✅ AP World History: Modern FRQ — 5 questions
+  ✅ AP Computer Science Principles FRQ — 6 questions
+  ⚠️ AP Physics 1: Algebra-Based FRQ — 0 FRQ questions — AI will generate on first session
+  ✅ AP Calculus AB FRQ — 9 questions
+  ✅ AP Calculus BC FRQ — 1 questions
+  ⚠️ AP Statistics FRQ — 0 FRQ questions — AI will generate on first session
+  ✅ AP Chemistry FRQ — 1 questions
+  ✅ AP Biology FRQ — 2 questions
+  ✅ AP US History FRQ — 6 questions
+  ✅ AP Psychology FRQ — 8 questions
+  ✅ Analytics API — 50/50 courses responding (all 401 auth guard — healthy)
+  ✅ Study Plan API — 50/50 courses responding (all 401 auth guard — healthy)
+```
+
+### Manual P0 checklist (fill in before marking release complete)
+**Practice — AP/SAT/ACT (16 courses, AP-track user):**
+- [ ] AP_WORLD_HISTORY MCQ — ALL units, ALL difficulty → session starts, questions load
+- [ ] AP_US_HISTORY MCQ — session starts
+- [ ] AP_COMPUTER_SCIENCE_PRINCIPLES MCQ — session starts
+- [ ] AP_PHYSICS_1 MCQ + FRQ — both session types start within 30s
+- [ ] AP_CALCULUS_AB MCQ — session starts
+- [ ] AP_STATISTICS MCQ — session starts
+- [ ] AP_CHEMISTRY MCQ — session starts
+- [ ] AP_BIOLOGY MCQ — session starts
+- [ ] AP_PSYCHOLOGY MCQ — session starts
+- [ ] SAT_MATH MCQ — session starts
+- [ ] SAT_READING_WRITING MCQ — session starts
+- [ ] ACT_MATH MCQ — session starts, verify 5 answer choices (A-E not A-D)
+- [ ] ACT_ENGLISH MCQ — session starts
+- [ ] ACT_SCIENCE MCQ — session starts
+- [ ] ACT_READING MCQ — session starts
+
+**Practice — CLEP (34 courses, CLEP-track user + clep_enabled=true):**
+- [ ] CLEP_COLLEGE_ALGEBRA MCQ — session starts
+- [ ] CLEP_COLLEGE_COMPOSITION MCQ — session starts
+- [ ] CLEP_INTRO_PSYCHOLOGY MCQ — session starts
+- [ ] CLEP_PRINCIPLES_OF_MARKETING MCQ — session starts
+- [ ] CLEP_PRINCIPLES_OF_MANAGEMENT MCQ — session starts
+- [ ] CLEP_INTRODUCTORY_SOCIOLOGY MCQ — session starts
+- [ ] CLEP_AMERICAN_GOVERNMENT MCQ — session starts
+- [ ] CLEP_MACROECONOMICS MCQ — session starts
+- [ ] CLEP_BIOLOGY MCQ — session starts
+- [ ] CLEP_CALCULUS MCQ — session starts
+- [ ] CLEP_CHEMISTRY MCQ — session starts
+- [ ] CLEP_FINANCIAL_ACCOUNTING MCQ — session starts
+- [ ] CLEP_AMERICAN_LITERATURE MCQ — session starts
+- [ ] CLEP_ENGLISH_LITERATURE MCQ — session starts
+- [ ] CLEP_HUMANITIES MCQ — session starts
+- [ ] CLEP_WESTERN_CIV_1 MCQ — session starts
+- [ ] CLEP_COLLEGE_MATH MCQ — session starts
+- [ ] CLEP_PRECALCULUS MCQ — session starts
+- [ ] CLEP_BUSINESS_LAW MCQ — session starts
+- [ ] CLEP_SPANISH MCQ — session starts
+- [ ] CLEP_MICROECONOMICS MCQ — session starts
+- [ ] CLEP_US_HISTORY_1 MCQ — session starts
+- [ ] CLEP_US_HISTORY_2 MCQ — session starts
+- [ ] CLEP_HUMAN_GROWTH_DEV MCQ — session starts
+- [ ] CLEP_ANALYZING_INTERPRETING_LIT MCQ — session starts
+- [ ] CLEP_COLLEGE_COMP_MODULAR MCQ — session starts
+- [ ] CLEP_EDUCATIONAL_PSYCHOLOGY MCQ — session starts
+- [ ] CLEP_SOCIAL_SCIENCES_HISTORY MCQ — session starts
+- [ ] CLEP_WESTERN_CIV_2 MCQ — session starts
+- [ ] CLEP_NATURAL_SCIENCES MCQ — session starts
+- [ ] CLEP_INFORMATION_SYSTEMS MCQ — session starts
+- [ ] CLEP_FRENCH MCQ — session starts
+- [ ] CLEP_GERMAN MCQ — session starts
+- [ ] CLEP_SPANISH_WRITING MCQ — session starts
+
+**Track enforcement (DB-backed — Beta 2.1):**
+- [ ] Register at `/register?track=clep` → DB `User.track = "clep"`
+- [ ] Register at `/register?track=ap` → DB `User.track = "ap"`
+- [ ] Register (no param) → DB `User.track = "ap"` (default)
+- [ ] AP user: POST `/api/practice { course: "CLEP_COLLEGE_ALGEBRA" }` → 403
+- [ ] AP user: POST `/api/diagnostic { course: "CLEP_INTRO_PSYCHOLOGY" }` → 403
+- [ ] CLEP user: POST `/api/practice { course: "AP_WORLD_HISTORY" }` → 403
+- [ ] CLEP user: POST `/api/diagnostic { course: "AP_US_HISTORY" }` → 403
+- [ ] AP user: normal AP course practice → no 403 (200 OK)
+- [ ] Sidebar: no "Change track" button visible for any user
+- [ ] Sidebar: CLEP user sees only CLEP courses (reads from DB, not localStorage)
+- [ ] Sidebar: AP user sees AP/SAT/ACT courses (DB wins even if localStorage says "clep")
+- [ ] Onboarding: CLEP user sees only CLEP courses without localStorage dependency
+- [ ] `/api/user` response includes `user.track` field
+- [ ] Session JWT includes `track` field after login
+
+**Auth — login & registration:**
+- [ ] New credential registration → email verification sent (or auto-verified in dev)
+- [ ] Login with correct credentials → redirected to /dashboard or /onboarding
+- [ ] Login with wrong password → error toast shown, no redirect
+- [ ] Google OAuth sign-in button visible (when GOOGLE_CLIENT_ID configured)
+- [ ] Unverified email login → error "Please verify your email"
+
+**Student experience:**
+- [ ] Wrong MCQ answer → knowledge-check mini-quiz appears (count=1, within 15s)
+- [ ] Correct MCQ answer → "Go deeper with Sage →" teal pill visible
+- [ ] Ask Sage from practice → "Continue Practice" banner visible on Sage page
+- [ ] "Continue Practice" → returns to exact question position (no progress lost)
+- [ ] Session completes → summary screen with accuracy %, XP earned, AP score estimate
+- [ ] No 500 errors or blank screens during any flow above
+
+**PWA:**
+- [ ] On mobile Chrome: "Add to Home Screen" prompt appears (or menu option works)
+- [ ] Installed PWA launches in standalone mode (no browser chrome)
+- [ ] App loads from home screen without internet (cached shell)
+
+**AI & Sage:**
+- [ ] Sage answers a question within 15s
+- [ ] Sage response includes 5 sections (Core Concept, Visual Breakdown, How AP Asks, Common Traps, Memory Hook)
+- [ ] Follow-up chips appear and clicking one pre-fills the input
+
+
+---
+
+## Release Log — v2.4.0 (2026-03-23)
+
+**Deployed:** Mon, 23 Mar 2026 13:39:20 GMT
+**Version:** 2.4.0
+
+### Changes in this release
+- feat: Beta 2.4 — context-aware Sage chatbot, dashboard UX polish, Contact/Blog/FAQ pages
+- feat: landing page mockups, FAQ, rich footer, fade-in animations, testimonial avatars
+- feat: Beta 2.3 — per-module Stripe subscriptions, SEO overhaul, content optimization, daily goals
+- fix: parallelize study plan queries + add 20s AI timeout to prevent CF Workers failure
+- fix: reduce analytics to 5 queries (was 12) — fetch all sessions once, derive rest in-memory
+- fix: parallelize analytics queries to prevent CF Workers timeout, add force-dynamic to study-plan
+- feat: add weekly study schedules, score targets, How It Works nav link
+- fix: deploy email script loads .env automatically when RESEND_API_KEY not in environment
+- chore: bump to Beta 2.2 — deploy email pipeline, StudentNest AI branding
+- feat: add automatic deployment notification email to pages:deploy pipeline
+
+### Automated smoke tests
+```
+Smoke tests: 14 passed, 1 warnings, 0 failed
+  ✅ GET /
+  ✅ GET /pricing
+  ✅ GET /about
+  ✅ GET /login
+  ✅ GET /register
+  ⚠️ GET /api/ai/status — This operation was aborted
+  ✅ GET /api/feature-flags
+  ✅ POST /api/practice
+  ✅ POST /api/ai/tutor/knowledge-check
+  ✅ GET /api/analytics
+  ✅ GET /api/user
+  ✅ Feature flags latency
+  ✅ Analytics latency
+  ✅ Study plan latency
+  ✅ POST /api/ai/tutor/knowledge-check (bad input)
+```
+
+### Functional tests (authenticated regression suite)
+```
+Functional tests: 13 passed, 1 warnings, 0 failed (5.1s)
+  ✅ Test user created — userId=cmn38fae...
+  ✅ A1. User profile — track=ap
+  ✅ A2a. Create practice session — sessionId=cmn38fb1... 3 questions
+  ✅ A2b. Submit answer — isCorrect=false, explanation=633ch
+  ✅ A2c. Complete session — accuracy=0%, xp=0
+  ✅ A3. Analytics — totalAnswered=1, mastery units=9
+  ✅ A4. Study Plan GET — plan=null (expected for new user)
+  ✅ A5. Auth guards — unauthenticated requests correctly blocked
+  ⚠️ B1. AI Tutor — answer too short or missing
+  ✅ B2. Knowledge Check gen — 1 question(s) generated
+  ✅ B3. Knowledge Check submit — score=1/1
+  ✅ C1. Multi-course analytics — 5/5 courses returned 200
+  ✅ C2. Multi-course study plan — 4/4 courses returned 200
+  ✅ C3. Invalid course rejected — analytics returned 400
+```
+
+### Integration tests (practice coverage — all 50 courses)
+```
+Integration tests: 30 passed, 33 warnings, 0 failed
+  Total questions: 648 | Courses: 19 green, 2 yellow, 29 red
+  ✅ AI generation enabled — students will get questions even for thin courses
+  ✅ AP_WORLD_HISTORY — 67 MCQ questions
+  ✅ AP_COMPUTER_SCIENCE_PRINCIPLES — 35 MCQ questions
+  ✅ AP_PHYSICS_1 — 55 MCQ questions
+  ✅ AP_CALCULUS_AB — 42 MCQ questions
+  ✅ AP_CALCULUS_BC — 17 MCQ questions
+  ✅ AP_STATISTICS — 22 MCQ questions
+  ✅ AP_CHEMISTRY — 16 MCQ questions
+  ✅ AP_BIOLOGY — 36 MCQ questions
+  ✅ AP_US_HISTORY — 28 MCQ questions
+  ✅ AP_PSYCHOLOGY — 34 MCQ questions
+  ✅ SAT_MATH — 45 MCQ questions
+  ✅ SAT_READING_WRITING — 40 MCQ questions
+  ✅ ACT_MATH — 40 MCQ questions
+  ✅ ACT_ENGLISH — 24 MCQ questions
+  ✅ ACT_SCIENCE — 26 MCQ questions
+  ✅ ACT_READING — 32 MCQ questions
+  ✅ CLEP_COLLEGE_ALGEBRA — 11 MCQ questions
+  ✅ CLEP_COLLEGE_COMPOSITION — 16 MCQ questions
+  ✅ CLEP_INTRO_PSYCHOLOGY — 20 MCQ questions
+  ⚠️ CLEP_PRINCIPLES_OF_MARKETING — only 3 questions
+  ⚠️ CLEP_PRINCIPLES_OF_MANAGEMENT — 0 questions — AI will generate on first session
+  ⚠️ CLEP_INTRODUCTORY_SOCIOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_AMERICAN_GOVERNMENT — 0 questions — AI will generate on first session
+  ⚠️ CLEP_MACROECONOMICS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_MICROECONOMICS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_BIOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_US_HISTORY_1 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_US_HISTORY_2 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_HUMAN_GROWTH_DEV — only 1 questions
+  ⚠️ CLEP_CALCULUS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_CHEMISTRY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_FINANCIAL_ACCOUNTING — 0 questions — AI will generate on first session
+  ⚠️ CLEP_AMERICAN_LITERATURE — 0 questions — AI will generate on first session
+  ⚠️ CLEP_ANALYZING_INTERPRETING_LIT — 0 questions — AI will generate on first session
+  ⚠️ CLEP_COLLEGE_COMP_MODULAR — 0 questions — AI will generate on first session
+  ⚠️ CLEP_ENGLISH_LITERATURE — 0 questions — AI will generate on first session
+  ⚠️ CLEP_HUMANITIES — 0 questions — AI will generate on first session
+  ⚠️ CLEP_FRENCH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_GERMAN — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SPANISH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SPANISH_WRITING — 0 questions — AI will generate on first session
+  ⚠️ CLEP_EDUCATIONAL_PSYCHOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SOCIAL_SCIENCES_HISTORY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_WESTERN_CIV_1 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_WESTERN_CIV_2 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_COLLEGE_MATH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_NATURAL_SCIENCES — 0 questions — AI will generate on first session
+  ⚠️ CLEP_PRECALCULUS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_INFORMATION_SYSTEMS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_BUSINESS_LAW — 0 questions — AI will generate on first session
+  ✅ AP World History: Modern FRQ — 5 questions
+  ✅ AP Computer Science Principles FRQ — 6 questions
+  ⚠️ AP Physics 1: Algebra-Based FRQ — 0 FRQ questions — AI will generate on first session
+  ✅ AP Calculus AB FRQ — 9 questions
+  ✅ AP Calculus BC FRQ — 1 questions
+  ⚠️ AP Statistics FRQ — 0 FRQ questions — AI will generate on first session
+  ✅ AP Chemistry FRQ — 1 questions
+  ✅ AP Biology FRQ — 2 questions
+  ✅ AP US History FRQ — 6 questions
+  ✅ AP Psychology FRQ — 8 questions
+  ✅ Analytics API — 50/50 courses responding (all 401 auth guard — healthy)
+  ✅ Study Plan API — 50/50 courses responding (all 401 auth guard — healthy)
+```
+
+### Manual P0 checklist (fill in before marking release complete)
+**Practice — AP/SAT/ACT (16 courses, AP-track user):**
+- [ ] AP_WORLD_HISTORY MCQ — ALL units, ALL difficulty → session starts, questions load
+- [ ] AP_US_HISTORY MCQ — session starts
+- [ ] AP_COMPUTER_SCIENCE_PRINCIPLES MCQ — session starts
+- [ ] AP_PHYSICS_1 MCQ + FRQ — both session types start within 30s
+- [ ] AP_CALCULUS_AB MCQ — session starts
+- [ ] AP_STATISTICS MCQ — session starts
+- [ ] AP_CHEMISTRY MCQ — session starts
+- [ ] AP_BIOLOGY MCQ — session starts
+- [ ] AP_PSYCHOLOGY MCQ — session starts
+- [ ] SAT_MATH MCQ — session starts
+- [ ] SAT_READING_WRITING MCQ — session starts
+- [ ] ACT_MATH MCQ — session starts, verify 5 answer choices (A-E not A-D)
+- [ ] ACT_ENGLISH MCQ — session starts
+- [ ] ACT_SCIENCE MCQ — session starts
+- [ ] ACT_READING MCQ — session starts
+
+**Practice — CLEP (34 courses, CLEP-track user + clep_enabled=true):**
+- [ ] CLEP_COLLEGE_ALGEBRA MCQ — session starts
+- [ ] CLEP_COLLEGE_COMPOSITION MCQ — session starts
+- [ ] CLEP_INTRO_PSYCHOLOGY MCQ — session starts
+- [ ] CLEP_PRINCIPLES_OF_MARKETING MCQ — session starts
+- [ ] CLEP_PRINCIPLES_OF_MANAGEMENT MCQ — session starts
+- [ ] CLEP_INTRODUCTORY_SOCIOLOGY MCQ — session starts
+- [ ] CLEP_AMERICAN_GOVERNMENT MCQ — session starts
+- [ ] CLEP_MACROECONOMICS MCQ — session starts
+- [ ] CLEP_BIOLOGY MCQ — session starts
+- [ ] CLEP_CALCULUS MCQ — session starts
+- [ ] CLEP_CHEMISTRY MCQ — session starts
+- [ ] CLEP_FINANCIAL_ACCOUNTING MCQ — session starts
+- [ ] CLEP_AMERICAN_LITERATURE MCQ — session starts
+- [ ] CLEP_ENGLISH_LITERATURE MCQ — session starts
+- [ ] CLEP_HUMANITIES MCQ — session starts
+- [ ] CLEP_WESTERN_CIV_1 MCQ — session starts
+- [ ] CLEP_COLLEGE_MATH MCQ — session starts
+- [ ] CLEP_PRECALCULUS MCQ — session starts
+- [ ] CLEP_BUSINESS_LAW MCQ — session starts
+- [ ] CLEP_SPANISH MCQ — session starts
+- [ ] CLEP_MICROECONOMICS MCQ — session starts
+- [ ] CLEP_US_HISTORY_1 MCQ — session starts
+- [ ] CLEP_US_HISTORY_2 MCQ — session starts
+- [ ] CLEP_HUMAN_GROWTH_DEV MCQ — session starts
+- [ ] CLEP_ANALYZING_INTERPRETING_LIT MCQ — session starts
+- [ ] CLEP_COLLEGE_COMP_MODULAR MCQ — session starts
+- [ ] CLEP_EDUCATIONAL_PSYCHOLOGY MCQ — session starts
+- [ ] CLEP_SOCIAL_SCIENCES_HISTORY MCQ — session starts
+- [ ] CLEP_WESTERN_CIV_2 MCQ — session starts
+- [ ] CLEP_NATURAL_SCIENCES MCQ — session starts
+- [ ] CLEP_INFORMATION_SYSTEMS MCQ — session starts
+- [ ] CLEP_FRENCH MCQ — session starts
+- [ ] CLEP_GERMAN MCQ — session starts
+- [ ] CLEP_SPANISH_WRITING MCQ — session starts
+
+**Track enforcement (DB-backed — Beta 2.1):**
+- [ ] Register at `/register?track=clep` → DB `User.track = "clep"`
+- [ ] Register at `/register?track=ap` → DB `User.track = "ap"`
+- [ ] Register (no param) → DB `User.track = "ap"` (default)
+- [ ] AP user: POST `/api/practice { course: "CLEP_COLLEGE_ALGEBRA" }` → 403
+- [ ] AP user: POST `/api/diagnostic { course: "CLEP_INTRO_PSYCHOLOGY" }` → 403
+- [ ] CLEP user: POST `/api/practice { course: "AP_WORLD_HISTORY" }` → 403
+- [ ] CLEP user: POST `/api/diagnostic { course: "AP_US_HISTORY" }` → 403
+- [ ] AP user: normal AP course practice → no 403 (200 OK)
+- [ ] Sidebar: no "Change track" button visible for any user
+- [ ] Sidebar: CLEP user sees only CLEP courses (reads from DB, not localStorage)
+- [ ] Sidebar: AP user sees AP/SAT/ACT courses (DB wins even if localStorage says "clep")
+- [ ] Onboarding: CLEP user sees only CLEP courses without localStorage dependency
+- [ ] `/api/user` response includes `user.track` field
+- [ ] Session JWT includes `track` field after login
+
+**Auth — login & registration:**
+- [ ] New credential registration → email verification sent (or auto-verified in dev)
+- [ ] Login with correct credentials → redirected to /dashboard or /onboarding
+- [ ] Login with wrong password → error toast shown, no redirect
+- [ ] Google OAuth sign-in button visible (when GOOGLE_CLIENT_ID configured)
+- [ ] Unverified email login → error "Please verify your email"
+
+**Student experience:**
+- [ ] Wrong MCQ answer → knowledge-check mini-quiz appears (count=1, within 15s)
+- [ ] Correct MCQ answer → "Go deeper with Sage →" teal pill visible
+- [ ] Ask Sage from practice → "Continue Practice" banner visible on Sage page
+- [ ] "Continue Practice" → returns to exact question position (no progress lost)
+- [ ] Session completes → summary screen with accuracy %, XP earned, AP score estimate
+- [ ] No 500 errors or blank screens during any flow above
+
+**PWA:**
+- [ ] On mobile Chrome: "Add to Home Screen" prompt appears (or menu option works)
+- [ ] Installed PWA launches in standalone mode (no browser chrome)
+- [ ] App loads from home screen without internet (cached shell)
+
+**AI & Sage:**
+- [ ] Sage answers a question within 15s
+- [ ] Sage response includes 5 sections (Core Concept, Visual Breakdown, How AP Asks, Common Traps, Memory Hook)
+- [ ] Follow-up chips appear and clicking one pre-fills the input
+
+
+---
+
+## Release Log — v2.4.0 (2026-03-23)
+
+**Deployed:** Mon, 23 Mar 2026 13:48:49 GMT
+**Version:** 2.4.0
+
+### Changes in this release
+- feat: Beta 2.4 — context-aware Sage chatbot, dashboard UX polish, Contact/Blog/FAQ pages
+- feat: landing page mockups, FAQ, rich footer, fade-in animations, testimonial avatars
+- feat: Beta 2.3 — per-module Stripe subscriptions, SEO overhaul, content optimization, daily goals
+- fix: parallelize study plan queries + add 20s AI timeout to prevent CF Workers failure
+- fix: reduce analytics to 5 queries (was 12) — fetch all sessions once, derive rest in-memory
+- fix: parallelize analytics queries to prevent CF Workers timeout, add force-dynamic to study-plan
+- feat: add weekly study schedules, score targets, How It Works nav link
+- fix: deploy email script loads .env automatically when RESEND_API_KEY not in environment
+- chore: bump to Beta 2.2 — deploy email pipeline, StudentNest AI branding
+- feat: add automatic deployment notification email to pages:deploy pipeline
+
+### Automated smoke tests
+```
+Smoke tests: 15 passed, 0 warnings, 0 failed
+  ✅ GET /
+  ✅ GET /pricing
+  ✅ GET /about
+  ✅ GET /login
+  ✅ GET /register
+  ✅ GET /api/ai/status
+  ✅ GET /api/feature-flags
+  ✅ POST /api/practice
+  ✅ POST /api/ai/tutor/knowledge-check
+  ✅ GET /api/analytics
+  ✅ GET /api/user
+  ✅ Feature flags latency
+  ✅ Analytics latency
+  ✅ Study plan latency
+  ✅ POST /api/ai/tutor/knowledge-check (bad input)
+```
+
+### Functional tests (authenticated regression suite)
+```
+Functional tests: 13 passed, 1 warnings, 0 failed (6.3s)
+  ✅ Test user created — userId=cmn38rh7...
+  ✅ A1. User profile — track=ap
+  ✅ A2a. Create practice session — sessionId=cmn38rhx... 3 questions
+  ✅ A2b. Submit answer — isCorrect=false, explanation=571ch
+  ✅ A2c. Complete session — accuracy=0%, xp=0
+  ✅ A3. Analytics — totalAnswered=1, mastery units=9
+  ✅ A4. Study Plan GET — plan=null (expected for new user)
+  ✅ A5. Auth guards — unauthenticated requests correctly blocked
+  ⚠️ B1. AI Tutor — answer too short or missing
+  ✅ B2. Knowledge Check gen — 1 question(s) generated
+  ✅ B3. Knowledge Check submit — score=1/1
+  ✅ C1. Multi-course analytics — 5/5 courses returned 200
+  ✅ C2. Multi-course study plan — 4/4 courses returned 200
+  ✅ C3. Invalid course rejected — analytics returned 400
+```
+
+### Integration tests (practice coverage — all 50 courses)
+```
+Integration tests: 30 passed, 33 warnings, 0 failed
+  Total questions: 648 | Courses: 19 green, 2 yellow, 29 red
+  ✅ AI generation enabled — students will get questions even for thin courses
+  ✅ AP_WORLD_HISTORY — 67 MCQ questions
+  ✅ AP_COMPUTER_SCIENCE_PRINCIPLES — 35 MCQ questions
+  ✅ AP_PHYSICS_1 — 55 MCQ questions
+  ✅ AP_CALCULUS_AB — 42 MCQ questions
+  ✅ AP_CALCULUS_BC — 17 MCQ questions
+  ✅ AP_STATISTICS — 22 MCQ questions
+  ✅ AP_CHEMISTRY — 16 MCQ questions
+  ✅ AP_BIOLOGY — 36 MCQ questions
+  ✅ AP_US_HISTORY — 28 MCQ questions
+  ✅ AP_PSYCHOLOGY — 34 MCQ questions
+  ✅ SAT_MATH — 45 MCQ questions
+  ✅ SAT_READING_WRITING — 40 MCQ questions
+  ✅ ACT_MATH — 40 MCQ questions
+  ✅ ACT_ENGLISH — 24 MCQ questions
+  ✅ ACT_SCIENCE — 26 MCQ questions
+  ✅ ACT_READING — 32 MCQ questions
+  ✅ CLEP_COLLEGE_ALGEBRA — 11 MCQ questions
+  ✅ CLEP_COLLEGE_COMPOSITION — 16 MCQ questions
+  ✅ CLEP_INTRO_PSYCHOLOGY — 20 MCQ questions
+  ⚠️ CLEP_PRINCIPLES_OF_MARKETING — only 3 questions
+  ⚠️ CLEP_PRINCIPLES_OF_MANAGEMENT — 0 questions — AI will generate on first session
+  ⚠️ CLEP_INTRODUCTORY_SOCIOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_AMERICAN_GOVERNMENT — 0 questions — AI will generate on first session
+  ⚠️ CLEP_MACROECONOMICS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_MICROECONOMICS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_BIOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_US_HISTORY_1 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_US_HISTORY_2 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_HUMAN_GROWTH_DEV — only 1 questions
+  ⚠️ CLEP_CALCULUS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_CHEMISTRY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_FINANCIAL_ACCOUNTING — 0 questions — AI will generate on first session
+  ⚠️ CLEP_AMERICAN_LITERATURE — 0 questions — AI will generate on first session
+  ⚠️ CLEP_ANALYZING_INTERPRETING_LIT — 0 questions — AI will generate on first session
+  ⚠️ CLEP_COLLEGE_COMP_MODULAR — 0 questions — AI will generate on first session
+  ⚠️ CLEP_ENGLISH_LITERATURE — 0 questions — AI will generate on first session
+  ⚠️ CLEP_HUMANITIES — 0 questions — AI will generate on first session
+  ⚠️ CLEP_FRENCH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_GERMAN — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SPANISH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SPANISH_WRITING — 0 questions — AI will generate on first session
+  ⚠️ CLEP_EDUCATIONAL_PSYCHOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SOCIAL_SCIENCES_HISTORY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_WESTERN_CIV_1 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_WESTERN_CIV_2 — 0 questions — AI will generate on first session
+  ⚠️ CLEP_COLLEGE_MATH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_NATURAL_SCIENCES — 0 questions — AI will generate on first session
+  ⚠️ CLEP_PRECALCULUS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_INFORMATION_SYSTEMS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_BUSINESS_LAW — 0 questions — AI will generate on first session
+  ✅ AP World History: Modern FRQ — 5 questions
+  ✅ AP Computer Science Principles FRQ — 6 questions
+  ⚠️ AP Physics 1: Algebra-Based FRQ — 0 FRQ questions — AI will generate on first session
+  ✅ AP Calculus AB FRQ — 9 questions
+  ✅ AP Calculus BC FRQ — 1 questions
+  ⚠️ AP Statistics FRQ — 0 FRQ questions — AI will generate on first session
+  ✅ AP Chemistry FRQ — 1 questions
+  ✅ AP Biology FRQ — 2 questions
+  ✅ AP US History FRQ — 6 questions
+  ✅ AP Psychology FRQ — 8 questions
+  ✅ Analytics API — 50/50 courses responding (all 401 auth guard — healthy)
+  ✅ Study Plan API — 50/50 courses responding (all 401 auth guard — healthy)
+```
+
+### Manual P0 checklist (fill in before marking release complete)
+**Practice — AP/SAT/ACT (16 courses, AP-track user):**
+- [ ] AP_WORLD_HISTORY MCQ — ALL units, ALL difficulty → session starts, questions load
+- [ ] AP_US_HISTORY MCQ — session starts
+- [ ] AP_COMPUTER_SCIENCE_PRINCIPLES MCQ — session starts
+- [ ] AP_PHYSICS_1 MCQ + FRQ — both session types start within 30s
+- [ ] AP_CALCULUS_AB MCQ — session starts
+- [ ] AP_STATISTICS MCQ — session starts
+- [ ] AP_CHEMISTRY MCQ — session starts
+- [ ] AP_BIOLOGY MCQ — session starts
+- [ ] AP_PSYCHOLOGY MCQ — session starts
+- [ ] SAT_MATH MCQ — session starts
+- [ ] SAT_READING_WRITING MCQ — session starts
+- [ ] ACT_MATH MCQ — session starts, verify 5 answer choices (A-E not A-D)
+- [ ] ACT_ENGLISH MCQ — session starts
+- [ ] ACT_SCIENCE MCQ — session starts
+- [ ] ACT_READING MCQ — session starts
+
+**Practice — CLEP (34 courses, CLEP-track user + clep_enabled=true):**
+- [ ] CLEP_COLLEGE_ALGEBRA MCQ — session starts
+- [ ] CLEP_COLLEGE_COMPOSITION MCQ — session starts
+- [ ] CLEP_INTRO_PSYCHOLOGY MCQ — session starts
+- [ ] CLEP_PRINCIPLES_OF_MARKETING MCQ — session starts
+- [ ] CLEP_PRINCIPLES_OF_MANAGEMENT MCQ — session starts
+- [ ] CLEP_INTRODUCTORY_SOCIOLOGY MCQ — session starts
+- [ ] CLEP_AMERICAN_GOVERNMENT MCQ — session starts
+- [ ] CLEP_MACROECONOMICS MCQ — session starts
+- [ ] CLEP_BIOLOGY MCQ — session starts
+- [ ] CLEP_CALCULUS MCQ — session starts
+- [ ] CLEP_CHEMISTRY MCQ — session starts
+- [ ] CLEP_FINANCIAL_ACCOUNTING MCQ — session starts
+- [ ] CLEP_AMERICAN_LITERATURE MCQ — session starts
+- [ ] CLEP_ENGLISH_LITERATURE MCQ — session starts
+- [ ] CLEP_HUMANITIES MCQ — session starts
+- [ ] CLEP_WESTERN_CIV_1 MCQ — session starts
+- [ ] CLEP_COLLEGE_MATH MCQ — session starts
+- [ ] CLEP_PRECALCULUS MCQ — session starts
+- [ ] CLEP_BUSINESS_LAW MCQ — session starts
+- [ ] CLEP_SPANISH MCQ — session starts
+- [ ] CLEP_MICROECONOMICS MCQ — session starts
+- [ ] CLEP_US_HISTORY_1 MCQ — session starts
+- [ ] CLEP_US_HISTORY_2 MCQ — session starts
+- [ ] CLEP_HUMAN_GROWTH_DEV MCQ — session starts
+- [ ] CLEP_ANALYZING_INTERPRETING_LIT MCQ — session starts
+- [ ] CLEP_COLLEGE_COMP_MODULAR MCQ — session starts
+- [ ] CLEP_EDUCATIONAL_PSYCHOLOGY MCQ — session starts
+- [ ] CLEP_SOCIAL_SCIENCES_HISTORY MCQ — session starts
+- [ ] CLEP_WESTERN_CIV_2 MCQ — session starts
+- [ ] CLEP_NATURAL_SCIENCES MCQ — session starts
+- [ ] CLEP_INFORMATION_SYSTEMS MCQ — session starts
+- [ ] CLEP_FRENCH MCQ — session starts
+- [ ] CLEP_GERMAN MCQ — session starts
+- [ ] CLEP_SPANISH_WRITING MCQ — session starts
 
 **Track enforcement (DB-backed — Beta 2.1):**
 - [ ] Register at `/register?track=clep` → DB `User.track = "clep"`

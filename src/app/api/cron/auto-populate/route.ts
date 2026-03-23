@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
   }
 
   // Check if auto-populate is enabled
-  const enabled = await getSetting("auto_populate_enabled", "false");
+  const enabled = await getSetting("auto_populate_enabled", "true");
   if (enabled !== "true") {
     return NextResponse.json({ status: "disabled" });
   }

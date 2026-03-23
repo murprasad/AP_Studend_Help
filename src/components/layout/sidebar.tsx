@@ -82,10 +82,7 @@ const BASE_COURSE_GROUPS: { label: string; shortLabel: string; keys: ApCourse[] 
 const CLEP_GROUP: { label: string; shortLabel: string; keys: ApCourse[] } = {
   label: "CLEP Prep",
   shortLabel: "CLEP",
-  keys: [
-    "CLEP_COLLEGE_ALGEBRA", "CLEP_COLLEGE_COMPOSITION", "CLEP_INTRO_PSYCHOLOGY",
-    "CLEP_PRINCIPLES_OF_MARKETING", "CLEP_PRINCIPLES_OF_MANAGEMENT", "CLEP_INTRODUCTORY_SOCIOLOGY",
-  ] as ApCourse[],
+  keys: (Object.keys(COURSE_REGISTRY) as ApCourse[]).filter(k => k.startsWith("CLEP_")),
 };
 
 interface SidebarProps {
@@ -259,7 +256,7 @@ export function Sidebar({ userRole, userTrack, isOpen = false, onClose = () => {
                 <ChevronDown className="h-3.5 w-3.5 ml-1 flex-shrink-0 opacity-60" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="start" className="w-64 p-0">
+            <DropdownMenuContent align="start" className="w-64 p-0 max-h-[60vh] overflow-y-auto">
               {/* Category tabs */}
               <div className="flex gap-1 p-2 border-b border-border/40">
                 {COURSE_GROUPS.map((g) => (

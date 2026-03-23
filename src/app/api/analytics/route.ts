@@ -137,10 +137,21 @@ export async function GET(req: NextRequest) {
     const avgComprehension = totalChecks > 0 && totalCheckQuestions > 0
       ? Math.round((totalCheckScore / totalCheckQuestions) * 100) : null;
 
+    // CLEP Readiness Score (CLEP courses only)
+    const isCLEP = (course as string).startsWith("CLEP_");
+    let clepReadiness: { score: number; label: string; threshold: number } | null = null;
+    if (isCLEP && masteryScores.length > 0) {
+      const avgClepMastery = masteryScores.reduce((s, m) => s + m.masteryScore, 0) / courseUnitKeys.length;
+      const readinessScore = Math.round(avgClepMastery);
+      const label = readinessScore >= 70 ? "Ready to schedule" : readinessScore >= 50 ? "Getting close" : "Keep practicing";
+      clepReadiness = { score: readinessScore, label, threshold: 70 };
+    }
+
     return NextResponse.json({
       masteryData,
       accuracyTimeline,
       knowledgeCheckStats: { totalChecks, avgComprehension },
+      clepReadiness,
       stats: {
         totalAnswered,
         totalCorrect,

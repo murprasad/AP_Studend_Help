@@ -39,6 +39,22 @@ interface StudyPlan {
   dailySchedule?: Record<string, string>;
 }
 
+interface CLEP7DayPlan {
+  planType: "7day";
+  courseName: string;
+  isStatic?: boolean;
+  days: Array<{
+    day: number;
+    theme: string;
+    units: string[];
+    tasks: string[];
+    estimatedMinutes: number;
+    milestone: string;
+  }>;
+  readinessThreshold: number;
+  examTip: string;
+}
+
 const PRIORITY_COLORS = {
   high: "text-red-400 border-red-500/30 bg-red-500/10",
   medium: "text-yellow-400 border-yellow-500/30 bg-yellow-500/10",
@@ -54,6 +70,34 @@ export default function StudyPlanPage() {
   const [featureDisabled, setFeatureDisabled] = useState(false);
   const [stale, setStale] = useState(false);
   const [cachedCourse, setCachedCourse] = useState<string>("");
+  const [planMode, setPlanMode] = useState<"weekly" | "7day">("weekly");
+  const [sevenDayPlan, setSevenDayPlan] = useState<CLEP7DayPlan | null>(null);
+  const [checkedTasks, setCheckedTasks] = useState<Record<string, boolean>>({});
+  const [readinessScore, setReadinessScore] = useState(0);
+  const isCLEP = course.startsWith("CLEP_");
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem(`clep_7day_${course}`);
+      if (saved) setCheckedTasks(JSON.parse(saved));
+    } catch {}
+    // Fetch readiness score for CLEP courses
+    if (course.startsWith("CLEP_")) {
+      fetch(`/api/analytics?course=${course}`, { signal: AbortSignal.timeout(10000) })
+        .then(r => r.ok ? r.json() : null)
+        .then(data => { if (data?.clepReadiness) setReadinessScore(data.clepReadiness.score); })
+        .catch(() => {});
+    }
+  }, [course]);
+
+  function toggleTask(dayNum: number, taskIdx: number) {
+    const key = `d${dayNum}_t${taskIdx}`;
+    setCheckedTasks(prev => {
+      const next = { ...prev, [key]: !prev[key] };
+      try { localStorage.setItem(`clep_7day_${course}`, JSON.stringify(next)); } catch {}
+      return next;
+    });
+  }
 
   useEffect(() => {
     const hasData = plan !== null && cachedCourse === course;
@@ -94,6 +138,30 @@ export default function StudyPlanPage() {
       if (data.plan) {
         setPlan(data.plan);
         toast({ title: "Study plan updated!", variant: "default" });
+      }
+    } catch {
+      toast({ title: "Failed to generate plan. Check your connection.", variant: "destructive" });
+    } finally {
+      setGenerating(false);
+    }
+  }
+
+  async function generate7DayPlan() {
+    setGenerating(true);
+    try {
+      const response = await fetch("/api/study-plan", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ course, mode: "7day" }),
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        toast({ title: "Error", description: data.error || "Failed to generate 7-day plan", variant: "destructive" });
+        return;
+      }
+      if (data.plan) {
+        setSevenDayPlan(data.plan as CLEP7DayPlan);
+        toast({ title: "7-Day Pass Plan generated!", variant: "default" });
       }
     } catch {
       toast({ title: "Failed to generate plan. Check your connection.", variant: "destructive" });
@@ -150,6 +218,136 @@ export default function StudyPlanPage() {
 
       <CourseSelectorInline />
 
+      {isCLEP && (
+        <div className="flex gap-1 p-1 rounded-lg bg-secondary/50 border border-border/40 w-fit">
+          <button
+            onClick={() => setPlanMode("weekly")}
+            className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${
+              planMode === "weekly" ? "bg-primary/15 text-primary" : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            Weekly Plan
+          </button>
+          <button
+            onClick={() => { setPlanMode("7day"); if (!sevenDayPlan) generate7DayPlan(); }}
+            className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${
+              planMode === "7day" ? "bg-emerald-500/15 text-emerald-400" : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            7-Day Pass Plan
+          </button>
+        </div>
+      )}
+
+      {planMode === "7day" && isCLEP ? (
+        <div className="space-y-4">
+          {!sevenDayPlan ? (
+            <Card className="card-glow">
+              <CardContent className="p-10 text-center">
+                <GraduationCap className="h-12 w-12 text-emerald-400 mx-auto mb-4" />
+                <h2 className="text-xl font-bold mb-2">Build Your 7-Day Pass Plan</h2>
+                <p className="text-muted-foreground mb-6">
+                  Sage creates a day-by-day plan to get you exam-ready in one week.
+                </p>
+                <Button onClick={generate7DayPlan} disabled={generating} className="gap-2 bg-emerald-600 hover:bg-emerald-700">
+                  {generating ? <><Loader2 className="h-4 w-4 animate-spin" /> Building Plan...</> : <><Zap className="h-4 w-4" /> Generate 7-Day Plan</>}
+                </Button>
+              </CardContent>
+            </Card>
+          ) : (
+            <>
+              {/* Readiness bar */}
+              <div className="p-4 rounded-xl border border-emerald-500/20 bg-emerald-500/5">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-sm font-medium text-emerald-400">CLEP Readiness</span>
+                  <span className="text-xs text-muted-foreground">Target: {sevenDayPlan.readinessThreshold}%</span>
+                </div>
+                <div className="h-2 rounded-full bg-secondary overflow-hidden">
+                  <div className="h-full rounded-full bg-emerald-500 transition-all" style={{ width: `${readinessScore}%` }} />
+                </div>
+                <p className="text-xs text-muted-foreground mt-2">Complete practice sessions to fill your readiness bar</p>
+              </div>
+
+              {/* Day cards */}
+              <div className="space-y-3">
+                {sevenDayPlan.days.map((day) => (
+                  <Card key={day.day} className="card-glow overflow-hidden">
+                    <div className="flex">
+                      {/* Day indicator */}
+                      <div className="w-16 flex-shrink-0 bg-emerald-500/10 flex flex-col items-center justify-center border-r border-border/40 py-4">
+                        <span className="text-xs text-emerald-400 font-medium">DAY</span>
+                        <span className="text-2xl font-bold text-emerald-400">{day.day}</span>
+                      </div>
+                      <div className="flex-1 p-4">
+                        <div className="flex items-start justify-between gap-2 mb-2">
+                          <p className="font-semibold text-sm">{day.theme}</p>
+                          <span className="text-xs text-muted-foreground flex-shrink-0 flex items-center gap-1">
+                            <Clock className="h-3 w-3" /> {day.estimatedMinutes} min
+                          </span>
+                        </div>
+                        <div className="space-y-1.5 mb-3">
+                          {day.tasks.map((task, ti) => {
+                            const taskKey = `d${day.day}_t${ti}`;
+                            const checked = checkedTasks[taskKey] || false;
+                            return (
+                              <label key={ti} className="flex items-start gap-2 cursor-pointer group">
+                                <input
+                                  type="checkbox"
+                                  checked={checked}
+                                  onChange={() => toggleTask(day.day, ti)}
+                                  className="mt-0.5 rounded border-border accent-emerald-500"
+                                />
+                                <span className={`text-sm ${checked ? "line-through text-muted-foreground" : ""}`}>{task}</span>
+                              </label>
+                            );
+                          })}
+                        </div>
+                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                          <Target className="h-3 w-3 text-emerald-400" />
+                          <span>{day.milestone}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+
+              {/* Day 8 CTA */}
+              <Card className="card-glow border-emerald-500/30 bg-emerald-500/5">
+                <CardContent className="p-5 text-center space-y-3">
+                  <GraduationCap className="h-8 w-8 text-emerald-400 mx-auto" />
+                  <p className="font-bold">Day 8: Schedule Your Exam</p>
+                  <p className="text-sm text-muted-foreground">Hit 70% mastery? You&apos;re ready. Book your $93 exam at any test center.</p>
+                  <a href="https://clep.collegeboard.org/find-a-test-center" target="_blank" rel="noopener noreferrer">
+                    <Button variant="outline" className="gap-2 border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/10">
+                      Find a Test Center <ChevronRight className="h-4 w-4" />
+                    </Button>
+                  </a>
+                </CardContent>
+              </Card>
+
+              {/* Exam tip */}
+              {sevenDayPlan.examTip && (
+                <div className="flex items-start gap-3 p-4 rounded-xl bg-amber-500/5 border border-amber-500/20">
+                  <Lightbulb className="h-5 w-5 text-amber-400 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <p className="text-sm font-medium text-amber-300">Exam Day Tip</p>
+                    <p className="text-sm text-muted-foreground">{sevenDayPlan.examTip}</p>
+                  </div>
+                </div>
+              )}
+
+              {/* Regenerate */}
+              <div className="text-center">
+                <Button onClick={generate7DayPlan} disabled={generating} variant="ghost" size="sm" className="gap-2 text-muted-foreground">
+                  {generating ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <RefreshCw className="h-3.5 w-3.5" />} Regenerate Plan
+                </Button>
+              </div>
+            </>
+          )}
+        </div>
+      ) : (
+      <>
       {!plan ? (
         <Card className="card-glow">
           <CardContent className="p-10 text-center">
@@ -307,6 +505,8 @@ export default function StudyPlanPage() {
             </Card>
           )}
         </>
+      )}
+      </>
       )}
     </div>
   );

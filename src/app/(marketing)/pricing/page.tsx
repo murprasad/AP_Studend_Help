@@ -6,7 +6,7 @@ import { CheckCircle, Zap, Crown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const FREE_FEATURES = [
-  "All 22 courses — AP, SAT, ACT & CLEP",
+  "All 50 courses — AP, SAT, ACT & CLEP",
   "Unlimited MCQ practice questions",
   "3 practice sessions per day",
   "5 AI explanations per day — never get stuck",
@@ -61,7 +61,7 @@ const MODULE_CONFIGS = {
     color: "emerald",
     features: [
       "Everything in Free, plus:",
-      "Full prep for all 6 CLEP exams",
+      "Full prep for all 34 CLEP exams",
       "Unlimited AI explanations — ask Sage anything",
       "Personalized CLEP study plan (6–12 weeks)",
       "Faster AI responses (streaming)",

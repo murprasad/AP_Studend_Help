@@ -367,7 +367,7 @@ export default function BillingPage() {
             <ul className="space-y-2">
               {((session?.user as { track?: string })?.track === "clep" ? [
                 "Unlimited AI Tutor conversations",
-                "All 6 CLEP courses with full prep",
+                "All 34 CLEP courses with full prep",
                 "AI-personalized CLEP study plan",
                 "Streaming AI responses",
                 "Advanced analytics & weak-area insights",
@@ -458,7 +458,7 @@ export default function BillingPage() {
               { module: "ap", label: "AP Premium", desc: "10 AP courses + FRQ scoring", color: "indigo", btn: "bg-indigo-600 hover:bg-indigo-700", border: "border-indigo-500/30" },
               { module: "sat", label: "SAT Premium", desc: "SAT Math + Reading & Writing", color: "blue", btn: "bg-blue-600 hover:bg-blue-700", border: "border-blue-500/30" },
               { module: "act", label: "ACT Premium", desc: "All 4 ACT sections", color: "violet", btn: "bg-violet-600 hover:bg-violet-700", border: "border-violet-500/30" },
-              { module: "clep", label: "CLEP Premium", desc: "6 CLEP exams · Save $1,200+", color: "emerald", btn: "bg-emerald-600 hover:bg-emerald-700", border: "border-emerald-500/30" },
+              { module: "clep", label: "CLEP Premium", desc: "34 CLEP exams · Save $1,200+", color: "emerald", btn: "bg-emerald-600 hover:bg-emerald-700", border: "border-emerald-500/30" },
             ] as const).map((m) => {
               const activeSub = moduleSubs.find(s => s.module === m.module && (s.status === "active" || s.status === "canceling"));
               return (

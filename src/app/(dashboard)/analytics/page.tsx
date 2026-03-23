@@ -82,6 +82,8 @@ export default function AnalyticsPage() {
   const [goalTarget, setGoalTarget] = useState("75");
   const [goalDate, setGoalDate] = useState("");
   const [goalSaving, setGoalSaving] = useState(false);
+  const [clepReadiness, setClepReadiness] = useState<{ score: number; label: string; threshold: number } | null>(null);
+  const isCLEP = course.startsWith("CLEP_");
   const [featureDisabled, setFeatureDisabled] = useState(false);
   const [stale, setStale] = useState(false);
   const [cachedCourse, setCachedCourse] = useState<string>("");
@@ -93,7 +95,8 @@ export default function AnalyticsPage() {
     setError(null);
     setStale(false);
     setFeatureDisabled(false);
-    Promise.all([
+    // Use allSettled so one failing fetch doesn't block the other
+    Promise.allSettled([
       fetch(`/api/analytics?course=${course}`, { signal: AbortSignal.timeout(40000) }).then((r) => {
         if (r.status === 503) { setFeatureDisabled(true); throw new Error("under-maintenance"); }
         if (!r.ok) throw new Error("Failed to load analytics");
@@ -101,26 +104,33 @@ export default function AnalyticsPage() {
       }),
       fetch(`/api/mastery-goal?course=${course}`, { signal: AbortSignal.timeout(40000) }).then((r) => r.json()).catch(() => ({ goals: [] })),
     ])
-      .then(([data, goalData]) => {
-        setMasteryData(data.masteryData || []);
-        setAccuracyTimeline(data.accuracyTimeline || []);
-        setStats(data.stats);
-        setKnowledgeCheckStats(data.knowledgeCheckStats ?? null);
-        setCachedCourse(course);
-        setStale(false);
+      .then(([analyticsResult, goalResult]) => {
+        const goalData = goalResult.status === "fulfilled" ? goalResult.value : { goals: [] };
+        if (analyticsResult.status === "fulfilled") {
+          const data = analyticsResult.value;
+          setMasteryData(data.masteryData || []);
+          setAccuracyTimeline(data.accuracyTimeline || []);
+          setStats(data.stats);
+          setKnowledgeCheckStats(data.knowledgeCheckStats ?? null);
+          setClepReadiness(data.clepReadiness ?? null);
+          setCachedCourse(course);
+          setStale(false);
+          setError(null);
+        } else {
+          // Analytics fetch failed — show stale data or error
+          if (hasData) {
+            setStale(true);
+          } else {
+            const reason = analyticsResult.reason;
+            if (reason?.message === "under-maintenance") return;
+            setError("Failed to load analytics — check your connection and try again.");
+          }
+        }
         const goalMap: Record<string, { targetScore: number; targetDate?: string }> = {};
         for (const g of (goalData.goals || [])) {
           goalMap[g.unit] = { targetScore: g.targetScore, targetDate: g.targetDate };
         }
         setGoals(goalMap);
-      })
-      .catch((err) => {
-        if (hasData) {
-          // Keep showing cached data with stale banner
-          setStale(true);
-        } else {
-          setError(err.message);
-        }
       })
       .finally(() => { setLoading(false); setRefreshing(false); });
   }, [course]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -295,6 +305,42 @@ export default function AnalyticsPage() {
       </div>
 
       <CourseSelectorInline />
+
+      {/* CLEP Readiness Score */}
+      {isCLEP && clepReadiness && (
+        <Card className="card-glow border-emerald-500/20 bg-emerald-500/[0.03]">
+          <CardContent className="p-5">
+            <div className="flex items-center gap-6">
+              {/* SVG Gauge */}
+              <div className="relative w-24 h-24 flex-shrink-0">
+                <svg viewBox="0 0 100 100" className="w-full h-full -rotate-90">
+                  <circle cx="50" cy="50" r="42" fill="none" stroke="currentColor" strokeWidth="8" className="text-secondary" />
+                  <circle
+                    cx="50" cy="50" r="42" fill="none"
+                    stroke={clepReadiness.score >= 70 ? "#10b981" : clepReadiness.score >= 50 ? "#f59e0b" : "#ef4444"}
+                    strokeWidth="8" strokeLinecap="round"
+                    strokeDasharray={`${(clepReadiness.score / 100) * 264} 264`}
+                    className="transition-all duration-1000"
+                  />
+                </svg>
+                <div className="absolute inset-0 flex flex-col items-center justify-center">
+                  <span className="text-2xl font-bold">{clepReadiness.score}%</span>
+                </div>
+              </div>
+              <div className="flex-1">
+                <p className="font-semibold text-emerald-400 text-sm mb-1">CLEP Readiness</p>
+                <p className="text-lg font-bold">{clepReadiness.label}</p>
+                <p className="text-xs text-muted-foreground mt-1">Target: {clepReadiness.threshold}% mastery across all units</p>
+                {clepReadiness.score >= 70 && (
+                  <a href="https://clep.collegeboard.org/find-a-test-center" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-xs text-emerald-400 hover:text-emerald-300 mt-2 font-medium">
+                    Find a test center →
+                  </a>
+                )}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Key stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">

@@ -116,7 +116,7 @@ ${smokeSection}
 ${functionalSection}
 \`\`\`
 
-### Integration tests (practice coverage — all 22 courses)
+### Integration tests (practice coverage — all 50 courses)
 \`\`\`
 ${integrationSection}
 \`\`\`
@@ -139,13 +139,41 @@ ${integrationSection}
 - [ ] ACT_SCIENCE MCQ — session starts
 - [ ] ACT_READING MCQ — session starts
 
-**Practice — CLEP (6 courses, CLEP-track user + clep_enabled=true):**
+**Practice — CLEP (34 courses, CLEP-track user + clep_enabled=true):**
 - [ ] CLEP_COLLEGE_ALGEBRA MCQ — session starts
 - [ ] CLEP_COLLEGE_COMPOSITION MCQ — session starts
 - [ ] CLEP_INTRO_PSYCHOLOGY MCQ — session starts
 - [ ] CLEP_PRINCIPLES_OF_MARKETING MCQ — session starts
 - [ ] CLEP_PRINCIPLES_OF_MANAGEMENT MCQ — session starts
 - [ ] CLEP_INTRODUCTORY_SOCIOLOGY MCQ — session starts
+- [ ] CLEP_AMERICAN_GOVERNMENT MCQ — session starts
+- [ ] CLEP_MACROECONOMICS MCQ — session starts
+- [ ] CLEP_BIOLOGY MCQ — session starts
+- [ ] CLEP_CALCULUS MCQ — session starts
+- [ ] CLEP_CHEMISTRY MCQ — session starts
+- [ ] CLEP_FINANCIAL_ACCOUNTING MCQ — session starts
+- [ ] CLEP_AMERICAN_LITERATURE MCQ — session starts
+- [ ] CLEP_ENGLISH_LITERATURE MCQ — session starts
+- [ ] CLEP_HUMANITIES MCQ — session starts
+- [ ] CLEP_WESTERN_CIV_1 MCQ — session starts
+- [ ] CLEP_COLLEGE_MATH MCQ — session starts
+- [ ] CLEP_PRECALCULUS MCQ — session starts
+- [ ] CLEP_BUSINESS_LAW MCQ — session starts
+- [ ] CLEP_SPANISH MCQ — session starts
+- [ ] CLEP_MICROECONOMICS MCQ — session starts
+- [ ] CLEP_US_HISTORY_1 MCQ — session starts
+- [ ] CLEP_US_HISTORY_2 MCQ — session starts
+- [ ] CLEP_HUMAN_GROWTH_DEV MCQ — session starts
+- [ ] CLEP_ANALYZING_INTERPRETING_LIT MCQ — session starts
+- [ ] CLEP_COLLEGE_COMP_MODULAR MCQ — session starts
+- [ ] CLEP_EDUCATIONAL_PSYCHOLOGY MCQ — session starts
+- [ ] CLEP_SOCIAL_SCIENCES_HISTORY MCQ — session starts
+- [ ] CLEP_WESTERN_CIV_2 MCQ — session starts
+- [ ] CLEP_NATURAL_SCIENCES MCQ — session starts
+- [ ] CLEP_INFORMATION_SYSTEMS MCQ — session starts
+- [ ] CLEP_FRENCH MCQ — session starts
+- [ ] CLEP_GERMAN MCQ — session starts
+- [ ] CLEP_SPANISH_WRITING MCQ — session starts
 
 **Track enforcement (DB-backed — Beta 2.1):**
 - [ ] Register at \`/register?track=clep\` → DB \`User.track = "clep"\`

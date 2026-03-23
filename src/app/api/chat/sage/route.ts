@@ -21,7 +21,7 @@ StudentNest Prep features:
 🤖 AI Tutor — deep-dive chat for course content questions.
 🌐 Resources — curated free textbooks, videos, links per unit.
 
-22 courses: 10 AP (World History, CS Principles, Physics 1, Calc AB, Calc BC, Statistics, Chemistry, Biology, US History, Psychology), 2 SAT (Math, Reading & Writing), 4 ACT (Math, English, Science, Reading), 6 CLEP (College Algebra, Composition, Psychology, Marketing, Management, Sociology).
+50 courses: 10 AP, 2 SAT, 4 ACT, 34 CLEP exams (all 5 domains). CLEP = pass a $93 exam to skip a $1,200 college course. 7-day pass plans available for CLEP.
 
 Pricing: Free forever (unlimited MCQ, 5 AI chats/day, basic study plan). Premium $9.99/mo or $79.99/yr (save 33%) per module — unlimited AI tutoring, personalized study plans, FRQ scoring, streaming AI. 7-day refund policy.
 
@@ -33,7 +33,7 @@ IMPORTANT: Keep most responses under 3 sentences. Be helpful, be fun, be Sage! �
 // Page-specific context injections
 function getPageContext(page: string, course: string): string {
   if (page === "/" || page === "")
-    return `\n\nCONTEXT: The user is on the landing page — likely a prospective student. Answer questions about pricing, features, how it works, and what makes StudentNest different from ChatGPT or private tutoring. Encourage signing up free. Key facts: Free forever, no credit card, 22 courses, $9.99/mo Premium.`;
+    return `\n\nCONTEXT: The user is on the landing page — likely a prospective student. Answer questions about pricing, features, how it works, and what makes StudentNest different from ChatGPT or private tutoring. Encourage signing up free. Key facts: Free forever, no credit card, 50 courses, $9.99/mo Premium.`;
 
   if (page === "/pricing")
     return `\n\nCONTEXT: User is on the pricing page. Answer billing questions clearly: Free = unlimited MCQ + 5 chats/day. Premium = $9.99/mo or $79.99/yr (save 33%). Per-module subscriptions (AP, SAT, ACT, CLEP). 7-day refund policy. No credit card for free tier.`;
@@ -117,7 +117,7 @@ export async function POST(req: NextRequest) {
           max_tokens: 400,
           temperature: 0.8,
         }),
-        signal: AbortSignal.timeout(25000),
+        signal: AbortSignal.timeout(15000),
       });
 
       if (res.ok) {
@@ -126,32 +126,79 @@ export async function POST(req: NextRequest) {
         if (reply?.trim()) {
           return NextResponse.json({ reply: reply.trim(), provider: "Groq" });
         }
+      } else {
+        console.warn("[Sage] Groq HTTP", res.status);
       }
     } catch (err) {
-      console.warn("[Sage] Groq failed:", err);
+      console.warn("[Sage] Groq failed:", err instanceof Error ? err.message : err);
     }
   }
 
-  // Fallback: Pollinations (no key needed)
+  // Fallback 2: Gemini (if key available)
+  if (process.env.GOOGLE_AI_API_KEY) {
+    try {
+      const res = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${process.env.GOOGLE_AI_API_KEY}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            contents: [{ role: "user", parts: [{ text: `${systemPrompt.slice(0, 1200)}\n\nStudent says: ${message}` }] }],
+            generationConfig: { maxOutputTokens: 300, temperature: 0.8 },
+          }),
+          signal: AbortSignal.timeout(15000),
+        }
+      );
+      if (res.ok) {
+        const data = await res.json() as { candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }> };
+        const reply = data.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (reply?.trim()) {
+          return NextResponse.json({ reply: reply.trim().slice(0, 500), provider: "Gemini" });
+        }
+      } else {
+        console.warn("[Sage] Gemini HTTP", res.status);
+      }
+    } catch (err) {
+      console.warn("[Sage] Gemini failed:", err instanceof Error ? err.message : err);
+    }
+  }
+
+  // Fallback 3: Pollinations via POST (avoids URL length issues)
   try {
-    const combined = `${systemPrompt.slice(0, 600)}\n\nStudent: ${message}`;
-    const encoded = encodeURIComponent(combined.slice(0, 1200));
-    const res = await fetch(
-      `https://text.pollinations.ai/${encoded}?model=openai&seed=42`,
-      { signal: AbortSignal.timeout(20000) }
-    );
+    const pollinationsBody = {
+      messages: [
+        { role: "system", content: systemPrompt.slice(0, 800) },
+        { role: "user", content: message },
+      ],
+      model: "openai",
+      seed: 42,
+    };
+    const res = await fetch("https://text.pollinations.ai/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(pollinationsBody),
+      signal: AbortSignal.timeout(15000),
+    });
     if (res.ok) {
       const text = await res.text();
       if (text?.trim()) {
         return NextResponse.json({ reply: text.trim().slice(0, 500), provider: "Pollinations" });
       }
+    } else {
+      console.warn("[Sage] Pollinations HTTP", res.status);
     }
   } catch (err) {
-    console.warn("[Sage] Pollinations fallback failed:", err);
+    console.warn("[Sage] Pollinations failed:", err instanceof Error ? err.message : err);
   }
 
-  return NextResponse.json(
-    { error: "Sage is taking a quick nap ☁️ Try again in a moment!" },
-    { status: 503 }
-  );
+  // Last resort: return a helpful static response instead of error
+  const fallbackReplies = [
+    "I'm having a brief connection issue! 🌿 Try asking again in a moment — I'll be right back.",
+    "Hmm, my AI brain needs a quick reset! Try again in a few seconds. In the meantime, check out our FAQ page for common questions!",
+    "Quick hiccup on my end! 🌿 I'll be back shortly. You can also email contact@studentnest.ai if you need help right away.",
+  ];
+  return NextResponse.json({
+    reply: fallbackReplies[Math.floor(Math.random() * fallbackReplies.length)],
+    provider: "fallback",
+  });
 }

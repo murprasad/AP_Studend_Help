@@ -871,7 +871,7 @@ export default function PracticePage() {
             <div className="col-span-2 flex items-center gap-2 px-3 py-2 rounded-lg bg-yellow-500/5 border border-yellow-500/20 text-xs text-yellow-300/80">
               <Crown className="h-3.5 w-3.5 flex-shrink-0 text-yellow-400" />
               <span>You&apos;re on the Free plan — 3 sessions/day. {userTrack === "clep"
-                ? <>Want unlimited practice + all 6 CLEP courses? <Link href="/pricing" className="underline hover:text-indigo-200">Upgrade to CLEP Premium</Link></>
+                ? <>Want unlimited practice + all 34 CLEP courses? <Link href="/pricing" className="underline hover:text-indigo-200">Upgrade to CLEP Premium</Link></>
                 : <>Want unlimited practice + FRQ scoring? <Link href="/pricing" className="underline hover:text-indigo-200">Upgrade to AP Premium</Link></>
               }</span>
             </div>

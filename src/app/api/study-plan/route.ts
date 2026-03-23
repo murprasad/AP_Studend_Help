@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { generateStudyPlan } from "@/lib/ai";
+import { generateStudyPlan, generateCLEP7DayPlan, staticCLEP7DayPlan } from "@/lib/ai";
 import { ApUnit, ApCourse } from "@prisma/client";
 import { COURSE_UNITS } from "@/lib/utils";
 import { VALID_AP_COURSES, COURSE_REGISTRY } from "@/lib/courses";
@@ -49,9 +49,14 @@ export async function POST(req: NextRequest) {
 
     const body = await req.json().catch(() => ({}));
     const course: ApCourse = body.course || "AP_WORLD_HISTORY";
+    const mode = body.mode || "weekly";
 
     if (!VALID_AP_COURSES.includes(course)) {
       return NextResponse.json({ error: "Invalid course" }, { status: 400 });
+    }
+
+    if (mode === "7day" && !course.startsWith("CLEP_")) {
+      return NextResponse.json({ error: "7-day intensive plans are only available for CLEP courses" }, { status: 400 });
     }
 
     const config = COURSE_REGISTRY[course];
@@ -87,9 +92,12 @@ export async function POST(req: NextRequest) {
       },
     };
 
+    // Static 7-day plan for CLEP courses
+    const static7DayPlan = mode === "7day" ? staticCLEP7DayPlan(course) : null;
+
     // Try to fetch data and enhance plan — if ANY step fails, use static plan
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let planData: any = staticPlan;
+    let planData: any = mode === "7day" ? static7DayPlan : staticPlan;
 
     try {
       // Feature flag check
@@ -135,21 +143,35 @@ export async function POST(req: NextRequest) {
       // If user has 20+ responses, try AI-enhanced plan
       if (recentResponses.length >= 20) {
         try {
-          planData = (await Promise.race([
-            generateStudyPlan(
-              masteryScores.map((m) => ({
-                unit: m.unit as ApUnit,
-                masteryScore: m.masteryScore,
-                accuracy: m.accuracy,
-              })),
-              { accuracy: recentAccuracy, totalAnswered: recentResponses.length },
-              course
-            ),
-            new Promise((_, reject) => setTimeout(() => reject(new Error("AI timeout")), 10000)),
-          ])) as Record<string, unknown>;
+          if (mode === "7day") {
+            planData = (await Promise.race([
+              generateCLEP7DayPlan(
+                course,
+                masteryScores.map((m) => ({
+                  unit: m.unit as ApUnit,
+                  masteryScore: m.masteryScore,
+                  accuracy: m.accuracy,
+                })),
+              ),
+              new Promise((_, reject) => setTimeout(() => reject(new Error("AI timeout")), 10000)),
+            ])) as Record<string, unknown>;
+          } else {
+            planData = (await Promise.race([
+              generateStudyPlan(
+                masteryScores.map((m) => ({
+                  unit: m.unit as ApUnit,
+                  masteryScore: m.masteryScore,
+                  accuracy: m.accuracy,
+                })),
+                { accuracy: recentAccuracy, totalAnswered: recentResponses.length },
+                course
+              ),
+              new Promise((_, reject) => setTimeout(() => reject(new Error("AI timeout")), 10000)),
+            ])) as Record<string, unknown>;
+          }
         } catch (aiError) {
           console.error("AI study plan generation failed:", aiError);
-          // Keep staticPlan as fallback — already set above
+          // Keep staticPlan / static7DayPlan as fallback — already set above
         }
       }
     } catch (dataError) {

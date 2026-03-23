@@ -71,12 +71,14 @@ const courses = [
 ];
 
 const clepCourses = [
-  { name: "CLEP College Algebra",          units: 5, savings: "$1,200", topics: "Equations, inequalities, functions, graphing" },
-  { name: "CLEP College Composition",      units: 5, savings: "$2,400", topics: "Thesis, argument, rhetoric, research writing" },
-  { name: "CLEP Introductory Psychology",  units: 5, savings: "$1,200", topics: "Behavior, cognition, development, disorders" },
-  { name: "CLEP Principles of Marketing",  units: 5, savings: "$1,200", topics: "Market strategy, consumer behavior, pricing" },
-  { name: "CLEP Principles of Management", units: 5, savings: "$1,200", topics: "Leadership, planning, organization, control" },
-  { name: "CLEP Introductory Sociology",   units: 5, savings: "$1,200", topics: "Social structures, culture, institutions" },
+  { name: "CLEP Introductory Sociology",          units: 5, savings: "$1,200", topics: "Social structures, culture, institutions — easiest CLEP" },
+  { name: "CLEP Introductory Psychology",          units: 5, savings: "$1,200", topics: "Behavior, cognition, development, disorders" },
+  { name: "CLEP Analyzing & Interpreting Lit",     units: 5, savings: "$2,400", topics: "No reading list — pure passage analysis skills" },
+  { name: "CLEP Principles of Marketing",          units: 5, savings: "$1,200", topics: "Real-world business intuition helps a lot" },
+  { name: "CLEP College Mathematics",              units: 5, savings: "$2,400", topics: "Broader but shallower than College Algebra" },
+  { name: "CLEP American Government",              units: 5, savings: "$1,200", topics: "High school civics goes far on this exam" },
+  { name: "CLEP Principles of Management",         units: 5, savings: "$1,200", topics: "Common sense management + key theorists" },
+  { name: "CLEP College Algebra",                  units: 5, savings: "$1,200", topics: "Equations, inequalities, functions, graphing" },
 ];
 
 const testimonials = [
@@ -194,7 +196,7 @@ export default function LandingPage() {
                 </Link>
                 <Link href="/register?track=clep">
                   <Button size="lg" className="btn-lift gap-2 text-base px-8 h-12 bg-emerald-600 hover:bg-emerald-700 text-white">
-                    Start CLEP Prep Free <ArrowRight className="h-5 w-5" />
+                    Pass CLEP in 7 Days <ArrowRight className="h-5 w-5" />
                   </Button>
                 </Link>
               </div>
@@ -229,9 +231,12 @@ export default function LandingPage() {
             { href: "/ap-prep", color: "indigo", icon: BookOpen, label: "AP Courses", count: "10 courses", desc: "Score a 5. Get into your dream school.", cta: "Explore AP Prep" },
             { href: "/sat-prep", color: "blue", icon: BookOpen, label: "SAT Prep", count: "2 sections", desc: "Raise your SAT score with targeted practice.", cta: "Explore SAT Prep" },
             { href: "/act-prep", color: "violet", icon: BookOpen, label: "ACT Prep", count: "4 sections", desc: "Boost your composite with section-specific AI.", cta: "Explore ACT Prep" },
-            { href: "/clep-prep", color: "emerald", icon: GraduationCap, label: "CLEP Prep", count: "6 exams", desc: "Skip intro classes. Save $1,200+ per exam.", cta: "Explore CLEP Prep" },
-          ].map((m) => (
-            <Link key={m.href} href={m.href} className={`p-5 rounded-2xl border border-${m.color}-500/30 bg-${m.color}-500/5 hover:bg-${m.color}-500/10 transition-colors block`}>
+            { href: "/clep-prep", color: "emerald", icon: GraduationCap, label: "CLEP Prep", count: "34 exams", desc: "Pass in 7 days. Save $1,200+ per exam.", cta: "Build My 7-Day Plan", badge: "Most Popular" },
+          ].map((m: { href: string; color: string; icon: typeof BookOpen; label: string; count: string; desc: string; cta: string; badge?: string }) => (
+            <Link key={m.href} href={m.href} className={`relative p-5 rounded-2xl border border-${m.color}-500/30 bg-${m.color}-500/5 hover:bg-${m.color}-500/10 transition-colors block`}>
+              {m.badge && (
+                <span className={`absolute -top-2.5 right-4 px-2.5 py-0.5 rounded-full bg-${m.color}-600 text-white text-[10px] font-semibold`}>{m.badge}</span>
+              )}
               <div className="flex items-center gap-2 mb-2">
                 <m.icon className={`h-4 w-4 text-${m.color}-400`} />
                 <span className={`text-xs font-semibold text-${m.color}-400 uppercase tracking-wide`}>{m.label}</span>
@@ -252,7 +257,7 @@ export default function LandingPage() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
             {[
-              { icon: "🎯", stat: "22 courses covered", sub: "AP, SAT, ACT & CLEP" },
+              { icon: "🎯", stat: "50 courses covered", sub: "AP, SAT, ACT & CLEP" },
               { icon: "💰", stat: "$1,200+ saved per CLEP exam", sub: "Skip courses, keep the credit" },
               { icon: "🔥", stat: "8 engagement features", sub: "Stay motivated daily" },
             ].map(({ icon, stat, sub }) => (
@@ -705,7 +710,7 @@ export default function LandingPage() {
                 <span className="text-xs text-muted-foreground">/ forever</span>
               </div>
               {[
-                "All 22 courses — AP, SAT, ACT & CLEP",
+                "All 50 courses — AP, SAT, ACT & CLEP",
                 "Unlimited MCQ practice",
                 "5 AI tutor chats per day",
                 "Basic study plan",
@@ -766,7 +771,7 @@ export default function LandingPage() {
               <p className="text-xs text-muted-foreground/60 mb-3">Less than a single hour of tutoring</p>
               {[
                 "Everything in Free, plus:",
-                "All 6 CLEP courses (earn college credit)",
+                "All 34 CLEP courses (earn college credit)",
                 "Unlimited AI tutor chats",
                 "Personalized CLEP study plan",
                 "Streaming AI responses",

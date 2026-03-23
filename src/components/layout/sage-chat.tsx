@@ -242,15 +242,15 @@ export function SageChat() {
               {messages.length > 0 && (
                 <button
                   onClick={() => setMessages([])}
-                  className="text-white/60 hover:text-white p-1.5 rounded-lg hover:bg-white/10 transition-colors"
+                  className="text-white/60 hover:text-white p-2 rounded-lg hover:bg-white/10 transition-colors min-w-[36px] min-h-[36px] flex items-center justify-center"
                   title="Clear chat"
                 >
-                  <RotateCcw className="h-3.5 w-3.5" />
+                  <RotateCcw className="h-4 w-4" />
                 </button>
               )}
               <button
                 onClick={() => setOpen(false)}
-                className="text-white/60 hover:text-white p-1.5 rounded-lg hover:bg-white/10 transition-colors"
+                className="text-white/60 hover:text-white p-2 rounded-lg hover:bg-white/10 transition-colors min-w-[36px] min-h-[36px] flex items-center justify-center"
               >
                 <X className="h-4 w-4" />
               </button>
@@ -276,7 +276,7 @@ export function SageChat() {
                   <button
                     key={q}
                     onClick={() => sendMessage(q)}
-                    className="text-xs px-2.5 py-1.5 rounded-full border border-indigo-500/30 text-indigo-400 hover:bg-indigo-500/10 transition-colors"
+                    className="text-xs px-3 py-2 rounded-full border border-indigo-500/30 text-indigo-400 hover:bg-indigo-500/10 transition-colors min-h-[36px]"
                   >
                     {q}
                   </button>
@@ -338,7 +338,7 @@ export function SageChat() {
                 size="sm"
                 onClick={() => sendMessage(input)}
                 disabled={!input.trim() || loading}
-                className="bg-indigo-600 hover:bg-indigo-700 h-10 w-10 p-0 flex-shrink-0"
+                className="bg-indigo-600 hover:bg-indigo-700 h-11 w-11 p-0 flex-shrink-0"
               >
                 {loading ? (
                   <Loader2 className="h-4 w-4 animate-spin" />

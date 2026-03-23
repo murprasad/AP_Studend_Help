@@ -47,7 +47,7 @@ export const FEATURE_FLAG_DEFS = [
     key: "clep_enabled",
     label: "CLEP Prep",
     description:
-      "Enable CLEP (College-Level Examination Program) courses in the sidebar and landing page. When ON, 6 CLEP exams appear as a separate group alongside AP/SAT/ACT.",
+      "Enable CLEP (College-Level Examination Program) courses in the sidebar and landing page. When ON, all 34 CLEP exams appear as a separate group alongside AP/SAT/ACT.",
     default: "false",
     dangerous: false,
   },
