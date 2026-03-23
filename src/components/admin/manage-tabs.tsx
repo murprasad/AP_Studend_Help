@@ -9,6 +9,7 @@ import { AdminMegaPopulate } from "@/components/admin/mega-populate";
 import { AdminCoverageTab } from "@/components/admin/coverage-tab";
 import { AdminFeatureFlags } from "@/components/admin/feature-flags";
 import { AdminPaymentSetup } from "@/components/admin/payment-setup";
+import { AdminQualityTab } from "@/components/admin/quality-tab";
 
 interface UnitCount {
   course: string;
@@ -36,6 +37,7 @@ export function AdminManageTabs({ questionsByUnit, questionsByTopic }: Props) {
     { id: "bank", label: "Question Bank" },
     { id: "coverage", label: "Coverage" },
     { id: "config", label: "Config" },
+    { id: "quality", label: "Quality" },
   ] as const;
 
   return (
@@ -112,6 +114,9 @@ export function AdminManageTabs({ questionsByUnit, questionsByTopic }: Props) {
           <AdminPaymentSetup />
         </div>
       )}
+
+      {/* Quality tab */}
+      {tab === "quality" && <AdminQualityTab />}
     </div>
   );
 }
