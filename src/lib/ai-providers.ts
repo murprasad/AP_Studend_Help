@@ -565,6 +565,46 @@ export async function callAIForTier(
   throw new Error(`All AI providers failed for tier: ${tier}. Tried: ${available.map((p) => p.name).join(", ")}`);
 }
 
+// ── CLEP-specific provider list ──────────────────────────────────────────────
+// Gemini 2.5 Pro excels at educational content — prioritize it for CLEP generation.
+const CLEP_PROVIDER_NAMES = ["Gemini", "Groq", "Together.ai", "Pollinations-Free"];
+
+/**
+ * CLEP-optimized AI cascade: Gemini (best for educational content) → Groq → Together.ai → Pollinations-Free.
+ * Falls back to the full cascade if all CLEP-tier providers fail.
+ */
+export async function callAIForCLEP(
+  prompt: string,
+  systemPrompt?: string,
+): Promise<AICallResult> {
+  const available = PROVIDERS.filter(
+    (p) =>
+      CLEP_PROVIDER_NAMES.includes(p.name) &&
+      (p.envKey === "ALWAYS_AVAILABLE" || !!process.env[p.envKey])
+  );
+
+  for (const provider of available) {
+    try {
+      const text = await provider.call(prompt, systemPrompt);
+      if (text?.trim()) {
+        console.log(`[AI][CLEP] Used provider: ${provider.name} (${provider.modelId})`);
+        return { response: text.trim(), modelUsed: provider.modelId };
+      }
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      console.warn(`[AI][CLEP] ${provider.name} failed: ${msg}`);
+      if (msg.includes("401") || msg.includes("403") || msg.includes("invalid") || msg.includes("API key")) {
+        continue;
+      }
+    }
+  }
+
+  // Final fallback: full cascade
+  console.warn("[AI][CLEP] All CLEP providers failed — falling back to full cascade");
+  const text = await callAIWithCascade(prompt, systemPrompt);
+  return { response: text, modelUsed: "cascade/fallback" };
+}
+
 /**
  * Validate a generated question for AP/SAT/ACT style and correctness.
  * Uses Groq (fast, free) with a 10s timeout, falls back to Pollinations-Free.
@@ -576,20 +616,30 @@ export async function callAIForTier(
 export async function validateQuestion(
   questionJson: string,
   difficulty?: string,
-  difficultyRubricEntry?: string
+  difficultyRubricEntry?: string,
+  course?: string,
+  generatorModel?: string,
 ): Promise<ValidationResult> {
   const difficultySection = difficulty && difficultyRubricEntry
     ? `\n6. Difficulty calibration — The question matches the ${difficulty} difficulty standard: "${difficultyRubricEntry}"`
     : "";
 
-  const criteriaCount = difficultyRubricEntry ? "SIX" : "FIVE";
+  const clepCriteria = course?.startsWith("CLEP_") ? `
+6. SCENARIO-BASED: The question presents a scenario, case study, or concrete context (NOT bare "What is X?" recall)
+7. DISTRACTOR DISTINCTNESS: All 4 options test different misconceptions (no two distractors representing the same error type)
+8. EXPLANATION TEACHES: The explanation explains why the correct answer is right AND why each wrong answer is wrong` : "";
+
+  const allExtraCriteria = `${difficultySection}${clepCriteria}`;
+  const criteriaCount = course?.startsWith("CLEP_")
+    ? (difficultyRubricEntry ? "NINE" : "EIGHT")
+    : (difficultyRubricEntry ? "SIX" : "FIVE");
 
   const validatorPrompt = `You are a College Board AP exam quality reviewer. Evaluate this question on ${criteriaCount} criteria:
 1. Factual accuracy — Is the content and explanation factually correct?
 2. Single unambiguous answer — Only one choice is clearly correct; the others are definitively wrong.
 3. Distractor quality — Wrong answers are plausible but clearly incorrect on careful reflection; each represents a distinct common misconception.
 4. Cognitive level — Tests understanding, analysis, or application (NOT pure rote memorization or trivia).
-5. Exam alignment — Matches AP/SAT/ACT exam style (appropriate stimulus if needed, appropriate stem verb, no trick questions).${difficultySection}
+5. Exam alignment — Matches AP/SAT/ACT/CLEP exam style (appropriate stimulus if needed, appropriate stem verb, no trick questions).${allExtraCriteria}
 
 Score each criterion PASS or FAIL.
 
@@ -599,8 +649,29 @@ ${questionJson}
 Reply ONLY with valid JSON (no markdown, no extra text):
 {"approved": true} if all criteria pass, or {"approved": false, "reason": "criterion: explanation"}`;
 
+  // Cross-model validation: prefer a different model family than the generator
+  // to catch blind spots (same model tends to approve its own mistakes)
+  const generatorIsGroq = generatorModel?.includes("llama") || generatorModel?.includes("groq");
+  const generatorIsGemini = generatorModel?.includes("gemini");
+  const geminiKey = process.env.GOOGLE_AI_API_KEY;
   const groqKey = process.env.GROQ_API_KEY;
-  if (groqKey) {
+
+  // Try Gemini first if generator was Groq/Llama (or if no generator info)
+  if (geminiKey && (!generatorIsGemini || !groqKey)) {
+    try {
+      const text = await callGemini(validatorPrompt);
+      if (text?.trim()) {
+        const clean = text.trim().replace(/^```(?:json)?\s*/i, "").replace(/```\s*$/i, "");
+        console.log(`[validateQuestion] Used Gemini (cross-model: generator=${generatorModel ?? "unknown"})`);
+        return JSON.parse(clean) as ValidationResult;
+      }
+    } catch {
+      // fall through to Groq
+    }
+  }
+
+  // Try Groq if generator was Gemini, or as fallback
+  if (groqKey && (!generatorIsGroq || !geminiKey)) {
     try {
       const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
         method: "POST",
@@ -622,12 +693,37 @@ Reply ONLY with valid JSON (no markdown, no extra text):
         const content = data.choices?.[0]?.message?.content?.trim();
         if (content) {
           const clean = content.replace(/^```(?:json)?\s*/i, "").replace(/```\s*$/i, "");
+          console.log(`[validateQuestion] Used Groq (cross-model: generator=${generatorModel ?? "unknown"})`);
           return JSON.parse(clean) as ValidationResult;
         }
       }
     } catch {
       // fall through to Pollinations
     }
+  }
+
+  // Last resort: if both keys exist but cross-model conditions skipped them, try either
+  if (groqKey) {
+    try {
+      const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${groqKey}` },
+        body: JSON.stringify({
+          model: "llama-3.3-70b-versatile",
+          messages: [{ role: "user", content: validatorPrompt }],
+          max_tokens: 200, temperature: 0.1,
+        }),
+        signal: AbortSignal.timeout(10000),
+      });
+      if (res.ok) {
+        const data = await res.json() as { choices?: Array<{ message?: { content?: string } }> };
+        const content = data.choices?.[0]?.message?.content?.trim();
+        if (content) {
+          const clean = content.replace(/^```(?:json)?\s*/i, "").replace(/```\s*$/i, "");
+          return JSON.parse(clean) as ValidationResult;
+        }
+      }
+    } catch { /* fall through */ }
   }
 
   // Fallback: Pollinations-Free

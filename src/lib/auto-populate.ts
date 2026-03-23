@@ -147,6 +147,20 @@ export async function runAutoPopulate(
       try {
         const q = await generateOneQuestion(course, unit, unitName, difficulty, topic, questionType);
         if (q) {
+          // CLEP quality heuristic: scenario-based check for MCQs
+          const isCLEPCourse = (course as string).startsWith("CLEP_");
+          let shouldAutoApprove = true;
+          if (isCLEPCourse && questionType === QuestionType.MCQ) {
+            const qText = q.questionText || "";
+            const expl = q.explanation || "";
+            const isScenarioBased = /\b(observes?|discovers?|researcher|student|company|experiment|study|data\s+shows?|according\s+to|finds?\s+that|argues?\s+that|reports?\s+that|notices?\s+that|scenario|situation|case)\b/i.test(qText);
+            const explanationQuality = /\b(incorrect|wrong|because|however|unlike|rather\s+than|instead|not\s+the\s+same|different\s+from|confused\s+with)\b/i.test(expl);
+            shouldAutoApprove = isScenarioBased && explanationQuality;
+            if (!shouldAutoApprove) {
+              console.log(`[auto-populate] ${course}/${unit}: flagged for review (not scenario-based or weak explanation)`);
+            }
+          }
+
           await prisma.question.create({
             data: {
               course,
@@ -162,7 +176,7 @@ export async function runAutoPopulate(
               correctAnswer: q.correctAnswer,
               explanation: q.explanation,
               isAiGenerated: true,
-              isApproved: true,
+              isApproved: shouldAutoApprove,
             },
           });
           added++;
@@ -219,7 +233,7 @@ async function generateOneQuestion(
 
     // Validate MCQ quality — skip validation for open-ended types
     if (needsValidation) {
-      const validation = await validateQuestion(JSON.stringify(parsed), difficulty, difficultyRubricEntry);
+      const validation = await validateQuestion(JSON.stringify(parsed), difficulty, difficultyRubricEntry, course as string);
       if (!validation.approved) {
         console.warn(`[auto-populate] Attempt ${attempt} rejected: ${validation.reason}`);
         if (attempt === MAX_ATTEMPTS) return null;

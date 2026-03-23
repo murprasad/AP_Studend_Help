@@ -2,7 +2,7 @@ import { createHash } from "crypto";
 import { ApUnit, ApCourse, Difficulty, QuestionType } from "@prisma/client";
 import { COURSE_UNITS } from "./utils";
 import { COURSE_REGISTRY, getCourseForUnit } from "./courses";
-import { callAIWithCascade, callAIForTier, validateQuestion, AICallResult } from "./ai-providers";
+import { callAIWithCascade, callAIForTier, callAIForCLEP, validateQuestion, AICallResult } from "./ai-providers";
 import { prisma } from "./prisma";
 import { getWikipediaSummary, getEduContextForQuery, searchStackExchange, getEnrichedContext, fetchMITOCWContent, fetchDIGContent, fetchOpenStaxContent, fetchSmithsonianContent, fetchCollegeBoardSATTopics, fetchACTTopics, fetchCBFRQContent, getCBFRQUrl, fetchKhanAcademyContext } from "./edu-apis";
 
@@ -214,17 +214,65 @@ export function buildQuestionPrompt(
 - Vary question stems — not just "Which of the following"`
     : "";
 
+  // CLEP-specific quality standards
+  const isCLEP = (course as string).startsWith("CLEP_");
+  const clepSection = isCLEP ? `
+CLEP EXAM STANDARDS (College Board level):
+- CLEP questions test UNDERSTANDING and APPLICATION, rarely pure recall
+- 80% of questions MUST be scenario-based: "A researcher observes...", "A company decides...", "A student reads..."
+- DO NOT generate "What is X?" or "Define Y" questions — these fail CLEP standards
+- Correct answer is the BEST answer among plausible options
+- Reading level: first-year college student (clear, accessible, no unnecessary jargon)
+- Time target: solvable in 60-90 seconds by a prepared student
+
+DISTRACTOR CONSTRUCTION (mandatory for CLEP):
+- Option A (correct): Clearly best answer when analyzed carefully
+- Option B (distractor): Correct concept, wrong application (partial understanding trap)
+- Option C (distractor): Related but different concept (similar-term confusion)
+- Option D (distractor): Common misconception or oversimplification
+- Each distractor MUST represent a DISTINCT error type — no two testing the same mistake
+
+EXPLANATION REQUIREMENTS:
+- Explain WHY the correct answer is right (cite the principle/theory)
+- Explain WHY each distractor is wrong (name the specific error)
+- The explanation should TEACH the concept, not just confirm the answer
+
+CLEP DIFFICULTY CALIBRATION:
+- Passing: ~60-65% correct answers needed
+- EASY (30%): Textbook-reader level, single concept application
+- MEDIUM (50%): Apply concept to unfamiliar scenario, requires reasoning
+- HARD (20%): Distinguish between similar concepts in ambiguous context
+
+BLOOM'S TAXONOMY REQUIREMENT (critical for CLEP realism):
+- 20% of questions: Remember/Understand — identify, define, describe a concept
+- 50% of questions: Apply — use a concept in a new, unfamiliar scenario
+- 30% of questions: Analyze/Evaluate — compare concepts, distinguish similar theories, assess outcomes
+For THIS question, select the appropriate Bloom's level and include it in your JSON as: "bloomLevel": "remember" | "apply" | "analyze"
+
+DATA INTERPRETATION (10-15% of social science CLEPs):
+- Some questions SHOULD present a small data table, survey result, or statistical finding as stimulus
+- Format tables using pipe-delimited markdown: | Header1 | Header2 |
+- Ask the student to interpret, compare, or draw conclusions from the data
+
+DISTRACTOR STRATEGY (misconception-first):
+- Before writing options, identify 3 common student MISCONCEPTIONS about the topic
+- Each wrong answer must represent a DISTINCT misconception a real student would hold
+- Do NOT create "obviously wrong" distractors — every option must be tempting to an underprepared student
+
+${config.examAlignmentNotes ? `EXAM CONTENT WEIGHTS:\n${config.examAlignmentNotes}` : ""}
+` : "";
+
   return `You are an ${config.name} exam question generator trained on College Board ${config.name} curriculum standards.
 
 ${unitHeader}
 
-${config.examAlignmentNotes}${difficultySection}${skillsSection}${stimulusSection}${distractorSection}${wordCountSection}${satFormatSection}${actFormatSection}
+${config.examAlignmentNotes}${difficultySection}${skillsSection}${stimulusSection}${distractorSection}${wordCountSection}${satFormatSection}${actFormatSection}${clepSection}
 
 GENERATION TASK:
 ${generationInstruction}
 
 Return ONLY a JSON object (no markdown, no extra text):
-${responseFormat}`;
+${responseFormat}${isCLEP ? `\n\nCLEP ADDITIONAL FIELDS — include these in your JSON:\n"bloomLevel": "remember" | "apply" | "analyze"\n"misconceptionsTested": ["misconception distractor B targets", "misconception distractor C targets", "misconception distractor D targets"]` : ""}`;
 }
 
 // ── Question Generation ────────────────────────────────────────────────────
@@ -281,10 +329,25 @@ export async function generateQuestion(
     }
   }
 
+  // CLEP calibration examples (style reference)
+  let clepCalibrationSection = "";
+  if ((inferredCourse as string).startsWith("CLEP_") && !quickMode) {
+    try {
+      const { CLEP_CALIBRATION } = await import("./clep-calibration");
+      const examples = CLEP_CALIBRATION[inferredCourse as string];
+      if (examples && examples.length > 0) {
+        const sample = examples[Math.floor(Math.random() * examples.length)];
+        clepCalibrationSection = `\n\nCALIBRATION EXAMPLE (match this style and difficulty):\n"${sample}"\n\nGenerate a DIFFERENT question at the SAME quality level. Do NOT copy this scenario or wording.`;
+      }
+    } catch {
+      // clep-calibration module not available — continue without examples
+    }
+  }
+
   const prompt = seedQuestion
-    ? `${basePrompt}${cbFrqSeedSection}\n\nREFERENCE QUESTION (for style/difficulty calibration — generate something DIFFERENT):\n"${seedQuestion}"\n\nGenerate a new question on the SAME concept with entirely different numbers, context, and scenario. Do NOT reuse the same values or phrasing from the reference.`
-    : cbFrqSeedSection
-    ? `${basePrompt}${cbFrqSeedSection}`
+    ? `${basePrompt}${cbFrqSeedSection}${clepCalibrationSection}\n\nREFERENCE QUESTION (for style/difficulty calibration — generate something DIFFERENT):\n"${seedQuestion}"\n\nGenerate a new question on the SAME concept with entirely different numbers, context, and scenario. Do NOT reuse the same values or phrasing from the reference.`
+    : cbFrqSeedSection || clepCalibrationSection
+    ? `${basePrompt}${cbFrqSeedSection}${clepCalibrationSection}`
     : basePrompt;
 
   // FRQ/open-ended types have no distractors — skip validator (saves ~10s/attempt).
@@ -295,17 +358,28 @@ export async function generateQuestion(
   let aiResult: AICallResult | null = null;
   let parsed: Record<string, unknown> | null = null;
   let lastError = "";
+  let lastRejectionReason = "";
 
   for (let attempt = 1; attempt <= MAX_GEN_ATTEMPTS; attempt++) {
     try {
-      const raw = await callAIForTier(userTier, prompt);
+      // On retry, append the previous rejection reason so the model can self-correct
+      const retryFeedback = attempt > 1 && lastRejectionReason
+        ? `\n\nPREVIOUS ATTEMPT FAILED VALIDATION:\n"${lastRejectionReason}"\nFix this specific issue in your new generation. Do NOT repeat the same error.`
+        : "";
+      const attemptPrompt = prompt + retryFeedback;
+
+      const raw = (inferredCourse as string).startsWith("CLEP_")
+        ? await callAIForCLEP(attemptPrompt)
+        : await callAIForTier(userTier, attemptPrompt);
       const rawText = raw.response.trim().replace(/^```(?:json)?\s*/i, "").replace(/```\s*$/i, "");
       const candidate = JSON.parse(rawText) as Record<string, unknown>;
       if (needsValidation) {
-        const validation = await validateQuestion(JSON.stringify(candidate));
+        // Cross-model validation: pass generator model so validator uses a different model family
+        const validation = await validateQuestion(JSON.stringify(candidate), difficulty, undefined, inferredCourse as string, raw.modelUsed);
         if (!validation.approved) {
           console.warn(`[generateQuestion] Attempt ${attempt} rejected: ${validation.reason}`);
-          lastError = validation.reason ?? "validation failed";
+          lastRejectionReason = validation.reason ?? "validation failed";
+          lastError = lastRejectionReason;
           continue;
         }
       }

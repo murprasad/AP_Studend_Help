@@ -1919,13 +1919,15 @@ Topics: algebraic operations (25%), equations/inequalities (25%), functions and 
 - OpenStax College Algebra 2e (openstax.org/books/college-algebra-2e): Free, CC-licensed textbook — matches CLEP content exactly
 - Khan Academy Algebra 1 & 2 (khanacademy.org/math/algebra): Free video lessons for every topic
 - Paul's Online Math Notes (tutorial.math.lamar.edu): Reference for functions, polynomials, logs`,
-    examAlignmentNotes: `CLEP College Algebra alignment:
+    examAlignmentNotes: `CLEP College Algebra alignment (College Board official weights):
 - Algebraic operations: 25% of exam
 - Equations and inequalities: 25%
-- Functions and their graphs: 30%
-- Number systems and operations: 10%
-- Sequences and series: 10%
-All questions are 4-choice MCQ — no calculators on most CLEP versions.`,
+- Functions and their properties: 30%
+- Number systems and operations: 20%
+~60 questions in 90 minutes. ~50% routine problems (basic algebraic skills), ~50% nonroutine (multi-step reasoning).
+TI-30XS MultiView scientific calculator integrated into exam software.
+Passing score: 50 (ACE recommendation), earns 3 semester hours.
+All questions are 4-choice MCQ.`,
     stimulusRequirement: "Include a function definition, equation, or graph description as stimulus where relevant; null for direct computation questions",
     stimulusDescription: "equation, function definition, or graph description (null for direct computation)",
     explanationGuidance: "showing full algebraic steps and naming the property or theorem applied at each step",
@@ -2068,11 +2070,23 @@ social psychology (8-10%), statistics and research (3-5%).`,
 - OpenStax Psychology 2e (openstax.org/books/psychology-2e): Free, CC-licensed, chapter-by-chapter
 - Khan Academy AP Psychology (khanacademy.org/science/ap-psychology): Free video lessons + practice
 - Noba Project (nobaproject.com): Free, peer-reviewed psychology textbook modules`,
-    examAlignmentNotes: `CLEP Introductory Psychology alignment:
-- Abnormal psychology has the highest weight (12-14%)
-- Learning (classical/operant conditioning): 8-10%
-- Social psychology: 8-10%
-- Questions are application-focused — expect scenario-based questions asking you to identify which concept applies.`,
+    examAlignmentNotes: `CLEP Introductory Psychology alignment (College Board official weights):
+- History, Approaches, and Methods: 11-12%
+- Biological Bases of Behavior: 8-9%
+- Sensation and Perception: 7-8%
+- States of Consciousness: 5-6%
+- Learning: 8-9%
+- Cognition: 8-9%
+- Motivation and Emotion: 5-6%
+- Developmental Psychology: 8-9%
+- Personality: 7-8%
+- Psychological Disorders and Health: 8-9%
+- Treatment of Psychological Disorders: 6-7%
+- Social Psychology: 9-10%
+- Statistics, Tests, and Measurement: 3-4%
+~95 questions (some unscored pretests) in 90 minutes. DSM-5 aligned.
+Passing score: 50 (ACE recommendation), earns 3 semester hours.
+Questions are application-focused — expect scenario-based questions asking to identify which concept applies.`,
     stimulusRequirement: "Include a brief scenario or case study as stimulus when the question asks the student to identify or apply a concept",
     stimulusDescription: "short scenario (2-3 sentences) describing a behavior or experiment (null for direct recall questions)",
     explanationGuidance: "naming the specific theory, theorist, or brain structure involved and explaining why the distractors describe a different concept",
@@ -2284,11 +2298,16 @@ sociological theory and methods (12%).`,
 - OpenStax Introduction to Sociology 3e (openstax.org/books/introduction-sociology-3e): Free, CC-licensed
 - Khan Academy MCAT Social and Behavioral Sciences (khanacademy.org): Free lessons covering key sociological concepts
 - LibreTexts Sociology (socialsci.libretexts.org): Free open-access chapters on stratification, deviance, and institutions`,
-    examAlignmentNotes: `CLEP Introductory Sociology alignment:
-- Social stratification has the highest single-area weight (25%)
-- Social patterns (groups, culture, socialization): 31%
-- Know all three major theoretical perspectives and when each is typically applied
-- Questions are often scenario-based — given a social situation, identify the correct sociological concept`,
+    examAlignmentNotes: `CLEP Introductory Sociology alignment (College Board official weights):
+- Institutions: 20%
+- Social Patterns: 10%
+- Social Processes: 25%
+- Social Stratification: 25%
+- The Sociological Perspective: 20%
+~100 questions (some unscored pretests) in 90 minutes.
+Tested competencies: (1) identifying facts/concepts, (2) understanding concept relationships, (3) understanding research methods, (4) applying concepts to hypothetical situations, (5) interpreting tables and charts.
+Passing score: 50 (ACE recommendation), earns 3 semester hours.
+Questions are often scenario-based — given a social situation, identify the correct sociological concept.`,
     stimulusRequirement: "Include a brief social scenario or research finding as stimulus for application questions; null for direct theory-recall",
     stimulusDescription: "social scenario or research summary (null for direct recall of theory names)",
     explanationGuidance: "naming the specific sociological theory or concept and explaining how it interprets the scenario, contrasting with the alternative theories in the distractors",
@@ -2322,7 +2341,16 @@ sociological theory and methods (12%).`,
     suggestedTutorQuestions: ["How does judicial review check the other branches?", "What factors influence voter turnout?", "How do interest groups differ from political parties?"],
     curriculumContext: `CLEP American Government covers the structure and function of the US government. Exam: 100 questions, 120 minutes. Passing earns 3 credits (~$1,200 savings). Content: institutions (30-35%), political behavior (15-20%), civil rights/liberties (15-20%), parties/interest groups (15-20%), constitutional foundations (10-15%). Cognitive: 30-40% Recall, 40-50% Understanding, 20-30% Application.`,
     tutorResources: `- OpenStax American Government 3e (openstax.org/books/american-government-3e): CC BY 4.0\n- Khan Academy US Government (khanacademy.org/humanities/us-government-and-civics)\n- Saylor Academy POLSC231 (learn.saylor.org)`,
-    examAlignmentNotes: `Institutions: 30-35%, Parties/interest groups: 15-20%, Political beliefs: 15-20%, Civil rights: 15-20%, Constitutional underpinnings: 10-15%. All 5-choice MCQ. Scenario-based preferred.`,
+    examAlignmentNotes: `CLEP American Government alignment (College Board official weights):
+- Institutions and Policy Processes (Presidency, Bureaucracy, Congress, Federal Courts): 30-35%
+- Political Parties and Interest Groups: 15-20%
+- Political Beliefs and Behavior: 15-20%
+- Civil Liberties and Civil Rights: 10-15%
+- Constitutional Underpinnings of American Democracy: 15-20%
+Competency breakdown: 55-60% knowledge of government/politics, 30-35% understanding processes/behavior patterns, 10-15% analysis and interpretation of data.
+~100 questions (some unscored pretests) in 90 minutes.
+Passing score: 50 (ACE recommendation), earns 3 semester hours.
+Scenario-based preferred.`,
     stimulusRequirement: "Include a political scenario, Supreme Court case excerpt, or policy situation as stimulus; null for direct constitutional recall",
     stimulusDescription: "political scenario, court case reference, or policy situation",
     explanationGuidance: "citing the specific constitutional clause, amendment, or court precedent",
@@ -2556,7 +2584,16 @@ sociological theory and methods (12%).`,
     suggestedTutorQuestions: ["How do I record adjusting entries?", "What is FIFO vs LIFO?", "How do I calculate the current ratio?"],
     curriculumContext: `CLEP Financial Accounting covers introductory financial accounting. Exam: 75 questions, 90 minutes. Passing earns 3 credits (~$1,200 savings). Content: general framework (20-30%), accounting cycle (20-30%), financial statements (25-35%), analysis (10-20%). Cognitive: 30-40% Recall, 40-50% Understanding, 20-30% Application.`,
     tutorResources: `- OpenStax Principles of Financial Accounting (openstax.org/books/principles-financial-accounting): CC BY 4.0\n- Khan Academy Accounting (khanacademy.org/economics-finance-domain)\n- Saylor BUS103 (learn.saylor.org)`,
-    examAlignmentNotes: `Framework: 20-30%, Accounting cycle: 20-30%, Financial statements: 25-35%, Analysis: 10-20%. All 5-choice MCQ. Journal entries and calculations common.`,
+    examAlignmentNotes: `CLEP Financial Accounting alignment (College Board official weights):
+- General Topics (accounting principles, conceptual framework): 20-30%
+- The Income Statement (revenue recognition, expenses, EPS): 20-30%
+- The Balance Sheet (assets, liabilities, equity, valuation): 30-40%
+- Statement of Cash Flows: 5-10%
+- Miscellaneous: <5%
+~75 questions (some unscored pretests) in 90 minutes.
+Four-function calculator available in exam software.
+Passing score: 50 (ACE recommendation), earns 3 semester hours.
+Journal entries and calculations common.`,
     stimulusRequirement: "Include a transaction scenario, partial financial statement, or journal entry; null for principle recall",
     stimulusDescription: "transaction scenario, financial data, or journal entry",
     explanationGuidance: "showing complete journal entry with debits/credits, explaining affected accounts, referencing GAAP",
