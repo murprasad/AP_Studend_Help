@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     description: "AI-powered exam prep built on learning science. 50 courses, free to start.",
   },
 };
-import { Globe, Mail, Target, Heart, Sparkles, Lightbulb, LayoutDashboard, GraduationCap } from "lucide-react";
+import { Globe, Mail, Target, Heart, Sparkles, Lightbulb, LayoutDashboard, GraduationCap, ShieldCheck } from "lucide-react";
 import Link from "next/link";
 import { BrowserFrame } from "@/components/landing/browser-frame";
 import { MockupPractice } from "@/components/landing/mockup-practice";
@@ -156,6 +156,56 @@ export default function AboutPage() {
         </p>
         <p className="text-muted-foreground leading-relaxed">
           <strong className="text-foreground/80">Comprehension verification.</strong> After Sage explains a concept, it offers an optional 3-question check to verify you understood the explanation — not just read it. This closes the loop between passive learning and active demonstration of understanding.
+        </p>
+      </div>
+
+      {/* Section 3b2: College Board-Aligned Question Quality */}
+      <div className="rounded-2xl border border-border/40 bg-card/50 p-8 text-left space-y-6">
+        <div className="flex items-center gap-2 mb-2">
+          <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center">
+            <ShieldCheck className="h-4 w-4 text-blue-500" />
+          </div>
+          <h2 className="text-xl font-bold">College Board-Aligned Question Quality</h2>
+        </div>
+        <p className="text-muted-foreground leading-relaxed">
+          Every CLEP practice question goes through a rigorous 9-step quality pipeline
+        </p>
+
+        <div className="grid sm:grid-cols-3 gap-3">
+          {[
+            { step: 1, title: "Topic Distribution",                desc: "Questions match College Board\u2019s official exam topic weights" },
+            { step: 2, title: "Bloom\u2019s Taxonomy",             desc: "50%+ questions test application and analysis, not just recall" },
+            { step: 3, title: "Scenario-Based",                    desc: "80%+ of questions present real-world scenarios, matching CLEP\u2019s format" },
+            { step: 4, title: "Misconception-First Distractors",   desc: "Wrong answers target actual student misconceptions" },
+            { step: 5, title: "AI Generation",                     desc: "Gemini 2.5 Pro generates questions calibrated to intro-college level" },
+            { step: 6, title: "Cross-Model Validation",            desc: "A second AI model independently validates every question" },
+            { step: 7, title: "8-Criterion Review",                desc: "Factual accuracy, single correct answer, distractor quality, cognitive level, exam alignment, scenario check, distractor distinctness, explanation quality" },
+            { step: 8, title: "Difficulty Calibration",            desc: "Empirical tracking ensures questions match real CLEP pass rates" },
+            { step: 9, title: "OpenStax Grounding",                desc: "Factual accuracy verified against free, peer-reviewed college textbooks" },
+          ].map(({ step, title, desc }) => (
+            <div key={step} className="rounded-xl border border-border/40 bg-card p-4 space-y-1.5">
+              <div className="flex items-center gap-2">
+                <span className="w-6 h-6 rounded-full bg-blue-500/15 text-blue-500 text-xs font-bold flex items-center justify-center flex-shrink-0">
+                  {step}
+                </span>
+                <p className="text-sm font-semibold">{title}</p>
+              </div>
+              <p className="text-xs text-muted-foreground leading-relaxed">{desc}</p>
+            </div>
+          ))}
+        </div>
+
+        <div className="flex flex-wrap justify-center gap-6 pt-2">
+          <p className="text-xs text-muted-foreground">
+            <span className="font-semibold text-foreground/70">34</span> College Board CLEP exam topic distributions aligned
+          </p>
+          <p className="text-xs text-muted-foreground">
+            <span className="font-semibold text-foreground/70">120+</span> original calibration question stems validated against
+          </p>
+        </div>
+
+        <p className="text-[11px] text-muted-foreground/60 leading-relaxed pt-1">
+          StudentNest is not affiliated with or endorsed by the College Board. CLEP® is a registered trademark of the College Board.
         </p>
       </div>
 
