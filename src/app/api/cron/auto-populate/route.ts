@@ -13,7 +13,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { getSetting, setSetting } from "@/lib/settings";
-import { runAutoPopulate } from "@/lib/auto-populate";
+import { runAutoPopulate, runDifficultyAudit } from "@/lib/auto-populate";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 300;
@@ -53,6 +53,10 @@ export async function POST(req: NextRequest) {
     ? Math.min(limitOverride, 20)   // cap at 20 to prevent accidental abuse
     : (isNaN(maxPerRun) ? 5 : maxPerRun);
 
+  // Optional ?audit=true — run difficulty audit (flags miscalibrated questions)
+  const runAudit = searchParams.get("audit") === "true";
+  const autoRecalibrate = searchParams.get("recalibrate") === "true";
+
   let result;
   try {
     result = await runAutoPopulate(
@@ -64,6 +68,16 @@ export async function POST(req: NextRequest) {
     const msg = err instanceof Error ? err.message : String(err);
     console.error("[cron/auto-populate] runAutoPopulate threw:", msg);
     return NextResponse.json({ status: "error", error: msg }, { status: 500 });
+  }
+
+  // Run difficulty audit if requested
+  let auditResult = null;
+  if (runAudit) {
+    try {
+      auditResult = await runDifficultyAudit(20, autoRecalibrate);
+    } catch (err) {
+      console.warn("[cron/auto-populate] Difficulty audit error:", err instanceof Error ? err.message : err);
+    }
   }
 
   try {
@@ -80,5 +94,5 @@ export async function POST(req: NextRequest) {
     // Don't fail the whole request — the populate itself succeeded
   }
 
-  return NextResponse.json({ status: "ok", ...result });
+  return NextResponse.json({ status: "ok", ...result, ...(auditResult ? { audit: auditResult } : {}) });
 }
