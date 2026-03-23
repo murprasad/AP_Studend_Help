@@ -5,7 +5,7 @@ name: Seed Question Bank
 # Stops early when all units have ≥ 8 questions.
 on:
   schedule:
-    - cron: '0 2,8,14,20 * * *'   # every 6 hours (2 AM, 8 AM, 2 PM, 8 PM UTC)
+    - cron: '0 * * * *'   # every hour until all courses are seeded
   workflow_dispatch:
     inputs:
       iterations:

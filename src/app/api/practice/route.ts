@@ -205,6 +205,32 @@ export async function POST(req: NextRequest) {
         aiGenerationWarning = stillNeeded > 0
           ? `${generated.length} AI question${generated.length === 1 ? "" : "s"} generated. Start another session to get ${stillNeeded} more — they'll be ready instantly!`
           : `${generated.length} AI question${generated.length === 1 ? "" : "s"} generated and saved for future sessions too.`;
+
+        // Fire-and-forget: if bank was empty, generate more in background for next session
+        if (allQuestions.length === 0) {
+          const bgCount = Math.min(5, courseUnitKeys.length);
+          const bgDiffs: Difficulty[] = [Difficulty.EASY, Difficulty.MEDIUM, Difficulty.HARD, Difficulty.MEDIUM, Difficulty.EASY];
+          void Promise.allSettled(
+            Array.from({ length: bgCount }, (_, i) =>
+              generateQuestion(
+                courseUnitKeys[i % courseUnitKeys.length] as ApUnit,
+                bgDiffs[i % bgDiffs.length],
+                resolvedQuestionType, undefined, course as ApCourse, "FREE", undefined, true
+              ).then((gen) =>
+                prisma.question.create({
+                  data: {
+                    course: course as ApCourse, unit: gen.unit, topic: gen.topic, subtopic: gen.subtopic,
+                    difficulty: gen.difficulty, questionType: gen.questionType, questionText: gen.questionText,
+                    stimulus: gen.stimulus || null, stimulusImageUrl: gen.stimulusImageUrl || null,
+                    options: gen.options ?? undefined, correctAnswer: gen.correctAnswer, explanation: gen.explanation,
+                    isAiGenerated: true, isApproved: true, modelUsed: gen.modelUsed ?? null,
+                    contentHash: gen.contentHash ?? null, apSkill: gen.apSkill ?? null, bloomLevel: gen.bloomLevel ?? null,
+                  },
+                }).catch(() => null)
+              ).catch(() => null)
+            )
+          );
+        }
       } else if (allQuestions.length === 0) {
         // Retry once more with reduced count — sometimes providers recover after a brief delay
         try {

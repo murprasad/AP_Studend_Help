@@ -390,7 +390,9 @@ export async function generateQuestion(
   // Also skip in quickMode (on-demand practice) — speed > perfection for live sessions.
   const needsValidation = !quickMode && !["FRQ", "SAQ", "DBQ", "LEQ", "CODING"].includes(questionType ?? "");
 
-  const MAX_GEN_ATTEMPTS = 3;
+  // CLEP quickMode gets more attempts since validation is skipped (each attempt is fast ~3-5s)
+  const isCLEPCourse = (inferredCourse as string).startsWith("CLEP_");
+  const MAX_GEN_ATTEMPTS = (isCLEPCourse && quickMode) ? 5 : 3;
   let aiResult: AICallResult | null = null;
   let parsed: Record<string, unknown> | null = null;
   let lastError = "";
@@ -404,7 +406,9 @@ export async function generateQuestion(
         : "";
       const attemptPrompt = prompt + retryFeedback;
 
-      const raw = (inferredCourse as string).startsWith("CLEP_")
+      // quickMode: use standard tier cascade (faster, skips broken Gemini on CF Workers)
+      // non-quickMode (auto-populate): use CLEP cascade with full quality pipeline
+      const raw = (isCLEPCourse && !quickMode)
         ? await callAIForCLEP(attemptPrompt)
         : await callAIForTier(userTier, attemptPrompt);
       const rawText = raw.response.trim().replace(/^```(?:json)?\s*/i, "").replace(/```\s*$/i, "");

@@ -566,8 +566,9 @@ export async function callAIForTier(
 }
 
 // ── CLEP-specific provider list ──────────────────────────────────────────────
-// Gemini 2.5 Pro excels at educational content — prioritize it for CLEP generation.
-const CLEP_PROVIDER_NAMES = ["Gemini", "Groq", "Together.ai", "Pollinations-Free"];
+// Gemini fails on CF Workers (GoogleGenerativeAI SDK uses Node.js APIs).
+// Groq is fast + reliable on edge. Gemini is used in auto-populate (Node.js env) via full cascade.
+const CLEP_PROVIDER_NAMES = ["Groq", "Together.ai", "Pollinations-Free"];
 
 /**
  * CLEP-optimized AI cascade: Gemini (best for educational content) → Groq → Together.ai → Pollinations-Free.
