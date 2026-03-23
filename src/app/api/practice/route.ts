@@ -34,7 +34,8 @@ export async function POST(req: NextRequest) {
     const userTrack = session.user.track ?? "ap";
     const courseModule = getCourseModule(course as ApCourse);
     const moduleSubs: ModuleSub[] = (session.user as { moduleSubs?: ModuleSub[] }).moduleSubs ?? [];
-    const hasPremium = hasModulePremium(moduleSubs, courseModule) || isPremiumForTrack(session.user.subscriptionTier, userTrack);
+    const isAdmin = (session.user as { role?: string }).role === "ADMIN";
+    const hasPremium = isAdmin || hasModulePremium(moduleSubs, courseModule) || isPremiumForTrack(session.user.subscriptionTier, userTrack);
     const [premiumRestricted, aiGenEnabled] = await Promise.all([
       isPremiumRestrictionEnabled(),
       getSetting("ai_generation_enabled", "true").then((v) => v === "true"),

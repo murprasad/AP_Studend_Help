@@ -112,7 +112,10 @@ export function Sidebar({ userRole, userTrack, isOpen = false, onClose = () => {
     clep: [CLEP_GROUP],              // CLEP Prep only
   };
 
-  const COURSE_GROUPS = TRACK_TO_GROUP[effectiveTrack] ?? [BASE_COURSE_GROUPS[0]];
+  // Admin sees ALL course groups regardless of track
+  const COURSE_GROUPS = userRole === "ADMIN"
+    ? [...BASE_COURSE_GROUPS, CLEP_GROUP]
+    : (TRACK_TO_GROUP[effectiveTrack] ?? [BASE_COURSE_GROUPS[0]]);
 
   const DEFAULT_GROUP: Record<string, string> = {
     ap: "AP Courses", sat: "SAT Prep", act: "ACT Prep", clep: "CLEP Prep",
@@ -122,8 +125,9 @@ export function Sidebar({ userRole, userTrack, isOpen = false, onClose = () => {
     DEFAULT_GROUP[effectiveTrack] ?? "AP Courses"
   );
 
-  // Auto-switch course when it doesn't belong to the user's track
+  // Auto-switch course when it doesn't belong to the user's track (skip for admin)
   useEffect(() => {
+    if (userRole === "ADMIN") return; // Admin can access any course
     const trackGroup = TRACK_TO_GROUP[effectiveTrack];
     if (trackGroup) {
       const courseInTrack = trackGroup.some(g => g.keys.includes(course as ApCourse));
