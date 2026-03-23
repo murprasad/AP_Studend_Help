@@ -7,6 +7,7 @@ import { isAnyPremium, tierLabel } from "@/lib/tiers";
 import { Users, BookOpen, BarChart3, Clock } from "lucide-react";
 import { AdminInfrastructureMetrics } from "@/components/admin/infrastructure-metrics";
 import { AdminFeedbackOverview } from "@/components/admin/feedback-overview";
+import { AdminSubscribersTab } from "@/components/admin/subscribers-tab";
 
 interface RecentUser {
   id: string;
@@ -37,6 +38,7 @@ export function AdminMonitorTabs({ stats, recentUsers }: Props) {
   const tabs = [
     { id: "overview", label: "Overview" },
     { id: "users", label: "Users" },
+    { id: "subscribers", label: "Subscribers" },
   ] as const;
 
   return (
@@ -115,6 +117,10 @@ export function AdminMonitorTabs({ stats, recentUsers }: Props) {
           </Card>
           <AdminFeedbackOverview />
         </div>
+      )}
+
+      {tab === "subscribers" && (
+        <AdminSubscribersTab />
       )}
     </div>
   );
