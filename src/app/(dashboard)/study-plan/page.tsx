@@ -318,7 +318,7 @@ export default function StudyPlanPage() {
                   <GraduationCap className="h-8 w-8 text-emerald-400 mx-auto" />
                   <p className="font-bold">Day 8: Schedule Your Exam</p>
                   <p className="text-sm text-muted-foreground">Hit 70% mastery? You&apos;re ready. Book your $93 exam at any test center.</p>
-                  <a href="https://clep.collegeboard.org/find-a-test-center" target="_blank" rel="noopener noreferrer">
+                  <a href="https://clep.collegeboard.org/clep-search" target="_blank" rel="noopener noreferrer">
                     <Button variant="outline" className="gap-2 border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/10">
                       Find a Test Center <ChevronRight className="h-4 w-4" />
                     </Button>

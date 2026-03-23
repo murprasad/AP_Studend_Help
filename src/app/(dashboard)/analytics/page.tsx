@@ -332,7 +332,7 @@ export default function AnalyticsPage() {
                 <p className="text-lg font-bold">{clepReadiness.label}</p>
                 <p className="text-xs text-muted-foreground mt-1">Target: {clepReadiness.threshold}% mastery across all units</p>
                 {clepReadiness.score >= 70 && (
-                  <a href="https://clep.collegeboard.org/find-a-test-center" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-xs text-emerald-400 hover:text-emerald-300 mt-2 font-medium">
+                  <a href="https://clep.collegeboard.org/clep-search" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-xs text-emerald-400 hover:text-emerald-300 mt-2 font-medium">
                     Find a test center →
                   </a>
                 )}
