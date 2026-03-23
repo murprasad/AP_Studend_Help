@@ -17,6 +17,43 @@
 
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
+// ── Circuit breaker — auto-disable broken providers for 10 minutes ──────────
+// Prevents wasting time on providers that are consistently failing.
+// Each provider gets a failure count; after 3 consecutive failures, it's
+// disabled for CIRCUIT_BREAKER_COOLDOWN_MS. Resets on success.
+const CIRCUIT_BREAKER_COOLDOWN_MS = 10 * 60 * 1000; // 10 minutes
+const CIRCUIT_BREAKER_THRESHOLD = 3; // failures before tripping
+
+interface CircuitState {
+  failures: number;
+  disabledUntil: number; // timestamp
+}
+
+const circuitBreakers = new Map<string, CircuitState>();
+
+function isProviderDisabled(name: string): boolean {
+  const state = circuitBreakers.get(name);
+  if (!state) return false;
+  if (state.disabledUntil > Date.now()) return true;
+  // Cooldown expired — reset
+  circuitBreakers.delete(name);
+  return false;
+}
+
+function recordProviderFailure(name: string): void {
+  const state = circuitBreakers.get(name) || { failures: 0, disabledUntil: 0 };
+  state.failures++;
+  if (state.failures >= CIRCUIT_BREAKER_THRESHOLD) {
+    state.disabledUntil = Date.now() + CIRCUIT_BREAKER_COOLDOWN_MS;
+    console.warn(`[AI][circuit-breaker] ${name} disabled for 10 min after ${state.failures} consecutive failures`);
+  }
+  circuitBreakers.set(name, state);
+}
+
+function recordProviderSuccess(name: string): void {
+  circuitBreakers.delete(name);
+}
+
 export interface AICallResult {
   response: string;
   modelUsed: string;
@@ -467,8 +504,10 @@ const PROVIDERS: Provider[] = [
 
 // ── Tier-based provider lists ───────────────────────────────────────────────
 
-const FREE_TIER_PROVIDER_NAMES = ["Groq", "Together.ai", "HuggingFace", "Pollinations-Free"];
-const PREMIUM_TIER_PROVIDER_NAMES = ["Gemini", "OpenRouter-Premium", "Anthropic", "Groq", "Together.ai", "Pollinations-Free"];
+// Ordered by reliability: Groq (fast+free) → Together.ai (paid backup) → Anthropic (quality) → Pollinations (always-on)
+// HuggingFace removed from FREE tier (too slow/unreliable)
+const FREE_TIER_PROVIDER_NAMES = ["Groq", "Together.ai", "Anthropic", "Pollinations-Free"];
+const PREMIUM_TIER_PROVIDER_NAMES = ["Groq", "Anthropic", "OpenRouter-Premium", "Gemini", "Together.ai", "Pollinations-Free"];
 
 /**
  * Call the first available provider.
@@ -492,22 +531,33 @@ export async function callAIWithCascade(
   }
 
   for (const provider of available) {
+    // Circuit breaker: skip providers that are consistently failing
+    if (isProviderDisabled(provider.name)) {
+      console.log(`[AI] Skipping ${provider.name} — circuit breaker active`);
+      continue;
+    }
+
     for (let attempt = 0; attempt <= maxRetries; attempt++) {
       try {
         const text = await provider.call(prompt, systemPrompt, history);
         if (text?.trim()) {
           console.log(`[AI] Used provider: ${provider.name}`);
+          recordProviderSuccess(provider.name);
           return text.trim();
         }
       } catch (err: unknown) {
         const msg = err instanceof Error ? err.message : String(err);
         console.warn(`[AI] ${provider.name} failed (attempt ${attempt + 1}): ${msg}`);
-        // Don't retry on auth errors
-        if (msg.includes("401") || msg.includes("403") || msg.includes("invalid") || msg.includes("API key")) {
+        // Don't retry on auth, billing, or rate-limit errors — skip to next provider
+        if (msg.includes("401") || msg.includes("403") || msg.includes("402")
+          || msg.includes("429") || msg.includes("invalid") || msg.includes("API key")
+          || msg.includes("rate") || msg.includes("quota")) {
+          recordProviderFailure(provider.name);
           break;
         }
       }
     }
+    recordProviderFailure(provider.name);
   }
 
   throw new Error(
@@ -547,16 +597,23 @@ export async function callAIForTier(
   }
 
   for (const provider of available) {
+    if (isProviderDisabled(provider.name)) {
+      console.log(`[AI][${tier}] Skipping ${provider.name} — circuit breaker active`);
+      continue;
+    }
     try {
       const text = await provider.call(prompt, systemPrompt, history);
       if (text?.trim()) {
         console.log(`[AI][${tier}] Used provider: ${provider.name} (${provider.modelId})`);
+        recordProviderSuccess(provider.name);
         return { response: text.trim(), modelUsed: provider.modelId };
       }
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : String(err);
       console.warn(`[AI][${tier}] ${provider.name} failed: ${msg}`);
-      if (msg.includes("401") || msg.includes("403") || msg.includes("invalid") || msg.includes("API key")) {
+      recordProviderFailure(provider.name);
+      if (msg.includes("401") || msg.includes("403") || msg.includes("402")
+        || msg.includes("429") || msg.includes("invalid") || msg.includes("API key")) {
         continue;
       }
     }
@@ -585,16 +642,23 @@ export async function callAIForCLEP(
   );
 
   for (const provider of available) {
+    if (isProviderDisabled(provider.name)) {
+      console.log(`[AI][CLEP] Skipping ${provider.name} — circuit breaker active`);
+      continue;
+    }
     try {
       const text = await provider.call(prompt, systemPrompt);
       if (text?.trim()) {
         console.log(`[AI][CLEP] Used provider: ${provider.name} (${provider.modelId})`);
+        recordProviderSuccess(provider.name);
         return { response: text.trim(), modelUsed: provider.modelId };
       }
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : String(err);
       console.warn(`[AI][CLEP] ${provider.name} failed: ${msg}`);
-      if (msg.includes("401") || msg.includes("403") || msg.includes("invalid") || msg.includes("API key")) {
+      recordProviderFailure(provider.name);
+      if (msg.includes("401") || msg.includes("403") || msg.includes("402")
+        || msg.includes("429") || msg.includes("invalid") || msg.includes("API key")) {
         continue;
       }
     }
