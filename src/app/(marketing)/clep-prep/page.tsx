@@ -343,6 +343,68 @@ export default function ClepPrepPage() {
         </div>
       </section>
 
+      {/* ═══ QUESTION QUALITY VISUAL ═══ */}
+      <section className="max-w-5xl mx-auto px-4 py-16">
+        <FadeIn>
+          <div className="text-center mb-10">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-sm font-medium mb-4">
+              <Shield className="h-4 w-4" />
+              Question Quality Guarantee
+            </div>
+            <h2 className="text-2xl sm:text-3xl font-bold">College Board-Level Questions</h2>
+            <p className="text-muted-foreground mt-2 max-w-2xl mx-auto">Every practice question goes through a rigorous quality pipeline — not random AI output</p>
+          </div>
+        </FadeIn>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <FadeIn>
+            <div className="relative overflow-hidden rounded-2xl border border-emerald-500/20 bg-gradient-to-br from-emerald-500/[0.06] to-transparent p-6 text-center">
+              <div className="text-4xl font-bold text-emerald-500 mb-1">9</div>
+              <div className="text-sm font-semibold mb-2">Validation Steps</div>
+              <p className="text-xs text-muted-foreground">Topic alignment, Bloom&apos;s taxonomy, scenario check, distractor analysis, cross-model review, difficulty calibration, factual grounding, explanation quality, deduplication</p>
+            </div>
+          </FadeIn>
+          <FadeIn>
+            <div className="relative overflow-hidden rounded-2xl border border-blue-500/20 bg-gradient-to-br from-blue-500/[0.06] to-transparent p-6 text-center">
+              <div className="text-4xl font-bold text-blue-500 mb-1">80%+</div>
+              <div className="text-sm font-semibold mb-2">Application-Level</div>
+              <p className="text-xs text-muted-foreground">Real CLEP exams test understanding, not memorization. Our questions require you to apply concepts to scenarios — just like the real exam</p>
+            </div>
+          </FadeIn>
+          <FadeIn>
+            <div className="relative overflow-hidden rounded-2xl border border-violet-500/20 bg-gradient-to-br from-violet-500/[0.06] to-transparent p-6 text-center">
+              <div className="text-4xl font-bold text-violet-500 mb-1">34</div>
+              <div className="text-sm font-semibold mb-2">Exam Topic Maps</div>
+              <p className="text-xs text-muted-foreground">Questions follow College Board&apos;s official topic distribution — the same percentages tested on your actual CLEP exam</p>
+            </div>
+          </FadeIn>
+        </div>
+
+        <FadeIn>
+          <div className="rounded-2xl border border-border/40 bg-card/50 p-6">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
+              <div>
+                <div className="text-lg font-bold text-foreground">2 AI Models</div>
+                <div className="text-xs text-muted-foreground">Generate + independently validate</div>
+              </div>
+              <div>
+                <div className="text-lg font-bold text-foreground">8 Criteria</div>
+                <div className="text-xs text-muted-foreground">Accuracy, distractors, cognitive level...</div>
+              </div>
+              <div>
+                <div className="text-lg font-bold text-foreground">OpenStax</div>
+                <div className="text-xs text-muted-foreground">Verified against peer-reviewed textbooks</div>
+              </div>
+              <div>
+                <div className="text-lg font-bold text-foreground">Auto-Calibrated</div>
+                <div className="text-xs text-muted-foreground">Difficulty tracked by real student data</div>
+              </div>
+            </div>
+          </div>
+        </FadeIn>
+        <p className="text-[10px] text-muted-foreground/50 text-center mt-4">StudentNest is not affiliated with or endorsed by the College Board. CLEP® is a registered trademark of the College Board.</p>
+      </section>
+
       {/* ═══ TESTIMONIALS ═══ */}
       <section className="max-w-5xl mx-auto px-4 py-16">
         <FadeIn>
