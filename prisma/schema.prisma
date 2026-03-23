@@ -161,6 +161,7 @@ model Question {
   generatedForTier   SubTier   @default(FREE)
   contentHash        String?   @unique  // SHA-256 of normalized questionText — prevents duplicates
   apSkill            String?            // e.g., "Causation", "Comparison", "Data Analysis"
+  bloomLevel         String?            // "remember" | "apply" | "analyze" — Bloom's taxonomy level
   timesAnswered Int         @default(0)
   timesCorrect  Int         @default(0)
   reportedCount Int         @default(0)

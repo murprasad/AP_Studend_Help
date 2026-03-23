@@ -40,6 +40,7 @@ export interface GeneratedQuestion {
   generatedForTier?: "FREE" | "PREMIUM";
   apSkill?: string;
   contentHash?: string;
+  bloomLevel?: string;
 }
 
 // ── Fetch web content from open educational resources ──────────────────────
@@ -470,6 +471,7 @@ export async function generateQuestion(
     modelUsed: aiResult.modelUsed,
     generatedForTier: userTier,
     apSkill: (parsed.apSkill as string) || undefined,
+    bloomLevel: (parsed.bloomLevel as string) || undefined,
     contentHash,
     isAiGenerated: true,
     isApproved: false,

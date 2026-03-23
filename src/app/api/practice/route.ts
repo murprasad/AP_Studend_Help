@@ -177,6 +177,7 @@ export async function POST(req: NextRequest) {
                 generatedForTier: (hasPremium ? "PREMIUM" : "FREE") as SubTier,
                 contentHash: gen.contentHash ?? null,
                 apSkill: gen.apSkill ?? null,
+                bloomLevel: gen.bloomLevel ?? null,
               },
               select: {
                 id: true, course: true, unit: true, topic: true, subtopic: true,
