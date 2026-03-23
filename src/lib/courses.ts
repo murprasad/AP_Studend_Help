@@ -118,6 +118,12 @@ export interface CourseConfig {
   stimulusQualityGuidance?: string;
   /** AP skill codes tested on this exam */
   skillCodes?: string[];
+  /**
+   * College Board official topic weight percentages for weighted question distribution.
+   * Keys are topic labels matching unit keyThemes; values are decimals summing to ~1.0.
+   * When present, buildDifficultyQueue distributes questions proportionally.
+   */
+  topicWeights?: Record<string, number>;
 }
 
 // ═════════════════════════════════════════════════════════════════════════════
@@ -1939,6 +1945,14 @@ All questions are 4-choice MCQ.`,
     distractorTaxonomy: "(1) SIGN FLIP TRAP — forgets to distribute a negative; (2) LOG PROPERTY TRAP — incorrectly applies log(a+b) = log(a)+log(b); (3) DOMAIN RESTRICTION TRAP — ignores where the function is undefined.",
     stimulusQualityGuidance: "GOOD: A specific function like f(x) = (x²-4)/(x-2) with an explicit question. AVOID: Abstract 'let f be a function' without definition.",
     skillCodes: ["Algebraic Operations", "Equation Solving", "Function Analysis", "Graphical Interpretation"],
+    // CB weights: Algebraic operations 25%, Equations/inequalities 25%, Functions/properties 30%, Number systems 20%
+    topicWeights: {
+      "CLEP_ALGEBRA_1_FOUNDATIONS": 0.20,
+      "CLEP_ALGEBRA_2_EQUATIONS_INEQUALITIES": 0.25,
+      "CLEP_ALGEBRA_3_FUNCTIONS_GRAPHS": 0.30,
+      "CLEP_ALGEBRA_4_POLYNOMIAL_RATIONAL": 0.13,
+      "CLEP_ALGEBRA_5_EXPONENTIAL_LOGARITHMIC": 0.12,
+    },
   },
 
   // ── CLEP College Composition ─────────────────────────────────────────────
@@ -2098,6 +2112,17 @@ Questions are application-focused — expect scenario-based questions asking to 
     distractorTaxonomy: "(1) SIMILAR-TERM TRAP — negative reinforcement vs punishment; classical vs operant; (2) WRONG-THEORIST TRAP — attributes Freud's idea to Erikson or vice versa; (3) DIRECTION TRAP — confuses what increases vs decreases behavior.",
     stimulusQualityGuidance: "GOOD: 'A child cries and his mother gives him a cookie, which stops the crying. The mother is more likely to give cookies in the future.' AVOID: Abstract definitions without a behavioral scenario.",
     skillCodes: ["Concept Identification", "Application to Scenarios", "Research Methods", "Theoretical Frameworks"],
+    // CB weights summed into 5 units: Bio bases (8-9% + 7-8% sensation + 5-6% consciousness) ≈ 21%,
+    // Cognition (8-9% learning + 8-9% cognition + 5-6% motivation) ≈ 22%, Developmental 8-9% ≈ 9%,
+    // Social/Personality (9-10% social + 7-8% personality + 11-12% history/methods + 3-4% stats) ≈ 31%,
+    // Clinical (8-9% disorders + 6-7% treatment) ≈ 15%
+    topicWeights: {
+      "CLEP_PSY_1_BIOLOGICAL_BASES": 0.21,
+      "CLEP_PSY_2_COGNITION_MEMORY": 0.22,
+      "CLEP_PSY_3_DEVELOPMENTAL": 0.09,
+      "CLEP_PSY_4_SOCIAL_PERSONALITY": 0.33,
+      "CLEP_PSY_5_CLINICAL_ABNORMAL": 0.15,
+    },
   },
 
   // ── CLEP Principles of Marketing ────────────────────────────────────────
@@ -2319,6 +2344,14 @@ Questions are often scenario-based — given a social situation, identify the co
     distractorTaxonomy: "(1) THEORY-DIRECTION TRAP — conflict theory vs functionalism give opposite explanations for the same phenomenon; (2) LEVEL-ANALYSIS TRAP — micro vs macro sociological perspective; (3) ADJACENT-CONCEPT TRAP — folkways vs mores; primary vs secondary groups.",
     stimulusQualityGuidance: "GOOD: 'A sociologist argues that poverty persists because it serves a function for the wealthy by providing a cheap labor supply. Which theoretical perspective does this represent?' AVOID: Abstract definitions without a social context.",
     skillCodes: ["Theory Application", "Social Structure Analysis", "Research Methods", "Stratification and Inequality"],
+    // CB weights: Institutions 20%, Social Patterns 10%, Social Processes 25%, Social Stratification 25%, Sociological Perspective 20%
+    topicWeights: {
+      "CLEP_SOC_1_SOCIOLOGICAL_PERSPECTIVE": 0.20,
+      "CLEP_SOC_2_SOCIAL_STRUCTURE_GROUPS": 0.10,
+      "CLEP_SOC_3_SOCIAL_STRATIFICATION": 0.25,
+      "CLEP_SOC_4_SOCIAL_INSTITUTIONS": 0.20,
+      "CLEP_SOC_5_SOCIAL_CHANGE_DEVIANCE": 0.25,
+    },
   },
 
   // ═══════════════════════════════════════════════════════════════════════════
@@ -2358,6 +2391,14 @@ Scenario-based preferred.`,
     difficultyRubric: { EASY: "Recall a constitutional provision or branch power (Bloom's: Remember). 65%+ correct.", MEDIUM: "Explain how a check/balance operates in a scenario (Bloom's: Apply). 40-55% correct.", HARD: "Evaluate competing constitutional interpretations or predict institutional behavior in a novel scenario (Bloom's: Analyze/Evaluate). 25-40% correct." },
     distractorTaxonomy: "(1) BRANCH-CONFUSION TRAP — attributes power to wrong branch; (2) AMENDMENT-MIX TRAP — confuses which amendment guarantees which right; (3) FEDERALISM-LEVEL TRAP — assigns state power to federal or vice versa.",
     stimulusQualityGuidance: "GOOD: 'A state passes a law requiring loyalty oaths. A student sues. Which precedent applies?' AVOID: 'Which amendment protects free speech?'",
+    // CB weights: Institutions 30-35%, Parties 15-20%, Political beliefs 15-20%, Civil rights 10-15%, Constitutional 15-20%
+    topicWeights: {
+      "CLEP_GOV_1_FOUNDATIONS": 0.175,
+      "CLEP_GOV_2_POLITICAL_BELIEFS": 0.175,
+      "CLEP_GOV_3_POLITICAL_PARTIES": 0.175,
+      "CLEP_GOV_4_INSTITUTIONS": 0.325,
+      "CLEP_GOV_5_CIVIL_RIGHTS": 0.15,
+    },
   },
 
   // ─── CLEP Macroeconomics ───
@@ -2601,6 +2642,14 @@ Journal entries and calculations common.`,
     difficultyRubric: { EASY: "Identify debit/credit or classify item as asset/liability/equity (Bloom's: Remember). 65%+ correct.", MEDIUM: "Record an adjusting entry or calculate depreciation (Bloom's: Apply). 40-55% correct.", HARD: "Analyze effect of an error on multiple statements, or compare inventory methods' impact on net income (Bloom's: Analyze/Evaluate). 25-40% correct." },
     distractorTaxonomy: "(1) DEBIT-CREDIT REVERSAL TRAP — reverses debit and credit; (2) INVENTORY-METHOD TRAP — applies FIFO logic when LIFO specified; (3) ACCRUAL-CASH TRAP — uses cash-basis timing for accrual question.",
     stimulusQualityGuidance: "GOOD: 'On Dec 31, $5,000 of services performed but not billed. Prepare the adjusting entry.' AVOID: 'What is an adjusting entry?'",
+    // CB weights: General topics 20-30%, Income statement 20-30%, Balance sheet 30-40%, Cash flows 5-10%, Misc <5%
+    topicWeights: {
+      "CLEP_ACCT_1_FRAMEWORK": 0.25,
+      "CLEP_ACCT_2_ACCOUNTING_CYCLE": 0.25,
+      "CLEP_ACCT_3_FINANCIAL_STATEMENTS": 0.35,
+      "CLEP_ACCT_4_ANALYSIS_REPORTING": 0.08,
+      "CLEP_ACCT_5_SPECIAL_TOPICS": 0.07,
+    },
   },
 
   // ─── CLEP American Literature ───

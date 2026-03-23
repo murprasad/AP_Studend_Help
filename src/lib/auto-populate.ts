@@ -94,14 +94,21 @@ export async function runAutoPopulate(
 
   for (const course of VALID_AP_COURSES) {
     const config = COURSE_REGISTRY[course];
+    const unitCount = Object.keys(config.units).length;
     for (const [unit, unitMeta] of Object.entries(config.units) as [ApUnit, typeof config.units[ApUnit]][]) {
       const current = countMap.get(`${course}::${unit}`) ?? 0;
-      if (current < threshold) {
+      // When topicWeights are available, scale the target per unit by CB exam weight.
+      // A unit with weight 0.35 gets 35% of total course target (targetPerUnit * unitCount * weight).
+      const weight = config.topicWeights?.[unit];
+      const unitTarget = weight
+        ? Math.max(Math.round(targetPerUnit * unitCount * weight), Math.round(targetPerUnit * 0.5))
+        : targetPerUnit;
+      if (current < Math.min(unitTarget, threshold)) {
         needsWork.push({
           course,
           unit,
           current,
-          needed: targetPerUnit - current,
+          needed: unitTarget - current,
           keyThemes: unitMeta?.keyThemes ?? [],
         });
       }

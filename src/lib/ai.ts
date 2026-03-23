@@ -344,10 +344,42 @@ export async function generateQuestion(
     }
   }
 
+  // CLEP OpenStax content grounding — fetch unit-specific textbook content for factual accuracy
+  let openStaxGroundingSection = "";
+  if ((inferredCourse as string).startsWith("CLEP_") && !quickMode) {
+    const unitMeta = COURSE_REGISTRY[inferredCourse].units[unit];
+    const openStaxUrl = unitMeta?.openStaxUrl;
+    if (openStaxUrl) {
+      try {
+        const res = await Promise.race([
+          fetch(openStaxUrl, {
+            headers: { "User-Agent": "StudentNest/1.0 (Educational CLEP Prep)", Accept: "text/html" },
+            signal: AbortSignal.timeout(3000),
+          }),
+          new Promise<Response>((_, reject) => setTimeout(() => reject(new Error("timeout")), 3000)),
+        ]);
+        if (res.ok) {
+          const html = await res.text();
+          // Extract text content from HTML (strip tags, keep first 500 chars of body content)
+          const bodyMatch = html.match(/<main[^>]*>([\s\S]*?)<\/main>/i) || html.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
+          if (bodyMatch) {
+            const text = bodyMatch[1].replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim().slice(0, 500);
+            if (text.length > 100) {
+              openStaxGroundingSection = `\n\nTEXTBOOK REFERENCE (OpenStax, CC BY 4.0 — use for factual accuracy, do NOT copy verbatim):\n"${text}"\nEnsure your question's content and correct answer are consistent with this authoritative source.`;
+            }
+          }
+        }
+      } catch {
+        // OpenStax fetch failed — continue without grounding (no impact on generation)
+      }
+    }
+  }
+
+  const allEnrichments = `${cbFrqSeedSection}${clepCalibrationSection}${openStaxGroundingSection}`;
   const prompt = seedQuestion
-    ? `${basePrompt}${cbFrqSeedSection}${clepCalibrationSection}\n\nREFERENCE QUESTION (for style/difficulty calibration — generate something DIFFERENT):\n"${seedQuestion}"\n\nGenerate a new question on the SAME concept with entirely different numbers, context, and scenario. Do NOT reuse the same values or phrasing from the reference.`
-    : cbFrqSeedSection || clepCalibrationSection
-    ? `${basePrompt}${cbFrqSeedSection}${clepCalibrationSection}`
+    ? `${basePrompt}${allEnrichments}\n\nREFERENCE QUESTION (for style/difficulty calibration — generate something DIFFERENT):\n"${seedQuestion}"\n\nGenerate a new question on the SAME concept with entirely different numbers, context, and scenario. Do NOT reuse the same values or phrasing from the reference.`
+    : allEnrichments
+    ? `${basePrompt}${allEnrichments}`
     : basePrompt;
 
   // FRQ/open-ended types have no distractors — skip validator (saves ~10s/attempt).
