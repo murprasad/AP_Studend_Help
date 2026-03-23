@@ -27,6 +27,8 @@ import {
 import { format } from "date-fns";
 import { ExamCountdownSetter } from "@/components/dashboard/exam-countdown-setter";
 import { DailyReviewCard } from "@/components/dashboard/daily-review-card";
+import { CLEPDayCard } from "@/components/dashboard/clep-day-card";
+import { CLEPGeneratePlan } from "@/components/dashboard/clep-generate-plan";
 
 export default async function DashboardPage() {
   const session = await getServerSession(authOptions);
@@ -100,6 +102,20 @@ export default async function DashboardPage() {
     orderBy: { earnedAt: "desc" },
   });
 
+  // Fetch 7-day CLEP study plan if applicable
+  const isCLEP = selectedCourse.startsWith("CLEP_");
+  let clepPlan: { planData: any; generatedAt: string } | null = null;
+  if (isCLEP) {
+    const plan = await prisma.studyPlan.findFirst({
+      where: { userId: session.user.id, course: selectedCourse, isActive: true },
+      orderBy: { generatedAt: "desc" },
+      select: { planData: true, generatedAt: true },
+    });
+    if (plan && (plan.planData as any)?.planType === "7day") {
+      clepPlan = { planData: plan.planData, generatedAt: plan.generatedAt.toISOString() };
+    }
+  }
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -125,6 +141,20 @@ export default async function DashboardPage() {
           </Button>
         </Link>
       </div>
+
+      {/* CLEP 7-Day Plan Card */}
+      {isCLEP && clepPlan && (
+        <CLEPDayCard
+          planData={clepPlan.planData}
+          generatedAt={clepPlan.generatedAt}
+          course={selectedCourse}
+        />
+      )}
+
+      {/* CLEP empty state — no plan yet */}
+      {isCLEP && !clepPlan && (
+        <CLEPGeneratePlan course={selectedCourse} />
+      )}
 
       {/* Stats Row — 3 cards */}
       <div className="grid grid-cols-3 gap-4">

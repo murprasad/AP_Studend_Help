@@ -8,9 +8,10 @@ import { useCourse } from "@/hooks/use-course";
 import { COURSE_REGISTRY } from "@/lib/courses";
 import { ApCourse } from "@prisma/client";
 import {
-  Sparkles, BookOpen, ClipboardList, BarChart3, ChevronRight, Check,
+  Sparkles, BookOpen, ClipboardList, BarChart3, ChevronRight, Check, Clock, GraduationCap,
 } from "lucide-react";
 import Link from "next/link";
+import { staticCLEP7DayPlan } from "@/lib/ai";
 
 const ONBOARDING_KEY = "onboarding_completed";
 
@@ -38,6 +39,17 @@ const AP_COURSE_GROUPS = [
 const CLEP_COURSE_GROUP = {
   label: "CLEP Prep",
   keys: (Object.keys(COURSE_REGISTRY) as ApCourse[]).filter(k => (k as string).startsWith("CLEP_")),
+};
+
+const CLEP_COURSE_META: Record<string, { badge: string; color: string }> = {
+  CLEP_INTRO_PSYCHOLOGY: { badge: "Highest pass rate", color: "bg-green-500/20 text-green-400 border-green-500/30" },
+  CLEP_INTRODUCTORY_SOCIOLOGY: { badge: "Easiest", color: "bg-green-500/20 text-green-400 border-green-500/30" },
+  CLEP_PRINCIPLES_OF_MARKETING: { badge: "Most popular", color: "bg-green-500/20 text-green-400 border-green-500/30" },
+  CLEP_ANALYZING_INTERPRETING_LIT: { badge: "No reading list needed", color: "bg-blue-500/20 text-blue-400 border-blue-500/30" },
+  CLEP_COLLEGE_MATH: { badge: "Easier than Algebra", color: "bg-blue-500/20 text-blue-400 border-blue-500/30" },
+  CLEP_AMERICAN_GOVERNMENT: { badge: "Great if you took civics", color: "bg-blue-500/20 text-blue-400 border-blue-500/30" },
+  CLEP_PRINCIPLES_OF_MANAGEMENT: { badge: "Common sense + theorists", color: "bg-blue-500/20 text-blue-400 border-blue-500/30" },
+  CLEP_COLLEGE_ALGEBRA: { badge: "Math-heavy", color: "bg-amber-500/20 text-amber-400 border-amber-500/30" },
 };
 
 export default function OnboardingPage() {
@@ -83,6 +95,14 @@ export default function OnboardingPage() {
   }, [router]);
 
   function completeOnboarding() {
+    // If CLEP track, auto-generate 7-day plan (fire-and-forget)
+    if (effectiveTrack === "clep") {
+      fetch("/api/study-plan", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ course, mode: "7day" }),
+      }).catch(() => {});
+    }
     try {
       localStorage.setItem(ONBOARDING_KEY, "true");
     } catch {
@@ -144,6 +164,14 @@ export default function OnboardingPage() {
             <CardDescription>You can change this anytime from the sidebar.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
+            {effectiveTrack === "clep" && (
+              <div className="flex items-start gap-2 p-3 rounded-lg bg-emerald-500/5 border border-emerald-500/20 mb-3">
+                <Sparkles className="h-4 w-4 text-emerald-400 flex-shrink-0 mt-0.5" />
+                <p className="text-xs text-muted-foreground">
+                  <span className="text-emerald-400 font-medium">Not sure where to start?</span> Most students pick Psychology or Sociology first — highest pass rates.
+                </p>
+              </div>
+            )}
             {COURSE_GROUPS.map((group) => (
               <div key={group.label}>
                 <p className={`text-xs font-semibold uppercase tracking-wider mb-2 ${
@@ -169,10 +197,15 @@ export default function OnboardingPage() {
                             : "border-border/40 hover:bg-accent hover:border-border"
                         }`}
                       >
-                        <span className="flex items-center gap-2">
+                        <span className="flex items-center gap-2 flex-wrap">
                           {cfg.name}
                           {["AP_WORLD_HISTORY", "AP_CALCULUS_AB", "SAT_MATH"].includes(key) && (
                             <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-indigo-500/20 text-indigo-400 font-semibold">Popular</span>
+                          )}
+                          {effectiveTrack === "clep" && CLEP_COURSE_META[key] && (
+                            <span className={`text-[10px] px-1.5 py-0.5 rounded-full border ${CLEP_COURSE_META[key].color}`}>
+                              {CLEP_COURSE_META[key].badge}
+                            </span>
                           )}
                         </span>
                       </button>
@@ -253,7 +286,71 @@ export default function OnboardingPage() {
       )}
 
       {/* Step 3: Your recommended first action */}
-      {step === 3 && (
+      {step === 3 && effectiveTrack === "clep" ? (
+        <Card className="card-glow border-emerald-500/20">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <GraduationCap className="h-5 w-5 text-emerald-400" />
+              Your 7-Day Pass Plan
+            </CardTitle>
+            <CardDescription>
+              Here&apos;s your day-by-day plan to pass {COURSE_REGISTRY[course]?.name || course.replace(/_/g, " ")}
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {/* Plan preview */}
+            <div className="space-y-2">
+              {(() => {
+                const plan = staticCLEP7DayPlan(course) as { days: Array<{ day: number; theme: string; estimatedMinutes: number }> };
+                const totalMinutes = plan.days.reduce((s, d) => s + d.estimatedMinutes, 0);
+                return (
+                  <>
+                    {plan.days.map((day) => (
+                      <div key={day.day} className="flex items-center gap-3 p-2 rounded-lg bg-secondary/30">
+                        <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center flex-shrink-0">
+                          <span className="text-xs font-bold text-emerald-400">{day.day}</span>
+                        </div>
+                        <p className="text-sm flex-1">{day.theme}</p>
+                        <span className="text-xs text-muted-foreground">{day.estimatedMinutes} min</span>
+                      </div>
+                    ))}
+                    <div className="flex items-center justify-center gap-2 pt-2 text-xs text-muted-foreground">
+                      <Clock className="h-3.5 w-3.5" />
+                      Total: ~{Math.round(totalMinutes / 60)} hours over 7 days
+                    </div>
+                  </>
+                );
+              })()}
+            </div>
+
+            <div className="flex flex-col gap-2 pt-2">
+              <Button
+                size="lg"
+                className="w-full gap-2 bg-emerald-600 hover:bg-emerald-700"
+                onClick={() => {
+                  // Fire-and-forget: save plan to DB
+                  fetch("/api/study-plan", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ course, mode: "7day" }),
+                  }).catch(() => {});
+                  completeOnboarding();
+                }}
+              >
+                Start Day 1 <ChevronRight className="h-5 w-5" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-muted-foreground"
+                onClick={completeOnboarding}
+              >
+                Skip to dashboard
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      ) : step === 3 && (
         <Card className="border-border/40">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
