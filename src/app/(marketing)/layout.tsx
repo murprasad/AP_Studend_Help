@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Sparkles } from "lucide-react";
+import { SageChat } from "@/components/layout/sage-chat";
 
 export default function MarketingLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -48,6 +49,7 @@ export default function MarketingLayout({ children }: { children: React.ReactNod
           © {new Date().getFullYear()} StudentNest Prep — independent educational platform.
         </p>
       </footer>
+      <SageChat />
     </div>
   );
 }

@@ -26,6 +26,7 @@ import { MockupPractice } from "@/components/landing/mockup-practice";
 import { ProductShowcase } from "@/components/landing/product-showcase";
 import { FadeIn } from "@/components/landing/fade-in";
 import { LandingFaq } from "@/components/landing/faq";
+import { SageChat } from "@/components/layout/sage-chat";
 
 const features = [
   {
@@ -125,9 +126,9 @@ export default function LandingPage() {
             <Sparkles className="h-6 w-6 text-indigo-400" />
             <div>
               <span className="text-lg font-bold">
-                <span className="gradient-text">Student</span><span className="text-foreground/80 font-medium">Nest</span><span className="text-indigo-400/60 font-normal text-[0.6em] ml-1">AI</span>
+                <span className="gradient-text">Student</span><span className="text-foreground/80 font-medium">Nest</span><span className="text-indigo-400/60 font-normal text-[0.6em] ml-1">Prep</span>
               </span>
-              <p className="text-xs text-muted-foreground leading-none hidden sm:block">Your AI Study Partner</p>
+              <p className="text-xs text-muted-foreground leading-none hidden sm:block">Study Smarter. Score Higher.</p>
             </div>
           </Link>
           <div className="flex items-center gap-2 sm:gap-4">
@@ -174,7 +175,7 @@ export default function LandingPage() {
                 Free forever · AP, SAT, ACT &amp; CLEP · No credit card
               </Badge>
               <h1 className="text-4xl sm:text-5xl lg:text-5xl font-bold tracking-tight mb-4">
-                <span className="gradient-text">Student</span><span className="text-foreground/80 font-medium">Nest</span><span className="text-indigo-400/60 font-normal text-[0.6em] ml-1">AI</span>
+                <span className="gradient-text">Student</span><span className="text-foreground/80 font-medium">Nest</span><span className="text-indigo-400/60 font-normal text-[0.6em] ml-1">Prep</span>
               </h1>
               <p className="text-xl sm:text-2xl font-semibold text-foreground/90 mb-2">
                 Improve your AP, SAT, ACT, or CLEP scores — with AI that adapts to your weak areas.
@@ -206,13 +207,13 @@ export default function LandingPage() {
 
             {/* Right — product mockup */}
             <div className="hidden lg:block animate-float">
-              <BrowserFrame title="StudentNest AI · Analytics" className="shadow-2xl shadow-indigo-500/10">
+              <BrowserFrame title="StudentNest Prep · Analytics" className="shadow-2xl shadow-indigo-500/10">
                 <MockupAnalytics />
               </BrowserFrame>
             </div>
             {/* Mobile mockup — no float, compact */}
             <div className="lg:hidden max-w-md mx-auto w-full">
-              <BrowserFrame title="StudentNest AI · Analytics">
+              <BrowserFrame title="StudentNest Prep · Analytics">
                 <MockupAnalytics />
               </BrowserFrame>
             </div>
@@ -222,6 +223,7 @@ export default function LandingPage() {
 
       {/* 4 Module Cards */}
       <section id="courses" className="py-8 px-4 scroll-mt-20">
+        <FadeIn>
         <div className="max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {[
             { href: "/ap-prep", color: "indigo", icon: BookOpen, label: "AP Courses", count: "10 courses", desc: "Score a 5. Get into your dream school.", cta: "Explore AP Prep" },
@@ -242,6 +244,7 @@ export default function LandingPage() {
             </Link>
           ))}
         </div>
+        </FadeIn>
       </section>
 
       {/* Social Proof Bar */}
@@ -267,7 +270,7 @@ export default function LandingPage() {
       <section className="py-24 bg-gradient-to-b from-indigo-950/20 to-transparent">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-sm font-medium mb-6">
-            <Sparkles className="h-4 w-4" /> Your AI Study Partner
+            <Sparkles className="h-4 w-4" /> Study Smarter. Score Higher.
           </div>
           <h2 className="text-4xl font-bold mb-4">Meet Sage 🌿</h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-12">
@@ -334,7 +337,7 @@ export default function LandingPage() {
               <div className="w-3 h-3 rounded-full bg-red-500/60" />
               <div className="w-3 h-3 rounded-full bg-yellow-500/60" />
               <div className="w-3 h-3 rounded-full bg-green-500/60" />
-              <span className="ml-2 text-xs text-muted-foreground">StudentNest AI · Tutor</span>
+              <span className="ml-2 text-xs text-muted-foreground">StudentNest Prep · Tutor</span>
             </div>
             {/* Chat */}
             <div className="p-5 space-y-4 text-sm">
@@ -382,7 +385,7 @@ export default function LandingPage() {
               <div className="w-3 h-3 rounded-full bg-red-500/60" />
               <div className="w-3 h-3 rounded-full bg-yellow-500/60" />
               <div className="w-3 h-3 rounded-full bg-green-500/60" />
-              <span className="ml-2 text-xs text-muted-foreground">StudentNest AI · Tutor — CLEP College Algebra</span>
+              <span className="ml-2 text-xs text-muted-foreground">StudentNest Prep · Tutor — CLEP College Algebra</span>
             </div>
             {/* Chat */}
             <div className="p-5 space-y-4 text-sm">
@@ -454,7 +457,7 @@ export default function LandingPage() {
                 </p>
               </div>
               <div>
-                <BrowserFrame title="StudentNest AI · Study Plan" className="shadow-xl">
+                <BrowserFrame title="StudentNest Prep · Study Plan" className="shadow-xl">
                   <MockupStudyPlan />
                 </BrowserFrame>
               </div>
@@ -472,7 +475,7 @@ export default function LandingPage() {
                 </p>
               </div>
               <div className="lg:order-1">
-                <BrowserFrame title="StudentNest AI · Practice" className="shadow-xl">
+                <BrowserFrame title="StudentNest Prep · Practice" className="shadow-xl">
                   <MockupPractice />
                 </BrowserFrame>
               </div>
@@ -490,7 +493,7 @@ export default function LandingPage() {
                 </p>
               </div>
               <div>
-                <BrowserFrame title="StudentNest AI · Analytics" className="shadow-xl">
+                <BrowserFrame title="StudentNest Prep · Analytics" className="shadow-xl">
                   <MockupAnalytics />
                 </BrowserFrame>
               </div>
@@ -521,9 +524,9 @@ export default function LandingPage() {
       <section className="py-16 bg-secondary/20">
         <div className="max-w-3xl mx-auto px-4">
           <div className="text-center mb-8 space-y-3">
-            <h2 className="text-2xl font-bold mb-2">Why StudentNest AI?</h2>
+            <h2 className="text-2xl font-bold mb-2">Why StudentNest Prep?</h2>
             <p className="text-sm text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-              ChatGPT gives random answers. StudentNest AI gives structured, exam-aligned practice with mastery tracking — that&apos;s the difference between studying and actually improving. Premium prep courses charge $200–500. Private tutors cost $50–150/hr. StudentNest starts at $0 and does what both do: explains mistakes, tracks progress, and builds a plan around your weak areas.
+              ChatGPT gives random answers. StudentNest Prep gives structured, exam-aligned practice with mastery tracking — that&apos;s the difference between studying and actually improving. Premium prep courses charge $200–500. Private tutors cost $50–150/hr. StudentNest starts at $0 and does what both do: explains mistakes, tracks progress, and builds a plan around your weak areas.
             </p>
           </div>
           <div className="rounded-xl border border-border/40 overflow-hidden">
@@ -531,7 +534,7 @@ export default function LandingPage() {
               <thead>
                 <tr className="bg-secondary/60 text-muted-foreground">
                   <th className="text-left p-3 font-medium">Feature</th>
-                  <th className="text-center p-3 font-medium text-indigo-400">StudentNest AI</th>
+                  <th className="text-center p-3 font-medium text-indigo-400">StudentNest Prep</th>
                   <th className="text-center p-3 font-medium">ChatGPT / AI</th>
                   <th className="text-center p-3 font-medium">Private Tutor</th>
                 </tr>
@@ -611,7 +614,7 @@ export default function LandingPage() {
               Pass CLEP exams and skip introductory college courses. One exam. One passing score. Up to $2,400 in tuition savings.
             </p>
             <p className="text-sm text-muted-foreground/70 mt-2 max-w-xl mx-auto">
-              CLEP® exams cost $93 each. StudentNest AI prepares you with the same AI-powered practice and tutoring used for AP — optimized for CLEP content.
+              CLEP® exams cost $93 each. StudentNest Prep prepares you with the same AI-powered practice and tutoring used for AP — optimized for CLEP content.
             </p>
           </div>
 
@@ -792,7 +795,7 @@ export default function LandingPage() {
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold mb-2">Student Feedback</h2>
-            <p className="text-muted-foreground text-sm">Real results from students using StudentNest AI</p>
+            <p className="text-muted-foreground text-sm">Real results from students using StudentNest Prep</p>
           </div>
           <div className="grid md:grid-cols-3 gap-6">
             {testimonials.map((t) => (
@@ -841,7 +844,7 @@ export default function LandingPage() {
             <p className="text-xs font-semibold uppercase tracking-wider text-indigo-400 mb-2">For Parents</p>
             <h2 className="text-3xl font-bold mb-3">You want to see your child succeed. So do we.</h2>
             <p className="text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-              A typical AP student needs 8–12 weeks of focused practice before exam day. With a private tutor at $50/hr twice a week, that&apos;s $800–$1,200. StudentNest AI Premium covers the same period for about $20 total. Your child gets adaptive practice and AI explanations, and you get visibility into their actual progress: which units they&apos;ve mastered, where they&apos;re struggling, how many days they&apos;ve studied this week, and whether their accuracy is trending up.
+              A typical AP student needs 8–12 weeks of focused practice before exam day. With a private tutor at $50/hr twice a week, that&apos;s $800–$1,200. StudentNest Prep Premium covers the same period for about $20 total. Your child gets adaptive practice and AI explanations, and you get visibility into their actual progress: which units they&apos;ve mastered, where they&apos;re struggling, how many days they&apos;ve studied this week, and whether their accuracy is trending up.
             </p>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -901,7 +904,7 @@ export default function LandingPage() {
             <div className="col-span-2 md:col-span-1 space-y-3">
               <div className="flex items-center gap-2">
                 <Sparkles className="h-5 w-5 text-indigo-400" />
-                <span className="font-semibold"><span className="gradient-text">Student</span><span className="text-foreground/80 font-medium">Nest</span><span className="text-indigo-400/60 font-normal text-[0.6em] ml-1">AI</span></span>
+                <span className="font-semibold"><span className="gradient-text">Student</span><span className="text-foreground/80 font-medium">Nest</span><span className="text-indigo-400/60 font-normal text-[0.6em] ml-1">Prep</span></span>
               </div>
               <p className="text-xs text-muted-foreground leading-relaxed">
                 AI-powered exam prep for AP, SAT, ACT &amp; CLEP. Free to start.
@@ -934,6 +937,9 @@ export default function LandingPage() {
               <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">Company</p>
               <div className="space-y-2 text-sm">
                 <Link href="/about" className="block text-muted-foreground hover:text-foreground transition-colors">About</Link>
+                <Link href="/contact" className="block text-muted-foreground hover:text-foreground transition-colors">Contact</Link>
+                <Link href="/blog" className="block text-muted-foreground hover:text-foreground transition-colors">Blog</Link>
+                <Link href="/faq" className="block text-muted-foreground hover:text-foreground transition-colors">FAQ</Link>
                 <Link href="/terms" className="block text-muted-foreground hover:text-foreground transition-colors">Terms</Link>
                 <Link href="/privacy" className="block text-muted-foreground hover:text-foreground transition-colors">Privacy</Link>
               </div>
@@ -941,7 +947,7 @@ export default function LandingPage() {
           </div>
           <div className="border-t border-border/20 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
             <p className="text-xs text-muted-foreground">
-              &copy; {new Date().getFullYear()} StudentNest AI. Your AI Study Partner.
+              &copy; {new Date().getFullYear()} StudentNest Prep. Study Smarter. Score Higher..
             </p>
             <p className="text-[11px] text-muted-foreground/60 text-center sm:text-right max-w-lg">
               AP&reg; and SAT&reg; are trademarks of the College Board. ACT&reg; is a trademark of ACT, Inc.
@@ -951,6 +957,7 @@ export default function LandingPage() {
         </div>
       </footer>
 
+      <SageChat />
       <MobileStickyCta />
     </div>
   );

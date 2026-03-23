@@ -79,12 +79,12 @@ export default function ApPrepPage() {
           </div>
         </div>
         <div className="hidden lg:block animate-float">
-          <BrowserFrame title="StudentNest AI · AP Analytics" className="shadow-2xl shadow-indigo-500/10">
+          <BrowserFrame title="StudentNest Prep · AP Analytics" className="shadow-2xl shadow-indigo-500/10">
             <MockupAnalytics />
           </BrowserFrame>
         </div>
         <div className="lg:hidden max-w-md mx-auto w-full">
-          <BrowserFrame title="StudentNest AI · AP Analytics">
+          <BrowserFrame title="StudentNest Prep · AP Analytics">
             <MockupAnalytics />
           </BrowserFrame>
         </div>
@@ -98,7 +98,7 @@ export default function ApPrepPage() {
             <h3 className="text-2xl font-bold">AI builds your study plan by unit</h3>
             <p className="text-muted-foreground leading-relaxed">10–15 diagnostic questions identify your weak spots. Sage creates a weekly plan targeting your lowest-scoring units first — and adjusts as you improve.</p>
           </div>
-          <BrowserFrame title="StudentNest AI · AP Study Plan" className="shadow-xl"><MockupStudyPlan /></BrowserFrame>
+          <BrowserFrame title="StudentNest Prep · AP Study Plan" className="shadow-xl"><MockupStudyPlan /></BrowserFrame>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
           <div className="lg:order-2 space-y-3">
@@ -106,7 +106,7 @@ export default function ApPrepPage() {
             <h3 className="text-2xl font-bold">Practice MCQs &amp; FRQs with instant feedback</h3>
             <p className="text-muted-foreground leading-relaxed">Every question matches AP format. Get it wrong? Sage explains why — not just the answer, but the reasoning behind every option.</p>
           </div>
-          <div className="lg:order-1"><BrowserFrame title="StudentNest AI · AP Practice" className="shadow-xl"><MockupPractice /></BrowserFrame></div>
+          <div className="lg:order-1"><BrowserFrame title="StudentNest Prep · AP Practice" className="shadow-xl"><MockupPractice /></BrowserFrame></div>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
           <div className="space-y-3">
@@ -114,7 +114,7 @@ export default function ApPrepPage() {
             <h3 className="text-2xl font-bold">Track mastery and see your estimated AP score</h3>
             <p className="text-muted-foreground leading-relaxed">Per-unit mastery scores, accuracy trends, and a readiness heatmap — all in real time. Know exactly when you&apos;re ready for exam day.</p>
           </div>
-          <BrowserFrame title="StudentNest AI · AP Analytics" className="shadow-xl"><MockupAnalytics /></BrowserFrame>
+          <BrowserFrame title="StudentNest Prep · AP Analytics" className="shadow-xl"><MockupAnalytics /></BrowserFrame>
         </div>
       </div>
 

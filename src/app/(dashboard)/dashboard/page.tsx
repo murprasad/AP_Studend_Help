@@ -22,6 +22,7 @@ import {
   ArrowRight,
   Clock,
   Crown,
+  Sparkles,
 } from "lucide-react";
 import { format } from "date-fns";
 import { ExamCountdownSetter } from "@/components/dashboard/exam-countdown-setter";
@@ -118,7 +119,7 @@ export default async function DashboardPage() {
           </div>
         </div>
         <Link href="/practice" className="flex-shrink-0">
-          <Button size="lg" className="gap-2">
+          <Button size="lg" className="btn-lift gap-2">
             <Zap className="h-5 w-5" />
             Start Practice
           </Button>
@@ -127,7 +128,7 @@ export default async function DashboardPage() {
 
       {/* Stats Row — 3 cards */}
       <div className="grid grid-cols-3 gap-4">
-        <Card className="card-glow">
+        <Card className={`card-glow ${(user?.streakDays || 0) >= 7 ? "border-orange-500/30" : ""}`}>
           <CardContent className="p-5">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-lg bg-orange-500/20 flex items-center justify-center">
@@ -136,6 +137,10 @@ export default async function DashboardPage() {
               <div>
                 <p className="text-2xl font-bold">{user?.streakDays || 0}</p>
                 <p className="text-xs text-muted-foreground">Day Streak</p>
+                {(user?.streakDays || 0) >= 100 && <p className="text-[10px] font-semibold text-yellow-400 mt-0.5">Legend! 100 days!</p>}
+                {(user?.streakDays || 0) >= 30 && (user?.streakDays || 0) < 100 && <p className="text-[10px] font-semibold text-orange-400 mt-0.5">1 month strong!</p>}
+                {(user?.streakDays || 0) >= 14 && (user?.streakDays || 0) < 30 && <p className="text-[10px] font-semibold text-orange-400/80 mt-0.5">2 weeks!</p>}
+                {(user?.streakDays || 0) >= 7 && (user?.streakDays || 0) < 14 && <p className="text-[10px] font-semibold text-orange-400/70 mt-0.5">1 week strong!</p>}
               </div>
             </div>
           </CardContent>
@@ -272,7 +277,10 @@ export default async function DashboardPage() {
               </div>
             ))
           ) : (
-            <p className="text-muted-foreground text-sm">Great job! All units are at 70%+ mastery.</p>
+            <div className="text-center py-4 space-y-1">
+              <p className="text-sm font-semibold text-emerald-400">All units at 70%+ mastery!</p>
+              <p className="text-xs text-muted-foreground">Keep practicing to push toward 90%+ and exam-day confidence.</p>
+            </div>
           )}
           <Link href="/practice">
             <Button variant="outline" size="sm" className="w-full gap-2 mt-2">
@@ -322,10 +330,18 @@ export default async function DashboardPage() {
               ))}
             </div>
           ) : (
-            <div className="text-center py-8">
-              <p className="text-muted-foreground text-sm">No sessions yet.</p>
+            <div className="text-center py-10 space-y-3">
+              <div className="w-12 h-12 rounded-full bg-indigo-500/10 flex items-center justify-center mx-auto">
+                <Sparkles className="h-6 w-6 text-indigo-400" />
+              </div>
+              <div>
+                <p className="font-semibold text-sm">Ready to start your first session?</p>
+                <p className="text-xs text-muted-foreground mt-1">Answer 10 questions and see how Sage tracks your progress.</p>
+              </div>
               <Link href="/practice">
-                <Button size="sm" className="mt-3">Start Practicing</Button>
+                <Button size="sm" className="btn-lift gap-2 mt-1">
+                  <Zap className="h-4 w-4" /> Start Practicing
+                </Button>
               </Link>
             </div>
           )}

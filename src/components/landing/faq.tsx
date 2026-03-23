@@ -38,7 +38,7 @@ export function LandingFaq() {
       <div className="max-w-3xl mx-auto px-4">
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold mb-2">Frequently Asked Questions</h2>
-          <p className="text-muted-foreground text-sm">Quick answers to common questions about StudentNest AI.</p>
+          <p className="text-muted-foreground text-sm">Quick answers to common questions about StudentNest Prep.</p>
         </div>
         <div className="space-y-2">
           {faqs.map((faq, i) => (

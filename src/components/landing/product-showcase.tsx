@@ -9,25 +9,25 @@ const steps = [
   {
     num: "1",
     label: "Pick Your Course",
-    title: "StudentNest AI · Courses",
+    title: "StudentNest Prep · Courses",
     content: <MockupSidebar />,
   },
   {
     num: "2",
     label: "Get Your Plan",
-    title: "StudentNest AI · Study Plan",
+    title: "StudentNest Prep · Study Plan",
     content: <MockupStudyPlan />,
   },
   {
     num: "3",
     label: "Practice Daily",
-    title: "StudentNest AI · Practice",
+    title: "StudentNest Prep · Practice",
     content: <MockupPractice />,
   },
   {
     num: "4",
     label: "Track Progress",
-    title: "StudentNest AI · Analytics",
+    title: "StudentNest Prep · Analytics",
     content: <MockupAnalytics />,
   },
 ];

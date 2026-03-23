@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -23,14 +24,94 @@ const GREETINGS = [
   "What's up! Sage here 🌿 Ask me about features, courses, or just say hi!",
 ];
 
-const QUICK_PROMPTS = [
+// Page-specific quick prompts
+const PROMPTS_BY_PAGE: Record<string, string[]> = {
+  "/": [
+    "What makes you different from ChatGPT?",
+    "How much does it cost?",
+    "What exams do you cover?",
+    "Is it really free?",
+  ],
+  "/pricing": [
+    "What's the difference between Free and Premium?",
+    "Is there a refund policy?",
+    "Do I need Premium to practice?",
+    "How does annual billing work?",
+  ],
+  "/ap-prep": [
+    "How does AP prep work?",
+    "What's included free?",
+    "How long until I see results?",
+    "Which AP courses do you have?",
+  ],
+  "/sat-prep": [
+    "How does SAT prep work?",
+    "Can I improve 200 points?",
+    "What's included free?",
+    "How long until I see results?",
+  ],
+  "/act-prep": [
+    "How does ACT prep work?",
+    "Do you support 5-choice Math?",
+    "What's included free?",
+    "How long until I see results?",
+  ],
+  "/clep-prep": [
+    "How much can I save with CLEP?",
+    "How long does CLEP prep take?",
+    "What's a passing CLEP score?",
+    "Is it really free to start?",
+  ],
+  "/about": [
+    "Who built StudentNest?",
+    "How does the AI work?",
+    "What courses are covered?",
+    "Is it safe and private?",
+  ],
+  "/practice": [
+    "Which unit should I focus on?",
+    "What's Quick Practice vs Mock Exam?",
+    "How does scoring work?",
+    "Can I practice FRQs?",
+  ],
+  "/analytics": [
+    "How do I improve my accuracy?",
+    "What does mastery mean?",
+    "How do I set a goal?",
+    "What's Tutor Comprehension?",
+  ],
+  "/study-plan": [
+    "How is my plan generated?",
+    "Can I change my study plan?",
+    "What do priority badges mean?",
+    "How often does it update?",
+  ],
+  "/ai-tutor": [
+    "What can I ask you?",
+    "How is Sage different from AI Tutor?",
+    "What's a knowledge check?",
+    "Can you help with homework?",
+  ],
+};
+
+const DEFAULT_PROMPTS = [
   "How do I start practicing?",
   "What courses are available?",
   "How do I get a study plan?",
   "What's the Mock Exam?",
 ];
 
+function getPrompts(pathname: string): string[] {
+  // Check exact match first, then prefix match for prep pages
+  if (PROMPTS_BY_PAGE[pathname]) return PROMPTS_BY_PAGE[pathname];
+  for (const key of Object.keys(PROMPTS_BY_PAGE)) {
+    if (pathname.startsWith(key) && key !== "/") return PROMPTS_BY_PAGE[key];
+  }
+  return DEFAULT_PROMPTS;
+}
+
 export function SageChat() {
+  const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
@@ -39,6 +120,8 @@ export function SageChat() {
   const [pulse, setPulse] = useState(true);
   const bottomRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  const quickPrompts = getPrompts(pathname);
 
   // Stop pulsing after 8 seconds
   useEffect(() => {
@@ -57,6 +140,14 @@ export function SageChat() {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading]);
 
+  // Read course from cookie (works on both marketing and dashboard pages)
+  function getCourse(): string {
+    try {
+      const match = document.cookie.match(/ap_selected_course=([^;]+)/);
+      return match?.[1] || "";
+    } catch { return ""; }
+  }
+
   async function sendMessage(text: string) {
     const msg = text.trim();
     if (!msg || loading) return;
@@ -73,9 +164,15 @@ export function SageChat() {
         body: JSON.stringify({
           message: msg,
           history: messages.slice(-8),
+          context: { page: pathname, course: getCourse() },
         }),
       });
 
+      if (res.status === 401) {
+        setMessages((prev) => [...prev, { role: "assistant", content: "I'd love to chat! 🌿 Create a free account to talk with me — it takes 30 seconds. Click 'Get started free' above!" }]);
+        setLoading(false);
+        return;
+      }
       const data = await res.json();
       const reply = data.reply || data.error || "Hmm, brain glitch! Try again 🧠";
       setMessages((prev) => [...prev, { role: "assistant", content: reply }]);
@@ -172,10 +269,10 @@ export function SageChat() {
               </div>
             </div>
 
-            {/* Quick prompts */}
+            {/* Quick prompts — page-specific */}
             {messages.length === 0 && (
               <div className="flex flex-wrap gap-1.5 pl-9">
-                {QUICK_PROMPTS.map((q) => (
+                {quickPrompts.map((q) => (
                   <button
                     key={q}
                     onClick={() => sendMessage(q)}

@@ -172,7 +172,12 @@ export default function OnboardingPage() {
                             : "border-border/40 hover:bg-accent hover:border-border"
                         }`}
                       >
-                        {cfg.name}
+                        <span className="flex items-center gap-2">
+                          {cfg.name}
+                          {["AP_WORLD_HISTORY", "AP_CALCULUS_AB", "SAT_MATH"].includes(key) && (
+                            <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-indigo-500/20 text-indigo-400 font-semibold">Popular</span>
+                          )}
+                        </span>
                       </button>
                     );
                   })}
@@ -255,10 +260,12 @@ export default function OnboardingPage() {
         <Card className="border-border/40">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <BarChart3 className="h-5 w-5 text-indigo-400" />
+              <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center">
+                <Check className="h-5 w-5 text-emerald-400" />
+              </div>
               You&apos;re all set!
             </CardTitle>
-            <CardDescription>We recommend starting with the Diagnostic to build your personalized study plan.</CardDescription>
+            <CardDescription>Great choice! We recommend starting with the Diagnostic to build your personalized study plan.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid sm:grid-cols-2 gap-3">

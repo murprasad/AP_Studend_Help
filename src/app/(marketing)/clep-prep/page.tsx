@@ -75,12 +75,12 @@ export default function ClepPrepPage() {
           </div>
         </div>
         <div className="hidden lg:block animate-float">
-          <BrowserFrame title="StudentNest AI · CLEP Analytics" className="shadow-2xl shadow-emerald-500/10">
+          <BrowserFrame title="StudentNest Prep · CLEP Analytics" className="shadow-2xl shadow-emerald-500/10">
             <MockupAnalytics />
           </BrowserFrame>
         </div>
         <div className="lg:hidden max-w-md mx-auto w-full">
-          <BrowserFrame title="StudentNest AI · CLEP Analytics">
+          <BrowserFrame title="StudentNest Prep · CLEP Analytics">
             <MockupAnalytics />
           </BrowserFrame>
         </div>
@@ -117,7 +117,7 @@ export default function ClepPrepPage() {
             <h3 className="text-2xl font-bold">AI builds your CLEP study plan</h3>
             <p className="text-muted-foreground leading-relaxed">Quick diagnostic to see how much you already know. AI builds a 4–8 week plan (faster if you have prior coursework). The plan adapts to your pace.</p>
           </div>
-          <BrowserFrame title="StudentNest AI · CLEP Study Plan" className="shadow-xl"><MockupStudyPlan /></BrowserFrame>
+          <BrowserFrame title="StudentNest Prep · CLEP Study Plan" className="shadow-xl"><MockupStudyPlan /></BrowserFrame>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
           <div className="lg:order-2 space-y-3">
@@ -125,7 +125,7 @@ export default function ClepPrepPage() {
             <h3 className="text-2xl font-bold">CLEP-aligned practice with instant feedback</h3>
             <p className="text-muted-foreground leading-relaxed">Questions match official CLEP exam format. Sage explains concepts using free resources like OpenStax and Khan Academy.</p>
           </div>
-          <div className="lg:order-1"><BrowserFrame title="StudentNest AI · CLEP Practice" className="shadow-xl"><MockupPractice /></BrowserFrame></div>
+          <div className="lg:order-1"><BrowserFrame title="StudentNest Prep · CLEP Practice" className="shadow-xl"><MockupPractice /></BrowserFrame></div>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
           <div className="space-y-3">
@@ -133,7 +133,7 @@ export default function ClepPrepPage() {
             <h3 className="text-2xl font-bold">Know exactly when you&apos;re ready to test</h3>
             <p className="text-muted-foreground leading-relaxed">Per-unit mastery scores tell you when to schedule your $93 exam. Hit 70%+ and you&apos;re ready to save $1,200+.</p>
           </div>
-          <BrowserFrame title="StudentNest AI · CLEP Analytics" className="shadow-xl"><MockupAnalytics /></BrowserFrame>
+          <BrowserFrame title="StudentNest Prep · CLEP Analytics" className="shadow-xl"><MockupAnalytics /></BrowserFrame>
         </div>
       </div>
 

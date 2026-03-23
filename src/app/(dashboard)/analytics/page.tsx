@@ -167,8 +167,25 @@ export default function AnalyticsPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-96">
-        <Loader2 className="h-8 w-8 animate-spin text-indigo-400" />
+      <div className="space-y-6">
+        <div><div className="h-8 w-48 bg-secondary/60 rounded-lg animate-pulse" /><div className="h-4 w-72 bg-secondary/40 rounded mt-2 animate-pulse" /></div>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          {[...Array(4)].map((_, i) => (
+            <div key={i} className="p-5 rounded-xl border border-border/40 bg-card/50">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-lg bg-secondary/40 animate-pulse" />
+                <div className="space-y-2">
+                  <div className="h-6 w-16 bg-secondary/60 rounded animate-pulse" />
+                  <div className="h-3 w-24 bg-secondary/40 rounded animate-pulse" />
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="grid lg:grid-cols-2 gap-6">
+          <div className="h-64 rounded-xl border border-border/40 bg-card/50 animate-pulse" />
+          <div className="h-64 rounded-xl border border-border/40 bg-card/50 animate-pulse" />
+        </div>
       </div>
     );
   }
@@ -337,6 +354,25 @@ export default function AnalyticsPage() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Narrative insight */}
+      {stats && stats.totalAnswered > 0 && (
+        <div className="rounded-lg border border-border/40 bg-card/50 px-4 py-3 flex items-center gap-3">
+          <TrendingUp className="h-4 w-4 text-emerald-400 flex-shrink-0" />
+          <p className="text-sm text-muted-foreground">
+            {stats.overallAccuracy >= 80
+              ? `You're doing great — ${stats.overallAccuracy}% accuracy across ${stats.totalAnswered} questions. Keep pushing toward 90%+!`
+              : stats.overallAccuracy >= 60
+              ? `Solid progress — ${stats.overallAccuracy}% accuracy. Focus on your weakest units to break through to 80%+.`
+              : `You're building momentum — ${stats.totalAnswered} questions answered. Keep practicing daily and watch your accuracy climb.`}
+            {masteryData.length > 0 && (() => {
+              const mastered = masteryData.filter((u) => u.masteryScore >= 70).length;
+              const total = masteryData.length;
+              return mastered > 0 ? ` ${mastered}/${total} units at mastery.` : "";
+            })()}
+          </p>
+        </div>
+      )}
 
       {/* Tutor Comprehension card — only if user has taken at least one check */}
       {knowledgeCheckStats && knowledgeCheckStats.totalChecks > 0 && (

@@ -73,12 +73,12 @@ export default function ActPrepPage() {
           </div>
         </div>
         <div className="hidden lg:block animate-float">
-          <BrowserFrame title="StudentNest AI · ACT Analytics" className="shadow-2xl shadow-violet-500/10">
+          <BrowserFrame title="StudentNest Prep · ACT Analytics" className="shadow-2xl shadow-violet-500/10">
             <MockupAnalytics />
           </BrowserFrame>
         </div>
         <div className="lg:hidden max-w-md mx-auto w-full">
-          <BrowserFrame title="StudentNest AI · ACT Analytics">
+          <BrowserFrame title="StudentNest Prep · ACT Analytics">
             <MockupAnalytics />
           </BrowserFrame>
         </div>
@@ -92,7 +92,7 @@ export default function ActPrepPage() {
             <h3 className="text-2xl font-bold">AI builds a section-by-section study plan</h3>
             <p className="text-muted-foreground leading-relaxed">Quick diagnostic across all 4 sections. Sage identifies which sections need the most work and builds a plan for maximum score gain.</p>
           </div>
-          <BrowserFrame title="StudentNest AI · ACT Study Plan" className="shadow-xl"><MockupStudyPlan /></BrowserFrame>
+          <BrowserFrame title="StudentNest Prep · ACT Study Plan" className="shadow-xl"><MockupStudyPlan /></BrowserFrame>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
           <div className="lg:order-2 space-y-3">
@@ -100,7 +100,7 @@ export default function ActPrepPage() {
             <h3 className="text-2xl font-bold">Real ACT format — including 5-choice Math</h3>
             <p className="text-muted-foreground leading-relaxed">Section-specific questions with real ACT format (A–E for Math). Instant AI explanations for every answer, every mistake.</p>
           </div>
-          <div className="lg:order-1"><BrowserFrame title="StudentNest AI · ACT Practice" className="shadow-xl"><MockupPractice /></BrowserFrame></div>
+          <div className="lg:order-1"><BrowserFrame title="StudentNest Prep · ACT Practice" className="shadow-xl"><MockupPractice /></BrowserFrame></div>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
           <div className="space-y-3">
@@ -108,7 +108,7 @@ export default function ActPrepPage() {
             <h3 className="text-2xl font-bold">Track your composite and per-section scores</h3>
             <p className="text-muted-foreground leading-relaxed">See per-section scores and overall composite improve as you practice. Build ACT pacing instincts — 60s/question Math, 36s English.</p>
           </div>
-          <BrowserFrame title="StudentNest AI · ACT Analytics" className="shadow-xl"><MockupAnalytics /></BrowserFrame>
+          <BrowserFrame title="StudentNest Prep · ACT Analytics" className="shadow-xl"><MockupAnalytics /></BrowserFrame>
         </div>
       </div>
 

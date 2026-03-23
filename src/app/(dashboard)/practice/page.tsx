@@ -429,9 +429,17 @@ export default function PracticePage() {
     return (
       <div className="max-w-2xl mx-auto space-y-6">
         <div className="text-center">
-          <Trophy className="h-16 w-16 text-yellow-400 mx-auto mb-4" />
-          <h1 className="text-3xl font-bold mb-2">Session Complete!</h1>
-          <p className="text-muted-foreground">Here&apos;s how you did</p>
+          <Trophy className={`h-16 w-16 mx-auto mb-4 ${sessionSummary.accuracy >= 80 ? "text-yellow-400" : "text-muted-foreground/60"}`} />
+          <h1 className="text-3xl font-bold mb-2">
+            {sessionSummary.accuracy >= 90 ? "Outstanding!" : sessionSummary.accuracy >= 80 ? "Great Job!" : sessionSummary.accuracy >= 60 ? "Session Complete!" : "Keep Going!"}
+          </h1>
+          <p className="text-muted-foreground">
+            {sessionSummary.accuracy >= 80
+              ? "You're showing real mastery — keep this up."
+              : sessionSummary.accuracy >= 50
+              ? "Every question builds your understanding."
+              : "Focus on your weakest units and you'll see improvement fast."}
+          </p>
         </div>
 
         <Card className="card-glow">
