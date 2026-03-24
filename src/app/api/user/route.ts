@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { isClepEnabled } from "@/lib/settings";
+import { isClepEnabled, isDsstEnabled } from "@/lib/settings";
 
 export const dynamic = "force-dynamic";
 
@@ -13,7 +13,7 @@ export async function PATCH(req: NextRequest) {
   try {
     const body = await req.json();
     const track = body.track;
-    const validTracks = ["ap", "sat", "act", "clep"];
+    const validTracks = ["ap", "sat", "act", "clep", "dsst"];
     if (!validTracks.includes(track)) {
       return NextResponse.json({ error: "Invalid track" }, { status: 400 });
     }
@@ -33,7 +33,7 @@ export async function GET(req: NextRequest) {
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   try {
-    const [user, clepEnabled, moduleSubs] = await Promise.all([
+    const [user, clepEnabled, dsstEnabled, moduleSubs] = await Promise.all([
       prisma.user.findUnique({
         where: { id: session.user.id },
         select: {
@@ -57,6 +57,7 @@ export async function GET(req: NextRequest) {
         },
       }),
       isClepEnabled(),
+      isDsstEnabled(),
       prisma.moduleSubscription.findMany({
         where: { userId: session.user.id },
         select: { module: true, status: true, stripeCurrentPeriodEnd: true },
@@ -65,7 +66,7 @@ export async function GET(req: NextRequest) {
 
     if (!user) return NextResponse.json({ error: "User not found" }, { status: 404 });
 
-    return NextResponse.json({ user, flags: { clepEnabled }, moduleSubs });
+    return NextResponse.json({ user, flags: { clepEnabled, dsstEnabled }, moduleSubs });
   } catch (error) {
     console.error("GET /api/user error:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });

@@ -85,6 +85,12 @@ const CLEP_GROUP: { label: string; shortLabel: string; keys: ApCourse[] } = {
   keys: (Object.keys(COURSE_REGISTRY) as ApCourse[]).filter(k => k.startsWith("CLEP_")),
 };
 
+const DSST_GROUP: { label: string; shortLabel: string; keys: ApCourse[] } = {
+  label: "DSST Prep",
+  shortLabel: "DSST",
+  keys: (Object.keys(COURSE_REGISTRY) as ApCourse[]).filter(k => k.startsWith("DSST_")),
+};
+
 interface SidebarProps {
   userRole?: string;
   userTrack?: string;
@@ -110,15 +116,16 @@ export function Sidebar({ userRole, userTrack, isOpen = false, onClose = () => {
     sat: [BASE_COURSE_GROUPS[1]],    // SAT Prep only
     act: [BASE_COURSE_GROUPS[2]],    // ACT Prep only
     clep: [CLEP_GROUP],              // CLEP Prep only
+    dsst: [DSST_GROUP],              // DSST Prep only
   };
 
   // Admin sees ALL course groups regardless of track
   const COURSE_GROUPS = userRole === "ADMIN"
-    ? [...BASE_COURSE_GROUPS, CLEP_GROUP]
+    ? [...BASE_COURSE_GROUPS, CLEP_GROUP, DSST_GROUP]
     : (TRACK_TO_GROUP[effectiveTrack] ?? [BASE_COURSE_GROUPS[0]]);
 
   const DEFAULT_GROUP: Record<string, string> = {
-    ap: "AP Courses", sat: "SAT Prep", act: "ACT Prep", clep: "CLEP Prep",
+    ap: "AP Courses", sat: "SAT Prep", act: "ACT Prep", clep: "CLEP Prep", dsst: "DSST Prep",
   };
 
   const [activeGroup, setActiveGroup] = useState<string>(
@@ -140,7 +147,7 @@ export function Sidebar({ userRole, userTrack, isOpen = false, onClose = () => {
 
   // Sync activeGroup when course changes
   useEffect(() => {
-    const allGroups = [...BASE_COURSE_GROUPS, CLEP_GROUP];
+    const allGroups = [...BASE_COURSE_GROUPS, CLEP_GROUP, DSST_GROUP];
     const group = allGroups.find(g => g.keys.includes(course as ApCourse));
     if (group) setActiveGroup(group.label);
   }, [course]);
@@ -274,6 +281,9 @@ export function Sidebar({ userRole, userTrack, isOpen = false, onClose = () => {
                         : "text-muted-foreground hover:text-foreground hover:bg-accent",
                       g.label === "CLEP Prep" && activeGroup === g.label
                         ? "bg-emerald-500/15 text-emerald-400"
+                        : "",
+                      g.label === "DSST Prep" && activeGroup === g.label
+                        ? "bg-orange-500/15 text-orange-400"
                         : ""
                     )}
                   >

@@ -20,6 +20,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
         "western-civilization-2", "college-mathematics", "natural-sciences", "precalculus",
         "information-systems", "business-law", "french", "german", "spanish", "spanish-writing",
     ].map(slug => ({ url: `${baseUrl}/clep-prep/${slug}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.7 })),
+    // DSST pages
+    { url: `${baseUrl}/dsst-prep`, lastModified: now, changeFrequency: "weekly", priority: 0.9 },
+    ...["principles-of-supervision", "human-resource-management", "organizational-behavior",
+        "personal-finance", "lifespan-developmental-psychology",
+    ].map(slug => ({ url: `${baseUrl}/dsst-prep/${slug}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.7 })),
     { url: `${baseUrl}/pricing`, lastModified: now, changeFrequency: "monthly", priority: 0.8 },
     { url: `${baseUrl}/about`, lastModified: now, changeFrequency: "monthly", priority: 0.6 },
     { url: `${baseUrl}/register`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },

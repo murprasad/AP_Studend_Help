@@ -57,6 +57,12 @@ export async function isClepEnabled(): Promise<boolean> {
   return val === "true";
 }
 
+/** Returns true if DSST courses are enabled. Defaults to false. */
+export async function isDsstEnabled(): Promise<boolean> {
+  const val = await getSetting("dsst_enabled", "false");
+  return val === "true";
+}
+
 /** Returns true if the Analytics page is enabled. Defaults to true. */
 export async function isAnalyticsEnabled(): Promise<boolean> {
   return (await getSetting("analytics_enabled", "true")) === "true";
@@ -101,6 +107,10 @@ export interface StripeConfig {
   actAnnualPriceId: string;
   actPaymentLinkMonthly: string;
   actPaymentLinkAnnual: string;
+  dsstPriceId: string;
+  dsstAnnualPriceId: string;
+  dsstPaymentLinkMonthly: string;
+  dsstPaymentLinkAnnual: string;
 }
 
 /**
@@ -108,7 +118,7 @@ export interface StripeConfig {
  * Env vars take precedence over DB settings so CF Pages secrets override admin UI values.
  */
 export async function getStripeConfig(): Promise<StripeConfig> {
-  const [secretKey, webhookSecret, priceId, annualPriceId, publishableKey, premiumPriceDisplay, premiumAnnualPriceDisplay, premiumName, paymentLinkMonthly, paymentLinkAnnual, clepPriceId, clepAnnualPriceId, clepPaymentLinkMonthly, clepPaymentLinkAnnual, satPriceId, satAnnualPriceId, satPaymentLinkMonthly, satPaymentLinkAnnual, actPriceId, actAnnualPriceId, actPaymentLinkMonthly, actPaymentLinkAnnual] =
+  const [secretKey, webhookSecret, priceId, annualPriceId, publishableKey, premiumPriceDisplay, premiumAnnualPriceDisplay, premiumName, paymentLinkMonthly, paymentLinkAnnual, clepPriceId, clepAnnualPriceId, clepPaymentLinkMonthly, clepPaymentLinkAnnual, satPriceId, satAnnualPriceId, satPaymentLinkMonthly, satPaymentLinkAnnual, actPriceId, actAnnualPriceId, actPaymentLinkMonthly, actPaymentLinkAnnual, dsstPriceId, dsstAnnualPriceId, dsstPaymentLinkMonthly, dsstPaymentLinkAnnual] =
     await Promise.all([
       getSetting("stripe_secret_key", ""),
       getSetting("stripe_webhook_secret", ""),
@@ -132,6 +142,10 @@ export async function getStripeConfig(): Promise<StripeConfig> {
       getSetting("stripe_act_annual_price_id", ""),
       getSetting("stripe_act_payment_link_monthly", ""),
       getSetting("stripe_act_payment_link_annual", ""),
+      getSetting("stripe_dsst_premium_price_id", ""),
+      getSetting("stripe_dsst_annual_price_id", ""),
+      getSetting("stripe_dsst_payment_link_monthly", ""),
+      getSetting("stripe_dsst_payment_link_annual", ""),
     ]);
 
   return {
@@ -157,6 +171,10 @@ export async function getStripeConfig(): Promise<StripeConfig> {
     actAnnualPriceId: process.env.STRIPE_ACT_ANNUAL_PRICE_ID || actAnnualPriceId,
     actPaymentLinkMonthly: process.env.STRIPE_ACT_PAYMENT_LINK_MONTHLY || actPaymentLinkMonthly,
     actPaymentLinkAnnual: process.env.STRIPE_ACT_PAYMENT_LINK_ANNUAL || actPaymentLinkAnnual,
+    dsstPriceId: process.env.STRIPE_DSST_PREMIUM_PRICE_ID || dsstPriceId,
+    dsstAnnualPriceId: process.env.STRIPE_DSST_ANNUAL_PRICE_ID || dsstAnnualPriceId,
+    dsstPaymentLinkMonthly: process.env.STRIPE_DSST_PAYMENT_LINK_MONTHLY || dsstPaymentLinkMonthly,
+    dsstPaymentLinkAnnual: process.env.STRIPE_DSST_PAYMENT_LINK_ANNUAL || dsstPaymentLinkAnnual,
   };
 }
 

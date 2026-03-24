@@ -172,8 +172,10 @@ export default function RegisterPage() {
       <CardHeader>
         <CardTitle className="text-2xl">Create your account</CardTitle>
         <CardDescription>
-          {isClepTrack
+          {userModule === "clep"
             ? "Start earning college credit with CLEP — free"
+            : userModule === "dsst"
+            ? "Start earning college credit with DSST — free"
             : "Start your AP exam journey today — free"}
         </CardDescription>
       </CardHeader>

@@ -52,6 +52,14 @@ export const FEATURE_FLAG_DEFS = [
     dangerous: false,
   },
   {
+    key: "dsst_enabled",
+    label: "DSST Prep",
+    description:
+      "Enable DSST (DANTES Subject Standardized Tests) courses in the sidebar and landing page. When ON, all 5 DSST exams appear as a separate group alongside AP/SAT/ACT/CLEP.",
+    default: "false",
+    dangerous: false,
+  },
+  {
     key: "analytics_enabled",
     label: "Analytics Page",
     description:

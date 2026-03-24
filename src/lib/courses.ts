@@ -3475,6 +3475,443 @@ Content aligns with a typical introductory business law or legal environment of 
       "CLEP_BIZLAW_5_EMPLOYMENT_ETHICS": 0.20,
     },
   },
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // DSST — DANTES Subject Standardized Tests
+  // DSST® is a registered trademark of Prometric. StudentNest is not
+  // affiliated with or endorsed by Prometric or DANTES.
+  // All questions are AI-generated original content.
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  // ── DSST Principles of Supervision ──────────────────────────────────────
+  DSST_PRINCIPLES_OF_SUPERVISION: {
+    name: "DSST Principles of Supervision",
+    shortName: "DSST Supervision",
+    examSecsPerQuestion: 72, // 100 questions in 120 minutes
+    enrichWithEduAPIs: false,
+    units: {
+      DSST_SUPV_1_ROLES_RESPONSIBILITIES: {
+        name: "Unit 1: Roles and Responsibilities of Supervisors",
+        keyThemes: ["supervisory roles", "management levels", "authority and responsibility", "delegation", "accountability", "span of control"],
+        openStaxUrl: "https://openstax.org/books/principles-management/pages/1-introduction",
+        khanUrl: "https://www.khanacademy.org/economics-finance-domain/entrepreneurship2",
+      },
+      DSST_SUPV_2_MANAGEMENT_FUNCTIONS: {
+        name: "Unit 2: Management Functions",
+        keyThemes: ["planning", "organizing", "leading", "controlling", "decision-making", "SWOT analysis"],
+        openStaxUrl: "https://openstax.org/books/principles-management/pages/2-introduction",
+        khanUrl: "https://www.khanacademy.org/economics-finance-domain/entrepreneurship2",
+      },
+      DSST_SUPV_3_LEADERSHIP: {
+        name: "Unit 3: Leadership and Communication",
+        keyThemes: ["leadership styles", "situational leadership", "communication barriers", "active listening", "conflict resolution", "team building"],
+        openStaxUrl: "https://openstax.org/books/principles-management/pages/13-introduction",
+        khanUrl: "https://www.khanacademy.org/economics-finance-domain/entrepreneurship2",
+      },
+      DSST_SUPV_4_LABOR_RELATIONS: {
+        name: "Unit 4: Labor Relations and Legal Issues",
+        keyThemes: ["labor unions", "collective bargaining", "grievance procedures", "EEOC", "workplace safety", "OSHA"],
+        openStaxUrl: "https://openstax.org/books/principles-management/pages/12-introduction",
+        khanUrl: "https://www.khanacademy.org/economics-finance-domain/entrepreneurship2",
+      },
+      DSST_SUPV_5_TRAINING_PERFORMANCE: {
+        name: "Unit 5: Training and Performance Management",
+        keyThemes: ["employee orientation", "training methods", "performance appraisal", "feedback techniques", "coaching", "progressive discipline"],
+        openStaxUrl: "https://openstax.org/books/principles-management/pages/11-introduction",
+        khanUrl: "https://www.khanacademy.org/economics-finance-domain/entrepreneurship2",
+      },
+    },
+    suggestedTutorQuestions: [
+      "What are the four main management functions?",
+      "How does situational leadership work?",
+      "What is the difference between delegation and abdication?",
+      "How should a supervisor handle a grievance?",
+      "What are the key steps in a performance appraisal?",
+      "How does OSHA protect workers?",
+    ],
+    curriculumContext: `DSST Principles of Supervision covers the fundamentals of first-line and mid-level supervisory management.
+Exam: 100 questions, 120 minutes, multiple choice. Passing score ~400/500 (scaled). Earns 3 college credits.
+Typical credit value: ~$1,000+ in tuition savings.
+Topics: roles and responsibilities of supervisors (20%), management functions (20%), leadership and communication (25%), labor relations (15%), training and performance (20%).`,
+    tutorResources: `
+- OpenStax Principles of Management (openstax.org/books/principles-management): Free, CC-licensed textbook
+- Saylor Academy BUS209 (learn.saylor.org/course/BUS209): Free Principles of Supervision course
+- Khan Academy Entrepreneurship (khanacademy.org): Management fundamentals`,
+    examAlignmentNotes: `DSST Principles of Supervision alignment:
+- Roles/responsibilities of supervisors: 20%
+- Management functions (POLC): 20%
+- Leadership and communication: 25%
+- Labor relations and legal issues: 15%
+- Training, development, and performance: 20%
+100 MCQ in 120 min. 4-choice format. ~400/500 passing. Earns 3 semester hours.`,
+    stimulusRequirement: "Include a brief workplace scenario as stimulus where relevant; null for concept-definition questions",
+    stimulusDescription: "workplace scenario or management situation (null for concept recall)",
+    explanationGuidance: "referencing the specific management theory or supervisory principle and explaining why the correct approach is preferred in practice",
+    difficultyRubric: {
+      EASY: "Define a management term or identify a supervisory function from its description. 65%+ correct.",
+      MEDIUM: "Apply a leadership theory to a workplace scenario or determine the correct disciplinary step. 40–55% correct.",
+      HARD: "Analyze a multi-factor management dilemma requiring trade-off evaluation between competing principles. 25–40% correct.",
+    },
+    distractorTaxonomy: "(1) AUTOCRATIC TRAP — chooses unilateral action when participative approach is warranted; (2) LEGAL CONFUSION — mixes up OSHA, EEOC, and FLSA protections; (3) DELEGATION TRAP — confuses accountability with responsibility after delegation.",
+    stimulusQualityGuidance: "GOOD: A 3-sentence workplace scenario with a specific supervisory dilemma and question. AVOID: Abstract management theory without applied context.",
+    skillCodes: ["Supervisory Functions", "Leadership Application", "Labor Relations", "Performance Management"],
+    topicWeights: {
+      "DSST_SUPV_1_ROLES_RESPONSIBILITIES": 0.20,
+      "DSST_SUPV_2_MANAGEMENT_FUNCTIONS": 0.20,
+      "DSST_SUPV_3_LEADERSHIP": 0.25,
+      "DSST_SUPV_4_LABOR_RELATIONS": 0.15,
+      "DSST_SUPV_5_TRAINING_PERFORMANCE": 0.20,
+    },
+    recommendedTextbooks: [
+      "OpenStax Principles of Management (free: openstax.org/books/principles-management)",
+      "Mosley, Pietri & Mosley, Supervisory Management (Cengage)",
+      "Certo, Supervision: Concepts and Skill-Building (McGraw-Hill)",
+    ],
+  },
+
+  // ── DSST Human Resource Management ──────────────────────────────────────
+  DSST_HUMAN_RESOURCE_MANAGEMENT: {
+    name: "DSST Human Resource Management",
+    shortName: "DSST HR Mgmt",
+    examSecsPerQuestion: 72,
+    enrichWithEduAPIs: false,
+    units: {
+      DSST_HRM_1_WORKFORCE_PLANNING: {
+        name: "Unit 1: Workforce Planning and Employment Law",
+        keyThemes: ["job analysis", "HR planning", "Title VII", "ADA", "FMLA", "equal employment opportunity"],
+        openStaxUrl: "https://openstax.org/books/principles-management/pages/11-introduction",
+        khanUrl: "https://www.khanacademy.org/economics-finance-domain/entrepreneurship2",
+      },
+      DSST_HRM_2_RECRUITMENT_SELECTION: {
+        name: "Unit 2: Recruitment and Selection",
+        keyThemes: ["recruiting strategies", "interviewing", "selection tests", "background checks", "onboarding", "employer branding"],
+        openStaxUrl: "https://openstax.org/books/principles-management/pages/11-2-the-changing-role-of-strategic-human-resource-management-in-principles-of-management",
+        khanUrl: "https://www.khanacademy.org/economics-finance-domain/entrepreneurship2",
+      },
+      DSST_HRM_3_TRAINING_DEVELOPMENT: {
+        name: "Unit 3: Training and Development",
+        keyThemes: ["needs assessment", "training methods", "e-learning", "career development", "succession planning", "mentoring"],
+        openStaxUrl: "https://openstax.org/books/principles-management/pages/11-3-recruiting-and-selecting-the-right-employees",
+        khanUrl: "https://www.khanacademy.org/economics-finance-domain/entrepreneurship2",
+      },
+      DSST_HRM_4_COMPENSATION_BENEFITS: {
+        name: "Unit 4: Compensation and Benefits",
+        keyThemes: ["pay structures", "job evaluation", "incentive plans", "health insurance", "401(k)", "FLSA and minimum wage"],
+        openStaxUrl: "https://openstax.org/books/principles-management/pages/11-5-building-an-organization-for-the-future",
+        khanUrl: "https://www.khanacademy.org/economics-finance-domain/core-finance",
+      },
+      DSST_HRM_5_EMPLOYEE_RELATIONS: {
+        name: "Unit 5: Employee and Labor Relations",
+        keyThemes: ["employee engagement", "disciplinary procedures", "termination", "unions", "NLRA", "workplace safety"],
+        openStaxUrl: "https://openstax.org/books/principles-management/pages/12-introduction",
+        khanUrl: "https://www.khanacademy.org/economics-finance-domain/entrepreneurship2",
+      },
+    },
+    suggestedTutorQuestions: [
+      "What is the difference between Title VII and the ADA?",
+      "How does a structured interview differ from an unstructured one?",
+      "What are the key steps in conducting a training needs assessment?",
+      "How are pay structures typically designed?",
+      "What rights does the NLRA give employees?",
+      "What is progressive discipline?",
+    ],
+    curriculumContext: `DSST Human Resource Management covers the full HR lifecycle from workforce planning to employee relations.
+Exam: 100 questions, 120 minutes, multiple choice. Passing score ~400/500 (scaled). Earns 3 college credits.
+Typical credit value: ~$1,000+ in tuition savings.
+Topics: workforce planning (20%), recruitment/selection (20%), training/development (20%), compensation/benefits (20%), employee relations (20%).`,
+    tutorResources: `
+- OpenStax Principles of Management Ch. 11-12 (openstax.org/books/principles-management): Free HR chapters
+- Saylor Academy BUS301 (learn.saylor.org/course/BUS301): Free Human Resource Management course
+- SHRM Learning System (shrm.org): Professional HR reference materials`,
+    examAlignmentNotes: `DSST Human Resource Management alignment:
+- Workforce planning and employment law: 20%
+- Recruitment and selection: 20%
+- Training and development: 20%
+- Compensation and benefits: 20%
+- Employee and labor relations: 20%
+100 MCQ in 120 min. 4-choice format. ~400/500 passing. Earns 3 semester hours.`,
+    stimulusRequirement: "Include a brief HR scenario as stimulus where relevant; null for law/regulation recall questions",
+    stimulusDescription: "HR scenario or workplace situation (null for definition/regulation recall)",
+    explanationGuidance: "citing the relevant employment law, HR principle, or best practice and explaining why the correct HR action is most appropriate",
+    difficultyRubric: {
+      EASY: "Define an HR term or identify which employment law applies to a described situation. 65%+ correct.",
+      MEDIUM: "Determine the correct HR procedure for a scenario involving multiple applicable laws or policies. 40–55% correct.",
+      HARD: "Analyze a complex HR dilemma with competing legal, ethical, and business considerations. 25–40% correct.",
+    },
+    distractorTaxonomy: "(1) WRONG LAW TRAP — applies Title VII when ADA is the correct statute; (2) PROCESS SKIP TRAP — jumps to termination without following progressive discipline; (3) COMPLIANCE TRAP — confuses federal and state employment law thresholds.",
+    stimulusQualityGuidance: "GOOD: A 3-sentence HR scenario with specific employee details and a clear dilemma. AVOID: Vague 'an employee has a problem' without enough specifics to analyze.",
+    skillCodes: ["Employment Law", "Recruitment", "Compensation Design", "Employee Relations"],
+    topicWeights: {
+      "DSST_HRM_1_WORKFORCE_PLANNING": 0.20,
+      "DSST_HRM_2_RECRUITMENT_SELECTION": 0.20,
+      "DSST_HRM_3_TRAINING_DEVELOPMENT": 0.20,
+      "DSST_HRM_4_COMPENSATION_BENEFITS": 0.20,
+      "DSST_HRM_5_EMPLOYEE_RELATIONS": 0.20,
+    },
+    recommendedTextbooks: [
+      "OpenStax Principles of Management (free: openstax.org/books/principles-management)",
+      "Dessler, Human Resource Management (Pearson)",
+      "Noe et al., Fundamentals of Human Resource Management (McGraw-Hill)",
+    ],
+  },
+
+  // ── DSST Organizational Behavior ────────────────────────────────────────
+  DSST_ORGANIZATIONAL_BEHAVIOR: {
+    name: "DSST Organizational Behavior",
+    shortName: "DSST Org Behavior",
+    examSecsPerQuestion: 72,
+    enrichWithEduAPIs: false,
+    units: {
+      DSST_OB_1_INDIVIDUAL_BEHAVIOR: {
+        name: "Unit 1: Individual Behavior and Perception",
+        keyThemes: ["personality traits", "perception and attribution", "attitudes", "job satisfaction", "Big Five model", "self-efficacy"],
+        openStaxUrl: "https://openstax.org/books/organizational-behavior/pages/3-introduction",
+        khanUrl: "https://www.khanacademy.org/test-prep/mcat/behavior",
+      },
+      DSST_OB_2_MOTIVATION_THEORIES: {
+        name: "Unit 2: Motivation Theories",
+        keyThemes: ["Maslow hierarchy", "Herzberg two-factor", "expectancy theory", "equity theory", "goal-setting theory", "self-determination theory"],
+        openStaxUrl: "https://openstax.org/books/organizational-behavior/pages/7-introduction",
+        khanUrl: "https://www.khanacademy.org/test-prep/mcat/behavior/theories-of-personality",
+      },
+      DSST_OB_3_GROUP_DYNAMICS: {
+        name: "Unit 3: Group Dynamics and Teams",
+        keyThemes: ["group development stages", "groupthink", "social loafing", "team roles", "norms", "cohesion"],
+        openStaxUrl: "https://openstax.org/books/organizational-behavior/pages/9-introduction",
+        khanUrl: "https://www.khanacademy.org/test-prep/mcat/behavior/social-psychology",
+      },
+      DSST_OB_4_LEADERSHIP_POWER: {
+        name: "Unit 4: Leadership and Power",
+        keyThemes: ["trait theories", "behavioral theories", "transformational leadership", "sources of power", "politics", "ethical leadership"],
+        openStaxUrl: "https://openstax.org/books/organizational-behavior/pages/13-introduction",
+        khanUrl: "https://www.khanacademy.org/economics-finance-domain/entrepreneurship2",
+      },
+      DSST_OB_5_ORGANIZATIONAL_CHANGE: {
+        name: "Unit 5: Organizational Structure and Change",
+        keyThemes: ["organizational design", "culture", "change management", "Lewin model", "resistance to change", "organizational development"],
+        openStaxUrl: "https://openstax.org/books/organizational-behavior/pages/15-introduction",
+        khanUrl: "https://www.khanacademy.org/economics-finance-domain/entrepreneurship2",
+      },
+    },
+    suggestedTutorQuestions: [
+      "What is the difference between Maslow's and Herzberg's theories?",
+      "What are the five stages of group development?",
+      "How does transformational leadership differ from transactional?",
+      "What causes groupthink and how can it be prevented?",
+      "What is Lewin's three-step change model?",
+      "What are the Big Five personality traits?",
+    ],
+    curriculumContext: `DSST Organizational Behavior covers how individuals and groups behave within organizations.
+Exam: 100 questions, 120 minutes, multiple choice. Passing score ~400/500 (scaled). Earns 3 college credits.
+Typical credit value: ~$1,000+ in tuition savings.
+Topics: individual behavior (20%), motivation (25%), group dynamics (20%), leadership (20%), org structure/change (15%).`,
+    tutorResources: `
+- OpenStax Organizational Behavior (openstax.org/books/organizational-behavior): Free, CC-licensed textbook — matches DSST content
+- Saylor Academy BUS208 (learn.saylor.org/course/BUS208): Free Organizational Behavior course
+- CrashCourse Business (youtube.com/@crashcourse): Accessible video series`,
+    examAlignmentNotes: `DSST Organizational Behavior alignment:
+- Individual behavior and perception: 20%
+- Motivation theories: 25%
+- Group dynamics and teams: 20%
+- Leadership and power: 20%
+- Organizational structure and change: 15%
+100 MCQ in 120 min. 4-choice format. ~400/500 passing. Earns 3 semester hours.`,
+    stimulusRequirement: "Include a brief workplace scenario as stimulus where relevant; null for theory recall questions",
+    stimulusDescription: "organizational scenario or workplace behavior case (null for theory identification)",
+    explanationGuidance: "naming the specific OB theory or model, then explaining how it applies to the scenario with concrete workplace examples",
+    difficultyRubric: {
+      EASY: "Name the theory from its description or identify a motivational factor. 65%+ correct.",
+      MEDIUM: "Apply a theory to a workplace scenario or determine which leadership style fits a situation. 40–55% correct.",
+      HARD: "Evaluate competing OB theories for a complex scenario or predict organizational outcomes from multiple interacting factors. 25–40% correct.",
+    },
+    distractorTaxonomy: "(1) THEORY MIX-UP — confuses Maslow's esteem needs with Herzberg's motivators; (2) LEADERSHIP CONFUSION — confuses transformational with servant leadership; (3) GROUP STAGE TRAP — applies norming behaviors to a storming-stage team.",
+    stimulusQualityGuidance: "GOOD: A workplace scenario describing specific employee behaviors and asking which OB theory best explains them. AVOID: Abstract theory questions with no applied context.",
+    skillCodes: ["Individual Behavior", "Motivation Analysis", "Group Dynamics", "Leadership Theory"],
+    topicWeights: {
+      "DSST_OB_1_INDIVIDUAL_BEHAVIOR": 0.20,
+      "DSST_OB_2_MOTIVATION_THEORIES": 0.25,
+      "DSST_OB_3_GROUP_DYNAMICS": 0.20,
+      "DSST_OB_4_LEADERSHIP_POWER": 0.20,
+      "DSST_OB_5_ORGANIZATIONAL_CHANGE": 0.15,
+    },
+    recommendedTextbooks: [
+      "OpenStax Organizational Behavior (free: openstax.org/books/organizational-behavior)",
+      "Robbins & Judge, Organizational Behavior (Pearson)",
+      "McShane & Von Glinow, Organizational Behavior (McGraw-Hill)",
+    ],
+  },
+
+  // ── DSST Personal Finance ───────────────────────────────────────────────
+  DSST_PERSONAL_FINANCE: {
+    name: "DSST Personal Finance",
+    shortName: "DSST Personal Finance",
+    examSecsPerQuestion: 72,
+    enrichWithEduAPIs: false,
+    units: {
+      DSST_PF_1_FINANCIAL_PLANNING: {
+        name: "Unit 1: Financial Planning and Budgeting",
+        keyThemes: ["budgeting methods", "financial goals", "net worth", "time value of money", "opportunity cost", "financial statements"],
+        openStaxUrl: "https://openstax.org/books/principles-finance/pages/1-why-finance",
+        khanUrl: "https://www.khanacademy.org/college-careers-more/personal-finance",
+      },
+      DSST_PF_2_CREDIT_DEBT: {
+        name: "Unit 2: Credit and Debt Management",
+        keyThemes: ["credit scores", "credit reports", "types of credit", "interest rates", "debt reduction strategies", "bankruptcy"],
+        openStaxUrl: "https://openstax.org/books/principles-finance/pages/2-why-finance",
+        khanUrl: "https://www.khanacademy.org/college-careers-more/personal-finance/pf-saving-and-budgeting",
+      },
+      DSST_PF_3_INVESTING: {
+        name: "Unit 3: Investing Fundamentals",
+        keyThemes: ["stocks", "bonds", "mutual funds", "diversification", "risk vs return", "compound interest", "401(k) and IRA"],
+        openStaxUrl: "https://openstax.org/books/principles-finance/pages/15-stocks-and-stock-valuation",
+        khanUrl: "https://www.khanacademy.org/economics-finance-domain/core-finance/stock-and-bonds",
+      },
+      DSST_PF_4_INSURANCE_RISK: {
+        name: "Unit 4: Insurance and Risk Management",
+        keyThemes: ["health insurance", "auto insurance", "homeowners insurance", "life insurance", "deductibles", "risk assessment"],
+        openStaxUrl: "https://openstax.org/books/principles-finance/pages/1-why-finance",
+        khanUrl: "https://www.khanacademy.org/college-careers-more/personal-finance/pf-insurance",
+      },
+      DSST_PF_5_RETIREMENT_ESTATE: {
+        name: "Unit 5: Retirement and Estate Planning",
+        keyThemes: ["Social Security", "pension plans", "401(k) matching", "Roth IRA", "estate planning basics", "wills and trusts"],
+        openStaxUrl: "https://openstax.org/books/principles-finance/pages/1-why-finance",
+        khanUrl: "https://www.khanacademy.org/college-careers-more/personal-finance/pf-retirement",
+      },
+    },
+    suggestedTutorQuestions: [
+      "What is the difference between a Roth IRA and a traditional IRA?",
+      "How is a credit score calculated?",
+      "What is compound interest and why does it matter?",
+      "How should I build an emergency fund?",
+      "What is diversification in investing?",
+      "What types of insurance do I need?",
+    ],
+    curriculumContext: `DSST Personal Finance covers the fundamentals of managing personal finances across the lifespan.
+Exam: 100 questions, 120 minutes, multiple choice. Passing score ~400/500 (scaled). Earns 3 college credits.
+Typical credit value: ~$1,000+ in tuition savings.
+Topics: financial planning (20%), credit/debt (20%), investing (25%), insurance (15%), retirement/estate (20%).`,
+    tutorResources: `
+- Khan Academy Personal Finance (khanacademy.org/college-careers-more/personal-finance): Free comprehensive video course
+- OpenStax Principles of Finance (openstax.org/books/principles-finance): Free textbook on finance fundamentals
+- Investopedia (investopedia.com): Free articles and tutorials on all personal finance topics`,
+    examAlignmentNotes: `DSST Personal Finance alignment:
+- Financial planning and budgeting: 20%
+- Credit and debt management: 20%
+- Investing fundamentals: 25%
+- Insurance and risk management: 15%
+- Retirement and estate planning: 20%
+100 MCQ in 120 min. 4-choice format. ~400/500 passing. Earns 3 semester hours.`,
+    stimulusRequirement: "Include a personal finance scenario or calculation as stimulus where relevant; null for definition questions",
+    stimulusDescription: "personal finance scenario with dollar amounts or financial situation (null for concept recall)",
+    explanationGuidance: "showing the financial calculation step-by-step or explaining the financial principle with a concrete dollar-amount example",
+    difficultyRubric: {
+      EASY: "Define a financial term or identify the correct type of account for a given goal. 65%+ correct.",
+      MEDIUM: "Calculate simple interest, compare two investment options, or determine the best debt payoff strategy. 40–55% correct.",
+      HARD: "Analyze a complex financial scenario with multiple factors (tax implications, opportunity cost, risk trade-offs). 25–40% correct.",
+    },
+    distractorTaxonomy: "(1) TAX CONFUSION — confuses pre-tax and post-tax account benefits; (2) INTEREST TRAP — mistakes simple for compound interest calculation; (3) INSURANCE GAP — confuses deductible with premium or copay.",
+    stimulusQualityGuidance: "GOOD: A scenario with specific dollar amounts, ages, and financial goals. AVOID: Abstract 'someone wants to save money' without concrete numbers.",
+    skillCodes: ["Financial Planning", "Credit Management", "Investment Analysis", "Risk Assessment"],
+    topicWeights: {
+      "DSST_PF_1_FINANCIAL_PLANNING": 0.20,
+      "DSST_PF_2_CREDIT_DEBT": 0.20,
+      "DSST_PF_3_INVESTING": 0.25,
+      "DSST_PF_4_INSURANCE_RISK": 0.15,
+      "DSST_PF_5_RETIREMENT_ESTATE": 0.20,
+    },
+    recommendedTextbooks: [
+      "OpenStax Principles of Finance (free: openstax.org/books/principles-finance)",
+      "Garman & Forgue, Personal Finance (Cengage)",
+      "Kapoor et al., Personal Finance (McGraw-Hill)",
+    ],
+  },
+
+  // ── DSST Lifespan Developmental Psychology ──────────────────────────────
+  DSST_LIFESPAN_DEV_PSYCHOLOGY: {
+    name: "DSST Lifespan Developmental Psychology",
+    shortName: "DSST Lifespan Psych",
+    examSecsPerQuestion: 72,
+    enrichWithEduAPIs: false,
+    units: {
+      DSST_LDP_1_PRENATAL_INFANCY: {
+        name: "Unit 1: Prenatal Development and Infancy",
+        keyThemes: ["nature vs nurture", "prenatal stages", "teratogens", "reflexes", "attachment theory", "sensorimotor stage"],
+        openStaxUrl: "https://openstax.org/books/psychology-2e/pages/9-1-what-is-lifespan-development",
+        khanUrl: "https://www.khanacademy.org/test-prep/mcat/behavior/human-development",
+      },
+      DSST_LDP_2_CHILDHOOD: {
+        name: "Unit 2: Early and Middle Childhood",
+        keyThemes: ["Piaget stages", "Vygotsky zone of proximal development", "language development", "moral development", "play", "parenting styles"],
+        openStaxUrl: "https://openstax.org/books/psychology-2e/pages/9-2-lifespan-theories",
+        khanUrl: "https://www.khanacademy.org/test-prep/mcat/behavior/cognition",
+      },
+      DSST_LDP_3_ADOLESCENCE: {
+        name: "Unit 3: Adolescence",
+        keyThemes: ["puberty", "identity formation", "Erikson identity vs role confusion", "peer influence", "formal operational thought", "risk-taking behavior"],
+        openStaxUrl: "https://openstax.org/books/psychology-2e/pages/9-3-stages-of-development",
+        khanUrl: "https://www.khanacademy.org/test-prep/mcat/behavior/theories-of-personality",
+      },
+      DSST_LDP_4_ADULTHOOD: {
+        name: "Unit 4: Early and Middle Adulthood",
+        keyThemes: ["intimacy vs isolation", "generativity vs stagnation", "career development", "cognitive changes", "midlife transition", "relationships"],
+        openStaxUrl: "https://openstax.org/books/psychology-2e/pages/9-4-death-and-dying",
+        khanUrl: "https://www.khanacademy.org/test-prep/mcat/behavior/human-development",
+      },
+      DSST_LDP_5_AGING_DEATH: {
+        name: "Unit 5: Late Adulthood, Aging, and Death",
+        keyThemes: ["integrity vs despair", "cognitive decline", "dementia", "Kubler-Ross stages of grief", "end-of-life care", "successful aging"],
+        openStaxUrl: "https://openstax.org/books/psychology-2e/pages/9-4-death-and-dying",
+        khanUrl: "https://www.khanacademy.org/test-prep/mcat/behavior/human-development",
+      },
+    },
+    suggestedTutorQuestions: [
+      "What are Piaget's four stages of cognitive development?",
+      "How does Erikson's identity crisis work in adolescence?",
+      "What is attachment theory and why does it matter?",
+      "What are common teratogens during prenatal development?",
+      "What is the difference between fluid and crystallized intelligence?",
+      "What are the Kubler-Ross stages of grief?",
+    ],
+    curriculumContext: `DSST Lifespan Developmental Psychology covers human development from conception through death.
+Exam: 100 questions, 120 minutes, multiple choice. Passing score ~400/500 (scaled). Earns 3 college credits.
+Typical credit value: ~$1,000+ in tuition savings.
+Topics: prenatal/infancy (20%), childhood (25%), adolescence (20%), adulthood (20%), aging/death (15%).`,
+    tutorResources: `
+- OpenStax Psychology 2e Ch. 9 (openstax.org/books/psychology-2e/pages/9-introduction): Free developmental psychology chapter
+- Saylor Academy PSYCH302 (learn.saylor.org/course/PSYCH302): Free Lifespan Development course
+- Khan Academy MCAT Behavior (khanacademy.org): Development topics overlap`,
+    examAlignmentNotes: `DSST Lifespan Developmental Psychology alignment:
+- Prenatal development and infancy: 20%
+- Early and middle childhood: 25%
+- Adolescence: 20%
+- Early and middle adulthood: 20%
+- Late adulthood, aging, and death: 15%
+100 MCQ in 120 min. 4-choice format. ~400/500 passing. Earns 3 semester hours.`,
+    stimulusRequirement: "Include a developmental scenario or case study as stimulus where relevant; null for theory recall questions",
+    stimulusDescription: "developmental case study or age-specific behavior description (null for theory identification)",
+    explanationGuidance: "naming the specific developmental theory, stage, or theorist, then connecting it to the observable behavior described in the question",
+    difficultyRubric: {
+      EASY: "Identify a developmental stage from its description or name the theorist associated with a concept. 65%+ correct.",
+      MEDIUM: "Apply a developmental theory to a scenario or determine which stage a described behavior represents. 40–55% correct.",
+      HARD: "Compare competing theories for the same developmental phenomenon or analyze a complex case spanning multiple developmental domains. 25–40% correct.",
+    },
+    distractorTaxonomy: "(1) STAGE MIX-UP — assigns a behavior to the wrong Piaget or Erikson stage; (2) THEORIST CONFUSION — attributes Vygotsky's concepts to Piaget or vice versa; (3) AGE NORM TRAP — expects a milestone at the wrong age.",
+    stimulusQualityGuidance: "GOOD: A case describing a child or adult at a specific age exhibiting particular behaviors. AVOID: Abstract 'what happens during adolescence' without a specific case.",
+    skillCodes: ["Developmental Theory", "Stage Identification", "Case Analysis", "Lifespan Integration"],
+    topicWeights: {
+      "DSST_LDP_1_PRENATAL_INFANCY": 0.20,
+      "DSST_LDP_2_CHILDHOOD": 0.25,
+      "DSST_LDP_3_ADOLESCENCE": 0.20,
+      "DSST_LDP_4_ADULTHOOD": 0.20,
+      "DSST_LDP_5_AGING_DEATH": 0.15,
+    },
+    recommendedTextbooks: [
+      "OpenStax Psychology 2e (free: openstax.org/books/psychology-2e)",
+      "Santrock, Life-Span Development (McGraw-Hill)",
+      "Feldman, Development Across the Life Span (Pearson)",
+    ],
+  },
 };
 
 // ═════════════════════════════════════════════════════════════════════════════
@@ -3517,13 +3954,16 @@ export function getUnitsForCourse(course: ApCourse): ApUnit[] {
 }
 
 /** Returns the track a course belongs to. @deprecated Use getCourseModule instead. */
-export function getCourseTrack(course: ApCourse): "ap" | "clep" {
-  return (course as string).startsWith("CLEP_") ? "clep" : "ap";
+export function getCourseTrack(course: ApCourse): "ap" | "clep" | "dsst" {
+  const s = course as string;
+  if (s.startsWith("DSST_")) return "dsst";
+  return s.startsWith("CLEP_") ? "clep" : "ap";
 }
 
-/** Returns the module a course belongs to (4-way: ap, sat, act, clep). */
-export function getCourseModule(course: ApCourse): "ap" | "sat" | "act" | "clep" {
+/** Returns the module a course belongs to (5-way: ap, sat, act, clep, dsst). */
+export function getCourseModule(course: ApCourse): "ap" | "sat" | "act" | "clep" | "dsst" {
   const s = course as string;
+  if (s.startsWith("DSST_")) return "dsst";
   if (s.startsWith("CLEP_")) return "clep";
   if (s.startsWith("SAT_")) return "sat";
   if (s.startsWith("ACT_")) return "act";

@@ -3,7 +3,7 @@ import { Badge } from "@/components/ui/badge";
 
 export const metadata: Metadata = {
   title: "About StudentNest Prep — Mission, Science & Course Coverage",
-  description: "Learn how StudentNest Prep uses active recall, spaced repetition, and AI tutoring to help students score higher on AP, SAT, ACT & CLEP exams.",
+  description: "Learn how StudentNest Prep uses active recall, spaced repetition, and AI tutoring to help students score higher on AP, SAT, ACT, CLEP & DSST exams.",
   openGraph: {
     title: "About | StudentNest Prep",
     description: "AI-powered exam prep built on learning science. 50 courses, free to start.",
@@ -75,6 +75,12 @@ const COURSES = [
   { name: "CLEP German (Levels 1 & 2)",              category: "CLEP (College Credit)", color: "bg-teal-500/10 text-teal-600 dark:text-teal-300 border-teal-500/20", desc: "Reading, grammar, vocabulary, culture" },
   { name: "CLEP Spanish (Levels 1 & 2)",             category: "CLEP (College Credit)", color: "bg-green-500/10 text-green-600 dark:text-green-300 border-green-500/20", desc: "Reading, grammar, vocabulary, culture" },
   { name: "CLEP Spanish with Writing",               category: "CLEP (College Credit)", color: "bg-emerald-500/10 text-emerald-500 dark:text-emerald-400 border-emerald-500/20", desc: "Advanced grammar, error identification, essays" },
+  // DSST
+  { name: "Principles of Supervision",              category: "DSST (College Credit)", color: "bg-orange-500/10 text-orange-600 dark:text-orange-300 border-orange-500/20", desc: "Leadership, delegation, employee development" },
+  { name: "Human Resource Management",              category: "DSST (College Credit)", color: "bg-orange-500/10 text-orange-600 dark:text-orange-300 border-orange-500/20", desc: "Recruitment, compensation, labor relations" },
+  { name: "Organizational Behavior",                category: "DSST (College Credit)", color: "bg-orange-500/10 text-orange-600 dark:text-orange-300 border-orange-500/20", desc: "Motivation, group dynamics, organizational culture" },
+  { name: "Personal Finance",                       category: "DSST (College Credit)", color: "bg-orange-500/10 text-orange-600 dark:text-orange-300 border-orange-500/20", desc: "Budgeting, investing, insurance, credit management" },
+  { name: "Lifespan Developmental Psychology",       category: "DSST (College Credit)", color: "bg-orange-500/10 text-orange-600 dark:text-orange-300 border-orange-500/20", desc: "Physical, cognitive, social development across the lifespan" },
 ];
 
 const COURSE_CATEGORIES = Array.from(new Set(COURSES.map((c) => c.category)));
@@ -84,6 +90,7 @@ const CATEGORY_COLORS: Record<string, string> = {
   "SAT Prep":             "text-blue-500 dark:text-blue-400",
   "ACT Prep":             "text-amber-500 dark:text-amber-400",
   "CLEP (College Credit)":"text-emerald-500 dark:text-emerald-400",
+  "DSST (College Credit)":"text-orange-500 dark:text-orange-400",
 };
 
 
@@ -99,12 +106,12 @@ export default function AboutPage() {
           </div>
           <div className="flex items-center gap-2 flex-wrap">
             <h1 className="text-3xl font-bold gradient-text">About StudentNest Prep</h1>
-            <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30 text-xs font-semibold">Beta 2.4</Badge>
+            <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30 text-xs font-semibold">Beta 2.5</Badge>
           </div>
         </div>
         <p className="text-muted-foreground leading-relaxed max-w-2xl mx-auto">
           AP exams shape college admissions. CLEP exams save thousands in tuition. But the best prep tools cost hundreds of dollars — or require hiring a tutor.
-          StudentNest exists to change that: world-class AI-powered AP, SAT, ACT &amp; CLEP prep, free for every student.
+          StudentNest exists to change that: world-class AI-powered AP, SAT, ACT, CLEP &amp; DSST prep, free for every student.
         </p>
       </div>
 
@@ -133,7 +140,7 @@ export default function AboutPage() {
       <div className="rounded-2xl border border-blue-500/20 bg-blue-500/5 p-8 space-y-3">
         <p className="text-xs font-semibold uppercase tracking-wider text-blue-500">Our Mission</p>
         <p className="text-xl font-semibold text-foreground/90 leading-relaxed max-w-2xl mx-auto">
-          &ldquo;Make world-class AP, SAT, ACT &amp; CLEP prep accessible to every student — not just those who can afford a tutor.&rdquo;
+          &ldquo;Make world-class AP, SAT, ACT, CLEP &amp; DSST prep accessible to every student — not just those who can afford a tutor.&rdquo;
         </p>
       </div>
 
@@ -311,7 +318,7 @@ export default function AboutPage() {
       <div className="space-y-6">
         <h2 className="text-xl font-bold">
           What We Cover{" "}
-          <span className="text-muted-foreground font-normal text-base">({COURSES.length} courses · AP, SAT, ACT &amp; CLEP)</span>
+          <span className="text-muted-foreground font-normal text-base">({COURSES.length} courses · AP, SAT, ACT, CLEP &amp; DSST)</span>
         </h2>
         {COURSE_CATEGORIES.map((category) => (
           <div key={category} className="space-y-2">
@@ -352,10 +359,37 @@ export default function AboutPage() {
         </div>
       </div>
 
-      {/* Section 7: What's New in Beta 2.1 */}
+      {/* Section 7: What's New in Beta 2.5 */}
       <div className="space-y-6">
         <div className="text-center space-y-1">
           <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30 text-xs font-semibold mb-2">Latest Release</Badge>
+          <h2 className="text-xl font-bold">What&apos;s New in Beta 2.5</h2>
+          <p className="text-sm text-muted-foreground">DSST exam support, admin user management, expanded payment system, and SEO updates.</p>
+        </div>
+        <div className="grid sm:grid-cols-2 gap-3 text-left">
+          {[
+            { icon: GraduationCap, color: "text-orange-400", bg: "bg-orange-500/10", title: "5 DSST Exams — New Module", desc: "Principles of Supervision, HR Management, Organizational Behavior, Personal Finance, and Lifespan Developmental Psychology. Full course configs, AI question generation, and dedicated landing pages." },
+            { icon: LayoutDashboard, color: "text-blue-500", bg: "bg-blue-500/10", title: "Admin Users & Revenue Dashboard", desc: "New admin tab showing all users (free + premium) with date range filtering, search, tier breakdown, and revenue metrics (MRR/ARR)." },
+            { icon: Sparkles, color: "text-orange-400", bg: "bg-orange-500/10", title: "DSST Stripe Integration", desc: "Independent $9.99/mo or $79.99/yr DSST Premium subscriptions with dedicated Stripe products, payment links, and webhook handling." },
+            { icon: Target, color: "text-emerald-400", bg: "bg-emerald-500/10", title: "SEO — 55 Courses", desc: "All metadata, FAQ, JSON-LD, sitemap, and PWA manifest updated to include DSST alongside AP, SAT, ACT & CLEP. 55 total courses." },
+          ].map(({ icon: Icon, color, bg, title, desc }) => (
+            <div key={title} className="flex gap-3 p-4 rounded-xl border border-border/40 bg-card">
+              <div className={`w-8 h-8 rounded-lg ${bg} flex items-center justify-center flex-shrink-0 mt-0.5`}>
+                <Icon className={`h-4 w-4 ${color}`} />
+              </div>
+              <div>
+                <p className="text-sm font-semibold">{title}</p>
+                <p className="text-xs text-muted-foreground leading-relaxed mt-0.5">{desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Section 7b: What's New in Beta 2.1 */}
+      <div className="space-y-6">
+        <div className="text-center space-y-1">
+          <Badge className="bg-border/60 text-muted-foreground border-border/40 text-xs font-semibold mb-2">Beta 2.1</Badge>
           <h2 className="text-xl font-bold">What&apos;s New in Beta 2.1</h2>
           <p className="text-sm text-muted-foreground">Per-module subscriptions, SEO overhaul, content optimization, and strict course filtering.</p>
         </div>

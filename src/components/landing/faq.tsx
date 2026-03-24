@@ -6,7 +6,7 @@ import { ChevronDown } from "lucide-react";
 const faqs = [
   {
     q: "Is it really free?",
-    a: "Yes. Free accounts get unlimited MCQ practice across all 50 courses, 5 AI tutor chats per day, a basic study plan, and per-unit mastery analytics. No credit card required, no time limit.",
+    a: "Yes. Free accounts get unlimited MCQ practice across all 55 courses, 5 AI tutor chats per day, a basic study plan, and per-unit mastery analytics. No credit card required, no time limit.",
   },
   {
     q: "How is this different from ChatGPT?",
@@ -14,7 +14,7 @@ const faqs = [
   },
   {
     q: "What exams do you cover?",
-    a: "10 AP courses (World History, Calculus AB/BC, Physics 1, Chemistry, Biology, Statistics, US History, Psychology, Computer Science), SAT Math & Reading/Writing, 4 ACT sections (Math, English, Science, Reading), and all 34 CLEP exams across 5 domains.",
+    a: "10 AP courses (World History, Calculus AB/BC, Physics 1, Chemistry, Biology, Statistics, US History, Psychology, Computer Science), SAT Math & Reading/Writing, 4 ACT sections (Math, English, Science, Reading), all 34 CLEP exams across 5 domains, and 5 DSST exams (Supervision, HR Management, Organizational Behavior, Personal Finance, Lifespan Psychology).",
   },
   {
     q: "Can parents track their child's progress?",

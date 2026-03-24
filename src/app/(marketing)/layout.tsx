@@ -16,6 +16,12 @@ export default function MarketingLayout({ children }: { children: React.ReactNod
           </div>
         </Link>
         <div className="flex items-center gap-2 sm:gap-4">
+          <Link href="/clep-prep" className="hidden sm:block text-sm text-muted-foreground hover:text-foreground transition-colors">
+            CLEP Prep
+          </Link>
+          <Link href="/dsst-prep" className="hidden sm:block text-sm text-muted-foreground hover:text-foreground transition-colors">
+            DSST Prep
+          </Link>
           <Link href="/pricing" className="hidden sm:block text-sm text-muted-foreground hover:text-foreground transition-colors">
             Pricing
           </Link>
@@ -44,8 +50,8 @@ export default function MarketingLayout({ children }: { children: React.ReactNod
           <a href="/privacy" className="hover:text-foreground transition-colors">Privacy</a>
         </div>
         <p className="text-[11px] text-muted-foreground/60 max-w-2xl mx-auto leading-relaxed">
-          AP®, SAT®, and CLEP® are trademarks of the College Board. ACT® is a registered trademark of ACT, Inc.
-          StudentNest is not affiliated with or endorsed by the College Board or ACT, Inc.
+          AP®, SAT®, and CLEP® are trademarks of the College Board. ACT® is a registered trademark of ACT, Inc. DSST® is a registered trademark of Prometric.
+          StudentNest is not affiliated with or endorsed by the College Board, ACT, Inc., or Prometric.
           © {new Date().getFullYear()} StudentNest Prep — independent educational platform.
         </p>
       </footer>

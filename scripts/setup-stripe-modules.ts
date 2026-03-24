@@ -72,6 +72,13 @@ const MODULES: Module[] = [
     monthlyEnv: "STRIPE_CLEP_PREMIUM_PRICE_ID",
     annualEnv: "STRIPE_CLEP_ANNUAL_PRICE_ID",
   },
+  {
+    key: "dsst",
+    name: "DSST Premium",
+    description: "StudentNest Prep — DSST exam prep for 5 exams. Earn college credit and save $1,000+ per exam.",
+    monthlyEnv: "STRIPE_DSST_PREMIUM_PRICE_ID",
+    annualEnv: "STRIPE_DSST_ANNUAL_PRICE_ID",
+  },
 ];
 
 async function findExistingProduct(name: string): Promise<string | null> {

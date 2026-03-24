@@ -884,6 +884,43 @@ const UNIT_DATA: Record<ApCourse, Array<{
     { unit: ApUnit.CLEP_BIZLAW_5_EMPLOYMENT_ETHICS, name: "Employment Law & Ethics", keyThemes: ["Employment discrimination and Title VII", "Workplace safety: OSHA and workers' compensation", "Intellectual property: patents, trademarks, copyrights", "Business ethics and corporate social responsibility"],
       examNotes: "Employment law, IP, and business ethics.", stimulusGuide: "employment dispute or ethical dilemma scenario" },
   ],
+
+  // ── DSST Courses ──────────────────────────────────────────────────────────
+  DSST_PRINCIPLES_OF_SUPERVISION: [
+    { unit: ApUnit.DSST_SUPV_1_ROLES_RESPONSIBILITIES, name: "Roles and Responsibilities", keyThemes: ["supervisory roles", "authority and responsibility", "delegation", "span of control"], examNotes: "DSST Supervision: 100 MCQ, 120 min.", stimulusGuide: "workplace scenario" },
+    { unit: ApUnit.DSST_SUPV_2_MANAGEMENT_FUNCTIONS, name: "Management Functions", keyThemes: ["planning", "organizing", "leading", "controlling"], examNotes: "POLC framework.", stimulusGuide: "management decision scenario" },
+    { unit: ApUnit.DSST_SUPV_3_LEADERSHIP, name: "Leadership and Communication", keyThemes: ["leadership styles", "conflict resolution", "active listening", "team building"], examNotes: "Communication and leadership.", stimulusGuide: "leadership dilemma" },
+    { unit: ApUnit.DSST_SUPV_4_LABOR_RELATIONS, name: "Labor Relations", keyThemes: ["labor unions", "collective bargaining", "OSHA", "EEOC"], examNotes: "Labor law and workplace safety.", stimulusGuide: "labor dispute scenario" },
+    { unit: ApUnit.DSST_SUPV_5_TRAINING_PERFORMANCE, name: "Training and Performance", keyThemes: ["performance appraisal", "coaching", "progressive discipline", "training methods"], examNotes: "Employee development.", stimulusGuide: "performance review scenario" },
+  ],
+  DSST_HUMAN_RESOURCE_MANAGEMENT: [
+    { unit: ApUnit.DSST_HRM_1_WORKFORCE_PLANNING, name: "Workforce Planning", keyThemes: ["job analysis", "Title VII", "ADA", "FMLA"], examNotes: "DSST HRM: 100 MCQ, 120 min.", stimulusGuide: "HR planning scenario" },
+    { unit: ApUnit.DSST_HRM_2_RECRUITMENT_SELECTION, name: "Recruitment and Selection", keyThemes: ["recruiting strategies", "interviewing", "selection tests", "onboarding"], examNotes: "Hiring process.", stimulusGuide: "recruitment scenario" },
+    { unit: ApUnit.DSST_HRM_3_TRAINING_DEVELOPMENT, name: "Training and Development", keyThemes: ["needs assessment", "training methods", "career development", "mentoring"], examNotes: "Employee development.", stimulusGuide: "training program scenario" },
+    { unit: ApUnit.DSST_HRM_4_COMPENSATION_BENEFITS, name: "Compensation and Benefits", keyThemes: ["pay structures", "incentive plans", "health insurance", "FLSA"], examNotes: "Pay and benefits.", stimulusGuide: "compensation design scenario" },
+    { unit: ApUnit.DSST_HRM_5_EMPLOYEE_RELATIONS, name: "Employee Relations", keyThemes: ["employee engagement", "disciplinary procedures", "unions", "NLRA"], examNotes: "Labor relations.", stimulusGuide: "employee dispute scenario" },
+  ],
+  DSST_ORGANIZATIONAL_BEHAVIOR: [
+    { unit: ApUnit.DSST_OB_1_INDIVIDUAL_BEHAVIOR, name: "Individual Behavior", keyThemes: ["personality traits", "perception", "job satisfaction", "Big Five"], examNotes: "DSST OB: 100 MCQ, 120 min.", stimulusGuide: "workplace behavior scenario" },
+    { unit: ApUnit.DSST_OB_2_MOTIVATION_THEORIES, name: "Motivation Theories", keyThemes: ["Maslow", "Herzberg", "expectancy theory", "goal-setting"], examNotes: "Motivation frameworks.", stimulusGuide: "employee motivation scenario" },
+    { unit: ApUnit.DSST_OB_3_GROUP_DYNAMICS, name: "Group Dynamics", keyThemes: ["group development", "groupthink", "social loafing", "team roles"], examNotes: "Team behavior.", stimulusGuide: "team conflict scenario" },
+    { unit: ApUnit.DSST_OB_4_LEADERSHIP_POWER, name: "Leadership and Power", keyThemes: ["transformational leadership", "sources of power", "ethical leadership"], examNotes: "Leadership theories.", stimulusGuide: "leadership style scenario" },
+    { unit: ApUnit.DSST_OB_5_ORGANIZATIONAL_CHANGE, name: "Organizational Change", keyThemes: ["change management", "Lewin model", "organizational culture", "resistance"], examNotes: "Org design and change.", stimulusGuide: "change management scenario" },
+  ],
+  DSST_PERSONAL_FINANCE: [
+    { unit: ApUnit.DSST_PF_1_FINANCIAL_PLANNING, name: "Financial Planning", keyThemes: ["budgeting", "financial goals", "time value of money", "net worth"], examNotes: "DSST Personal Finance: 100 MCQ, 120 min.", stimulusGuide: "budget scenario" },
+    { unit: ApUnit.DSST_PF_2_CREDIT_DEBT, name: "Credit and Debt", keyThemes: ["credit scores", "interest rates", "debt reduction", "bankruptcy"], examNotes: "Credit management.", stimulusGuide: "credit scenario" },
+    { unit: ApUnit.DSST_PF_3_INVESTING, name: "Investing", keyThemes: ["stocks", "bonds", "mutual funds", "diversification", "compound interest"], examNotes: "Investment fundamentals.", stimulusGuide: "investment comparison scenario" },
+    { unit: ApUnit.DSST_PF_4_INSURANCE_RISK, name: "Insurance and Risk", keyThemes: ["health insurance", "life insurance", "deductibles", "risk assessment"], examNotes: "Insurance types.", stimulusGuide: "insurance selection scenario" },
+    { unit: ApUnit.DSST_PF_5_RETIREMENT_ESTATE, name: "Retirement and Estate", keyThemes: ["Social Security", "401(k)", "Roth IRA", "estate planning"], examNotes: "Retirement planning.", stimulusGuide: "retirement scenario" },
+  ],
+  DSST_LIFESPAN_DEV_PSYCHOLOGY: [
+    { unit: ApUnit.DSST_LDP_1_PRENATAL_INFANCY, name: "Prenatal and Infancy", keyThemes: ["prenatal stages", "teratogens", "attachment theory", "sensorimotor stage"], examNotes: "DSST Lifespan: 100 MCQ, 120 min.", stimulusGuide: "developmental case" },
+    { unit: ApUnit.DSST_LDP_2_CHILDHOOD, name: "Childhood", keyThemes: ["Piaget stages", "Vygotsky", "language development", "parenting styles"], examNotes: "Childhood development.", stimulusGuide: "child behavior case" },
+    { unit: ApUnit.DSST_LDP_3_ADOLESCENCE, name: "Adolescence", keyThemes: ["identity formation", "Erikson", "peer influence", "formal operations"], examNotes: "Adolescent development.", stimulusGuide: "teen behavior case" },
+    { unit: ApUnit.DSST_LDP_4_ADULTHOOD, name: "Adulthood", keyThemes: ["intimacy vs isolation", "generativity", "career development", "midlife"], examNotes: "Adult development.", stimulusGuide: "adult life transition case" },
+    { unit: ApUnit.DSST_LDP_5_AGING_DEATH, name: "Aging and Death", keyThemes: ["integrity vs despair", "cognitive decline", "Kubler-Ross", "end-of-life"], examNotes: "Late adulthood.", stimulusGuide: "aging scenario" },
+  ],
 };
 
 // ── AI caller (Groq cascade → Pollinations fallback) ──────────────────────────

@@ -3,9 +3,9 @@
 
 // ── Module subscription types (matches DB ModuleSubscription) ──
 export type ModuleSub = { module: string; status: string };
-export type Module = "ap" | "sat" | "act" | "clep";
+export type Module = "ap" | "sat" | "act" | "clep" | "dsst";
 
-export const ALL_MODULES: Module[] = ["ap", "sat", "act", "clep"];
+export const ALL_MODULES: Module[] = ["ap", "sat", "act", "clep", "dsst"];
 
 /** Check if user has premium for a specific module. */
 export function hasModulePremium(subs: ModuleSub[], module: string): boolean {
@@ -46,6 +46,7 @@ export function moduleLabel(module: string): string {
     sat: "SAT",
     act: "ACT",
     clep: "CLEP",
+    dsst: "DSST",
   };
   return labels[module] ?? module.toUpperCase();
 }
@@ -61,12 +62,13 @@ export function isClepPremium(tier: string): boolean {
 }
 
 export function isAnyPremiumLegacy(tier: string): boolean {
-  return isApPremium(tier) || isClepPremium(tier) || tier === "SAT_PREMIUM" || tier === "ACT_PREMIUM";
+  return isApPremium(tier) || isClepPremium(tier) || tier === "SAT_PREMIUM" || tier === "ACT_PREMIUM" || tier === "DSST_PREMIUM";
 }
 
 /** @deprecated Use hasModulePremium instead. */
 export function isPremiumForTrack(tier: string, track: string): boolean {
   if (track === "clep") return isClepPremium(tier);
+  if (track === "dsst") return tier === "DSST_PREMIUM";
   return isApPremium(tier);
 }
 
@@ -74,6 +76,7 @@ export function tierLabel(tier: string): string {
   if (tier === "CLEP_PREMIUM") return "CLEP Premium";
   if (tier === "SAT_PREMIUM") return "SAT Premium";
   if (tier === "ACT_PREMIUM") return "ACT Premium";
+  if (tier === "DSST_PREMIUM") return "DSST Premium";
   if (isApPremium(tier)) return "AP Premium";
   return "Free";
 }

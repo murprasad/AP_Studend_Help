@@ -20,7 +20,8 @@ export async function POST(req: NextRequest) {
 
   const userTrack = session.user.track ?? "ap"
   const courseModule = getCourseModule(course as ApCourse)
-  if (courseModule !== userTrack) {
+  const isAdmin = (session.user as { role?: string }).role === "ADMIN"
+  if (!isAdmin && courseModule !== userTrack) {
     return NextResponse.json(
       { error: "This course is not available on your current track." },
       { status: 403 }

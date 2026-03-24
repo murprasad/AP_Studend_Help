@@ -23,6 +23,11 @@ function getModuleStripeConfig(cfg: StripeConfig, module: string, plan: string) 
         paymentLink: isAnnual ? cfg.clepPaymentLinkAnnual : cfg.clepPaymentLinkMonthly,
         priceId: isAnnual ? (cfg.clepAnnualPriceId || cfg.clepPriceId) : cfg.clepPriceId,
       };
+    case "dsst":
+      return {
+        paymentLink: isAnnual ? cfg.dsstPaymentLinkAnnual : cfg.dsstPaymentLinkMonthly,
+        priceId: isAnnual ? (cfg.dsstAnnualPriceId || cfg.dsstPriceId) : cfg.dsstPriceId,
+      };
     default: // "ap"
       return {
         paymentLink: isAnnual ? cfg.paymentLinkAnnual : cfg.paymentLinkMonthly,

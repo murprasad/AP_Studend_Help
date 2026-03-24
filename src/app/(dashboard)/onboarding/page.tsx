@@ -41,6 +41,11 @@ const CLEP_COURSE_GROUP = {
   keys: (Object.keys(COURSE_REGISTRY) as ApCourse[]).filter(k => (k as string).startsWith("CLEP_")),
 };
 
+const DSST_COURSE_GROUP = {
+  label: "DSST Prep",
+  keys: (Object.keys(COURSE_REGISTRY) as ApCourse[]).filter(k => (k as string).startsWith("DSST_")),
+};
+
 const CLEP_COURSE_META: Record<string, { badge: string; color: string }> = {
   CLEP_INTRO_PSYCHOLOGY: { badge: "Highest pass rate", color: "bg-green-500/20 text-green-400 border-green-500/30" },
   CLEP_INTRODUCTORY_SOCIOLOGY: { badge: "Easiest", color: "bg-green-500/20 text-green-400 border-green-500/30" },
@@ -56,7 +61,7 @@ export default function OnboardingPage() {
   const [step, setStep] = useState<Step>(1);
   const [course, setCourse] = useCourse();
   const router = useRouter();
-  const [track, setTrackState] = useState<"ap" | "clep">("ap");
+  const [track, setTrackState] = useState<"ap" | "clep" | "dsst">("ap");
   const [clepEnabled, setClepEnabled] = useState(false);
 
   // Fetch clepEnabled flag and track from DB
@@ -65,23 +70,25 @@ export default function OnboardingPage() {
       .then((r) => r.json())
       .then((data: { user?: { track?: string }; flags?: { clepEnabled?: boolean } }) => {
         if (data.flags?.clepEnabled) setClepEnabled(true);
-        if (data.user?.track) setTrackState(data.user.track as "ap" | "clep");
+        if (data.user?.track) setTrackState(data.user.track as "ap" | "clep" | "dsst");
       })
       .catch(() => {});
   }, []);
 
   // Auto-select first course when track changes (clepEnabled removed — track from DB is authoritative)
   useEffect(() => {
-    const effectiveTrack = track === "clep" ? "clep" : "ap";
+    const effectiveTrack = track === "clep" ? "clep" : track === "dsst" ? "dsst" : "ap";
     const firstCourse = effectiveTrack === "clep"
       ? CLEP_COURSE_GROUP.keys[0]
+      : effectiveTrack === "dsst"
+      ? DSST_COURSE_GROUP.keys[0]
       : AP_COURSE_GROUPS[0].keys[0];
     setCourse(firstCourse);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [track]);
 
-  const effectiveTrack = track === "clep" ? "clep" : "ap";
-  const COURSE_GROUPS = effectiveTrack === "clep" ? [CLEP_COURSE_GROUP] : AP_COURSE_GROUPS;
+  const effectiveTrack = track === "clep" ? "clep" : track === "dsst" ? "dsst" : "ap";
+  const COURSE_GROUPS = effectiveTrack === "clep" ? [CLEP_COURSE_GROUP] : effectiveTrack === "dsst" ? [DSST_COURSE_GROUP] : AP_COURSE_GROUPS;
 
   // If already onboarded, skip to dashboard
   useEffect(() => {

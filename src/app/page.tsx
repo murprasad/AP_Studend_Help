@@ -152,6 +152,9 @@ export default function LandingPage() {
             <Link href="/clep-prep" className="hidden lg:block text-sm text-muted-foreground hover:text-foreground transition-colors">
               CLEP
             </Link>
+            <Link href="/dsst-prep" className="hidden lg:block text-sm text-muted-foreground hover:text-foreground transition-colors">
+              DSST
+            </Link>
             <Link href="/pricing" className="hidden sm:block text-sm text-muted-foreground hover:text-foreground transition-colors">
               Pricing
             </Link>
@@ -232,6 +235,7 @@ export default function LandingPage() {
             { href: "/sat-prep", color: "blue", icon: BookOpen, label: "SAT Prep", count: "2 sections", desc: "Raise your SAT score with targeted practice.", cta: "Explore SAT Prep" },
             { href: "/act-prep", color: "violet", icon: BookOpen, label: "ACT Prep", count: "4 sections", desc: "Boost your composite with section-specific AI.", cta: "Explore ACT Prep" },
             { href: "/clep-prep", color: "emerald", icon: GraduationCap, label: "CLEP Prep", count: "34 exams", desc: "Pass in 7 days. Save $1,200+ per exam.", cta: "Build My 7-Day Plan", badge: "Most Popular" },
+            { href: "/dsst-prep", color: "orange", icon: GraduationCap, label: "DSST Prep", count: "5 exams", desc: "Skip intro courses. Save $1,000+ per exam.", cta: "Explore DSST Prep" },
           ].map((m: { href: string; color: string; icon: typeof BookOpen; label: string; count: string; desc: string; cta: string; badge?: string }) => (
             <Link key={m.href} href={m.href} className={`relative p-5 rounded-2xl border border-${m.color}-500/30 bg-${m.color}-500/5 hover:bg-${m.color}-500/10 transition-colors block`}>
               {m.badge && (
@@ -694,6 +698,57 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* DSST Section — College Credit */}
+      <section className="py-20 bg-gradient-to-b from-transparent via-orange-500/[0.03] to-transparent">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-400 text-sm font-medium mb-4">
+              <GraduationCap className="h-4 w-4" /> DSST Exams
+            </div>
+            <h2 className="text-4xl font-bold mb-3">Skip Intro Courses with DSST</h2>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              5 high-demand DSST exams in Business & Psychology. $85 per exam. Accepted at 1,900+ colleges. Popular with military, adult learners, and cost-conscious students.
+            </p>
+          </div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-10 max-w-4xl mx-auto">
+            {[
+              { name: "Principles of Supervision", tip: "Easiest DSST — highest pass rate" },
+              { name: "Human Resource Management", tip: "Business students love this one" },
+              { name: "Organizational Behavior", tip: "Leadership theories + motivation" },
+              { name: "Personal Finance", tip: "Real-world knowledge helps a lot" },
+              { name: "Lifespan Developmental Psychology", tip: "Overlaps with AP/CLEP Psych" },
+            ].map((c) => (
+              <div key={c.name} className="flex items-center gap-3 p-4 rounded-xl border border-orange-500/20 bg-orange-500/5">
+                <CheckCircle className="h-5 w-5 text-orange-400 flex-shrink-0" />
+                <div>
+                  <p className="text-sm font-medium">{c.name}</p>
+                  <p className="text-xs text-muted-foreground">{c.tip}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="text-center flex flex-col sm:flex-row gap-3 justify-center">
+            <Link href="/register?module=dsst">
+              <Button size="lg" className="gap-2 bg-orange-600 hover:bg-orange-700 text-white">
+                Start DSST Prep Free <ArrowRight className="h-5 w-5" />
+              </Button>
+            </Link>
+            <Link href="/dsst-prep">
+              <Button size="lg" variant="outline" className="gap-2 border-orange-500/30 text-orange-400 hover:bg-orange-500/10">
+                View All 5 DSST Exams
+              </Button>
+            </Link>
+          </div>
+
+          <p className="text-center text-[11px] text-muted-foreground/50 mt-6">
+            DSST® is a registered trademark of Prometric, which is not affiliated with, and does not endorse, this product.
+            All practice questions are original AI-generated content.
+          </p>
+        </div>
+      </section>
+
       {/* Free vs AP Premium vs CLEP Premium */}
       <section className="py-20 px-4">
         <div className="max-w-5xl mx-auto">
@@ -880,7 +935,7 @@ export default function LandingPage() {
           <h2 className="text-4xl font-bold mb-4">Ready to prepare for the exam that changes everything?</h2>
           <p className="text-muted-foreground text-lg mb-8">
             Whether you&apos;re a high schooler aiming for a 5, or a college student saving thousands
-            with CLEP — StudentNest is free to start, and Sage is ready to teach.
+            with CLEP and DSST — StudentNest is free to start, and Sage is ready to teach.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/register?track=ap">
@@ -926,6 +981,7 @@ export default function LandingPage() {
                 <Link href="/sat-prep" className="block text-muted-foreground hover:text-foreground transition-colors">SAT Prep</Link>
                 <Link href="/act-prep" className="block text-muted-foreground hover:text-foreground transition-colors">ACT Prep</Link>
                 <Link href="/clep-prep" className="block text-muted-foreground hover:text-foreground transition-colors">CLEP Prep</Link>
+                <Link href="/dsst-prep" className="block text-muted-foreground hover:text-foreground transition-colors">DSST Prep</Link>
               </div>
             </div>
             {/* Col 3: Product */}

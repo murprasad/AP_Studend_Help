@@ -46,7 +46,7 @@ export default function DashboardLayout({
     try {
       const params = new URLSearchParams(window.location.search);
       const urlTrack = params.get("track");
-      const validTracks = ["ap", "sat", "act", "clep"];
+      const validTracks = ["ap", "sat", "act", "clep", "dsst"];
       if (validTracks.includes(urlTrack ?? "") && urlTrack !== session?.user?.track) {
         trackSynced.current = true;
         fetch("/api/user", {

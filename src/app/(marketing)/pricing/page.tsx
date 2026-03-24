@@ -6,7 +6,7 @@ import { CheckCircle, Zap, Crown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const FREE_FEATURES = [
-  "All 50 courses — AP, SAT, ACT & CLEP",
+  "All 50+ courses — AP, SAT, ACT, CLEP & DSST",
   "Unlimited MCQ practice questions",
   "3 practice sessions per day",
   "5 AI explanations per day — never get stuck",
@@ -69,6 +69,19 @@ const MODULE_CONFIGS = {
       "Cancel anytime · 7-day money-back guarantee",
     ],
   },
+  dsst: {
+    label: "DSST Premium",
+    color: "orange",
+    features: [
+      "Everything in Free, plus:",
+      "Full prep for all 5 DSST exams",
+      "Unlimited AI explanations — ask Sage anything",
+      "Personalized DSST study plan",
+      "Faster AI responses (streaming)",
+      "Save $1,000+ per exam passed in tuition",
+      "Cancel anytime · 7-day money-back guarantee",
+    ],
+  },
 };
 
 type ModuleKey = keyof typeof MODULE_CONFIGS;
@@ -89,6 +102,7 @@ export default function PricingPage() {
     blue: { border: "border-blue-500", bg: "bg-blue-500/5", text: "text-blue-400", btn: "bg-blue-600 hover:bg-blue-700", check: "text-blue-400", badge: "bg-blue-600" },
     violet: { border: "border-violet-500", bg: "bg-violet-500/5", text: "text-violet-400", btn: "bg-violet-600 hover:bg-violet-700", check: "text-violet-400", badge: "bg-violet-600" },
     emerald: { border: "border-emerald-500", bg: "bg-emerald-500/5", text: "text-emerald-400", btn: "bg-emerald-600 hover:bg-emerald-700", check: "text-emerald-400", badge: "bg-emerald-600" },
+    orange: { border: "border-orange-500", bg: "bg-orange-500/5", text: "text-orange-400", btn: "bg-orange-600 hover:bg-orange-700", check: "text-orange-400", badge: "bg-orange-600" },
   };
   const c = colorMap[config.color];
 
@@ -268,7 +282,7 @@ export default function PricingPage() {
         <h2 className="text-2xl font-bold text-center mb-8">Frequently asked questions</h2>
         <div className="space-y-6">
           {[
-            { q: "Can I subscribe to multiple modules?", a: "Yes! Each module (AP, SAT, ACT, CLEP) is an independent $9.99/mo subscription. Subscribe to as many as you need." },
+            { q: "Can I subscribe to multiple modules?", a: "Yes! Each module (AP, SAT, ACT, CLEP, DSST) is an independent $9.99/mo subscription. Subscribe to as many as you need." },
             { q: "Can I cancel anytime?", a: "Yes. Cancel from your billing page and you'll keep Premium access until the end of your billing period." },
             { q: "Can I pay annually?", a: "Yes — $79.99/year per module saves you 33% compared to monthly billing ($6.67/mo)." },
             { q: "What is your refund policy?", a: "We offer a 7-day money-back guarantee on new Premium subscriptions. If you're not satisfied within 7 days of your first payment, email contact@studentnest.ai and we'll issue a full refund — no questions asked. After 7 days, subscriptions are non-refundable but you can cancel anytime and keep access until the end of your billing period." },

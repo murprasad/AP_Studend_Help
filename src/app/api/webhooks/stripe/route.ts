@@ -80,7 +80,7 @@ export async function POST(req: NextRequest) {
             });
           } catch (e) { console.warn("[webhook] ModuleSubscription upsert failed:", e); }
           // Legacy: also update subscriptionTier on User
-          const tierMap: Record<string, "AP_PREMIUM" | "SAT_PREMIUM" | "ACT_PREMIUM" | "CLEP_PREMIUM"> = { ap: "AP_PREMIUM", sat: "SAT_PREMIUM", act: "ACT_PREMIUM", clep: "CLEP_PREMIUM" };
+          const tierMap: Record<string, "AP_PREMIUM" | "SAT_PREMIUM" | "ACT_PREMIUM" | "CLEP_PREMIUM" | "DSST_PREMIUM"> = { ap: "AP_PREMIUM", sat: "SAT_PREMIUM", act: "ACT_PREMIUM", clep: "CLEP_PREMIUM", dsst: "DSST_PREMIUM" };
           const user = await prisma.user.update({
             where: { id: userId },
             data: { subscriptionTier: tierMap[module] ?? "AP_PREMIUM" },
@@ -88,7 +88,7 @@ export async function POST(req: NextRequest) {
           });
           const amountTotal = checkoutSession.amount_total ?? 0;
           const planCycle = amountTotal >= 7000 ? "Annual ($79.99/yr)" : "Monthly ($9.99/mo)";
-          const moduleNames: Record<string, string> = { ap: "AP Premium", sat: "SAT Premium", act: "ACT Premium", clep: "CLEP Premium" };
+          const moduleNames: Record<string, string> = { ap: "AP Premium", sat: "SAT Premium", act: "ACT Premium", clep: "CLEP Premium", dsst: "DSST Premium" };
           sendPremiumSignupNotification({
             userEmail: user.email,
             userName: `${user.firstName} ${user.lastName}`.trim(),
@@ -116,7 +116,7 @@ export async function POST(req: NextRequest) {
             });
           } catch (e) { console.warn("[webhook] ModuleSubscription upsert failed:", e); }
           // Legacy: update User fields
-          const tierMap2: Record<string, "AP_PREMIUM" | "SAT_PREMIUM" | "ACT_PREMIUM" | "CLEP_PREMIUM"> = { ap: "AP_PREMIUM", sat: "SAT_PREMIUM", act: "ACT_PREMIUM", clep: "CLEP_PREMIUM" };
+          const tierMap2: Record<string, "AP_PREMIUM" | "SAT_PREMIUM" | "ACT_PREMIUM" | "CLEP_PREMIUM" | "DSST_PREMIUM"> = { ap: "AP_PREMIUM", sat: "SAT_PREMIUM", act: "ACT_PREMIUM", clep: "CLEP_PREMIUM", dsst: "DSST_PREMIUM" };
           await prisma.user.update({
             where: { id: userId },
             data: {
