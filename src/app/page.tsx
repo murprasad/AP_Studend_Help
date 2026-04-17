@@ -27,6 +27,7 @@ import { ProductShowcase } from "@/components/landing/product-showcase";
 import { FadeIn } from "@/components/landing/fade-in";
 import { LandingFaq } from "@/components/landing/faq";
 import { SageChat } from "@/components/layout/sage-chat";
+import { isClepEnabled, isDsstEnabled, getExamLabel, getCourseCount } from "@/lib/settings";
 
 const features = [
   {
@@ -47,7 +48,7 @@ const features = [
   {
     icon: Clock,
     title: "Test Your Readiness with a Mock Exam",
-    description: "Simulate exam conditions under timed pressure. Get readiness scores per unit — whether you're targeting an AP 5 or a CLEP passing score.",
+    description: "Simulate exam conditions under timed pressure. Get readiness scores per unit and see exactly where you stand before exam day.",
   },
 ];
 
@@ -117,7 +118,24 @@ const testimonials = [
   },
 ];
 
-export default function LandingPage() {
+export default async function LandingPage() {
+  const [clepOn, dsstOn] = await Promise.all([isClepEnabled(), isDsstEnabled()]);
+  const examLabel = getExamLabel(clepOn, dsstOn);
+  const courseCount = getCourseCount(clepOn, dsstOn);
+
+  const visibleTestimonials = testimonials.filter((t) => {
+    if (!clepOn && t.context.startsWith("CLEP")) return false;
+    return true;
+  });
+
+  const moduleCards = [
+    { href: "/ap-prep", color: "indigo", icon: BookOpen, label: "AP Courses", count: "10 courses", desc: "Score a 5. Get into your dream school.", cta: "Explore AP Prep" },
+    { href: "/sat-prep", color: "blue", icon: BookOpen, label: "SAT Prep", count: "2 sections", desc: "Raise your SAT score with targeted practice.", cta: "Explore SAT Prep" },
+    { href: "/act-prep", color: "violet", icon: BookOpen, label: "ACT Prep", count: "4 sections", desc: "Boost your composite with section-specific AI.", cta: "Explore ACT Prep" },
+    ...(clepOn ? [{ href: "/clep-prep", color: "emerald", icon: GraduationCap, label: "CLEP Prep", count: "34 exams", desc: "Pass in 7 days. Save $1,200+ per exam.", cta: "Build My 7-Day Plan", badge: "Most Popular" }] : []),
+    ...(dsstOn ? [{ href: "/dsst-prep", color: "orange", icon: GraduationCap, label: "DSST Prep", count: "22 exams", desc: "Skip intro courses. Save $1,000+ per exam.", cta: "Explore DSST Prep" }] : []),
+  ];
+
   return (
     <div className="min-h-screen bg-background">
 
@@ -149,12 +167,16 @@ export default function LandingPage() {
             <Link href="/act-prep" className="hidden lg:block text-sm text-muted-foreground hover:text-foreground transition-colors">
               ACT
             </Link>
-            <Link href="/clep-prep" className="hidden lg:block text-sm text-muted-foreground hover:text-foreground transition-colors">
-              CLEP
-            </Link>
-            <Link href="/dsst-prep" className="hidden lg:block text-sm text-muted-foreground hover:text-foreground transition-colors">
-              DSST
-            </Link>
+            {clepOn && (
+              <Link href="/clep-prep" className="hidden lg:block text-sm text-muted-foreground hover:text-foreground transition-colors">
+                CLEP
+              </Link>
+            )}
+            {dsstOn && (
+              <Link href="/dsst-prep" className="hidden lg:block text-sm text-muted-foreground hover:text-foreground transition-colors">
+                DSST
+              </Link>
+            )}
             <Link href="/pricing" className="hidden sm:block text-sm text-muted-foreground hover:text-foreground transition-colors">
               Pricing
             </Link>
@@ -175,15 +197,15 @@ export default function LandingPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
             {/* Left — text */}
             <div className="text-center lg:text-left">
-              <Badge className="mb-6 bg-blue-500/10 text-blue-400 border-blue-500/20 text-sm px-4 py-1.5">
+              <Badge className="mb-6 bg-white/10 dark:bg-white/10 text-white dark:text-white border-white/20 text-sm px-4 py-1.5">
                 <Sparkles className="h-3.5 w-3.5 mr-1.5" />
-                Free forever · AP, SAT, ACT &amp; CLEP · No credit card
+                Free forever · {courseCount} courses · No credit card
               </Badge>
               <h1 className="text-4xl sm:text-5xl lg:text-5xl font-bold tracking-tight mb-4">
                 <span className="gradient-text">Student</span><span className="text-foreground/80 font-medium">Nest</span><span className="text-blue-500/60 font-normal text-[0.6em] ml-1">Prep</span>
               </h1>
               <p className="text-xl sm:text-2xl font-semibold text-foreground/90 mb-2">
-                Improve your AP, SAT, ACT, or CLEP scores — with AI that adapts to your weak areas.
+                Improve your {examLabel} scores — with AI that adapts to your weak areas.
               </p>
               <p className="text-lg text-muted-foreground mb-2 max-w-xl mx-auto lg:mx-0">
                 Stop guessing what to study. See real score improvement in weeks, not months.
@@ -197,11 +219,13 @@ export default function LandingPage() {
                     Start Free Diagnostic <ArrowRight className="h-5 w-5" />
                   </Button>
                 </Link>
-                <Link href="/register?track=clep">
-                  <Button size="lg" className="btn-lift gap-2 text-base px-8 h-12 bg-emerald-600 hover:bg-emerald-700 text-white">
-                    Pass CLEP in 7 Days <ArrowRight className="h-5 w-5" />
-                  </Button>
-                </Link>
+                {clepOn && (
+                  <Link href="/register?track=clep">
+                    <Button size="lg" className="btn-lift gap-2 text-base px-8 h-12 bg-emerald-600 hover:bg-emerald-700 text-white">
+                      Pass CLEP in 7 Days <ArrowRight className="h-5 w-5" />
+                    </Button>
+                  </Link>
+                )}
               </div>
               <div className="mt-4 flex items-center gap-4 justify-center lg:justify-start text-sm text-muted-foreground">
                 <span className="flex items-center gap-1"><Shield className="h-3.5 w-3.5 text-emerald-400" /> No credit card required</span>
@@ -229,14 +253,8 @@ export default function LandingPage() {
       {/* 4 Module Cards */}
       <section id="courses" className="py-8 px-4 scroll-mt-20">
         <FadeIn>
-        <div className="max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {[
-            { href: "/ap-prep", color: "indigo", icon: BookOpen, label: "AP Courses", count: "10 courses", desc: "Score a 5. Get into your dream school.", cta: "Explore AP Prep" },
-            { href: "/sat-prep", color: "blue", icon: BookOpen, label: "SAT Prep", count: "2 sections", desc: "Raise your SAT score with targeted practice.", cta: "Explore SAT Prep" },
-            { href: "/act-prep", color: "violet", icon: BookOpen, label: "ACT Prep", count: "4 sections", desc: "Boost your composite with section-specific AI.", cta: "Explore ACT Prep" },
-            { href: "/clep-prep", color: "emerald", icon: GraduationCap, label: "CLEP Prep", count: "34 exams", desc: "Pass in 7 days. Save $1,200+ per exam.", cta: "Build My 7-Day Plan", badge: "Most Popular" },
-            { href: "/dsst-prep", color: "orange", icon: GraduationCap, label: "DSST Prep", count: "5 exams", desc: "Skip intro courses. Save $1,000+ per exam.", cta: "Explore DSST Prep" },
-          ].map((m: { href: string; color: string; icon: typeof BookOpen; label: string; count: string; desc: string; cta: string; badge?: string }) => (
+        <div className={`max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-2 ${moduleCards.length <= 3 ? "lg:grid-cols-3" : "lg:grid-cols-4"} gap-4`}>
+          {moduleCards.map((m: { href: string; color: string; icon: typeof BookOpen; label: string; count: string; desc: string; cta: string; badge?: string }) => (
             <Link key={m.href} href={m.href} className={`relative p-5 rounded-2xl border border-${m.color}-500/30 bg-${m.color}-500/5 hover:bg-${m.color}-500/10 transition-colors block`}>
               {m.badge && (
                 <span className={`absolute -top-2.5 right-4 px-2.5 py-0.5 rounded-full bg-${m.color}-600 text-white text-[10px] font-semibold`}>{m.badge}</span>
@@ -261,8 +279,8 @@ export default function LandingPage() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
             {[
-              { icon: "🎯", stat: "50 courses covered", sub: "AP, SAT, ACT & CLEP" },
-              { icon: "💰", stat: "$1,200+ saved per CLEP exam", sub: "Skip courses, keep the credit" },
+              { icon: "🎯", stat: `${courseCount} courses covered`, sub: examLabel },
+              ...(clepOn ? [{ icon: "💰", stat: "$1,200+ saved per CLEP exam", sub: "Skip courses, keep the credit" }] : [{ icon: "📚", stat: "Exam-aligned AI", sub: "Questions match real exam formats" }]),
               { icon: "🔥", stat: "8 engagement features", sub: "Stay motivated daily" },
             ].map(({ icon, stat, sub }) => (
               <div key={stat} className="flex flex-col items-center gap-1">
@@ -383,53 +401,55 @@ export default function LandingPage() {
       </section>
 
       {/* Product Demo — Sage CLEP conversation snippet */}
-      <section className="py-16 px-4">
-        <div className="max-w-2xl mx-auto">
-          <p className="text-center text-sm text-muted-foreground mb-4 font-medium uppercase tracking-wide">
-            See how Sage helps CLEP students too
-          </p>
-          <div className="rounded-2xl border border-emerald-500/30 bg-card/60 overflow-hidden shadow-xl">
-            {/* Window chrome */}
-            <div className="flex items-center gap-2 px-4 py-3 border-b border-border/40 bg-secondary/40">
-              <div className="w-3 h-3 rounded-full bg-red-500/60" />
-              <div className="w-3 h-3 rounded-full bg-yellow-500/60" />
-              <div className="w-3 h-3 rounded-full bg-green-500/60" />
-              <span className="ml-2 text-xs text-muted-foreground">StudentNest Prep · Tutor — CLEP College Algebra</span>
-            </div>
-            {/* Chat */}
-            <div className="p-5 space-y-4 text-sm">
-              {/* User message */}
-              <div className="flex justify-end">
-                <div className="bg-emerald-600/20 border border-emerald-500/20 rounded-2xl rounded-tr-sm px-4 py-2.5 max-w-[80%]">
-                  <p className="text-foreground/90">I don&apos;t understand how to factor trinomials like x² + 5x + 6</p>
-                </div>
+      {clepOn && (
+        <section className="py-16 px-4">
+          <div className="max-w-2xl mx-auto">
+            <p className="text-center text-sm text-muted-foreground mb-4 font-medium uppercase tracking-wide">
+              See how Sage helps CLEP students too
+            </p>
+            <div className="rounded-2xl border border-emerald-500/30 bg-card/60 overflow-hidden shadow-xl">
+              {/* Window chrome */}
+              <div className="flex items-center gap-2 px-4 py-3 border-b border-border/40 bg-secondary/40">
+                <div className="w-3 h-3 rounded-full bg-red-500/60" />
+                <div className="w-3 h-3 rounded-full bg-yellow-500/60" />
+                <div className="w-3 h-3 rounded-full bg-green-500/60" />
+                <span className="ml-2 text-xs text-muted-foreground">StudentNest Prep · Tutor — CLEP College Algebra</span>
               </div>
-              {/* Sage response */}
-              <div className="flex gap-3 items-start">
-                <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <Sparkles className="h-4 w-4 text-emerald-400" />
+              {/* Chat */}
+              <div className="p-5 space-y-4 text-sm">
+                {/* User message */}
+                <div className="flex justify-end">
+                  <div className="bg-emerald-600/20 border border-emerald-500/20 rounded-2xl rounded-tr-sm px-4 py-2.5 max-w-[80%]">
+                    <p className="text-foreground/90">I don&apos;t understand how to factor trinomials like x² + 5x + 6</p>
+                  </div>
                 </div>
-                <div className="bg-secondary/60 border border-border/40 rounded-2xl rounded-tl-sm px-4 py-2.5 max-w-[85%] space-y-1.5">
-                  <p className="font-semibold text-xs text-emerald-400 mb-1">Sage</p>
-                  <p className="text-foreground/80 leading-relaxed">
-                    To factor <strong>x² + 5x + 6</strong>, find two numbers that <strong>multiply to 6</strong> and <strong>add to 5</strong>. Those numbers are 2 and 3.
-                  </p>
-                  <p className="text-foreground/80">So x² + 5x + 6 = <strong>(x + 2)(x + 3)</strong> ✓</p>
-                  <p className="text-foreground/80 text-xs mt-1 text-muted-foreground">This is a common CLEP College Algebra topic — Unit 2: Algebraic Expressions.</p>
+                {/* Sage response */}
+                <div className="flex gap-3 items-start">
+                  <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <Sparkles className="h-4 w-4 text-emerald-400" />
+                  </div>
+                  <div className="bg-secondary/60 border border-border/40 rounded-2xl rounded-tl-sm px-4 py-2.5 max-w-[85%] space-y-1.5">
+                    <p className="font-semibold text-xs text-emerald-400 mb-1">Sage</p>
+                    <p className="text-foreground/80 leading-relaxed">
+                      To factor <strong>x² + 5x + 6</strong>, find two numbers that <strong>multiply to 6</strong> and <strong>add to 5</strong>. Those numbers are 2 and 3.
+                    </p>
+                    <p className="text-foreground/80">So x² + 5x + 6 = <strong>(x + 2)(x + 3)</strong> ✓</p>
+                    <p className="text-foreground/80 text-xs mt-1 text-muted-foreground">This is a common CLEP College Algebra topic — Unit 2: Algebraic Expressions.</p>
+                  </div>
                 </div>
-              </div>
-              {/* Follow-up chips */}
-              <div className="pl-11 flex flex-wrap gap-2">
-                {["What about negative terms?", "Show me a harder example"].map((q) => (
-                  <span key={q} className="text-xs px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 cursor-default">
-                    {q}
-                  </span>
-                ))}
+                {/* Follow-up chips */}
+                <div className="pl-11 flex flex-wrap gap-2">
+                  {["What about negative terms?", "Show me a harder example"].map((q) => (
+                    <span key={q} className="text-xs px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 cursor-default">
+                      {q}
+                    </span>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Knowledge Check callout */}
       <section className="py-16">
@@ -450,7 +470,7 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold mb-3">Everything You Need to Score Higher</h2>
-            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">Built around how AP, SAT, ACT, and CLEP exams actually work — not generic quiz apps.</p>
+            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">Built around how {examLabel} exams actually work — not generic quiz apps.</p>
           </div>
 
           <div className="space-y-24">
@@ -554,7 +574,7 @@ export default function LandingPage() {
                   ["Exam-aligned questions", true, false, "varies"],
                   ["Instant feedback + explanations", true, true, "slow"],
                   ["Mastery tracking by topic", true, false, false],
-                  ["CLEP college credit prep", true, false, "rare"],
+                  ...(clepOn ? [["CLEP college credit prep", true, false, "rare"]] : []),
                   ["Available 24/7", true, true, false],
                   ["Cost", "$9.99/mo", "Free–$20/mo", "$50–150/hr"],
                 ].map(([feature, sn, ai, tutor], i) => (
@@ -612,7 +632,7 @@ export default function LandingPage() {
       </section>
 
       {/* CLEP Section — College Credit */}
-      <section className="py-24">
+      {clepOn && <section className="py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm font-medium mb-4">
@@ -696,10 +716,10 @@ export default function LandingPage() {
             All practice questions are original AI-generated content — not reproduced from any official exam.
           </p>
         </div>
-      </section>
+      </section>}
 
       {/* DSST Section — College Credit */}
-      <section className="py-20 bg-gradient-to-b from-transparent via-orange-500/[0.03] to-transparent">
+      {dsstOn && <section className="py-20 bg-gradient-to-b from-transparent via-orange-500/[0.03] to-transparent">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-400 text-sm font-medium mb-4">
@@ -707,16 +727,19 @@ export default function LandingPage() {
             </div>
             <h2 className="text-4xl font-bold mb-3">Skip Intro Courses with DSST</h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              5 high-demand DSST exams in Business & Psychology. $85 per exam. Accepted at 1,900+ colleges. Popular with military, adult learners, and cost-conscious students.
+              22 DSST exams across 6 domains — Business, Social Sciences, Humanities, STEM, English, and History. $85 per exam. Accepted at 1,900+ colleges.
             </p>
           </div>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-10 max-w-4xl mx-auto">
             {[
               { name: "Principles of Supervision", tip: "Easiest DSST — highest pass rate" },
-              { name: "Human Resource Management", tip: "Business students love this one" },
+              { name: "Introduction to Business", tip: "Broad but shallow — intuitive content" },
               { name: "Organizational Behavior", tip: "Leadership theories + motivation" },
               { name: "Personal Finance", tip: "Real-world knowledge helps a lot" },
+              { name: "Ethics in America", tip: "Moral reasoning — less memorization" },
+              { name: "Environmental Science", tip: "Ecosystems + policy — practical" },
+              { name: "Technical Writing", tip: "Most practical DSST exam" },
               { name: "Lifespan Developmental Psychology", tip: "Overlaps with AP/CLEP Psych" },
             ].map((c) => (
               <div key={c.name} className="flex items-center gap-3 p-4 rounded-xl border border-orange-500/20 bg-orange-500/5">
@@ -737,7 +760,7 @@ export default function LandingPage() {
             </Link>
             <Link href="/dsst-prep">
               <Button size="lg" variant="outline" className="gap-2 border-orange-500/30 text-orange-400 hover:bg-orange-500/10">
-                View All 5 DSST Exams
+                View All 22 DSST Exams
               </Button>
             </Link>
           </div>
@@ -747,7 +770,7 @@ export default function LandingPage() {
             All practice questions are original AI-generated content.
           </p>
         </div>
-      </section>
+      </section>}
 
       {/* Free vs AP Premium vs CLEP Premium */}
       <section className="py-20 px-4">
@@ -756,7 +779,7 @@ export default function LandingPage() {
             <h2 className="text-3xl font-bold mb-2">What Do You Actually Get?</h2>
             <p className="text-muted-foreground text-sm">Free is genuinely useful. Premium unlocks the full engine — pick your track.</p>
           </div>
-          <div className="grid sm:grid-cols-3 gap-4">
+          <div className={`grid ${clepOn ? "sm:grid-cols-3" : "sm:grid-cols-2"} gap-4`}>
             {/* Free column */}
             <div className="rounded-xl border border-border/40 bg-card/50 p-6 space-y-3">
               <div className="flex items-center gap-2 mb-4">
@@ -765,7 +788,7 @@ export default function LandingPage() {
                 <span className="text-xs text-muted-foreground">/ forever</span>
               </div>
               {[
-                "All 50 courses — AP, SAT, ACT & CLEP",
+                `All ${courseCount} courses — ${examLabel}`,
                 "Unlimited MCQ practice",
                 "5 AI tutor chats per day",
                 "Basic study plan",
@@ -813,7 +836,7 @@ export default function LandingPage() {
               </div>
             </div>
             {/* CLEP Premium column */}
-            <div className="rounded-xl border border-emerald-500/40 bg-emerald-500/5 p-6 space-y-3 relative">
+            {clepOn && <div className="rounded-xl border border-emerald-500/40 bg-emerald-500/5 p-6 space-y-3 relative">
               <div className="absolute -top-3 right-4">
                 <span className="text-xs px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 font-medium">CLEP</span>
               </div>
@@ -842,7 +865,7 @@ export default function LandingPage() {
                   <Button className="w-full bg-emerald-600 hover:bg-emerald-700 text-white">Upgrade CLEP Premium</Button>
                 </Link>
               </div>
-            </div>
+            </div>}
           </div>
           <p className="text-center text-xs text-muted-foreground mt-5">
             <Link href="/pricing" className="text-blue-500 hover:underline">See full pricing details →</Link>
@@ -857,8 +880,8 @@ export default function LandingPage() {
             <h2 className="text-3xl font-bold mb-2">Student Feedback</h2>
             <p className="text-muted-foreground text-sm">Real results from students using StudentNest Prep</p>
           </div>
-          <div className="grid md:grid-cols-3 gap-6">
-            {testimonials.map((t) => (
+          <div className={`grid ${visibleTestimonials.length === 3 ? "md:grid-cols-3" : "md:grid-cols-2"} gap-6`}>
+            {visibleTestimonials.map((t) => (
               <FadeIn key={t.name}>
                 <div className="p-6 rounded-xl border border-border/40 bg-card/50 card-glow space-y-4 h-full">
                   <div className="flex items-center justify-between">
@@ -911,7 +934,7 @@ export default function LandingPage() {
             {[
               { icon: BarChart3, title: "Track Progress", desc: "See mastery scores by unit, accuracy trends, and study streaks — all in real time." },
               { icon: Target, title: "Identify Weak Areas", desc: "Know exactly which topics need work, so study time is never wasted." },
-              { icon: GraduationCap, title: "Curriculum-Aligned", desc: "Every question aligns with College Board AP standards and official CLEP exam outlines." },
+              { icon: GraduationCap, title: "Curriculum-Aligned", desc: clepOn ? "Every question aligns with College Board AP standards and official CLEP exam outlines." : "Every question aligns with College Board AP standards and official exam outlines." },
               { icon: Clock, title: "Affordable Prep", desc: "$9.99/mo — less than one hour of private tutoring. Free tier available for every student." },
             ].map((item) => (
               <div key={item.title} className="p-5 rounded-xl border border-border/40 bg-card/50 text-center space-y-2">
@@ -927,15 +950,17 @@ export default function LandingPage() {
       </section>
 
       {/* FAQ */}
-      <LandingFaq />
+      <LandingFaq clepEnabled={clepOn} dsstEnabled={dsstOn} />
 
       {/* Final CTA */}
       <section className="py-24 lg:py-32 bg-gradient-to-b from-blue-950/30 to-background">
         <div className="max-w-3xl mx-auto px-4 text-center">
           <h2 className="text-4xl font-bold mb-4">Ready to prepare for the exam that changes everything?</h2>
           <p className="text-muted-foreground text-lg mb-8">
-            Whether you&apos;re a high schooler aiming for a 5, or a college student saving thousands
-            with CLEP and DSST — StudentNest is free to start, and Sage is ready to teach.
+            {clepOn || dsstOn
+              ? <>Whether you&apos;re a high schooler aiming for a 5, or a college student saving thousands{clepOn && <> with CLEP</>}{dsstOn && <>{clepOn ? " and" : " with"} DSST</>} — StudentNest is free to start, and Sage is ready to teach.</>
+              : <>Whether you&apos;re aiming for a 5 on AP exams, a top SAT score, or a strong ACT composite — StudentNest is free to start, and Sage is ready to teach.</>
+            }
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/register?track=ap">
@@ -943,14 +968,16 @@ export default function LandingPage() {
                 Start AP/SAT/ACT Prep Free
               </Button>
             </Link>
-            <Link href="/register?track=clep">
-              <Button size="lg" variant="outline" className="text-base px-10 h-12 border-emerald-500/40 text-emerald-400 hover:bg-emerald-500/10">
-                Start CLEP Prep Free
-              </Button>
-            </Link>
+            {clepOn && (
+              <Link href="/register?track=clep">
+                <Button size="lg" variant="outline" className="text-base px-10 h-12 border-emerald-500/40 text-emerald-400 hover:bg-emerald-500/10">
+                  Start CLEP Prep Free
+                </Button>
+              </Link>
+            )}
           </div>
           <p className="mt-3 text-sm text-muted-foreground">
-            Free forever · AP Premium or CLEP Premium from $6.67/mo (annual) or $9.99/mo ·{" "}
+            Free forever · Premium from $6.67/mo (annual) or $9.99/mo ·{" "}
             <Link href="/pricing" className="text-blue-500 hover:underline">See full pricing</Link>
           </p>
         </div>
@@ -967,7 +994,7 @@ export default function LandingPage() {
                 <span className="font-semibold"><span className="gradient-text">Student</span><span className="text-foreground/80 font-medium">Nest</span><span className="text-blue-500/60 font-normal text-[0.6em] ml-1">Prep</span></span>
               </div>
               <p className="text-xs text-muted-foreground leading-relaxed">
-                AI-powered exam prep for AP, SAT, ACT &amp; CLEP. Free to start.
+                AI-powered exam prep for {examLabel}. Free to start.
               </p>
               <div className="flex items-center gap-1 text-xs text-emerald-400">
                 <Shield className="h-3.5 w-3.5" /> No credit card required
@@ -980,8 +1007,8 @@ export default function LandingPage() {
                 <Link href="/ap-prep" className="block text-muted-foreground hover:text-foreground transition-colors">AP Courses</Link>
                 <Link href="/sat-prep" className="block text-muted-foreground hover:text-foreground transition-colors">SAT Prep</Link>
                 <Link href="/act-prep" className="block text-muted-foreground hover:text-foreground transition-colors">ACT Prep</Link>
-                <Link href="/clep-prep" className="block text-muted-foreground hover:text-foreground transition-colors">CLEP Prep</Link>
-                <Link href="/dsst-prep" className="block text-muted-foreground hover:text-foreground transition-colors">DSST Prep</Link>
+                {clepOn && <Link href="/clep-prep" className="block text-muted-foreground hover:text-foreground transition-colors">CLEP Prep</Link>}
+                {dsstOn && <Link href="/dsst-prep" className="block text-muted-foreground hover:text-foreground transition-colors">DSST Prep</Link>}
               </div>
             </div>
             {/* Col 3: Product */}

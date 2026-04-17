@@ -7,22 +7,22 @@ import { Toaster } from "@/components/ui/toaster";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "StudentNest Prep — AP, SAT, ACT, CLEP & DSST Exam Prep",
+  title: "StudentNest Prep — AP, SAT & ACT Exam Prep",
   description:
-    "Raise your exam score with AI that explains why, not just what. Personalized practice, instant feedback, and mastery tracking for AP, SAT, ACT, CLEP & DSST. Free for every student.",
+    "Raise your exam score with AI that explains why, not just what. Personalized practice, instant feedback, and mastery tracking for AP, SAT, and ACT. Free for every student.",
   metadataBase: new URL("https://studentnest.ai"),
   openGraph: {
-    title: "StudentNest Prep — Score Higher on AP, SAT, ACT, CLEP & DSST",
+    title: "StudentNest Prep — Score Higher on AP, SAT & ACT",
     description: "AI-powered exam prep with personalized practice, instant feedback, and mastery tracking. Free for every student.",
     url: "https://studentnest.ai",
     siteName: "StudentNest Prep",
     type: "website",
     locale: "en_US",
-    images: [{ url: "/og-image.svg?v=2", width: 1200, height: 630, alt: "StudentNest Prep — AP, SAT, ACT, CLEP & DSST Exam Prep" }],
+    images: [{ url: "/og-image.svg?v=2", width: 1200, height: 630, alt: "StudentNest Prep — AP, SAT & ACT Exam Prep" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "StudentNest Prep — Score Higher on AP, SAT, ACT, CLEP & DSST",
+    title: "StudentNest Prep — Score Higher on AP, SAT & ACT",
     description: "AI-powered exam prep. Personalized practice. Free to start.",
     images: ["/og-image.svg?v=2"],
   },
@@ -59,7 +59,7 @@ export default function RootLayout({
               "@type": "Organization",
               name: "StudentNest Prep",
               url: "https://studentnest.ai",
-              description: "AI-powered exam preparation for AP, SAT, ACT, CLEP, and DSST exams",
+              description: "AI-powered exam preparation for AP, SAT, and ACT exams",
               contactPoint: { "@type": "ContactPoint", email: "contact@studentnest.ai", contactType: "customer support" },
             }),
           }}

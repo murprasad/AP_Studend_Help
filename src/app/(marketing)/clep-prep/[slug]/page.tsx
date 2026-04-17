@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
+import { isClepEnabled } from "@/lib/settings";
 import { Button } from "@/components/ui/button";
 import { COURSE_REGISTRY } from "@/lib/courses";
 import { ApCourse } from "@prisma/client";
@@ -64,7 +65,8 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   };
 }
 
-export default function CLEPSubjectPage({ params }: { params: { slug: string } }) {
+export default async function CLEPSubjectPage({ params }: { params: { slug: string } }) {
+  if (!(await isClepEnabled())) permanentRedirect(`https://preplion.ai/clep-prep/${params.slug}`);
   const courseKey = SLUG_MAP[params.slug];
   if (!courseKey) notFound();
   const config = COURSE_REGISTRY[courseKey];

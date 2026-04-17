@@ -18,9 +18,9 @@ export const metadata: Metadata = {
 };
 
 const courses = [
-  { name: "AP World History: Modern", units: 9 },
-  { name: "AP Computer Science Principles", units: 5 },
-  { name: "AP Physics 1: Algebra-Based", units: 10 },
+  { name: "AP World History: Modern", units: 9, slug: "ap-world-history-modern" },
+  { name: "AP Computer Science Principles", units: 5, slug: "ap-computer-science-principles" },
+  { name: "AP Physics 1: Algebra-Based", units: 10, slug: "ap-physics-1" },
   { name: "AP Calculus AB", units: 8 },
   { name: "AP Calculus BC", units: 10 },
   { name: "AP Statistics", units: 9 },
@@ -158,13 +158,29 @@ export default function ApPrepPage() {
       <div>
         <h2 className="text-2xl font-bold mb-6 text-center">10 AP Courses — Full Curriculum Coverage</h2>
         <div className="grid sm:grid-cols-2 gap-3">
-          {courses.map((c) => (
-            <div key={c.name} className="flex items-center gap-3 p-3.5 rounded-lg bg-card/50 border border-border/40">
-              <CheckCircle className="h-5 w-5 text-emerald-400 flex-shrink-0" />
-              <span className="text-sm font-medium">{c.name}</span>
-              <span className="ml-auto text-xs text-muted-foreground">({c.units} units)</span>
-            </div>
-          ))}
+          {courses.map((c) => {
+            const inner = (
+              <>
+                <CheckCircle className="h-5 w-5 text-emerald-400 flex-shrink-0" />
+                <span className="text-sm font-medium">{c.name}</span>
+                <span className="ml-auto text-xs text-muted-foreground">({c.units} units)</span>
+                {c.slug && <ArrowRight className="h-4 w-4 text-blue-400 flex-shrink-0" />}
+              </>
+            );
+            return c.slug ? (
+              <Link
+                key={c.name}
+                href={`/ap-prep/${c.slug}`}
+                className="flex items-center gap-3 p-3.5 rounded-lg bg-card/50 border border-border/40 hover:border-blue-500/40 transition-colors"
+              >
+                {inner}
+              </Link>
+            ) : (
+              <div key={c.name} className="flex items-center gap-3 p-3.5 rounded-lg bg-card/50 border border-border/40">
+                {inner}
+              </div>
+            );
+          })}
         </div>
       </div>
 

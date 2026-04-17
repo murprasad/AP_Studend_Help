@@ -79,18 +79,6 @@ const BASE_COURSE_GROUPS: { label: string; shortLabel: string; keys: ApCourse[] 
   },
 ];
 
-const CLEP_GROUP: { label: string; shortLabel: string; keys: ApCourse[] } = {
-  label: "CLEP Prep",
-  shortLabel: "CLEP",
-  keys: (Object.keys(COURSE_REGISTRY) as ApCourse[]).filter(k => k.startsWith("CLEP_")),
-};
-
-const DSST_GROUP: { label: string; shortLabel: string; keys: ApCourse[] } = {
-  label: "DSST Prep",
-  shortLabel: "DSST",
-  keys: (Object.keys(COURSE_REGISTRY) as ApCourse[]).filter(k => k.startsWith("DSST_")),
-};
-
 interface SidebarProps {
   userRole?: string;
   userTrack?: string;
@@ -111,21 +99,20 @@ export function Sidebar({ userRole, userTrack, isOpen = false, onClose = () => {
   const effectiveTrack = userTrack || "ap";
 
   // Map track to the specific course group — strict filtering, no expansion
+  // CLEP/DSST sunset 2026-04-14 — redirected to preplion.ai, no longer exposed here
   const TRACK_TO_GROUP: Record<string, typeof BASE_COURSE_GROUPS[number][]> = {
     ap: [BASE_COURSE_GROUPS[0]],     // AP Courses only
     sat: [BASE_COURSE_GROUPS[1]],    // SAT Prep only
     act: [BASE_COURSE_GROUPS[2]],    // ACT Prep only
-    clep: [CLEP_GROUP],              // CLEP Prep only
-    dsst: [DSST_GROUP],              // DSST Prep only
   };
 
-  // Admin sees ALL course groups regardless of track
+  // Admin and all tracks see AP/SAT/ACT groups only. CLEP/DSST hidden post-sunset.
   const COURSE_GROUPS = userRole === "ADMIN"
-    ? [...BASE_COURSE_GROUPS, CLEP_GROUP, DSST_GROUP]
+    ? BASE_COURSE_GROUPS
     : (TRACK_TO_GROUP[effectiveTrack] ?? [BASE_COURSE_GROUPS[0]]);
 
   const DEFAULT_GROUP: Record<string, string> = {
-    ap: "AP Courses", sat: "SAT Prep", act: "ACT Prep", clep: "CLEP Prep", dsst: "DSST Prep",
+    ap: "AP Courses", sat: "SAT Prep", act: "ACT Prep",
   };
 
   const [activeGroup, setActiveGroup] = useState<string>(
@@ -147,8 +134,7 @@ export function Sidebar({ userRole, userTrack, isOpen = false, onClose = () => {
 
   // Sync activeGroup when course changes
   useEffect(() => {
-    const allGroups = [...BASE_COURSE_GROUPS, CLEP_GROUP, DSST_GROUP];
-    const group = allGroups.find(g => g.keys.includes(course as ApCourse));
+    const group = BASE_COURSE_GROUPS.find(g => g.keys.includes(course as ApCourse));
     if (group) setActiveGroup(group.label);
   }, [course]);
 

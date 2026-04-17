@@ -1,5 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { notFound, permanentRedirect } from "next/navigation";
+import { isClepEnabled } from "@/lib/settings";
+
+// Force dynamic so permanentRedirect executes at request time, not build time.
+// Static prerender caches the redirect as a 404 response.
+export const dynamic = "force-dynamic";
 import { Button } from "@/components/ui/button";
 import { CheckCircle, ArrowRight, GraduationCap, Clock, TrendingUp, DollarSign, ChevronDown, CalendarCheck, BookOpen, Users, Shield } from "lucide-react";
 import { BrowserFrame } from "@/components/landing/browser-frame";
@@ -145,7 +151,8 @@ const faqJsonLd = {
   ],
 };
 
-export default function ClepPrepPage() {
+export default async function ClepPrepPage() {
+  if (!(await isClepEnabled())) permanentRedirect("https://preplion.ai/clep-prep");
   return (
     <div className="space-y-0">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />

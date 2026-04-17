@@ -2,36 +2,57 @@
 
 import { useState } from "react";
 import { ChevronDown } from "lucide-react";
+import { getExamLabel, getCourseCount } from "@/lib/exam-label";
 
-const faqs = [
-  {
-    q: "Is it really free?",
-    a: "Yes. Free accounts get unlimited MCQ practice across all 55 courses, 5 AI tutor chats per day, a basic study plan, and per-unit mastery analytics. No credit card required, no time limit.",
-  },
-  {
-    q: "How is this different from ChatGPT?",
-    a: "ChatGPT gives random answers with no structure. StudentNest gives exam-aligned practice questions, tracks mastery by unit, builds a personalized study plan, and Sage quizzes you back to verify comprehension. It's structured prep, not a chatbot.",
-  },
-  {
-    q: "What exams do you cover?",
-    a: "10 AP courses (World History, Calculus AB/BC, Physics 1, Chemistry, Biology, Statistics, US History, Psychology, Computer Science), SAT Math & Reading/Writing, 4 ACT sections (Math, English, Science, Reading), all 34 CLEP exams across 5 domains, and 5 DSST exams (Supervision, HR Management, Organizational Behavior, Personal Finance, Lifespan Psychology).",
-  },
-  {
-    q: "Can parents track their child's progress?",
-    a: "Yes. The analytics dashboard shows per-unit mastery scores, accuracy trends, study streaks, and estimated exam scores — all visible in real time. Parents can review progress together with their child.",
-  },
-  {
-    q: "Is there a refund policy?",
-    a: "Yes. Premium subscriptions come with a 7-day refund policy. If you're not satisfied, contact us within 7 days of your purchase for a full refund.",
-  },
-  {
-    q: "How does the AI work?",
-    a: "Sage uses large language models to generate exam-aligned questions, provide instant explanations, and build personalized study plans. Every question passes a 5-criterion validation check for accuracy, answer clarity, distractor quality, cognitive level, and exam alignment.",
-  },
-];
+interface LandingFaqProps {
+  clepEnabled?: boolean;
+  dsstEnabled?: boolean;
+}
 
-export function LandingFaq() {
+function buildFaqs(clepOn: boolean, dsstOn: boolean) {
+  const courseCount = getCourseCount(clepOn, dsstOn);
+  const examLabel = getExamLabel(clepOn, dsstOn);
+
+  let coverageAnswer = "10 AP courses (World History, Calculus AB/BC, Physics 1, Chemistry, Biology, Statistics, US History, Psychology, Computer Science), SAT Math & Reading/Writing, and 4 ACT sections (Math, English, Science, Reading).";
+  if (clepOn && dsstOn) {
+    coverageAnswer = "10 AP courses (World History, Calculus AB/BC, Physics 1, Chemistry, Biology, Statistics, US History, Psychology, Computer Science), SAT Math & Reading/Writing, 4 ACT sections (Math, English, Science, Reading), all 34 CLEP exams across 5 domains, and 22 DSST exams across Business, Social Sciences, Humanities, STEM, English, and History.";
+  } else if (clepOn) {
+    coverageAnswer = "10 AP courses (World History, Calculus AB/BC, Physics 1, Chemistry, Biology, Statistics, US History, Psychology, Computer Science), SAT Math & Reading/Writing, 4 ACT sections (Math, English, Science, Reading), and all 34 CLEP exams across 5 domains.";
+  } else if (dsstOn) {
+    coverageAnswer = "10 AP courses (World History, Calculus AB/BC, Physics 1, Chemistry, Biology, Statistics, US History, Psychology, Computer Science), SAT Math & Reading/Writing, 4 ACT sections (Math, English, Science, Reading), and 22 DSST exams across Business, Social Sciences, Humanities, STEM, English, and History.";
+  }
+
+  return [
+    {
+      q: "Is it really free?",
+      a: `Yes. Free accounts get unlimited MCQ practice across all ${courseCount} courses, 5 AI tutor chats per day, a basic study plan, and per-unit mastery analytics. No credit card required, no time limit.`,
+    },
+    {
+      q: "How is this different from ChatGPT?",
+      a: "ChatGPT gives random answers with no structure. StudentNest gives exam-aligned practice questions, tracks mastery by unit, builds a personalized study plan, and Sage quizzes you back to verify comprehension. It's structured prep, not a chatbot.",
+    },
+    {
+      q: "What exams do you cover?",
+      a: coverageAnswer,
+    },
+    {
+      q: "Can parents track their child's progress?",
+      a: "Yes. The analytics dashboard shows per-unit mastery scores, accuracy trends, study streaks, and estimated exam scores — all visible in real time. Parents can review progress together with their child.",
+    },
+    {
+      q: "Is there a refund policy?",
+      a: "Yes. Premium subscriptions come with a 7-day refund policy. If you're not satisfied, contact us within 7 days of your purchase for a full refund.",
+    },
+    {
+      q: "How does the AI work?",
+      a: "Sage uses large language models to generate exam-aligned questions, provide instant explanations, and build personalized study plans. Every question passes a 5-criterion validation check for accuracy, answer clarity, distractor quality, cognitive level, and exam alignment.",
+    },
+  ];
+}
+
+export function LandingFaq({ clepEnabled = false, dsstEnabled = false }: LandingFaqProps) {
   const [open, setOpen] = useState<number | null>(null);
+  const faqs = buildFaqs(clepEnabled, dsstEnabled);
 
   return (
     <section className="py-24 lg:py-32">

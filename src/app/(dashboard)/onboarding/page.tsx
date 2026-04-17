@@ -75,20 +75,16 @@ export default function OnboardingPage() {
       .catch(() => {});
   }, []);
 
-  // Auto-select first course when track changes (clepEnabled removed — track from DB is authoritative)
+  // CLEP/DSST sunset 2026-04-14 — force any stale clep/dsst track to "ap" for onboarding flow
+  const effectiveTrack: string = "ap";
+
+  // Auto-select first AP course on mount
   useEffect(() => {
-    const effectiveTrack = track === "clep" ? "clep" : track === "dsst" ? "dsst" : "ap";
-    const firstCourse = effectiveTrack === "clep"
-      ? CLEP_COURSE_GROUP.keys[0]
-      : effectiveTrack === "dsst"
-      ? DSST_COURSE_GROUP.keys[0]
-      : AP_COURSE_GROUPS[0].keys[0];
-    setCourse(firstCourse);
+    setCourse(AP_COURSE_GROUPS[0].keys[0]);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [track]);
 
-  const effectiveTrack = track === "clep" ? "clep" : track === "dsst" ? "dsst" : "ap";
-  const COURSE_GROUPS = effectiveTrack === "clep" ? [CLEP_COURSE_GROUP] : effectiveTrack === "dsst" ? [DSST_COURSE_GROUP] : AP_COURSE_GROUPS;
+  const COURSE_GROUPS = AP_COURSE_GROUPS;
 
   // If already onboarded, skip to dashboard
   useEffect(() => {

@@ -1,45 +1,99 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { notFound, permanentRedirect } from "next/navigation";
+
+// Force dynamic so permanentRedirect executes at request time, not build time.
+export const dynamic = "force-dynamic";
+import { isDsstEnabled } from "@/lib/settings";
 import { Button } from "@/components/ui/button";
 import { CheckCircle, ArrowRight, GraduationCap, Clock, TrendingUp, DollarSign, Users, Shield, BookOpen } from "lucide-react";
 import { FadeIn } from "@/components/landing/fade-in";
 
 export const metadata: Metadata = {
   title: "DSST Exam Prep — Pass and Save $1,000+ Per Course | StudentNest Prep",
-  description: "Pass your DSST exam with AI-powered prep. 5 high-demand exams in Business & Psychology. $85 exam replaces a $1,000+ college course. Free to start.",
+  description: "Pass your DSST exam with AI-powered prep. 22 exams across 6 domains. $85 exam replaces a $1,000+ college course. Free to start.",
   openGraph: {
     title: "Pass Your DSST Exam — Save $1,000+ | StudentNest Prep",
-    description: "One $85 exam replaces a full college course. AI builds your custom study plan. 5 DSST exams. Free to start.",
+    description: "One $85 exam replaces a full college course. AI builds your custom study plan. 22 DSST exams. Free to start.",
     url: "https://studentnest.ai/dsst-prep",
   },
 };
 
 const topExams = [
   { name: "Principles of Supervision", hours: "15–25", passRate: "High", savings: "$1,000", tip: "Easiest DSST — mostly common-sense management" },
-  { name: "Human Resource Management", hours: "20–30", passRate: "High", savings: "$1,000", tip: "Employment law + HR processes — very practical" },
+  { name: "Introduction to Business", hours: "15–25", passRate: "High", savings: "$1,000", tip: "Broad but shallow — real-world business intuition helps" },
   { name: "Organizational Behavior", hours: "20–30", passRate: "High", savings: "$1,000", tip: "Leadership theories + motivation — intuitive content" },
   { name: "Personal Finance", hours: "15–25", passRate: "High", savings: "$1,000", tip: "Budgeting, investing, insurance — real-world knowledge helps" },
-  { name: "Lifespan Developmental Psychology", hours: "20–30", passRate: "Medium", savings: "$1,000", tip: "Overlaps with AP/CLEP Psych — Piaget, Erikson, attachment" },
+  { name: "Ethics in America", hours: "15–25", passRate: "High", savings: "$1,000", tip: "Moral philosophy — mostly reasoning, less memorization" },
+  { name: "Environmental Science", hours: "20–30", passRate: "High", savings: "$1,000", tip: "Ecosystems + policy — practical and intuitive" },
+  { name: "Technical Writing", hours: "10–20", passRate: "High", savings: "$1,000", tip: "Clarity, structure, audience — most practical DSST" },
+  { name: "Lifespan Developmental Psychology", hours: "20–30", passRate: "Medium", savings: "$1,000", tip: "Overlaps with AP/CLEP Psych content" },
+  { name: "Human Development", hours: "20–30", passRate: "Medium", savings: "$1,000", tip: "Similar to Lifespan Psych — Piaget, Erikson, attachment" },
 ];
 
 const domains = [
   {
     name: "Business & Management",
     emoji: "💼",
-    totalSavings: "$4,000",
+    totalSavings: "$8,000",
     courses: [
       { name: "Principles of Supervision", savings: "$1,000" },
-      { name: "Human Resource Management", savings: "$1,000" },
+      { name: "Introduction to Business", savings: "$1,000" },
       { name: "Organizational Behavior", savings: "$1,000" },
       { name: "Personal Finance", savings: "$1,000" },
+      { name: "Human Resource Management", savings: "$1,000" },
+      { name: "Principles of Finance", savings: "$1,000" },
+      { name: "Management Information Systems", savings: "$1,000" },
+      { name: "Money and Banking", savings: "$1,000" },
     ],
   },
   {
     name: "Social Sciences",
     emoji: "🧠",
-    totalSavings: "$1,000",
+    totalSavings: "$6,000",
     courses: [
       { name: "Lifespan Developmental Psychology", savings: "$1,000" },
+      { name: "Human Development", savings: "$1,000" },
+      { name: "Substance Abuse", savings: "$1,000" },
+      { name: "Criminal Justice", savings: "$1,000" },
+      { name: "Fundamentals of Counseling", savings: "$1,000" },
+      { name: "General Anthropology", savings: "$1,000" },
+    ],
+  },
+  {
+    name: "Humanities",
+    emoji: "📚",
+    totalSavings: "$3,000",
+    courses: [
+      { name: "Ethics in America", savings: "$1,000" },
+      { name: "World Religions", savings: "$1,000" },
+      { name: "Art of the Western World", savings: "$1,000" },
+    ],
+  },
+  {
+    name: "STEM",
+    emoji: "🔬",
+    totalSavings: "$3,000",
+    courses: [
+      { name: "Environmental Science", savings: "$1,000" },
+      { name: "Astronomy", savings: "$1,000" },
+      { name: "Computing & IT", savings: "$1,000" },
+    ],
+  },
+  {
+    name: "English / Communication",
+    emoji: "✍️",
+    totalSavings: "$1,000",
+    courses: [
+      { name: "Technical Writing", savings: "$1,000" },
+    ],
+  },
+  {
+    name: "History",
+    emoji: "🏛️",
+    totalSavings: "$1,000",
+    courses: [
+      { name: "The Civil War and Reconstruction", savings: "$1,000" },
     ],
   },
 ];
@@ -50,8 +104,8 @@ const jsonLd = {
   "@context": "https://schema.org",
   "@type": "ItemList",
   name: "DSST Exam Prep Courses",
-  description: "5 DSST exams with AI-powered practice — earn college credit and save thousands",
-  numberOfItems: 5,
+  description: "22 DSST exams with AI-powered practice — earn college credit and save thousands",
+  numberOfItems: 22,
   itemListElement: allCourses.map((c, i) => ({
     "@type": "ListItem",
     position: i + 1,
@@ -81,7 +135,8 @@ const faqJsonLd = {
   ],
 };
 
-export default function DsstPrepPage() {
+export default async function DsstPrepPage() {
+  if (!(await isDsstEnabled())) permanentRedirect("https://preplion.ai/dsst-prep");
   return (
     <div className="space-y-0">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
@@ -92,7 +147,7 @@ export default function DsstPrepPage() {
         <div className="text-center space-y-5">
           <FadeIn>
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-400 text-sm font-medium">
-              <GraduationCap className="h-4 w-4" /> 5 DSST Exams · Business & Psychology
+              <GraduationCap className="h-4 w-4" /> 22 DSST Exams · 6 Domains
             </div>
             <h1 className="text-4xl sm:text-5xl lg:text-[3.4rem] font-bold leading-[1.1] tracking-tight mt-4">
               Pass Your DSST Exam.<br />
@@ -109,7 +164,7 @@ export default function DsstPrepPage() {
               </Link>
               <a href="#exams">
                 <Button size="lg" variant="ghost" className="text-orange-400 hover:text-orange-300 w-full sm:w-auto">
-                  View All 5 Exams
+                  View All 22 Exams
                 </Button>
               </a>
             </div>
@@ -150,7 +205,7 @@ export default function DsstPrepPage() {
       <section id="exams" className="max-w-5xl mx-auto px-4 py-16 scroll-mt-20">
         <FadeIn>
           <div className="text-center mb-8">
-            <h2 className="text-2xl sm:text-3xl font-bold">5 High-Demand DSST Exams</h2>
+            <h2 className="text-2xl sm:text-3xl font-bold">Featured DSST Exams</h2>
             <p className="text-sm text-muted-foreground mt-2">Start with the easiest — Principles of Supervision has the highest pass rate</p>
           </div>
         </FadeIn>
@@ -205,7 +260,7 @@ export default function DsstPrepPage() {
               {
                 icon: TrendingUp, color: "yellow", label: "Cost-Conscious Students",
                 title: "Save thousands on tuition",
-                desc: "Stack 3-5 DSST + CLEP exams and enter college with a semester of credits already earned.",
+                desc: "Stack multiple DSST + CLEP exams and enter college with a semester of credits already earned.",
               },
             ].map((p) => (
               <FadeIn key={p.label}>
@@ -230,9 +285,9 @@ export default function DsstPrepPage() {
       {/* ═══ ALL DOMAINS ═══ */}
       <section className="max-w-5xl mx-auto px-4 py-16">
         <FadeIn>
-          <h2 className="text-2xl font-bold text-center mb-8">All DSST Courses by Domain</h2>
+          <h2 className="text-2xl font-bold text-center mb-8">All 22 DSST Courses by Domain</h2>
         </FadeIn>
-        <div className="grid sm:grid-cols-2 gap-6">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {domains.map((domain) => (
             <FadeIn key={domain.name}>
               <div className="p-6 rounded-2xl border border-border/40 bg-card/50">
@@ -264,7 +319,7 @@ export default function DsstPrepPage() {
           </FadeIn>
           <div className="grid sm:grid-cols-4 gap-6">
             {[
-              { step: "1", title: "Pick Your Exam", desc: "Choose from 5 high-demand DSST exams" },
+              { step: "1", title: "Pick Your Exam", desc: "Choose from 22 DSST exams across 6 domains" },
               { step: "2", title: "Take a Diagnostic", desc: "AI identifies your strengths and weak spots" },
               { step: "3", title: "Follow Your Plan", desc: "Sage builds a personalized study plan" },
               { step: "4", title: "Pass the Exam", desc: "Score 400+ on a 500-point scale and earn 3 credits" },

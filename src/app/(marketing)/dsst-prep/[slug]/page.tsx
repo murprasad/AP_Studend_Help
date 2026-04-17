@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
+import { isDsstEnabled } from "@/lib/settings";
 import { Button } from "@/components/ui/button";
 import { COURSE_REGISTRY } from "@/lib/courses";
 import { ApCourse } from "@prisma/client";
@@ -13,6 +14,23 @@ const SLUG_MAP: Record<string, ApCourse> = {
   "organizational-behavior": "DSST_ORGANIZATIONAL_BEHAVIOR",
   "personal-finance": "DSST_PERSONAL_FINANCE",
   "lifespan-developmental-psychology": "DSST_LIFESPAN_DEV_PSYCHOLOGY",
+  "intro-to-business": "DSST_INTRO_TO_BUSINESS",
+  "human-development": "DSST_HUMAN_DEVELOPMENT",
+  "ethics-in-america": "DSST_ETHICS_IN_AMERICA",
+  "environmental-science": "DSST_ENVIRONMENTAL_SCIENCE",
+  "technical-writing": "DSST_TECHNICAL_WRITING",
+  "principles-of-finance": "DSST_PRINCIPLES_OF_FINANCE",
+  "management-information-systems": "DSST_MANAGEMENT_INFO_SYSTEMS",
+  "money-and-banking": "DSST_MONEY_AND_BANKING",
+  "substance-abuse": "DSST_SUBSTANCE_ABUSE",
+  "criminal-justice": "DSST_CRIMINAL_JUSTICE",
+  "fundamentals-of-counseling": "DSST_FUNDAMENTALS_OF_COUNSELING",
+  "general-anthropology": "DSST_GENERAL_ANTHROPOLOGY",
+  "world-religions": "DSST_WORLD_RELIGIONS",
+  "art-of-the-western-world": "DSST_ART_WESTERN_WORLD",
+  "astronomy": "DSST_ASTRONOMY",
+  "computing-and-it": "DSST_COMPUTING_AND_IT",
+  "civil-war-and-reconstruction": "DSST_CIVIL_WAR",
 };
 
 export function generateStaticParams() {
@@ -34,7 +52,8 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   };
 }
 
-export default function DSSTSubjectPage({ params }: { params: { slug: string } }) {
+export default async function DSSTSubjectPage({ params }: { params: { slug: string } }) {
+  if (!(await isDsstEnabled())) permanentRedirect(`https://preplion.ai/dsst-prep/${params.slug}`);
   const courseKey = SLUG_MAP[params.slug];
   if (!courseKey) notFound();
   const config = COURSE_REGISTRY[courseKey];
@@ -144,7 +163,7 @@ export default function DSSTSubjectPage({ params }: { params: { slug: string } }
               </Button>
             </Link>
             <Link href="/dsst-prep">
-              <Button size="lg" variant="outline">All 5 DSST Exams</Button>
+              <Button size="lg" variant="outline">All 22 DSST Exams</Button>
             </Link>
           </div>
         </div>

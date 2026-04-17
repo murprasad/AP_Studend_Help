@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Pricing — Free & Premium Plans | StudentNest Prep",
   description:
-    "Free forever with all 55 courses. Premium upgrades for AP, SAT, ACT, CLEP & DSST at $9.99/mo or $79.99/yr (save 33%). 7-day money-back guarantee.",
+    "Free forever with all courses. Premium upgrades for AP, SAT, ACT and more at $9.99/mo or $79.99/yr (save 33%). 7-day money-back guarantee.",
   openGraph: {
     title: "Pricing | StudentNest Prep",
     description:
@@ -21,7 +21,7 @@ const faqJsonLd = {
       name: "Can I subscribe to multiple modules?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Yes! Each module (AP, SAT, ACT, CLEP, DSST) is an independent $9.99/mo subscription. Subscribe to as many as you need.",
+        text: "Yes! Each module (AP, SAT, ACT) is an independent $9.99/mo subscription. Subscribe to as many as you need.",
       },
     },
     {

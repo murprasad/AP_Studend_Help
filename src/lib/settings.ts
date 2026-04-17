@@ -178,5 +178,9 @@ export async function getStripeConfig(): Promise<StripeConfig> {
   };
 }
 
+// Pure helpers live in ./exam-label (no Prisma — safe for client imports).
+// Re-exported here so existing server-side imports keep working.
+export { getExamLabel, getCourseCount } from "./exam-label";
+
 // Re-export from the pure-constants file so server code can use one import
 export { FEATURE_FLAG_DEFS, type FeatureFlagKey } from "./feature-flag-defs";
