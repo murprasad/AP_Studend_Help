@@ -290,7 +290,18 @@ export async function POST(req: NextRequest) {
 
     scored.sort((a, b) => b.priority - a.priority);
     const count = Math.min(questionCount, scored.length);
-    const selectedQuestions = scored.slice(0, count);
+    let selectedQuestions = scored.slice(0, count);
+
+    // A22.5 port — Topic interleaving. Cap consecutive same-unit exposure
+    // at 2 for multi-unit sessions so students get a recovery beat between
+    // same-unit drills. Skipped for FOCUSED_STUDY on a specific unit
+    // (single-unit pool) and for MOCK_EXAM (blueprint already interleaves).
+    // Pure helper at lib/interleave-by-unit.ts.
+    const isMultiUnit = !unit || unit === "ALL";
+    if (isMultiUnit && sessionType !== "MOCK_EXAM" && selectedQuestions.length > 2) {
+      const { interleaveByUnit } = await import("@/lib/interleave-by-unit");
+      selectedQuestions = interleaveByUnit(selectedQuestions) as typeof selectedQuestions;
+    }
 
     // Guard: if no questions available after all attempts, return 400 (not 500)
     if (selectedQuestions.length === 0) {

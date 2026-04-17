@@ -169,50 +169,89 @@ async function main() {
       let consecutiveSkipped = 0;
       let currentTarget = 0; // incremented each chunk
 
+      // Retry-with-backoff on transient fetch errors. Pre-2026-04-17 the
+      // inner loop called `break` on the first network hiccup, causing
+      // units to exit at 60-70% completion (observed: CSP first-pass 321/500,
+      // BIO first-pass 370/500 — both stopped by single fetch-fails). The
+      // AI validator is slow, Neon pooler cold-starts, CF edge burps — these
+      // are common and recoverable. Retry twice with 3s + 6s backoff; only
+      // move to the next unit after 3 failed attempts in a row.
+      const MAX_RETRIES = 2;
+      let consecutiveChunkFails = 0;
+
       for (let chunk = 0; chunk < MAX_CHUNKS_PER_UNIT; chunk++) {
         currentTarget = Math.min(currentTarget + CHUNK_SIZE, fullTarget);
         if (currentTarget > fullTarget) currentTarget = fullTarget;
 
         process.stdout.write(`  ├─ ${unit.padEnd(42)} [chunk ${chunk + 1}, target=${currentTarget}] `);
-        const t0 = Date.now();
-        try {
-          const res = await fetch(`${BASE}/api/admin/mega-populate`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json", Cookie: allCookies },
-            body: JSON.stringify({ course, unit, targetPerUnit: currentTarget }),
-            signal: AbortSignal.timeout(20 * 60 * 1000), // 20 min cap per chunk
-          });
 
-          const elapsed = ((Date.now() - t0) / 1000).toFixed(1);
-          if (!res.ok) {
-            const text = await res.text();
-            console.log(`❌ ${res.status} (${elapsed}s): ${text.slice(0, 100)}`);
+        let chunkResult: "skipped" | "progress" | "nostop" | "hardfail" = "hardfail";
+        let chunkData: { generated: number; failed: number; skipped?: boolean; difficulty: { EASY: number; MEDIUM: number; HARD: number } } | null = null;
+        let retries = 0;
+
+        while (retries <= MAX_RETRIES) {
+          const t0 = Date.now();
+          try {
+            const res = await fetch(`${BASE}/api/admin/mega-populate`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json", Cookie: allCookies },
+              body: JSON.stringify({ course, unit, targetPerUnit: currentTarget }),
+              signal: AbortSignal.timeout(20 * 60 * 1000), // 20 min cap per chunk
+            });
+            const elapsed = ((Date.now() - t0) / 1000).toFixed(1);
+            if (!res.ok) {
+              const text = await res.text();
+              if (retries < MAX_RETRIES) {
+                const backoffSec = [3, 6][retries] ?? 6;
+                process.stdout.write(`⚠ HTTP ${res.status} (${elapsed}s), retry ${retries + 1}/${MAX_RETRIES} in ${backoffSec}s... `);
+                await new Promise((r) => setTimeout(r, backoffSec * 1000));
+                retries++;
+                continue;
+              }
+              console.log(`❌ ${res.status} after ${MAX_RETRIES} retries (${elapsed}s): ${text.slice(0, 80)}`);
+              unitFailed++;
+              break;
+            }
+            chunkData = await res.json();
+            if (chunkData!.skipped) {
+              console.log(`⏩ already at ${currentTarget} (${elapsed}s)`);
+              chunkResult = "skipped";
+            } else {
+              console.log(`✅ +${chunkData!.generated} (E:${chunkData!.difficulty.EASY} M:${chunkData!.difficulty.MEDIUM} H:${chunkData!.difficulty.HARD}), ${chunkData!.failed} fail, ${elapsed}s`);
+              chunkResult = chunkData!.generated > 0 ? "progress" : "nostop";
+              unitTotal += chunkData!.generated;
+              unitFailed += chunkData!.failed;
+            }
+            consecutiveChunkFails = 0;
+            break;
+          } catch (err) {
+            const elapsed = ((Date.now() - t0) / 1000).toFixed(1);
+            if (retries < MAX_RETRIES) {
+              const backoffSec = [3, 6][retries] ?? 6;
+              process.stdout.write(`⚠ ${err instanceof Error ? err.message.slice(0, 40) : String(err).slice(0, 40)} (${elapsed}s), retry ${retries + 1}/${MAX_RETRIES} in ${backoffSec}s... `);
+              await new Promise((r) => setTimeout(r, backoffSec * 1000));
+              retries++;
+              continue;
+            }
+            console.log(`❌ ${err instanceof Error ? err.message.slice(0, 80) : err} after ${MAX_RETRIES} retries`);
             unitFailed++;
+            consecutiveChunkFails++;
             break;
           }
+        }
 
-          const data = (await res.json()) as {
-            generated: number;
-            failed: number;
-            skipped?: boolean;
-            difficulty: { EASY: number; MEDIUM: number; HARD: number };
-          };
-
-          if (data.skipped) {
-            console.log(`⏩ already at ${currentTarget} (${elapsed}s)`);
-            consecutiveSkipped++;
-            if (consecutiveSkipped >= 1 && currentTarget >= fullTarget) break; // fully done
-          } else {
-            console.log(`✅ +${data.generated} (E:${data.difficulty.EASY} M:${data.difficulty.MEDIUM} H:${data.difficulty.HARD}), ${data.failed} fail, ${elapsed}s`);
-            unitTotal += data.generated;
-            unitFailed += data.failed;
-            consecutiveSkipped = 0;
-            if (currentTarget >= fullTarget && data.generated === 0) break; // no progress
+        if (chunkResult === "skipped") {
+          consecutiveSkipped++;
+          if (consecutiveSkipped >= 1 && currentTarget >= fullTarget) break;
+        } else if (chunkResult === "progress" || chunkResult === "nostop") {
+          consecutiveSkipped = 0;
+          if (currentTarget >= fullTarget && chunkData!.generated === 0) break;
+        } else if (chunkResult === "hardfail") {
+          // Only give up on the unit after 3 hard-fails in a row.
+          if (consecutiveChunkFails >= 3) {
+            console.log(`  ├─ ${unit.padEnd(42)} [unit aborted: 3 consecutive failures]`);
+            break;
           }
-        } catch (err) {
-          console.log(`❌ ${err instanceof Error ? err.message : err}`);
-          unitFailed++;
-          break; // abort this unit on fetch error, next unit takes over
         }
         await new Promise((r) => setTimeout(r, 800));
       }

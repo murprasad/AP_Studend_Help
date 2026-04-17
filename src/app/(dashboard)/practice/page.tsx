@@ -14,6 +14,7 @@ import { getCourseConfig } from "@/lib/courses";
 import { isPremiumForTrack } from "@/lib/tiers";
 import { Textarea } from "@/components/ui/textarea";
 import { CourseSelectorInline } from "@/components/layout/course-selector-inline";
+import { SessionFeedbackPopup } from "@/components/feedback/session-feedback-popup";
 import {
   Zap,
   BookOpen,
@@ -310,6 +311,31 @@ export default function PracticePage() {
       }
       setFeedback(data);
       setResults((prev) => [...prev, { correct: data.isCorrect, timeSecs }]);
+
+      // A22.4 port — Fail-downshift. If this is the 2nd consecutive wrong
+      // in the current unit, reorder the upcoming queue so the student sees
+      // a different-unit (or easier) question next. Pure helper at
+      // lib/fail-downshift.ts.
+      if (!data.isCorrect) {
+        const { applyDownshift } = await import("@/lib/fail-downshift");
+        const resultsForCheck = [
+          ...results.map((r, i) => ({
+            unit: questionsRef.current[i]?.unit ?? "",
+            correct: r.correct,
+          })),
+          { unit: currentQuestion.unit, correct: false },
+        ];
+        const reordered = applyDownshift(questionsRef.current as { id: string; unit: string; difficulty: "EASY" | "MEDIUM" | "HARD" }[], resultsForCheck, currentIndex);
+        if (reordered) {
+          questionsRef.current = reordered as typeof questionsRef.current;
+          setQuestions(reordered as typeof questions);
+          toast({
+            title: "Tough spot — let's shift gears",
+            description: "Next question comes from a different angle to help you build momentum.",
+          });
+        }
+      }
+
       // Auto-trigger embedded knowledge check for wrong MCQ answers
       if (!data.isCorrect && parsedOptions.length > 0) {
         setCheckQuestion(null);
@@ -429,6 +455,15 @@ export default function PracticePage() {
   if (mode === "summary" && sessionSummary) {
     return (
       <div className="max-w-2xl mx-auto space-y-6">
+        {/* A22.6 port — Session feedback popup. Shows once per source+course
+            after the first completed session, asks rating + text on thumbs-down. */}
+        <SessionFeedbackPopup
+          sessionId={sessionId}
+          triggerCondition="first-only"
+          source="practice"
+          course={course}
+          context="completion"
+        />
         <div className="text-center">
           <Trophy className={`h-16 w-16 mx-auto mb-4 ${sessionSummary.accuracy >= 80 ? "text-yellow-400" : "text-muted-foreground/60"}`} />
           <h1 className="text-3xl font-bold mb-2">
