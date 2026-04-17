@@ -2,7 +2,7 @@ import { createHash } from "crypto";
 import { ApUnit, ApCourse, Difficulty, QuestionType } from "@prisma/client";
 import { COURSE_UNITS } from "./utils";
 import { COURSE_REGISTRY, getCourseForUnit } from "./courses";
-import { callAIWithCascade, callAIForTier, callAIForCLEP, validateQuestion, AICallResult } from "./ai-providers";
+import { callAIWithCascade, callAIForTier, callAIForCLEP, callSonnetDirect, validateQuestion, AICallResult } from "./ai-providers";
 import { prisma } from "./prisma";
 import { getWikipediaSummary, getEduContextForQuery, searchStackExchange, getEnrichedContext, fetchMITOCWContent, fetchDIGContent, fetchOpenStaxContent, fetchSmithsonianContent, fetchCollegeBoardSATTopics, fetchACTTopics, fetchCBFRQContent, getCBFRQUrl, fetchKhanAcademyContext } from "./edu-apis";
 
@@ -176,7 +176,7 @@ export function buildQuestionPrompt(
     ?? `Create a College Board-style multiple choice question. ${config.stimulusRequirement}. Provide exactly 4 answer choices labeled A, B, C, D. Only one correct answer. Explanation should ${config.explanationGuidance}`;
 
   const responseFormat = typeFormat?.responseFormat
-    ?? `{"topic":"specific topic name","subtopic":"specific subtopic","apSkill":"the primary AP skill tested (e.g. Causation, Comparison, Data Analysis, Argumentation)","questionText":"the question text","stimulus":"${config.stimulusDescription}","options":["A) option text","B) option text","C) option text","D) option text"],"correctAnswer":"A","explanation":"detailed explanation ${config.explanationGuidance}"}`;
+    ?? `{"topic":"specific topic name","subtopic":"specific subtopic","apSkill":"the primary AP skill tested (e.g. Causation, Comparison, Data Analysis, Argumentation)","bloomLevel":"remember | apply | analyze","questionText":"the question text","stimulus":"${config.stimulusDescription}","options":["A) option text","B) option text","C) option text","D) option text"],"correctAnswer":"A","explanation":"detailed explanation ${config.explanationGuidance}"}`;
 
   const difficultySection = config.difficultyRubric?.[difficulty]
     ? `\nDIFFICULTY DEFINITION (${difficulty}):\n${config.difficultyRubric[difficulty]}`
@@ -285,13 +285,16 @@ export async function generateQuestion(
   course?: ApCourse,
   userTier: "FREE" | "PREMIUM" = "FREE",
   seedQuestion?: string,
-  quickMode: boolean = false  // skip validation + CB FRQ fetch for on-demand speed
+  quickMode: boolean = false,  // skip validation + CB FRQ fetch for on-demand speed
+  opts?: { generatorOverride?: "sonnet" }  // bulk admin: force Anthropic Sonnet generator (validator auto-switches to Haiku)
 ): Promise<GeneratedQuestion> {
   const inferredCourse = course || getCourseForUnit(unit);
   const unitName = COURSE_REGISTRY[inferredCourse].units[unit]?.name || unit;
 
   // ── Topic saturation guard: rotate away from over-represented topics ───────
-  const MAX_PER_TOPIC = 8;
+  // Raised to 15 for PrepLion-scale banks (~500 Qs/subject). At 5 themes × 15 = 75/unit ceiling
+  // before rotation kicks in — enough headroom to let AI pick varied sub-angles within a theme.
+  const MAX_PER_TOPIC = 15;
   if (topic) {
     try {
       const topicCount = await prisma.question.count({
@@ -348,6 +351,49 @@ export async function generateQuestion(
     }
   }
 
+  // AP calibration examples (style reference) — covers AP World History, AP CSP, AP Physics 1
+  let apCalibrationSection = "";
+  const AP_CALIBRATION_COURSES = new Set([
+    "AP_WORLD_HISTORY",
+    "AP_COMPUTER_SCIENCE_PRINCIPLES",
+    "AP_PHYSICS_1",
+    "AP_US_HISTORY",   // added 2026-04-17 — see docs/ap-refs/us-history/
+    "AP_STATISTICS",   // added 2026-04-17 — see docs/ap-refs/statistics/
+  ]);
+  if (AP_CALIBRATION_COURSES.has(inferredCourse as string) && !quickMode) {
+    try {
+      const { AP_CALIBRATION } = await import("./ap-calibration");
+      const examples = AP_CALIBRATION[inferredCourse as string];
+      if (examples && examples.length > 0) {
+        // Inject 2 random examples for stronger CB style/difficulty anchoring
+        const shuffled = [...examples].sort(() => Math.random() - 0.5);
+        const samples = shuffled.slice(0, Math.min(2, shuffled.length));
+        const exampleText = samples.map((s, i) => `Example ${i + 1}: "${s}"`).join("\n");
+        apCalibrationSection = `\n\nCOLLEGE BOARD STYLE CALIBRATION (match the stem pattern, stimulus depth, and cognitive level):\n${exampleText}\n\nGenerate a DIFFERENT question at the SAME quality level. Do NOT copy these scenarios, wording, dates, or numbers — paraphrase fully.`;
+      }
+    } catch {
+      // ap-calibration module not available — continue without examples
+    }
+  }
+
+  // AP grounding — fetch free educational content (Wikipedia/OpenStax/MIT OCW/DIG/Smithsonian)
+  // for factual accuracy. Capped at 6s to avoid slowing generation.
+  let apGroundingSection = "";
+  if (AP_CALIBRATION_COURSES.has(inferredCourse as string) && !quickMode) {
+    try {
+      const grounding = await Promise.race([
+        getUnitContext(unit),
+        new Promise<string>((resolve) => setTimeout(() => resolve(""), 6000)),
+      ]);
+      if (grounding && grounding.length > 200) {
+        const trimmed = grounding.slice(0, 2500);
+        apGroundingSection = `\n\nGROUNDED REFERENCE MATERIAL (from free educational sources — Wikipedia CC BY-SA, OpenStax CC BY, MIT OCW CC BY, Library of Congress):\n${trimmed}\n\nCRITICAL: Your question's content, correct answer, and explanation MUST be factually consistent with this authoritative source. Do NOT fabricate primary source quotes, dates, or data. Paraphrase — do not copy.`;
+      }
+    } catch {
+      // Grounding fetch failed — continue without it (not a blocker)
+    }
+  }
+
   // CLEP OpenStax content grounding — fetch unit-specific textbook content for factual accuracy
   let openStaxGroundingSection = "";
   if ((inferredCourse as string).startsWith("CLEP_") && !quickMode) {
@@ -379,7 +425,7 @@ export async function generateQuestion(
     }
   }
 
-  const allEnrichments = `${cbFrqSeedSection}${clepCalibrationSection}${openStaxGroundingSection}`;
+  const allEnrichments = `${cbFrqSeedSection}${clepCalibrationSection}${apCalibrationSection}${apGroundingSection}${openStaxGroundingSection}`;
   const prompt = seedQuestion
     ? `${basePrompt}${allEnrichments}\n\nREFERENCE QUESTION (for style/difficulty calibration — generate something DIFFERENT):\n"${seedQuestion}"\n\nGenerate a new question on the SAME concept with entirely different numbers, context, and scenario. Do NOT reuse the same values or phrasing from the reference.`
     : allEnrichments
@@ -406,13 +452,58 @@ export async function generateQuestion(
         : "";
       const attemptPrompt = prompt + retryFeedback;
 
-      // quickMode: use standard tier cascade (faster, skips broken Gemini on CF Workers)
-      // non-quickMode (auto-populate): use CLEP cascade with full quality pipeline
-      const raw = (isCLEPCourse && !quickMode)
-        ? await callAIForCLEP(attemptPrompt)
-        : await callAIForTier(userTier, attemptPrompt);
+      // Routing:
+      //   - generatorOverride="sonnet" (bulk admin): direct Anthropic Sonnet — highest yield on strict v2 validator
+      //   - CLEP + !quickMode: CLEP-specific cascade with full quality pipeline
+      //   - everything else: standard tier cascade (faster, Groq-first)
+      const raw = opts?.generatorOverride === "sonnet"
+        ? await callSonnetDirect(attemptPrompt)
+        : (isCLEPCourse && !quickMode)
+          ? await callAIForCLEP(attemptPrompt)
+          : await callAIForTier(userTier, attemptPrompt);
       const rawText = raw.response.trim().replace(/^```(?:json)?\s*/i, "").replace(/```\s*$/i, "");
       const candidate = JSON.parse(rawText) as Record<string, unknown>;
+
+      // Structural checks (cheap, run before LLM validator) — catches CB-format violations
+      if (needsValidation && questionType === QuestionType.MCQ) {
+        const isAP = (inferredCourse as string).startsWith("AP_");
+        const isACTMath = inferredCourse === "ACT_MATH";
+        const expectedOptions = isACTMath ? 5 : (isAP ? 4 : 4);
+        const opts = candidate.options;
+        const qtStr = String(candidate.questionText ?? "");
+        const stimStr = candidate.stimulus && candidate.stimulus !== "null" ? String(candidate.stimulus) : "";
+        const explStr = String(candidate.explanation ?? "");
+
+        if (!Array.isArray(opts) || opts.length !== expectedOptions) {
+          lastRejectionReason = `MCQ must have exactly ${expectedOptions} options, got ${Array.isArray(opts) ? opts.length : "none"}`;
+          lastError = lastRejectionReason;
+          continue;
+        }
+        const refsPseudo = /\bpseudocode|\bcode (segment|block|below)|trace (the |this )(following |below )?(pseudo)?code/i.test(qtStr);
+        if (refsPseudo && !/\b(PROCEDURE|DISPLAY|INPUT|IF|REPEAT|FOR EACH|RETURN|<-|←)\b/.test(stimStr)) {
+          lastRejectionReason = "Question references pseudocode but stimulus lacks AP pseudocode syntax (PROCEDURE/DISPLAY/REPEAT/IF/etc.)";
+          lastError = lastRejectionReason;
+          continue;
+        }
+        const refsPassage = /\b(excerpt|passage|letter|document|source|author|text) (above|below|shown)|the (passage|excerpt|source|document) (above|below)/i.test(qtStr);
+        if (refsPassage && stimStr.length < 40) {
+          lastRejectionReason = "Question references a passage/excerpt but stimulus is missing or too short (need ≥40 chars)";
+          lastError = lastRejectionReason;
+          continue;
+        }
+        const refsDiagram = /\b(graph|chart|diagram|figure|table|free-body|FBD) (above|below|shown)/i.test(qtStr);
+        if (refsDiagram && stimStr.length < 10) {
+          lastRejectionReason = "Question references a diagram/graph/table but no visual stimulus provided";
+          lastError = lastRejectionReason;
+          continue;
+        }
+        if (explStr.length < 100) {
+          lastRejectionReason = `Explanation too short (${explStr.length} chars, need ≥100)`;
+          lastError = lastRejectionReason;
+          continue;
+        }
+      }
+
       if (needsValidation) {
         // Cross-model validation: pass generator model so validator uses a different model family
         const validation = await validateQuestion(JSON.stringify(candidate), difficulty, undefined, inferredCourse as string, raw.modelUsed);
