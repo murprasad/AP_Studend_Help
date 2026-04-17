@@ -1091,7 +1091,54 @@ async function callPollinations(prompt: string, attempt = 0): Promise<string> {
   return text.trim();
 }
 
-async function callAI(prompt: string): Promise<string> {
+// Per-course model override — courses where free models underperform (e.g. USH free-response
+// style nuance, STATS numerical-reasoning). Uses Anthropic Sonnet direct.
+// Set via env PREMIUM_COURSES=AP_US_HISTORY,AP_STATISTICS to override at runtime.
+const DEFAULT_PREMIUM_COURSES = new Set(["AP_US_HISTORY", "AP_STATISTICS"]);
+const PREMIUM_COURSES: Set<string> = (() => {
+  const env = process.env.PREMIUM_COURSES;
+  if (!env) return DEFAULT_PREMIUM_COURSES;
+  return new Set(env.split(",").map(s => s.trim()).filter(Boolean));
+})();
+
+async function callSonnet(prompt: string): Promise<string> {
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) throw new Error("No ANTHROPIC_API_KEY");
+  const res = await fetch("https://api.anthropic.com/v1/messages", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "x-api-key": apiKey,
+      "anthropic-version": "2023-06-01",
+    },
+    body: JSON.stringify({
+      model: "claude-sonnet-4-6",
+      max_tokens: 2000,
+      system: "You are an AP exam question generator. Always respond with valid JSON only.",
+      messages: [{ role: "user", content: prompt }],
+    }),
+    signal: AbortSignal.timeout(45000),
+  });
+  if (!res.ok) {
+    const body = await res.text().catch(() => res.statusText);
+    throw new Error(`Anthropic-Sonnet ${res.status}: ${body.slice(0, 140)}`);
+  }
+  const data = await res.json() as { content?: Array<{ type: string; text?: string }> };
+  const text = data.content?.[0]?.text;
+  if (!text?.trim()) throw new Error("Anthropic-Sonnet: empty response");
+  return text.trim();
+}
+
+async function callAI(prompt: string, course?: string): Promise<string> {
+  // Premium-override path: route specific courses to Sonnet direct.
+  if (course && PREMIUM_COURSES.has(course) && process.env.ANTHROPIC_API_KEY) {
+    try {
+      return await callSonnet(prompt);
+    } catch (e) {
+      console.warn(`  [premium] Sonnet failed for ${course}, falling back to Groq: ${(e as Error).message.slice(0, 100)}`);
+      // fall through to Groq cascade
+    }
+  }
   // Try each Groq model in sequence
   for (const model of GROQ_MODELS) {
     try {
@@ -1194,7 +1241,7 @@ async function main() {
         const topic = unitData.keyThemes[i % unitData.keyThemes.length];
 
         try {
-          const raw = await callAI(buildPrompt(course, unitData, difficulty, topic));
+          const raw = await callAI(buildPrompt(course, unitData, difficulty, topic), course);
           const cleaned = raw.replace(/^```(?:json)?\s*/i, "").replace(/```\s*$/i, "").trim();
           const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
           if (!jsonMatch) throw new Error("No JSON found");
