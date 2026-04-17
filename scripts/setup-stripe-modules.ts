@@ -9,6 +9,7 @@
  *
  * Safe to run multiple times — it checks for existing products by name first.
  */
+export {};
 
 const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
 if (!STRIPE_SECRET_KEY) {

@@ -21,7 +21,7 @@ StudentNest Prep features:
 🤖 AI Tutor — deep-dive chat for course content questions.
 🌐 Resources — curated free textbooks, videos, links per unit.
 
-50 courses: 10 AP, 2 SAT, 4 ACT, 34 CLEP exams (all 5 domains). CLEP = pass a $93 exam to skip a $1,200 college course. 7-day pass plans available for CLEP.
+72 courses: 10 AP, 2 SAT, 4 ACT, 34 CLEP exams (all 5 domains), 22 DSST exams (6 domains). CLEP = pass a $93 exam to skip a $1,200 college course. DSST = pass an $85 exam to skip a $1,000+ course. 7-day pass plans available.
 
 Pricing: Free forever (unlimited MCQ, 5 AI chats/day, basic study plan). Premium $9.99/mo or $79.99/yr (save 33%) per module — unlimited AI tutoring, personalized study plans, FRQ scoring, streaming AI. 7-day refund policy.
 
@@ -33,10 +33,10 @@ IMPORTANT: Keep most responses under 3 sentences. Be helpful, be fun, be Sage! �
 // Page-specific context injections
 function getPageContext(page: string, course: string): string {
   if (page === "/" || page === "")
-    return `\n\nCONTEXT: The user is on the landing page — likely a prospective student. Answer questions about pricing, features, how it works, and what makes StudentNest different from ChatGPT or private tutoring. Encourage signing up free. Key facts: Free forever, no credit card, 50 courses, $9.99/mo Premium.`;
+    return `\n\nCONTEXT: The user is on the landing page — likely a prospective student. Answer questions about pricing, features, how it works, and what makes StudentNest different from ChatGPT or private tutoring. Encourage signing up free. Key facts: Free forever, no credit card, 72 courses, $9.99/mo Premium.`;
 
   if (page === "/pricing")
-    return `\n\nCONTEXT: User is on the pricing page. Answer billing questions clearly: Free = unlimited MCQ + 5 chats/day. Premium = $9.99/mo or $79.99/yr (save 33%). Per-module subscriptions (AP, SAT, ACT, CLEP). 7-day refund policy. No credit card for free tier.`;
+    return `\n\nCONTEXT: User is on the pricing page. Answer billing questions clearly: Free = unlimited MCQ + 5 chats/day. Premium = $9.99/mo or $79.99/yr (save 33%). Per-module subscriptions (AP, SAT, ACT, CLEP, DSST). 7-day refund policy. No credit card for free tier.`;
 
   if (page.includes("-prep")) {
     const exam = page.includes("ap") ? "AP" : page.includes("sat") ? "SAT" : page.includes("act") ? "ACT" : "CLEP";

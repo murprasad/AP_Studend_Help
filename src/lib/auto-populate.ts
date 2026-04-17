@@ -185,6 +185,7 @@ export async function runAutoPopulate(
               isAiGenerated: true,
               isApproved: shouldAutoApprove,
               bloomLevel: q.bloomLevel ?? null,
+              apSkill: q.apSkill ?? null,
             },
           });
           added++;
@@ -318,7 +319,7 @@ async function generateOneQuestion(
   difficulty: Difficulty,
   topic: string | undefined,
   questionType: QuestionType = QuestionType.MCQ
-): Promise<{ topic: string; subtopic: string; questionText: string; stimulus: string | null; stimulusImageUrl: string | null; options: string[]; correctAnswer: string; explanation: string; bloomLevel?: string } | null> {
+): Promise<{ topic: string; subtopic: string; questionText: string; stimulus: string | null; stimulusImageUrl: string | null; options: string[]; correctAnswer: string; explanation: string; bloomLevel?: string; apSkill?: string } | null> {
   const prompt = buildQuestionPrompt(course, unit, unitName, difficulty, questionType, topic);
   const needsValidation = questionType === QuestionType.MCQ;
   const config = COURSE_REGISTRY[course];
@@ -372,6 +373,7 @@ async function generateOneQuestion(
         : parsed.correctAnswer.trim(),
       explanation: parsed.explanation ?? "",
       bloomLevel: parsed.bloomLevel ?? undefined,
+      apSkill: parsed.apSkill ?? undefined,
     };
   }
 

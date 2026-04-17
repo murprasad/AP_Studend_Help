@@ -15,8 +15,7 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { ApCourse, ApUnit, Difficulty, QuestionType, SubTier } from "@prisma/client";
 import { VALID_AP_COURSES, COURSE_REGISTRY } from "@/lib/courses";
-import { buildQuestionPrompt } from "@/lib/ai";
-import { callAIWithCascade, validateQuestion } from "@/lib/ai-providers";
+import { generateQuestion } from "@/lib/ai";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 300;
@@ -29,7 +28,7 @@ export async function POST(req: NextRequest) {
   const body = await req.json().catch(() => ({}));
   const course: ApCourse = body.course && VALID_AP_COURSES.includes(body.course) ? body.course : "AP_WORLD_HISTORY";
   const unit: ApUnit = body.unit;
-  const targetPerUnit: number = Math.min(Math.max(body.targetPerUnit ?? 30, 1), 60);
+  const targetPerUnit: number = Math.min(Math.max(body.targetPerUnit ?? 30, 1), 150);
 
   if (!unit) return NextResponse.json({ error: "unit is required" }, { status: 400 });
 
@@ -52,33 +51,17 @@ export async function POST(req: NextRequest) {
   let failed = 0;
   const diffCount = { EASY: 0, MEDIUM: 0, HARD: 0 };
 
-  // Collect questions first, then bulk-insert to minimise individual DB round-trips
-  const toInsert: Array<{
-    topic: string; subtopic: string; questionText: string; stimulus: string | null;
-    options: string[]; correctAnswer: string; explanation: string; difficulty: Difficulty;
-    apSkill?: string; contentHash?: string;
-  }> = [];
-
+  // Save-as-you-generate: each Q is inserted to DB right after it's generated.
+  // If the client aborts mid-run, everything generated so far is persisted.
   for (let i = 0; i < queue.length; i++) {
     const { difficulty, topic } = queue[i];
     try {
       const q = await generateOne(course, unit, unitName, difficulty, topic);
-      if (q) {
-        toInsert.push({ ...q, difficulty });
-        diffCount[difficulty]++;
-        generated++;
-      } else {
+      if (!q) {
         failed++;
+        if (i < queue.length - 1) await sleep(600);
+        continue;
       }
-    } catch {
-      failed++;
-    }
-    if (i < queue.length - 1) await sleep(600);
-  }
-
-  // Insert questions one at a time (Neon HTTP does not support transactions or multi-row WASM inserts)
-  if (toInsert.length > 0) {
-    for (const q of toInsert) {
       try {
         await prisma.question.create({
           data: {
@@ -86,7 +69,7 @@ export async function POST(req: NextRequest) {
             unit,
             topic: q.topic,
             subtopic: q.subtopic,
-            difficulty: q.difficulty,
+            difficulty,
             questionType: QuestionType.MCQ,
             questionText: q.questionText,
             stimulus: q.stimulus ?? null,
@@ -99,20 +82,25 @@ export async function POST(req: NextRequest) {
             generatedForTier: "PREMIUM" as SubTier,
             contentHash: q.contentHash ?? null,
             apSkill: q.apSkill ?? null,
+            bloomLevel: q.bloomLevel ?? null,
           },
         });
+        diffCount[difficulty]++;
+        generated++;
       } catch (err) {
         const errCode = (err as { code?: string })?.code;
         if (errCode === "P2002") {
           console.warn("[mega-populate] Duplicate question skipped");
+          failed++;
         } else {
           console.warn("[mega-populate] DB insert failed:", err instanceof Error ? err.message : err);
           failed++;
-          generated--;
-          diffCount[q.difficulty]--;
         }
       }
+    } catch {
+      failed++;
     }
+    if (i < queue.length - 1) await sleep(600);
   }
 
   return NextResponse.json({ generated, failed, difficulty: diffCount });
@@ -153,54 +141,48 @@ function buildDifficultyQueue(
 }
 
 // ── Single question generator ─────────────────────────────────────────────────
+// Delegates to generateQuestion() in src/lib/ai.ts which includes:
+//   - AP calibration examples (2-shot)
+//   - Grounded content (Wikipedia/OpenStax/MIT OCW/DIG/Smithsonian) via getUnitContext
+//   - Structural checks (option count, stimulus integrity, pseudocode syntax, explanation length)
+//   - Cross-model validation (generator Haiku → validator Sonnet-4-6)
+//   - Retry with rejection-reason feedback (3 attempts)
 
 async function generateOne(
   course: ApCourse,
   unit: ApUnit,
-  unitName: string,
+  _unitName: string,
   difficulty: Difficulty,
   topic: string | undefined
-): Promise<{ topic: string; subtopic: string; questionText: string; stimulus: string | null; options: string[]; correctAnswer: string; explanation: string; apSkill?: string; contentHash: string } | null> {
-  const courseConfig = COURSE_REGISTRY[course];
-  const difficultyRubricEntry = courseConfig.difficultyRubric?.[difficulty];
-  const prompt = buildQuestionPrompt(course, unit, unitName, difficulty, QuestionType.MCQ, topic);
+): Promise<{ topic: string; subtopic: string; questionText: string; stimulus: string | null; options: string[]; correctAnswer: string; explanation: string; apSkill?: string; bloomLevel?: string; contentHash: string } | null> {
+  void _unitName; // generateQuestion looks up unitName from COURSE_REGISTRY internally
+  try {
+    const q = await generateQuestion(
+      unit, difficulty, QuestionType.MCQ, topic, course, "PREMIUM", undefined, false,
+      { generatorOverride: process.env.BULK_USE_SONNET === "1" ? "sonnet" : undefined }
+    );
+    if (!q || !q.options || q.options.length === 0) return null;
 
-  const MAX_ATTEMPTS = 3;
-  for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
-    const raw = await callAIWithCascade(prompt);
-    const cleaned = raw.trim().replace(/^```(?:json)?\s*/i, "").replace(/```\s*$/i, "").trim();
-    const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) continue;
-
-    const parsed = JSON.parse(jsonMatch[0]);
-    if (!parsed.questionText || !parsed.correctAnswer || !Array.isArray(parsed.options)) continue;
-
-    // Validate MCQ quality
-    const validation = await validateQuestion(JSON.stringify(parsed), difficulty, difficultyRubricEntry);
-    if (!validation.approved) {
-      console.warn(`[mega-populate] Attempt ${attempt} rejected: ${validation.reason}`);
-      if (attempt === MAX_ATTEMPTS) return null;
-      continue;
-    }
-
-    const questionText = parsed.questionText as string;
-    const normalized = questionText.toLowerCase().replace(/\s+/g, " ").trim();
+    // Compute content hash for dedup
+    const normalized = q.questionText.toLowerCase().replace(/\s+/g, " ").trim();
     const contentHash = createHash("sha256").update(normalized).digest("hex");
 
     return {
-      topic: parsed.topic ?? topic ?? unitName,
-      subtopic: parsed.subtopic ?? "",
-      questionText,
-      stimulus: parsed.stimulus && parsed.stimulus !== "null" ? parsed.stimulus : null,
-      options: parsed.options,
-      correctAnswer: parsed.correctAnswer.trim().charAt(0).toUpperCase(),
-      explanation: parsed.explanation ?? "",
-      apSkill: (parsed.apSkill as string) || undefined,
+      topic: q.topic,
+      subtopic: q.subtopic,
+      questionText: q.questionText,
+      stimulus: q.stimulus && q.stimulus !== "null" ? q.stimulus : null,
+      options: q.options,
+      correctAnswer: q.correctAnswer,
+      explanation: q.explanation,
+      apSkill: q.apSkill,
+      bloomLevel: q.bloomLevel,
       contentHash,
     };
+  } catch (err) {
+    console.warn(`[mega-populate] generateQuestion failed for ${course}/${unit}/${difficulty}:`, err instanceof Error ? err.message : err);
+    return null;
   }
-
-  return null;
 }
 
 function sleep(ms: number) {

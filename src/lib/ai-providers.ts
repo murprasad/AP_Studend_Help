@@ -50,6 +50,14 @@ function recordProviderFailure(name: string): void {
   circuitBreakers.set(name, state);
 }
 
+// Trip the circuit breaker in a single strike for permanent errors (429/402/401/403 etc.)
+// These errors will not recover within a job run — no sense re-trying across requests.
+function recordProviderFailureHard(name: string, reason: string): void {
+  const state = { failures: CIRCUIT_BREAKER_THRESHOLD, disabledUntil: Date.now() + CIRCUIT_BREAKER_COOLDOWN_MS };
+  circuitBreakers.set(name, state);
+  console.warn(`[AI][circuit-breaker] ${name} disabled for 10 min (hard fail: ${reason})`);
+}
+
 function recordProviderSuccess(name: string): void {
   circuitBreakers.delete(name);
 }
@@ -432,6 +440,44 @@ async function callAnthropic(
   return content.text!;
 }
 
+// Direct-to-Sonnet generator (bulk admin paths only).
+// Bypasses the cascade and circuit breaker — we want every bulk call to hit
+// Sonnet unless the caller explicitly opts out via BULK_USE_SONNET env.
+// Returns AICallResult so the existing generateQuestion → validateQuestion
+// cross-model detection (via modelUsed) kicks in automatically.
+export async function callSonnetDirect(
+  prompt: string,
+  systemPrompt?: string,
+): Promise<AICallResult> {
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) throw new Error("No ANTHROPIC_API_KEY");
+
+  const res = await fetch("https://api.anthropic.com/v1/messages", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "x-api-key": apiKey,
+      "anthropic-version": "2023-06-01",
+    },
+    body: JSON.stringify({
+      model: "claude-sonnet-4-6",
+      max_tokens: 2000,
+      ...(systemPrompt ? { system: systemPrompt } : {}),
+      messages: [{ role: "user", content: prompt }],
+    }),
+    signal: AbortSignal.timeout(40000),
+  });
+
+  if (!res.ok) {
+    const err = await res.text().catch(() => res.statusText);
+    throw new Error(`Anthropic-Sonnet-direct error ${res.status}: ${err.slice(0, 100)}`);
+  }
+  const data = await res.json() as { content?: Array<{ type: string; text?: string }> };
+  const content = data.content?.[0];
+  if (!content || content.type !== "text") throw new Error("Anthropic-Sonnet-direct: empty response");
+  return { response: content.text!.trim(), modelUsed: "anthropic/claude-sonnet-4-6" };
+}
+
 // ── Provider cascade ───────────────────────────────────────────────────────
 
 type ProviderFn = (
@@ -548,11 +594,11 @@ export async function callAIWithCascade(
       } catch (err: unknown) {
         const msg = err instanceof Error ? err.message : String(err);
         console.warn(`[AI] ${provider.name} failed (attempt ${attempt + 1}): ${msg}`);
-        // Don't retry on auth, billing, or rate-limit errors — skip to next provider
+        // Hard-fail immediately on auth, billing, rate-limit, or spend errors — trip breaker for full cooldown
         if (msg.includes("401") || msg.includes("403") || msg.includes("402")
-          || msg.includes("429") || msg.includes("invalid") || msg.includes("API key")
-          || msg.includes("rate") || msg.includes("quota")) {
-          recordProviderFailure(provider.name);
+          || msg.includes("429") || msg.includes("400") || msg.includes("invalid") || msg.includes("API key")
+          || msg.includes("rate") || msg.includes("quota") || msg.includes("spend")) {
+          recordProviderFailureHard(provider.name, msg.slice(0, 80));
           break;
         }
       }
@@ -611,7 +657,13 @@ export async function callAIForTier(
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : String(err);
       console.warn(`[AI][${tier}] ${provider.name} failed: ${msg}`);
-      recordProviderFailure(provider.name);
+      if (msg.includes("401") || msg.includes("403") || msg.includes("402")
+        || msg.includes("429") || msg.includes("400") || msg.includes("invalid") || msg.includes("API key")
+        || msg.includes("rate") || msg.includes("quota") || msg.includes("spend")) {
+        recordProviderFailureHard(provider.name, msg.slice(0, 80));
+      } else {
+        recordProviderFailure(provider.name);
+      }
       if (msg.includes("401") || msg.includes("403") || msg.includes("402")
         || msg.includes("429") || msg.includes("invalid") || msg.includes("API key")) {
         continue;
@@ -694,10 +746,20 @@ export async function validateQuestion(
 7. DISTRACTOR DISTINCTNESS: All 4 options test different misconceptions (no two distractors representing the same error type)
 8. EXPLANATION TEACHES: The explanation explains why the correct answer is right AND why each wrong answer is wrong` : "";
 
-  const allExtraCriteria = `${difficultySection}${clepCriteria}`;
-  const criteriaCount = course?.startsWith("CLEP_")
-    ? (difficultyRubricEntry ? "NINE" : "EIGHT")
-    : (difficultyRubricEntry ? "SIX" : "FIVE");
+  const apCriteria = course?.startsWith("AP_") ? `
+6. AUTHENTIC AP STEM PATTERN: The stem uses College Board style — "Which of the following best/most directly/most clearly...", scenario/passage-based, or data/stimulus-driven. NOT bare "What is X?" recall.
+7. STIMULUS INTEGRITY: If the question REFERENCES a stimulus (passage, graph, pseudocode, table, diagram), the stimulus MUST be present in the "stimulus" field AND actually match what the question asks. Questions that reference non-existent stimuli FAIL.
+8. NUMERICAL CONSISTENCY: For calculation questions, the numbers in the stem, stimulus, correctAnswer, and explanation MUST be consistent and mathematically correct. Cross-check all values.
+9. DISTRACTOR PLAUSIBILITY: Each wrong answer represents a distinct, realistic student misconception (NOT obviously wrong, NOT duplicate errors across options).
+10. EXPLANATION COMPLETENESS: The explanation is complete (not truncated mid-sentence), names the correct answer, and explains WHY each distractor is wrong.` : "";
+
+  const allExtraCriteria = `${difficultySection}${clepCriteria}${apCriteria}`;
+  const apCount = course?.startsWith("AP_");
+  const criteriaCount = apCount
+    ? (difficultyRubricEntry ? "ELEVEN" : "TEN")
+    : course?.startsWith("CLEP_")
+      ? (difficultyRubricEntry ? "NINE" : "EIGHT")
+      : (difficultyRubricEntry ? "SIX" : "FIVE");
 
   const validatorPrompt = `You are a College Board AP exam quality reviewer. Evaluate this question on ${criteriaCount} criteria:
 1. Factual accuracy — Is the content and explanation factually correct?
@@ -714,62 +776,79 @@ ${questionJson}
 Reply ONLY with valid JSON (no markdown, no extra text):
 {"approved": true} if all criteria pass, or {"approved": false, "reason": "criterion: explanation"}`;
 
-  // Cross-model validation: prefer a different model family than the generator
-  // to catch blind spots (same model tends to approve its own mistakes)
+  // Cross-model validation: validator MUST be from a different model family than the generator.
+  // Tries in order: Gemini, Groq, Anthropic, Pollinations — skips the one matching the generator.
   const generatorIsGroq = generatorModel?.includes("llama") || generatorModel?.includes("groq");
   const generatorIsGemini = generatorModel?.includes("gemini");
+  const generatorIsAnthropic = generatorModel?.includes("claude") || generatorModel?.includes("anthropic");
+  const generatorIsSonnet = !!(generatorModel && (generatorModel.includes("sonnet") || generatorModel.includes("claude-sonnet")));
   const geminiKey = process.env.GOOGLE_AI_API_KEY;
   const groqKey = process.env.GROQ_API_KEY;
+  const anthropicKey = process.env.ANTHROPIC_API_KEY;
 
-  // Try Gemini first if generator was Groq/Llama (or if no generator info)
-  if (geminiKey && (!generatorIsGemini || !groqKey)) {
+  const tryValidator = async (
+    name: string,
+    matchesGenerator: boolean,
+    fn: () => Promise<string>,
+  ): Promise<ValidationResult | null> => {
+    if (matchesGenerator) return null; // cross-model constraint
+    if (isProviderDisabled(name)) return null; // circuit breaker
     try {
-      const text = await callGemini(validatorPrompt);
-      if (text?.trim()) {
-        const clean = text.trim().replace(/^```(?:json)?\s*/i, "").replace(/```\s*$/i, "");
-        console.log(`[validateQuestion] Used Gemini (cross-model: generator=${generatorModel ?? "unknown"})`);
-        return JSON.parse(clean) as ValidationResult;
+      const text = await fn();
+      if (!text?.trim()) return null;
+      const clean = text.trim().replace(/^```(?:json)?\s*/i, "").replace(/```\s*$/i, "");
+      const match = clean.match(/\{[\s\S]*\}/);
+      const parsed = JSON.parse(match ? match[0] : clean) as ValidationResult;
+      if (typeof parsed.approved === "boolean") {
+        console.log(`[validateQuestion] Used ${name} (cross-model: generator=${generatorModel ?? "unknown"})`);
+        return parsed;
       }
-    } catch {
-      // fall through to Groq
+      return null;
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      if (msg.includes("429") || msg.includes("400") || msg.includes("402") || msg.includes("403") || msg.includes("quota") || msg.includes("rate")) {
+        recordProviderFailureHard(name, msg.slice(0, 60));
+      }
+      return null;
     }
-  }
+  };
 
-  // Try Groq if generator was Gemini, or as fallback
-  if (groqKey && (!generatorIsGroq || !geminiKey)) {
-    try {
-      const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+  // Priority 1: Anthropic validator (highest-quality, catches factual errors best).
+  // When generator was Sonnet, validator downgrades to Haiku 4.5 — still a meaningful
+  // cross-model check within the Anthropic family (avoids same-model-bias).
+  if (anthropicKey) {
+    const validatorModel = generatorIsSonnet ? "claude-haiku-4-5-20251001" : "claude-sonnet-4-6";
+    const validatorName = generatorIsSonnet ? "Anthropic-Haiku-validator" : "Anthropic-Sonnet-validator";
+    const validatorMaxTokens = generatorIsSonnet ? 600 : 400;
+    const result = await tryValidator(validatorName, false, async () => {
+      const res = await fetch("https://api.anthropic.com/v1/messages", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${groqKey}`,
-        },
+        headers: { "Content-Type": "application/json", "x-api-key": anthropicKey, "anthropic-version": "2023-06-01" },
         body: JSON.stringify({
-          model: "llama-3.3-70b-versatile",
+          model: validatorModel,
+          max_tokens: validatorMaxTokens,
           messages: [{ role: "user", content: validatorPrompt }],
-          max_tokens: 200,
-          temperature: 0.1,
         }),
-        signal: AbortSignal.timeout(10000),
+        signal: AbortSignal.timeout(20000),
       });
-
-      if (res.ok) {
-        const data = await res.json() as { choices?: Array<{ message?: { content?: string } }> };
-        const content = data.choices?.[0]?.message?.content?.trim();
-        if (content) {
-          const clean = content.replace(/^```(?:json)?\s*/i, "").replace(/```\s*$/i, "");
-          console.log(`[validateQuestion] Used Groq (cross-model: generator=${generatorModel ?? "unknown"})`);
-          return JSON.parse(clean) as ValidationResult;
-        }
-      }
-    } catch {
-      // fall through to Pollinations
-    }
+      if (!res.ok) throw new Error(`Anthropic ${res.status}: ${await res.text().catch(() => res.statusText)}`);
+      const data = await res.json() as { content?: Array<{ text?: string }> };
+      return data.content?.[0]?.text ?? "";
+    });
+    if (result) return result;
   }
 
-  // Last resort: if both keys exist but cross-model conditions skipped them, try either
+  // Priority 2: Gemini
+  if (geminiKey) {
+    const result = await tryValidator("Gemini-validator", !!generatorIsGemini, () =>
+      callGemini(validatorPrompt),
+    );
+    if (result) return result;
+  }
+
+  // Priority 3: Groq
   if (groqKey) {
-    try {
+    const result = await tryValidator("Groq-validator", !!generatorIsGroq, async () => {
       const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
         method: "POST",
         headers: { "Content-Type": "application/json", "Authorization": `Bearer ${groqKey}` },
@@ -780,25 +859,27 @@ Reply ONLY with valid JSON (no markdown, no extra text):
         }),
         signal: AbortSignal.timeout(10000),
       });
-      if (res.ok) {
-        const data = await res.json() as { choices?: Array<{ message?: { content?: string } }> };
-        const content = data.choices?.[0]?.message?.content?.trim();
-        if (content) {
-          const clean = content.replace(/^```(?:json)?\s*/i, "").replace(/```\s*$/i, "");
-          return JSON.parse(clean) as ValidationResult;
-        }
-      }
-    } catch { /* fall through */ }
+      if (!res.ok) throw new Error(`Groq ${res.status}`);
+      const data = await res.json() as { choices?: Array<{ message?: { content?: string } }> };
+      return data.choices?.[0]?.message?.content ?? "";
+    });
+    if (result) return result;
   }
 
-  // Fallback: Pollinations-Free
+  // Priority 4: Pollinations-Free (last resort — known to be lenient, but non-zero signal)
   try {
     const text = await callPollinationsFree(validatorPrompt);
     const clean = text.trim().replace(/^```(?:json)?\s*/i, "").replace(/```\s*$/i, "");
-    return JSON.parse(clean) as ValidationResult;
-  } catch {
-    // If validation itself fails, approve the question to avoid blocking generation
-    console.warn("[validateQuestion] Validation failed — approving by default");
-    return { approved: true };
-  }
+    const match = clean.match(/\{[\s\S]*\}/);
+    const parsed = JSON.parse(match ? match[0] : clean) as ValidationResult;
+    if (typeof parsed.approved === "boolean") {
+      console.log(`[validateQuestion] Used Pollinations-Free (last-resort validator)`);
+      return parsed;
+    }
+  } catch { /* fall through */ }
+
+  // Fail-closed: reject the question if all validators failed.
+  // Prior behavior was "fail-open" (approve by default) but that shipped low-quality Qs.
+  console.warn("[validateQuestion] All validators failed — rejecting question (fail-closed)");
+  return { approved: false, reason: "All validators unreachable" };
 }

@@ -180,6 +180,7 @@ export async function POST(req: NextRequest) {
                   generatedForTier: "PREMIUM" as SubTier,
                   contentHash: q.contentHash ?? null,
                   apSkill: q.apSkill ?? null,
+                  bloomLevel: q.bloomLevel ?? null,
                 },
               });
               generated++;
@@ -223,6 +224,7 @@ interface SimpleQuestion {
   correctAnswer: string;
   explanation: string;
   apSkill?: string;
+  bloomLevel?: string;
   contentHash?: string;
 }
 
@@ -239,13 +241,17 @@ async function generateOneQuestion(
 
   const prompt = buildQuestionPrompt(course, unit, unitName, difficulty, questionType, topic);
 
-  const { callAIWithCascade, validateQuestion } = await import("@/lib/ai-providers");
+  const { callAIWithCascade, callSonnetDirect, validateQuestion } = await import("@/lib/ai-providers");
 
   const MAX_ATTEMPTS = 3;
   const needsValidation = questionType === QuestionType.MCQ;
+  const useSonnet = process.env.BULK_USE_SONNET === "1";
 
   for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
-    const raw = await callAIWithCascade(prompt);
+    const generatorModel = useSonnet ? "anthropic/claude-sonnet-4-6" : undefined;
+    const raw = useSonnet
+      ? (await callSonnetDirect(prompt)).response
+      : await callAIWithCascade(prompt);
     const cleaned = raw.trim().replace(/^```(?:json)?\s*/i, "").replace(/```\s*$/i, "").trim();
 
     // Find the first valid JSON object in the response
@@ -269,7 +275,7 @@ async function generateOneQuestion(
     // Validate MCQ quality — reject and retry if it fails
     if (needsValidation) {
       const difficultyRubricEntry = courseConfig.difficultyRubric?.[difficulty];
-      const validation = await validateQuestion(JSON.stringify(parsed), difficulty, difficultyRubricEntry);
+      const validation = await validateQuestion(JSON.stringify(parsed), difficulty, difficultyRubricEntry, course, generatorModel);
       if (!validation.approved) {
         console.warn(`[populate] Attempt ${attempt} rejected: ${validation.reason}`);
         if (attempt === MAX_ATTEMPTS) return null; // Give up after 3 failed attempts
@@ -292,6 +298,7 @@ async function generateOneQuestion(
         : parsed.correctAnswer.trim(),
       explanation: parsed.explanation ?? "",
       apSkill: (parsed.apSkill as string) || undefined,
+      bloomLevel: (parsed.bloomLevel as string) || undefined,
       contentHash,
     };
   }

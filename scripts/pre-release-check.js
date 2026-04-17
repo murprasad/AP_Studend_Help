@@ -62,7 +62,7 @@ try {
 section("3. Pricing consistency");
 const PRICING_FILES = {
   "src/app/page.tsx":                           ["9.99", "79.99"],
-  "src/app/(marketing)/pricing/page.tsx":        ["9.99", "79.99", "33%"],
+  "src/app/(marketing)/pricing/pricing-client.tsx": ["9.99", "79.99", "33%"],
   "src/app/(marketing)/terms/page.tsx":          ["9.99", "79.99"],
   "src/app/(marketing)/about/page.tsx":          ["79.99"],
   "src/app/(dashboard)/billing/page.tsx":        ["9.99", "79.99"],
@@ -82,7 +82,7 @@ for (const [file, terms] of Object.entries(PRICING_FILES)) {
 // Refund policy present in both pricing page and terms
 section("  3b. Refund policy");
 const refundFiles = [
-  "src/app/(marketing)/pricing/page.tsx",
+  "src/app/(marketing)/pricing/pricing-client.tsx",
   "src/app/(marketing)/terms/page.tsx",
 ];
 for (const f of refundFiles) {
@@ -167,6 +167,12 @@ const REQUIRED_COURSES = [
   "CLEP_BUSINESS_LAW", "CLEP_FRENCH", "CLEP_GERMAN", "CLEP_SPANISH", "CLEP_SPANISH_WRITING",
   "DSST_PRINCIPLES_OF_SUPERVISION", "DSST_HUMAN_RESOURCE_MANAGEMENT",
   "DSST_ORGANIZATIONAL_BEHAVIOR", "DSST_PERSONAL_FINANCE", "DSST_LIFESPAN_DEV_PSYCHOLOGY",
+  "DSST_INTRO_TO_BUSINESS", "DSST_HUMAN_DEVELOPMENT", "DSST_ETHICS_IN_AMERICA",
+  "DSST_ENVIRONMENTAL_SCIENCE", "DSST_TECHNICAL_WRITING", "DSST_PRINCIPLES_OF_FINANCE",
+  "DSST_MANAGEMENT_INFO_SYSTEMS", "DSST_MONEY_AND_BANKING", "DSST_SUBSTANCE_ABUSE",
+  "DSST_CRIMINAL_JUSTICE", "DSST_FUNDAMENTALS_OF_COUNSELING", "DSST_GENERAL_ANTHROPOLOGY",
+  "DSST_WORLD_RELIGIONS", "DSST_ART_WESTERN_WORLD", "DSST_ASTRONOMY",
+  "DSST_COMPUTING_AND_IT", "DSST_CIVIL_WAR",
 ];
 const testPlanPath = "qa_test_plan_practice_comprehensive.md";
 const testPlanContent = read(testPlanPath);

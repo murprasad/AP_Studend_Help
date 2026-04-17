@@ -190,6 +190,8 @@ export const COURSE_REGISTRY: Record<ApCourse, CourseConfig> = {
         responseFormat:
           '{"topic":"...", "subtopic":"...", "questionText":"question", "stimulus":"primary source stimulus", ' +
           '"wikiImageTopic":"Specific Wikipedia article title for a contextual image, or null", ' +
+          '"apSkill":"Causation | Comparison | Continuity and Change | Contextualization | Argumentation | Data Analysis", ' +
+          '"bloomLevel":"remember | apply | analyze", ' +
           '"options":["A) ...","B) ...","C) ...","D) ..."], "correctAnswer":"A", ' +
           '"explanation":"Why correct + why each trap answer is wrong, citing historical evidence"}',
         estimatedMinutes: 2,
@@ -373,6 +375,19 @@ When referencing resources:
     distractorTaxonomy: "Create exactly 3 distractor types: (1) TEMPORAL TRAP — true fact from the wrong time period; (2) GEOGRAPHIC TRAP — true development from a different region; (3) CAUSAL INVERSION — reverses the cause-effect relationship or conflates correlation with causation.",
     stimulusQualityGuidance: "GOOD: A verbatim primary source excerpt (Ibn Battuta, a colonial charter, a diplomatic letter) with date and attribution, or a specific map/image description. AVOID: Vague paraphrases ('A historian noted that…') or textbook summaries.",
     skillCodes: ["Causation", "Comparison", "Continuity and Change Over Time (CCOT)", "Contextualization", "Argumentation"],
+    // College Board official exam weights (midpoints of CB published ranges).
+    // Used by auto-populate to scale per-unit question targets to real exam distribution.
+    topicWeights: {
+      UNIT_1_GLOBAL_TAPESTRY: 0.09,                // CB: 8–10%
+      UNIT_2_NETWORKS_OF_EXCHANGE: 0.09,           // CB: 8–10%
+      UNIT_3_LAND_BASED_EMPIRES: 0.135,            // CB: 12–15%
+      UNIT_4_TRANSOCEANIC_INTERCONNECTIONS: 0.135, // CB: 12–15%
+      UNIT_5_REVOLUTIONS: 0.135,                   // CB: 12–15%
+      UNIT_6_INDUSTRIALIZATION: 0.135,             // CB: 12–15%
+      UNIT_7_GLOBAL_CONFLICT: 0.09,                // CB: 8–10%
+      UNIT_8_COLD_WAR: 0.09,                       // CB: 8–10%
+      UNIT_9_GLOBALIZATION: 0.09,                  // CB: 8–10%
+    },
   },
 
   // ── AP Computer Science Principles ───────────────────────────────────────
@@ -394,6 +409,8 @@ When referencing resources:
         responseFormat:
           '{"topic":"...", "subtopic":"...", "questionText":"question", ' +
           '"stimulus":"pseudocode block or scenario description (use ``` fences for code)", ' +
+          '"apSkill":"Algorithmic Reasoning | Abstraction | Data Analysis | Code Tracing | Computing Innovation Analysis", ' +
+          '"bloomLevel":"remember | apply | analyze", ' +
           '"options":["A) ...","B) ...","C) ...","D) ..."], "correctAnswer":"A", ' +
           '"explanation":"Step-by-step trace or concept explanation referencing AP CSP big ideas"}',
         estimatedMinutes: 3,
@@ -503,6 +520,15 @@ When referencing resources:
     distractorTaxonomy: "(1) OFF-BY-ONE TRAP — plausible but wrong by one iteration; (2) SYNTAX CONFUSION — correct in Python/Java but wrong in AP pseudocode; (3) PARTIAL-TRACE TRAP — correct value at an intermediate step, not the final output.",
     stimulusQualityGuidance: "GOOD: Complete AP pseudocode block using DISPLAY, INPUT, IF/ELSE, REPEAT UNTIL, PROCEDURE with clear variable names. AVOID: Natural-language code descriptions, incomplete fragments, or mixed Python/AP syntax.",
     skillCodes: ["Computational Solution Design", "Algorithms and Program Development", "Abstraction in Program Development", "Code Analysis", "Computing Innovations", "Responsible Computing"],
+    // College Board Big Idea exam weights (midpoints of CB published ranges).
+    // CSP exam = 70 MCQs (70% of score). The 5 units map 1:1 to the 5 Big Ideas.
+    topicWeights: {
+      CSP_1_CREATIVE_DEVELOPMENT: 0.115,         // BI 1: 10–13%
+      CSP_2_DATA: 0.195,                         // BI 2: 17–22%
+      CSP_3_ALGORITHMS_AND_PROGRAMMING: 0.325,   // BI 3: 30–35%
+      CSP_4_COMPUTER_SYSTEMS_NETWORKS: 0.13,     // BI 4: 11–15%
+      CSP_5_IMPACT_OF_COMPUTING: 0.235,          // BI 5: 21–26%
+    },
   },
 
   // ── AP Physics 1: Algebra-Based ───────────────────────────────────────────
@@ -524,6 +550,8 @@ When referencing resources:
         responseFormat:
           '{"topic":"...", "subtopic":"...", "questionText":"question", ' +
           '"stimulus":"null for conceptual | markdown table of given values for calculation | ```mermaid xychart-beta ... ``` block for graph | scenario text for experimental", ' +
+          '"apSkill":"Model Analysis | Mathematical Routines | Scientific Questioning | Experimental Design | Data Analysis | Argumentation", ' +
+          '"bloomLevel":"remember | apply | analyze", ' +
           '"options":["A) ...","B) ...","C) ...","D) ..."], "correctAnswer":"A", ' +
           '"explanation":"Physics law/principle, equation used, step-by-step solution if calculation"}',
         estimatedMinutes: 3,
@@ -734,6 +762,23 @@ When referencing resources:
     distractorTaxonomy: "(1) MAGNITUDE TRAP — correct formula but forgot to square, root, or negate; (2) DIRECTION/SIGN TRAP — correct magnitude, wrong direction (force diagrams, momentum, work); (3) FORMULA SUBSTITUTION TRAP — plugged numbers into wrong equation for superficially similar scenario.",
     stimulusQualityGuidance: "GOOD: (a) Markdown table of given values with units for calculation questions; (b) Mermaid xychart-beta block with realistic data for graph questions; (c) Specific scenario description with numbers (e.g., '5 kg block on frictionless surface connected by string to 2 kg hanging mass'). AVOID: Generic 'an object moves' setups without numbers or vague diagram descriptions.",
     skillCodes: ["Modeling", "Mathematical Routines", "Scientific Questioning", "Experimental Design", "Data Analysis", "Argumentation"],
+    // Topic weights aligned to College Board AP Physics 1 (current redesign) exam content distribution.
+    // CB lists 8 official units; AP_Help schema has 10 units (older split keeping E&M topics).
+    // We weight kinematics/dynamics/energy/momentum highest (mechanics core, ~70% of real exam),
+    // and give the legacy E&M units (Charge/Force, DC Circuits) reduced weight since the
+    // current redesigned exam excludes them. Sums to 1.0.
+    topicWeights: {
+      PHY1_1_KINEMATICS: 0.125,                  // CB: 10–15%
+      PHY1_2_FORCES_AND_NEWTONS_LAWS: 0.205,     // CB: 18–23% (Force & Translational Dynamics)
+      PHY1_3_CIRCULAR_MOTION_GRAVITATION: 0.10,  // shared between Forces + Rotational
+      PHY1_4_ENERGY: 0.205,                      // CB: 18–23% (Work, Energy, Power)
+      PHY1_5_MOMENTUM: 0.125,                    // CB: 10–15%
+      PHY1_6_SIMPLE_HARMONIC_MOTION: 0.065,      // CB: 5–8% (Oscillations)
+      PHY1_7_TORQUE_AND_ROTATION: 0.115,         // CB: 10–15% (Torque & Rotational Dynamics)
+      PHY1_8_ELECTRIC_CHARGE_AND_FORCE: 0.02,    // legacy unit, deprioritised
+      PHY1_9_DC_CIRCUITS: 0.02,                  // legacy unit, deprioritised
+      PHY1_10_WAVES_AND_SOUND: 0.02,             // legacy unit, deprioritised
+    },
   },
 
   // ── AP Calculus AB ────────────────────────────────────────────────────────
@@ -3910,6 +3955,1468 @@ Topics: prenatal/infancy (20%), childhood (25%), adolescence (20%), adulthood (2
       "OpenStax Psychology 2e (free: openstax.org/books/psychology-2e)",
       "Santrock, Life-Span Development (McGraw-Hill)",
       "Feldman, Development Across the Life Span (Pearson)",
+    ],
+  },
+
+  // ── DSST Introduction to Business ──────────────────────────────────────
+  DSST_INTRO_TO_BUSINESS: {
+    name: "DSST Introduction to Business",
+    shortName: "DSST Intro Business",
+    examSecsPerQuestion: 72,
+    enrichWithEduAPIs: false,
+    units: {
+      DSST_BUS_1_ECONOMIC_FOUNDATIONS: {
+        name: "Unit 1: Economic Foundations",
+        keyThemes: ["economic systems", "supply and demand", "market structures", "GDP", "inflation", "business cycles"],
+        openStaxUrl: "https://openstax.org/books/introduction-business/pages/1-introduction",
+        khanUrl: "https://www.khanacademy.org/economics-finance-domain/microeconomics",
+      },
+      DSST_BUS_2_BUSINESS_OWNERSHIP: {
+        name: "Unit 2: Business Ownership and Entrepreneurship",
+        keyThemes: ["sole proprietorship", "partnerships", "corporations", "LLCs", "franchising", "entrepreneurship"],
+        openStaxUrl: "https://openstax.org/books/introduction-business/pages/4-introduction",
+        khanUrl: "https://www.khanacademy.org/economics-finance-domain/entrepreneurship2",
+      },
+      DSST_BUS_3_MANAGEMENT_LEADERSHIP: {
+        name: "Unit 3: Management and Leadership",
+        keyThemes: ["management functions", "organizational structure", "leadership styles", "motivation theories", "decision-making", "strategic planning"],
+        openStaxUrl: "https://openstax.org/books/introduction-business/pages/6-introduction",
+        khanUrl: "https://www.khanacademy.org/economics-finance-domain/entrepreneurship2",
+      },
+      DSST_BUS_4_MARKETING_FUNDAMENTALS: {
+        name: "Unit 4: Marketing Fundamentals",
+        keyThemes: ["marketing mix (4Ps)", "market segmentation", "consumer behavior", "branding", "advertising", "digital marketing"],
+        openStaxUrl: "https://openstax.org/books/introduction-business/pages/11-introduction",
+        khanUrl: "https://www.khanacademy.org/economics-finance-domain/entrepreneurship2",
+      },
+      DSST_BUS_5_FINANCE_ACCOUNTING: {
+        name: "Unit 5: Finance and Accounting",
+        keyThemes: ["financial statements", "balance sheet", "income statement", "cash flow", "budgeting", "financial ratios"],
+        openStaxUrl: "https://openstax.org/books/introduction-business/pages/14-introduction",
+        khanUrl: "https://www.khanacademy.org/economics-finance-domain/core-finance",
+      },
+    },
+    suggestedTutorQuestions: [
+      "What are the main differences between sole proprietorships, partnerships, and corporations?",
+      "How do supply and demand determine market prices?",
+      "What are the four Ps of the marketing mix?",
+      "What is the difference between a balance sheet and an income statement?",
+      "How do leadership styles affect organizational performance?",
+      "What are the stages of the business cycle?",
+    ],
+    curriculumContext: `DSST Introduction to Business covers foundational concepts in business operations, management, marketing, and finance.
+Exam: 100 questions, 120 minutes, multiple choice. Passing score ~400/500 (scaled). Earns 3 college credits.
+Typical credit value: ~$1,000+ in tuition savings.
+Topics: economic foundations (20%), business ownership (20%), management/leadership (20%), marketing (20%), finance/accounting (20%).`,
+    tutorResources: `
+- OpenStax Introduction to Business (openstax.org/books/introduction-business): Free, CC-licensed textbook
+- Saylor Academy BUS100 (learn.saylor.org/course/BUS100): Free Introduction to Business course
+- Khan Academy Microeconomics & Finance (khanacademy.org): Economics and finance fundamentals`,
+    examAlignmentNotes: `DSST Introduction to Business alignment:
+- Economic foundations: 20%
+- Business ownership and entrepreneurship: 20%
+- Management and leadership: 20%
+- Marketing fundamentals: 20%
+- Finance and accounting: 20%
+100 MCQ in 120 min. 4-choice format. ~400/500 passing. Earns 3 semester hours.`,
+    stimulusRequirement: "Include a brief business scenario as stimulus where relevant; null for concept-definition questions",
+    stimulusDescription: "business scenario or market situation (null for concept recall)",
+    explanationGuidance: "referencing the specific business concept or theory and explaining how it applies to real-world business operations",
+    difficultyRubric: {
+      EASY: "Define a business term or identify a type of business ownership from its description. 65%+ correct.",
+      MEDIUM: "Apply a marketing or management concept to a business scenario or analyze a simple financial statement. 40–55% correct.",
+      HARD: "Evaluate a multi-factor business decision involving trade-offs between competing strategies or financial considerations. 25–40% correct.",
+    },
+    distractorTaxonomy: "(1) OWNERSHIP CONFUSION — mixes up liability protections across business structures; (2) MARKETING MIX TRAP — assigns the wrong P to a marketing activity; (3) FINANCIAL STATEMENT SWAP — places items on the wrong financial statement.",
+    stimulusQualityGuidance: "GOOD: A 3-sentence business scenario describing a specific situation requiring a decision. AVOID: Abstract definitions without applied context.",
+    skillCodes: ["Economic Analysis", "Business Operations", "Marketing Application", "Financial Literacy"],
+    topicWeights: {
+      "DSST_BUS_1_ECONOMIC_FOUNDATIONS": 0.20,
+      "DSST_BUS_2_BUSINESS_OWNERSHIP": 0.20,
+      "DSST_BUS_3_MANAGEMENT_LEADERSHIP": 0.20,
+      "DSST_BUS_4_MARKETING_FUNDAMENTALS": 0.20,
+      "DSST_BUS_5_FINANCE_ACCOUNTING": 0.20,
+    },
+    recommendedTextbooks: [
+      "OpenStax Introduction to Business (free: openstax.org/books/introduction-business)",
+      "Nickels, McHugh & McHugh, Understanding Business (McGraw-Hill)",
+      "Ebert & Griffin, Business Essentials (Pearson)",
+    ],
+  },
+
+  // ── DSST Human Development ──────────────────────────────────────────────
+  DSST_HUMAN_DEVELOPMENT: {
+    name: "DSST Human Development",
+    shortName: "DSST Human Dev",
+    examSecsPerQuestion: 72,
+    enrichWithEduAPIs: false,
+    units: {
+      DSST_HD_1_THEORIES_RESEARCH: {
+        name: "Unit 1: Theories and Research Methods",
+        keyThemes: ["developmental theories", "nature vs nurture", "research methods", "cross-sectional vs longitudinal", "ethical research", "scientific method"],
+        openStaxUrl: "https://openstax.org/books/psychology-2e/pages/9-1-what-is-lifespan-development",
+        khanUrl: "https://www.khanacademy.org/test-prep/mcat/behavior/human-development",
+      },
+      DSST_HD_2_PRENATAL_INFANCY: {
+        name: "Unit 2: Prenatal Development and Infancy",
+        keyThemes: ["prenatal stages", "teratogens", "neonatal development", "attachment theory", "sensorimotor stage", "temperament"],
+        openStaxUrl: "https://openstax.org/books/psychology-2e/pages/9-2-lifespan-theories",
+        khanUrl: "https://www.khanacademy.org/test-prep/mcat/behavior/human-development",
+      },
+      DSST_HD_3_CHILDHOOD: {
+        name: "Unit 3: Childhood Development",
+        keyThemes: ["cognitive development", "language acquisition", "social development", "moral reasoning", "parenting styles", "play and learning"],
+        openStaxUrl: "https://openstax.org/books/psychology-2e/pages/9-3-stages-of-development",
+        khanUrl: "https://www.khanacademy.org/test-prep/mcat/behavior/cognition",
+      },
+      DSST_HD_4_ADOLESCENCE_ADULTHOOD: {
+        name: "Unit 4: Adolescence and Adulthood",
+        keyThemes: ["identity formation", "puberty", "Erikson psychosocial stages", "career development", "intimate relationships", "midlife transition"],
+        openStaxUrl: "https://openstax.org/books/psychology-2e/pages/9-3-stages-of-development",
+        khanUrl: "https://www.khanacademy.org/test-prep/mcat/behavior/theories-of-personality",
+      },
+      DSST_HD_5_AGING_DEATH: {
+        name: "Unit 5: Aging, Death, and Dying",
+        keyThemes: ["physical aging", "cognitive decline", "wisdom", "retirement", "Kubler-Ross stages", "end-of-life issues"],
+        openStaxUrl: "https://openstax.org/books/psychology-2e/pages/9-4-death-and-dying",
+        khanUrl: "https://www.khanacademy.org/test-prep/mcat/behavior/human-development",
+      },
+    },
+    suggestedTutorQuestions: [
+      "What are the major theories of human development?",
+      "How do teratogens affect prenatal development?",
+      "What are Piaget's stages of cognitive development?",
+      "How does Erikson explain identity formation in adolescence?",
+      "What is the difference between cross-sectional and longitudinal studies?",
+      "What are the Kubler-Ross stages of grief?",
+    ],
+    curriculumContext: `DSST Human Development covers the biological, cognitive, and psychosocial development across the lifespan.
+Exam: 100 questions, 120 minutes, multiple choice. Passing score ~400/500 (scaled). Earns 3 college credits.
+Typical credit value: ~$1,000+ in tuition savings.
+Topics: theories/research (20%), prenatal/infancy (20%), childhood (20%), adolescence/adulthood (20%), aging/death (20%).`,
+    tutorResources: `
+- OpenStax Psychology 2e Ch. 9 (openstax.org/books/psychology-2e/pages/9-introduction): Free developmental psychology chapter
+- Saylor Academy PSYCH302 (learn.saylor.org/course/PSYCH302): Free Lifespan Development course
+- Khan Academy MCAT Behavior (khanacademy.org): Development and cognition topics`,
+    examAlignmentNotes: `DSST Human Development alignment:
+- Theories and research methods: 20%
+- Prenatal development and infancy: 20%
+- Childhood development: 20%
+- Adolescence and adulthood: 20%
+- Aging, death, and dying: 20%
+100 MCQ in 120 min. 4-choice format. ~400/500 passing. Earns 3 semester hours.`,
+    stimulusRequirement: "Include a developmental case study or scenario as stimulus where relevant; null for theory recall questions",
+    stimulusDescription: "developmental case study or age-specific behavior vignette (null for theory identification)",
+    explanationGuidance: "naming the specific developmental theory, stage, or theorist, and explaining how it connects to the observed behavior or milestone",
+    difficultyRubric: {
+      EASY: "Identify a developmental stage or name a theorist from a description. 65%+ correct.",
+      MEDIUM: "Apply a developmental theory to a case scenario or determine which stage a behavior represents. 40–55% correct.",
+      HARD: "Compare competing developmental theories or analyze a case spanning multiple developmental domains. 25–40% correct.",
+    },
+    distractorTaxonomy: "(1) STAGE MIX-UP — assigns behavior to the wrong developmental stage; (2) THEORIST SWAP — attributes one theorist's concept to another; (3) AGE NORM ERROR — expects a milestone at the wrong developmental period.",
+    stimulusQualityGuidance: "GOOD: A case describing a person at a specific age exhibiting particular behaviors. AVOID: Abstract theory questions without a real-world connection.",
+    skillCodes: ["Developmental Theory", "Stage Identification", "Research Methods", "Lifespan Analysis"],
+    topicWeights: {
+      "DSST_HD_1_THEORIES_RESEARCH": 0.20,
+      "DSST_HD_2_PRENATAL_INFANCY": 0.20,
+      "DSST_HD_3_CHILDHOOD": 0.20,
+      "DSST_HD_4_ADOLESCENCE_ADULTHOOD": 0.20,
+      "DSST_HD_5_AGING_DEATH": 0.20,
+    },
+    recommendedTextbooks: [
+      "OpenStax Psychology 2e (free: openstax.org/books/psychology-2e)",
+      "Santrock, Life-Span Development (McGraw-Hill)",
+      "Berger, The Developing Person Through the Life Span (Worth)",
+    ],
+  },
+
+  // ── DSST Ethics in America ──────────────────────────────────────────────
+  DSST_ETHICS_IN_AMERICA: {
+    name: "DSST Ethics in America",
+    shortName: "DSST Ethics",
+    examSecsPerQuestion: 72,
+    enrichWithEduAPIs: false,
+    units: {
+      DSST_EIA_1_ETHICAL_TRADITIONS: {
+        name: "Unit 1: Ethical Traditions and Theories",
+        keyThemes: ["utilitarianism", "deontology", "virtue ethics", "social contract theory", "natural law", "moral relativism"],
+        openStaxUrl: "https://openstax.org/books/introduction-philosophy/pages/8-introduction",
+        khanUrl: "https://www.khanacademy.org/partner-content/wi-phi/wiphi-value-theory",
+      },
+      DSST_EIA_2_CIVIL_LIBERTIES: {
+        name: "Unit 2: Civil Liberties and Rights",
+        keyThemes: ["freedom of speech", "due process", "equal protection", "privacy rights", "religious freedom", "civil disobedience"],
+        openStaxUrl: "https://openstax.org/books/american-government-3e/pages/4-introduction",
+        khanUrl: "https://www.khanacademy.org/humanities/us-government-and-civics/us-gov-civil-liberties-and-civil-rights",
+      },
+      DSST_EIA_3_SOCIAL_JUSTICE: {
+        name: "Unit 3: Social Justice and Equality",
+        keyThemes: ["distributive justice", "Rawls theory of justice", "affirmative action", "economic inequality", "human rights", "discrimination"],
+        openStaxUrl: "https://openstax.org/books/introduction-philosophy/pages/8-3-distributive-justice",
+        khanUrl: "https://www.khanacademy.org/partner-content/wi-phi/wiphi-value-theory",
+      },
+      DSST_EIA_4_BIOETHICS: {
+        name: "Unit 4: Bioethics and Medical Ethics",
+        keyThemes: ["informed consent", "euthanasia", "genetic engineering", "organ donation", "reproductive ethics", "patient autonomy"],
+        openStaxUrl: "https://openstax.org/books/introduction-philosophy/pages/8-4-applied-ethics",
+        khanUrl: "https://www.khanacademy.org/partner-content/wi-phi/wiphi-value-theory",
+      },
+      DSST_EIA_5_BUSINESS_GOV_ETHICS: {
+        name: "Unit 5: Business and Government Ethics",
+        keyThemes: ["corporate responsibility", "whistleblowing", "environmental ethics", "political corruption", "lobbying", "ethical leadership"],
+        openStaxUrl: "https://openstax.org/books/business-ethics/pages/1-introduction",
+        khanUrl: "https://www.khanacademy.org/partner-content/wi-phi/wiphi-value-theory",
+      },
+    },
+    suggestedTutorQuestions: [
+      "What is the difference between utilitarianism and deontology?",
+      "How does Rawls' veil of ignorance work?",
+      "What ethical arguments exist for and against euthanasia?",
+      "When is civil disobedience morally justified?",
+      "What are the main arguments for and against affirmative action?",
+      "How do businesses balance profit with corporate social responsibility?",
+    ],
+    curriculumContext: `DSST Ethics in America covers major ethical theories and their application to contemporary moral issues in American society.
+Exam: 100 questions, 120 minutes, multiple choice. Passing score ~400/500 (scaled). Earns 3 college credits.
+Typical credit value: ~$1,000+ in tuition savings.
+Topics: ethical traditions (20%), civil liberties (20%), social justice (20%), bioethics (20%), business/government ethics (20%).`,
+    tutorResources: `
+- Yale Open Courses: Moral Philosophy (oyc.yale.edu): Free lectures on ethical theory
+- Stanford Encyclopedia of Philosophy (plato.stanford.edu): Authoritative ethics articles
+- MIT OCW Ethics (ocw.mit.edu): Free ethics course materials`,
+    examAlignmentNotes: `DSST Ethics in America alignment:
+- Ethical traditions and theories: 20%
+- Civil liberties and rights: 20%
+- Social justice and equality: 20%
+- Bioethics and medical ethics: 20%
+- Business and government ethics: 20%
+100 MCQ in 120 min. 4-choice format. ~400/500 passing. Earns 3 semester hours.`,
+    stimulusRequirement: "Include an ethical dilemma or scenario as stimulus where relevant; null for theory identification questions",
+    stimulusDescription: "ethical dilemma or real-world moral scenario (null for theory recall)",
+    explanationGuidance: "identifying the relevant ethical theory or principle, explaining how it applies to the dilemma, and noting why competing perspectives fall short",
+    difficultyRubric: {
+      EASY: "Identify an ethical theory from its description or match a philosopher to their key concept. 65%+ correct.",
+      MEDIUM: "Apply an ethical framework to a specific moral dilemma or compare two ethical positions. 40–55% correct.",
+      HARD: "Analyze a complex ethical scenario requiring integration of multiple frameworks and consideration of competing moral claims. 25–40% correct.",
+    },
+    distractorTaxonomy: "(1) THEORY SWAP — attributes a utilitarian argument to deontology or vice versa; (2) RIGHTS CONFUSION — conflates civil liberties with civil rights; (3) ABSOLUTISM TRAP — treats a context-dependent ethical issue as having a single correct universal answer.",
+    stimulusQualityGuidance: "GOOD: A specific ethical dilemma with competing moral claims and stakeholders. AVOID: Abstract philosophy questions without practical application.",
+    skillCodes: ["Ethical Reasoning", "Theory Application", "Moral Analysis", "Critical Evaluation"],
+    topicWeights: {
+      "DSST_EIA_1_ETHICAL_TRADITIONS": 0.20,
+      "DSST_EIA_2_CIVIL_LIBERTIES": 0.20,
+      "DSST_EIA_3_SOCIAL_JUSTICE": 0.20,
+      "DSST_EIA_4_BIOETHICS": 0.20,
+      "DSST_EIA_5_BUSINESS_GOV_ETHICS": 0.20,
+    },
+    recommendedTextbooks: [
+      "Rachels & Rachels, The Elements of Moral Philosophy (McGraw-Hill)",
+      "Sandel, Justice: What's the Right Thing to Do? (Farrar, Straus and Giroux)",
+      "Mappes & DeGrazia, Biomedical Ethics (McGraw-Hill)",
+    ],
+  },
+
+  // ── DSST Environmental Science ──────────────────────────────────────────
+  DSST_ENVIRONMENTAL_SCIENCE: {
+    name: "DSST Environmental Science",
+    shortName: "DSST Env Science",
+    examSecsPerQuestion: 72,
+    enrichWithEduAPIs: false,
+    units: {
+      DSST_ENV_1_ECOSYSTEMS: {
+        name: "Unit 1: Ecosystems and Biodiversity",
+        keyThemes: ["ecosystem structure", "food webs", "energy flow", "biogeochemical cycles", "biodiversity", "biomes"],
+        openStaxUrl: "https://openstax.org/books/biology-2e/pages/44-1-ecology-of-ecosystems",
+        khanUrl: "https://www.khanacademy.org/science/biology/ecology",
+      },
+      DSST_ENV_2_POPULATION_RESOURCES: {
+        name: "Unit 2: Population and Natural Resources",
+        keyThemes: ["population growth", "carrying capacity", "demographic transition", "water resources", "soil conservation", "deforestation"],
+        openStaxUrl: "https://openstax.org/books/biology-2e/pages/45-1-population-demography",
+        khanUrl: "https://www.khanacademy.org/science/biology/ecology",
+      },
+      DSST_ENV_3_POLLUTION_WASTE: {
+        name: "Unit 3: Pollution and Waste Management",
+        keyThemes: ["air pollution", "water pollution", "solid waste", "hazardous waste", "ozone depletion", "acid rain"],
+        openStaxUrl: "https://openstax.org/books/biology-2e/pages/44-5-threats-to-biodiversity",
+        khanUrl: "https://www.khanacademy.org/science/biology/ecology",
+      },
+      DSST_ENV_4_ENERGY: {
+        name: "Unit 4: Energy Sources and Consumption",
+        keyThemes: ["fossil fuels", "nuclear energy", "solar energy", "wind power", "hydroelectric", "energy conservation"],
+        openStaxUrl: "https://openstax.org/books/biology-2e/pages/44-1-ecology-of-ecosystems",
+        khanUrl: "https://www.khanacademy.org/science/biology/ecology",
+      },
+      DSST_ENV_5_POLICY_SUSTAINABILITY: {
+        name: "Unit 5: Environmental Policy and Sustainability",
+        keyThemes: ["Clean Air Act", "Clean Water Act", "EPA", "climate change policy", "sustainable development", "international agreements"],
+        openStaxUrl: "https://openstax.org/books/biology-2e/pages/44-5-threats-to-biodiversity",
+        khanUrl: "https://www.khanacademy.org/science/biology/ecology",
+      },
+    },
+    suggestedTutorQuestions: [
+      "How does energy flow through an ecosystem?",
+      "What is the difference between renewable and nonrenewable resources?",
+      "What causes ozone depletion and how is it different from climate change?",
+      "How does the demographic transition model work?",
+      "What are the main provisions of the Clean Air Act?",
+      "How do biogeochemical cycles maintain ecosystem balance?",
+    ],
+    curriculumContext: `DSST Environmental Science covers ecosystems, natural resources, pollution, energy, and environmental policy.
+Exam: 100 questions, 120 minutes, multiple choice. Passing score ~400/500 (scaled). Earns 3 college credits.
+Typical credit value: ~$1,000+ in tuition savings.
+Topics: ecosystems/biodiversity (20%), population/resources (20%), pollution/waste (20%), energy (20%), policy/sustainability (20%).`,
+    tutorResources: `
+- EPA.gov (epa.gov): Authoritative U.S. environmental data and policy resources
+- OpenStax Biology 2e Ecology chapters (openstax.org/books/biology-2e): Free ecology content
+- Khan Academy Ecology (khanacademy.org/science/biology/ecology): Ecosystem and population ecology`,
+    examAlignmentNotes: `DSST Environmental Science alignment:
+- Ecosystems and biodiversity: 20%
+- Population and natural resources: 20%
+- Pollution and waste management: 20%
+- Energy sources and consumption: 20%
+- Environmental policy and sustainability: 20%
+100 MCQ in 120 min. 4-choice format. ~400/500 passing. Earns 3 semester hours.`,
+    stimulusRequirement: "Include an environmental scenario or data description as stimulus where relevant; null for concept recall questions",
+    stimulusDescription: "environmental scenario, data table, or ecosystem description (null for definition questions)",
+    explanationGuidance: "referencing the specific environmental science principle, identifying the ecological mechanism, and connecting it to real-world environmental outcomes",
+    difficultyRubric: {
+      EASY: "Identify an ecosystem component or define an environmental term. 65%+ correct.",
+      MEDIUM: "Apply an ecological principle to a scenario or analyze the impact of a pollutant on an ecosystem. 40–55% correct.",
+      HARD: "Evaluate trade-offs in environmental policy or analyze multi-factor ecological interactions. 25–40% correct.",
+    },
+    distractorTaxonomy: "(1) CYCLE CONFUSION — mixes up steps in different biogeochemical cycles; (2) POLICY SWAP — confuses Clean Air Act provisions with Clean Water Act; (3) ENERGY TRAP — conflates renewable energy advantages with wrong energy source.",
+    stimulusQualityGuidance: "GOOD: A specific environmental scenario with measurable impacts or a policy decision with trade-offs. AVOID: Vague 'pollution is bad' statements without specifics.",
+    skillCodes: ["Ecosystem Analysis", "Resource Management", "Pollution Assessment", "Policy Evaluation"],
+    topicWeights: {
+      "DSST_ENV_1_ECOSYSTEMS": 0.20,
+      "DSST_ENV_2_POPULATION_RESOURCES": 0.20,
+      "DSST_ENV_3_POLLUTION_WASTE": 0.20,
+      "DSST_ENV_4_ENERGY": 0.20,
+      "DSST_ENV_5_POLICY_SUSTAINABILITY": 0.20,
+    },
+    recommendedTextbooks: [
+      "Withgott & Laposata, Environment: The Science Behind the Stories (Pearson)",
+      "Miller & Spoolman, Living in the Environment (Cengage)",
+      "OpenStax Biology 2e Ecology chapters (free: openstax.org/books/biology-2e)",
+    ],
+  },
+
+  // ── DSST Technical Writing ──────────────────────────────────────────────
+  DSST_TECHNICAL_WRITING: {
+    name: "DSST Technical Writing",
+    shortName: "DSST Tech Writing",
+    examSecsPerQuestion: 72,
+    enrichWithEduAPIs: false,
+    units: {
+      DSST_TW_1_PURPOSE_AUDIENCE: {
+        name: "Unit 1: Purpose and Audience Analysis",
+        keyThemes: ["audience analysis", "purpose identification", "tone and style", "reader expectations", "context of use", "user personas"],
+        openStaxUrl: "https://openstax.org/books/writing-guide/pages/1-introduction",
+        khanUrl: "https://www.khanacademy.org/humanities/grammar",
+      },
+      DSST_TW_2_DOCUMENT_DESIGN: {
+        name: "Unit 2: Document Design and Organization",
+        keyThemes: ["document structure", "headings and subheadings", "visual design", "page layout", "lists and tables", "white space"],
+        openStaxUrl: "https://openstax.org/books/writing-guide/pages/4-introduction",
+        khanUrl: "https://www.khanacademy.org/humanities/grammar",
+      },
+      DSST_TW_3_RESEARCH_DOCUMENTATION: {
+        name: "Unit 3: Research and Documentation",
+        keyThemes: ["source evaluation", "citation styles", "APA format", "MLA format", "plagiarism", "primary vs secondary sources"],
+        openStaxUrl: "https://openstax.org/books/writing-guide/pages/13-introduction",
+        khanUrl: "https://www.khanacademy.org/humanities/grammar",
+      },
+      DSST_TW_4_REVISION_EDITING: {
+        name: "Unit 4: Revision and Editing",
+        keyThemes: ["clarity", "concision", "active voice", "grammar and mechanics", "proofreading", "peer review"],
+        openStaxUrl: "https://openstax.org/books/writing-guide/pages/5-introduction",
+        khanUrl: "https://www.khanacademy.org/humanities/grammar",
+      },
+      DSST_TW_5_WORKPLACE_COMM: {
+        name: "Unit 5: Workplace Communication",
+        keyThemes: ["memos", "business reports", "proposals", "email etiquette", "presentations", "instructions and manuals"],
+        openStaxUrl: "https://openstax.org/books/writing-guide/pages/1-introduction",
+        khanUrl: "https://www.khanacademy.org/humanities/grammar",
+      },
+    },
+    suggestedTutorQuestions: [
+      "How do you analyze an audience for a technical document?",
+      "What are the key principles of document design?",
+      "When should you use APA vs MLA citation format?",
+      "How do you revise a paragraph for clarity and concision?",
+      "What is the difference between a memo and a business report?",
+      "How do you write effective instructions for a non-technical audience?",
+    ],
+    curriculumContext: `DSST Technical Writing covers principles of effective technical and professional communication.
+Exam: 100 questions, 120 minutes, multiple choice. Passing score ~400/500 (scaled). Earns 3 college credits.
+Typical credit value: ~$1,000+ in tuition savings.
+Topics: purpose/audience (20%), document design (20%), research/documentation (20%), revision/editing (20%), workplace communication (20%).`,
+    tutorResources: `
+- Purdue OWL (owl.purdue.edu): Comprehensive writing and citation guidance
+- OpenStax Writing Guide (openstax.org/books/writing-guide): Free, CC-licensed writing textbook
+- Open technical writing textbooks (various): Free technical communication resources`,
+    examAlignmentNotes: `DSST Technical Writing alignment:
+- Purpose and audience analysis: 20%
+- Document design and organization: 20%
+- Research and documentation: 20%
+- Revision and editing: 20%
+- Workplace communication: 20%
+100 MCQ in 120 min. 4-choice format. ~400/500 passing. Earns 3 semester hours.`,
+    stimulusRequirement: "Include a writing sample or document excerpt as stimulus where relevant; null for concept recall questions",
+    stimulusDescription: "writing sample, document excerpt, or workplace communication scenario (null for definition questions)",
+    explanationGuidance: "identifying the specific writing principle or convention, explaining why the correct approach improves communication effectiveness",
+    difficultyRubric: {
+      EASY: "Identify a document type or define a technical writing term. 65%+ correct.",
+      MEDIUM: "Evaluate a writing sample for clarity or select the best revision of a passage. 40–55% correct.",
+      HARD: "Analyze a complex document for multiple writing issues or determine the best approach for a multi-audience communication challenge. 25–40% correct.",
+    },
+    distractorTaxonomy: "(1) STYLE CONFUSION — uses overly formal or informal tone for the given audience; (2) CITATION TRAP — mixes up APA and MLA formatting rules; (3) STRUCTURE ERROR — misidentifies the appropriate document format for a workplace situation.",
+    stimulusQualityGuidance: "GOOD: A specific writing sample with identifiable strengths or weaknesses. AVOID: Abstract questions about 'good writing' without concrete examples.",
+    skillCodes: ["Audience Analysis", "Document Design", "Research Skills", "Editing and Revision"],
+    topicWeights: {
+      "DSST_TW_1_PURPOSE_AUDIENCE": 0.20,
+      "DSST_TW_2_DOCUMENT_DESIGN": 0.20,
+      "DSST_TW_3_RESEARCH_DOCUMENTATION": 0.20,
+      "DSST_TW_4_REVISION_EDITING": 0.20,
+      "DSST_TW_5_WORKPLACE_COMM": 0.20,
+    },
+    recommendedTextbooks: [
+      "Markel & Selber, Technical Communication (Bedford/St. Martin's)",
+      "Lannon & Gurak, Technical Communication (Pearson)",
+      "OpenStax Writing Guide (free: openstax.org/books/writing-guide)",
+    ],
+  },
+
+  // ── DSST Principles of Finance ──────────────────────────────────────────
+  DSST_PRINCIPLES_OF_FINANCE: {
+    name: "DSST Principles of Finance",
+    shortName: "DSST Finance",
+    examSecsPerQuestion: 72,
+    enrichWithEduAPIs: false,
+    units: {
+      DSST_FIN_1_FINANCIAL_STATEMENTS: {
+        name: "Unit 1: Financial Statements and Analysis",
+        keyThemes: ["balance sheet", "income statement", "cash flow statement", "financial ratios", "liquidity ratios", "profitability ratios"],
+        openStaxUrl: "https://openstax.org/books/principles-finance/pages/3-introduction",
+        khanUrl: "https://www.khanacademy.org/economics-finance-domain/core-finance/accounting-and-financial-stateme",
+      },
+      DSST_FIN_2_TIME_VALUE_MONEY: {
+        name: "Unit 2: Time Value of Money",
+        keyThemes: ["present value", "future value", "compounding", "discounting", "annuities", "perpetuities"],
+        openStaxUrl: "https://openstax.org/books/principles-finance/pages/7-introduction",
+        khanUrl: "https://www.khanacademy.org/economics-finance-domain/core-finance/interest-tutorial",
+      },
+      DSST_FIN_3_RISK_RETURN: {
+        name: "Unit 3: Risk and Return",
+        keyThemes: ["risk types", "diversification", "CAPM", "beta", "standard deviation", "risk-return tradeoff"],
+        openStaxUrl: "https://openstax.org/books/principles-finance/pages/15-introduction",
+        khanUrl: "https://www.khanacademy.org/economics-finance-domain/core-finance/stock-and-bonds",
+      },
+      DSST_FIN_4_CAPITAL_MARKETS: {
+        name: "Unit 4: Capital Markets and Investments",
+        keyThemes: ["stocks", "bonds", "mutual funds", "stock exchanges", "bond pricing", "yield to maturity"],
+        openStaxUrl: "https://openstax.org/books/principles-finance/pages/10-introduction",
+        khanUrl: "https://www.khanacademy.org/economics-finance-domain/core-finance/stock-and-bonds",
+      },
+      DSST_FIN_5_CORPORATE_FINANCE: {
+        name: "Unit 5: Corporate Finance and Capital Budgeting",
+        keyThemes: ["NPV", "IRR", "payback period", "cost of capital", "capital structure", "dividend policy"],
+        openStaxUrl: "https://openstax.org/books/principles-finance/pages/16-introduction",
+        khanUrl: "https://www.khanacademy.org/economics-finance-domain/core-finance",
+      },
+    },
+    suggestedTutorQuestions: [
+      "How do you calculate net present value (NPV)?",
+      "What is the difference between stocks and bonds?",
+      "How does diversification reduce portfolio risk?",
+      "What do liquidity ratios tell us about a company?",
+      "How does the Capital Asset Pricing Model (CAPM) work?",
+      "What is the difference between NPV and IRR?",
+    ],
+    curriculumContext: `DSST Principles of Finance covers financial analysis, time value of money, risk/return, capital markets, and corporate finance.
+Exam: 100 questions, 120 minutes, multiple choice. Passing score ~400/500 (scaled). Earns 3 college credits.
+Typical credit value: ~$1,000+ in tuition savings.
+Topics: financial statements (20%), time value of money (20%), risk/return (20%), capital markets (20%), corporate finance (20%).`,
+    tutorResources: `
+- Khan Academy Finance & Capital Markets (khanacademy.org): Free finance tutorials
+- OpenStax Principles of Finance (openstax.org/books/principles-finance): Free, CC-licensed textbook
+- MIT OCW Introduction to Finance (ocw.mit.edu): Free finance lectures`,
+    examAlignmentNotes: `DSST Principles of Finance alignment:
+- Financial statements and analysis: 20%
+- Time value of money: 20%
+- Risk and return: 20%
+- Capital markets and investments: 20%
+- Corporate finance and capital budgeting: 20%
+100 MCQ in 120 min. 4-choice format. ~400/500 passing. Earns 3 semester hours.`,
+    stimulusRequirement: "Include financial data or a scenario as stimulus where relevant; null for concept-definition questions",
+    stimulusDescription: "financial data, company scenario, or calculation setup (null for concept recall)",
+    explanationGuidance: "showing the relevant formula or financial principle, walking through the calculation or reasoning, and explaining the financial implications",
+    difficultyRubric: {
+      EASY: "Define a financial term or identify a financial statement component. 65%+ correct.",
+      MEDIUM: "Calculate a present/future value or analyze a financial ratio to assess company health. 40–55% correct.",
+      HARD: "Evaluate a capital budgeting decision using NPV/IRR or analyze a complex risk-return scenario with multiple variables. 25–40% correct.",
+    },
+    distractorTaxonomy: "(1) FORMULA SWAP — uses the wrong TVM formula (e.g., PV instead of FV); (2) RATIO CONFUSION — calculates or interprets the wrong financial ratio; (3) RISK TRAP — confuses systematic and unsystematic risk.",
+    stimulusQualityGuidance: "GOOD: A specific financial scenario with numbers to analyze or a capital budgeting decision with clear cash flows. AVOID: Abstract finance theory without quantitative context.",
+    skillCodes: ["Financial Analysis", "TVM Calculations", "Risk Assessment", "Capital Budgeting"],
+    topicWeights: {
+      "DSST_FIN_1_FINANCIAL_STATEMENTS": 0.20,
+      "DSST_FIN_2_TIME_VALUE_MONEY": 0.20,
+      "DSST_FIN_3_RISK_RETURN": 0.20,
+      "DSST_FIN_4_CAPITAL_MARKETS": 0.20,
+      "DSST_FIN_5_CORPORATE_FINANCE": 0.20,
+    },
+    recommendedTextbooks: [
+      "OpenStax Principles of Finance (free: openstax.org/books/principles-finance)",
+      "Berk & DeMarzo, Corporate Finance (Pearson)",
+      "Ross, Westerfield & Jordan, Fundamentals of Corporate Finance (McGraw-Hill)",
+    ],
+  },
+
+  // ── DSST Management Information Systems ──────────────────────────────────
+  DSST_MANAGEMENT_INFO_SYSTEMS: {
+    name: "DSST Management Information Systems",
+    shortName: "DSST MIS",
+    examSecsPerQuestion: 72,
+    enrichWithEduAPIs: false,
+    units: {
+      DSST_MIS_1_IT_FUNDAMENTALS: {
+        name: "Unit 1: IT Fundamentals and Infrastructure",
+        keyThemes: ["hardware components", "software types", "operating systems", "cloud computing", "IT infrastructure", "virtualization"],
+        openStaxUrl: "https://openstax.org/books/introduction-business/pages/13-introduction",
+        khanUrl: "https://www.khanacademy.org/computing/computer-science",
+      },
+      DSST_MIS_2_DATABASES: {
+        name: "Unit 2: Databases and Data Management",
+        keyThemes: ["relational databases", "SQL basics", "data modeling", "normalization", "data warehousing", "big data"],
+        openStaxUrl: "https://openstax.org/books/introduction-business/pages/13-introduction",
+        khanUrl: "https://www.khanacademy.org/computing/computer-programming/sql",
+      },
+      DSST_MIS_3_NETWORKS_SECURITY: {
+        name: "Unit 3: Networks and Cybersecurity",
+        keyThemes: ["network topologies", "TCP/IP", "LAN/WAN", "firewalls", "encryption", "cybersecurity threats"],
+        openStaxUrl: "https://openstax.org/books/introduction-business/pages/13-introduction",
+        khanUrl: "https://www.khanacademy.org/computing/computer-science/internet-intro",
+      },
+      DSST_MIS_4_SYSTEMS_DEVELOPMENT: {
+        name: "Unit 4: Systems Development and Project Management",
+        keyThemes: ["SDLC phases", "Agile methodology", "Waterfall model", "requirements analysis", "testing", "project management"],
+        openStaxUrl: "https://openstax.org/books/introduction-business/pages/13-introduction",
+        khanUrl: "https://www.khanacademy.org/computing/computer-science",
+      },
+      DSST_MIS_5_BUSINESS_INTELLIGENCE: {
+        name: "Unit 5: Business Intelligence and Decision Support",
+        keyThemes: ["data analytics", "decision support systems", "ERP systems", "CRM", "supply chain management", "business intelligence tools"],
+        openStaxUrl: "https://openstax.org/books/introduction-business/pages/13-introduction",
+        khanUrl: "https://www.khanacademy.org/computing/computer-science",
+      },
+    },
+    suggestedTutorQuestions: [
+      "What are the phases of the Systems Development Life Cycle?",
+      "How do relational databases organize data?",
+      "What is the difference between LAN and WAN?",
+      "How do ERP systems benefit organizations?",
+      "What are common cybersecurity threats and defenses?",
+      "How does Agile differ from Waterfall methodology?",
+    ],
+    curriculumContext: `DSST Management Information Systems covers IT infrastructure, databases, networking, systems development, and business intelligence.
+Exam: 100 questions, 120 minutes, multiple choice. Passing score ~400/500 (scaled). Earns 3 college credits.
+Typical credit value: ~$1,000+ in tuition savings.
+Topics: IT fundamentals (20%), databases (20%), networks/security (20%), systems development (20%), business intelligence (20%).`,
+    tutorResources: `
+- Open MIS textbooks (various): Free management information systems resources
+- Harvard CS50 selected modules (cs50.harvard.edu): Free computing fundamentals
+- Saylor Academy (learn.saylor.org): Free MIS and business technology courses`,
+    examAlignmentNotes: `DSST Management Information Systems alignment:
+- IT fundamentals and infrastructure: 20%
+- Databases and data management: 20%
+- Networks and cybersecurity: 20%
+- Systems development and project management: 20%
+- Business intelligence and decision support: 20%
+100 MCQ in 120 min. 4-choice format. ~400/500 passing. Earns 3 semester hours.`,
+    stimulusRequirement: "Include a business technology scenario as stimulus where relevant; null for concept-definition questions",
+    stimulusDescription: "business technology scenario or system design situation (null for IT concept recall)",
+    explanationGuidance: "identifying the specific IT concept or system, explaining how it functions in a business context, and noting why it solves the described problem",
+    difficultyRubric: {
+      EASY: "Define an IT term or identify a system type from its description. 65%+ correct.",
+      MEDIUM: "Apply an MIS concept to a business scenario or select the best system solution for a given need. 40–55% correct.",
+      HARD: "Evaluate a complex system integration decision or analyze trade-offs between competing technology solutions. 25–40% correct.",
+    },
+    distractorTaxonomy: "(1) SYSTEM TYPE CONFUSION — confuses ERP, CRM, and SCM systems; (2) SDLC PHASE SWAP — places activities in the wrong SDLC phase; (3) NETWORK TRAP — mixes up network topologies or protocols.",
+    stimulusQualityGuidance: "GOOD: A specific business scenario describing a technology need or system problem. AVOID: Abstract IT vocabulary without practical context.",
+    skillCodes: ["IT Infrastructure", "Database Management", "Network Security", "Systems Analysis"],
+    topicWeights: {
+      "DSST_MIS_1_IT_FUNDAMENTALS": 0.20,
+      "DSST_MIS_2_DATABASES": 0.20,
+      "DSST_MIS_3_NETWORKS_SECURITY": 0.20,
+      "DSST_MIS_4_SYSTEMS_DEVELOPMENT": 0.20,
+      "DSST_MIS_5_BUSINESS_INTELLIGENCE": 0.20,
+    },
+    recommendedTextbooks: [
+      "Laudon & Laudon, Management Information Systems (Pearson)",
+      "O'Brien & Marakas, Essentials of MIS (McGraw-Hill)",
+      "Stair & Reynolds, Principles of Information Systems (Cengage)",
+    ],
+  },
+
+  // ── DSST Money and Banking ──────────────────────────────────────────────
+  DSST_MONEY_AND_BANKING: {
+    name: "DSST Money and Banking",
+    shortName: "DSST Money & Banking",
+    examSecsPerQuestion: 72,
+    enrichWithEduAPIs: false,
+    units: {
+      DSST_MB_1_MONEY_FINANCIAL_SYSTEM: {
+        name: "Unit 1: Money and the Financial System",
+        keyThemes: ["functions of money", "money supply (M1/M2)", "financial intermediaries", "interest rates", "bond markets", "stock markets"],
+        openStaxUrl: "https://openstax.org/books/principles-macroeconomics-3e/pages/27-introduction-to-money-and-banking",
+        khanUrl: "https://www.khanacademy.org/economics-finance-domain/macroeconomics/monetary-system-topic",
+      },
+      DSST_MB_2_BANKING_INSTITUTIONS: {
+        name: "Unit 2: Banking Institutions",
+        keyThemes: ["commercial banks", "investment banks", "credit unions", "savings institutions", "deposit insurance (FDIC)", "bank regulation"],
+        openStaxUrl: "https://openstax.org/books/principles-macroeconomics-3e/pages/27-1-defining-money-by-its-functions",
+        khanUrl: "https://www.khanacademy.org/economics-finance-domain/macroeconomics/monetary-system-topic",
+      },
+      DSST_MB_3_FEDERAL_RESERVE: {
+        name: "Unit 3: The Federal Reserve System",
+        keyThemes: ["Fed structure", "Board of Governors", "FOMC", "reserve requirements", "discount rate", "bank supervision"],
+        openStaxUrl: "https://openstax.org/books/principles-macroeconomics-3e/pages/28-introduction-to-monetary-policy-and-bank-regulation",
+        khanUrl: "https://www.khanacademy.org/economics-finance-domain/macroeconomics/monetary-system-topic",
+      },
+      DSST_MB_4_MONETARY_POLICY: {
+        name: "Unit 4: Monetary Policy",
+        keyThemes: ["open market operations", "federal funds rate", "quantitative easing", "expansionary policy", "contractionary policy", "money multiplier"],
+        openStaxUrl: "https://openstax.org/books/principles-macroeconomics-3e/pages/28-2-bank-regulation",
+        khanUrl: "https://www.khanacademy.org/economics-finance-domain/macroeconomics/monetary-system-topic",
+      },
+      DSST_MB_5_INTERNATIONAL_FINANCE: {
+        name: "Unit 5: International Finance",
+        keyThemes: ["exchange rates", "balance of payments", "currency markets", "international monetary system", "trade deficits", "purchasing power parity"],
+        openStaxUrl: "https://openstax.org/books/principles-macroeconomics-3e/pages/29-introduction-to-exchange-rates-and-international-capital-flows",
+        khanUrl: "https://www.khanacademy.org/economics-finance-domain/macroeconomics/forex-trade-topic",
+      },
+    },
+    suggestedTutorQuestions: [
+      "What are the three functions of money?",
+      "How does the Federal Reserve control the money supply?",
+      "What is the difference between M1 and M2 money supply?",
+      "How do open market operations work?",
+      "What determines exchange rates between currencies?",
+      "What role does the FDIC play in the banking system?",
+    ],
+    curriculumContext: `DSST Money and Banking covers the financial system, banking institutions, the Federal Reserve, monetary policy, and international finance.
+Exam: 100 questions, 120 minutes, multiple choice. Passing score ~400/500 (scaled). Earns 3 college credits.
+Typical credit value: ~$1,000+ in tuition savings.
+Topics: money/financial system (20%), banking institutions (20%), Federal Reserve (20%), monetary policy (20%), international finance (20%).`,
+    tutorResources: `
+- Federal Reserve Education (federalreserveeducation.org): Free Fed educational resources
+- Khan Academy Macroeconomics (khanacademy.org): Money, banking, and monetary policy
+- OpenStax Principles of Macroeconomics (openstax.org/books/principles-macroeconomics-3e): Free textbook`,
+    examAlignmentNotes: `DSST Money and Banking alignment:
+- Money and the financial system: 20%
+- Banking institutions: 20%
+- The Federal Reserve System: 20%
+- Monetary policy: 20%
+- International finance: 20%
+100 MCQ in 120 min. 4-choice format. ~400/500 passing. Earns 3 semester hours.`,
+    stimulusRequirement: "Include a monetary policy scenario or financial data as stimulus where relevant; null for concept-definition questions",
+    stimulusDescription: "monetary policy scenario, banking situation, or economic data (null for concept recall)",
+    explanationGuidance: "identifying the specific monetary/banking concept, explaining the mechanism of action, and connecting it to broader economic outcomes",
+    difficultyRubric: {
+      EASY: "Define a monetary term or identify a function of the Federal Reserve. 65%+ correct.",
+      MEDIUM: "Analyze how a monetary policy action affects the money supply or interest rates. 40–55% correct.",
+      HARD: "Evaluate the combined effects of multiple monetary policy tools on the economy or analyze an international finance scenario with exchange rate implications. 25–40% correct.",
+    },
+    distractorTaxonomy: "(1) POLICY DIRECTION SWAP — confuses expansionary with contractionary policy effects; (2) FED TOOL MIX-UP — attributes the wrong mechanism to an open market operation vs discount rate change; (3) MONEY SUPPLY CONFUSION — mixes up M1 and M2 components.",
+    stimulusQualityGuidance: "GOOD: A specific economic scenario where the Fed must choose a policy action. AVOID: Abstract monetary theory without applied context.",
+    skillCodes: ["Monetary Analysis", "Banking Operations", "Policy Evaluation", "International Finance"],
+    topicWeights: {
+      "DSST_MB_1_MONEY_FINANCIAL_SYSTEM": 0.20,
+      "DSST_MB_2_BANKING_INSTITUTIONS": 0.20,
+      "DSST_MB_3_FEDERAL_RESERVE": 0.20,
+      "DSST_MB_4_MONETARY_POLICY": 0.20,
+      "DSST_MB_5_INTERNATIONAL_FINANCE": 0.20,
+    },
+    recommendedTextbooks: [
+      "OpenStax Principles of Macroeconomics (free: openstax.org/books/principles-macroeconomics-3e)",
+      "Mishkin, The Economics of Money, Banking, and Financial Markets (Pearson)",
+      "Cecchetti & Schoenholtz, Money, Banking, and Financial Markets (McGraw-Hill)",
+    ],
+  },
+
+  // ── DSST Substance Abuse ────────────────────────────────────────────────
+  DSST_SUBSTANCE_ABUSE: {
+    name: "DSST Substance Abuse",
+    shortName: "DSST Substance Abuse",
+    examSecsPerQuestion: 72,
+    enrichWithEduAPIs: false,
+    units: {
+      DSST_SA_1_PHARMACOLOGY: {
+        name: "Unit 1: Pharmacology and Drug Classification",
+        keyThemes: ["drug classification", "pharmacokinetics", "pharmacodynamics", "depressants", "stimulants", "hallucinogens"],
+        openStaxUrl: "https://openstax.org/books/psychology-2e/pages/4-5-substance-use-and-abuse",
+        khanUrl: "https://www.khanacademy.org/test-prep/mcat/behavior/drug-use",
+      },
+      DSST_SA_2_ALCOHOL: {
+        name: "Unit 2: Alcohol Use and Abuse",
+        keyThemes: ["alcohol pharmacology", "BAC levels", "alcoholism", "fetal alcohol syndrome", "liver disease", "alcohol withdrawal"],
+        openStaxUrl: "https://openstax.org/books/psychology-2e/pages/4-5-substance-use-and-abuse",
+        khanUrl: "https://www.khanacademy.org/test-prep/mcat/behavior/drug-use",
+      },
+      DSST_SA_3_DRUGS_SOCIETY: {
+        name: "Unit 3: Drugs and Society",
+        keyThemes: ["addiction mechanisms", "tolerance", "dependence", "social factors in drug use", "gateway hypothesis", "drug epidemiology"],
+        openStaxUrl: "https://openstax.org/books/psychology-2e/pages/4-5-substance-use-and-abuse",
+        khanUrl: "https://www.khanacademy.org/test-prep/mcat/behavior/drug-use",
+      },
+      DSST_SA_4_TREATMENT_PREVENTION: {
+        name: "Unit 4: Treatment and Prevention",
+        keyThemes: ["treatment modalities", "12-step programs", "cognitive-behavioral therapy", "harm reduction", "detoxification", "prevention programs"],
+        openStaxUrl: "https://openstax.org/books/psychology-2e/pages/16-3-treatment-modalities",
+        khanUrl: "https://www.khanacademy.org/test-prep/mcat/behavior/drug-use",
+      },
+      DSST_SA_5_POLICY_LAW: {
+        name: "Unit 5: Drug Policy and Law",
+        keyThemes: ["Controlled Substances Act", "DEA scheduling", "War on Drugs", "drug courts", "legalization debate", "international drug policy"],
+        openStaxUrl: "https://openstax.org/books/psychology-2e/pages/4-5-substance-use-and-abuse",
+        khanUrl: "https://www.khanacademy.org/test-prep/mcat/behavior/drug-use",
+      },
+    },
+    suggestedTutorQuestions: [
+      "What is the difference between physical dependence and psychological addiction?",
+      "How does alcohol affect the body at different BAC levels?",
+      "What are the main drug schedules under the Controlled Substances Act?",
+      "How do 12-step programs work for addiction treatment?",
+      "What is the gateway drug hypothesis and what does evidence say?",
+      "What is harm reduction and how does it differ from abstinence-based approaches?",
+    ],
+    curriculumContext: `DSST Substance Abuse covers pharmacology, alcohol/drug effects, addiction, treatment approaches, and drug policy.
+Exam: 100 questions, 120 minutes, multiple choice. Passing score ~400/500 (scaled). Earns 3 college credits.
+Typical credit value: ~$1,000+ in tuition savings.
+Topics: pharmacology (20%), alcohol (20%), drugs/society (20%), treatment/prevention (20%), policy/law (20%).`,
+    tutorResources: `
+- NIH/NIDA (nida.nih.gov): National Institute on Drug Abuse — authoritative substance abuse data
+- CDC Substance Abuse (cdc.gov): Public health resources on substance use
+- OpenStax Psychology 2e (openstax.org/books/psychology-2e): Free substance use chapter`,
+    examAlignmentNotes: `DSST Substance Abuse alignment:
+- Pharmacology and drug classification: 20%
+- Alcohol use and abuse: 20%
+- Drugs and society: 20%
+- Treatment and prevention: 20%
+- Drug policy and law: 20%
+100 MCQ in 120 min. 4-choice format. ~400/500 passing. Earns 3 semester hours.`,
+    stimulusRequirement: "Include a case study or scenario involving substance use as stimulus where relevant; null for concept recall questions",
+    stimulusDescription: "substance use case study or public health scenario (null for pharmacology definitions)",
+    explanationGuidance: "identifying the substance or mechanism involved, explaining the physiological or social effect, and connecting it to treatment or policy implications",
+    difficultyRubric: {
+      EASY: "Identify a drug classification or define a substance abuse term. 65%+ correct.",
+      MEDIUM: "Apply knowledge of drug effects to a case scenario or compare treatment approaches. 40–55% correct.",
+      HARD: "Analyze a complex case involving co-occurring disorders or evaluate competing drug policy approaches with their societal implications. 25–40% correct.",
+    },
+    distractorTaxonomy: "(1) CLASSIFICATION ERROR — puts a drug in the wrong schedule or category; (2) EFFECT SWAP — attributes stimulant effects to depressants or vice versa; (3) TREATMENT CONFUSION — confuses harm reduction with abstinence-only approaches.",
+    stimulusQualityGuidance: "GOOD: A specific case describing substance use patterns, effects, or a treatment decision. AVOID: Moralizing statements about drug use without scientific context.",
+    skillCodes: ["Pharmacology", "Substance Effects", "Treatment Knowledge", "Policy Analysis"],
+    topicWeights: {
+      "DSST_SA_1_PHARMACOLOGY": 0.20,
+      "DSST_SA_2_ALCOHOL": 0.20,
+      "DSST_SA_3_DRUGS_SOCIETY": 0.20,
+      "DSST_SA_4_TREATMENT_PREVENTION": 0.20,
+      "DSST_SA_5_POLICY_LAW": 0.20,
+    },
+    recommendedTextbooks: [
+      "Hart & Ksir, Drugs, Society, and Human Behavior (McGraw-Hill)",
+      "Levinthal, Drugs, Behavior, and Modern Society (Pearson)",
+      "Inaba & Cohen, Uppers, Downers, All Arounders (CNS Productions)",
+    ],
+  },
+
+  // ── DSST Criminal Justice ───────────────────────────────────────────────
+  DSST_CRIMINAL_JUSTICE: {
+    name: "DSST Criminal Justice",
+    shortName: "DSST Criminal Justice",
+    examSecsPerQuestion: 72,
+    enrichWithEduAPIs: false,
+    units: {
+      DSST_CJ_1_CRIME_THEORY: {
+        name: "Unit 1: Crime and Criminological Theory",
+        keyThemes: ["criminological theories", "classical school", "positivist school", "social learning theory", "strain theory", "crime statistics"],
+        openStaxUrl: "https://openstax.org/books/introduction-sociology-3e/pages/7-2-theoretical-perspectives-on-deviance-and-crime",
+        khanUrl: "https://www.khanacademy.org/test-prep/mcat/behavior/social-structures",
+      },
+      DSST_CJ_2_LAW_ENFORCEMENT: {
+        name: "Unit 2: Law Enforcement",
+        keyThemes: ["policing models", "community policing", "use of force", "police discretion", "law enforcement agencies", "Fourth Amendment"],
+        openStaxUrl: "https://openstax.org/books/american-government-3e/pages/4-introduction",
+        khanUrl: "https://www.khanacademy.org/humanities/us-government-and-civics/us-gov-civil-liberties-and-civil-rights",
+      },
+      DSST_CJ_3_COURTS_ADJUDICATION: {
+        name: "Unit 3: Courts and Adjudication",
+        keyThemes: ["court structure", "due process", "plea bargaining", "trial procedures", "jury system", "sentencing guidelines"],
+        openStaxUrl: "https://openstax.org/books/american-government-3e/pages/13-introduction",
+        khanUrl: "https://www.khanacademy.org/humanities/us-government-and-civics/us-gov-interactions-among-branches",
+      },
+      DSST_CJ_4_CORRECTIONS: {
+        name: "Unit 4: Corrections",
+        keyThemes: ["incarceration", "probation", "parole", "prison systems", "rehabilitation programs", "recidivism"],
+        openStaxUrl: "https://openstax.org/books/introduction-sociology-3e/pages/7-3-crime-and-the-law",
+        khanUrl: "https://www.khanacademy.org/test-prep/mcat/behavior/social-structures",
+      },
+      DSST_CJ_5_JUVENILE_JUSTICE: {
+        name: "Unit 5: Juvenile Justice",
+        keyThemes: ["juvenile court", "delinquency", "status offenses", "diversion programs", "waiver to adult court", "restorative justice"],
+        openStaxUrl: "https://openstax.org/books/introduction-sociology-3e/pages/7-3-crime-and-the-law",
+        khanUrl: "https://www.khanacademy.org/test-prep/mcat/behavior/social-structures",
+      },
+    },
+    suggestedTutorQuestions: [
+      "What are the main criminological theories of why people commit crimes?",
+      "How does community policing differ from traditional policing?",
+      "What are the steps in the criminal trial process?",
+      "What is the difference between probation and parole?",
+      "How does the juvenile justice system differ from the adult system?",
+      "What is restorative justice and how does it work?",
+    ],
+    curriculumContext: `DSST Criminal Justice covers criminological theory, law enforcement, courts, corrections, and juvenile justice.
+Exam: 100 questions, 120 minutes, multiple choice. Passing score ~400/500 (scaled). Earns 3 college credits.
+Typical credit value: ~$1,000+ in tuition savings.
+Topics: crime theory (20%), law enforcement (20%), courts (20%), corrections (20%), juvenile justice (20%).`,
+    tutorResources: `
+- DOJ.gov (justice.gov): U.S. Department of Justice resources
+- Saylor Academy CJ101 (learn.saylor.org/course/CJ101): Free Introduction to Criminal Justice course
+- Open CJ textbooks (various): Free criminal justice resources`,
+    examAlignmentNotes: `DSST Criminal Justice alignment:
+- Crime and criminological theory: 20%
+- Law enforcement: 20%
+- Courts and adjudication: 20%
+- Corrections: 20%
+- Juvenile justice: 20%
+100 MCQ in 120 min. 4-choice format. ~400/500 passing. Earns 3 semester hours.`,
+    stimulusRequirement: "Include a criminal justice scenario or case as stimulus where relevant; null for concept recall questions",
+    stimulusDescription: "criminal justice scenario, case study, or legal situation (null for theory identification)",
+    explanationGuidance: "identifying the relevant criminal justice principle or theory, explaining how it applies to the scenario, and noting the legal or procedural rationale",
+    difficultyRubric: {
+      EASY: "Identify a criminological theory or define a criminal justice term. 65%+ correct.",
+      MEDIUM: "Apply a legal principle to a case scenario or compare corrections approaches. 40–55% correct.",
+      HARD: "Analyze a complex criminal justice case involving competing theories or evaluate policy trade-offs in sentencing and corrections. 25–40% correct.",
+    },
+    distractorTaxonomy: "(1) THEORY CONFUSION — attributes one criminological theory's explanation to another; (2) PROCESS ERROR — places a CJ procedure in the wrong stage of the system; (3) RIGHTS TRAP — confuses procedural protections (e.g., 4th vs 5th vs 6th Amendment).",
+    stimulusQualityGuidance: "GOOD: A specific case scenario involving a crime, arrest, trial, or corrections decision. AVOID: Abstract theory without a practical application.",
+    skillCodes: ["Criminological Theory", "Legal Procedures", "Corrections Analysis", "Policy Evaluation"],
+    topicWeights: {
+      "DSST_CJ_1_CRIME_THEORY": 0.20,
+      "DSST_CJ_2_LAW_ENFORCEMENT": 0.20,
+      "DSST_CJ_3_COURTS_ADJUDICATION": 0.20,
+      "DSST_CJ_4_CORRECTIONS": 0.20,
+      "DSST_CJ_5_JUVENILE_JUSTICE": 0.20,
+    },
+    recommendedTextbooks: [
+      "Siegel, Introduction to Criminal Justice (Cengage)",
+      "Schmalleger, Criminal Justice: A Brief Introduction (Pearson)",
+      "Cole, Smith & DeJong, The American System of Criminal Justice (Cengage)",
+    ],
+  },
+
+  // ── DSST Fundamentals of Counseling ─────────────────────────────────────
+  DSST_FUNDAMENTALS_OF_COUNSELING: {
+    name: "DSST Fundamentals of Counseling",
+    shortName: "DSST Counseling",
+    examSecsPerQuestion: 72,
+    enrichWithEduAPIs: false,
+    units: {
+      DSST_COUN_1_THEORIES: {
+        name: "Unit 1: Counseling Theories",
+        keyThemes: ["psychodynamic therapy", "cognitive-behavioral therapy", "humanistic counseling", "person-centered therapy", "existential therapy", "solution-focused therapy"],
+        openStaxUrl: "https://openstax.org/books/psychology-2e/pages/16-1-mental-health-treatment-past-and-present",
+        khanUrl: "https://www.khanacademy.org/test-prep/mcat/behavior/psychological-disorders",
+      },
+      DSST_COUN_2_TECHNIQUES: {
+        name: "Unit 2: Counseling Techniques and Skills",
+        keyThemes: ["active listening", "empathy", "reflection", "open-ended questions", "confrontation", "goal setting"],
+        openStaxUrl: "https://openstax.org/books/psychology-2e/pages/16-2-types-of-treatment",
+        khanUrl: "https://www.khanacademy.org/test-prep/mcat/behavior/psychological-disorders",
+      },
+      DSST_COUN_3_GROUP_FAMILY: {
+        name: "Unit 3: Group and Family Counseling",
+        keyThemes: ["group dynamics", "stages of group development", "family systems theory", "couples therapy", "group facilitation", "therapeutic factors"],
+        openStaxUrl: "https://openstax.org/books/psychology-2e/pages/16-3-treatment-modalities",
+        khanUrl: "https://www.khanacademy.org/test-prep/mcat/behavior/psychological-disorders",
+      },
+      DSST_COUN_4_ASSESSMENT: {
+        name: "Unit 4: Assessment and Diagnosis",
+        keyThemes: ["psychological testing", "DSM-5", "intake interviews", "behavioral assessment", "reliability and validity", "cultural considerations"],
+        openStaxUrl: "https://openstax.org/books/psychology-2e/pages/15-1-diagnosing-and-classifying-psychological-disorders",
+        khanUrl: "https://www.khanacademy.org/test-prep/mcat/behavior/psychological-disorders",
+      },
+      DSST_COUN_5_ETHICS_PROFESSIONAL: {
+        name: "Unit 5: Ethics and Professional Issues",
+        keyThemes: ["ACA ethics code", "confidentiality", "informed consent", "dual relationships", "mandatory reporting", "licensure"],
+        openStaxUrl: "https://openstax.org/books/psychology-2e/pages/16-4-substance-related-and-addictive-disorders-a-special-case",
+        khanUrl: "https://www.khanacademy.org/test-prep/mcat/behavior/psychological-disorders",
+      },
+    },
+    suggestedTutorQuestions: [
+      "What are the key differences between CBT and psychodynamic therapy?",
+      "How does active listening work in counseling?",
+      "What are the stages of group development in therapy?",
+      "How is the DSM-5 used in psychological diagnosis?",
+      "What are the main principles of the ACA ethics code?",
+      "What is person-centered therapy and how does it work?",
+    ],
+    curriculumContext: `DSST Fundamentals of Counseling covers counseling theories, techniques, group/family therapy, assessment, and professional ethics.
+Exam: 100 questions, 120 minutes, multiple choice. Passing score ~400/500 (scaled). Earns 3 college credits.
+Typical credit value: ~$1,000+ in tuition savings.
+Topics: counseling theories (20%), techniques (20%), group/family (20%), assessment (20%), ethics (20%).`,
+    tutorResources: `
+- OpenStax Psychology 2e therapy chapters (openstax.org/books/psychology-2e): Free therapy and treatment content
+- Open counseling textbooks (various): Free counseling theory resources
+- ACA (counseling.org): American Counseling Association ethics resources`,
+    examAlignmentNotes: `DSST Fundamentals of Counseling alignment:
+- Counseling theories: 20%
+- Counseling techniques and skills: 20%
+- Group and family counseling: 20%
+- Assessment and diagnosis: 20%
+- Ethics and professional issues: 20%
+100 MCQ in 120 min. 4-choice format. ~400/500 passing. Earns 3 semester hours.`,
+    stimulusRequirement: "Include a counseling case vignette as stimulus where relevant; null for theory identification questions",
+    stimulusDescription: "counseling case vignette or therapeutic scenario (null for theory recall)",
+    explanationGuidance: "identifying the relevant counseling theory or technique, explaining why it is appropriate for the described situation, and noting ethical considerations",
+    difficultyRubric: {
+      EASY: "Identify a counseling theory or define a therapeutic technique. 65%+ correct.",
+      MEDIUM: "Apply a counseling approach to a client scenario or determine the appropriate ethical response. 40–55% correct.",
+      HARD: "Analyze a complex client case requiring integration of multiple theories or navigate an ethical dilemma with competing obligations. 25–40% correct.",
+    },
+    distractorTaxonomy: "(1) THEORY SWAP — attributes CBT techniques to psychodynamic therapy or vice versa; (2) ETHICS CONFUSION — misapplies confidentiality exceptions; (3) ASSESSMENT TRAP — uses the wrong assessment tool for the presenting concern.",
+    stimulusQualityGuidance: "GOOD: A client case describing presenting concerns, behaviors, and a therapeutic decision point. AVOID: Abstract theory questions without a client context.",
+    skillCodes: ["Counseling Theory", "Therapeutic Techniques", "Assessment Skills", "Ethical Practice"],
+    topicWeights: {
+      "DSST_COUN_1_THEORIES": 0.20,
+      "DSST_COUN_2_TECHNIQUES": 0.20,
+      "DSST_COUN_3_GROUP_FAMILY": 0.20,
+      "DSST_COUN_4_ASSESSMENT": 0.20,
+      "DSST_COUN_5_ETHICS_PROFESSIONAL": 0.20,
+    },
+    recommendedTextbooks: [
+      "Corey, Theory and Practice of Counseling and Psychotherapy (Cengage)",
+      "Gladding, Counseling: A Comprehensive Profession (Pearson)",
+      "Ivey, Ivey & Zalaquett, Intentional Interviewing and Counseling (Cengage)",
+    ],
+  },
+
+  // ── DSST General Anthropology ───────────────────────────────────────────
+  DSST_GENERAL_ANTHROPOLOGY: {
+    name: "DSST General Anthropology",
+    shortName: "DSST Anthropology",
+    examSecsPerQuestion: 72,
+    enrichWithEduAPIs: false,
+    units: {
+      DSST_ANTH_1_PHYSICAL: {
+        name: "Unit 1: Physical Anthropology",
+        keyThemes: ["human evolution", "primatology", "natural selection", "hominid fossils", "genetics and heredity", "biological variation"],
+        openStaxUrl: "https://openstax.org/books/introduction-anthropology/pages/1-introduction",
+        khanUrl: "https://www.khanacademy.org/science/biology/her/evolution-and-natural-selection",
+      },
+      DSST_ANTH_2_ARCHAEOLOGY: {
+        name: "Unit 2: Archaeology",
+        keyThemes: ["archaeological methods", "dating techniques", "excavation", "artifact analysis", "cultural chronology", "ethnoarchaeology"],
+        openStaxUrl: "https://openstax.org/books/introduction-anthropology/pages/3-introduction",
+        khanUrl: "https://www.khanacademy.org/humanities/world-history/world-history-beginnings",
+      },
+      DSST_ANTH_3_CULTURAL: {
+        name: "Unit 3: Cultural Anthropology",
+        keyThemes: ["cultural relativism", "ethnocentrism", "kinship systems", "marriage patterns", "subsistence strategies", "political organization"],
+        openStaxUrl: "https://openstax.org/books/introduction-anthropology/pages/2-introduction",
+        khanUrl: "https://www.khanacademy.org/test-prep/mcat/behavior/social-structures",
+      },
+      DSST_ANTH_4_LINGUISTIC: {
+        name: "Unit 4: Linguistic Anthropology",
+        keyThemes: ["language and culture", "Sapir-Whorf hypothesis", "phonology", "morphology", "sociolinguistics", "language change"],
+        openStaxUrl: "https://openstax.org/books/introduction-anthropology/pages/5-introduction",
+        khanUrl: "https://www.khanacademy.org/test-prep/mcat/behavior/social-interactions",
+      },
+      DSST_ANTH_5_APPLIED: {
+        name: "Unit 5: Applied Anthropology",
+        keyThemes: ["medical anthropology", "development anthropology", "forensic anthropology", "urban anthropology", "globalization", "ethical issues"],
+        openStaxUrl: "https://openstax.org/books/introduction-anthropology/pages/15-introduction",
+        khanUrl: "https://www.khanacademy.org/test-prep/mcat/behavior/social-structures",
+      },
+    },
+    suggestedTutorQuestions: [
+      "What are the four subfields of anthropology?",
+      "How does natural selection drive human evolution?",
+      "What is cultural relativism and why is it important?",
+      "How do archaeologists date artifacts?",
+      "What is the Sapir-Whorf hypothesis?",
+      "How does forensic anthropology help solve crimes?",
+    ],
+    curriculumContext: `DSST General Anthropology covers physical anthropology, archaeology, cultural anthropology, linguistic anthropology, and applied anthropology.
+Exam: 100 questions, 120 minutes, multiple choice. Passing score ~400/500 (scaled). Earns 3 college credits.
+Typical credit value: ~$1,000+ in tuition savings.
+Topics: physical anthropology (20%), archaeology (20%), cultural anthropology (20%), linguistic anthropology (20%), applied anthropology (20%).`,
+    tutorResources: `
+- Smithsonian open resources (si.edu): Human origins and anthropology exhibits
+- OpenStax Introduction to Anthropology (openstax.org/books/introduction-anthropology): Free textbook
+- Khan Academy (khanacademy.org): Evolution and world history content`,
+    examAlignmentNotes: `DSST General Anthropology alignment:
+- Physical anthropology: 20%
+- Archaeology: 20%
+- Cultural anthropology: 20%
+- Linguistic anthropology: 20%
+- Applied anthropology: 20%
+100 MCQ in 120 min. 4-choice format. ~400/500 passing. Earns 3 semester hours.`,
+    stimulusRequirement: "Include an anthropological case study or fieldwork scenario as stimulus where relevant; null for concept recall questions",
+    stimulusDescription: "anthropological case study, fieldwork description, or cultural scenario (null for definition questions)",
+    explanationGuidance: "identifying the relevant anthropological concept or subfield, explaining the evidence or cultural context, and noting how anthropologists approach the phenomenon",
+    difficultyRubric: {
+      EASY: "Identify an anthropological subfield or define a key term. 65%+ correct.",
+      MEDIUM: "Apply an anthropological concept to a cultural scenario or analyze archaeological evidence. 40–55% correct.",
+      HARD: "Compare competing anthropological theories or analyze a complex cross-cultural case requiring integration of multiple subfields. 25–40% correct.",
+    },
+    distractorTaxonomy: "(1) SUBFIELD CONFUSION — attributes a method from one subfield to another; (2) DATING ERROR — confuses relative and absolute dating techniques; (3) CULTURAL TRAP — applies ethnocentric assumptions to a cross-cultural scenario.",
+    stimulusQualityGuidance: "GOOD: A specific ethnographic scenario, fossil discovery, or cultural practice to analyze. AVOID: Abstract definitions without fieldwork context.",
+    skillCodes: ["Physical Anthropology", "Archaeological Methods", "Cultural Analysis", "Linguistic Theory"],
+    topicWeights: {
+      "DSST_ANTH_1_PHYSICAL": 0.20,
+      "DSST_ANTH_2_ARCHAEOLOGY": 0.20,
+      "DSST_ANTH_3_CULTURAL": 0.20,
+      "DSST_ANTH_4_LINGUISTIC": 0.20,
+      "DSST_ANTH_5_APPLIED": 0.20,
+    },
+    recommendedTextbooks: [
+      "OpenStax Introduction to Anthropology (free: openstax.org/books/introduction-anthropology)",
+      "Kottak, Anthropology: Appreciating Human Diversity (McGraw-Hill)",
+      "Haviland et al., Anthropology: The Human Challenge (Cengage)",
+    ],
+  },
+
+  // ── DSST Introduction to World Religions ────────────────────────────────
+  DSST_WORLD_RELIGIONS: {
+    name: "DSST Introduction to World Religions",
+    shortName: "DSST World Religions",
+    examSecsPerQuestion: 72,
+    enrichWithEduAPIs: false,
+    units: {
+      DSST_REL_1_HINDUISM_BUDDHISM: {
+        name: "Unit 1: Hinduism and Buddhism",
+        keyThemes: ["Vedas and Upanishads", "karma and dharma", "caste system", "Four Noble Truths", "Eightfold Path", "Mahayana vs Theravada"],
+        openStaxUrl: "https://openstax.org/books/introduction-philosophy/pages/4-introduction",
+        khanUrl: "https://www.khanacademy.org/humanities/world-history/world-history-beginnings",
+      },
+      DSST_REL_2_JUDAISM: {
+        name: "Unit 2: Judaism",
+        keyThemes: ["Torah", "covenant", "prophets", "synagogue worship", "Jewish holidays", "denominations of Judaism"],
+        openStaxUrl: "https://openstax.org/books/introduction-philosophy/pages/4-introduction",
+        khanUrl: "https://www.khanacademy.org/humanities/world-history/world-history-beginnings",
+      },
+      DSST_REL_3_CHRISTIANITY: {
+        name: "Unit 3: Christianity",
+        keyThemes: ["life of Jesus", "New Testament", "sacraments", "Protestant Reformation", "Catholic/Orthodox/Protestant branches", "Christian theology"],
+        openStaxUrl: "https://openstax.org/books/introduction-philosophy/pages/4-introduction",
+        khanUrl: "https://www.khanacademy.org/humanities/world-history/medieval-times",
+      },
+      DSST_REL_4_ISLAM: {
+        name: "Unit 4: Islam",
+        keyThemes: ["Five Pillars of Islam", "Quran", "Prophet Muhammad", "Sunni vs Shia", "Sharia", "Islamic Golden Age"],
+        openStaxUrl: "https://openstax.org/books/introduction-philosophy/pages/4-introduction",
+        khanUrl: "https://www.khanacademy.org/humanities/world-history/medieval-times",
+      },
+      DSST_REL_5_OTHER_TRADITIONS: {
+        name: "Unit 5: Other Religious Traditions",
+        keyThemes: ["Sikhism", "Confucianism", "Taoism", "Shinto", "indigenous religions", "new religious movements"],
+        openStaxUrl: "https://openstax.org/books/introduction-philosophy/pages/4-introduction",
+        khanUrl: "https://www.khanacademy.org/humanities/world-history/world-history-beginnings",
+      },
+    },
+    suggestedTutorQuestions: [
+      "What are the Four Noble Truths of Buddhism?",
+      "How do the Five Pillars of Islam structure Muslim life?",
+      "What caused the Protestant Reformation?",
+      "How do Hinduism's concepts of karma and dharma work?",
+      "What are the main differences between Sunni and Shia Islam?",
+      "How does Confucianism differ from Taoism?",
+    ],
+    curriculumContext: `DSST Introduction to World Religions covers major world religions including Hinduism, Buddhism, Judaism, Christianity, Islam, and other traditions.
+Exam: 100 questions, 120 minutes, multiple choice. Passing score ~400/500 (scaled). Earns 3 college credits.
+Typical credit value: ~$1,000+ in tuition savings.
+Topics: Hinduism/Buddhism (20%), Judaism (20%), Christianity (20%), Islam (20%), other traditions (20%).`,
+    tutorResources: `
+- Harvard/Yale open religion lectures (various): Free comparative religion lectures
+- Open comparative religion texts (various): Free world religions resources
+- Khan Academy World History (khanacademy.org): Religious history context`,
+    examAlignmentNotes: `DSST Introduction to World Religions alignment:
+- Hinduism and Buddhism: 20%
+- Judaism: 20%
+- Christianity: 20%
+- Islam: 20%
+- Other religious traditions: 20%
+100 MCQ in 120 min. 4-choice format. ~400/500 passing. Earns 3 semester hours.`,
+    stimulusRequirement: "Include a religious text excerpt or practice description as stimulus where relevant; null for concept recall questions",
+    stimulusDescription: "religious text excerpt, ritual description, or comparative scenario (null for definition questions)",
+    explanationGuidance: "identifying the specific religion and tradition, explaining the theological or historical significance, and noting connections or distinctions with other traditions",
+    difficultyRubric: {
+      EASY: "Identify a religion from a description of its practices or name a key text/figure. 65%+ correct.",
+      MEDIUM: "Compare two religions on a specific doctrine or apply theological knowledge to a scenario. 40–55% correct.",
+      HARD: "Analyze the historical interaction between two religions or evaluate a complex theological debate within a tradition. 25–40% correct.",
+    },
+    distractorTaxonomy: "(1) RELIGION SWAP — attributes a practice or text to the wrong religion; (2) DENOMINATION CONFUSION — confuses branches within a religion (e.g., Sunni/Shia, Catholic/Protestant); (3) HISTORICAL TRAP — places a religious development in the wrong historical period.",
+    stimulusQualityGuidance: "GOOD: A specific religious text, practice, or historical event to analyze. AVOID: Oversimplified or stereotypical descriptions of religious traditions.",
+    skillCodes: ["Religious Knowledge", "Comparative Analysis", "Historical Context", "Theological Reasoning"],
+    topicWeights: {
+      "DSST_REL_1_HINDUISM_BUDDHISM": 0.20,
+      "DSST_REL_2_JUDAISM": 0.20,
+      "DSST_REL_3_CHRISTIANITY": 0.20,
+      "DSST_REL_4_ISLAM": 0.20,
+      "DSST_REL_5_OTHER_TRADITIONS": 0.20,
+    },
+    recommendedTextbooks: [
+      "Molloy, Experiencing the World's Religions (McGraw-Hill)",
+      "Hopfe & Woodward, Religions of the World (Pearson)",
+      "Smith, The World's Religions (HarperOne)",
+    ],
+  },
+
+  // ── DSST Art of the Western World ───────────────────────────────────────
+  DSST_ART_WESTERN_WORLD: {
+    name: "DSST Art of the Western World",
+    shortName: "DSST Western Art",
+    examSecsPerQuestion: 72,
+    enrichWithEduAPIs: false,
+    units: {
+      DSST_ART_1_ANCIENT_MEDIEVAL: {
+        name: "Unit 1: Ancient and Medieval Art",
+        keyThemes: ["Greek art and architecture", "Roman art", "Byzantine art", "Romanesque", "Gothic cathedrals", "manuscript illumination"],
+        openStaxUrl: "https://openstax.org/books/introduction-philosophy/pages/8-introduction",
+        khanUrl: "https://www.khanacademy.org/humanities/ap-art-history/ancient-mediterranean-702-702",
+      },
+      DSST_ART_2_RENAISSANCE_BAROQUE: {
+        name: "Unit 2: Renaissance and Baroque",
+        keyThemes: ["Early Renaissance", "High Renaissance", "Leonardo da Vinci", "Michelangelo", "Baroque drama", "Caravaggio and Rembrandt"],
+        openStaxUrl: "https://openstax.org/books/introduction-philosophy/pages/8-introduction",
+        khanUrl: "https://www.khanacademy.org/humanities/renaissance-reformation",
+      },
+      DSST_ART_3_NEOCLASSICAL_ROMANTIC: {
+        name: "Unit 3: Neoclassical and Romantic Art",
+        keyThemes: ["Neoclassicism", "Romanticism", "Jacques-Louis David", "Delacroix", "landscape painting", "Sublime"],
+        openStaxUrl: "https://openstax.org/books/introduction-philosophy/pages/8-introduction",
+        khanUrl: "https://www.khanacademy.org/humanities/becoming-modern",
+      },
+      DSST_ART_4_MODERN: {
+        name: "Unit 4: Modern Art",
+        keyThemes: ["Impressionism", "Post-Impressionism", "Cubism", "Surrealism", "Abstract Expressionism", "Monet, Picasso, Dali"],
+        openStaxUrl: "https://openstax.org/books/introduction-philosophy/pages/8-introduction",
+        khanUrl: "https://www.khanacademy.org/humanities/art-1010",
+      },
+      DSST_ART_5_CONTEMPORARY: {
+        name: "Unit 5: Contemporary Art",
+        keyThemes: ["Pop Art", "Minimalism", "Conceptual Art", "postmodernism", "installation art", "digital art"],
+        openStaxUrl: "https://openstax.org/books/introduction-philosophy/pages/8-introduction",
+        khanUrl: "https://www.khanacademy.org/humanities/art-1010",
+      },
+    },
+    suggestedTutorQuestions: [
+      "What are the key characteristics of Renaissance art?",
+      "How did Impressionism break from traditional art?",
+      "What is the difference between Romanesque and Gothic architecture?",
+      "How did Cubism change the way artists represent reality?",
+      "What defines Abstract Expressionism?",
+      "How does Pop Art challenge traditional notions of fine art?",
+    ],
+    curriculumContext: `DSST Art of the Western World covers Western art history from ancient Greece through contemporary movements.
+Exam: 100 questions, 120 minutes, multiple choice. Passing score ~400/500 (scaled). Earns 3 college credits.
+Typical credit value: ~$1,000+ in tuition savings.
+Topics: ancient/medieval (20%), Renaissance/Baroque (20%), Neoclassical/Romantic (20%), Modern (20%), Contemporary (20%).`,
+    tutorResources: `
+- Khan Academy Art History (khanacademy.org/humanities/art-history): Free comprehensive art history
+- The Metropolitan Museum of Art (metmuseum.org): Free art collections and resources
+- Smarthistory (smarthistory.org): Free art history multimedia resources`,
+    examAlignmentNotes: `DSST Art of the Western World alignment:
+- Ancient and medieval art: 20%
+- Renaissance and Baroque: 20%
+- Neoclassical and Romantic: 20%
+- Modern art: 20%
+- Contemporary art: 20%
+100 MCQ in 120 min. 4-choice format. ~400/500 passing. Earns 3 semester hours.`,
+    stimulusRequirement: "Include an artwork description or stylistic comparison as stimulus where relevant; null for identification questions",
+    stimulusDescription: "artwork description, stylistic comparison, or art movement scenario (null for artist/period identification)",
+    explanationGuidance: "identifying the art movement, period, and key artists, explaining the stylistic characteristics, and noting the historical or cultural context",
+    difficultyRubric: {
+      EASY: "Identify an art movement or artist from a description. 65%+ correct.",
+      MEDIUM: "Compare two art movements or analyze the stylistic features of a described artwork. 40–55% correct.",
+      HARD: "Evaluate the cultural/historical forces that drove an artistic shift or analyze how a specific work reflects multiple influences. 25–40% correct.",
+    },
+    distractorTaxonomy: "(1) PERIOD SWAP — places an artist or work in the wrong art period; (2) MOVEMENT CONFUSION — attributes stylistic features to the wrong art movement; (3) INFLUENCE TRAP — misidentifies the cultural or artistic influence on a movement.",
+    stimulusQualityGuidance: "GOOD: A description of a specific artwork or architectural work with identifiable stylistic features. AVOID: Vague 'what style is this' without concrete details.",
+    skillCodes: ["Art Identification", "Stylistic Analysis", "Historical Context", "Movement Comparison"],
+    topicWeights: {
+      "DSST_ART_1_ANCIENT_MEDIEVAL": 0.20,
+      "DSST_ART_2_RENAISSANCE_BAROQUE": 0.20,
+      "DSST_ART_3_NEOCLASSICAL_ROMANTIC": 0.20,
+      "DSST_ART_4_MODERN": 0.20,
+      "DSST_ART_5_CONTEMPORARY": 0.20,
+    },
+    recommendedTextbooks: [
+      "Stokstad & Cothren, Art History (Pearson)",
+      "Gardner, Gardner's Art Through the Ages (Cengage)",
+      "Smarthistory (free: smarthistory.org)",
+    ],
+  },
+
+  // ── DSST Astronomy ──────────────────────────────────────────────────────
+  DSST_ASTRONOMY: {
+    name: "DSST Astronomy",
+    shortName: "DSST Astronomy",
+    examSecsPerQuestion: 72,
+    enrichWithEduAPIs: false,
+    units: {
+      DSST_ASTR_1_SOLAR_SYSTEM: {
+        name: "Unit 1: The Solar System",
+        keyThemes: ["planets", "moons", "asteroids and comets", "solar system formation", "Kepler's laws", "planetary atmospheres"],
+        openStaxUrl: "https://openstax.org/books/astronomy-2e/pages/7-introduction",
+        khanUrl: "https://www.khanacademy.org/science/cosmology-and-astronomy/solar-system-topic",
+      },
+      DSST_ASTR_2_STARS_STELLAR: {
+        name: "Unit 2: Stars and Stellar Evolution",
+        keyThemes: ["stellar classification", "HR diagram", "nuclear fusion", "main sequence", "red giants", "supernovae and neutron stars"],
+        openStaxUrl: "https://openstax.org/books/astronomy-2e/pages/18-introduction",
+        khanUrl: "https://www.khanacademy.org/science/cosmology-and-astronomy/stellar-life-topic",
+      },
+      DSST_ASTR_3_GALAXIES: {
+        name: "Unit 3: Galaxies",
+        keyThemes: ["Milky Way", "galaxy types", "galaxy formation", "active galactic nuclei", "quasars", "galaxy clusters"],
+        openStaxUrl: "https://openstax.org/books/astronomy-2e/pages/25-introduction",
+        khanUrl: "https://www.khanacademy.org/science/cosmology-and-astronomy/universe-scale-topic",
+      },
+      DSST_ASTR_4_COSMOLOGY: {
+        name: "Unit 4: Cosmology",
+        keyThemes: ["Big Bang theory", "cosmic microwave background", "dark matter", "dark energy", "expansion of the universe", "fate of the universe"],
+        openStaxUrl: "https://openstax.org/books/astronomy-2e/pages/29-introduction",
+        khanUrl: "https://www.khanacademy.org/science/cosmology-and-astronomy/universe-scale-topic",
+      },
+      DSST_ASTR_5_OBSERVATIONAL: {
+        name: "Unit 5: Observational Astronomy",
+        keyThemes: ["telescopes", "electromagnetic spectrum", "spectroscopy", "celestial coordinates", "space missions", "light pollution"],
+        openStaxUrl: "https://openstax.org/books/astronomy-2e/pages/6-introduction",
+        khanUrl: "https://www.khanacademy.org/science/cosmology-and-astronomy",
+      },
+    },
+    suggestedTutorQuestions: [
+      "How do stars evolve on the HR diagram?",
+      "What evidence supports the Big Bang theory?",
+      "How do Kepler's laws describe planetary motion?",
+      "What is dark matter and how do we know it exists?",
+      "How do telescopes collect and focus light?",
+      "What is the life cycle of a massive star?",
+    ],
+    curriculumContext: `DSST Astronomy covers the solar system, stellar evolution, galaxies, cosmology, and observational techniques.
+Exam: 100 questions, 120 minutes, multiple choice. Passing score ~400/500 (scaled). Earns 3 college credits.
+Typical credit value: ~$1,000+ in tuition savings.
+Topics: solar system (20%), stars/stellar evolution (20%), galaxies (20%), cosmology (20%), observational astronomy (20%).`,
+    tutorResources: `
+- NASA.gov (nasa.gov): Public domain astronomy resources and data
+- Khan Academy Cosmology & Astronomy (khanacademy.org): Free astronomy tutorials
+- MIT OCW Astronomy (ocw.mit.edu): Free astronomy course materials`,
+    examAlignmentNotes: `DSST Astronomy alignment:
+- The solar system: 20%
+- Stars and stellar evolution: 20%
+- Galaxies: 20%
+- Cosmology: 20%
+- Observational astronomy: 20%
+100 MCQ in 120 min. 4-choice format. ~400/500 passing. Earns 3 semester hours.`,
+    stimulusRequirement: "Include an astronomical observation or data description as stimulus where relevant; null for concept recall questions",
+    stimulusDescription: "astronomical observation, diagram description, or celestial event scenario (null for definition questions)",
+    explanationGuidance: "identifying the astronomical concept or phenomenon, explaining the underlying physics, and connecting it to observable evidence",
+    difficultyRubric: {
+      EASY: "Identify a planet, star type, or astronomical term from its description. 65%+ correct.",
+      MEDIUM: "Apply stellar evolution concepts or analyze an astronomical observation to draw conclusions. 40–55% correct.",
+      HARD: "Evaluate cosmological evidence or analyze a complex scenario involving multiple astronomical phenomena. 25–40% correct.",
+    },
+    distractorTaxonomy: "(1) SCALE CONFUSION — confuses solar system, galactic, and cosmological scales; (2) STELLAR STAGE SWAP — places a star in the wrong evolutionary stage; (3) SPECTRUM TRAP — misidentifies what a spectral observation reveals about a celestial object.",
+    stimulusQualityGuidance: "GOOD: A specific astronomical observation or data set to interpret. AVOID: Trivia questions about planet names without conceptual depth.",
+    skillCodes: ["Solar System Knowledge", "Stellar Physics", "Galactic Structure", "Cosmological Analysis"],
+    topicWeights: {
+      "DSST_ASTR_1_SOLAR_SYSTEM": 0.20,
+      "DSST_ASTR_2_STARS_STELLAR": 0.20,
+      "DSST_ASTR_3_GALAXIES": 0.20,
+      "DSST_ASTR_4_COSMOLOGY": 0.20,
+      "DSST_ASTR_5_OBSERVATIONAL": 0.20,
+    },
+    recommendedTextbooks: [
+      "OpenStax Astronomy 2e (free: openstax.org/books/astronomy-2e)",
+      "Seeds & Backman, Foundations of Astronomy (Cengage)",
+      "Bennett et al., The Cosmic Perspective (Pearson)",
+    ],
+  },
+
+  // ── DSST Computing and Information Technology ───────────────────────────
+  DSST_COMPUTING_AND_IT: {
+    name: "DSST Computing and Information Technology",
+    shortName: "DSST Computing & IT",
+    examSecsPerQuestion: 72,
+    enrichWithEduAPIs: false,
+    units: {
+      DSST_CIT_1_HARDWARE_SOFTWARE: {
+        name: "Unit 1: Hardware and Software Fundamentals",
+        keyThemes: ["CPU and memory", "storage devices", "operating systems", "application software", "binary and data representation", "system architecture"],
+        openStaxUrl: "https://openstax.org/books/introduction-business/pages/13-introduction",
+        khanUrl: "https://www.khanacademy.org/computing/computer-science/how-computers-work2",
+      },
+      DSST_CIT_2_NETWORKING: {
+        name: "Unit 2: Networking and the Internet",
+        keyThemes: ["TCP/IP", "network topologies", "Internet protocols", "Wi-Fi", "cloud computing", "client-server model"],
+        openStaxUrl: "https://openstax.org/books/introduction-business/pages/13-introduction",
+        khanUrl: "https://www.khanacademy.org/computing/computer-science/internet-intro",
+      },
+      DSST_CIT_3_PROGRAMMING: {
+        name: "Unit 3: Programming Concepts",
+        keyThemes: ["programming languages", "algorithms", "control structures", "data types", "functions", "object-oriented programming"],
+        openStaxUrl: "https://openstax.org/books/introduction-business/pages/13-introduction",
+        khanUrl: "https://www.khanacademy.org/computing/computer-programming",
+      },
+      DSST_CIT_4_DATABASES_WEB: {
+        name: "Unit 4: Databases and Web Technologies",
+        keyThemes: ["SQL", "relational databases", "HTML/CSS", "web development", "e-commerce", "content management"],
+        openStaxUrl: "https://openstax.org/books/introduction-business/pages/13-introduction",
+        khanUrl: "https://www.khanacademy.org/computing/computer-programming/sql",
+      },
+      DSST_CIT_5_SECURITY_ETHICS: {
+        name: "Unit 5: Cybersecurity and IT Ethics",
+        keyThemes: ["cybersecurity basics", "malware", "encryption", "privacy", "intellectual property", "IT ethics and social impact"],
+        openStaxUrl: "https://openstax.org/books/introduction-business/pages/13-introduction",
+        khanUrl: "https://www.khanacademy.org/computing/computer-science/cryptography",
+      },
+    },
+    suggestedTutorQuestions: [
+      "How does a CPU process instructions?",
+      "What is the difference between TCP and UDP?",
+      "How does object-oriented programming work?",
+      "What is SQL and how is it used with databases?",
+      "What are common cybersecurity threats and defenses?",
+      "How does encryption protect data?",
+    ],
+    curriculumContext: `DSST Computing and Information Technology covers hardware/software, networking, programming, databases, and cybersecurity.
+Exam: 100 questions, 120 minutes, multiple choice. Passing score ~400/500 (scaled). Earns 3 college credits.
+Typical credit value: ~$1,000+ in tuition savings.
+Topics: hardware/software (20%), networking (20%), programming (20%), databases/web (20%), security/ethics (20%).`,
+    tutorResources: `
+- Harvard CS50 (cs50.harvard.edu): Free comprehensive computing course
+- Cisco Networking Academy free modules (netacad.com): Networking fundamentals
+- Khan Academy Computing (khanacademy.org/computing): Free programming and CS content`,
+    examAlignmentNotes: `DSST Computing and Information Technology alignment:
+- Hardware and software fundamentals: 20%
+- Networking and the Internet: 20%
+- Programming concepts: 20%
+- Databases and web technologies: 20%
+- Cybersecurity and IT ethics: 20%
+100 MCQ in 120 min. 4-choice format. ~400/500 passing. Earns 3 semester hours.`,
+    stimulusRequirement: "Include a computing scenario or code snippet as stimulus where relevant; null for concept-definition questions",
+    stimulusDescription: "computing scenario, code snippet, or network diagram description (null for concept recall)",
+    explanationGuidance: "identifying the specific computing concept, explaining how the technology works, and connecting it to practical applications",
+    difficultyRubric: {
+      EASY: "Identify a hardware component or define a computing term. 65%+ correct.",
+      MEDIUM: "Trace through a simple code snippet or diagnose a network configuration issue. 40–55% correct.",
+      HARD: "Analyze a complex system architecture decision or evaluate trade-offs between competing technology solutions. 25–40% correct.",
+    },
+    distractorTaxonomy: "(1) PROTOCOL CONFUSION — mixes up TCP, UDP, HTTP, and FTP functions; (2) LANGUAGE TRAP — confuses features of different programming paradigms; (3) SECURITY ERROR — misidentifies the correct defense for a given cybersecurity threat.",
+    stimulusQualityGuidance: "GOOD: A specific computing scenario, code example, or technology decision to analyze. AVOID: Abstract vocabulary without practical application.",
+    skillCodes: ["Hardware/Software", "Networking", "Programming Logic", "Security Analysis"],
+    topicWeights: {
+      "DSST_CIT_1_HARDWARE_SOFTWARE": 0.20,
+      "DSST_CIT_2_NETWORKING": 0.20,
+      "DSST_CIT_3_PROGRAMMING": 0.20,
+      "DSST_CIT_4_DATABASES_WEB": 0.20,
+      "DSST_CIT_5_SECURITY_ETHICS": 0.20,
+    },
+    recommendedTextbooks: [
+      "Brookshear & Brylow, Computer Science: An Overview (Pearson)",
+      "Schneider & Gersting, Invitation to Computer Science (Cengage)",
+      "Harvard CS50 (free: cs50.harvard.edu)",
+    ],
+  },
+
+  // ── DSST The Civil War and Reconstruction ───────────────────────────────
+  DSST_CIVIL_WAR: {
+    name: "DSST The Civil War and Reconstruction",
+    shortName: "DSST Civil War",
+    examSecsPerQuestion: 72,
+    enrichWithEduAPIs: false,
+    units: {
+      DSST_CW_1_ANTEBELLUM: {
+        name: "Unit 1: Antebellum America",
+        keyThemes: ["slavery debate", "sectionalism", "Compromise of 1850", "Kansas-Nebraska Act", "Dred Scott decision", "abolitionist movement"],
+        openStaxUrl: "https://openstax.org/books/us-history/pages/14-introduction",
+        khanUrl: "https://www.khanacademy.org/humanities/us-history/civil-war-era",
+      },
+      DSST_CW_2_SECESSION_EARLY_WAR: {
+        name: "Unit 2: Secession and Early War",
+        keyThemes: ["election of 1860", "secession", "Fort Sumter", "border states", "early battles", "military leadership"],
+        openStaxUrl: "https://openstax.org/books/us-history/pages/15-introduction",
+        khanUrl: "https://www.khanacademy.org/humanities/us-history/civil-war-era",
+      },
+      DSST_CW_3_MAJOR_CAMPAIGNS: {
+        name: "Unit 3: Major Campaigns and Battles",
+        keyThemes: ["Gettysburg", "Vicksburg", "Antietam", "Sherman's March", "naval warfare", "Grant's strategy"],
+        openStaxUrl: "https://openstax.org/books/us-history/pages/15-3-the-war-begins",
+        khanUrl: "https://www.khanacademy.org/humanities/us-history/civil-war-era",
+      },
+      DSST_CW_4_HOME_FRONT: {
+        name: "Unit 4: The Home Front",
+        keyThemes: ["Emancipation Proclamation", "women in the war", "draft riots", "economic impact", "African American soldiers", "political dissent"],
+        openStaxUrl: "https://openstax.org/books/us-history/pages/15-4-the-war-ends",
+        khanUrl: "https://www.khanacademy.org/humanities/us-history/civil-war-era",
+      },
+      DSST_CW_5_RECONSTRUCTION: {
+        name: "Unit 5: Reconstruction",
+        keyThemes: ["13th Amendment", "14th Amendment", "15th Amendment", "Freedmen's Bureau", "Radical Reconstruction", "end of Reconstruction"],
+        openStaxUrl: "https://openstax.org/books/us-history/pages/16-introduction",
+        khanUrl: "https://www.khanacademy.org/humanities/us-history/civil-war-era",
+      },
+    },
+    suggestedTutorQuestions: [
+      "What were the main causes of the Civil War?",
+      "How did the Emancipation Proclamation change the war?",
+      "Why was the Battle of Gettysburg a turning point?",
+      "What did the 13th, 14th, and 15th Amendments accomplish?",
+      "What was the Freedmen's Bureau and what did it do?",
+      "Why did Reconstruction ultimately end?",
+    ],
+    curriculumContext: `DSST The Civil War and Reconstruction covers the causes, major events, and aftermath of the American Civil War and Reconstruction era.
+Exam: 100 questions, 120 minutes, multiple choice. Passing score ~400/500 (scaled). Earns 3 college credits.
+Typical credit value: ~$1,000+ in tuition savings.
+Topics: antebellum America (20%), secession/early war (20%), major campaigns (20%), home front (20%), Reconstruction (20%).`,
+    tutorResources: `
+- National Archives (archives.gov): Primary source documents from the Civil War era
+- Library of Congress (loc.gov): Civil War photographs, maps, and documents
+- PBS Civil War resources (pbs.org): Documentary and educational resources`,
+    examAlignmentNotes: `DSST The Civil War and Reconstruction alignment:
+- Antebellum America: 20%
+- Secession and early war: 20%
+- Major campaigns and battles: 20%
+- The home front: 20%
+- Reconstruction: 20%
+100 MCQ in 120 min. 4-choice format. ~400/500 passing. Earns 3 semester hours.`,
+    stimulusRequirement: "Include a primary source excerpt or historical scenario as stimulus where relevant; null for fact recall questions",
+    stimulusDescription: "primary source excerpt, historical scenario, or map/battle description (null for fact identification)",
+    explanationGuidance: "identifying the specific historical event, figure, or policy, explaining its significance in the context of the Civil War or Reconstruction, and noting its broader impact on American history",
+    difficultyRubric: {
+      EASY: "Identify a key figure, battle, or event from the Civil War era. 65%+ correct.",
+      MEDIUM: "Analyze the causes or consequences of a specific event or compare military strategies. 40–55% correct.",
+      HARD: "Evaluate the long-term impact of Reconstruction policies or analyze how multiple factors contributed to a turning point in the war. 25–40% correct.",
+    },
+    distractorTaxonomy: "(1) CHRONOLOGY ERROR — places events in the wrong order or year; (2) CAUSE CONFUSION — attributes a battle outcome or policy to the wrong factor; (3) AMENDMENT SWAP — confuses the 13th, 14th, and 15th Amendments.",
+    stimulusQualityGuidance: "GOOD: A primary source quote, battle scenario, or policy description requiring analysis. AVOID: Simple date/name recall without historical context.",
+    skillCodes: ["Historical Causation", "Military Analysis", "Political Analysis", "Reconstruction Policy"],
+    topicWeights: {
+      "DSST_CW_1_ANTEBELLUM": 0.20,
+      "DSST_CW_2_SECESSION_EARLY_WAR": 0.20,
+      "DSST_CW_3_MAJOR_CAMPAIGNS": 0.20,
+      "DSST_CW_4_HOME_FRONT": 0.20,
+      "DSST_CW_5_RECONSTRUCTION": 0.20,
+    },
+    recommendedTextbooks: [
+      "OpenStax U.S. History (free: openstax.org/books/us-history)",
+      "McPherson, Battle Cry of Freedom (Oxford University Press)",
+      "Foner, Reconstruction: America's Unfinished Revolution (Harper Perennial)",
     ],
   },
 };
