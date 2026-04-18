@@ -29,6 +29,7 @@ import { ExamCountdownSetter } from "@/components/dashboard/exam-countdown-sette
 import { DailyReviewCard } from "@/components/dashboard/daily-review-card";
 import { CLEPDayCard } from "@/components/dashboard/clep-day-card";
 import { CLEPGeneratePlan } from "@/components/dashboard/clep-generate-plan";
+import { ReadinessCard } from "@/components/dashboard/readiness-card";
 
 export default async function DashboardPage() {
   const session = await getServerSession(authOptions);
@@ -159,6 +160,9 @@ export default async function DashboardPage() {
       {isCLEP && !clepPlan && (
         <CLEPGeneratePlan course={selectedCourse} />
       )}
+
+      {/* Projected AP/SAT/ACT score — single source of truth via /api/readiness */}
+      <ReadinessCard course={selectedCourse} />
 
       {/* Stats Row — 3 cards */}
       <div className="grid grid-cols-3 gap-4">

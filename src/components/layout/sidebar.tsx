@@ -8,6 +8,7 @@ import { AP_COURSE_SHORT } from "@/lib/utils";
 import { useCourse } from "@/hooks/use-course";
 import { ApCourse } from "@prisma/client";
 import { COURSE_REGISTRY } from "@/lib/courses";
+import { SidebarReadiness } from "@/components/layout/sidebar-readiness";
 import {
   LayoutDashboard,
   Zap,
@@ -300,6 +301,9 @@ export function Sidebar({ userRole, userTrack, isOpen = false, onClose = () => {
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
+
+        {/* Projected score for the selected course (reads /api/readiness) */}
+        <SidebarReadiness />
 
         {/* Navigation */}
         <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
