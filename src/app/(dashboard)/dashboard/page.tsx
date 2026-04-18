@@ -29,10 +29,10 @@ import { ExamCountdownSetter } from "@/components/dashboard/exam-countdown-sette
 import { DailyReviewCard } from "@/components/dashboard/daily-review-card";
 import { CLEPDayCard } from "@/components/dashboard/clep-day-card";
 import { CLEPGeneratePlan } from "@/components/dashboard/clep-generate-plan";
-import { ReadinessCard } from "@/components/dashboard/readiness-card";
 import { DailyGoalCard } from "@/components/dashboard/daily-goal-card";
 import { ProgressUpsellCard } from "@/components/dashboard/progress-upsell-card";
 import { MasteryTierUpCard } from "@/components/dashboard/mastery-tier-up-card";
+import { CoachCard } from "@/components/dashboard/coach-card";
 
 export default async function DashboardPage() {
   const session = await getServerSession(authOptions);
@@ -142,16 +142,17 @@ export default async function DashboardPage() {
             <ExamCountdownSetter course={selectedCourse} inline />
           </div>
         </div>
-        <Link href="/practice" className="flex-shrink-0">
-          <Button size="lg" className="btn-lift gap-2">
-            <Zap className="h-5 w-5" />
-            Start Practice
-          </Button>
-        </Link>
+        {/* Dashboard header CTA intentionally removed — the Coach Card below is the single dominant action. */}
       </div>
 
       {/* "You fixed it" — mastery tier-up celebration (renders null when no unread win) */}
       <MasteryTierUpCard />
+
+      {/* ═══ Coach Mode hero ══════════════════════════════════════════════
+          One prescription: projected score + effort-to-target + weakest
+          unit + single dominant CTA. Replaces the earlier fragmented top
+          zone (separate ReadinessCard + 3-CTA Quick Actions + countdown). */}
+      {!isCLEP && <CoachCard course={selectedCourse} />}
 
       {/* CLEP 7-Day Plan Card */}
       {isCLEP && clepPlan && (
@@ -166,9 +167,6 @@ export default async function DashboardPage() {
       {isCLEP && !clepPlan && (
         <CLEPGeneratePlan course={selectedCourse} />
       )}
-
-      {/* Projected AP/SAT/ACT score — single source of truth via /api/readiness */}
-      <ReadinessCard course={selectedCourse} />
 
       {/* Daily goal — tied to score delta, not a raw Q count */}
       <DailyGoalCard course={selectedCourse} />
@@ -244,54 +242,64 @@ export default async function DashboardPage() {
       {/* Goal card */}
       <GoalCard course={selectedCourse} track={session.user.track ?? "ap"} todayQuestions={todayQuestionCount} />
 
-      {/* Quick Actions + Daily Review */}
-      <div className="grid lg:grid-cols-2 gap-6">
-        <Card className="card-glow">
-          <CardHeader>
-            <CardTitle className="text-lg">Quick Actions</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <Link href="/practice?mode=quick">
-              <div className="flex items-center gap-4 p-4 rounded-lg border border-border/40 hover:bg-accent cursor-pointer transition-colors">
-                <div className="w-10 h-10 rounded-lg bg-yellow-500/20 flex items-center justify-center">
-                  <Zap className="h-5 w-5 text-yellow-400" />
-                </div>
-                <div className="flex-1">
-                  <p className="font-medium">Quick Practice</p>
-                  <p className="text-xs text-muted-foreground">10 questions · untimed</p>
-                </div>
-                <ArrowRight className="h-4 w-4 text-muted-foreground" />
-              </div>
-            </Link>
-            <Link href="/practice?mode=focused">
-              <div className="flex items-center gap-4 p-4 rounded-lg border border-border/40 hover:bg-accent cursor-pointer transition-colors">
-                <div className="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center">
-                  <BookOpen className="h-5 w-5 text-blue-400" />
-                </div>
-                <div className="flex-1">
-                  <p className="font-medium">Focused Study</p>
-                  <p className="text-xs text-muted-foreground">Choose unit & difficulty</p>
-                </div>
-                <ArrowRight className="h-4 w-4 text-muted-foreground" />
-              </div>
-            </Link>
-            <Link href="/mock-exam">
-              <div className="flex items-center gap-4 p-4 rounded-lg border border-border/40 hover:bg-accent cursor-pointer transition-colors">
-                <div className="w-10 h-10 rounded-lg bg-purple-500/20 flex items-center justify-center">
-                  <Trophy className="h-5 w-5 text-purple-400" />
-                </div>
-                <div className="flex-1">
-                  <p className="font-medium">Mock Exam</p>
-                  <p className="text-xs text-muted-foreground">10 questions · timed at AP pace</p>
-                </div>
-                <ArrowRight className="h-4 w-4 text-muted-foreground" />
-              </div>
-            </Link>
-          </CardContent>
-        </Card>
+      {/* Daily Review (fast-win loop — lives above Other Options because
+          its "Fix 1 mistake in 60s" is a secondary dopamine hit, not a
+          menu option). */}
+      <DailyReviewCard course={selectedCourse} />
 
-        <DailyReviewCard course={selectedCourse} />
-      </div>
+      {/* Demoted secondary options — intentionally a <details> collapse so
+          the dashboard no longer leads with 5 equal-weight CTAs. Primary
+          action is the Coach Card above. */}
+      <Card className="card-glow">
+        <CardContent className="p-0">
+          <details className="group">
+            <summary className="flex items-center justify-between p-4 cursor-pointer list-none hover:bg-accent/40 transition-colors rounded-lg">
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-medium text-muted-foreground">Other practice options</span>
+              </div>
+              <ArrowRight className="h-4 w-4 text-muted-foreground transition-transform group-open:rotate-90" />
+            </summary>
+            <div className="px-4 pb-4 space-y-2 border-t border-border/30">
+              <Link href="/practice?mode=quick">
+                <div className="flex items-center gap-4 p-3 mt-3 rounded-lg border border-border/40 hover:bg-accent cursor-pointer transition-colors">
+                  <div className="w-9 h-9 rounded-lg bg-yellow-500/20 flex items-center justify-center">
+                    <Zap className="h-4 w-4 text-yellow-400" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-sm font-medium">Quick Practice</p>
+                    <p className="text-xs text-muted-foreground">10 questions · untimed</p>
+                  </div>
+                  <ArrowRight className="h-4 w-4 text-muted-foreground" />
+                </div>
+              </Link>
+              <Link href="/practice?mode=focused">
+                <div className="flex items-center gap-4 p-3 rounded-lg border border-border/40 hover:bg-accent cursor-pointer transition-colors">
+                  <div className="w-9 h-9 rounded-lg bg-blue-500/20 flex items-center justify-center">
+                    <BookOpen className="h-4 w-4 text-blue-400" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-sm font-medium">Focused Study</p>
+                    <p className="text-xs text-muted-foreground">Choose unit & difficulty</p>
+                  </div>
+                  <ArrowRight className="h-4 w-4 text-muted-foreground" />
+                </div>
+              </Link>
+              <Link href="/mock-exam">
+                <div className="flex items-center gap-4 p-3 rounded-lg border border-border/40 hover:bg-accent cursor-pointer transition-colors">
+                  <div className="w-9 h-9 rounded-lg bg-purple-500/20 flex items-center justify-center">
+                    <Trophy className="h-4 w-4 text-purple-400" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-sm font-medium">Mock Exam</p>
+                    <p className="text-xs text-muted-foreground">10 questions · timed at AP pace</p>
+                  </div>
+                  <ArrowRight className="h-4 w-4 text-muted-foreground" />
+                </div>
+              </Link>
+            </div>
+          </details>
+        </CardContent>
+      </Card>
 
       {/* Focus Areas */}
       <Card className="card-glow">
@@ -308,32 +316,44 @@ export default async function DashboardPage() {
         </CardHeader>
         <CardContent className="space-y-3">
           {weakUnits.length > 0 ? (
-            weakUnits.map((unit) => (
-              <div key={unit.unit} className="p-3 rounded-lg bg-secondary/50">
-                <div className="flex items-center justify-between mb-1.5">
-                  <p className="text-sm font-medium line-clamp-1">{unit.unitName}</p>
-                  <Badge variant="outline" className={`text-xs ${getMasteryColor(unit.masteryScore)}`}>
-                    {getMasteryLabel(unit.masteryScore)}
-                  </Badge>
-                </div>
-                <Progress
-                  value={unit.masteryScore}
-                  className="h-1.5"
-                  indicatorClassName={getMasteryBg(unit.masteryScore)}
-                />
-              </div>
-            ))
+            weakUnits.map((unit) => {
+              // Numeric impact framing: miss rate × estimated exam weight.
+              // Anchor 6 = conservative "this unit spans ~10-15% of the MCQ section".
+              const missRate = Math.max(0, Math.min(100, 100 - unit.accuracy));
+              const likelyMisses = Math.round((missRate / 100) * 6);
+              return (
+                <Link
+                  key={unit.unit}
+                  href={`/practice?mode=focused&unit=${encodeURIComponent(unit.unit)}`}
+                  className="block"
+                >
+                  <div className="p-3 rounded-lg bg-secondary/50 hover:bg-accent transition-colors cursor-pointer">
+                    <div className="flex items-center justify-between mb-1.5">
+                      <p className="text-sm font-medium line-clamp-1">{unit.unitName}</p>
+                      <Badge variant="outline" className={`text-xs ${getMasteryColor(unit.masteryScore)}`}>
+                        {getMasteryLabel(unit.masteryScore)}
+                      </Badge>
+                    </div>
+                    <Progress
+                      value={unit.masteryScore}
+                      className="h-1.5 mb-1.5"
+                      indicatorClassName={getMasteryBg(unit.masteryScore)}
+                    />
+                    {likelyMisses > 0 && (
+                      <p className="text-[11px] text-muted-foreground">
+                        Likely <span className="font-semibold text-amber-600 dark:text-amber-400">~{likelyMisses} question{likelyMisses === 1 ? "" : "s"}</span> lost if not fixed → tap to drill this unit.
+                      </p>
+                    )}
+                  </div>
+                </Link>
+              );
+            })
           ) : (
             <div className="text-center py-4 space-y-1">
               <p className="text-sm font-semibold text-emerald-400">All units at 70%+ mastery!</p>
               <p className="text-xs text-muted-foreground">Keep practicing to push toward 90%+ and exam-day confidence.</p>
             </div>
           )}
-          <Link href="/practice">
-            <Button variant="outline" size="sm" className="w-full gap-2 mt-2">
-              Practice Weak Areas <ArrowRight className="h-4 w-4" />
-            </Button>
-          </Link>
         </CardContent>
       </Card>
 

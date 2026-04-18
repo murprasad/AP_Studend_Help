@@ -82,7 +82,7 @@ export function ReadinessCard({ course }: Props) {
                   {scaleLabel && <span className="text-sm text-muted-foreground">{scaleLabel}</span>}
                 </div>
               ) : (
-                <p className="text-sm text-muted-foreground">Take diagnostic to unlock</p>
+                <p className="text-sm text-muted-foreground">Rough estimate — more practice sharpens it</p>
               )}
               <p className="text-sm font-medium mt-0.5">{data.label}</p>
             </div>
@@ -113,7 +113,7 @@ export function ReadinessCard({ course }: Props) {
         {!data.hasDiagnostic && (
           <Link href="/diagnostic" className="block">
             <div className="flex items-center justify-between p-2.5 rounded-lg bg-secondary/40 hover:bg-accent transition-colors">
-              <span className="text-sm font-medium">Take diagnostic to calibrate →</span>
+              <span className="text-sm font-medium">Calibrate in 10 min → sharper score</span>
             </div>
           </Link>
         )}

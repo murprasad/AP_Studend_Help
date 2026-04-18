@@ -67,7 +67,12 @@ function compositePercentile(composite: number): number {
 }
 
 function labelFor(composite: number, confidence: "low" | "medium" | "high", hasDiagnostic: boolean): string {
-  if (!hasDiagnostic) return "Take diagnostic to start";
+  if (!hasDiagnostic) {
+    if (composite >= 28) return `Rough estimate: trending toward ${composite}`;
+    if (composite >= 22) return "Rough estimate: above national average";
+    if (composite >= 18) return "Rough estimate: near national average";
+    return "Rough estimate: just getting started";
+  }
   if (confidence === "low") return "Keep building — more practice needed";
   if (composite >= 33) return "Elite range";
   if (composite >= 30) return "Highly selective range";

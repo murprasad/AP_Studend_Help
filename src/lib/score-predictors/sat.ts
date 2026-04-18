@@ -73,7 +73,12 @@ function compositePercentile(total: number): number {
 }
 
 function labelFor(total: number, confidence: "low" | "medium" | "high", hasDiagnostic: boolean): string {
-  if (!hasDiagnostic) return "Take diagnostic to start";
+  if (!hasDiagnostic) {
+    if (total >= 1400) return `Rough estimate: trending toward ${total}`;
+    if (total >= 1200) return "Rough estimate: above national average";
+    if (total >= 1050) return "Rough estimate: near national average";
+    return "Rough estimate: just getting started";
+  }
   if (confidence === "low") return "Keep building — more practice needed";
   if (total >= 1500) return "Reach-school range";
   if (total >= 1400) return "Competitive school range";

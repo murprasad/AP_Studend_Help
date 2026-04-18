@@ -30,7 +30,7 @@ export function getReadinessDisplay(
   else if (passPercent > 0 && confidence === "low") label = "Just getting started";
   else if (passPercent > 0) label = "You're on your way";
   else if (hasDiagnostic) label = "Momentum started";
-  else label = "Take diagnostic to start";
+  else label = "Rough estimate — keep practicing";
 
   return {
     label,

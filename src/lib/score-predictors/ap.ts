@@ -82,7 +82,16 @@ function scaleToAp(rawPercent: number, cutoffs: APCutoffs): 1 | 2 | 3 | 4 | 5 {
 }
 
 function labelFor(scaled: 1 | 2 | 3 | 4 | 5, confidence: "low" | "medium" | "high", hasDiagnostic: boolean): string {
-  if (!hasDiagnostic) return "Take diagnostic to start";
+  if (!hasDiagnostic) {
+    // Show a rough-estimate label — don't gate on diagnostic. A user who
+    // opens the dashboard and sees "Take diagnostic to start" feels like
+    // they've hit a wall before any information is given. Rough-framed
+    // labels below let them self-assess and decide when to calibrate.
+    if (scaled >= 4) return `Rough estimate: trending toward a ${scaled}`;
+    if (scaled === 3) return "Rough estimate: near the passing line";
+    if (scaled === 2) return "Rough estimate: building toward a 3";
+    return "Rough estimate: just getting started";
+  }
   if (confidence === "low") return "Keep building — more practice needed";
   if (scaled === 5) return "On track for a 5";
   if (scaled === 4) return "On track for a 4";
