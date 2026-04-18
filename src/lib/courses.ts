@@ -551,8 +551,13 @@ When referencing resources:
   AP_PHYSICS_1: {
     name: "AP Physics 1: Algebra-Based",
     shortName: "AP Physics 1",
-    examSecsPerQuestion: 108, // 50 MCQ in 90 min = 1.8 min/q
-    mockExam: { mcqCount: 50, mcqTimeMinutes: 90 },
+    // Confirmed against apcentral.collegeboard.org/courses/ap-physics-1/exam
+    // (May 2026 administration):
+    //   Section I  — 40 MCQ / 80 min (50% of score)
+    //   Section II — 4 FRQ / 100 min (50% of score)
+    //   Total exam  — 180 min (3 hours)
+    examSecsPerQuestion: 120, // 40 MCQ in 80 min = 2 min/q
+    mockExam: { mcqCount: 40, mcqTimeMinutes: 80 },
     enrichWithEduAPIs: false,
     openStaxSubject: "physics",
     questionTypeFormats: {
