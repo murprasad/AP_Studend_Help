@@ -12,7 +12,7 @@
     "db:generate": "prisma generate && node scripts/patch-prisma-wasm.js",
     "db:seed": "tsx prisma/seed.ts",
     "db:studio": "prisma studio",
-    "pages:build": "npx prisma generate && node scripts/patch-prisma-wasm.js && opennextjs-cloudflare build --dangerouslyUseUnsupportedNextVersion && node scripts/prepare-cf-deploy.js",
+    "pages:build": "npx prisma generate --no-engine && node scripts/patch-prisma-wasm.js && opennextjs-cloudflare build --dangerouslyUseUnsupportedNextVersion && node scripts/prepare-cf-deploy.js",
     "release:check": "node scripts/pre-release-check.js",
     "smoke-tests": "node scripts/smoke-tests.js",
     "integration-tests": "node scripts/integration-tests.js",
