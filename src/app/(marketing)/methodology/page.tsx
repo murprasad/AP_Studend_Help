@@ -82,7 +82,7 @@ export default function Page() {
       <div className="p-6 rounded-2xl bg-primary/5 border border-primary/20 text-center space-y-3">
         <h2 className="text-xl font-bold">See your number</h2>
         <p className="text-muted-foreground">Free 10-minute diagnostic. Real pass-probability, your data, no card.</p>
-        <Link href="/am-i-ready" className="inline-block text-primary font-semibold underline">Start free diagnostic →</Link>
+        <Link href="/register" className="inline-block text-primary font-semibold underline">Start free diagnostic →</Link>
       </div>
     </div>
   );

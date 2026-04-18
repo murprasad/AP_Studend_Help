@@ -101,16 +101,26 @@ export default function PracticePage() {
   const [questionType, setQuestionType] = useState<"MCQ" | "FRQ" | "SAQ" | "LEQ" | "DBQ" | "CODING">("MCQ");
 
   useEffect(() => {
-    Promise.all([
+    // Use allSettled so one slow/failed call doesn't silently leave every
+    // downstream gating flag undefined. Each branch sets sensible defaults
+    // on rejection.
+    Promise.allSettled([
       fetch("/api/user").then((r) => r.json()),
       fetch("/api/feature-flags").then((r) => r.json()),
-    ])
-      .then(([userData, flagsData]) => {
-        setSubscriptionTier(userData.user?.subscriptionTier ?? "FREE");
-        setUserTrack(userData.user?.track ?? "ap");
-        setPremiumRestricted(flagsData.premiumRestrictionEnabled ?? false);
-      })
-      .catch(() => {});
+    ]).then(([userRes, flagsRes]) => {
+      if (userRes.status === "fulfilled") {
+        setSubscriptionTier(userRes.value.user?.subscriptionTier ?? "FREE");
+        setUserTrack(userRes.value.user?.track ?? "ap");
+      } else {
+        setSubscriptionTier("FREE");
+        setUserTrack("ap");
+      }
+      if (flagsRes.status === "fulfilled") {
+        setPremiumRestricted(flagsRes.value.premiumRestrictionEnabled ?? false);
+      } else {
+        setPremiumRestricted(false);
+      }
+    });
   }, []);
 
   // Restore session if returning from Sage ("Continue Practice" button)

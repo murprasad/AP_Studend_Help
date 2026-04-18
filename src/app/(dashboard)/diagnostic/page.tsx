@@ -174,11 +174,16 @@ export default function DiagnosticPage() {
   if (mode === "testing") {
     const question = questions[currentIndex]
     const progress = ((currentIndex) / questions.length) * 100
-    const options: string[] = Array.isArray(question.options)
-      ? question.options
-      : typeof question.options === "string"
-        ? JSON.parse(question.options)
-        : []
+    let options: string[] = []
+    if (Array.isArray(question.options)) {
+      options = question.options
+    } else if (typeof question.options === "string") {
+      try {
+        options = JSON.parse(question.options)
+      } catch {
+        options = [] // malformed JSON — render empty-options recovery below
+      }
+    }
 
     return (
       <div className="max-w-2xl mx-auto space-y-6">
