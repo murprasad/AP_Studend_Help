@@ -1,6 +1,7 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { useExamMode } from "@/hooks/use-exam-mode"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -41,6 +42,14 @@ export default function DiagnosticPage() {
   const { toast } = useToast()
   const { data: session } = useSession()
   const [mode, setMode] = useState<DiagMode>("intro")
+  const { enterExamMode, exitExamMode } = useExamMode()
+  useEffect(() => {
+    // Full-screen mode while taking the diagnostic; back to the normal
+    // layout on the intro and results screens so nav is available.
+    if (mode === "testing") enterExamMode()
+    else exitExamMode()
+  }, [mode, enterExamMode, exitExamMode])
+  useEffect(() => { return () => exitExamMode() }, [exitExamMode])
   const [sessionId, setSessionId] = useState<string | null>(null)
   const [questions, setQuestions] = useState<DiagQuestion[]>([])
   const [currentIndex, setCurrentIndex] = useState(0)

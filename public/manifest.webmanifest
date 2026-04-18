@@ -1,7 +1,7 @@
 {
   "name": "StudentNest",
   "short_name": "StudentNest",
-  "description": "AP, SAT, ACT, CLEP & DSST exam preparation — adaptive practice, personalized study plans, and an AI tutor.",
+  "description": "AP, SAT & ACT exam preparation — adaptive practice, personalized study plans, and an AI tutor.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",

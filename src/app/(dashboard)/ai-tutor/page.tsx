@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
+import { useExamMode } from "@/hooks/use-exam-mode";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Button } from "@/components/ui/button";
@@ -68,6 +69,11 @@ export default function AiTutorPage() {
   const { data: session } = useSession();
   const router = useRouter();
   const [course, setCourse] = useCourse();
+
+  // Full-screen Sage chat — hide sidebar + floating SageChat widget
+  // for an app-like deep-work experience. Matches PrepLion's AI Tutor.
+  const { enterExamMode, exitExamMode } = useExamMode();
+  useEffect(() => { enterExamMode(); return () => exitExamMode(); }, [enterExamMode, exitExamMode]);
 
   function handleCourseChange(newCourse: ApCourse) {
     setCourse(newCourse);

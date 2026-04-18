@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
+import { useExamMode } from "@/hooks/use-exam-mode";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -62,6 +63,16 @@ export default function MockExamPage() {
   const { toast } = useToast();
   const [course] = useCourse();
   const [phase, setPhase] = useState<ExamPhase>("intro");
+
+  // Full-screen exam mode while a section is in progress. Intro and
+  // complete/results screens keep the normal layout so the student has
+  // nav + Sage access before starting and after finishing.
+  const { enterExamMode, exitExamMode } = useExamMode();
+  useEffect(() => {
+    if (phase === "section1") enterExamMode();
+    else exitExamMode();
+  }, [phase, enterExamMode, exitExamMode]);
+  useEffect(() => { return () => exitExamMode(); }, [exitExamMode]);
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [questions, setQuestions] = useState<ExamQuestion[]>([]);
   const questionsRef = useRef<ExamQuestion[]>([]);

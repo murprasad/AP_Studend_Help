@@ -5,10 +5,15 @@ import { useRouter, usePathname } from "next/navigation";
 import { useEffect, useState, useRef } from "react";
 import { Sidebar } from "@/components/layout/sidebar";
 import { SageChat } from "@/components/layout/sage-chat";
-import { Sparkles, Menu } from "lucide-react";
+import { Sparkles, Menu, LayoutDashboard } from "lucide-react";
 import Link from "next/link";
+import { ExamModeContext, useExamModeState } from "@/hooks/use-exam-mode";
+import { cn } from "@/lib/utils";
 
 const ONBOARDING_KEY = "onboarding_completed";
+
+// Pages allowed to stay in exam mode. Navigating anywhere else auto-exits.
+const EXAM_MODE_PAGES = ["/diagnostic", "/mock-exam", "/ai-tutor", "/practice", "/flashcards"];
 
 export default function DashboardLayout({
   children,
@@ -19,6 +24,14 @@ export default function DashboardLayout({
   const router = useRouter();
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  // Start in exam mode if the diagnostic's "start" query param is present
+  // so the transition from onboarding → diagnostic feels seamless.
+  const isDiagAutoStart =
+    typeof window !== "undefined" &&
+    pathname === "/diagnostic" &&
+    new URLSearchParams(window.location.search).get("start") === "true";
+  const examModeState = useExamModeState(isDiagAutoStart);
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -37,13 +50,8 @@ export default function DashboardLayout({
 
     const onboardedAtServer = (session?.user as { onboardingCompletedAt?: string | null } | undefined)?.onboardingCompletedAt;
 
-    // If the server says not onboarded, force /onboarding and clear the
-    // stale localStorage flag so a reset test user isn't trapped by their
-    // browser state.
     if (onboardedAtServer === null || onboardedAtServer === undefined) {
       try { localStorage.removeItem(ONBOARDING_KEY); } catch { /* ignore */ }
-      // Fetch the latest user row directly — session JWT can lag a minute
-      // or two after a PATCH and shouldn't block an unambiguous redirect.
       fetch("/api/user", { cache: "no-store" })
         .then((r) => r.ok ? r.json() : null)
         .then((data) => {
@@ -52,22 +60,26 @@ export default function DashboardLayout({
             router.replace("/onboarding");
           }
         })
-        .catch(() => { /* silent — fall back to localStorage check below */ });
+        .catch(() => { /* silent */ });
       return;
     }
 
-    // Server says onboarded — trust it and short-circuit.
     try {
       const done = localStorage.getItem(ONBOARDING_KEY);
       if (!done) {
-        // Server says onboarded but localStorage hasn't caught up (new
-        // browser or cleared storage). Set the flag; no redirect.
         localStorage.setItem(ONBOARDING_KEY, "true");
       }
-    } catch { /* localStorage unavailable — nothing to sync */ }
+    } catch { /* ignore */ }
   }, [status, session, pathname, router]);
 
-  // Sync track from URL param (e.g. /dashboard?track=clep after Google OAuth redirect)
+  // Auto-exit exam mode when navigating away from exam-mode pages
+  useEffect(() => {
+    if (examModeState.examMode && !EXAM_MODE_PAGES.some(p => pathname.startsWith(p))) {
+      examModeState.exitExamMode();
+    }
+  }, [pathname, examModeState]);
+
+  // Sync track from URL param
   const trackSynced = useRef(false);
   useEffect(() => {
     if (status !== "authenticated" || trackSynced.current) return;
@@ -82,7 +94,6 @@ export default function DashboardLayout({
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ track: urlTrack }),
         }).then(async () => {
-          // Force JWT refresh to pick up new track, then reload
           await updateSession();
           window.location.replace(pathname);
         }).catch(() => {});
@@ -100,32 +111,70 @@ export default function DashboardLayout({
 
   if (!session) return null;
 
-  return (
-    <div className="flex h-screen bg-background overflow-hidden">
-      {/* Mobile header */}
-      <header className="lg:hidden fixed top-0 left-0 right-0 h-14 bg-background/95 backdrop-blur border-b border-border z-30 flex items-center px-4">
-        <button
-          onClick={() => setSidebarOpen(true)}
-          className="p-2 rounded-lg hover:bg-accent transition-colors mr-3"
-          aria-label="Open menu"
-        >
-          <Menu className="h-5 w-5" />
-        </button>
-        <Link href="/" className="flex items-center gap-2">
-          <Sparkles className="h-6 w-6 text-blue-500" />
-          <span className="text-lg font-bold">
-            <span className="gradient-text">Student</span><span className="text-foreground/80 font-medium">Nest</span><span className="text-blue-500/60 font-normal text-[0.6em] ml-1">Prep</span>
-          </span>
-        </Link>
-      </header>
+  const inExamMode = examModeState.examMode;
+  const onOnboarding = pathname === "/onboarding";
 
-      <Sidebar userRole={session.user.role} userTrack={session.user.track} isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-      <main className="flex-1 min-w-0 overflow-y-auto overflow-x-hidden pt-14 lg:pt-0">
-        <div className="px-4 py-4 sm:px-6 sm:py-6 max-w-7xl mx-auto">
-          {children}
-        </div>
-      </main>
-      <SageChat />
-    </div>
+  return (
+    <ExamModeContext.Provider value={examModeState}>
+      <div className="flex h-screen bg-background overflow-hidden">
+        {/* Exam mode top bar — slim bar with exit button. Desktop only;
+            mobile users use their OS back gesture or tap the X in the
+            exam UI itself. */}
+        {inExamMode && (
+          <div className="fixed top-0 left-0 right-0 h-10 bg-background/95 backdrop-blur border-b border-border/40 z-30 hidden lg:flex items-center px-4">
+            <button
+              onClick={() => examModeState.exitExamMode()}
+              className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors px-2.5 py-1.5 rounded-lg hover:bg-accent"
+            >
+              <LayoutDashboard className="h-3.5 w-3.5" />
+              <span>Dashboard</span>
+            </button>
+          </div>
+        )}
+
+        {/* Mobile header — hidden in exam mode and onboarding */}
+        {!inExamMode && !onOnboarding && (
+          <header className="lg:hidden fixed top-0 left-0 right-0 h-14 bg-background/95 backdrop-blur border-b border-border z-30 flex items-center px-4">
+            <button
+              onClick={() => setSidebarOpen(true)}
+              className="p-2 rounded-lg hover:bg-accent transition-colors mr-3"
+              aria-label="Open menu"
+            >
+              <Menu className="h-5 w-5" />
+            </button>
+            <Link href="/" className="flex items-center gap-2">
+              <Sparkles className="h-6 w-6 text-blue-500" />
+              <span className="text-lg font-bold">
+                <span className="gradient-text">Student</span><span className="text-foreground/80 font-medium">Nest</span><span className="text-blue-500/60 font-normal text-[0.6em] ml-1">Prep</span>
+              </span>
+            </Link>
+          </header>
+        )}
+
+        {/* Sidebar — hidden in exam mode and onboarding */}
+        {!inExamMode && !onOnboarding && (
+          <Sidebar
+            userRole={session.user.role}
+            userTrack={session.user.track}
+            isOpen={sidebarOpen}
+            onClose={() => setSidebarOpen(false)}
+          />
+        )}
+
+        <main className={cn(
+          "flex-1 min-w-0 overflow-y-auto overflow-x-hidden",
+          inExamMode ? "pt-0 lg:pt-10" : "pt-14 lg:pt-0"
+        )}>
+          <div className={cn(
+            "px-4 py-4 sm:px-6 sm:py-6 mx-auto",
+            inExamMode ? "max-w-5xl" : "max-w-7xl"
+          )}>
+            {children}
+          </div>
+        </main>
+        {/* Hide Sage chat widget while in exam mode — full-screen test UX */}
+        {!inExamMode && <SageChat />}
+      </div>
+    </ExamModeContext.Provider>
   );
 }
