@@ -6,6 +6,7 @@ import { useEffect, useState, useRef } from "react";
 import { Sidebar } from "@/components/layout/sidebar";
 import { SageChat } from "@/components/layout/sage-chat";
 import { Sparkles, Menu } from "lucide-react";
+import Link from "next/link";
 
 const ONBOARDING_KEY = "onboarding_completed";
 
@@ -83,12 +84,12 @@ export default function DashboardLayout({
         >
           <Menu className="h-5 w-5" />
         </button>
-        <div className="flex items-center gap-2">
+        <Link href="/" className="flex items-center gap-2">
           <Sparkles className="h-6 w-6 text-blue-500" />
           <span className="text-lg font-bold">
             <span className="gradient-text">Student</span><span className="text-foreground/80 font-medium">Nest</span><span className="text-blue-500/60 font-normal text-[0.6em] ml-1">Prep</span>
           </span>
-        </div>
+        </Link>
       </header>
 
       <Sidebar userRole={session.user.role} userTrack={session.user.track} isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />

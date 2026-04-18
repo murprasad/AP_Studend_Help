@@ -200,7 +200,7 @@ export function Sidebar({ userRole, userTrack, isOpen = false, onClose = () => {
         {/* Logo */}
         <div className="p-6 border-b border-border/40 pt-14 lg:pt-6">
           <div className="flex items-center justify-between">
-            <Link href="/dashboard" className="flex items-center gap-2" onClick={handleNavClick}>
+            <Link href="/" className="flex items-center gap-2" onClick={handleNavClick}>
               <Sparkles className="h-6 w-6 text-blue-500" />
               <span className="text-lg font-bold">
                 <span className="gradient-text">Student</span><span className="text-foreground/80 font-medium">Nest</span><span className="text-blue-500/60 font-normal text-[0.6em] ml-1">Prep</span>
