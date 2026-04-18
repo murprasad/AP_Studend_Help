@@ -39,7 +39,43 @@ const prisma = new PrismaClient();
  * guidelines: each row is one scorable "point" (or point cluster) with a short
  * description, the points awarded, and — helpfully for our self-grade UI —
  * keywords the student can check their answer against.
+ *
+ * NOTE on shape: the raw array below is the legacy "step" shape. At write-time
+ * `toTypedRubric(f)` reshapes it into the new discriminated-union form
+ * `{ type, parts: [{label, criterion, points, keywords}], totalPoints }`
+ * expected by `src/lib/frq-types.ts` + the per-type input/reveal components.
+ * We keep the legacy shape here only because it's easier to read inline;
+ * `parseRubric` also coerces legacy rows at runtime as a belt-and-braces.
  */
+
+/**
+ * Turn a legacy rubric row into the new typed shape consumed by
+ * MultiPartInput / MultiPartReveal. `parts[].label` is a 1-indexed number so
+ * the reveal checklist shows "1.", "2.", ... next to each criterion.
+ */
+function toTypedRubric(f) {
+  const parts = (f.rubric || []).map((r, i) => {
+    const label = String(i + 1);
+    const keywords = Array.isArray(r.keywords) ? r.keywords : [];
+    // Merge any non-empty `note` into the criterion text so it stays visible.
+    const criterion =
+      r.note && r.note.length > 0
+        ? `${r.step} (${r.note})`
+        : r.step;
+    return {
+      label,
+      points: r.points || 0,
+      criterion,
+      keywords,
+    };
+  });
+  return {
+    type: f.type, // "SHORT" | "LONG"
+    parts,
+    totalPoints: f.totalPoints,
+  };
+}
+
 const FRQS = [
   // 1. Kinematics — PHY1_1_KINEMATICS
   {
@@ -287,6 +323,8 @@ async function main() {
       },
     });
 
+    const typedRubric = toTypedRubric(f);
+
     if (existing) {
       await prisma.freeResponseQuestion.update({
         where: { id: existing.id },
@@ -297,7 +335,7 @@ async function main() {
           promptText: f.promptText,
           stimulus: f.stimulus ?? null,
           totalPoints: f.totalPoints,
-          rubric: f.rubric,
+          rubric: typedRubric,
           sampleResponse: f.sampleResponse,
           isApproved: true,
         },
@@ -316,7 +354,7 @@ async function main() {
           promptText: f.promptText,
           stimulus: f.stimulus ?? null,
           totalPoints: f.totalPoints,
-          rubric: f.rubric,
+          rubric: typedRubric,
           sampleResponse: f.sampleResponse,
           isApproved: true,
         },

@@ -71,6 +71,20 @@ export interface CourseConfig {
   units: Partial<Record<ApUnit, UnitMeta>>;
   /** Seconds allocated per question on the real AP exam (for mock-exam timer) */
   examSecsPerQuestion: number;
+  /**
+   * Real exam Section I (MCQ) shape — single source of truth for mock-exam
+   * length + pacing. Every course in the registry MUST populate this.
+   * Derive per-Q seconds as: (mcqTimeMinutes * 60) / mcqCount — the mock-exam
+   * UI applies this formula for both Full Section and Quick Mock modes so
+   * pacing stays faithful even when only 10 Qs are served.
+   */
+  mockExam: {
+    /** Real MCQ count on the official exam (e.g. AP World = 55, Physics 1 = 50) */
+    mcqCount: number;
+    /** Real total minutes allocated to Section I MCQ (e.g. AP World = 55, Physics 1 = 90) */
+    mcqTimeMinutes: number;
+    // Future: frqCount, frqTimeMinutes, splitMode for Calc no-calc / calc sections
+  };
   /** Sample questions shown in the AI Tutor sidebar */
   suggestedTutorQuestions: string[];
   /**
@@ -139,6 +153,7 @@ export const COURSE_REGISTRY: Record<ApCourse, CourseConfig> = {
     name: "AP World History: Modern",
     shortName: "AP World History",
     examSecsPerQuestion: 60, // 55 MCQ in 55 min
+    mockExam: { mcqCount: 55, mcqTimeMinutes: 55 },
     enrichWithEduAPIs: true,
     openStaxSubject: "world-history",
     questionTypeFormats: {
@@ -395,6 +410,7 @@ When referencing resources:
     name: "AP Computer Science Principles",
     shortName: "AP CS Principles",
     examSecsPerQuestion: 103, // 70 MCQ in 120 min ≈ 1.7 min/q
+    mockExam: { mcqCount: 70, mcqTimeMinutes: 120 },
     enrichWithEduAPIs: false,
     openStaxSubject: "cs",
     questionTypeFormats: {
@@ -536,6 +552,7 @@ When referencing resources:
     name: "AP Physics 1: Algebra-Based",
     shortName: "AP Physics 1",
     examSecsPerQuestion: 108, // 50 MCQ in 90 min = 1.8 min/q
+    mockExam: { mcqCount: 50, mcqTimeMinutes: 90 },
     enrichWithEduAPIs: false,
     openStaxSubject: "physics",
     questionTypeFormats: {
@@ -786,6 +803,8 @@ When referencing resources:
     name: "AP Calculus AB",
     shortName: "AP Calculus AB",
     examSecsPerQuestion: 96, // 45 MCQ in 105 min (Section I), plus FRQ
+    // Real exam splits 30 no-calc/60m + 15 calc/45m; treat as unified 45/105 for now.
+    mockExam: { mcqCount: 45, mcqTimeMinutes: 105 },
     enrichWithEduAPIs: false,
     openStaxSubject: undefined,
     units: {
@@ -907,6 +926,8 @@ Mathematical Practices: Implementing Mathematical Processes, Connecting Represen
     name: "AP Calculus BC",
     shortName: "AP Calculus BC",
     examSecsPerQuestion: 96,
+    // Real exam splits 30 no-calc/60m + 15 calc/45m; treat as unified 45/105 for now.
+    mockExam: { mcqCount: 45, mcqTimeMinutes: 105 },
     enrichWithEduAPIs: false,
     openStaxSubject: undefined,
     units: {
@@ -1026,6 +1047,7 @@ AP Exam: Section I — 45 MCQ (105 min). Section II — 6 FRQ (90 min).`,
     name: "AP Statistics",
     shortName: "AP Statistics",
     examSecsPerQuestion: 90, // 40 MCQ in 90 min
+    mockExam: { mcqCount: 40, mcqTimeMinutes: 90 },
     enrichWithEduAPIs: false,
     openStaxSubject: undefined,
     units: {
@@ -1146,6 +1168,7 @@ AP Exam: Section I — 40 MCQ (90 min). Section II — 6 FRQ (90 min) including 
     name: "AP Chemistry",
     shortName: "AP Chemistry",
     examSecsPerQuestion: 96, // 60 MCQ in 90 min
+    mockExam: { mcqCount: 60, mcqTimeMinutes: 90 },
     enrichWithEduAPIs: false,
     openStaxSubject: undefined,
     units: {
@@ -1271,6 +1294,7 @@ Science Practices: Models, Math/Calculation, Experimental Design, Data Analysis,
     name: "AP Biology",
     shortName: "AP Biology",
     examSecsPerQuestion: 90, // 60 MCQ in 90 min
+    mockExam: { mcqCount: 60, mcqTimeMinutes: 90 },
     enrichWithEduAPIs: false,
     openStaxSubject: undefined,
     units: {
@@ -1389,6 +1413,7 @@ Science Practices: Models, Quantitative Skills, Experimental Design, Data Analys
     name: "AP US History",
     shortName: "AP US History",
     examSecsPerQuestion: 60, // 55 MCQ in 55 min
+    mockExam: { mcqCount: 55, mcqTimeMinutes: 55 },
     enrichWithEduAPIs: true,
     openStaxSubject: undefined,
     units: {
@@ -1552,6 +1577,8 @@ Historical Thinking Skills: Argumentation, Causation, Comparison, CCOT, Contextu
     name: "AP Psychology",
     shortName: "AP Psychology",
     examSecsPerQuestion: 66, // 100 MCQ in 70 min
+    // 2024-25 redesigned format: 75 MCQ in 70 min (per task spec).
+    mockExam: { mcqCount: 75, mcqTimeMinutes: 70 },
     enrichWithEduAPIs: false,
     openStaxSubject: undefined,
     units: {
@@ -1677,6 +1704,7 @@ AP Exam: Section I — 100 MCQ (70 min). Section II — 2 FRQ (50 min).`,
     name: "SAT Math",
     shortName: "SAT Math",
     examSecsPerQuestion: 90,
+    mockExam: { mcqCount: 44, mcqTimeMinutes: 70 },
     enrichWithEduAPIs: true,
     units: {
       SAT_MATH_1_ALGEBRA: { name: "Algebra", keyThemes: ["linear equations", "systems of equations", "inequalities", "linear functions", "slope", "point-slope form", "absolute value equations", "word problems with variables"] },
@@ -1710,6 +1738,7 @@ AP Exam: Section I — 100 MCQ (70 min). Section II — 2 FRQ (50 min).`,
     name: "SAT Reading & Writing",
     shortName: "SAT Reading",
     examSecsPerQuestion: 75,
+    mockExam: { mcqCount: 54, mcqTimeMinutes: 64 },
     enrichWithEduAPIs: true,
     units: {
       SAT_RW_1_CRAFT_STRUCTURE: { name: "Craft and Structure", keyThemes: ["vocabulary in context", "text structure", "author's purpose", "cross-text connections", "point of view", "rhetorical situation", "word choice impact", "genre conventions"] },
@@ -1743,6 +1772,7 @@ AP Exam: Section I — 100 MCQ (70 min). Section II — 2 FRQ (50 min).`,
     name: "ACT Math",
     shortName: "ACT Math",
     examSecsPerQuestion: 60,
+    mockExam: { mcqCount: 60, mcqTimeMinutes: 60 },
     enrichWithEduAPIs: false,
     units: {
       ACT_MATH_1_NUMBER: { name: "Number and Quantity", keyThemes: ["arithmetic", "integers", "fractions", "exponents", "number properties"] },
@@ -1790,6 +1820,7 @@ AP Exam: Section I — 100 MCQ (70 min). Section II — 2 FRQ (50 min).`,
     name: "ACT English",
     shortName: "ACT English",
     examSecsPerQuestion: 36,
+    mockExam: { mcqCount: 75, mcqTimeMinutes: 45 },
     enrichWithEduAPIs: false,
     units: {
       ACT_ENG_1_PRODUCTION_WRITING: { name: "Production of Writing", keyThemes: ["topic development", "organization", "unity", "cohesion"] },
@@ -1822,6 +1853,7 @@ AP Exam: Section I — 100 MCQ (70 min). Section II — 2 FRQ (50 min).`,
     name: "ACT Science",
     shortName: "ACT Science",
     examSecsPerQuestion: 52,
+    mockExam: { mcqCount: 40, mcqTimeMinutes: 35 },
     enrichWithEduAPIs: false,
     units: {
       ACT_SCI_1_DATA_REPRESENTATION: { name: "Data Representation", keyThemes: ["graphs", "tables", "figures", "scientific notation", "data reading"] },
@@ -1854,6 +1886,7 @@ AP Exam: Section I — 100 MCQ (70 min). Section II — 2 FRQ (50 min).`,
     name: "ACT Reading",
     shortName: "ACT Reading",
     examSecsPerQuestion: 52,
+    mockExam: { mcqCount: 40, mcqTimeMinutes: 35 },
     enrichWithEduAPIs: false,
     units: {
       ACT_READ_1_LITERARY: {
@@ -1923,6 +1956,7 @@ AP Exam: Section I — 100 MCQ (70 min). Section II — 2 FRQ (50 min).`,
     name: "CLEP College Algebra",
     shortName: "CLEP Algebra",
     examSecsPerQuestion: 90, // 60 questions in 90 minutes
+    mockExam: { mcqCount: 60, mcqTimeMinutes: 90 },
     enrichWithEduAPIs: false,
     units: {
       CLEP_ALGEBRA_1_FOUNDATIONS: {
@@ -2012,6 +2046,7 @@ All questions are 4-choice MCQ.`,
     name: "CLEP College Composition",
     shortName: "CLEP Composition",
     examSecsPerQuestion: 90, // Part I: 90 MCQ in 95 min + Part II: 2 essays in 70 min
+    mockExam: { mcqCount: 50, mcqTimeMinutes: 95 }, // Section I MCQ only; essays handled separately
     enrichWithEduAPIs: false,
     units: {
       CLEP_COMP_1_ESSAY_STRATEGIES: {
@@ -2097,6 +2132,7 @@ MCQ section only — essay scoring is separate and institution-specific.`,
     name: "CLEP Introductory Psychology",
     shortName: "CLEP Psychology",
     examSecsPerQuestion: 57, // 95 questions in 90 minutes
+    mockExam: { mcqCount: 95, mcqTimeMinutes: 90 },
     enrichWithEduAPIs: false,
     units: {
       CLEP_PSY_1_BIOLOGICAL_BASES: {
@@ -2199,6 +2235,7 @@ Questions are application-focused — expect scenario-based questions asking to 
     name: "CLEP Principles of Marketing",
     shortName: "CLEP Marketing",
     examSecsPerQuestion: 54, // 100 questions in 90 minutes
+    mockExam: { mcqCount: 100, mcqTimeMinutes: 90 },
     enrichWithEduAPIs: false,
     units: {
       CLEP_MARKETING_1_FUNDAMENTALS: {
@@ -2284,6 +2321,7 @@ product (15%), price (15%), place/distribution (10%), promotion (10%), internati
     name: "CLEP Principles of Management",
     shortName: "CLEP Management",
     examSecsPerQuestion: 54, // 100 questions in 90 minutes
+    mockExam: { mcqCount: 100, mcqTimeMinutes: 90 },
     enrichWithEduAPIs: false,
     units: {
       CLEP_MGMT_1_PLANNING_ORGANIZING: {
@@ -2369,6 +2407,7 @@ motivating (15%), controlling (15%), organizational behavior (5%).`,
     name: "CLEP Introductory Sociology",
     shortName: "CLEP Sociology",
     examSecsPerQuestion: 54, // 100 questions in 90 minutes
+    mockExam: { mcqCount: 100, mcqTimeMinutes: 90 },
     enrichWithEduAPIs: false,
     units: {
       CLEP_SOC_1_SOCIOLOGICAL_PERSPECTIVE: {
@@ -2463,6 +2502,7 @@ Questions are often scenario-based — given a social situation, identify the co
     name: "CLEP American Government",
     shortName: "CLEP Am. Gov",
     examSecsPerQuestion: 72,
+    mockExam: { mcqCount: 100, mcqTimeMinutes: 90 },
     enrichWithEduAPIs: false,
     units: {
       CLEP_GOV_1_FOUNDATIONS: { name: "Unit 1: Constitutional Foundations", keyThemes: ["separation of powers", "federalism", "constitutional amendments", "checks and balances"] },
@@ -2511,6 +2551,7 @@ Scenario-based preferred.`,
     name: "CLEP Principles of Macroeconomics",
     shortName: "CLEP Macro",
     examSecsPerQuestion: 72,
+    mockExam: { mcqCount: 80, mcqTimeMinutes: 90 },
     enrichWithEduAPIs: false,
     units: {
       CLEP_MACRO_1_BASIC_CONCEPTS: { name: "Unit 1: Basic Economic Concepts", keyThemes: ["scarcity and opportunity cost", "production possibilities curve", "comparative advantage", "circular flow model"] },
@@ -2550,6 +2591,7 @@ Scenario-based preferred.`,
     name: "CLEP Principles of Microeconomics",
     shortName: "CLEP Micro",
     examSecsPerQuestion: 72,
+    mockExam: { mcqCount: 80, mcqTimeMinutes: 90 },
     enrichWithEduAPIs: false,
     units: {
       CLEP_MICRO_1_SUPPLY_DEMAND: { name: "Unit 1: Supply and Demand", keyThemes: ["law of demand", "supply shifters", "equilibrium price", "price ceilings and floors"] },
@@ -2588,6 +2630,7 @@ Scenario-based preferred.`,
     name: "CLEP Biology",
     shortName: "CLEP Biology",
     examSecsPerQuestion: 47,
+    mockExam: { mcqCount: 115, mcqTimeMinutes: 90 },
     enrichWithEduAPIs: false,
     units: {
       CLEP_BIO_1_MOLECULAR_CELL: { name: "Unit 1: Molecular and Cellular Biology", keyThemes: ["cell membrane transport", "enzyme kinetics", "cellular respiration", "photosynthesis"] },
@@ -2626,6 +2669,7 @@ Scenario-based preferred.`,
     name: "CLEP History of the United States I",
     shortName: "CLEP US Hist I",
     examSecsPerQuestion: 45,
+    mockExam: { mcqCount: 120, mcqTimeMinutes: 90 },
     enrichWithEduAPIs: false,
     units: {
       CLEP_USH1_1_COLONIAL: { name: "Unit 1: Colonial Period (1491-1763)", keyThemes: ["Columbian Exchange", "colonial economies", "indentured servitude and slavery", "French and Indian War"] },
@@ -2660,6 +2704,7 @@ Scenario-based preferred.`,
     name: "CLEP History of the United States II",
     shortName: "CLEP US Hist II",
     examSecsPerQuestion: 45,
+    mockExam: { mcqCount: 120, mcqTimeMinutes: 90 },
     enrichWithEduAPIs: false,
     units: {
       CLEP_USH2_1_RECONSTRUCTION: { name: "Unit 1: Reconstruction and Gilded Age (1877-1900)", keyThemes: ["Jim Crow laws", "industrialization", "Populist movement", "urbanization and immigration"] },
@@ -2694,6 +2739,7 @@ Scenario-based preferred.`,
     name: "CLEP Human Growth and Development",
     shortName: "CLEP Human Dev",
     examSecsPerQuestion: 60,
+    mockExam: { mcqCount: 90, mcqTimeMinutes: 90 },
     enrichWithEduAPIs: false,
     units: {
       CLEP_HGD_1_PRENATAL_INFANCY: { name: "Unit 1: Prenatal Development and Infancy", keyThemes: ["teratogens and prenatal stages", "Piaget's sensorimotor stage", "attachment theory (Bowlby/Ainsworth)", "motor development"] },
@@ -2728,6 +2774,7 @@ Scenario-based preferred.`,
     name: "CLEP Calculus",
     shortName: "CLEP Calculus",
     examSecsPerQuestion: 122,
+    mockExam: { mcqCount: 44, mcqTimeMinutes: 90 },
     enrichWithEduAPIs: false,
     units: {
       CLEP_CALC_1_LIMITS: { name: "Unit 1: Limits and Continuity", keyThemes: ["limit evaluation techniques", "one-sided limits", "continuity and IVT", "limits at infinity"] },
@@ -2762,6 +2809,7 @@ Scenario-based preferred.`,
     name: "CLEP Chemistry",
     shortName: "CLEP Chemistry",
     examSecsPerQuestion: 72,
+    mockExam: { mcqCount: 75, mcqTimeMinutes: 90 },
     enrichWithEduAPIs: false,
     units: {
       CLEP_CHEM_1_ATOMIC_STRUCTURE: { name: "Unit 1: Atomic Structure and Periodicity", keyThemes: ["electron configuration", "periodic trends", "quantum numbers", "atomic orbitals"] },
@@ -2800,6 +2848,7 @@ Scenario-based preferred.`,
     name: "CLEP Financial Accounting",
     shortName: "CLEP Fin. Acct",
     examSecsPerQuestion: 72,
+    mockExam: { mcqCount: 75, mcqTimeMinutes: 90 },
     enrichWithEduAPIs: false,
     units: {
       CLEP_FINACCT_1_ACCOUNTING_CYCLE: { name: "Unit 1: The Accounting Cycle", keyThemes: ["double-entry bookkeeping", "journal entries and T-accounts", "adjusting entries", "closing entries and trial balance"] },
@@ -2847,6 +2896,7 @@ Journal entries and calculations common.`,
     name: "CLEP American Literature",
     shortName: "CLEP Am. Lit",
     examSecsPerQuestion: 72,
+    mockExam: { mcqCount: 95, mcqTimeMinutes: 90 },
     enrichWithEduAPIs: false,
     units: {
       CLEP_AMLIT_1_COLONIAL_EARLY: { name: "Unit 1: Colonial and Early National (1620-1830)", keyThemes: ["Puritan literature and plain style", "Enlightenment prose (Franklin, Paine)", "early American poetry (Bradstreet, Wheatley)", "captivity and slave narratives"] },
@@ -2881,6 +2931,7 @@ Journal entries and calculations common.`,
     name: "CLEP Analyzing and Interpreting Literature",
     shortName: "CLEP Lit Analysis",
     examSecsPerQuestion: 72,
+    mockExam: { mcqCount: 80, mcqTimeMinutes: 90 },
     enrichWithEduAPIs: false,
     units: {
       CLEP_ANLIT_1_PROSE_FICTION: { name: "Unit 1: Prose Fiction", keyThemes: ["narrative point of view", "characterization and motivation", "plot structure and conflict", "setting and atmosphere"] },
@@ -2915,6 +2966,7 @@ Journal entries and calculations common.`,
     name: "CLEP College Composition Modular",
     shortName: "CLEP Comp Mod",
     examSecsPerQuestion: 72,
+    mockExam: { mcqCount: 90, mcqTimeMinutes: 90 },
     enrichWithEduAPIs: false,
     units: {
       CLEP_CCM_1_RHETORICAL_ANALYSIS: { name: "Unit 1: Rhetorical Analysis", keyThemes: ["ethos, pathos, logos", "audience and purpose", "rhetorical strategies", "tone and diction analysis"] },
@@ -2949,6 +3001,7 @@ Journal entries and calculations common.`,
     name: "CLEP English Literature",
     shortName: "CLEP Eng. Lit",
     examSecsPerQuestion: 72,
+    mockExam: { mcqCount: 95, mcqTimeMinutes: 90 },
     enrichWithEduAPIs: false,
     units: {
       CLEP_ENGLIT_1_MEDIEVAL_RENAISSANCE: { name: "Unit 1: Medieval and Renaissance (to 1660)", keyThemes: ["Chaucer and Middle English", "Shakespearean drama and sonnets", "Spenser and allegory", "metaphysical poets (Donne, Herbert)"] },
@@ -2983,6 +3036,7 @@ Journal entries and calculations common.`,
     name: "CLEP Humanities",
     shortName: "CLEP Humanities",
     examSecsPerQuestion: 72,
+    mockExam: { mcqCount: 140, mcqTimeMinutes: 90 },
     enrichWithEduAPIs: false,
     units: {
       CLEP_HUM_1_LITERATURE: { name: "Unit 1: Literature", keyThemes: ["major literary genres and forms", "world literature (Greek, Renaissance, modern)", "poetry analysis (meter, imagery, theme)", "drama (tragedy, comedy, absurdist)"] },
@@ -3017,6 +3071,7 @@ Journal entries and calculations common.`,
     name: "CLEP French Language",
     shortName: "CLEP French",
     examSecsPerQuestion: 72,
+    mockExam: { mcqCount: 121, mcqTimeMinutes: 90 },
     enrichWithEduAPIs: false,
     units: {
       CLEP_FRENCH_1_LISTENING: { name: "Unit 1: Listening Comprehension (Reading Adaptation)", keyThemes: ["dialogue comprehension", "main idea identification", "inference from context", "distinguishing speakers' attitudes"] },
@@ -3051,6 +3106,7 @@ Journal entries and calculations common.`,
     name: "CLEP German Language",
     shortName: "CLEP German",
     examSecsPerQuestion: 72,
+    mockExam: { mcqCount: 121, mcqTimeMinutes: 90 },
     enrichWithEduAPIs: false,
     units: {
       CLEP_GERMAN_1_LISTENING: { name: "Unit 1: Listening Comprehension (Reading Adaptation)", keyThemes: ["dialogue comprehension", "main idea identification", "inference from conversational context", "distinguishing tone and intent"] },
@@ -3085,6 +3141,7 @@ Journal entries and calculations common.`,
     name: "CLEP Spanish Language",
     shortName: "CLEP Spanish",
     examSecsPerQuestion: 72,
+    mockExam: { mcqCount: 121, mcqTimeMinutes: 90 },
     enrichWithEduAPIs: false,
     units: {
       CLEP_SPANISH_1_LISTENING: { name: "Unit 1: Listening Comprehension (Reading Adaptation)", keyThemes: ["dialogue comprehension", "main idea identification", "inference from context", "distinguishing speakers' attitudes and register"] },
@@ -3119,6 +3176,7 @@ Journal entries and calculations common.`,
     name: "CLEP Spanish with Writing",
     shortName: "CLEP Span. Writing",
     examSecsPerQuestion: 72,
+    mockExam: { mcqCount: 84, mcqTimeMinutes: 90 },
     enrichWithEduAPIs: false,
     units: {
       CLEP_SPANWR_1_LISTENING: { name: "Unit 1: Listening Comprehension (Reading Adaptation)", keyThemes: ["dialogue and narrative comprehension", "main idea and supporting details", "inference and implied meaning", "register and tone identification"] },
@@ -3153,6 +3211,7 @@ Journal entries and calculations common.`,
     name: "CLEP Educational Psychology",
     shortName: "CLEP Ed Psych",
     examSecsPerQuestion: 72,
+    mockExam: { mcqCount: 100, mcqTimeMinutes: 90 },
     enrichWithEduAPIs: false,
     units: {
       CLEP_EDPSY_1_LEARNING_THEORIES: { name: "Unit 1: Learning Theories", keyThemes: ["Behaviorism and classical/operant conditioning", "Constructivism and Piaget's stages", "Social learning theory and Bandura", "Information processing models"] },
@@ -3194,6 +3253,7 @@ Content aligns with a typical one-semester introductory educational psychology c
     name: "CLEP Social Sciences & History",
     shortName: "CLEP Soc Sci",
     examSecsPerQuestion: 72,
+    mockExam: { mcqCount: 120, mcqTimeMinutes: 90 },
     enrichWithEduAPIs: false,
     units: {
       CLEP_SSH_1_US_HISTORY: { name: "Unit 1: US History", keyThemes: ["Colonial period through independence", "Civil War, Reconstruction, and industrialization", "20th-century domestic policy and civil rights", "US foreign policy and global role"] },
@@ -3235,6 +3295,7 @@ Content spans introductory-level courses across five social science disciplines.
     name: "CLEP Western Civilization I",
     shortName: "CLEP West Civ I",
     examSecsPerQuestion: 72,
+    mockExam: { mcqCount: 120, mcqTimeMinutes: 90 },
     enrichWithEduAPIs: false,
     units: {
       CLEP_WC1_1_ANCIENT_NEAR_EAST: { name: "Unit 1: Ancient Near East", keyThemes: ["Mesopotamian civilizations and cuneiform", "Ancient Egypt: pharaohs, religion, and society", "Hebrew traditions and monotheism", "Persian Empire and governance"] },
@@ -3276,6 +3337,7 @@ Content aligns with a typical first-semester Western civilization survey course.
     name: "CLEP Western Civilization II",
     shortName: "CLEP West Civ II",
     examSecsPerQuestion: 72,
+    mockExam: { mcqCount: 120, mcqTimeMinutes: 90 },
     enrichWithEduAPIs: false,
     units: {
       CLEP_WC2_1_ENLIGHTENMENT: { name: "Unit 1: The Enlightenment", keyThemes: ["Enlightenment philosophy: Locke, Voltaire, Rousseau", "Social contract theory and natural rights", "Enlightened absolutism and reform", "Salon culture and public sphere"] },
@@ -3317,6 +3379,7 @@ Content aligns with a typical second-semester Western civilization survey course
     name: "CLEP College Mathematics",
     shortName: "CLEP College Math",
     examSecsPerQuestion: 72,
+    mockExam: { mcqCount: 60, mcqTimeMinutes: 90 },
     enrichWithEduAPIs: false,
     units: {
       CLEP_CMATH_1_SETS_LOGIC: { name: "Unit 1: Sets & Logic", keyThemes: ["Set operations: union, intersection, complement", "Venn diagrams and counting principles", "Propositional logic and truth tables", "Conditional statements and logical equivalence"] },
@@ -3362,6 +3425,7 @@ Content aligns with a general education college mathematics requirement (non-cal
     name: "CLEP Natural Sciences",
     shortName: "CLEP Nat Sci",
     examSecsPerQuestion: 72,
+    mockExam: { mcqCount: 120, mcqTimeMinutes: 90 },
     enrichWithEduAPIs: false,
     units: {
       CLEP_NATSCI_1_BIOLOGICAL: { name: "Unit 1: Biological Science", keyThemes: ["Cell structure, function, and reproduction", "Genetics, DNA, and heredity", "Evolution and natural selection", "Ecology: ecosystems, populations, and biodiversity"] },
@@ -3403,6 +3467,7 @@ Content spans introductory-level courses in biology and physical sciences.`,
     name: "CLEP Precalculus",
     shortName: "CLEP Precalc",
     examSecsPerQuestion: 72,
+    mockExam: { mcqCount: 48, mcqTimeMinutes: 90 },
     enrichWithEduAPIs: false,
     units: {
       CLEP_PRECALC_1_ALGEBRAIC: { name: "Unit 1: Algebraic Expressions & Equations", keyThemes: ["Polynomial operations and factoring", "Rational expressions and equations", "Systems of equations and inequalities", "Complex numbers and quadratic formula"] },
@@ -3444,6 +3509,7 @@ Content aligns with a precalculus course that prepares students for calculus.`,
     name: "CLEP Information Systems",
     shortName: "CLEP Info Sys",
     examSecsPerQuestion: 72,
+    mockExam: { mcqCount: 100, mcqTimeMinutes: 90 },
     enrichWithEduAPIs: false,
     units: {
       CLEP_IS_1_FUNDAMENTALS: { name: "Unit 1: IS Fundamentals", keyThemes: ["Role of information systems in organizations", "Types of IS: TPS, MIS, DSS, ERP", "Information system components and architecture", "IT governance and strategic alignment"] },
@@ -3485,6 +3551,7 @@ Content aligns with an introductory management information systems (MIS) course.
     name: "CLEP Introductory Business Law",
     shortName: "CLEP Biz Law",
     examSecsPerQuestion: 72,
+    mockExam: { mcqCount: 100, mcqTimeMinutes: 90 },
     enrichWithEduAPIs: false,
     units: {
       CLEP_BIZLAW_1_LEGAL_SYSTEM: { name: "Unit 1: The Legal System", keyThemes: ["Sources of law: constitutional, statutory, administrative", "Court systems and jurisdiction", "Civil vs criminal procedure", "Alternative dispute resolution: mediation and arbitration"] },
@@ -3533,6 +3600,7 @@ Content aligns with a typical introductory business law or legal environment of 
     name: "DSST Principles of Supervision",
     shortName: "DSST Supervision",
     examSecsPerQuestion: 72, // 100 questions in 120 minutes
+    mockExam: { mcqCount: 100, mcqTimeMinutes: 120 },
     enrichWithEduAPIs: false,
     units: {
       DSST_SUPV_1_ROLES_RESPONSIBILITIES: {
@@ -3619,6 +3687,7 @@ Topics: roles and responsibilities of supervisors (20%), management functions (2
     name: "DSST Human Resource Management",
     shortName: "DSST HR Mgmt",
     examSecsPerQuestion: 72,
+    mockExam: { mcqCount: 100, mcqTimeMinutes: 120 },
     enrichWithEduAPIs: false,
     units: {
       DSST_HRM_1_WORKFORCE_PLANNING: {
@@ -3705,6 +3774,7 @@ Topics: workforce planning (20%), recruitment/selection (20%), training/developm
     name: "DSST Organizational Behavior",
     shortName: "DSST Org Behavior",
     examSecsPerQuestion: 72,
+    mockExam: { mcqCount: 100, mcqTimeMinutes: 120 },
     enrichWithEduAPIs: false,
     units: {
       DSST_OB_1_INDIVIDUAL_BEHAVIOR: {
@@ -3791,6 +3861,7 @@ Topics: individual behavior (20%), motivation (25%), group dynamics (20%), leade
     name: "DSST Personal Finance",
     shortName: "DSST Personal Finance",
     examSecsPerQuestion: 72,
+    mockExam: { mcqCount: 100, mcqTimeMinutes: 120 },
     enrichWithEduAPIs: false,
     units: {
       DSST_PF_1_FINANCIAL_PLANNING: {
@@ -3877,6 +3948,7 @@ Topics: financial planning (20%), credit/debt (20%), investing (25%), insurance 
     name: "DSST Lifespan Developmental Psychology",
     shortName: "DSST Lifespan Psych",
     examSecsPerQuestion: 72,
+    mockExam: { mcqCount: 100, mcqTimeMinutes: 120 },
     enrichWithEduAPIs: false,
     units: {
       DSST_LDP_1_PRENATAL_INFANCY: {
@@ -3963,6 +4035,7 @@ Topics: prenatal/infancy (20%), childhood (25%), adolescence (20%), adulthood (2
     name: "DSST Introduction to Business",
     shortName: "DSST Intro Business",
     examSecsPerQuestion: 72,
+    mockExam: { mcqCount: 100, mcqTimeMinutes: 120 },
     enrichWithEduAPIs: false,
     units: {
       DSST_BUS_1_ECONOMIC_FOUNDATIONS: {
@@ -4049,6 +4122,7 @@ Topics: economic foundations (20%), business ownership (20%), management/leaders
     name: "DSST Human Development",
     shortName: "DSST Human Dev",
     examSecsPerQuestion: 72,
+    mockExam: { mcqCount: 100, mcqTimeMinutes: 120 },
     enrichWithEduAPIs: false,
     units: {
       DSST_HD_1_THEORIES_RESEARCH: {
@@ -4135,6 +4209,7 @@ Topics: theories/research (20%), prenatal/infancy (20%), childhood (20%), adoles
     name: "DSST Ethics in America",
     shortName: "DSST Ethics",
     examSecsPerQuestion: 72,
+    mockExam: { mcqCount: 100, mcqTimeMinutes: 120 },
     enrichWithEduAPIs: false,
     units: {
       DSST_EIA_1_ETHICAL_TRADITIONS: {
@@ -4221,6 +4296,7 @@ Topics: ethical traditions (20%), civil liberties (20%), social justice (20%), b
     name: "DSST Environmental Science",
     shortName: "DSST Env Science",
     examSecsPerQuestion: 72,
+    mockExam: { mcqCount: 100, mcqTimeMinutes: 120 },
     enrichWithEduAPIs: false,
     units: {
       DSST_ENV_1_ECOSYSTEMS: {
@@ -4307,6 +4383,7 @@ Topics: ecosystems/biodiversity (20%), population/resources (20%), pollution/was
     name: "DSST Technical Writing",
     shortName: "DSST Tech Writing",
     examSecsPerQuestion: 72,
+    mockExam: { mcqCount: 100, mcqTimeMinutes: 120 },
     enrichWithEduAPIs: false,
     units: {
       DSST_TW_1_PURPOSE_AUDIENCE: {
@@ -4393,6 +4470,7 @@ Topics: purpose/audience (20%), document design (20%), research/documentation (2
     name: "DSST Principles of Finance",
     shortName: "DSST Finance",
     examSecsPerQuestion: 72,
+    mockExam: { mcqCount: 100, mcqTimeMinutes: 120 },
     enrichWithEduAPIs: false,
     units: {
       DSST_FIN_1_FINANCIAL_STATEMENTS: {
@@ -4479,6 +4557,7 @@ Topics: financial statements (20%), time value of money (20%), risk/return (20%)
     name: "DSST Management Information Systems",
     shortName: "DSST MIS",
     examSecsPerQuestion: 72,
+    mockExam: { mcqCount: 100, mcqTimeMinutes: 120 },
     enrichWithEduAPIs: false,
     units: {
       DSST_MIS_1_IT_FUNDAMENTALS: {
@@ -4565,6 +4644,7 @@ Topics: IT fundamentals (20%), databases (20%), networks/security (20%), systems
     name: "DSST Money and Banking",
     shortName: "DSST Money & Banking",
     examSecsPerQuestion: 72,
+    mockExam: { mcqCount: 100, mcqTimeMinutes: 120 },
     enrichWithEduAPIs: false,
     units: {
       DSST_MB_1_MONEY_FINANCIAL_SYSTEM: {
@@ -4651,6 +4731,7 @@ Topics: money/financial system (20%), banking institutions (20%), Federal Reserv
     name: "DSST Substance Abuse",
     shortName: "DSST Substance Abuse",
     examSecsPerQuestion: 72,
+    mockExam: { mcqCount: 100, mcqTimeMinutes: 120 },
     enrichWithEduAPIs: false,
     units: {
       DSST_SA_1_PHARMACOLOGY: {
@@ -4737,6 +4818,7 @@ Topics: pharmacology (20%), alcohol (20%), drugs/society (20%), treatment/preven
     name: "DSST Criminal Justice",
     shortName: "DSST Criminal Justice",
     examSecsPerQuestion: 72,
+    mockExam: { mcqCount: 100, mcqTimeMinutes: 120 },
     enrichWithEduAPIs: false,
     units: {
       DSST_CJ_1_CRIME_THEORY: {
@@ -4823,6 +4905,7 @@ Topics: crime theory (20%), law enforcement (20%), courts (20%), corrections (20
     name: "DSST Fundamentals of Counseling",
     shortName: "DSST Counseling",
     examSecsPerQuestion: 72,
+    mockExam: { mcqCount: 100, mcqTimeMinutes: 120 },
     enrichWithEduAPIs: false,
     units: {
       DSST_COUN_1_THEORIES: {
@@ -4909,6 +4992,7 @@ Topics: counseling theories (20%), techniques (20%), group/family (20%), assessm
     name: "DSST General Anthropology",
     shortName: "DSST Anthropology",
     examSecsPerQuestion: 72,
+    mockExam: { mcqCount: 100, mcqTimeMinutes: 120 },
     enrichWithEduAPIs: false,
     units: {
       DSST_ANTH_1_PHYSICAL: {
@@ -4995,6 +5079,7 @@ Topics: physical anthropology (20%), archaeology (20%), cultural anthropology (2
     name: "DSST Introduction to World Religions",
     shortName: "DSST World Religions",
     examSecsPerQuestion: 72,
+    mockExam: { mcqCount: 100, mcqTimeMinutes: 120 },
     enrichWithEduAPIs: false,
     units: {
       DSST_REL_1_HINDUISM_BUDDHISM: {
@@ -5081,6 +5166,7 @@ Topics: Hinduism/Buddhism (20%), Judaism (20%), Christianity (20%), Islam (20%),
     name: "DSST Art of the Western World",
     shortName: "DSST Western Art",
     examSecsPerQuestion: 72,
+    mockExam: { mcqCount: 100, mcqTimeMinutes: 120 },
     enrichWithEduAPIs: false,
     units: {
       DSST_ART_1_ANCIENT_MEDIEVAL: {
@@ -5167,6 +5253,7 @@ Topics: ancient/medieval (20%), Renaissance/Baroque (20%), Neoclassical/Romantic
     name: "DSST Astronomy",
     shortName: "DSST Astronomy",
     examSecsPerQuestion: 72,
+    mockExam: { mcqCount: 100, mcqTimeMinutes: 120 },
     enrichWithEduAPIs: false,
     units: {
       DSST_ASTR_1_SOLAR_SYSTEM: {
@@ -5253,6 +5340,7 @@ Topics: solar system (20%), stars/stellar evolution (20%), galaxies (20%), cosmo
     name: "DSST Computing and Information Technology",
     shortName: "DSST Computing & IT",
     examSecsPerQuestion: 72,
+    mockExam: { mcqCount: 100, mcqTimeMinutes: 120 },
     enrichWithEduAPIs: false,
     units: {
       DSST_CIT_1_HARDWARE_SOFTWARE: {
@@ -5339,6 +5427,7 @@ Topics: hardware/software (20%), networking (20%), programming (20%), databases/
     name: "DSST The Civil War and Reconstruction",
     shortName: "DSST Civil War",
     examSecsPerQuestion: 72,
+    mockExam: { mcqCount: 100, mcqTimeMinutes: 120 },
     enrichWithEduAPIs: false,
     units: {
       DSST_CW_1_ANTEBELLUM: {
@@ -5475,4 +5564,33 @@ export function getCourseModule(course: ApCourse): "ap" | "sat" | "act" | "clep"
   if (s.startsWith("SAT_")) return "sat";
   if (s.startsWith("ACT_")) return "act";
   return "ap";
+}
+
+/**
+ * Resolves mock-exam length + per-question pacing for a given course and mode.
+ * Callers should use this instead of reading `mockExam` directly so the Quick
+ * Mock pacing stays derived from real exam pacing (per-Q seconds unchanged).
+ *
+ * mode = "full": use real exam MCQ count + real total minutes.
+ * mode = "quick": serve QUICK_MOCK_QUESTIONS (10 Qs) but keep the real per-Q
+ *   seconds, so total time scales down proportionally.
+ */
+export const QUICK_MOCK_QUESTIONS = 10;
+
+export function getMockExamConfig(
+  course: ApCourse,
+  mode: "full" | "quick"
+): { questionCount: number; totalSecs: number; secsPerQuestion: number; mcqCount: number; mcqTimeMinutes: number } {
+  const cfg = COURSE_REGISTRY[course];
+  const { mcqCount, mcqTimeMinutes } = cfg.mockExam;
+  // Always derive per-Q seconds from the real exam pacing — that way a Quick
+  // Mock for AP World (60s/Q) feels the same as a Full Section (60s/Q).
+  const secsPerQuestion = Math.round((mcqTimeMinutes * 60) / mcqCount);
+  if (mode === "full") {
+    const totalSecs = mcqTimeMinutes * 60;
+    return { questionCount: mcqCount, totalSecs, secsPerQuestion, mcqCount, mcqTimeMinutes };
+  }
+  const questionCount = Math.min(QUICK_MOCK_QUESTIONS, mcqCount);
+  const totalSecs = secsPerQuestion * questionCount;
+  return { questionCount, totalSecs, secsPerQuestion, mcqCount, mcqTimeMinutes };
 }

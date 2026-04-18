@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef, useMemo } from "react";
+import { useSession } from "next-auth/react";
 import { useExamMode } from "@/hooks/use-exam-mode";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,9 +9,10 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
 import { useCourse } from "@/hooks/use-course";
-import { AP_COURSES, formatTime } from "@/lib/utils";
+import { formatTime } from "@/lib/utils";
 import { ApCourse } from "@prisma/client";
-import { COURSE_REGISTRY, getCourseTrack } from "@/lib/courses";
+import { getCourseTrack, getMockExamConfig } from "@/lib/courses";
+import { isPremiumForTrack, type ModuleSub } from "@/lib/tiers";
 import {
   Trophy,
   Clock,
@@ -20,12 +22,14 @@ import {
   ChevronRight,
   Loader2,
   Play,
+  Zap,
   GraduationCap,
 } from "lucide-react";
 import { CourseSelectorInline } from "@/components/layout/course-selector-inline";
 import Link from "next/link";
 
 type ExamPhase = "intro" | "section1" | "complete";
+type ExamMode = "full" | "quick";
 
 interface ExamQuestion {
   id: string;
@@ -45,34 +49,39 @@ interface ExamResult {
   apScoreEstimate: number;
 }
 
-// Derived from COURSE_REGISTRY — update examSecsPerQuestion there when adding a course.
-const SECS_PER_QUESTION = Object.fromEntries(
-  Object.entries(COURSE_REGISTRY).map(([k, v]) => [k, v.examSecsPerQuestion])
-) as Record<ApCourse, number>;
-
-const EXAM_QUESTIONS = 10; // Representative sample (actual exams have 50-70)
-
-function getExamInfo(course: ApCourse) {
-  const secsPerQ = SECS_PER_QUESTION[course];
-  const totalSecs = secsPerQ * EXAM_QUESTIONS;
-  const mins = Math.round(totalSecs / 60);
-  return { totalSecs, mins, secsPerQ };
-}
-
 export default function MockExamPage() {
   const { toast } = useToast();
   const [course] = useCourse();
+  const { data: session } = useSession();
   const [phase, setPhase] = useState<ExamPhase>("intro");
 
-  // Full-screen exam mode while a section is in progress. Intro and
-  // complete/results screens keep the normal layout so the student has
-  // nav + Sage access before starting and after finishing.
+  // Premium check — default Full for premium, Quick for free-trial.
+  const hasPremium = useMemo(() => {
+    if (!session?.user) return false;
+    const track = session.user.track ?? "ap";
+    const tier = session.user.subscriptionTier ?? "FREE";
+    const moduleSubs: ModuleSub[] = session.user.moduleSubs ?? [];
+    // Any module premium OR legacy track-based premium counts.
+    if (isPremiumForTrack(tier, track)) return true;
+    return moduleSubs.some((s) => s.status === "active" || s.status === "canceling");
+    // (hasModulePremium not called directly — we accept premium on ANY module
+    // since Full-length mock value is generic.)
+  }, [session]);
+
+  const [mode, setMode] = useState<ExamMode>("full");
+  // Reset mode default whenever premium status resolves.
+  useEffect(() => {
+    setMode(hasPremium ? "full" : "quick");
+  }, [hasPremium]);
+
+  // Full-screen exam mode while a section is in progress.
   const { enterExamMode, exitExamMode } = useExamMode();
   useEffect(() => {
     if (phase === "section1") enterExamMode();
     else exitExamMode();
   }, [phase, enterExamMode, exitExamMode]);
   useEffect(() => { return () => exitExamMode(); }, [exitExamMode]);
+
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [questions, setQuestions] = useState<ExamQuestion[]>([]);
   const questionsRef = useRef<ExamQuestion[]>([]);
@@ -84,7 +93,14 @@ export default function MockExamPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [result, setResult] = useState<ExamResult | null>(null);
 
-  const examInfo = getExamInfo(course);
+  // Resolve both Full + Quick configs so the toggle can preview each without
+  // waiting for re-render. Pacing (secsPerQuestion) is identical between the
+  // two — that's the whole point of the derived formula.
+  const fullInfo = useMemo(() => getMockExamConfig(course as ApCourse, "full"), [course]);
+  const quickInfo = useMemo(() => getMockExamConfig(course as ApCourse, "quick"), [course]);
+  const selectedInfo = mode === "full" ? fullInfo : quickInfo;
+  const isClep = getCourseTrack(course as ApCourse) === "clep";
+  const trackLabel = isClep ? "CLEP" : "AP";
 
   // Timer
   useEffect(() => {
@@ -102,7 +118,7 @@ export default function MockExamPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           sessionType: "MOCK_EXAM",
-          questionCount: EXAM_QUESTIONS,
+          questionCount: selectedInfo.questionCount,
           unit: "ALL",
           difficulty: "ALL",
           course,
@@ -116,7 +132,12 @@ export default function MockExamPage() {
       questionsRef.current = data.questions ?? [];
       setSessionId(data.sessionId);
       setQuestions(data.questions ?? []);
-      setTimeLeft(examInfo.totalSecs);
+      // Scale timer to actual questions served — bank may be smaller than target.
+      const servedQs = (data.questions ?? []).length;
+      const totalSecs = servedQs > 0
+        ? selectedInfo.secsPerQuestion * servedQs
+        : selectedInfo.totalSecs;
+      setTimeLeft(totalSecs);
       setCurrentIndex(0);
       setAnswers({});
       setFeedback(null);
@@ -134,7 +155,9 @@ export default function MockExamPage() {
     const qId = questions[currentIndex].id;
     setAnswers((prev) => ({ ...prev, [qId]: answer }));
 
-    const elapsed = examInfo.totalSecs - timeLeft;
+    const total = questionsRef.current.length || selectedInfo.questionCount;
+    const totalSecs = selectedInfo.secsPerQuestion * total;
+    const elapsed = totalSecs - timeLeft;
     const timeSecs = Math.round(elapsed / Math.max(currentIndex + 1, 1));
 
     try {
@@ -170,7 +193,7 @@ export default function MockExamPage() {
     } catch {
       toast({ title: "Error completing exam", variant: "destructive" });
     }
-  }, [sessionId]);
+  }, [sessionId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   function nextQuestion() {
     const total = questionsRef.current.length;
@@ -194,11 +217,14 @@ export default function MockExamPage() {
 
   // ── Intro ────────────────────────────────────────────────────────────────
   if (phase === "intro") {
+    const minutesDisplay = Math.round(selectedInfo.totalSecs / 60);
     return (
       <div className="max-w-2xl mx-auto space-y-6">
         <div>
-          <h1 className="text-3xl font-bold">Mock {getCourseTrack(course as ApCourse) === "clep" ? "CLEP" : "AP"} Exam</h1>
-          <p className="text-muted-foreground mt-1">Timed section simulation with official {getCourseTrack(course as ApCourse) === "clep" ? "CLEP" : "AP"} pacing</p>
+          <h1 className="text-3xl font-bold">Mock {trackLabel} Exam</h1>
+          <p className="text-muted-foreground mt-1">
+            Timed section simulation with official {trackLabel} pacing
+          </p>
         </div>
 
         <CourseSelectorInline />
@@ -208,41 +234,82 @@ export default function MockExamPage() {
             <CardTitle>Section Overview</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
+            {/* Length toggle — Quick Mock vs Full Section */}
+            <div className="space-y-2">
+              <p className="text-sm font-medium text-muted-foreground">Length</p>
+              <div className="grid grid-cols-2 gap-3">
+                <button
+                  type="button"
+                  onClick={() => setMode("quick")}
+                  className={`p-3 rounded-lg border-2 text-left transition-all ${
+                    mode === "quick"
+                      ? "border-blue-500 bg-blue-500/10"
+                      : "border-border/40 hover:border-border"
+                  }`}
+                >
+                  <div className="flex items-center gap-2 mb-1">
+                    <Zap className="h-4 w-4 text-blue-400" />
+                    <span className="font-semibold">Quick Mock</span>
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    {quickInfo.questionCount} Qs · ~{Math.round(quickInfo.totalSecs / 60)} min
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    Real per-Q pacing
+                  </p>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setMode("full")}
+                  disabled={!hasPremium}
+                  className={`p-3 rounded-lg border-2 text-left transition-all ${
+                    mode === "full"
+                      ? "border-emerald-500 bg-emerald-500/10"
+                      : "border-border/40 hover:border-border"
+                  } ${!hasPremium ? "opacity-60 cursor-not-allowed" : ""}`}
+                >
+                  <div className="flex items-center gap-2 mb-1">
+                    <GraduationCap className="h-4 w-4 text-emerald-400" />
+                    <span className="font-semibold">Full Section</span>
+                    {!hasPremium && (
+                      <Badge variant="secondary" className="text-[10px] px-1.5 py-0">
+                        Premium
+                      </Badge>
+                    )}
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    {fullInfo.questionCount} Qs · {fullInfo.mcqTimeMinutes} min
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    Real exam length
+                  </p>
+                </button>
+              </div>
+              {!hasPremium && (
+                <p className="text-xs text-muted-foreground">
+                  Upgrade for the Full Section experience —{" "}
+                  <Link href="/billing" className="text-blue-400 hover:underline">
+                    Go Premium
+                  </Link>
+                </p>
+              )}
+            </div>
+
             <div className="grid grid-cols-3 gap-4">
               <div className="p-4 rounded-lg bg-secondary/50 text-center">
                 <p className="text-sm text-muted-foreground mb-1">Questions</p>
-                <p className="text-2xl font-bold text-blue-500">{EXAM_QUESTIONS}</p>
+                <p className="text-2xl font-bold text-blue-500">{selectedInfo.questionCount}</p>
                 <p className="text-xs text-muted-foreground">MCQ</p>
               </div>
               <div className="p-4 rounded-lg bg-secondary/50 text-center">
                 <p className="text-sm text-muted-foreground mb-1">Time Allowed</p>
-                <p className="text-2xl font-bold text-emerald-400">{examInfo.mins} min</p>
-                <p className="text-xs text-muted-foreground">{examInfo.secsPerQ}s per question</p>
+                <p className="text-2xl font-bold text-emerald-400">{minutesDisplay} min</p>
+                <p className="text-xs text-muted-foreground">{selectedInfo.secsPerQuestion}s per question</p>
               </div>
               <div className="p-4 rounded-lg bg-secondary/50 text-center">
                 <p className="text-sm text-muted-foreground mb-1">Result</p>
-                <p className="text-2xl font-bold text-yellow-400">{getCourseTrack(course as ApCourse) === "clep" ? "Pass/Fail" : "1–5"}</p>
-                <p className="text-xs text-muted-foreground">{getCourseTrack(course as ApCourse) === "clep" ? "CLEP Score" : "AP Score"}</p>
-              </div>
-            </div>
-
-            {/* Pacing reference */}
-            <div className="p-4 rounded-lg bg-secondary/30 text-sm space-y-1">
-              <p className="font-medium text-muted-foreground mb-2">Official {getCourseTrack(course as ApCourse) === "clep" ? "CLEP" : "AP"} pacing reference:</p>
-              <div className="grid grid-cols-3 gap-2 text-xs text-muted-foreground">
-                {getCourseTrack(course as ApCourse) === "clep" ? (
-                  <>
-                    <span>Algebra: 60 MCQ / 90 min</span>
-                    <span>Psych: 95 MCQ / 90 min</span>
-                    <span>Marketing: 100 MCQ / 90 min</span>
-                  </>
-                ) : (
-                  <>
-                    <span>WH: 55 MCQ / 55 min</span>
-                    <span>CSP: 70 MCQ / 120 min</span>
-                    <span>PHY1: 50 MCQ / 90 min</span>
-                  </>
-                )}
+                <p className="text-2xl font-bold text-yellow-400">{isClep ? "Pass/Fail" : "1–5"}</p>
+                <p className="text-xs text-muted-foreground">{isClep ? "CLEP Score" : "AP Score"}</p>
               </div>
             </div>
 
@@ -276,7 +343,7 @@ export default function MockExamPage() {
     };
     const scoreMessages: Record<number, string> = {
       5: "Excellent! You're exam ready!",
-      4: getCourseTrack(course as ApCourse) === "clep" ? "Great work! You're close to a passing score!" : "Great work! A few more sessions and you'll hit 5!",
+      4: isClep ? "Great work! You're close to a passing score!" : "Great work! A few more sessions and you'll hit 5!",
       3: "Good foundation. Focus on weak units to improve.",
       2: "Keep practicing. Review the units you struggled with.",
       1: "Don't give up! More practice will make a big difference.",
@@ -291,11 +358,11 @@ export default function MockExamPage() {
 
         <Card className="card-glow">
           <CardContent className="p-6 text-center">
-            <p className="text-sm text-muted-foreground mb-2">Estimated {getCourseTrack(course as ApCourse) === "clep" ? "CLEP" : "AP"} Score</p>
+            <p className="text-sm text-muted-foreground mb-2">Estimated {trackLabel} Score</p>
             <p className={`text-8xl font-bold ${scoreColors[result.apScoreEstimate] || "text-foreground"}`}>
               {result.apScoreEstimate}
             </p>
-            <p className="text-muted-foreground mt-2 mb-6">{getCourseTrack(course as ApCourse) === "clep" ? "out of 80 (pass: 50+)" : "out of 5"}</p>
+            <p className="text-muted-foreground mt-2 mb-6">{isClep ? "out of 80 (pass: 50+)" : "out of 5"}</p>
             <p className="text-base font-medium">
               {scoreMessages[result.apScoreEstimate] || "Keep practicing!"}
             </p>

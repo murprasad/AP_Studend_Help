@@ -7,7 +7,15 @@ import { rateLimit } from "@/lib/rate-limit";
 /**
  * POST /api/frq/[id]/submit
  *
- * Body: { studentText: string, selfScore?: number }
+ * Body: { studentText: string | Record<string,string>, selfScore?: number }
+ *
+ * - Legacy callers send a raw string (1 per-FRQ textarea).
+ * - New per-type callers send a keyed record (e.g. SAQ -> {A, B, C},
+ *   DBQ -> {essay}, multi-part -> {a, b, c, ...}).
+ *
+ * Either shape is accepted: we JSON-stringify the record before writing to
+ * `FrqAttempt.studentText`, so the Prisma column stays `String @db.Text` and
+ * the 10 existing Physics rows keep working.
  *
  * Creates an FrqAttempt row and returns the full FRQ with rubric +
  * sampleResponse so the UI can render the self-grade comparison view.
@@ -30,10 +38,14 @@ export async function POST(
 
     const { id } = params;
     const body = (await req.json().catch(() => ({}))) as {
-      studentText?: string;
+      studentText?: unknown;
       selfScore?: number;
     };
-    const studentText = typeof body.studentText === "string" ? body.studentText.trim() : "";
+
+    // Coerce either shape into a canonical string for storage. Records become
+    // JSON (so the reveal flow can rehydrate keyed answers); strings pass
+    // through as-is.
+    const studentText = coerceStudentText(body.studentText);
     const selfScore = typeof body.selfScore === "number" ? body.selfScore : null;
 
     if (!studentText) {
@@ -91,4 +103,25 @@ export async function POST(
     console.error("POST /api/frq/[id]/submit error:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
+}
+
+/**
+ * Accept either a raw string (legacy) or a Record<string,string> (new
+ * per-type inputs) and return the canonical string we'll write to
+ * `FrqAttempt.studentText`. Invalid shapes return "" so the caller can 400.
+ */
+function coerceStudentText(input: unknown): string {
+  if (typeof input === "string") return input.trim();
+  if (input && typeof input === "object" && !Array.isArray(input)) {
+    const record: Record<string, string> = {};
+    for (const [k, v] of Object.entries(input as Record<string, unknown>)) {
+      if (typeof v === "string") record[k] = v;
+    }
+    const anyContent = Object.values(record).some(
+      (v) => v.trim().length > 0
+    );
+    if (!anyContent) return "";
+    return JSON.stringify(record);
+  }
+  return "";
 }
