@@ -31,6 +31,9 @@ model User {
   streakFreezes     Int       @default(0)  // streak freeze tokens
   examDate          DateTime?              // AP exam date for countdown
   track             String    @default("ap")  // "ap" | "clep"
+  freeTrialExpiresAt   DateTime?              // 7-day trial window end
+  freeTrialCourse      String?                // course trial is scoped to
+  trialEmailsSent      Int       @default(0)  // re-engagement email count (cap at 3)
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
 
@@ -1043,5 +1046,21 @@ model AiResponseCache {
 
   @@index([createdAt])
   @@map("ai_response_cache")
+}
+
+model SageFAQ {
+  id          String   @id @default(cuid())
+  category    String   // "how_to_use" | "strategy" | "exam_info" | "pricing" | "troubleshooting"
+  question    String
+  answer      String   @db.Text
+  priority    Int      @default(5)
+  tags        String[]
+  sourceUrl   String?  // e.g. Reddit post that seeded this FAQ
+  corroborationCount Int @default(1)  // how many independent sources said this
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([category, priority])
+  @@map("sage_faq")
 }
 
