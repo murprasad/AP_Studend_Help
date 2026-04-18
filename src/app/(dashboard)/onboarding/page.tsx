@@ -10,7 +10,6 @@ import { ApCourse } from "@prisma/client";
 import {
   Sparkles, BookOpen, ClipboardList, BarChart3, ChevronRight, Check, Clock, GraduationCap,
 } from "lucide-react";
-import Link from "next/link";
 import { staticCLEP7DayPlan } from "@/lib/clep-plan";
 
 const ONBOARDING_KEY = "onboarding_completed";
@@ -384,33 +383,28 @@ export default function OnboardingPage() {
               </div>
               You&apos;re all set!
             </CardTitle>
-            <CardDescription>Great choice! We recommend starting with the Diagnostic to build your personalized study plan.</CardDescription>
+            <CardDescription>
+              Your dashboard is ready. We&apos;ve picked a first step for you — you can calibrate with a 10-min diagnostic when you&apos;re ready, or jump straight into practice. No pressure.
+            </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid sm:grid-cols-2 gap-3">
-              <Link href="/diagnostic" onClick={completeOnboarding} className="block">
-                <div className="p-4 rounded-xl border border-blue-500/30 bg-blue-500/5 hover:bg-blue-500/10 transition-colors cursor-pointer">
-                  <ClipboardList className="h-6 w-6 text-blue-500 mb-2" />
-                  <p className="font-semibold text-sm">Take Diagnostic</p>
-                  <p className="text-xs text-muted-foreground mt-1">Find your weak units immediately</p>
-                  <span className="text-xs text-blue-500 font-medium mt-2 inline-block">Recommended →</span>
-                </div>
-              </Link>
-              <Link href="/practice" onClick={completeOnboarding} className="block">
-                <div className="p-4 rounded-xl border border-border/40 hover:bg-accent transition-colors cursor-pointer">
-                  <Sparkles className="h-6 w-6 text-emerald-400 mb-2" />
-                  <p className="font-semibold text-sm">Start Practicing</p>
-                  <p className="text-xs text-muted-foreground mt-1">Jump straight into adaptive MCQs</p>
-                  <span className="text-xs text-emerald-400 font-medium mt-2 inline-block">Start now →</span>
-                </div>
-              </Link>
-            </div>
+            {/* Primary CTA lands on /dashboard — the Coach Card surfaces the
+                soft diagnostic nudge as the first step. Prior version forced
+                a diagnostic entry-point here which caused bounces when the
+                student didn't want to commit 10 min immediately. */}
+            <Button
+              size="lg"
+              className="w-full gap-2 bg-blue-600 hover:bg-blue-700"
+              onClick={completeOnboarding}
+            >
+              Go to dashboard <ChevronRight className="h-5 w-5" />
+            </Button>
+            <p className="text-[11px] text-muted-foreground text-center">
+              You&apos;ll see a rough projected score on the dashboard based on your track — sharpen it whenever you&apos;re ready.
+            </p>
             <div className="flex gap-2">
               <Button variant="outline" size="sm" onClick={() => setStep(2)} className="text-xs">
                 Back
-              </Button>
-              <Button variant="ghost" size="sm" onClick={completeOnboarding} className="text-xs text-muted-foreground ml-auto">
-                Skip to dashboard
               </Button>
             </div>
           </CardContent>

@@ -72,6 +72,45 @@ export async function sendPremiumSignupNotification(opts: {
   );
 }
 
+/**
+ * Onboarding-bounce re-engagement email.
+ *
+ * Target: users who completed onboarding in the last 14 days but never
+ * answered a single question (zero StudentResponse rows). Canonical example:
+ * Adithya Narayana, 2026-04-18 — signed up, breezed through onboarding in
+ * 17 seconds, started the diagnostic, answered nothing, never returned.
+ *
+ * The email is warm, short, direct: "your rough score is ready" + one-tap
+ * CTA into /dashboard where the Coach Card picks it up from there. We only
+ * ever send this once per user (dedup via TrialReengagement row with
+ * emailType="onboarding_bounce").
+ */
+export async function sendOnboardingBounceEmail(opts: {
+  email: string;
+  firstName: string;
+  courseName: string;
+}): Promise<void> {
+  const { email, firstName, courseName } = opts;
+  const baseUrl = process.env.APP_URL ?? process.env.NEXT_PUBLIC_APP_URL ?? "https://studentnest.ai";
+  const subject = `Your rough ${courseName} score is ready`;
+  const dashboardUrl = `${baseUrl}/dashboard?src=onboarding-bounce`;
+  const html = `
+    <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 600px; margin: 0 auto; padding: 24px;">
+      <h1 style="color: #1865F2; margin: 0 0 12px 0; font-size: 22px;">Hi ${firstName},</h1>
+      <p style="color: #334155; line-height: 1.6; margin: 0 0 20px 0; font-size: 15px;">
+        You set up a ${courseName} plan but haven&apos;t answered a question yet. We&apos;ve still got a rough projected score for you based on your track &mdash; come see it. Takes 60 seconds to answer one question and sharpen it.
+      </p>
+      <a href="${dashboardUrl}" style="display: inline-block; background: #1865F2; color: white; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 15px; margin: 8px 0 24px 0;">
+        See my rough score
+      </a>
+      <p style="color: #94a3b8; font-size: 12px; line-height: 1.5; margin-top: 24px;">
+        We only email once; unsubscribe anytime by replying.
+      </p>
+    </div>
+  `.trim();
+  await sendEmail(email, subject, html);
+}
+
 export async function sendPasswordResetEmail(
   email: string,
   firstName: string,
