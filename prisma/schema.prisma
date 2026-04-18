@@ -61,6 +61,7 @@ model User {
   trialReengagements   TrialReengagement[]
   dailyQuizSends       DailyQuizSend[]
   masteryTierUps       MasteryTierUp[]
+  frqAttempts          FrqAttempt[]
 
   @@map("users")
 }
@@ -1146,5 +1147,60 @@ model SageFAQ {
 
   @@index([category, priority])
   @@map("sage_faq")
+}
+
+// ── FRQ (Free-Response Question) Pipeline ─────────────────────────────────────
+// Past-exam FRQs with official rubrics. Student writes a response, then reveals
+// the rubric + sample response and self-scores. No AI grading initially.
+// Cluster A: AP Physics 1, Calc AB, Calc BC, Biology, Chemistry, Statistics.
+
+enum FrqType {
+  SHORT          // Physics/Chem "short" FRQ
+  LONG           // Physics/Chem "long" FRQ
+  MULTI_PART     // Calc multi-part
+  INVESTIGATIVE  // Stats 6th Q
+  SAQ            // History short-answer
+  DBQ            // History document-based
+  LEQ            // History long essay
+  AAQ            // Psych article analysis
+  EBQ            // Psych evidence-based
+}
+
+model FreeResponseQuestion {
+  id             String    @id @default(cuid())
+  course         ApCourse
+  unit           ApUnit?   // null if spans multiple units
+  year           Int       // exam year, e.g. 2023
+  questionNumber Int       // Q1-Q7 etc.
+  type           FrqType
+  sourceUrl      String    // apcentral.collegeboard.org URL
+  promptText     String    @db.Text  // the student-facing prompt
+  stimulus       String?   @db.Text  // docs/graphs/tables (may be long)
+  totalPoints    Int
+  rubric         Json      // [{step: "...", points: 2, keywords: [...], note: "..."}]
+  sampleResponse String?   @db.Text  // released scoring commentary / high-scoring sample
+  isApproved     Boolean   @default(false)
+  createdAt      DateTime  @default(now())
+
+  attempts       FrqAttempt[]
+
+  @@index([course, unit])
+  @@index([course, year])
+  @@map("free_response_questions")
+}
+
+model FrqAttempt {
+  id            String               @id @default(cuid())
+  userId        String
+  user          User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  frqId         String
+  frq           FreeResponseQuestion @relation(fields: [frqId], references: [id], onDelete: Cascade)
+  studentText   String               @db.Text  // what the student wrote
+  selfScore     Int?                 // student's self-grade vs rubric
+  revealed      Boolean              @default(false)
+  submittedAt   DateTime             @default(now())
+
+  @@index([userId, submittedAt])
+  @@map("frq_attempts")
 }
 

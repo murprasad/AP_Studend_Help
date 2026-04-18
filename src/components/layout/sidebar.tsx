@@ -28,6 +28,7 @@ import {
   Sun,
   Moon,
   Calendar,
+  PenLine,
 } from "lucide-react";
 import { useTheme } from "@/hooks/use-theme";
 import { useState, useEffect } from "react";
@@ -39,9 +40,19 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-const navItems = [
+interface NavItem {
+  href: string;
+  icon: typeof LayoutDashboard;
+  label: string;
+  /** If set, item only renders when userTrack matches one of these values. */
+  tracks?: string[];
+}
+
+const navItems: NavItem[] = [
   { href: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
   { href: "/practice", icon: Zap, label: "Practice" },
+  // FRQ Practice — AP only (SAT/ACT don't have FRQs). Admins always see it.
+  { href: "/frq-practice", icon: PenLine, label: "FRQ Practice", tracks: ["ap"] },
   { href: "/mock-exam", icon: Trophy, label: "Mock Exam" },
   { href: "/diagnostic", icon: ClipboardList, label: "Diagnostic" },
   { href: "/analytics", icon: BarChart3, label: "Analytics" },
@@ -307,7 +318,15 @@ export function Sidebar({ userRole, userTrack, isOpen = false, onClose = () => {
 
         {/* Navigation */}
         <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
-          {navItems.filter(item => !hiddenPages.has(item.href)).map((item) => {
+          {navItems
+            .filter((item) => !hiddenPages.has(item.href))
+            .filter((item) => {
+              // Track-scoped items (e.g. FRQ Practice is AP-only). Admins see all.
+              if (!item.tracks) return true;
+              if (userRole === "ADMIN") return true;
+              return item.tracks.includes(effectiveTrack);
+            })
+            .map((item) => {
             const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
             return (
               <Link

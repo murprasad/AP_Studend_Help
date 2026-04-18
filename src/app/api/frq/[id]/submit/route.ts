@@ -1,0 +1,94 @@
+import { NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
+import { rateLimit } from "@/lib/rate-limit";
+
+/**
+ * POST /api/frq/[id]/submit
+ *
+ * Body: { studentText: string, selfScore?: number }
+ *
+ * Creates an FrqAttempt row and returns the full FRQ with rubric +
+ * sampleResponse so the UI can render the self-grade comparison view.
+ *
+ * No AI grading — the student compares their answer to the rubric and
+ * records their own score (0..totalPoints).
+ */
+export async function POST(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+    const { allowed } = rateLimit(session.user.id, "frq:submit", 60);
+    if (!allowed) {
+      return NextResponse.json({ error: "Rate limit exceeded. Please slow down." }, { status: 429 });
+    }
+
+    const { id } = params;
+    const body = (await req.json().catch(() => ({}))) as {
+      studentText?: string;
+      selfScore?: number;
+    };
+    const studentText = typeof body.studentText === "string" ? body.studentText.trim() : "";
+    const selfScore = typeof body.selfScore === "number" ? body.selfScore : null;
+
+    if (!studentText) {
+      return NextResponse.json({ error: "studentText is required" }, { status: 400 });
+    }
+    if (studentText.length > 20000) {
+      return NextResponse.json({ error: "studentText exceeds 20k chars" }, { status: 400 });
+    }
+
+    const frq = await prisma.freeResponseQuestion.findUnique({
+      where: { id },
+    });
+
+    if (!frq || !frq.isApproved) {
+      return NextResponse.json({ error: "FRQ not found" }, { status: 404 });
+    }
+
+    if (selfScore !== null && (selfScore < 0 || selfScore > frq.totalPoints)) {
+      return NextResponse.json(
+        { error: `selfScore must be between 0 and ${frq.totalPoints}` },
+        { status: 400 }
+      );
+    }
+
+    // Record the attempt. Multiple attempts per FRQ are allowed — gives the
+    // student room to come back and try again with fresh eyes.
+    await prisma.frqAttempt.create({
+      data: {
+        userId: session.user.id,
+        frqId: id,
+        studentText,
+        selfScore,
+        revealed: true,
+      },
+    });
+
+    // Return the full FRQ so the UI can render rubric + sample response.
+    return NextResponse.json({
+      frq: {
+        id: frq.id,
+        course: frq.course,
+        unit: frq.unit,
+        year: frq.year,
+        questionNumber: frq.questionNumber,
+        type: frq.type,
+        sourceUrl: frq.sourceUrl,
+        promptText: frq.promptText,
+        stimulus: frq.stimulus,
+        totalPoints: frq.totalPoints,
+        rubric: frq.rubric,
+        sampleResponse: frq.sampleResponse,
+      },
+    });
+  } catch (error) {
+    console.error("POST /api/frq/[id]/submit error:", error);
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+  }
+}
