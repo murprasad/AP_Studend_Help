@@ -116,6 +116,7 @@ export async function POST(req: NextRequest) {
   } catch (error) {
     const errMsg = error instanceof Error ? error.message : String(error);
     console.error("POST /api/checkout error:", errMsg, error);
-    return NextResponse.redirect(new URL(`/pricing?error=checkout_failed&detail=${encodeURIComponent(errMsg.slice(0, 100))}`, req.url));
+    // Don't leak internal error text into URL query.
+    return NextResponse.redirect(new URL("/pricing?error=checkout_failed", req.url));
   }
 }

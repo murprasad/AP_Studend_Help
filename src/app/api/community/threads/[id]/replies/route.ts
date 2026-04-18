@@ -60,6 +60,6 @@ export async function POST(
     return NextResponse.json({ reply })
   } catch (e) {
     console.error("POST /api/community/threads/[id]/replies error:", e)
-    return NextResponse.json({ error: `Server error: ${String(e)}` }, { status: 500 })
+    return NextResponse.json({ error: "Unable to post reply right now. Please try again." }, { status: 500 })
   }
 }

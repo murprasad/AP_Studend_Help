@@ -86,6 +86,6 @@ Please give a helpful, concise tutoring response for this student's question.`
   return NextResponse.json({ reply })
   } catch (e) {
     console.error("POST /api/community/ai-tutor error:", e)
-    return NextResponse.json({ error: `Server error: ${String(e)}` }, { status: 500 })
+    return NextResponse.json({ error: "AI tutor reply failed. Please try again." }, { status: 500 })
   }
 }

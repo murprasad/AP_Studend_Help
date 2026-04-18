@@ -71,6 +71,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ thread })
   } catch (e) {
     console.error("POST /api/community/threads error:", e)
-    return NextResponse.json({ error: `Server error: ${String(e)}` }, { status: 500 })
+    return NextResponse.json({ error: "Unable to post thread right now. Please try again." }, { status: 500 })
   }
 }
