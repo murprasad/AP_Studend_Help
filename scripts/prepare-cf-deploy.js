@@ -38,14 +38,26 @@ for (const dir of ["server-functions", "cloudflare", "middleware"]) {
 const buildDir = path.join(src, ".build");
 if (fs.existsSync(buildDir)) copyDir(buildDir, path.join(dest, ".build"));
 
-// 5. _routes.json — tell CF Pages to serve /_next/static/* directly from
-//    the static deployment (bypassing the worker) so CSS/JS/fonts load correctly.
+// 5. _routes.json — tell CF Pages to serve static files directly from the
+//    static deployment (bypassing the worker). Without the extra excludes,
+//    CF Pages routes /sw.js, /manifest.webmanifest, /og-image.svg, icons,
+//    and the rest of /public/ through the Next.js worker handler, which
+//    doesn't know about them and returns 404.
 const routesJson = {
   version: 1,
   include: ["/*"],
   exclude: [
     "/_next/static/*",
     "/BUILD_ID",
+    "/sw.js",
+    "/manifest.webmanifest",
+    "/favicon.ico",
+    "/robots.txt",
+    "/sitemap.xml",
+    "/og-image.svg",
+    "/icons/*",
+    "/fonts/*",
+    "/images/*",
   ],
 };
 fs.writeFileSync(
