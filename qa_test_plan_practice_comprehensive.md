@@ -16757,3 +16757,248 @@ Integration tests: 49 passed, 36 warnings, 0 failed
 - [ ] Sage response includes 5 sections (Core Concept, Visual Breakdown, How AP Asks, Common Traps, Memory Hook)
 - [ ] Follow-up chips appear and clicking one pre-fills the input
 
+
+---
+
+## Release Log — v2.5.0 (2026-04-17)
+
+**Deployed:** Fri, 17 Apr 2026 22:18:02 GMT
+**Version:** 2.5.0
+
+### Changes in this release
+- fix: Sage system prompt — stale CLEP/DSST refs post-sunset
+- feat: seed 15 USH + 8 STATS CB-grade hand-authored questions
+- feat: per-course model override — route AP_US_HISTORY + AP_STATISTICS to Sonnet
+- fix: add missing files for Scope B — exam-label.ts + ap-prep/[slug]/page.tsx
+- feat: exam-module feature flags for landing, marketing, pricing, sidebar
+- feat: CB content alignment — topicWeights + Sonnet bulk gen + apSkill/bloomLevel taxonomy
+- Port A22.4 + A22.5 + A22.6 + retry-with-backoff + USH/STATS gen
+- feat: AP US History + AP Statistics generation support
+- feat: Beta 2.5 — DSST exam support, admin users dashboard, Stripe integration
+- feat: admin Subscribers tab — premium user details + revenue dashboard
+
+### Automated smoke tests
+```
+Smoke tests: 15 passed, 0 warnings, 0 failed
+  ✅ GET /
+  ✅ GET /pricing
+  ✅ GET /about
+  ✅ GET /login
+  ✅ GET /register
+  ✅ GET /api/ai/status
+  ✅ GET /api/feature-flags
+  ✅ POST /api/practice
+  ✅ POST /api/ai/tutor/knowledge-check
+  ✅ GET /api/analytics
+  ✅ GET /api/user
+  ✅ Feature flags latency
+  ✅ Analytics latency
+  ✅ Study plan latency
+  ✅ POST /api/ai/tutor/knowledge-check (bad input)
+```
+
+### Functional tests (authenticated regression suite)
+```
+Functional tests: 13 passed, 1 warnings, 0 failed (6.4s)
+  ✅ Test user created — userId=cmo3gylo...
+  ✅ A1. User profile — track=ap
+  ✅ A2a. Create practice session — sessionId=cmo3gymp... 3 questions
+  ✅ A2b. Submit answer — isCorrect=false, explanation=1053ch
+  ✅ A2c. Complete session — accuracy=0%, xp=0
+  ✅ A3. Analytics — totalAnswered=1, mastery units=9
+  ✅ A4. Study Plan GET — plan=null (expected for new user)
+  ✅ A5. Auth guards — unauthenticated requests correctly blocked
+  ⚠️ B1. AI Tutor — answer too short or missing
+  ✅ B2. Knowledge Check gen — 1 question(s) generated
+  ✅ B3. Knowledge Check submit — score=1/1
+  ✅ C1. Multi-course analytics — 5/5 courses returned 200
+  ✅ C2. Multi-course study plan — 4/4 courses returned 200
+  ✅ C3. Invalid course rejected — analytics returned 400
+```
+
+### Integration tests (practice coverage — all 50 courses)
+```
+Integration tests: 49 passed, 36 warnings, 0 failed
+  Total questions: 2610 | Courses: 40 green, 1 yellow, 31 red
+  ✅ AI generation enabled — students will get questions even for thin courses
+  ✅ AP_WORLD_HISTORY — 535 MCQ questions
+  ✅ AP_COMPUTER_SCIENCE_PRINCIPLES — 271 MCQ questions
+  ✅ AP_PHYSICS_1 — 285 MCQ questions
+  ✅ AP_CALCULUS_AB — 42 MCQ questions
+  ✅ AP_CALCULUS_BC — 18 MCQ questions
+  ✅ AP_STATISTICS — 41 MCQ questions
+  ✅ AP_CHEMISTRY — 16 MCQ questions
+  ✅ AP_BIOLOGY — 376 MCQ questions
+  ✅ AP_US_HISTORY — 52 MCQ questions
+  ✅ AP_PSYCHOLOGY — 508 MCQ questions
+  ✅ SAT_MATH — 49 MCQ questions
+  ✅ SAT_READING_WRITING — 40 MCQ questions
+  ✅ ACT_MATH — 40 MCQ questions
+  ✅ ACT_ENGLISH — 26 MCQ questions
+  ✅ ACT_SCIENCE — 26 MCQ questions
+  ✅ ACT_READING — 32 MCQ questions
+  ✅ CLEP_COLLEGE_ALGEBRA — 17 MCQ questions
+  ✅ CLEP_COLLEGE_COMPOSITION — 16 MCQ questions
+  ✅ CLEP_INTRO_PSYCHOLOGY — 20 MCQ questions
+  ✅ CLEP_PRINCIPLES_OF_MARKETING — 32 MCQ questions
+  ✅ CLEP_PRINCIPLES_OF_MANAGEMENT — 7 MCQ questions
+  ✅ CLEP_INTRODUCTORY_SOCIOLOGY — 7 MCQ questions
+  ✅ CLEP_AMERICAN_GOVERNMENT — 5 MCQ questions
+  ✅ CLEP_MACROECONOMICS — 10 MCQ questions
+  ✅ CLEP_MICROECONOMICS — 5 MCQ questions
+  ✅ CLEP_BIOLOGY — 13 MCQ questions
+  ✅ CLEP_US_HISTORY_1 — 5 MCQ questions
+  ✅ CLEP_US_HISTORY_2 — 5 MCQ questions
+  ✅ CLEP_HUMAN_GROWTH_DEV — 5 MCQ questions
+  ✅ CLEP_CALCULUS — 10 MCQ questions
+  ✅ CLEP_CHEMISTRY — 5 MCQ questions
+  ✅ CLEP_FINANCIAL_ACCOUNTING — 6 MCQ questions
+  ✅ CLEP_AMERICAN_LITERATURE — 5 MCQ questions
+  ✅ CLEP_ANALYZING_INTERPRETING_LIT — 5 MCQ questions
+  ✅ CLEP_COLLEGE_COMP_MODULAR — 6 MCQ questions
+  ✅ CLEP_ENGLISH_LITERATURE — 5 MCQ questions
+  ⚠️ CLEP_HUMANITIES — only 3 questions
+  ⚠️ CLEP_FRENCH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_GERMAN — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SPANISH — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SPANISH_WRITING — 0 questions — AI will generate on first session
+  ⚠️ CLEP_EDUCATIONAL_PSYCHOLOGY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_SOCIAL_SCIENCES_HISTORY — 0 questions — AI will generate on first session
+  ⚠️ CLEP_WESTERN_CIV_1 — 0 questions — AI will generate on first session
+  ✅ CLEP_WESTERN_CIV_2 — 8 MCQ questions
+  ✅ CLEP_COLLEGE_MATH — 8 MCQ questions
+  ⚠️ CLEP_NATURAL_SCIENCES — 0 questions — AI will generate on first session
+  ⚠️ CLEP_PRECALCULUS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_INFORMATION_SYSTEMS — 0 questions — AI will generate on first session
+  ⚠️ CLEP_BUSINESS_LAW — 0 questions — AI will generate on first session
+  ✅ DSST_PRINCIPLES_OF_SUPERVISION — 10 MCQ questions
+  ✅ DSST_HUMAN_RESOURCE_MANAGEMENT — 8 MCQ questions
+  ⚠️ DSST_ORGANIZATIONAL_BEHAVIOR — 0 questions — AI will generate on first session
+  ⚠️ DSST_PERSONAL_FINANCE — 0 questions — AI will generate on first session
+  ⚠️ DSST_LIFESPAN_DEV_PSYCHOLOGY — 0 questions — AI will generate on first session
+  ⚠️ DSST_INTRO_TO_BUSINESS — 0 questions — AI will generate on first session
+  ⚠️ DSST_HUMAN_DEVELOPMENT — 0 questions — AI will generate on first session
+  ⚠️ DSST_ETHICS_IN_AMERICA — 0 questions — AI will generate on first session
+  ⚠️ DSST_ENVIRONMENTAL_SCIENCE — 0 questions — AI will generate on first session
+  ⚠️ DSST_TECHNICAL_WRITING — 0 questions — AI will generate on first session
+  ⚠️ DSST_PRINCIPLES_OF_FINANCE — 0 questions — AI will generate on first session
+  ⚠️ DSST_MANAGEMENT_INFO_SYSTEMS — 0 questions — AI will generate on first session
+  ⚠️ DSST_MONEY_AND_BANKING — 0 questions — AI will generate on first session
+  ⚠️ DSST_SUBSTANCE_ABUSE — 0 questions — AI will generate on first session
+  ⚠️ DSST_CRIMINAL_JUSTICE — 0 questions — AI will generate on first session
+  ⚠️ DSST_FUNDAMENTALS_OF_COUNSELING — 0 questions — AI will generate on first session
+  ⚠️ DSST_GENERAL_ANTHROPOLOGY — 0 questions — AI will generate on first session
+  ⚠️ DSST_WORLD_RELIGIONS — 0 questions — AI will generate on first session
+  ⚠️ DSST_ART_WESTERN_WORLD — 0 questions — AI will generate on first session
+  ⚠️ DSST_ASTRONOMY — 0 questions — AI will generate on first session
+  ⚠️ DSST_COMPUTING_AND_IT — 0 questions — AI will generate on first session
+  ⚠️ DSST_CIVIL_WAR — 0 questions — AI will generate on first session
+  ⚠️ AP World History: Modern FRQ — 0 FRQ questions — AI will generate on first session
+  ⚠️ AP Computer Science Principles FRQ — 0 FRQ questions — AI will generate on first session
+  ⚠️ AP Physics 1: Algebra-Based FRQ — 0 FRQ questions — AI will generate on first session
+  ✅ AP Calculus AB FRQ — 9 questions
+  ✅ AP Calculus BC FRQ — 1 questions
+  ⚠️ AP Statistics FRQ — 0 FRQ questions — AI will generate on first session
+  ✅ AP Chemistry FRQ — 1 questions
+  ✅ AP Biology FRQ — 2 questions
+  ✅ AP US History FRQ — 6 questions
+  ✅ AP Psychology FRQ — 8 questions
+  ✅ Analytics API — 72/72 courses responding (all 401 auth guard — healthy)
+  ✅ Study Plan API — 72/72 courses responding (all 401 auth guard — healthy)
+```
+
+### Manual P0 checklist (fill in before marking release complete)
+**Practice — AP/SAT/ACT (16 courses, AP-track user):**
+- [ ] AP_WORLD_HISTORY MCQ — ALL units, ALL difficulty → session starts, questions load
+- [ ] AP_US_HISTORY MCQ — session starts
+- [ ] AP_COMPUTER_SCIENCE_PRINCIPLES MCQ — session starts
+- [ ] AP_PHYSICS_1 MCQ + FRQ — both session types start within 30s
+- [ ] AP_CALCULUS_AB MCQ — session starts
+- [ ] AP_STATISTICS MCQ — session starts
+- [ ] AP_CHEMISTRY MCQ — session starts
+- [ ] AP_BIOLOGY MCQ — session starts
+- [ ] AP_PSYCHOLOGY MCQ — session starts
+- [ ] SAT_MATH MCQ — session starts
+- [ ] SAT_READING_WRITING MCQ — session starts
+- [ ] ACT_MATH MCQ — session starts, verify 5 answer choices (A-E not A-D)
+- [ ] ACT_ENGLISH MCQ — session starts
+- [ ] ACT_SCIENCE MCQ — session starts
+- [ ] ACT_READING MCQ — session starts
+
+**Practice — CLEP (34 courses, CLEP-track user + clep_enabled=true):**
+- [ ] CLEP_COLLEGE_ALGEBRA MCQ — session starts
+- [ ] CLEP_COLLEGE_COMPOSITION MCQ — session starts
+- [ ] CLEP_INTRO_PSYCHOLOGY MCQ — session starts
+- [ ] CLEP_PRINCIPLES_OF_MARKETING MCQ — session starts
+- [ ] CLEP_PRINCIPLES_OF_MANAGEMENT MCQ — session starts
+- [ ] CLEP_INTRODUCTORY_SOCIOLOGY MCQ — session starts
+- [ ] CLEP_AMERICAN_GOVERNMENT MCQ — session starts
+- [ ] CLEP_MACROECONOMICS MCQ — session starts
+- [ ] CLEP_BIOLOGY MCQ — session starts
+- [ ] CLEP_CALCULUS MCQ — session starts
+- [ ] CLEP_CHEMISTRY MCQ — session starts
+- [ ] CLEP_FINANCIAL_ACCOUNTING MCQ — session starts
+- [ ] CLEP_AMERICAN_LITERATURE MCQ — session starts
+- [ ] CLEP_ENGLISH_LITERATURE MCQ — session starts
+- [ ] CLEP_HUMANITIES MCQ — session starts
+- [ ] CLEP_WESTERN_CIV_1 MCQ — session starts
+- [ ] CLEP_COLLEGE_MATH MCQ — session starts
+- [ ] CLEP_PRECALCULUS MCQ — session starts
+- [ ] CLEP_BUSINESS_LAW MCQ — session starts
+- [ ] CLEP_SPANISH MCQ — session starts
+- [ ] CLEP_MICROECONOMICS MCQ — session starts
+- [ ] CLEP_US_HISTORY_1 MCQ — session starts
+- [ ] CLEP_US_HISTORY_2 MCQ — session starts
+- [ ] CLEP_HUMAN_GROWTH_DEV MCQ — session starts
+- [ ] CLEP_ANALYZING_INTERPRETING_LIT MCQ — session starts
+- [ ] CLEP_COLLEGE_COMP_MODULAR MCQ — session starts
+- [ ] CLEP_EDUCATIONAL_PSYCHOLOGY MCQ — session starts
+- [ ] CLEP_SOCIAL_SCIENCES_HISTORY MCQ — session starts
+- [ ] CLEP_WESTERN_CIV_2 MCQ — session starts
+- [ ] CLEP_NATURAL_SCIENCES MCQ — session starts
+- [ ] CLEP_INFORMATION_SYSTEMS MCQ — session starts
+- [ ] CLEP_FRENCH MCQ — session starts
+- [ ] CLEP_GERMAN MCQ — session starts
+- [ ] CLEP_SPANISH_WRITING MCQ — session starts
+
+**Track enforcement (DB-backed — Beta 2.1):**
+- [ ] Register at `/register?track=clep` → DB `User.track = "clep"`
+- [ ] Register at `/register?track=ap` → DB `User.track = "ap"`
+- [ ] Register (no param) → DB `User.track = "ap"` (default)
+- [ ] AP user: POST `/api/practice { course: "CLEP_COLLEGE_ALGEBRA" }` → 403
+- [ ] AP user: POST `/api/diagnostic { course: "CLEP_INTRO_PSYCHOLOGY" }` → 403
+- [ ] CLEP user: POST `/api/practice { course: "AP_WORLD_HISTORY" }` → 403
+- [ ] CLEP user: POST `/api/diagnostic { course: "AP_US_HISTORY" }` → 403
+- [ ] AP user: normal AP course practice → no 403 (200 OK)
+- [ ] Sidebar: no "Change track" button visible for any user
+- [ ] Sidebar: CLEP user sees only CLEP courses (reads from DB, not localStorage)
+- [ ] Sidebar: AP user sees AP/SAT/ACT courses (DB wins even if localStorage says "clep")
+- [ ] Onboarding: CLEP user sees only CLEP courses without localStorage dependency
+- [ ] `/api/user` response includes `user.track` field
+- [ ] Session JWT includes `track` field after login
+
+**Auth — login & registration:**
+- [ ] New credential registration → email verification sent (or auto-verified in dev)
+- [ ] Login with correct credentials → redirected to /dashboard or /onboarding
+- [ ] Login with wrong password → error toast shown, no redirect
+- [ ] Google OAuth sign-in button visible (when GOOGLE_CLIENT_ID configured)
+- [ ] Unverified email login → error "Please verify your email"
+
+**Student experience:**
+- [ ] Wrong MCQ answer → knowledge-check mini-quiz appears (count=1, within 15s)
+- [ ] Correct MCQ answer → "Go deeper with Sage →" teal pill visible
+- [ ] Ask Sage from practice → "Continue Practice" banner visible on Sage page
+- [ ] "Continue Practice" → returns to exact question position (no progress lost)
+- [ ] Session completes → summary screen with accuracy %, XP earned, AP score estimate
+- [ ] No 500 errors or blank screens during any flow above
+
+**PWA:**
+- [ ] On mobile Chrome: "Add to Home Screen" prompt appears (or menu option works)
+- [ ] Installed PWA launches in standalone mode (no browser chrome)
+- [ ] App loads from home screen without internet (cached shell)
+
+**AI & Sage:**
+- [ ] Sage answers a question within 15s
+- [ ] Sage response includes 5 sections (Core Concept, Visual Breakdown, How AP Asks, Common Traps, Memory Hook)
+- [ ] Follow-up chips appear and clicking one pre-fills the input
+
