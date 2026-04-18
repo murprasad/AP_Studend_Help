@@ -89,9 +89,10 @@ export default function BillingPage() {
             stopped = true;
             clearInterval(intervalId);
             clearTimeout(timeoutId);
-            // Sync JWT once so the rest of the app sees PREMIUM immediately
-            await update();
+            // Flip refreshing off BEFORE update() so a rejected JWT-sync
+            // doesn't strand the UI in "Activating..." forever.
             setRefreshing(false);
+            try { await update(); } catch { /* JWT sync best-effort */ }
           }
         }
       } catch { /* ignore transient errors */ }
