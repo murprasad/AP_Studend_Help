@@ -18,6 +18,7 @@ import {
   ChevronDown,
 } from "lucide-react";
 import { InteractiveDemo } from "@/components/landing/interactive-demo";
+import { HeroReadinessPicker } from "@/components/landing/hero-readiness-picker";
 import { MobileStickyCta } from "@/components/landing/mobile-sticky-cta";
 import { BrowserFrame } from "@/components/landing/browser-frame";
 import { MockupAnalytics } from "@/components/landing/mockup-analytics";
@@ -213,18 +214,24 @@ export default async function LandingPage() {
               <p className="text-base text-muted-foreground/80 mb-4 max-w-xl mx-auto lg:mx-0">
                 Take a free diagnostic. Get a personalized study plan. Practice with AI that explains every mistake.
               </p>
-              <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
-                <Link href="/register?track=ap">
-                  <Button size="lg" className="btn-lift gap-2 text-base px-8 h-12 bg-blue-600 hover:bg-blue-700 text-white">
-                    Start Free Diagnostic <ArrowRight className="h-5 w-5" />
-                  </Button>
-                </Link>
+              {/* PRIMARY CTA: Am I Ready picker — 3-min no-signup readiness check */}
+              <HeroReadinessPicker />
+
+              {/* Secondary CTA row — direct signup for users who want the full product */}
+              <div className="mt-5 flex flex-col sm:flex-row gap-3 justify-center lg:justify-start items-center">
+                <span className="text-sm text-muted-foreground">Ready for the full experience?</span>
+                <div className="flex gap-2">
+                  <Link href="/register?track=ap" className="text-primary hover:text-primary/80 font-medium underline underline-offset-4 text-sm">AP</Link>
+                  <span className="text-muted-foreground">·</span>
+                  <Link href="/register?track=sat" className="text-primary hover:text-primary/80 font-medium underline underline-offset-4 text-sm">SAT</Link>
+                  <span className="text-muted-foreground">·</span>
+                  <Link href="/register?track=act" className="text-primary hover:text-primary/80 font-medium underline underline-offset-4 text-sm">ACT</Link>
+                </div>
                 {clepOn && (
-                  <Link href="/register?track=clep">
-                    <Button size="lg" className="btn-lift gap-2 text-base px-8 h-12 bg-emerald-600 hover:bg-emerald-700 text-white">
-                      Pass CLEP in 7 Days <ArrowRight className="h-5 w-5" />
-                    </Button>
-                  </Link>
+                  <>
+                    <span className="hidden sm:inline text-muted-foreground">|</span>
+                    <Link href="/register?track=clep" className="text-emerald-600 dark:text-emerald-400 hover:underline font-medium text-sm">Pass CLEP in 7 days →</Link>
+                  </>
                 )}
               </div>
               <div className="mt-4 flex items-center gap-4 justify-center lg:justify-start text-sm text-muted-foreground">
