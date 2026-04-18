@@ -34,6 +34,7 @@ model User {
   freeTrialExpiresAt   DateTime?              // 7-day trial window end
   freeTrialCourse      String?                // course trial is scoped to
   trialEmailsSent      Int       @default(0)  // re-engagement email count (cap at 3)
+  onboardingCompletedAt DateTime?             // null = send to /onboarding on next login
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
 

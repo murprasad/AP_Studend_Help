@@ -26,19 +26,46 @@ export default function DashboardLayout({
     }
   }, [status, router]);
 
-  // Redirect first-time users to onboarding
+  // Redirect first-time users to onboarding. Server-side
+  // `onboardingCompletedAt` on the user row is the source of truth;
+  // localStorage is a legacy fallback for existing users whose account
+  // predates the DB flag. Admin reset nulls the DB field so test users
+  // walk onboarding again on next login.
   useEffect(() => {
     if (status !== "authenticated") return;
     if (pathname === "/onboarding") return;
+
+    const onboardedAtServer = (session?.user as { onboardingCompletedAt?: string | null } | undefined)?.onboardingCompletedAt;
+
+    // If the server says not onboarded, force /onboarding and clear the
+    // stale localStorage flag so a reset test user isn't trapped by their
+    // browser state.
+    if (onboardedAtServer === null || onboardedAtServer === undefined) {
+      try { localStorage.removeItem(ONBOARDING_KEY); } catch { /* ignore */ }
+      // Fetch the latest user row directly — session JWT can lag a minute
+      // or two after a PATCH and shouldn't block an unambiguous redirect.
+      fetch("/api/user", { cache: "no-store" })
+        .then((r) => r.ok ? r.json() : null)
+        .then((data) => {
+          if (!data?.user) return;
+          if (data.user.onboardingCompletedAt == null) {
+            router.replace("/onboarding");
+          }
+        })
+        .catch(() => { /* silent — fall back to localStorage check below */ });
+      return;
+    }
+
+    // Server says onboarded — trust it and short-circuit.
     try {
       const done = localStorage.getItem(ONBOARDING_KEY);
       if (!done) {
-        router.replace("/onboarding");
+        // Server says onboarded but localStorage hasn't caught up (new
+        // browser or cleared storage). Set the flag; no redirect.
+        localStorage.setItem(ONBOARDING_KEY, "true");
       }
-    } catch {
-      // localStorage unavailable — skip onboarding
-    }
-  }, [status, pathname, router]);
+    } catch { /* localStorage unavailable — nothing to sync */ }
+  }, [status, session, pathname, router]);
 
   // Sync track from URL param (e.g. /dashboard?track=clep after Google OAuth redirect)
   const trackSynced = useRef(false);

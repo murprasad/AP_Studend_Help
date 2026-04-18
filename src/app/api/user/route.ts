@@ -12,14 +12,30 @@ export async function PATCH(req: NextRequest) {
 
   try {
     const body = await req.json();
-    const track = body.track;
-    const validTracks = ["ap", "sat", "act", "clep", "dsst"];
-    if (!validTracks.includes(track)) {
-      return NextResponse.json({ error: "Invalid track" }, { status: 400 });
+    const update: { track?: string; onboardingCompletedAt?: Date } = {};
+
+    if (body.track !== undefined) {
+      const validTracks = ["ap", "sat", "act", "clep", "dsst"];
+      if (!validTracks.includes(body.track)) {
+        return NextResponse.json({ error: "Invalid track" }, { status: 400 });
+      }
+      update.track = body.track;
     }
+
+    // Allow the onboarding page to mark the user complete. Only accepts
+    // `completeOnboarding: true` (not arbitrary dates) so callers can't
+    // backdate or forward-date the field.
+    if (body.completeOnboarding === true) {
+      update.onboardingCompletedAt = new Date();
+    }
+
+    if (Object.keys(update).length === 0) {
+      return NextResponse.json({ error: "No valid fields to update" }, { status: 400 });
+    }
+
     await prisma.user.update({
       where: { id: session.user.id },
-      data: { track },
+      data: update,
     });
     return NextResponse.json({ ok: true });
   } catch (error) {
@@ -53,6 +69,7 @@ export async function GET(req: NextRequest) {
           level: true,
           lastActiveDate: true,
           track: true,
+          onboardingCompletedAt: true,
           createdAt: true,
         },
       }),

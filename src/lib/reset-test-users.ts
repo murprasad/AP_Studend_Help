@@ -21,4 +21,8 @@ export const RESET_USER_FIELDS = {
   freeTrialExpiresAt: null,
   freeTrialCourse: null,
   trialEmailsSent: 0,
+  // Load-bearing: without this, the reset user lands on /dashboard
+  // (layout.tsx treats them as already-onboarded via session flag) and
+  // QA can't walk onboarding/diagnostic/trial flows.
+  onboardingCompletedAt: null,
 } as const;

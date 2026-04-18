@@ -86,15 +86,30 @@ export default function OnboardingPage() {
 
   const COURSE_GROUPS = AP_COURSE_GROUPS;
 
-  // If already onboarded, skip to dashboard
+  // If already onboarded, skip to dashboard. DB is authoritative — if
+  // a user was reset (onboardingCompletedAt=null on server) they must
+  // walk onboarding again, so we first check /api/user then fall back
+  // to localStorage for users predating the DB flag.
   useEffect(() => {
-    try {
-      if (localStorage.getItem(ONBOARDING_KEY) === "true") {
-        router.replace("/dashboard");
-      }
-    } catch {
-      // ignore
-    }
+    fetch("/api/user", { cache: "no-store" })
+      .then((r) => r.ok ? r.json() : null)
+      .then((data) => {
+        const onboardedAt = data?.user?.onboardingCompletedAt;
+        if (onboardedAt) {
+          router.replace("/dashboard");
+        } else {
+          // DB says not onboarded — clear any stale localStorage flag.
+          try { localStorage.removeItem(ONBOARDING_KEY); } catch { /* ignore */ }
+        }
+      })
+      .catch(() => {
+        // API unavailable — fall back to localStorage.
+        try {
+          if (localStorage.getItem(ONBOARDING_KEY) === "true") {
+            router.replace("/dashboard");
+          }
+        } catch { /* ignore */ }
+      });
   }, [router]);
 
   function completeOnboarding() {
@@ -106,6 +121,13 @@ export default function OnboardingPage() {
         body: JSON.stringify({ course, mode: "7day" }),
       }).catch(() => {});
     }
+    // Write DB flag so admin reset can null it later. localStorage is
+    // kept as a fast-path fallback; the DB flag is authoritative.
+    fetch("/api/user", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ completeOnboarding: true }),
+    }).catch(() => {});
     try {
       localStorage.setItem(ONBOARDING_KEY, "true");
     } catch {
