@@ -2,8 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { sendEmail } from "@/lib/email";
 
-export const runtime = "edge";
-
 interface Body {
   email: string;
   course: string;
