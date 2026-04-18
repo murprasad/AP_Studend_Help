@@ -1581,9 +1581,12 @@ Historical Thinking Skills: Argumentation, Causation, Comparison, CCOT, Contextu
   AP_PSYCHOLOGY: {
     name: "AP Psychology",
     shortName: "AP Psychology",
-    examSecsPerQuestion: 66, // 100 MCQ in 70 min
-    // 2024-25 redesigned format: 75 MCQ in 70 min (per task spec).
-    mockExam: { mcqCount: 75, mcqTimeMinutes: 70 },
+    // Confirmed against apcentral.collegeboard.org/courses/ap-psychology/exam
+    // (2025-26 redesigned format):
+    //   Section I  — 75 MCQ / 90 min (66.7% of score)
+    //   Section II — 1 AAQ + 1 EBQ / 70 min (33.3% of score)
+    examSecsPerQuestion: 72, // 75 MCQ in 90 min = 72s/q
+    mockExam: { mcqCount: 75, mcqTimeMinutes: 90 },
     enrichWithEduAPIs: false,
     openStaxSubject: undefined,
     units: {
@@ -1776,8 +1779,10 @@ AP Exam: Section I — 100 MCQ (70 min). Section II — 2 FRQ (50 min).`,
   ACT_MATH: {
     name: "ACT Math",
     shortName: "ACT Math",
-    examSecsPerQuestion: 60,
-    mockExam: { mcqCount: 60, mcqTimeMinutes: 60 },
+    // Confirmed against act.org — Enhanced ACT (2025+):
+    //   Math: 45 questions / 50 min. Prior format was 60 / 60.
+    examSecsPerQuestion: 67, // 45 MCQ in 50 min = 66.6s/q
+    mockExam: { mcqCount: 45, mcqTimeMinutes: 50 },
     enrichWithEduAPIs: false,
     units: {
       ACT_MATH_1_NUMBER: { name: "Number and Quantity", keyThemes: ["arithmetic", "integers", "fractions", "exponents", "number properties"] },
@@ -1824,8 +1829,10 @@ AP Exam: Section I — 100 MCQ (70 min). Section II — 2 FRQ (50 min).`,
   ACT_ENGLISH: {
     name: "ACT English",
     shortName: "ACT English",
-    examSecsPerQuestion: 36,
-    mockExam: { mcqCount: 75, mcqTimeMinutes: 45 },
+    // Confirmed against act.org — Enhanced ACT (2025+):
+    //   English: 50 questions / 35 min. Prior format was 75 / 45.
+    examSecsPerQuestion: 42, // 50 MCQ in 35 min = 42s/q
+    mockExam: { mcqCount: 50, mcqTimeMinutes: 35 },
     enrichWithEduAPIs: false,
     units: {
       ACT_ENG_1_PRODUCTION_WRITING: { name: "Production of Writing", keyThemes: ["topic development", "organization", "unity", "cohesion"] },
@@ -1857,8 +1864,11 @@ AP Exam: Section I — 100 MCQ (70 min). Section II — 2 FRQ (50 min).`,
   ACT_SCIENCE: {
     name: "ACT Science",
     shortName: "ACT Science",
-    examSecsPerQuestion: 52,
-    mockExam: { mcqCount: 40, mcqTimeMinutes: 35 },
+    // Confirmed against act.org — Enhanced ACT (2025+):
+    //   Science: 40 questions / 40 min. Now OPTIONAL.
+    //   Prior format was 40 / 35, required.
+    examSecsPerQuestion: 60, // 40 MCQ in 40 min = 60s/q
+    mockExam: { mcqCount: 40, mcqTimeMinutes: 40 },
     enrichWithEduAPIs: false,
     units: {
       ACT_SCI_1_DATA_REPRESENTATION: { name: "Data Representation", keyThemes: ["graphs", "tables", "figures", "scientific notation", "data reading"] },
@@ -1890,8 +1900,10 @@ AP Exam: Section I — 100 MCQ (70 min). Section II — 2 FRQ (50 min).`,
   ACT_READING: {
     name: "ACT Reading",
     shortName: "ACT Reading",
-    examSecsPerQuestion: 52,
-    mockExam: { mcqCount: 40, mcqTimeMinutes: 35 },
+    // Confirmed against act.org — Enhanced ACT (2025+):
+    //   Reading: 36 questions / 40 min. Prior format was 40 / 35.
+    examSecsPerQuestion: 67, // 36 MCQ in 40 min = 66.6s/q
+    mockExam: { mcqCount: 36, mcqTimeMinutes: 40 },
     enrichWithEduAPIs: false,
     units: {
       ACT_READ_1_LITERARY: {
