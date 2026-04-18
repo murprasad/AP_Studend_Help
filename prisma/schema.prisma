@@ -55,8 +55,21 @@ model User {
   sessionFeedbacks    SessionFeedback[]
   tutorKnowledgeChecks TutorKnowledgeCheck[]
   moduleSubscriptions  ModuleSubscription[]
+  trialReengagements   TrialReengagement[]
 
   @@map("users")
+}
+
+model TrialReengagement {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  emailType String   // "first_nudge" | "urgency" | "last_chance"
+  course    String   // ApCourse the user is trialing, for analytics slicing
+  sentAt    DateTime @default(now())
+
+  @@index([userId, sentAt])
+  @@map("trial_reengagements")
 }
 
 model ModuleSubscription {
