@@ -1,4 +1,6 @@
-const CACHE_NAME = "studentnest-v3";
+// Bump this whenever a bad response might have been cached for a landing /
+// dashboard page. On install the new SW purges all previous-version caches.
+const CACHE_NAME = "studentnest-v4";
 const STATIC_PAGES = ["/dashboard", "/practice", "/ai-tutor"];
 
 self.addEventListener("install", (event) => {
