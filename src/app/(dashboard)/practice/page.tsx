@@ -1023,30 +1023,26 @@ export default function PracticePage() {
         </Card>
       )}
 
-      {/* Premium upsell / limited-time banner for FRQ */}
-      {!isPremiumForTrack(subscriptionTier ?? "FREE", userTrack) && Object.keys(getCourseConfig(course as ApCourse)?.questionTypeFormats ?? {}).some((t) => t !== "MCQ") && !sessionLimitReached && (
-        premiumRestricted ? (
-          <Card className="card-glow border-purple-500/20 bg-purple-500/5">
-            <CardContent className="p-4 flex items-center gap-3">
-              <Crown className="h-5 w-5 text-purple-400 flex-shrink-0" />
-              <div className="flex-1">
-                <p className="text-sm font-medium">Unlock FRQ Practice</p>
-                <p className="text-xs text-muted-foreground">SAQ, LEQ & DBQ with AI rubric scoring — Premium only</p>
-              </div>
-              <Link href="/pricing">
-                <Button size="sm" variant="outline" className="border-purple-500/50 text-purple-300 hover:bg-purple-500/10 text-xs">
-                  Upgrade
-                </Button>
-              </Link>
-            </CardContent>
-          </Card>
-        ) : (
-          <Card className="card-glow border-blue-500/20 bg-blue-500/5">
-            <CardContent className="p-4">
-              <p className="text-sm">🎉 Premium access is available to all users for a limited time — enjoy FRQ practice free!</p>
-            </CardContent>
-          </Card>
-        )
+      {/* Premium upsell — only when the premium-restriction flag is ON.
+          When the flag is OFF (dev/QA), non-premium users have full FRQ
+          access so no banner is needed — previously we showed a
+          "limited time free" banner here that would have misled paying
+          users if the flag ever flipped by accident. */}
+      {!isPremiumForTrack(subscriptionTier ?? "FREE", userTrack) && Object.keys(getCourseConfig(course as ApCourse)?.questionTypeFormats ?? {}).some((t) => t !== "MCQ") && !sessionLimitReached && premiumRestricted && (
+        <Card className="card-glow border-purple-500/20 bg-purple-500/5">
+          <CardContent className="p-4 flex items-center gap-3">
+            <Crown className="h-5 w-5 text-purple-400 flex-shrink-0" />
+            <div className="flex-1">
+              <p className="text-sm font-medium">Unlock FRQ Practice</p>
+              <p className="text-xs text-muted-foreground">SAQ, LEQ & DBQ with AI rubric scoring — Premium only</p>
+            </div>
+            <Link href="/pricing">
+              <Button size="sm" variant="outline" className="border-purple-500/50 text-purple-300 hover:bg-purple-500/10 text-xs">
+                Upgrade
+              </Button>
+            </Link>
+          </CardContent>
+        </Card>
       )}
 
       {/* Sage loading bubble — shown while FRQ/CODING session is starting */}

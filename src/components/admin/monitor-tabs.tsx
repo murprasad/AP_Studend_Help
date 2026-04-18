@@ -9,6 +9,7 @@ import { AdminInfrastructureMetrics } from "@/components/admin/infrastructure-me
 import { AdminFeedbackOverview } from "@/components/admin/feedback-overview";
 import { AdminSubscribersTab } from "@/components/admin/subscribers-tab";
 import { AdminUsersListTab } from "@/components/admin/users-list-tab";
+import { AdminTestUsersTab } from "@/components/admin/test-users-tab";
 
 interface RecentUser {
   id: string;
@@ -41,6 +42,7 @@ export function AdminMonitorTabs({ stats, recentUsers }: Props) {
     { id: "users", label: "Users" },
     { id: "subscribers", label: "Subscribers" },
     { id: "all-users", label: "All Users & Revenue" },
+    { id: "test-users", label: "Test Users" },
   ] as const;
 
   return (
@@ -127,6 +129,10 @@ export function AdminMonitorTabs({ stats, recentUsers }: Props) {
 
       {tab === "all-users" && (
         <AdminUsersListTab />
+      )}
+
+      {tab === "test-users" && (
+        <AdminTestUsersTab />
       )}
     </div>
   );
