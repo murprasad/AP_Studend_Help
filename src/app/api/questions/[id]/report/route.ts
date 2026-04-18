@@ -15,16 +15,25 @@ export async function POST(
   const { reason, details } = await req.json()
   if (!reason) return NextResponse.json({ error: "Reason required" }, { status: 400 })
 
+  // Check if a report already exists so we only increment reportedCount on
+  // genuinely new reports (not on a same-user re-report of the same question).
+  const existing = await prisma.questionReport.findUnique({
+    where: { questionId_userId: { questionId: params.id, userId: session.user.id } },
+    select: { id: true },
+  })
+
   const report = await prisma.questionReport.upsert({
     where: { questionId_userId: { questionId: params.id, userId: session.user.id } },
     create: { questionId: params.id, userId: session.user.id, reason, details },
     update: { reason, details, status: "pending" }
   })
 
-  await prisma.$executeRawUnsafe(
-    `UPDATE "questions" SET "reportedCount" = "reportedCount" + 1 WHERE id = $1`,
-    params.id
-  )
+  if (!existing) {
+    await prisma.$executeRawUnsafe(
+      `UPDATE "questions" SET "reportedCount" = "reportedCount" + 1 WHERE id = $1`,
+      params.id
+    )
+  }
 
   return NextResponse.json({ success: true, reportId: report.id })
 }

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { rateLimit } from "@/lib/rate-limit";
 
 const SAGE_BASE_PROMPT = `You are Sage 🌿, the super-smart and fun study companion for StudentNest Prep — an AI-powered exam prep platform.
 
@@ -66,7 +67,20 @@ function getPageContext(page: string, course: string): string {
 
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions);
-  // Allow unauthenticated users on public pages — Sage works for everyone
+  // Allow unauthenticated users on public pages — Sage works for everyone.
+  // Rate-limit by session user (when logged in) or IP (when public) to
+  // prevent the unauth path from being used as an unlimited AI cost vector.
+  const ipHeader = req.headers.get("x-forwarded-for") ?? req.headers.get("cf-connecting-ip") ?? "unknown";
+  const ip = ipHeader.split(",")[0]?.trim() || "unknown";
+  const rlKey = session?.user?.id ?? `anon:${ip}`;
+  const rlLimit = session?.user?.id ? 30 : 10; // logged-in: 30/min, anon: 10/min
+  const { allowed } = rateLimit(rlKey, "sage-chat", rlLimit);
+  if (!allowed) {
+    return NextResponse.json(
+      { error: "Too many requests — try again in a minute." },
+      { status: 429 },
+    );
+  }
 
   const { message, history = [], context = {} } = await req.json();
   if (!message?.trim()) return NextResponse.json({ error: "Message required" }, { status: 400 });

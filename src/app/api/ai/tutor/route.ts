@@ -175,20 +175,10 @@ export async function POST(req: NextRequest) {
     }
     const msg = error instanceof Error ? error.message : "";
     if (msg.includes("No AI provider") || msg.includes("All AI providers failed")) {
-      return NextResponse.json({
-        error: "No AI provider configured. Please add a free API key — see Setup Guide below.",
-        setupGuide: {
-          recommended: "Groq (free, instant setup)",
-          steps: [
-            "1. Go to https://console.groq.com and sign in with Google",
-            "2. Click API Keys → Create API Key → copy the key (starts with gsk_)",
-            "3. In terminal: cd C:\\Users\\akkil\\project\\AP_Help",
-            "4. Run: netlify env:set GROQ_API_KEY \"your-key-here\"",
-            "5. Run: netlify deploy --build --prod",
-          ],
-          alternatives: "OpenRouter, Together.ai, Cohere, HuggingFace, Google Gemini — all have free tiers",
-        },
-      }, { status: 503 });
+      return NextResponse.json(
+        { error: "AI tutor is temporarily unavailable. Please try again in a minute." },
+        { status: 503 },
+      );
     }
     return NextResponse.json({ error: "AI service unavailable. Please try again." }, { status: 503 });
   }

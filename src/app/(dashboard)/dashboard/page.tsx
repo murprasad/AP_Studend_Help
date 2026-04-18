@@ -52,6 +52,10 @@ export default async function DashboardPage() {
       subscriptionTier: true,
     },
   });
+  // Defensive: the user row may have been deleted between the auth check and
+  // this query. Without this guard, subsequent `user!.firstName` access would
+  // throw a cryptic server error for the client.
+  if (!user) redirect("/login");
 
   const masteryScores = await prisma.masteryScore.findMany({
     where: { userId: session.user.id },
