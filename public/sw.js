@@ -1,46 +1,45 @@
-// Bump this whenever a bad response might have been cached for a landing /
-// dashboard page. On install the new SW purges all previous-version caches.
-const CACHE_NAME = "studentnest-v4";
-const STATIC_PAGES = ["/dashboard", "/practice", "/ai-tutor"];
+// EMERGENCY PASS-THROUGH v5 — 2026-04-18
+//
+// Previous versions (v3/v4) used a cache-first strategy on /dashboard,
+// /practice, and /ai-tutor. During the Prisma `--no-engine` incident they
+// cached broken responses and kept serving them even after the server
+// was fixed. On top of that, the broken cache caused ERR_FAILED on
+// navigation because the cached HTML referenced chunk URLs that no
+// longer existed.
+//
+// This version:
+//  1. Purges every previous cache on activation (studentnest-v3, -v4, etc.)
+//  2. Takes over all clients immediately (claim)
+//  3. Does NOT cache anything — every fetch goes to the network
+//
+// PWA offline capability is disabled for now in exchange for reliability.
+// If we want offline later, bring back caching with a NETWORK-FIRST
+// strategy + short TTL so a bad response can't get stuck.
+const CACHE_NAME = "studentnest-v5";
 
-self.addEventListener("install", (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(STATIC_PAGES))
-  );
+self.addEventListener("install", () => {
   self.skipWaiting();
 });
 
 self.addEventListener("activate", (event) => {
-  event.waitUntil(
-    caches.keys().then((keys) =>
-      Promise.all(
-        keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key))
-      )
-    )
-  );
-  self.clients.claim();
+  event.waitUntil((async () => {
+    // Purge every cache — both ours and any v3/v4 leftovers.
+    const keys = await caches.keys();
+    await Promise.all(keys.map((k) => caches.delete(k)));
+    // Take over all open tabs so they stop serving the old SW's cache.
+    await self.clients.claim();
+  })());
 });
 
 self.addEventListener("fetch", (event) => {
-  const url = new URL(event.request.url);
-
-  // Never cache API requests — always go to network
-  if (url.pathname.startsWith("/api/")) {
-    event.respondWith(fetch(event.request));
-    return;
-  }
-
-  // Cache-first for static pages
-  event.respondWith(
-    caches.match(event.request).then((cached) => {
-      if (cached) return cached;
-      return fetch(event.request).then((response) => {
-        if (response.ok && STATIC_PAGES.includes(url.pathname)) {
-          const clone = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
-        }
-        return response;
-      });
-    })
-  );
+  // Network-only. Caller (browser) may still hit HTTP cache, but that
+  // respects Cache-Control headers from the server, not this SW.
+  event.respondWith(fetch(event.request).catch(() => {
+    // If the network fails entirely, return a minimal 503 so browsers
+    // don't show ERR_FAILED — they'll show a proper error page.
+    return new Response("Service temporarily unavailable — refresh in a moment.", {
+      status: 503,
+      headers: { "Content-Type": "text/plain" },
+    });
+  }));
 });
