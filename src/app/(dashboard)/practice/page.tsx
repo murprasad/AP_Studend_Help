@@ -15,6 +15,7 @@ import { isPremiumForTrack } from "@/lib/tiers";
 import { Textarea } from "@/components/ui/textarea";
 import { CourseSelectorInline } from "@/components/layout/course-selector-inline";
 import { SessionFeedbackPopup } from "@/components/feedback/session-feedback-popup";
+import { SessionDeltaCard } from "@/components/practice/session-delta-card";
 import {
   Zap,
   BookOpen,
@@ -183,6 +184,10 @@ export default function PracticePage() {
   } | null>(null);
   const [checkAnswer, setCheckAnswer] = useState<number | null>(null);
   const [checkLoading, setCheckLoading] = useState(false);
+  // Snapshot of the projected score before this session started — used by
+  // SessionDeltaCard on the summary to render "3.2 → 3.5".
+  const [beforeScore, setBeforeScore] = useState<number | null>(null);
+  const [beforeFamily, setBeforeFamily] = useState<"AP" | "SAT" | "ACT" | undefined>(undefined);
 
   // Reset unit selection when course changes
   useEffect(() => {
@@ -285,6 +290,23 @@ export default function PracticePage() {
       setStartTime(new Date());
       setQuestionStartTime(new Date());
       setMode("practicing");
+
+      // Fire-and-forget snapshot of readiness BEFORE this session's answers
+      // land, so the post-session delta card can render "before → after".
+      // Failure here is silent — the summary just falls back to the
+      // first-session copy path inside SessionDeltaCard.
+      fetch(`/api/readiness?course=${course}`, { cache: "no-store" })
+        .then((r) => (r.ok ? r.json() : null))
+        .then((d) => {
+          if (d && d.showScore && typeof d.scaledScore === "number") {
+            setBeforeScore(d.scaledScore);
+            setBeforeFamily(d.family);
+          } else {
+            setBeforeScore(null);
+            setBeforeFamily(d?.family);
+          }
+        })
+        .catch(() => { /* silent — pre-signal path handles null */ });
     } catch {
       toast({ title: "Error", description: "Failed to start session. Check your connection.", variant: "destructive" });
     } finally {
@@ -460,6 +482,8 @@ export default function PracticePage() {
     setCheckQuestion(null);
     setCheckAnswer(null);
     setCheckLoading(false);
+    setBeforeScore(null);
+    setBeforeFamily(undefined);
   }
 
   if (mode === "summary" && sessionSummary) {
@@ -487,6 +511,17 @@ export default function PracticePage() {
               : "Focus on your weakest units and you'll see improvement fast."}
           </p>
         </div>
+
+        {/* Score-delta card — "You just moved from 3.2 → 3.5". Fire-and-forget
+            read of /api/readiness; silently hides if pre-signal or the call
+            fails so the rest of the summary still renders. */}
+        <SessionDeltaCard
+          course={course}
+          beforeScore={beforeScore}
+          family={beforeFamily}
+          totalQuestions={sessionSummary.totalQuestions}
+          correctAnswers={sessionSummary.correctAnswers}
+        />
 
         <Card className="card-glow">
           <CardContent className="p-6">

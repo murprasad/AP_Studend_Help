@@ -14,6 +14,7 @@ import {
   type ExamFamily,
   type UnifiedReadiness,
 } from "@/lib/score-predictors";
+import { ExitIntentCapture } from "@/components/marketing/exit-intent-capture";
 import {
   ArrowRight,
   ArrowLeft,
@@ -678,6 +679,14 @@ export function ReadinessAssessment({
         <p className="text-[11px] text-muted-foreground/70 leading-relaxed pt-6 border-t border-border/40">
           {result.disclaimer}
         </p>
+
+        <ExitIntentCapture
+          courseName={courseName}
+          scaledScore={result.scaledScore}
+          family={family}
+          scaleMax={result.scaleMax}
+          course={course}
+        />
       </div>
     );
   }

@@ -833,3 +833,833 @@ SAT Math, SAT Reading/Writing
 
 ### ACT courses
 ACT Math, ACT English, ACT Science, ACT Reading
+
+---
+
+## G. POST-670e43a REGRESSION MATRIX
+
+**Scope:** every feature shipped since the Beta-3.0 tag (`670e43a`). Each REQ gets a positive block, a 3x negative/edge block (per project testing policy — negatives > positives), and an FMEA row. RPN ≥ 200 is flagged `[HIGH RISK]` and must be monitored post-deploy.
+
+**FMEA formula:** `RPN = Severity (1-10) × Likelihood (1-10) × Detection difficulty (1-10)`. Severity = harm to student if it fails. Detection = how hard for ops to notice before the student does.
+
+### G-REQ-115. Score predictor engine (`/api/readiness`, `src/lib/score-predictors/`)
+
+**Positive**
+| ID | Case | Expected |
+|---|---|---|
+| G115-P1 | AP user w/ full diagnostic + 3 practice sessions, all ≥70% accuracy, hits `GET /api/readiness` | 200; body `{track:"ap", predicted:4 or 5, scale:"1-5", confidence:"high", inputs:{…}}` |
+| G115-P2 | SAT user w/ mixed mastery (Math 80%, Reading 40%) calls `/api/readiness` | 200; `predicted` in 1000-1200; `scale:"400-1600"` |
+| G115-P3 | ACT user at 60% across all sections | `predicted` in 22-26; `scale:"1-36"` |
+
+**Negative / edge (9 = 3×)**
+| ID | Case | Expected |
+|---|---|---|
+| G115-N1 | Unauthenticated GET `/api/readiness` | 401 |
+| G115-N2 | User with 0 sessions (pure fresh account) | 200 `{confidence:"none", predicted:null}` — client MUST hide the score |
+| G115-N3 | User with 1 diagnostic Q answered (below min-signal) | 200 `{confidence:"low", predicted:null}` — client hides |
+| G115-N4 | User with mastery map containing `NaN` (data corruption) | Engine clamps to 0, logs warning, returns `confidence:"low"` — MUST NOT return `NaN` in JSON |
+| G115-N5 | User track = `"ap"` but only SAT_MATH sessions exist | Engine returns `predicted:null` (track/course mismatch) |
+| G115-N6 | Unit weights undefined for a course | Falls back to equal weighting; result flagged `confidence:"low"` |
+| G115-N7 | All mastery values = 0 | Predicted = floor of scale (AP=1, SAT=400, ACT=1); never divide-by-zero |
+| G115-N8 | All mastery values = 1.0 and recency decay not applied | Predicted = top of scale, but audit flags "100% suspicious" in logs |
+| G115-N9 | Redis/DB fetch fails inside `getScoreEngineInputs()` | Endpoint 503 + `Retry-After`, does NOT return a fake prediction |
+
+**FMEA**
+| Failure mode | Effect on student | Sev | Lik | Det | RPN | Mitigation |
+|---|---|---|---|---|---|---|
+| Predictor returns NaN/Infinity (div-by-zero or schema mismatch) | Dashboard shows "NaN" | 9 | 4 | 6 | **216 [HIGH RISK]** | Unit tests in Section K; runtime `Number.isFinite()` guard in `/api/readiness` before `return Response.json` |
+| Wrong scale applied (SAT user shown AP 1-5) | Student trusts wrong number, misallocates study time | 10 | 3 | 8 | **240 [HIGH RISK]** | Scale is derived from `user.track` + validated by Zod; cross-check in E2E |
+| Confidence tier misses hide-at-low-signal gate | Fresh user sees "Predicted: 1" — demotivating | 8 | 4 | 7 | **224 [HIGH RISK]** | Min-signal threshold tested in K; ReadinessCard hides at `confidence==='low' OR 'none'` |
+| Recency decay inverted (newer sessions down-weighted) | Predicted score stale | 6 | 3 | 7 | 126 | Unit test on decay fn; property-based fuzz |
+
+### G-REQ-116. ReadinessCard on dashboard + SidebarReadiness pill
+
+**Positive**
+| ID | Case | Expected |
+|---|---|---|
+| G116-P1 | User w/ `confidence:"high"` loads `/dashboard` | `<ReadinessCard>` renders with predicted score, scale, "Improve" CTA |
+| G116-P2 | User on any `(dashboard)` page | Sidebar pill shows same predicted value |
+
+**Negative / edge (6 = 3×)**
+| ID | Case | Expected |
+|---|---|---|
+| G116-N1 | `/api/readiness` returns 503 | Card shows "Couldn't load prediction — retry" button; does NOT crash dashboard |
+| G116-N2 | API returns `{predicted:null}` | Card shows "Take diagnostic to see your score"; no number rendered |
+| G116-N3 | API returns predicted=0 for AP track | Card treats 0 as invalid (AP scale starts at 1), falls back to low-signal copy |
+| G116-N4 | Sidebar pill overflow with 5-digit number (data corruption) | CSS truncates to ≤12 chars; no layout shift |
+| G116-N5 | Slow response (> 3s) | Skeleton placeholder; no duplicate requests |
+| G116-N6 | `predicted` changes between dashboard + sidebar fetch (race) | Both re-sync on next interval (tolerated within 1 refresh) |
+
+**FMEA**
+| Failure mode | Effect on student | Sev | Lik | Det | RPN | Mitigation |
+|---|---|---|---|---|---|---|
+| Card renders "null" or "undefined" text | Trust loss | 6 | 3 | 5 | 90 | React key guards + fallback copy |
+| Sidebar pill flashes wrong value then corrects | Confusing | 4 | 4 | 4 | 64 | Single source via SWR |
+
+### G-REQ-117. Am I Ready — pre-signup quiz (`/am-i-ready`, `/api/am-i-ready-quiz`)
+
+**Positive**
+| ID | Case | Expected |
+|---|---|---|
+| G117-P1 | Anon visits `/am-i-ready`, picks AP Calc AB, completes 10 Qs | Result screen shows predicted 1-5 + "Start free at StudentNest" CTA to `/register?source=am-i-ready&course=AP_CALCULUS_AB` |
+| G117-P2 | SAT slug e.g. `/am-i-ready/sat-math` loads | 10 SAT Math Qs render |
+| G117-P3 | Completing quiz posts to `/api/am-i-ready-quiz`, response mirrors logged-in predictor math | Delta ≤ 5% from logged-in predictor given same answer distribution |
+
+**Negative / edge (9 = 3×)**
+| ID | Case | Expected |
+|---|---|---|
+| G117-N1 | Visit `/am-i-ready/UNKNOWN_COURSE` | 404 or redirect to `/am-i-ready` index |
+| G117-N2 | POST `/api/am-i-ready-quiz` with no answers | 400 "answers required" |
+| G117-N3 | POST with 0 correct answers | Predicted = floor of scale, no crash |
+| G117-N4 | POST with tampered `courseId` | 400 |
+| G117-N5 | Abandon mid-quiz, close tab, come back | No local-storage resume required (it's pre-signup; state loss is acceptable) but also no stale session that polluted the signup flow |
+| G117-N6 | Rate limit: 10 quiz submissions from same IP in 5 min | 429 |
+| G117-N7 | Anon submits quiz with 50k-char payload | 413 |
+| G117-N8 | Script injection in free-text fields (if any) | Sanitized before any render |
+| G117-N9 | CTA URL tampered to include `source=am-i-ready&course=CLEP_X` | Signup rejects `course=CLEP_*` (sunset) with 400 |
+
+**FMEA**
+| Failure mode | Effect on student | Sev | Lik | Det | RPN | Mitigation |
+|---|---|---|---|---|---|---|
+| Quiz predictor differs from logged-in predictor by > 1 scale point | User signs up, sees different number, trust broken | 8 | 4 | 7 | **224 [HIGH RISK]** | Both must call the same `predictScore()` lib fn; parity test in K |
+| Stale `/am-i-ready/[slug]` cached across deploys | Wrong questions shown | 5 | 3 | 5 | 75 | Cache-Control: no-store on dynamic; sw.js v5 pass-through |
+
+### G-REQ-118. HeroReadinessPicker on landing
+
+**Positive**
+| ID | Case | Expected |
+|---|---|---|
+| G118-P1 | Load `/` on desktop | Picker is primary CTA above fold; track buttons AP/SAT/ACT visible |
+| G118-P2 | Click AP → Course dropdown populates with AP courses only | No SAT/ACT leak |
+
+**Negative / edge (6 = 3×)**
+| ID | Case | Expected |
+|---|---|---|
+| G118-N1 | Click "Check my readiness" with no course selected | Button disabled OR inline validation "pick a course" |
+| G118-N2 | Course dropdown shows CLEP_* items (sunset leak) | FAIL — must filter to AP/SAT/ACT only |
+| G118-N3 | Mobile 375px width: tap-targets < 44px | FAIL — project a11y minimum |
+| G118-N4 | Keyboard-only: can't reach dropdown via Tab | FAIL |
+| G118-N5 | Select course, then switch track: previous course stays selected | Must clear course when track switches |
+| G118-N6 | Submit while slow 3G → user double-clicks | Button disables on first click; only one navigation |
+
+**FMEA**
+| Failure mode | Effect on student | Sev | Lik | Det | RPN | Mitigation |
+|---|---|---|---|---|---|---|
+| CLEP course shown in dropdown post-sunset | Broken flow after signup | 6 | 3 | 4 | 72 | Feature flag `isClepEnabled()` gates list |
+| Picker fails to load → no CTA above fold | Lost conversions | 8 | 2 | 5 | 80 | Static fallback CTA if JS fails |
+
+### G-REQ-119. /methodology page
+
+**Positive**
+| ID | Case | Expected |
+|---|---|---|
+| G119-P1 | Visit `/methodology` | 4 sections render: inputs / model / Pass Confident Guarantee / honesty pledge |
+| G119-P2 | Canonical `<link>` = `studentnest.ai/methodology` | Confirmed via view-source |
+
+**Negative / edge (6 = 3×)**
+| ID | Case | Expected |
+|---|---|---|
+| G119-N1 | Link from `/dashboard` confidence banner → `/methodology` | Works; no 404 |
+| G119-N2 | Dead link `/am-i-ready` previously present | Replaced with `/register` (fixed in `3ff330d`); don't regress |
+| G119-N3 | Meta title missing | FAIL — SEO regression |
+| G119-N4 | Copy references CLEP (sunset) | FAIL — project policy |
+| G119-N5 | LCP > 2.5s on mobile | P1 perf |
+| G119-N6 | Method page 500 on cold Neon start | 503 fallback page |
+
+**FMEA**
+| Failure mode | Effect on student | Sev | Lik | Det | RPN | Mitigation |
+|---|---|---|---|---|---|---|
+| Methodology formula drifts from actual engine | Trust broken when students compare page to real score | 7 | 3 | 8 | 168 | Require `/methodology` copy update in same PR as score-engine change |
+
+### G-REQ-120. Admin Test Users tab + `/api/admin/reset-test-users`
+
+**Positive**
+| ID | Case | Expected |
+|---|---|---|
+| G120-P1 | ADMIN loads `/admin?tab=test-users` | Table lists murprasad+std@gmail.com + any other seeded users; each row shows track/sub/trial/onboarding state |
+| G120-P2 | Click "Reset" on a row | Confirmation modal → POST `/api/admin/reset-test-users`; on 200 the row refreshes with all state cleared |
+
+**Negative / edge (9 = 3×)**
+| ID | Case | Expected |
+|---|---|---|
+| G120-N1 | STUDENT user hits `/admin?tab=test-users` | 403 |
+| G120-N2 | STUDENT calls `POST /api/admin/reset-test-users` directly | 403 |
+| G120-N3 | ADMIN passes `userId` of a NON-test user (real customer) | 400 — endpoint must whitelist seeded test accounts only (`email LIKE 'murprasad+%'`) |
+| G120-N4 | Reset run twice in rapid succession | Idempotent; second call is a no-op 200 |
+| G120-N5 | Reset while user has IN_PROGRESS session | Session cancelled cleanly; no orphaned session rows |
+| G120-N6 | Reset does not clear `onboardingCompletedAt` | FAIL — REQ-121 requires nullify so user re-walks onboarding |
+| G120-N7 | Reset leaves stale session cookie on user's browser | User sees cached onboarding-complete state on next login; mitigated by server-side check of DB field on every render |
+| G120-N8 | Reset while user subscribed in Stripe | DB SubTier cleared locally, but Stripe sub still active — admin warned via confirm modal |
+| G120-N9 | SQL-injection in `userId` param (`'; DROP TABLE User; --`) | Prisma parameterization blocks; test the literal payload |
+
+**FMEA**
+| Failure mode | Effect on student | Sev | Lik | Det | RPN | Mitigation |
+|---|---|---|---|---|---|---|
+| Reset endpoint accepts non-test user | Real customer's progress wiped | 10 | 2 | 8 | 160 | Email-pattern allowlist `murprasad+%` or DB flag `isTestUser` |
+| Reset clears DB but session cache stale on user's device | Test user still sees "completed onboarding" on next login | 6 | 5 | 7 | **210 [HIGH RISK]** | Server-side authority: onboarding check queries DB on every render; do not trust JWT claims |
+| Reset leaves orphan `PracticeSession.status=IN_PROGRESS` | Stats skewed | 3 | 4 | 4 | 48 | Cascade cleanup in endpoint |
+
+### G-REQ-121. onboardingCompletedAt DB field
+
+**Positive**
+| ID | Case | Expected |
+|---|---|---|
+| G121-P1 | User reaches Step 4 complete | `POST /api/onboarding/complete` sets `onboardingCompletedAt=now()` |
+| G121-P2 | User logs in next day | Redirects to `/dashboard`, NOT `/onboarding` (DB check respects the field) |
+
+**Negative / edge (6 = 3×)**
+| ID | Case | Expected |
+|---|---|---|
+| G121-N1 | User without `onboardingCompletedAt` hits `/dashboard` | Redirected to `/onboarding` |
+| G121-N2 | After admin reset, `onboardingCompletedAt = null`, user logs in | Redirected to `/onboarding` (round-trip works) |
+| G121-N3 | User somehow gets `onboardingCompletedAt` set in future (clock drift) | Treated as completed; no special-case negative time check needed but server uses server NOW() not client |
+| G121-N4 | JWT has stale claim saying onboarding completed but DB says null | DB wins — user re-walks onboarding |
+| G121-N5 | Onboarding POST fails (Neon 503) mid-save | Field remains null; user re-walks Step 4, not mid-state; log alert |
+| G121-N6 | Onboarding POST doesn't set field on legacy users (pre-REQ-121) | Migration backfill script must run for all existing completed users |
+
+**FMEA**
+| Failure mode | Effect on student | Sev | Lik | Det | RPN | Mitigation |
+|---|---|---|---|---|---|---|
+| Backfill missed legacy users → they're sent back to onboarding | Frustrating re-walk for real customers | 7 | 5 | 6 | **210 [HIGH RISK]** | Run one-time SQL update: `UPDATE "User" SET "onboardingCompletedAt"=NOW() WHERE diagnostic exists` before deploy |
+| Onboarding post succeeds but returns 500 | User stuck in step 4 retry | 4 | 3 | 3 | 36 | Server returns 200 if field already set (idempotent) |
+
+### G-REQ-122. Trial re-engagement cron (`/api/cron/trial-reengagement`)
+
+**Positive**
+| ID | Case | Expected |
+|---|---|---|
+| G122-P1 | Cron fires at 24h dormancy for a trial-active user | Email sends via Resend; `TrialReengagement` row inserted |
+| G122-P2 | `?dry=1` | Same logic runs, no Resend call, response JSON shows planned recipients |
+| G122-P3 | `CRON_TRIAL_REENGAGEMENT_ENABLED=false` | Returns 204 immediately; no DB hits |
+
+**Negative / edge (9 = 3×)**
+| ID | Case | Expected |
+|---|---|---|
+| G122-N1 | Request missing `Authorization: Bearer CRON_SECRET` | 401 |
+| G122-N2 | Wrong secret | 401 |
+| G122-N3 | User with `trialEmailsSent=3` | Skipped (hit cap) |
+| G122-N4 | Two cron fires within 36 min of each other for same user | Second is skipped (min-interval gate) |
+| G122-N5 | User with `freeTrialExpiresAt` in past | Skipped (not active) |
+| G122-N6 | Resend API returns 500 | Row NOT inserted; retry on next cron tick |
+| G122-N7 | `TrialReengagement` insert fails but email already sent | Alert + log; risk is double-send on next tick — mitigated by email-idempotency key (userId + day bucket) |
+| G122-N8 | User deleted between cron list build and send | Graceful skip |
+| G122-N9 | 10,000 eligible users at once | Cron batches (≤ 50/run) + returns `nextCursor` so cron-job.org re-invokes |
+
+**FMEA**
+| Failure mode | Effect on student | Sev | Lik | Det | RPN | Mitigation |
+|---|---|---|---|---|---|---|
+| Cron sends > 3 emails to same user | Spam complaint, domain reputation hit | 8 | 3 | 6 | 144 | `trialEmailsSent` cap enforced inside `decideEmail()`; kill-switch env flag |
+| Cron sends wrong weakest-unit (stale cache) | Email feels generic/wrong | 5 | 4 | 7 | 140 | Weakest unit recomputed at send time |
+| cron-job.org downtime | No emails for hours | 4 | 3 | 3 | 36 | Alert via Resend delivery dashboard gap |
+| CRON_SECRET leaked to GitHub | Attacker spams users | 9 | 2 | 5 | 90 | Env var only, secret-scan pre-commit |
+
+### G-REQ-123. SageFAQ model
+
+**Positive**
+| ID | Case | Expected |
+|---|---|---|
+| G123-P1 | Seed script inserts 20 FAQs from Reddit aggregator output | Rows exist with category/priority/tags |
+| G123-P2 | Sage fallback-matcher queries SageFAQ when all AI providers down | Returns top match by (category, priority) |
+
+**Negative / edge (6 = 3×)**
+| ID | Case | Expected |
+|---|---|---|
+| G123-N1 | SageFAQ query with no match | Sage returns generic fallback, not a bad match |
+| G123-N2 | Seed script run twice | Upsert; no duplicates |
+| G123-N3 | Stale `corroborationCount` — FAQ no longer valid | Admin UI shows "last verified" date |
+| G123-N4 | FAQ answer contains `<script>` | Sanitized on render (ReactMarkdown escapes by default) |
+| G123-N5 | FAQ referenced by Sage but deleted mid-session | Sage returns generic fallback |
+| G123-N6 | Tag filter returns 0 rows on legitimate query | Falls back to category-only match |
+
+**FMEA**
+| Failure mode | Effect on student | Sev | Lik | Det | RPN | Mitigation |
+|---|---|---|---|---|---|---|
+| Sage serves outdated FAQ answer | Wrong advice | 7 | 4 | 6 | 168 | Last-verified timestamp; monthly admin review |
+
+### G-REQ-124. Full-screen exam mode (`use-exam-mode.ts`)
+
+Full coverage in Section H. Summary:
+
+**FMEA**
+| Failure mode | Effect on student | Sev | Lik | Det | RPN | Mitigation |
+|---|---|---|---|---|---|---|
+| User enters full-screen but can't exit (no close button, Esc broken) | Trapped | 9 | 3 | 7 | 189 | `useExamMode()` wires Esc handler + beforePopState; visible "Exit" affordance on all three pages |
+| Full-screen leaks to non-exam page after navigation | Sidebar/header invisible everywhere | 6 | 4 | 6 | 144 | Route-change cleanup in `useEffect` return |
+| Full-screen mode on mobile hides URL bar unpredictably, content clipped | Question partially off-screen | 5 | 5 | 6 | 150 | Use `dvh` units; test 375px viewport |
+
+### G-REQ-125. ConfidenceRepairScreen
+
+**Positive**
+| ID | Case | Expected |
+|---|---|---|
+| G125-P1 | User completes diagnostic with `passPercent=45` | Repair screen renders BEFORE results flow |
+| G125-P2 | Shows 2 weakest units + 7-day projection + 14-day projection + Pass Confident Guarantee copy | All four present |
+
+**Negative / edge (6 = 3×)**
+| ID | Case | Expected |
+|---|---|---|
+| G125-N1 | `passPercent=61` | Repair screen NOT shown |
+| G125-N2 | User already saw repair screen this session (sessionStorage guard) | Not shown again |
+| G125-N3 | Fewer than 2 units have mastery data | Show 1 or "add more practice to see weakest unit" |
+| G125-N4 | `projectImprovement` returns NaN | Fallback to "on track in 7-14 days" copy, no NaN visible |
+| G125-N5 | SessionStorage disabled (private mode) | Repair screen may show twice; acceptable, log warning |
+| G125-N6 | Component not wired into diagnostic flow (current state) | Documented known gap; E2E skipped until wired (REQ-108 in ledger) |
+
+**FMEA**
+| Failure mode | Effect on student | Sev | Lik | Det | RPN | Mitigation |
+|---|---|---|---|---|---|---|
+| Repair screen demotivates user (shows 1/5 projection without guarantee) | Drops conversion | 7 | 4 | 8 | **224 [HIGH RISK]** | Copy enforces "here's your starting line" framing; Pass Confident Guarantee prominent |
+
+### G-REQ-126. early-win.ts (lib only)
+
+**Positive**
+| ID | Case | Expected |
+|---|---|---|
+| G126-P1 | `shouldBoost(avgDiag=0.35)` | Returns true |
+| G126-P2 | `applyEarlyWinBoost(qs, weakUnits, 2)` returns array starting with 2 EASY non-weak-unit Qs | Asserted |
+
+**Negative / edge (6 = 3×)**
+| ID | Case | Expected |
+|---|---|---|
+| G126-N1 | `shouldBoost(0.6)` | Returns false |
+| G126-N2 | No EASY non-weak-unit Qs available | Returns original array unchanged; does not pad with weak-unit Qs |
+| G126-N3 | `count=0` | Returns original array |
+| G126-N4 | weakUnits = all units | Returns original array (no non-weak Qs exist) |
+| G126-N5 | Called from practice route (not yet) | Known gap; ledger marks `⏳` |
+| G126-N6 | Questions array is empty | Returns empty array |
+
+**FMEA**
+| Failure mode | Effect on student | Sev | Lik | Det | RPN | Mitigation |
+|---|---|---|---|---|---|---|
+| Once wired, boost picks Qs already seen in diagnostic | Early win feels recycled | 4 | 4 | 5 | 80 | De-dup against session history before boost |
+
+### G-REQ-127. PREMIUM_COURSES Sonnet override
+
+**Positive**
+| ID | Case | Expected |
+|---|---|---|
+| G127-P1 | `PREMIUM_COURSES=AP_US_HISTORY,AP_STATISTICS`, bulk-gen on USH | Routes to `callSonnet()` |
+| G127-P2 | Sonnet returns valid JSON | Question saved to DB |
+
+**Negative / edge (6 = 3×)**
+| ID | Case | Expected |
+|---|---|---|
+| G127-N1 | `PREMIUM_COURSES` env unset | Defaults to Groq cascade (no breakage) |
+| G127-N2 | Sonnet throws 429 | Falls back to Groq cascade |
+| G127-N3 | Sonnet returns malformed JSON | Falls back to Groq cascade |
+| G127-N4 | `PREMIUM_COURSES` has typo `AP_USHISTORY` | Route treats as regex miss → Groq cascade |
+| G127-N5 | ANTHROPIC_API_KEY missing | Skipped with warning, Groq cascade |
+| G127-N6 | Cost runaway (Sonnet called 1000x in a loop) | Bulk-gen has per-run concurrency cap |
+
+**FMEA**
+| Failure mode | Effect on student | Sev | Lik | Det | RPN | Mitigation |
+|---|---|---|---|---|---|---|
+| All courses accidentally in PREMIUM_COURSES | Cost spike, Anthropic rate-limit hit | 6 | 2 | 4 | 48 | Env is explicit allowlist; production PR review |
+
+### G-REQ-128. Sage rate limit + error-leak sanitization
+
+**Positive**
+| ID | Case | Expected |
+|---|---|---|
+| G128-P1 | 20 requests/min from one IP to `/api/chat/sage` (auth or anon) | All 200 |
+| G128-P2 | `/api/ai/tutor` throws internally | Response body = "Sorry, I'm having trouble right now" — no stack, no path |
+
+**Negative / edge (9 = 3×)**
+| ID | Case | Expected |
+|---|---|---|
+| G128-N1 | 21st request in same minute | 429 with `Retry-After` |
+| G128-N2 | IP spoofed via `X-Forwarded-For` | Rate limit keyed off CF-Connecting-IP (trusted), not client header |
+| G128-N3 | 20 authed + 20 anon from same IP | Both share the bucket (bucket is per-IP, not per-user) |
+| G128-N4 | Error response contains `C:\Users\akkil` | FAIL — must be stripped |
+| G128-N5 | Error response contains stack trace | FAIL — must be stripped |
+| G128-N6 | Error response contains DB error (`syntax error at or near…`) | FAIL — must be generic |
+| G128-N7 | Auth token invalid | 401, not 500 |
+| G128-N8 | Distributed DDoS (1000 IPs) | Rate limit degrades gracefully; CF WAF layer kicks in |
+| G128-N9 | Rate limit storage unavailable | Fail-open (200 allowed, logged as warning) OR fail-closed — spec the choice; current impl: fail-open + alert |
+
+**FMEA**
+| Failure mode | Effect on student | Sev | Lik | Det | RPN | Mitigation |
+|---|---|---|---|---|---|---|
+| Path leak to client (Windows `C:\Users\akkil`) | Internal info disclosure | 6 | 3 | 5 | 90 | Generic catch at API boundary; ESLint rule to flag `.message` pass-through |
+| Rate limit bucket bypassed | Cost spike | 7 | 3 | 5 | 105 | Monitor per-IP RPM; CF WAF |
+
+### G-REQ-129. Billing polling — flip refreshing off before update()
+
+**Positive**
+| ID | Case | Expected |
+|---|---|---|
+| G129-P1 | User returns from Stripe, `/billing` polls `/api/billing/status` | Within 10s, status flips, `setRefreshing(false)` called, then `update()` awaited |
+| G129-P2 | `update()` resolves successfully | UI shows new tier |
+
+**Negative / edge (6 = 3×)**
+| ID | Case | Expected |
+|---|---|---|
+| G129-N1 | `update()` rejects | UI still shows new status (refreshing flag already off); no infinite spinner |
+| G129-N2 | Webhook delayed 30s | Polling continues up to max (30 tries); then shows "still processing" banner |
+| G129-N3 | User navigates away during polling | Polling aborts (AbortController) |
+| G129-N4 | Duplicate checkout → duplicate status change | Final state consistent, no double-render loop |
+| G129-N5 | `/api/billing/status` 500s repeatedly | Polling backs off exponentially; stops after 30s with error banner |
+| G129-N6 | User returns without completing Stripe (tab closed) | `/billing` shows old tier, no forever spinner |
+
+**FMEA**
+| Failure mode | Effect on student | Sev | Lik | Det | RPN | Mitigation |
+|---|---|---|---|---|---|---|
+| Infinite polling loop when `update()` rejects | Dashboard unusable, battery drain | 8 | 4 | 7 | **224 [HIGH RISK]** | Fixed in `6f9a236` — refreshing=false BEFORE update(); test guards regression |
+| Polling persists after unmount | Memory leak, stale state | 5 | 4 | 6 | 120 | AbortController + useEffect cleanup |
+
+### G-REQ-130. Mock-exam paywall fail-closed
+
+**Positive**
+| ID | Case | Expected |
+|---|---|---|
+| G130-P1 | PREMIUM user visits `/mock-exam` | Mock loads |
+| G130-P2 | FREE user on course-that-requires-premium | Paywall modal |
+
+**Negative / edge (6 = 3×)**
+| ID | Case | Expected |
+|---|---|---|
+| G130-N1 | Premium-check fn throws → `userIsPremium=undefined` | Defaults to false; paywall shown (fail-closed) |
+| G130-N2 | DB query for sub returns null | `userIsPremium=false` |
+| G130-N3 | SubTier `PREMIUM` (legacy) on AP course | Granted (legacy parity) |
+| G130-N4 | SubTier `SAT_PREMIUM` on AP course | Denied (cross-track) |
+| G130-N5 | Webhook lag: paid user not yet flipped | Paywall temporarily; `/billing` polling (REQ-129) resolves within 30s |
+| G130-N6 | User manually calls `/api/mock-exam/start` with spoofed tier | Server-side re-check blocks |
+
+**FMEA**
+| Failure mode | Effect on student | Sev | Lik | Det | RPN | Mitigation |
+|---|---|---|---|---|---|---|
+| Silent fail → `undefined` grants access | Revenue leak | 10 | 2 | 9 | 180 | Fail-closed default; server-side validation on every request |
+
+### G-REQ-131. Tailwind dynamic-class fix on clep-prep/dsst-prep
+
+**Positive**
+| ID | Case | Expected |
+|---|---|---|
+| G131-P1 | `/clep-prep` (if flag on) renders persona cards | Each card has correct background + text color |
+
+**Negative / edge (6 = 3×)**
+| ID | Case | Expected |
+|---|---|---|
+| G131-N1 | Template string `text-${p.color}-400` in source | FAIL linter (Tailwind can't statically extract) |
+| G131-N2 | Color value at runtime = `'red'` but not in safelist | Card unstyled |
+| G131-N3 | `isClepEnabled()` false | Page 404 or redirect — no crash from unstyled persona card |
+| G131-N4 | SSR output contains dynamic-class string | Client hydration mismatch → warning |
+| G131-N5 | Color name typo in config | Falls back to default style |
+| G131-N6 | Tailwind JIT build doesn't include runtime class | Confirmed in `.cf-deploy/static/**` CSS dump |
+
+**FMEA**
+| Failure mode | Effect on student | Sev | Lik | Det | RPN | Mitigation |
+|---|---|---|---|---|---|---|
+| Unstyled persona cards on sunset page look broken | Trust drop if flag ever flipped on | 5 | 6 | 5 | 150 | Safelist static map; CI test that `bg-red-400 text-red-400 …` all appear in build output |
+
+### G-REQ-132. Course count + subtest count copy fixes
+
+**Positive**
+| ID | Case | Expected |
+|---|---|---|
+| G132-P1 | Grep `16 courses` on StudentNest landing | Match |
+| G132-P2 | Grep `6 subtests` on Accuplacer copy | Match |
+
+**Negative / edge (6 = 3×)**
+| ID | Case | Expected |
+|---|---|---|
+| G132-N1 | Grep `56 courses` on StudentNest | No match (stale) |
+| G132-N2 | Grep `57 courses` cross-product | No match (StudentNest is 16 now; cross-product is 73) |
+| G132-N3 | Grep `5 subtests` on Accuplacer | No match |
+| G132-N4 | New course added without updating copy | CI grep enforces via `docs/course-count-source-of-truth.md` |
+| G132-N5 | CLEP course accidentally re-counted | Feature flag filter must exclude CLEP from StudentNest count |
+| G132-N6 | Copy uses "72 courses" (cross-product pre-addition) | FAIL |
+
+**FMEA**
+| Failure mode | Effect on student | Sev | Lik | Det | RPN | Mitigation |
+|---|---|---|---|---|---|---|
+| Wrong count erodes trust | Small, cumulative | 3 | 5 | 6 | 90 | CI grep + grep in Section D |
+
+### G-REQ-133. Logo routes to landing
+
+**Positive**
+| ID | Case | Expected |
+|---|---|---|
+| G133-P1 | Authed user on `/dashboard` clicks logo | Navigates to `/` |
+| G133-P2 | Authed user on `/analytics` clicks logo | Navigates to `/` |
+
+**Negative / edge (6 = 3×)**
+| ID | Case | Expected |
+|---|---|---|
+| G133-N1 | Logo hardcoded to `/dashboard` | FAIL (regression) |
+| G133-N2 | Middleware redirects `/` back to `/dashboard` for authed user | Expected (that's fine); the REQ is the link itself, not the landing view |
+| G133-N3 | Logo link has no `href` | A11y fail |
+| G133-N4 | Right-click → "Open in new tab" works | Yes |
+| G133-N5 | Logo on public pages still goes to `/` | Yes |
+| G133-N6 | Logo on `/admin` as ADMIN | Goes to `/`, admin can click back (no special case) |
+
+**FMEA**
+| Failure mode | Effect on student | Sev | Lik | Det | RPN | Mitigation |
+|---|---|---|---|---|---|---|
+| Logo deep-links to wrong route | Confusion only | 2 | 2 | 2 | 8 | Visual smoke test Section A |
+
+### G-REQ-134. Premium Feature Restriction banner cleanup
+
+**Positive**
+| ID | Case | Expected |
+|---|---|---|
+| G134-P1 | FREE user sees restriction banner on a premium feature | Banner says what's locked, does NOT mention FRQ as free |
+
+**Negative / edge (6 = 3×)**
+| ID | Case | Expected |
+|---|---|---|
+| G134-N1 | Grep for "FRQ" in banner copy | No match |
+| G134-N2 | Banner A/B variant still claims free FRQ | Must be deleted from all variants |
+| G134-N3 | PREMIUM user sees banner | Banner hidden |
+| G134-N4 | Copy mentions `CLEP` | FAIL |
+| G134-N5 | Banner link goes to `/billing` | Yes |
+| G134-N6 | Banner dismissible; re-renders next session | Yes (nonblocking) |
+
+**FMEA**
+| Failure mode | Effect on student | Sev | Lik | Det | RPN | Mitigation |
+|---|---|---|---|---|---|---|
+| Stale FRQ-free copy leads to refund request | Legal / trust | 6 | 3 | 6 | 108 | Grep in CI; Section D marketing audit |
+
+### G-REQ-135. Reddit mining pipeline
+
+**Positive**
+| ID | Case | Expected |
+|---|---|---|
+| G135-P1 | `node scripts/crawl-reddit-exam-subs.mjs` | Writes `scripts/data/reddit-signals.json` |
+| G135-P2 | Extractor + aggregator produce `themes.json` with corroboration counts | File valid |
+
+**Negative / edge (6 = 3×)**
+| ID | Case | Expected |
+|---|---|---|
+| G135-N1 | Reddit API 429 | Script retries with backoff, does not crash |
+| G135-N2 | Zero signals found | Writes empty JSON, logs warning, exits 0 |
+| G135-N3 | Theme with corroboration=1 | Flagged, NOT promoted to SageFAQ |
+| G135-N4 | Theme contains slur or harmful advice | Blocklist filter strips before promotion |
+| G135-N5 | Aggregator de-dups near-identical themes | Levenshtein ≥ 0.85 merged |
+| G135-N6 | Pipeline runs in CI but `REDDIT_CLIENT_ID` missing | Skipped with explicit message, no throw |
+
+**FMEA**
+| Failure mode | Effect on student | Sev | Lik | Det | RPN | Mitigation |
+|---|---|---|---|---|---|---|
+| Harmful / racist advice promoted to SageFAQ | Brand damage | 10 | 2 | 7 | 140 | Blocklist + manual approval gate before insert |
+
+### G-REQ-136. Daily Quiz Email cron
+
+Full smoke plan in Section I. Summary FMEA:
+
+**FMEA**
+| Failure mode | Effect on student | Sev | Lik | Det | RPN | Mitigation |
+|---|---|---|---|---|---|---|
+| Same question sent 2 days in a row (dedup broken) | User loses trust | 6 | 4 | 7 | 168 | 30-day dedup enforced in `pickDailyQuestion()`; test asserts window |
+| Email sent to opted-out user | Legal (CAN-SPAM) + brand | 9 | 3 | 8 | **216 [HIGH RISK]** | `dailyQuizOptIn=true` gate at SELECT level, not at SEND level |
+| Email renders broken on mobile Gmail | Low perceived quality | 4 | 5 | 6 | 120 | Email template smoke on real inboxes |
+| Cron fires, sends identical Q to 10k users (stale cache) | All see same Q, embarrassment | 5 | 2 | 6 | 60 | Q picked per-user, not globally cached |
+
+### G-REQ-137. _routes.json excludes static public files
+
+**Positive**
+| ID | Case | Expected |
+|---|---|---|
+| G137-P1 | `curl https://studentnest.ai/sw.js` | 200, content-type application/javascript, bytes match `public/sw.js` |
+| G137-P2 | `curl /favicon.ico`, `/manifest.webmanifest`, `/icons/icon-192.png` | All 200 |
+
+**Negative / edge (6 = 3×)**
+| ID | Case | Expected |
+|---|---|---|
+| G137-N1 | `_routes.json` missing `/sw.js` | Worker intercepts, returns 404 or 500 — FAIL |
+| G137-N2 | New image added to `public/` without update | Served via worker, likely 404 — caught by test checklist |
+| G137-N3 | Wildcard `/icons/*` captures only depth 1 | Confirmed to capture nested if present |
+| G137-N4 | `prepare-cf-deploy.js` not run before deploy | `_routes.json` stale; CI gate runs script |
+| G137-N5 | Browser caches old 404 for `/sw.js` | SW v5 activate clears cache on next load; users recover on next visit |
+| G137-N6 | Worker handler regressed to catch-all `/*` | Excludes ignored — static files break |
+
+**FMEA**
+| Failure mode | Effect on student | Sev | Lik | Det | RPN | Mitigation |
+|---|---|---|---|---|---|---|
+| `/sw.js` 404 after deploy | Users stuck on broken bundle (no SW update) | 9 | 3 | 5 | 135 | Rule #9 post-deploy smoke; curl check |
+| `/icons/*` 404 | PWA install icon missing | 4 | 3 | 4 | 48 | Post-deploy smoke checklist |
+
+### G-REQ-138. pages:clean prepended to pages:build
+
+**Positive**
+| ID | Case | Expected |
+|---|---|---|
+| G138-P1 | Run `npm run pages:build` | First command is `rm -rf .open-next .cf-deploy .next` |
+| G138-P2 | Subsequent OpenNext build starts from empty `.cf-deploy/` | No mixed artifacts |
+
+**Negative / edge (6 = 3×)**
+| ID | Case | Expected |
+|---|---|---|
+| G138-N1 | pages:clean removed from script | Release checklist rule #1 catches in PR review |
+| G138-N2 | Clean script fails (Windows EPERM on locked .dll) | Documented fallback: rename + retry |
+| G138-N3 | `.cf-deploy/_worker.js` from previous build slips in | FAIL — Beta-3.0 incident root cause |
+| G138-N4 | User runs `pages:deploy` without `pages:build` | `wrangler pages deploy` runs against existing `.cf-deploy/`; documented as unsafe |
+| G138-N5 | Parallel bulk-gen holds `query_engine-windows.dll.node` | `prisma generate` fails; release checklist rule #7 documents rename workaround |
+| G138-N6 | CI skips pages:clean to save time | Explicitly banned; RFC required |
+
+**FMEA**
+| Failure mode | Effect on student | Sev | Lik | Det | RPN | Mitigation |
+|---|---|---|---|---|---|---|
+| Stale `_worker.js` deployed → NextAuth 400s → ERR_FAILED | Full site outage | 10 | 4 | 7 | **280 [HIGH RISK]** | pages:clean ALWAYS runs first; rule #8 smoke detects within 30s |
+
+### G-REQ-139. SW pass-through v5
+
+**Positive**
+| ID | Case | Expected |
+|---|---|---|
+| G139-P1 | `public/sw.js` has `CACHE_NAME = 'studentnest-sw-v5'` | Confirmed |
+| G139-P2 | `fetch` handler returns `fetch(event.request)` unmodified | No cache lookup, no match-first |
+| G139-P3 | `activate` handler clears all caches | All `caches.keys()` deleted |
+
+**Negative / edge (6 = 3×)**
+| ID | Case | Expected |
+|---|---|---|
+| G139-N1 | Old SW v3/v4 still cached on user's device | v5 activate clears them; next page load is fresh |
+| G139-N2 | Network offline during fetch | Browser shows native offline page (SW doesn't cache fallback) |
+| G139-N3 | Strategy reverted to cache-first without bumping CACHE_NAME | Users stuck on stale cache — banned; release checklist rule #5 |
+| G139-N4 | `self.addEventListener('install', …)` calls `skipWaiting()` | Yes, so new SW activates immediately |
+| G139-N5 | Another `fetch` handler registered that caches | FAIL — only one handler |
+| G139-N6 | SW registration fails (HTTPS required) | App still works via network; log warning |
+
+**FMEA**
+| Failure mode | Effect on student | Sev | Lik | Det | RPN | Mitigation |
+|---|---|---|---|---|---|---|
+| SW caches broken deploy, user stuck indefinitely | Users see old broken bundle even after fix deploy | 10 | 3 | 7 | **210 [HIGH RISK]** | v5 is network-only; future strategy changes MUST bump CACHE_NAME; release checklist rule #5 |
+
+---
+
+## H. FULL-SCREEN EXAM MODE TEST MATRIX (REQ-124)
+
+`useExamMode()` controls whether the page chrome (sidebar + header + Sage floating bubble) is visible. Invoked on `/diagnostic`, `/mock-exam`, and `/ai-tutor` (when `?fullscreen=1`).
+
+### H1. Entry
+
+| ID | Step | Expected |
+|---|---|---|
+| H1-1 | Navigate to `/diagnostic` | `data-exam-mode="true"` on `<body>`; sidebar + header + Sage bubble hidden |
+| H1-2 | Navigate to `/mock-exam` | Same |
+| H1-3 | Navigate to `/ai-tutor?fullscreen=1` | Same |
+| H1-4 | Navigate to `/ai-tutor` (no flag) | `data-exam-mode` NOT set; normal chrome visible |
+| H1-5 | Route change `/dashboard → /diagnostic` | Chrome disappears; no flash of unstyled content |
+
+### H2. Exit
+
+| ID | Step | Expected |
+|---|---|---|
+| H2-1 | On `/diagnostic`, click visible "Exit" button | Mode clears, chrome re-appears |
+| H2-2 | Press Esc during `/mock-exam` | Confirmation modal (don't lose exam progress); on confirm, exits |
+| H2-3 | Browser back button during `/diagnostic` | Auto-exit; chrome re-appears |
+| H2-4 | Close tab during `/mock-exam` | Server-side exam state preserves; on reopen user sees resume banner; client-side mode state is gone (fresh page) |
+| H2-5 | Navigate via link click to `/dashboard` | Auto-exit; Next router's `useEffect` cleanup runs |
+| H2-6 | Exit handler fails (throw) | Mode still clears via `finally` block |
+
+### H3. Negative / edge
+
+| ID | Step | Expected |
+|---|---|---|
+| H3-1 | User opens DevTools and removes `data-exam-mode` attribute manually | Chrome shows but exam still active; no crash |
+| H3-2 | User has `prefers-reduced-motion` — no animation on transitions | Honored |
+| H3-3 | Mobile Safari hides URL bar; content below fold clipped | Use `100dvh`; fits viewport exactly |
+| H3-4 | Landscape phone — exam renders correctly | Sidebar MUST stay hidden |
+| H3-5 | Accessibility: tab focus should NOT enter hidden chrome | Use `inert` attribute on hidden nodes |
+| H3-6 | Sage bubble invoked via keyboard shortcut during exam | Blocked; banner "Sage unavailable during exam" |
+| H3-7 | Multiple exam routes open in 2 tabs | Each tab has own local state; no cross-tab leak |
+| H3-8 | Exam mode ON during session timeout → NextAuth kicks to login | Mode clears; user goes to `/login` |
+| H3-9 | Hot-reload during dev (`npm run dev`) with exam mode on | Cleanup runs; mode resets on module re-eval |
+
+### H4. FMEA (summary — full rows under G-REQ-124)
+
+- RPN 189: Can't exit (trapped user)
+- RPN 150: Mobile viewport clipping
+- RPN 144: Leak to non-exam page
+
+---
+
+## I. DAILY QUIZ EMAIL SMOKE PLAN (REQ-136)
+
+`/api/cron/daily-quiz` is triggered by cron-job.org daily at 14:00 UTC (8am Central target). Sends one Q to each opted-in user's weakest unit.
+
+### I1. Dry-run inspection
+
+| ID | Step | Expected |
+|---|---|---|
+| I1-1 | `curl -H "Authorization: Bearer $CRON_SECRET" https://studentnest.ai/api/cron/daily-quiz?dry=1` | 200 JSON: `{eligibleCount, planned:[{userId, courseId, questionId, weakestUnit}], skipped:[{userId, reason}]}` |
+| I1-2 | Response contains only opted-in users | `dailyQuizOptIn=true` gate working |
+| I1-3 | No Resend API call made | Inspect Resend dashboard — zero deltas for this run |
+| I1-4 | Selected question is EASY or MEDIUM from weakest unit | Confirmed per row |
+
+### I2. Opt-in gating
+
+| ID | Case | Expected |
+|---|---|---|
+| I2-1 | User `dailyQuizOptIn=true` | Included |
+| I2-2 | User `dailyQuizOptIn=false` | Skipped, reason `"not_opted_in"` |
+| I2-3 | User `dailyQuizOptIn=null` (legacy) | Skipped (treat null as false) |
+| I2-4 | User unsubscribed via one-click (List-Unsubscribe header) | `dailyQuizOptIn` flipped to false server-side; next cron skips them |
+| I2-5 | User deleted between cron runs | Skipped gracefully |
+| I2-6 | User has no track set | Skipped, reason `"no_track"` |
+
+### I3. 30-day dedup
+
+| ID | Case | Expected |
+|---|---|---|
+| I3-1 | User received Q-123 yesterday | Today picks a different Q |
+| I3-2 | User has received every Q in their weakest unit in last 30 days | Picks from second-weakest unit OR sends no-email with reason `"bank_exhausted"` |
+| I3-3 | `DailyQuizSend` has no rows for user (fresh opt-in) | Any Q allowed |
+| I3-4 | `DailyQuizSend` row from 31 days ago for Q-123 | Q-123 eligible again |
+| I3-5 | Dedup query uses `sentAt >= NOW() - interval '30 days'` | Confirmed via explain-analyze |
+| I3-6 | Same user opted in, opted out, opted back in | Dedup history preserved; cron respects 30-day gap from earlier sends |
+
+### I4. Email rendering
+
+| ID | Case | Expected |
+|---|---|---|
+| I4-1 | Preview email in Gmail / Apple Mail / Outlook | Renders cleanly; question + 4 options visible; "Answer in app" CTA works |
+| I4-2 | Email has `List-Unsubscribe` + `List-Unsubscribe-Post: List-Unsubscribe=One-Click` | Confirmed |
+| I4-3 | Subject line includes course name | e.g. "AP Calc AB — today's practice question" |
+| I4-4 | Body contains question stem + option list (NOT the answer) | Answer only revealed after click-through |
+| I4-5 | Answer link has signed token with expiry | Expires in 48h; prevents email-forwarding exploits |
+| I4-6 | Email sends in < 10s per user (Resend latency + render) | Monitored via Resend delivery dashboard |
+
+### I5. FMEA
+
+(See G-REQ-136 for full table. Flagged RPN ≥ 200: opt-out leak sent emails = 216.)
+
+---
+
+## J. RELEASE-CHECKLIST COMPLIANCE
+
+Maps each of the 13 rules in `docs/RELEASE_CHECKLIST.md` to a checker + a cadence.
+
+### J1. Before every deploy
+
+| Rule | What | Checker | Cadence | How to verify |
+|---|---|---|---|---|
+| #1 | pages:clean prepended to pages:build | Dev running deploy | Every deploy | `cat package.json | grep '"pages:build"'` — must start with `npm run pages:clean &&` |
+| #2 | `npx tsc --noEmit` exit 0 | Dev + CI | Every deploy | Run it; reject if non-zero |
+| #3 | Schema migration applied before deploy | Dev running deploy | Every deploy (if schema changed) | `git diff HEAD..last_deploy_tag prisma/schema.prisma`; if diff ≠ empty, confirm `npx prisma db push` against prod ran |
+| #4 | Env vars exist on CF Pages | Dev + DevOps | Every deploy | `npx wrangler pages secret list --project-name=studentnest` — cross-check against rule #4 list |
+| #5 | SW strategy reviewed; CACHE_NAME bumped on changes | Dev making SW change | Whenever `public/sw.js` changes | `git diff public/sw.js` — if CACHE_NAME not bumped, PR reject |
+| #6 | `_routes.json` covers all public/ files | Dev adding public asset | On public/ change | `ls public/` ∩ `_routes.json exclude[]` — every file must be listed or served by worker without 404 |
+| #7 | Prisma generate uses engine (no `--no-engine`) | Dev | Every deploy | `cat package.json | grep "prisma generate"` — must NOT contain `--no-engine` |
+| #8 | Post-deploy smoke | Dev running deploy | Every deploy | `curl -I /`, `/login`, `/dashboard`, `/api/auth/csrf` — all 200 or 307 redirect |
+| #9 | Post-deploy SW check | Dev running deploy | Every deploy | `curl /sw.js` byte-for-byte match `public/sw.js` |
+
+### J2. Before every release (tag cut)
+
+| Rule | What | Checker | Cadence | How to verify |
+|---|---|---|---|---|
+| #10 | REQUIREMENTS_LEDGER updated | Tag author | Every release tag | Every new REQ-### has an entry (this doc enforces) |
+| #11 | Test plan Section A rerun on reset test user | QA lead | Every release | Admin `/admin?tab=test-users` reset, then walk Priya journey end-to-end; log in Section F |
+| #12 | Negative/positive test ratio ≥ 3:1 | Reviewer | PR review | Grep new feature's test file — count `N` vs `P` IDs; reject if ratio < 3:1 |
+| #13 | Git tag at a deployable commit | Tag author | Every release tag | Tag commit must be the HEAD of a successful `pages:deploy`; confirm via `git log --decorate` and CF deploy dashboard |
+
+### J3. Compliance-gate outcomes
+
+- **Pass all 13** → deploy/tag proceeds
+- **Fail any of #1-#7** → blocking; fix + redeploy
+- **Fail #8 or #9** → emergency recovery from RELEASE_CHECKLIST.md → "Emergency recovery"
+- **Fail #10-#13** → tag is un-cut (move the tag, don't deploy a pseudo-release)
+
+---
+
+## K. SCORE PREDICTOR BOUNDARY TESTS (REQ-115)
+
+Every cutoff must have a positive "just above" and negative "just below" test. Hide-at-low-signal must trigger cleanly.
+
+### K1. AP scale (1-5)
+
+| ID | Input | Expected predicted |
+|---|---|---|
+| K1-1 | Aggregate mastery = 0.85, ≥ 40 Qs answered | 5 |
+| K1-2 | Aggregate = 0.75 | 4 |
+| K1-3 | Aggregate = 0.60 | 3 |
+| K1-4 | Aggregate = 0.45 | 2 |
+| K1-5 | Aggregate = 0.25 | 1 |
+| K1-6 | Aggregate = 0.849 (just below cutoff for 5) | 4 — boundary verified |
+| K1-7 | Aggregate = 0.850 (exactly at cutoff) | 5 (inclusive spec) |
+| K1-8 | Aggregate = 0.0 | 1 (never 0) |
+| K1-9 | Aggregate = 1.0 | 5 (never 6 or overflow) |
+
+### K2. SAT scale (400-1600)
+
+| ID | Input | Expected predicted (± 20 band) |
+|---|---|---|
+| K2-1 | Math 100% + RW 100% | 1600 |
+| K2-2 | Math 0% + RW 0% | 400 |
+| K2-3 | Math 50% + RW 50% | ~ 1000 |
+| K2-4 | Math 80% + RW 20% | ~ 1100 (Math carries more weight only if model says so; verify weighting spec) |
+| K2-5 | Only Math data (no RW sessions) | predicted = Math-only scale × 2, OR confidence drops to "low" |
+| K2-6 | Just below 1600 top cap | 1580 ≤ result ≤ 1600 |
+| K2-7 | Just above 400 floor | 410 ≤ result ≤ 430 |
+| K2-8 | Predicted = 1605 | CLAMP to 1600 |
+| K2-9 | Predicted = 395 | CLAMP to 400 |
+
+### K3. ACT scale (1-36)
+
+| ID | Input | Expected predicted (± 1 composite) |
+|---|---|---|
+| K3-1 | All 4 sections at 100% | 36 |
+| K3-2 | All at 0% | 1 |
+| K3-3 | All at 50% | ~ 20 |
+| K3-4 | English 100% + others 50% | 23-24 |
+| K3-5 | 3 sections complete, 1 absent | Composite on 3 sections OR confidence=low; spec the choice |
+| K3-6 | Percentile rollover: section score 25 → composite factors in | No off-by-one in percentile lookup |
+| K3-7 | CLAMP at 36 top, 1 bottom | Both enforced |
+| K3-8 | All 4 at 99% | 35 (not 36; rounding) |
+| K3-9 | Single section at 100%, others null | confidence=low, predicted hidden |
+
+### K4. Confidence tier flips
+
+| ID | Q count | Diag completeness | Expected confidence | Client behavior |
+|---|---|---|---|---|
+| K4-1 | 0 | none | `"none"` | Hide number; show "Take diagnostic first" |
+| K4-2 | 5 | partial | `"low"` | Hide number; show "Keep practicing" |
+| K4-3 | 30 | diag + 20 practice | `"medium"` | Show number with "± 1 band" disclaimer |
+| K4-4 | 100 | full + mock | `"high"` | Show number, no disclaimer |
+| K4-5 | 29 (boundary below medium threshold 30) | full | `"low"` | Hide |
+| K4-6 | 30 (exactly at threshold, inclusive) | full | `"medium"` | Show |
+| K4-7 | Data present but all stale (> 60 days) | — | downgrade one tier | e.g. medium → low |
+| K4-8 | All data from 1 course, user asks for another course | N/A per course | low on the untested course | Show track-average + disclaimer |
+
+### K5. Hide-score-at-low-signal
+
+| ID | Case | Expected |
+|---|---|---|
+| K5-1 | confidence = `"low"` | `<ReadinessCard>` hides the numeric prediction; shows "Not enough data yet" |
+| K5-2 | confidence = `"none"` | Same |
+| K5-3 | confidence = `"medium"` | Numeric prediction shown with "± 1 band" text |
+| K5-4 | confidence = `"high"` | Numeric prediction shown without disclaimer |
+| K5-5 | confidence field missing from API response (legacy) | Treat as `"low"`, hide |
+| K5-6 | confidence = `"invalid_string"` | Treat as `"low"`, hide, log warning |
+
+### K6. FMEA (summary; full rows under G-REQ-115)
+
+RPN ≥ 200 flagged:
+- 240: Wrong scale applied (SAT user shown AP 1-5)
+- 224: Confidence tier misses hide-at-low-signal gate
+- 216: NaN/Infinity returned from predictor
+
+All three require unit-test coverage before deploy.
+
+---
+
+## Post-670e43a: summary of HIGH-RISK (RPN ≥ 200) items
+
+| REQ | Failure mode | RPN | Must-fix before deploy? |
+|---|---|---|---|
+| REQ-115 | Wrong scale applied | 240 | Yes |
+| REQ-115 | Confidence tier misses hide gate | 224 | Yes |
+| REQ-115 | Predictor returns NaN/Infinity | 216 | Yes |
+| REQ-117 | Am I Ready vs logged-in predictor drift > 1 point | 224 | Yes — parity test required |
+| REQ-120 | Reset endpoint session cache stale → test user sees stale state | 210 | Yes — server-authority check |
+| REQ-121 | Backfill missed legacy users → sent back to onboarding | 210 | Yes — run SQL backfill before deploy |
+| REQ-125 | Confidence Repair demotivates user | 224 | Required copy review |
+| REQ-129 | Infinite polling loop on update() reject | 224 | Fixed in `6f9a236`; regression test required |
+| REQ-136 | Email sent to opted-out user | 216 | Yes — SELECT-level gate |
+| REQ-138 | Stale `_worker.js` deployed → site down | 280 | Rule #1 + rule #8 enforce |
+| REQ-139 | SW caches broken deploy → users stuck | 210 | Network-only v5 enforces; RFC required to change |
+
+Count of HIGH-RISK rows: **11** (all require pre-deploy mitigation confirmation).
+
+---

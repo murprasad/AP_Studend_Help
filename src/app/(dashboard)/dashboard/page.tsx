@@ -30,6 +30,9 @@ import { DailyReviewCard } from "@/components/dashboard/daily-review-card";
 import { CLEPDayCard } from "@/components/dashboard/clep-day-card";
 import { CLEPGeneratePlan } from "@/components/dashboard/clep-generate-plan";
 import { ReadinessCard } from "@/components/dashboard/readiness-card";
+import { DailyGoalCard } from "@/components/dashboard/daily-goal-card";
+import { ProgressUpsellCard } from "@/components/dashboard/progress-upsell-card";
+import { MasteryTierUpCard } from "@/components/dashboard/mastery-tier-up-card";
 
 export default async function DashboardPage() {
   const session = await getServerSession(authOptions);
@@ -147,6 +150,9 @@ export default async function DashboardPage() {
         </Link>
       </div>
 
+      {/* "You fixed it" — mastery tier-up celebration (renders null when no unread win) */}
+      <MasteryTierUpCard />
+
       {/* CLEP 7-Day Plan Card */}
       {isCLEP && clepPlan && (
         <CLEPDayCard
@@ -163,6 +169,9 @@ export default async function DashboardPage() {
 
       {/* Projected AP/SAT/ACT score — single source of truth via /api/readiness */}
       <ReadinessCard course={selectedCourse} />
+
+      {/* Daily goal — tied to score delta, not a raw Q count */}
+      <DailyGoalCard course={selectedCourse} />
 
       {/* Stats Row — 3 cards */}
       <div className="grid grid-cols-3 gap-4">
@@ -404,28 +413,14 @@ export default async function DashboardPage() {
         </Link>
       )}
 
-      {/* Premium upsell — bottom */}
-      {user?.subscriptionTier === "FREE" && (
-        <div className="rounded-xl border border-blue-500/20 bg-gradient-to-r from-blue-500/5 to-purple-500/5 p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-blue-500/20 flex items-center justify-center flex-shrink-0">
-              <Crown className="h-5 w-5 text-blue-500" />
-            </div>
-            <div>
-              <p className="text-sm font-semibold">Unlock Premium Modules</p>
-              <p className="text-xs text-muted-foreground">
-                Unlimited AI tutoring · Personalized study plans · Advanced analytics · $9.99/mo per module
-              </p>
-            </div>
-          </div>
-          <Link href="/pricing" className="flex-shrink-0">
-            <Button size="sm" className="gap-1.5 w-full sm:w-auto bg-blue-600 hover:bg-blue-700">
-              <Crown className="h-3.5 w-3.5" />
-              See Pricing
-            </Button>
-          </Link>
-        </div>
-      )}
+      {/* Score-tier-aware upsell — replaces the generic "See Pricing" card.
+          Copy + CTA both shift based on whether the user is struggling,
+          building, close, or ready (see src/lib/progress-cta.ts). */}
+      <ProgressUpsellCard
+        course={selectedCourse}
+        isPremium={user?.subscriptionTier !== "FREE"}
+      />
+
     </div>
   );
 }

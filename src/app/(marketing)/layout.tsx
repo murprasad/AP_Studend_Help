@@ -1,47 +1,10 @@
-import Link from "next/link";
-import { Sparkles } from "lucide-react";
 import { SageChat } from "@/components/layout/sage-chat";
+import { MarketingHeader } from "@/components/layout/marketing-header";
 
 export default function MarketingLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      <nav className="border-b border-border/40 p-4 flex items-center justify-between max-w-7xl mx-auto w-full">
-        <Link href="/" className="flex items-center gap-2">
-          <Sparkles className="h-6 w-6 text-blue-500" />
-          <div>
-            <span className="text-lg font-bold">
-              <span className="gradient-text">Student</span><span className="text-foreground/80 font-medium">Nest</span><span className="text-blue-500/60 font-normal text-[0.6em] ml-1">Prep</span>
-            </span>
-            <p className="text-xs text-muted-foreground leading-none hidden sm:block">Study Smarter. Score Higher.</p>
-          </div>
-        </Link>
-        <div className="flex items-center gap-2 sm:gap-4">
-          <Link href="/ap-prep" className="hidden sm:block text-sm text-muted-foreground hover:text-foreground transition-colors">
-            AP Prep
-          </Link>
-          <Link href="/sat-prep" className="hidden sm:block text-sm text-muted-foreground hover:text-foreground transition-colors">
-            SAT Prep
-          </Link>
-          <Link href="/act-prep" className="hidden sm:block text-sm text-muted-foreground hover:text-foreground transition-colors">
-            ACT Prep
-          </Link>
-          <Link href="/am-i-ready" className="hidden md:block text-sm font-medium text-primary hover:text-primary/80 transition-colors">
-            Am I Ready?
-          </Link>
-          <Link href="/pricing" className="hidden sm:block text-sm text-muted-foreground hover:text-foreground transition-colors">
-            Pricing
-          </Link>
-          <Link href="/login" className="hidden sm:block text-sm text-muted-foreground hover:text-foreground transition-colors">
-            Sign in
-          </Link>
-          <Link
-            href="/register"
-            className="text-sm bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 sm:px-4 rounded-lg transition-colors"
-          >
-            <span className="hidden sm:inline">Get started </span>free
-          </Link>
-        </div>
-      </nav>
+      <MarketingHeader />
       <div className="flex-1">{children}</div>
       <footer className="border-t border-border/40 py-8 px-4 text-center space-y-3">
         <div className="flex items-center justify-center gap-4 text-xs text-muted-foreground">

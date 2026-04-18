@@ -7,6 +7,7 @@ import { estimateApScore } from "@/lib/utils";
 import { getCourseForUnit } from "@/lib/courses";
 import { callAIWithCascade } from "@/lib/ai-providers";
 import { rateLimit } from "@/lib/rate-limit";
+import { detectTierUps, tierOf } from "@/lib/mastery-tier-up";
 
 // Submit an answer for a question in a session
 export async function POST(
@@ -170,8 +171,38 @@ Return ONLY valid JSON (no markdown, no extra text):
       }
     }
 
-    // Update mastery score for this unit
-    await updateMasteryScore(session.user.id, question.unit);
+    // Update mastery score for this unit and detect tier-ups.
+    // `updateMasteryScore` returns the before/after masteryScore snapshot so
+    // we can fire-and-forget a MasteryTierUp row if a boundary was crossed.
+    // CRITICAL: any failure here must NOT break the answer submission —
+    // the UI has already graded; tier-up is a celebration layer.
+    const tierCtx = await updateMasteryScore(session.user.id, question.unit);
+    if (tierCtx && tierOf(tierCtx.after) > tierOf(tierCtx.before)) {
+      const diffs = detectTierUps(
+        { [question.unit]: tierCtx.before },
+        { [question.unit]: tierCtx.after },
+      );
+      for (const d of diffs) {
+        // Fire-and-forget. We intentionally don't `await` — the response to
+        // the student should return with just the graded answer.
+        prisma.masteryTierUp
+          .create({
+            data: {
+              userId: session.user.id,
+              course: getCourseForUnit(question.unit),
+              unit: question.unit,
+              beforeScore: d.beforeScore,
+              afterScore: d.afterScore,
+              beforeTier: d.beforeTier,
+              afterTier: d.afterTier,
+              sessionId,
+            },
+          })
+          .catch((err) => {
+            console.error("masteryTierUp create failed (non-blocking):", err);
+          });
+      }
+    }
 
     return NextResponse.json({
       isCorrect,
@@ -279,7 +310,10 @@ export async function PATCH(
   }
 }
 
-async function updateMasteryScore(userId: string, unit: ApUnit) {
+async function updateMasteryScore(
+  userId: string,
+  unit: ApUnit,
+): Promise<{ before: number; after: number } | null> {
   try {
     const responses = await prisma.studentResponse.findMany({
       where: {
@@ -290,7 +324,7 @@ async function updateMasteryScore(userId: string, unit: ApUnit) {
       take: 50,
     });
 
-    if (responses.length === 0) return;
+    if (responses.length === 0) return null;
 
     const totalAttempts = responses.length;
     const correctAttempts = responses.filter((r) => r.isCorrect).length;
@@ -308,6 +342,15 @@ async function updateMasteryScore(userId: string, unit: ApUnit) {
 
     // Determine course from unit via registry lookup
     const course = getCourseForUnit(unit);
+
+    // Capture the pre-update masteryScore so the caller can diff tiers.
+    // If no row exists yet, treat before as 0 — a fresh unit jumping to e.g.
+    // 25% should register as a 0→1 tier-up.
+    const existing = await prisma.masteryScore.findUnique({
+      where: { userId_unit: { userId, unit } },
+      select: { masteryScore: true },
+    });
+    const before = existing?.masteryScore ?? 0;
 
     await prisma.masteryScore.upsert({
       where: { userId_unit: { userId, unit } },
@@ -332,8 +375,11 @@ async function updateMasteryScore(userId: string, unit: ApUnit) {
         lastPracticed: new Date(),
       },
     });
+
+    return { before, after: masteryScore };
   } catch (error) {
     console.error("updateMasteryScore error:", error);
+    return null;
   }
 }
 

@@ -35,6 +35,8 @@ model User {
   freeTrialCourse      String?                // course trial is scoped to
   trialEmailsSent      Int       @default(0)  // re-engagement email count (cap at 3)
   onboardingCompletedAt DateTime?             // null = send to /onboarding on next login
+  dailyQuizOptIn    Boolean   @default(false)    // opt-in for the "Daily Quiz Email" feature; flipped via Settings toggle
+  dailyQuizTz       String?                      // IANA tz (e.g. "America/Chicago"); null = UTC default at 7:30
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
 
@@ -57,8 +59,33 @@ model User {
   tutorKnowledgeChecks TutorKnowledgeCheck[]
   moduleSubscriptions  ModuleSubscription[]
   trialReengagements   TrialReengagement[]
+  dailyQuizSends       DailyQuizSend[]
+  masteryTierUps       MasteryTierUp[]
 
   @@map("users")
+}
+
+// "You fixed it" — mastery tier-up celebration ledger.
+// One row inserted whenever a practice session pushes a unit's masteryScore
+// across a tier boundary (0→20, 20→40, 40→60, 60→80, 80→100). The dashboard
+// and session summary read unshown rows and render a celebration card, then
+// PATCH shownAt to clear the celebration.
+model MasteryTierUp {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course      ApCourse
+  unit        ApUnit
+  beforeScore Float    // mastery % before this session
+  afterScore  Float    // mastery % after
+  beforeTier  Int      // 0=0-19, 1=20-39, 2=40-59, 3=60-79, 4=80-100
+  afterTier   Int
+  sessionId   String?  // which practice session triggered it
+  createdAt   DateTime @default(now())
+  shownAt     DateTime? // null until user has seen the celebration
+
+  @@index([userId, createdAt])
+  @@map("mastery_tier_ups")
 }
 
 model TrialReengagement {
@@ -71,6 +98,49 @@ model TrialReengagement {
 
   @@index([userId, sentAt])
   @@map("trial_reengagements")
+}
+
+// Record of each "Daily Quiz Email" sent. One row per successful send.
+// The cron at /api/cron/daily-quiz inserts; /api/daily-quiz-track updates
+// openedAt (pixel) and answeredAt (from practice page when the matching
+// question is answered). Dedup rule: the cron skips questions that appear
+// on any row for this user in the last 30 days, to keep variety high.
+model DailyQuizSend {
+  id                String    @id @default(cuid())
+  userId            String
+  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sentAt            DateTime  @default(now())
+  course            String    // course these 3 questions were pulled from (ApCourse value)
+  emailToken        String    @unique // UUID — embedded in every deep-link for this send
+  weakQuestionId    String
+  boosterQuestionId String
+  trapQuestionId    String
+  openedAt          DateTime?
+  answeredAt        DateTime?
+
+  @@index([userId, sentAt])
+  @@map("daily_quiz_sends")
+}
+
+// Anonymous lead captured from /am-i-ready exit-intent modal. No User FK —
+// these are visitors who haven't registered. When they later register with
+// the same email, the onboarding flow can link their result history.
+model AmIReadyLead {
+  id          String   @id @default(cuid())
+  email       String
+  course      String   // ApCourse value — string (not enum) so we can accept
+                       // future courses without enum migrations.
+  family      String   // "AP" | "SAT" | "ACT"
+  scaledScore Float
+  courseName  String
+  source      String   @default("exit_intent") // future: "footer_capture", "cta_bar", etc.
+  emailedAt   DateTime?
+  convertedAt DateTime? // set when this email signs up
+  createdAt   DateTime @default(now())
+
+  @@index([email])
+  @@index([createdAt])
+  @@map("am_i_ready_leads")
 }
 
 model ModuleSubscription {
