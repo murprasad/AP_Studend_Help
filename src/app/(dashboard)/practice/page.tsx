@@ -16,6 +16,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { CourseSelectorInline } from "@/components/layout/course-selector-inline";
 import { SessionFeedbackPopup } from "@/components/feedback/session-feedback-popup";
 import { SessionDeltaCard } from "@/components/practice/session-delta-card";
+import { useExamMode } from "@/hooks/use-exam-mode";
 import {
   Zap,
   BookOpen,
@@ -95,6 +96,15 @@ export default function PracticePage() {
   const [sessionLimitReached, setSessionLimitReached] = useState(false);
 
   const [mode, setMode] = useState<PracticeMode>("select");
+
+  // Full-screen exam mode for active practice sessions. Hides sidebar +
+  // Sage + mobile header while the student is in a question, matching
+  // diagnostic / mock-exam / ai-tutor. Auto-exits on unmount.
+  const { enterExamMode, exitExamMode } = useExamMode();
+  useEffect(() => {
+    if (mode === "practicing") enterExamMode();
+    else exitExamMode();
+  }, [mode, enterExamMode, exitExamMode]);
   const [selectedUnit, setSelectedUnit] = useState<string>("ALL");
   const [selectedDifficulty, setSelectedDifficulty] = useState<string>("ALL");
   const [questionCount, setQuestionCount] = useState(10);
