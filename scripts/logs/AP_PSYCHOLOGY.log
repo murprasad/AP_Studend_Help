@@ -1,0 +1,109 @@
+── Pass 1 for AP_PSYCHOLOGY (Thu, Apr 16, 2026  8:11:40 AM) ──
+(node:19880) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/akkil/project/AP_Help/scripts/populate-all.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\akkil\project\AP_Help\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+🔐 Authenticating murprasad@yahoo.com at http://localhost:3002...
+✅ Logged in as murprasad@yahoo.com (ADMIN)
+
+  (filtered to AP_PSYCHOLOGY)
+
+📚 AP_PSYCHOLOGY
+  ├─ PSYCH_1_SCIENTIFIC_FOUNDATIONS             [chunk 1, target=15] ✅ +10 (E:3 M:5 H:2), 0 fail, 130.9s
+  ├─ PSYCH_1_SCIENTIFIC_FOUNDATIONS             [chunk 2, target=30] ✅ +9 (E:4 M:3 H:2), 6 fail, 273.4s
+  ├─ PSYCH_1_SCIENTIFIC_FOUNDATIONS             [chunk 3, target=45] ❌ fetch failed
+     └─ unit done: +19, 7 failed
+  ├─ PSYCH_2_BIOLOGICAL_BASES                   [chunk 1, target=15] ⏩ already at 15 (1.0s)
+  ├─ PSYCH_2_BIOLOGICAL_BASES                   [chunk 2, target=30] ⏩ already at 30 (0.3s)
+  ├─ PSYCH_2_BIOLOGICAL_BASES                   [chunk 3, target=45] ⏩ already at 45 (0.3s)
+  ├─ PSYCH_2_BIOLOGICAL_BASES                   [chunk 4, target=55] ✅ +3 (E:1 M:1 H:1), 2 fail, 125.2s
+  ├─ PSYCH_2_BIOLOGICAL_BASES                   [chunk 5, target=55] ✅ +1 (E:1 M:0 H:0), 1 fail, 43.7s
+  ├─ PSYCH_2_BIOLOGICAL_BASES                   [chunk 6, target=55] ✅ +0 (E:0 M:0 H:0), 1 fail, 25.2s
+     └─ unit done: +4, 4 failed
+  ├─ PSYCH_3_SENSATION_PERCEPTION               [chunk 1, target=15] ✅ +1 (E:0 M:1 H:0), 10 fail, 260.4s
+  ├─ PSYCH_3_SENSATION_PERCEPTION               [chunk 2, target=30] ❌ fetch failed
+     └─ unit done: +1, 11 failed
+  ├─ PSYCH_4_LEARNING                           [chunk 1, target=15] ✅ +3 (E:0 M:2 H:1), 7 fail, 215.9s
+  ├─ PSYCH_4_LEARNING                           [chunk 2, target=30] ❌ fetch failed
+     └─ unit done: +3, 8 failed
+  ├─ PSYCH_5_COGNITION                          [chunk 1, target=15] ⏩ already at 15 (0.1s)
+  ├─ PSYCH_5_COGNITION                          [chunk 2, target=30] ⏩ already at 30 (0.1s)
+  ├─ PSYCH_5_COGNITION                          [chunk 3, target=45] ⏩ already at 45 (0.1s)
+  ├─ PSYCH_5_COGNITION                          [chunk 4, target=55] ❌ The operation was aborted due to timeout
+     └─ unit done: +0, 1 failed
+  ├─ PSYCH_6_DEVELOPMENTAL                      [chunk 1, target=15] ⏩ already at 15 (2.6s)
+  ├─ PSYCH_6_DEVELOPMENTAL                      [chunk 2, target=30] ⏩ already at 30 (6.5s)
+  ├─ PSYCH_6_DEVELOPMENTAL                      [chunk 3, target=45] ⏩ already at 45 (1.9s)
+  ├─ PSYCH_6_DEVELOPMENTAL                      [chunk 4, target=55] ✅ +2 (E:0 M:2 H:0), 3 fail, 89.2s
+  ├─ PSYCH_6_DEVELOPMENTAL                      [chunk 5, target=55] ✅ +3 (E:1 M:1 H:1), 0 fail, 26.1s
+  ├─ PSYCH_6_DEVELOPMENTAL                      [chunk 6, target=55] ⏩ already at 55 (0.1s)
+     └─ unit done: +5, 3 failed
+  ├─ PSYCH_7_MOTIVATION_EMOTION                 [chunk 1, target=15] ✅ +5 (E:2 M:2 H:1), 6 fail, 230.6s
+  ├─ PSYCH_7_MOTIVATION_EMOTION                 [chunk 2, target=30] ❌ fetch failed
+     └─ unit done: +5, 7 failed
+  ├─ PSYCH_8_CLINICAL                           [chunk 1, target=15] ⏩ already at 15 (0.4s)
+  ├─ PSYCH_8_CLINICAL                           [chunk 2, target=30] ⏩ already at 30 (0.1s)
+  ├─ PSYCH_8_CLINICAL                           [chunk 3, target=45] ⏩ already at 45 (0.1s)
+  ├─ PSYCH_8_CLINICAL                           [chunk 4, target=55] ✅ +2 (E:0 M:1 H:1), 3 fail, 117.1s
+  ├─ PSYCH_8_CLINICAL                           [chunk 5, target=55] ✅ +1 (E:0 M:0 H:1), 2 fail, 60.7s
+  ├─ PSYCH_8_CLINICAL                           [chunk 6, target=55] ✅ +1 (E:0 M:1 H:0), 1 fail, 36.1s
+  ├─ PSYCH_8_CLINICAL                           [chunk 7, target=55] ✅ +0 (E:0 M:0 H:0), 1 fail, 26.8s
+     └─ unit done: +4, 7 failed
+  ├─ PSYCH_9_SOCIAL                             [chunk 1, target=15] ⏩ already at 15 (0.2s)
+  ├─ PSYCH_9_SOCIAL                             [chunk 2, target=30] ⏩ already at 30 (0.1s)
+  ├─ PSYCH_9_SOCIAL                             [chunk 3, target=45] ⏩ already at 45 (0.1s)
+  ├─ PSYCH_9_SOCIAL                             [chunk 4, target=55] ✅ +2 (E:0 M:1 H:1), 3 fail, 118.2s
+  ├─ PSYCH_9_SOCIAL                             [chunk 5, target=55] ✅ +1 (E:0 M:1 H:0), 2 fail, 91.1s
+  ├─ PSYCH_9_SOCIAL                             [chunk 6, target=55] ✅ +1 (E:0 M:1 H:0), 1 fail, 31.8s
+  ├─ PSYCH_9_SOCIAL                             [chunk 7, target=55] ✅ +1 (E:0 M:1 H:0), 0 fail, 2.6s
+  ├─ PSYCH_9_SOCIAL                             [chunk 8, target=55] ⏩ already at 55 (0.3s)
+     └─ unit done: +5, 6 failed
+
+════════════════════════════════════════
+Total generated: 46
+Total failed:    54
+Elapsed:         100.9 min
+════════════════════════════════════════
+── Pass 2 for AP_PSYCHOLOGY (Thu, Apr 16, 2026  9:52:51 AM) ──
+(node:31716) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/akkil/project/AP_Help/scripts/populate-all.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\akkil\project\AP_Help\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+🔐 Authenticating murprasad@yahoo.com at http://localhost:3002...
+✅ Logged in as murprasad@yahoo.com (ADMIN)
+
+  (filtered to AP_PSYCHOLOGY)
+
+📚 AP_PSYCHOLOGY
+  ├─ PSYCH_1_SCIENTIFIC_FOUNDATIONS             [chunk 1, target=15] ⏩ already at 15 (0.7s)
+  ├─ PSYCH_1_SCIENTIFIC_FOUNDATIONS             [chunk 2, target=30] ⏩ already at 30 (0.3s)
+  ├─ PSYCH_1_SCIENTIFIC_FOUNDATIONS             [chunk 3, target=45] ⏩ already at 45 (0.4s)
+  ├─ PSYCH_1_SCIENTIFIC_FOUNDATIONS             [chunk 4, target=55] ✅ +2 (E:1 M:1 H:0), 1 fail, 55.5s
+  ├─ PSYCH_1_SCIENTIFIC_FOUNDATIONS             [chunk 5, target=55] ✅ +0 (E:0 M:0 H:0), 1 fail, 24.3s
+     └─ unit done: +2, 2 failed
+  ├─ PSYCH_2_BIOLOGICAL_BASES                   [chunk 1, target=15] ⏩ already at 15 (0.7s)
+  ├─ PSYCH_2_BIOLOGICAL_BASES                   [chunk 2, target=30] ⏩ already at 30 (0.3s)
+  ├─ PSYCH_2_BIOLOGICAL_BASES                   [chunk 3, target=45] ⏩ already at 45 (0.2s)
+  ├─ PSYCH_2_BIOLOGICAL_BASES                   [chunk 4, target=55] ✅ +0 (E:0 M:0 H:0), 1 fail, 19.7s
+     └─ unit done: +0, 1 failed
+  ├─ PSYCH_3_SENSATION_PERCEPTION               [chunk 1, target=15] ⏩ already at 15 (0.1s)
+  ├─ PSYCH_3_SENSATION_PERCEPTION               [chunk 2, target=30] ✅ +2 (E:1 M:1 H:0), 10 fail, 296.7s
+  ├─ PSYCH_3_SENSATION_PERCEPTION               [chunk 3, target=45] ❌ fetch failed
+     └─ unit done: +2, 11 failed
+  ├─ PSYCH_4_LEARNING                           [chunk 1, target=15] ⏩ already at 15 (0.1s)
+  ├─ PSYCH_4_LEARNING                           [chunk 2, target=30] ⏩ already at 30 (0.2s)
+  ├─ PSYCH_4_LEARNING                           [chunk 3, target=45] ✅ +4 (E:0 M:3 H:1), 8 fail, 218.3s
+  ├─ PSYCH_4_LEARNING                           [chunk 4, target=55] ❌ The operation was aborted due to timeout
+     └─ unit done: +4, 9 failed
+  ├─ PSYCH_5_COGNITION                          [chunk 1, target=15] ⏩ already at 15 (5.4s)
+  ├─ PSYCH_5_COGNITION                          [chunk 2, target=30] ⏩ already at 30 (0.1s)
+  ├─ PSYCH_5_COGNITION                          [chunk 3, target=45] ⏩ already at 45 (1.9s)
+  ├─ PSYCH_5_COGNITION                          [chunk 4, target=55] ✅ +0 (E:0 M:0 H:0), 2 fail, 53.6s
+     └─ unit done: +0, 2 failed
+  ├─ PSYCH_6_DEVELOPMENTAL                      [chunk 1, target=15] ⏩ already at 15 (0.3s)
+  ├─ PSYCH_6_DEVELOPMENTAL                      [chunk 2, target=30] ⏩ already at 30 (0.4s)
+  ├─ PSYCH_6_DEVELOPMENTAL                      [chunk 3, target=45] ⏩ already at 45 (0.5s)
+  ├─ PSYCH_6_DEVELOPMENTAL                      [chunk 4, target=55] ⏩ already at 55 (0.4s)
+     └─ unit done: +0, 0 failed
+  ├─ PSYCH_7_MOTIVATION_EMOTION                 [chunk 1, target=15] ⏩ already at 15 (0.1s)
+  ├─ PSYCH_7_MOTIVATION_EMOTION                 [chunk 2, target=30] 

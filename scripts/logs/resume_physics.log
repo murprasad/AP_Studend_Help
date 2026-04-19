@@ -1,0 +1,90 @@
+(node:21144) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/akkil/project/AP_Help/scripts/populate-all.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\akkil\project\AP_Help\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+🔐 Authenticating murprasad@yahoo.com at http://localhost:3000...
+✅ Logged in as murprasad@yahoo.com (ADMIN)
+
+  (filtered to AP_PHYSICS_1)
+
+📚 AP_PHYSICS_1
+  ├─ PHY1_1_KINEMATICS                          [chunk 1, target=10] ⏩ already at 10 (0.2s)
+  ├─ PHY1_1_KINEMATICS                          [chunk 2, target=20] ⏩ already at 20 (0.2s)
+  ├─ PHY1_1_KINEMATICS                          [chunk 3, target=30] ✅ +1 (E:0 M:1 H:0), 4 fail, 159.8s
+  ├─ PHY1_1_KINEMATICS                          [chunk 4, target=40] ❌ fetch failed
+     └─ unit done: +1, 5 failed
+  ├─ PHY1_2_FORCES_AND_NEWTONS_LAWS             [chunk 1, target=10] ⏩ already at 10 (0.4s)
+  ├─ PHY1_2_FORCES_AND_NEWTONS_LAWS             [chunk 2, target=20] ⏩ already at 20 (0.2s)
+  ├─ PHY1_2_FORCES_AND_NEWTONS_LAWS             [chunk 3, target=30] (node:15204) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/akkil/project/AP_Help/scripts/populate-all.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\akkil\project\AP_Help\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+🔐 Authenticating murprasad@yahoo.com at http://localhost:3000...
+✅ Logged in as murprasad@yahoo.com (ADMIN)
+
+  (filtered to AP_PHYSICS_1)
+
+📚 AP_PHYSICS_1
+  ├─ PHY1_1_KINEMATICS                          [chunk 1, target=5] ⏩ already at 5 (0.4s)
+  ├─ PHY1_1_KINEMATICS                          [chunk 2, target=10] ⏩ already at 10 (0.1s)
+  ├─ PHY1_1_KINEMATICS                          [chunk 3, target=15] ⏩ already at 15 (0.1s)
+  ├─ PHY1_1_KINEMATICS                          [chunk 4, target=20] ⏩ already at 20 (0.1s)
+  ├─ PHY1_1_KINEMATICS                          [chunk 5, target=25] ⏩ already at 25 (0.1s)
+  ├─ PHY1_1_KINEMATICS                          [chunk 6, target=30] ✅ +0 (E:0 M:0 H:0), 4 fail, 147.7s
+  ├─ PHY1_1_KINEMATICS                          [chunk 7, target=35] ❌ fetch failed
+     └─ unit done: +0, 5 failed
+  ├─ PHY1_2_FORCES_AND_NEWTONS_LAWS             [chunk 1, target=5] ⏩ already at 5 (0.3s)
+  ├─ PHY1_2_FORCES_AND_NEWTONS_LAWS             [chunk 2, target=10] ⏩ already at 10 (0.1s)
+  ├─ PHY1_2_FORCES_AND_NEWTONS_LAWS             [chunk 3, target=15] ⏩ already at 15 (0.3s)
+  ├─ PHY1_2_FORCES_AND_NEWTONS_LAWS             [chunk 4, target=20] ⏩ already at 20 (0.1s)
+  ├─ PHY1_2_FORCES_AND_NEWTONS_LAWS             [chunk 5, target=25] ⏩ already at 25 (0.1s)
+  ├─ PHY1_2_FORCES_AND_NEWTONS_LAWS             [chunk 6, target=30] ✅ +0 (E:0 M:0 H:0), 4 fail, 143.3s
+  ├─ PHY1_2_FORCES_AND_NEWTONS_LAWS             [chunk 7, target=35] (node:20136) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/akkil/project/AP_Help/scripts/populate-all.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\akkil\project\AP_Help\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+🔐 Authenticating murprasad@yahoo.com at http://localhost:3000...
+✅ Logged in as murprasad@yahoo.com (ADMIN)
+
+  (filtered to AP_PHYSICS_1)
+
+📚 AP_PHYSICS_1
+  ├─ PHY1_1_KINEMATICS                          [chunk 1, target=5] ⏩ already at 5 (0.1s)
+  ├─ PHY1_1_KINEMATICS                          [chunk 2, target=10] ⏩ already at 10 (0.1s)
+  ├─ PHY1_1_KINEMATICS                          [chunk 3, target=15] ⏩ already at 15 (0.3s)
+  ├─ PHY1_1_KINEMATICS                          [chunk 4, target=20] ⏩ already at 20 (0.1s)
+  ├─ PHY1_1_KINEMATICS                          [chunk 5, target=25] ⏩ already at 25 (0.1s)
+  ├─ PHY1_1_KINEMATICS                          [chunk 6, target=30] ✅ +0 (E:0 M:0 H:0), 2 fail, 59.5s
+  ├─ PHY1_1_KINEMATICS                          [chunk 7, target=35] ✅ +1 (E:0 M:1 H:0), 6 fail, 259.5s
+  ├─ PHY1_1_KINEMATICS                          [chunk 8, target=40] ❌ fetch failed
+     └─ unit done: +1, 9 failed
+  ├─ PHY1_2_FORCES_AND_NEWTONS_LAWS             [chunk 1, target=5] ⏩ already at 5 (0.5s)
+  ├─ PHY1_2_FORCES_AND_NEWTONS_LAWS             [chunk 2, target=10] ⏩ already at 10 (0.3s)
+  ├─ PHY1_2_FORCES_AND_NEWTONS_LAWS             [chunk 3, target=15] ⏩ already at 15 (0.2s)
+  ├─ PHY1_2_FORCES_AND_NEWTONS_LAWS             [chunk 4, target=20] ⏩ already at 20 (0.4s)
+  ├─ PHY1_2_FORCES_AND_NEWTONS_LAWS             [chunk 5, target=25] ⏩ already at 25 (0.1s)
+  ├─ PHY1_2_FORCES_AND_NEWTONS_LAWS             [chunk 6, target=30] ✅ +2 (E:1 M:1 H:0), 1 fail, 65.8s
+  ├─ PHY1_2_FORCES_AND_NEWTONS_LAWS             [chunk 7, target=35] ✅ +1 (E:1 M:0 H:0), 5 fail, 187.3s
+  ├─ PHY1_2_FORCES_AND_NEWTONS_LAWS             [chunk 8, target=40] ❌ fetch failed
+     └─ unit done: +3, 7 failed
+  ├─ PHY1_3_CIRCULAR_MOTION_GRAVITATION         [chunk 1, target=5] ⏩ already at 5 (0.3s)
+  ├─ PHY1_3_CIRCULAR_MOTION_GRAVITATION         [chunk 2, target=10] ⏩ already at 10 (0.1s)
+  ├─ PHY1_3_CIRCULAR_MOTION_GRAVITATION         [chunk 3, target=15] ⏩ already at 15 (0.3s)
+  ├─ PHY1_3_CIRCULAR_MOTION_GRAVITATION         [chunk 4, target=20] ⏩ already at 20 (0.2s)
+  ├─ PHY1_3_CIRCULAR_MOTION_GRAVITATION         [chunk 5, target=25] ⏩ already at 25 (0.1s)
+  ├─ PHY1_3_CIRCULAR_MOTION_GRAVITATION         [chunk 6, target=30] ✅ +1 (E:0 M:0 H:1), 4 fail, 195.6s
+  ├─ PHY1_3_CIRCULAR_MOTION_GRAVITATION         [chunk 7, target=35] ❌ fetch failed
+     └─ unit done: +1, 5 failed
+  ├─ PHY1_4_ENERGY                              [chunk 1, target=5] ⏩ already at 5 (0.3s)
+  ├─ PHY1_4_ENERGY                              [chunk 2, target=10] ⏩ already at 10 (0.1s)
+  ├─ PHY1_4_ENERGY                              [chunk 3, target=15] ⏩ already at 15 (0.1s)
+  ├─ PHY1_4_ENERGY                              [chunk 4, target=20] ⏩ already at 20 (0.1s)
+  ├─ PHY1_4_ENERGY                              [chunk 5, target=25] ⏩ already at 25 (0.1s)
+  ├─ PHY1_4_ENERGY                              [chunk 6, target=30] ✅ +2 (E:1 M:1 H:0), 3 fail, 170.2s
+  ├─ PHY1_4_ENERGY                              [chunk 7, target=35] ❌ The operation was aborted due to timeout
+     └─ unit done: +2, 4 failed
+  ├─ PHY1_5_MOMENTUM                            [chunk 1, target=5] ⏩ already at 5 (10.1s)
+  ├─ PHY1_5_MOMENTUM                            [chunk 2, target=10] ⏩ already at 10 (1.8s)
+  ├─ PHY1_5_MOMENTUM                            [chunk 3, target=15] ⏩ already at 15 (0.7s)
+  ├─ PHY1_5_MOMENTUM                            [chunk 4, target=20] ⏩ already at 20 (0.4s)
+  ├─ PHY1_5_MOMENTUM                            [chunk 5, target=25] 

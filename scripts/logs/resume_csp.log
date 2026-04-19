@@ -1,0 +1,110 @@
+(node:22872) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/akkil/project/AP_Help/scripts/populate-all.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\akkil\project\AP_Help\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+🔐 Authenticating murprasad@yahoo.com at http://localhost:3000...
+✅ Logged in as murprasad@yahoo.com (ADMIN)
+
+  (filtered to AP_COMPUTER_SCIENCE_PRINCIPLES)
+
+📚 AP_COMPUTER_SCIENCE_PRINCIPLES
+  ├─ CSP_1_CREATIVE_DEVELOPMENT                 [chunk 1, target=10] ⏩ already at 10 (0.1s)
+  ├─ CSP_1_CREATIVE_DEVELOPMENT                 [chunk 2, target=20] ⏩ already at 20 (0.1s)
+  ├─ CSP_1_CREATIVE_DEVELOPMENT                 [chunk 3, target=30] ⏩ already at 30 (0.2s)
+  ├─ CSP_1_CREATIVE_DEVELOPMENT                 [chunk 4, target=40] ✅ +1 (E:0 M:0 H:1), 2 fail, 74.1s
+  ├─ CSP_1_CREATIVE_DEVELOPMENT                 [chunk 5, target=50] ❌ fetch failed
+     └─ unit done: +1, 3 failed
+  ├─ CSP_2_DATA                                 [chunk 1, target=10] ⏩ already at 10 (0.1s)
+  ├─ CSP_2_DATA                                 [chunk 2, target=20] ⏩ already at 20 (0.1s)
+  ├─ CSP_2_DATA                                 [chunk 3, target=30] ⏩ already at 30 (0.3s)
+  ├─ CSP_2_DATA                                 [chunk 4, target=40] ✅ +1 (E:0 M:1 H:0), 5 fail, 155.0s
+  ├─ CSP_2_DATA                                 [chunk 5, target=50] (node:6352) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/akkil/project/AP_Help/scripts/populate-all.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\akkil\project\AP_Help\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+🔐 Authenticating murprasad@yahoo.com at http://localhost:3000...
+✅ Logged in as murprasad@yahoo.com (ADMIN)
+
+  (filtered to AP_COMPUTER_SCIENCE_PRINCIPLES)
+
+📚 AP_COMPUTER_SCIENCE_PRINCIPLES
+  ├─ CSP_1_CREATIVE_DEVELOPMENT                 [chunk 1, target=5] ⏩ already at 5 (0.1s)
+  ├─ CSP_1_CREATIVE_DEVELOPMENT                 [chunk 2, target=10] ⏩ already at 10 (0.1s)
+  ├─ CSP_1_CREATIVE_DEVELOPMENT                 [chunk 3, target=15] ⏩ already at 15 (0.2s)
+  ├─ CSP_1_CREATIVE_DEVELOPMENT                 [chunk 4, target=20] ⏩ already at 20 (0.3s)
+  ├─ CSP_1_CREATIVE_DEVELOPMENT                 [chunk 5, target=25] ⏩ already at 25 (0.1s)
+  ├─ CSP_1_CREATIVE_DEVELOPMENT                 [chunk 6, target=30] ⏩ already at 30 (0.1s)
+  ├─ CSP_1_CREATIVE_DEVELOPMENT                 [chunk 7, target=35] ⏩ already at 35 (0.1s)
+  ├─ CSP_1_CREATIVE_DEVELOPMENT                 [chunk 8, target=40] ✅ +1 (E:0 M:1 H:0), 0 fail, 17.6s
+  ├─ CSP_1_CREATIVE_DEVELOPMENT                 [chunk 9, target=45] ✅ +1 (E:0 M:0 H:1), 4 fail, 136.9s
+  ├─ CSP_1_CREATIVE_DEVELOPMENT                 [chunk 10, target=50] ✅ +1 (E:0 M:0 H:1), 8 fail, 207.1s
+  ├─ CSP_1_CREATIVE_DEVELOPMENT                 [chunk 11, target=55] ❌ fetch failed
+     └─ unit done: +3, 13 failed
+  ├─ CSP_2_DATA                                 [chunk 1, target=5] ⏩ already at 5 (0.3s)
+  ├─ CSP_2_DATA                                 [chunk 2, target=10] ⏩ already at 10 (0.1s)
+  ├─ CSP_2_DATA                                 [chunk 3, target=15] ⏩ already at 15 (0.1s)
+  ├─ CSP_2_DATA                                 [chunk 4, target=20] ⏩ already at 20 (0.1s)
+  ├─ CSP_2_DATA                                 [chunk 5, target=25] ⏩ already at 25 (0.3s)
+  ├─ CSP_2_DATA                                 [chunk 6, target=30] ⏩ already at 30 (0.3s)
+  ├─ CSP_2_DATA                                 [chunk 7, target=35] ⏩ already at 35 (0.1s)
+  ├─ CSP_2_DATA                                 [chunk 8, target=40] ✅ +0 (E:0 M:0 H:0), 5 fail, 151.8s
+  ├─ CSP_2_DATA                                 [chunk 9, target=45] (node:18832) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/akkil/project/AP_Help/scripts/populate-all.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\akkil\project\AP_Help\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+🔐 Authenticating murprasad@yahoo.com at http://localhost:3000...
+✅ Logged in as murprasad@yahoo.com (ADMIN)
+
+  (filtered to AP_COMPUTER_SCIENCE_PRINCIPLES)
+
+📚 AP_COMPUTER_SCIENCE_PRINCIPLES
+  ├─ CSP_1_CREATIVE_DEVELOPMENT                 [chunk 1, target=5] ⏩ already at 5 (0.1s)
+  ├─ CSP_1_CREATIVE_DEVELOPMENT                 [chunk 2, target=10] ⏩ already at 10 (0.2s)
+  ├─ CSP_1_CREATIVE_DEVELOPMENT                 [chunk 3, target=15] ⏩ already at 15 (0.1s)
+  ├─ CSP_1_CREATIVE_DEVELOPMENT                 [chunk 4, target=20] ⏩ already at 20 (0.3s)
+  ├─ CSP_1_CREATIVE_DEVELOPMENT                 [chunk 5, target=25] ⏩ already at 25 (0.3s)
+  ├─ CSP_1_CREATIVE_DEVELOPMENT                 [chunk 6, target=30] ⏩ already at 30 (0.1s)
+  ├─ CSP_1_CREATIVE_DEVELOPMENT                 [chunk 7, target=35] ⏩ already at 35 (0.1s)
+  ├─ CSP_1_CREATIVE_DEVELOPMENT                 [chunk 8, target=40] ⏩ already at 40 (0.1s)
+  ├─ CSP_1_CREATIVE_DEVELOPMENT                 [chunk 9, target=45] ✅ +0 (E:0 M:0 H:0), 3 fail, 65.9s
+  ├─ CSP_1_CREATIVE_DEVELOPMENT                 [chunk 10, target=50] ✅ +1 (E:0 M:1 H:0), 7 fail, 199.8s
+  ├─ CSP_1_CREATIVE_DEVELOPMENT                 [chunk 11, target=55] ❌ fetch failed
+     └─ unit done: +1, 11 failed
+  ├─ CSP_2_DATA                                 [chunk 1, target=5] ⏩ already at 5 (0.5s)
+  ├─ CSP_2_DATA                                 [chunk 2, target=10] ⏩ already at 10 (0.2s)
+  ├─ CSP_2_DATA                                 [chunk 3, target=15] ⏩ already at 15 (0.2s)
+  ├─ CSP_2_DATA                                 [chunk 4, target=20] ⏩ already at 20 (0.1s)
+  ├─ CSP_2_DATA                                 [chunk 5, target=25] ⏩ already at 25 (0.1s)
+  ├─ CSP_2_DATA                                 [chunk 6, target=30] ⏩ already at 30 (0.1s)
+  ├─ CSP_2_DATA                                 [chunk 7, target=35] ⏩ already at 35 (0.2s)
+  ├─ CSP_2_DATA                                 [chunk 8, target=40] ✅ +0 (E:0 M:0 H:0), 3 fail, 78.5s
+  ├─ CSP_2_DATA                                 [chunk 9, target=45] ✅ +0 (E:0 M:0 H:0), 8 fail, 228.1s
+  ├─ CSP_2_DATA                                 [chunk 10, target=50] ❌ fetch failed
+     └─ unit done: +0, 12 failed
+  ├─ CSP_3_ALGORITHMS_AND_PROGRAMMING           [chunk 1, target=5] ⏩ already at 5 (0.1s)
+  ├─ CSP_3_ALGORITHMS_AND_PROGRAMMING           [chunk 2, target=10] ⏩ already at 10 (0.1s)
+  ├─ CSP_3_ALGORITHMS_AND_PROGRAMMING           [chunk 3, target=15] ⏩ already at 15 (0.1s)
+  ├─ CSP_3_ALGORITHMS_AND_PROGRAMMING           [chunk 4, target=20] ⏩ already at 20 (0.1s)
+  ├─ CSP_3_ALGORITHMS_AND_PROGRAMMING           [chunk 5, target=25] ⏩ already at 25 (0.1s)
+  ├─ CSP_3_ALGORITHMS_AND_PROGRAMMING           [chunk 6, target=30] ✅ +2 (E:0 M:1 H:1), 3 fail, 106.6s
+  ├─ CSP_3_ALGORITHMS_AND_PROGRAMMING           [chunk 7, target=35] ✅ +0 (E:0 M:0 H:0), 8 fail, 228.9s
+  ├─ CSP_3_ALGORITHMS_AND_PROGRAMMING           [chunk 8, target=40] ❌ fetch failed
+     └─ unit done: +2, 12 failed
+  ├─ CSP_4_COMPUTER_SYSTEMS_NETWORKS            [chunk 1, target=5] ⏩ already at 5 (0.2s)
+  ├─ CSP_4_COMPUTER_SYSTEMS_NETWORKS            [chunk 2, target=10] ⏩ already at 10 (0.1s)
+  ├─ CSP_4_COMPUTER_SYSTEMS_NETWORKS            [chunk 3, target=15] ⏩ already at 15 (0.1s)
+  ├─ CSP_4_COMPUTER_SYSTEMS_NETWORKS            [chunk 4, target=20] ⏩ already at 20 (0.1s)
+  ├─ CSP_4_COMPUTER_SYSTEMS_NETWORKS            [chunk 5, target=25] ⏩ already at 25 (0.1s)
+  ├─ CSP_4_COMPUTER_SYSTEMS_NETWORKS            [chunk 6, target=30] ⏩ already at 30 (0.1s)
+  ├─ CSP_4_COMPUTER_SYSTEMS_NETWORKS            [chunk 7, target=35] ✅ +0 (E:0 M:0 H:0), 3 fail, 83.2s
+  ├─ CSP_4_COMPUTER_SYSTEMS_NETWORKS            [chunk 8, target=40] ❌ The operation was aborted due to timeout
+     └─ unit done: +0, 4 failed
+  ├─ CSP_5_IMPACT_OF_COMPUTING                  [chunk 1, target=5] ⏩ already at 5 (10.3s)
+  ├─ CSP_5_IMPACT_OF_COMPUTING                  [chunk 2, target=10] ⏩ already at 10 (0.6s)
+  ├─ CSP_5_IMPACT_OF_COMPUTING                  [chunk 3, target=15] ⏩ already at 15 (1.4s)
+  ├─ CSP_5_IMPACT_OF_COMPUTING                  [chunk 4, target=20] ⏩ already at 20 (0.1s)
+  ├─ CSP_5_IMPACT_OF_COMPUTING                  [chunk 5, target=25] ⏩ already at 25 (0.5s)
+  ├─ CSP_5_IMPACT_OF_COMPUTING                  [chunk 6, target=30] ⏩ already at 30 (0.1s)
+  ├─ CSP_5_IMPACT_OF_COMPUTING                  [chunk 7, target=35] ⏩ already at 35 (0.1s)
+  ├─ CSP_5_IMPACT_OF_COMPUTING                  [chunk 8, target=40] ✅ +0 (E:0 M:0 H:0), 3 fail, 77.2s
+  ├─ CSP_5_IMPACT_OF_COMPUTING                  [chunk 9, target=45] 

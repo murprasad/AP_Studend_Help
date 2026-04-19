@@ -1,0 +1,95 @@
+── Pass 1 for AP_COMPUTER_SCIENCE_PRINCIPLES (Thu, Apr 16, 2026  8:11:28 AM) ──
+(node:20580) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/akkil/project/AP_Help/scripts/populate-all.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\akkil\project\AP_Help\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+🔐 Authenticating murprasad@yahoo.com at http://localhost:3002...
+✅ Logged in as murprasad@yahoo.com (ADMIN)
+
+  (filtered to AP_COMPUTER_SCIENCE_PRINCIPLES)
+
+📚 AP_COMPUTER_SCIENCE_PRINCIPLES
+  ├─ CSP_1_CREATIVE_DEVELOPMENT                 [chunk 1, target=15] ⏩ already at 15 (0.1s)
+  ├─ CSP_1_CREATIVE_DEVELOPMENT                 [chunk 2, target=30] ✅ +3 (E:1 M:1 H:1), 0 fail, 89.6s
+  ├─ CSP_1_CREATIVE_DEVELOPMENT                 [chunk 3, target=45] ❌ fetch failed
+     └─ unit done: +3, 1 failed
+  ├─ CSP_2_DATA                                 [chunk 1, target=15] ⏩ already at 15 (0.1s)
+  ├─ CSP_2_DATA                                 [chunk 2, target=30] ✅ +0 (E:0 M:0 H:0), 1 fail, 25.4s
+  ├─ CSP_2_DATA                                 [chunk 3, target=45] ❌ fetch failed
+     └─ unit done: +0, 2 failed
+  ├─ CSP_3_ALGORITHMS_AND_PROGRAMMING           [chunk 1, target=15] ✅ +0 (E:0 M:0 H:0), 4 fail, 119.9s
+  ├─ CSP_3_ALGORITHMS_AND_PROGRAMMING           [chunk 2, target=30] ❌ fetch failed
+     └─ unit done: +0, 5 failed
+  ├─ CSP_4_COMPUTER_SYSTEMS_NETWORKS            [chunk 1, target=15] ⏩ already at 15 (3.0s)
+  ├─ CSP_4_COMPUTER_SYSTEMS_NETWORKS            [chunk 2, target=30] ✅ +0 (E:0 M:0 H:0), 2 fail, 58.3s
+  ├─ CSP_4_COMPUTER_SYSTEMS_NETWORKS            [chunk 3, target=45] ❌ fetch failed
+     └─ unit done: +0, 3 failed
+  ├─ CSP_5_IMPACT_OF_COMPUTING                  [chunk 1, target=15] ⏩ already at 15 (0.8s)
+  ├─ CSP_5_IMPACT_OF_COMPUTING                  [chunk 2, target=30] ✅ +1 (E:0 M:1 H:0), 0 fail, 17.5s
+  ├─ CSP_5_IMPACT_OF_COMPUTING                  [chunk 3, target=45] ❌ fetch failed
+     └─ unit done: +1, 1 failed
+
+════════════════════════════════════════
+Total generated: 4
+Total failed:    12
+Elapsed:         31.5 min
+════════════════════════════════════════
+── Pass 2 for AP_COMPUTER_SCIENCE_PRINCIPLES (Thu, Apr 16, 2026  8:43:35 AM) ──
+(node:24524) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/akkil/project/AP_Help/scripts/populate-all.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\akkil\project\AP_Help\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+🔐 Authenticating murprasad@yahoo.com at http://localhost:3002...
+✅ Logged in as murprasad@yahoo.com (ADMIN)
+
+  (filtered to AP_COMPUTER_SCIENCE_PRINCIPLES)
+
+📚 AP_COMPUTER_SCIENCE_PRINCIPLES
+  ├─ CSP_1_CREATIVE_DEVELOPMENT                 [chunk 1, target=15] ⏩ already at 15 (0.5s)
+  ├─ CSP_1_CREATIVE_DEVELOPMENT                 [chunk 2, target=30] ⏩ already at 30 (0.1s)
+  ├─ CSP_1_CREATIVE_DEVELOPMENT                 [chunk 3, target=45] ❌ The operation was aborted due to timeout
+     └─ unit done: +0, 1 failed
+  ├─ CSP_2_DATA                                 [chunk 1, target=15] ⏩ already at 15 (2.4s)
+  ├─ CSP_2_DATA                                 [chunk 2, target=30] ⏩ already at 30 (6.7s)
+  ├─ CSP_2_DATA                                 [chunk 3, target=45] ❌ fetch failed
+     └─ unit done: +0, 1 failed
+  ├─ CSP_3_ALGORITHMS_AND_PROGRAMMING           [chunk 1, target=15] ✅ +0 (E:0 M:0 H:0), 2 fail, 43.6s
+  ├─ CSP_3_ALGORITHMS_AND_PROGRAMMING           [chunk 2, target=30] ❌ fetch failed
+     └─ unit done: +0, 3 failed
+  ├─ CSP_4_COMPUTER_SYSTEMS_NETWORKS            [chunk 1, target=15] ⏩ already at 15 (0.5s)
+  ├─ CSP_4_COMPUTER_SYSTEMS_NETWORKS            [chunk 2, target=30] ⏩ already at 30 (0.1s)
+  ├─ CSP_4_COMPUTER_SYSTEMS_NETWORKS            [chunk 3, target=45] ❌ fetch failed
+     └─ unit done: +0, 1 failed
+  ├─ CSP_5_IMPACT_OF_COMPUTING                  [chunk 1, target=15] ⏩ already at 15 (0.7s)
+  ├─ CSP_5_IMPACT_OF_COMPUTING                  [chunk 2, target=30] ⏩ already at 30 (0.2s)
+  ├─ CSP_5_IMPACT_OF_COMPUTING                  [chunk 3, target=45] ✅ +2 (E:0 M:2 H:0), 9 fail, 310.4s
+  ├─ CSP_5_IMPACT_OF_COMPUTING                  [chunk 4, target=60] ❌ fetch failed
+     └─ unit done: +2, 10 failed
+
+════════════════════════════════════════
+Total generated: 2
+Total failed:    16
+Elapsed:         76.2 min
+════════════════════════════════════════
+── Pass 3 for AP_COMPUTER_SCIENCE_PRINCIPLES (Thu, Apr 16, 2026 10:00:05 AM) ──
+(node:26328) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/akkil/project/AP_Help/scripts/populate-all.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\akkil\project\AP_Help\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+🔐 Authenticating murprasad@yahoo.com at http://localhost:3002...
+✅ Logged in as murprasad@yahoo.com (ADMIN)
+
+  (filtered to AP_COMPUTER_SCIENCE_PRINCIPLES)
+
+📚 AP_COMPUTER_SCIENCE_PRINCIPLES
+  ├─ CSP_1_CREATIVE_DEVELOPMENT                 [chunk 1, target=15] ⏩ already at 15 (0.1s)
+  ├─ CSP_1_CREATIVE_DEVELOPMENT                 [chunk 2, target=30] ⏩ already at 30 (0.1s)
+  ├─ CSP_1_CREATIVE_DEVELOPMENT                 [chunk 3, target=45] ✅ +1 (E:0 M:0 H:1), 6 fail, 190.0s
+  ├─ CSP_1_CREATIVE_DEVELOPMENT                 [chunk 4, target=60] ❌ fetch failed
+     └─ unit done: +1, 7 failed
+  ├─ CSP_2_DATA                                 [chunk 1, target=15] ⏩ already at 15 (0.2s)
+  ├─ CSP_2_DATA                                 [chunk 2, target=30] ⏩ already at 30 (0.1s)
+  ├─ CSP_2_DATA                                 [chunk 3, target=45] ❌ The operation was aborted due to timeout
+     └─ unit done: +0, 1 failed
+  ├─ CSP_3_ALGORITHMS_AND_PROGRAMMING           [chunk 1, target=15] ⏩ already at 15 (5.2s)
+  ├─ CSP_3_ALGORITHMS_AND_PROGRAMMING           [chunk 2, target=30] 

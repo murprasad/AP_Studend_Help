@@ -1,0 +1,83 @@
+── Pass 1 for AP_BIOLOGY (Thu, Apr 16, 2026  8:11:45 AM) ──
+(node:28392) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/akkil/project/AP_Help/scripts/populate-all.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\akkil\project\AP_Help\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+🔐 Authenticating murprasad@yahoo.com at http://localhost:3002...
+✅ Logged in as murprasad@yahoo.com (ADMIN)
+
+  (filtered to AP_BIOLOGY)
+
+📚 AP_BIOLOGY
+  ├─ BIO_1_CHEMISTRY_OF_LIFE                    [chunk 1, target=15] ⏩ already at 15 (0.1s)
+  ├─ BIO_1_CHEMISTRY_OF_LIFE                    [chunk 2, target=30] ⏩ already at 30 (0.6s)
+  ├─ BIO_1_CHEMISTRY_OF_LIFE                    [chunk 3, target=45] ⏩ already at 45 (0.1s)
+  ├─ BIO_1_CHEMISTRY_OF_LIFE                    [chunk 4, target=60] ✅ +10 (E:3 M:5 H:2), 0 fail, 154.0s
+  ├─ BIO_1_CHEMISTRY_OF_LIFE                    [chunk 5, target=62] ✅ +1 (E:1 M:0 H:0), 1 fail, 36.5s
+  ├─ BIO_1_CHEMISTRY_OF_LIFE                    [chunk 6, target=62] ✅ +0 (E:0 M:0 H:0), 1 fail, 20.2s
+     └─ unit done: +11, 2 failed
+  ├─ BIO_2_CELL_STRUCTURE_FUNCTION              [chunk 1, target=15] ⏩ already at 15 (0.3s)
+  ├─ BIO_2_CELL_STRUCTURE_FUNCTION              [chunk 2, target=30] ⏩ already at 30 (0.2s)
+  ├─ BIO_2_CELL_STRUCTURE_FUNCTION              [chunk 3, target=45] ⏩ already at 45 (0.2s)
+  ├─ BIO_2_CELL_STRUCTURE_FUNCTION              [chunk 4, target=60] ✅ +2 (E:0 M:1 H:1), 8 fail, 263.1s
+  ├─ BIO_2_CELL_STRUCTURE_FUNCTION              [chunk 5, target=62] ✅ +1 (E:0 M:0 H:1), 9 fail, 244.6s
+  ├─ BIO_2_CELL_STRUCTURE_FUNCTION              [chunk 6, target=62] ✅ +1 (E:0 M:1 H:0), 8 fail, 277.8s
+  ├─ BIO_2_CELL_STRUCTURE_FUNCTION              [chunk 7, target=62] ✅ +0 (E:0 M:0 H:0), 8 fail, 228.0s
+     └─ unit done: +4, 33 failed
+  ├─ BIO_3_CELLULAR_ENERGETICS                  [chunk 1, target=15] ❌ fetch failed
+     └─ unit done: +0, 1 failed
+  ├─ BIO_4_CELL_COMMUNICATION                   [chunk 1, target=15] ❌ fetch failed
+     └─ unit done: +0, 1 failed
+  ├─ BIO_5_HEREDITY                             [chunk 1, target=15] ⏩ already at 15 (0.3s)
+  ├─ BIO_5_HEREDITY                             [chunk 2, target=30] ⏩ already at 30 (0.2s)
+  ├─ BIO_5_HEREDITY                             [chunk 3, target=45] ⏩ already at 45 (0.1s)
+  ├─ BIO_5_HEREDITY                             [chunk 4, target=60] ❌ The operation was aborted due to timeout
+     └─ unit done: +0, 1 failed
+  ├─ BIO_6_GENE_EXPRESSION                      [chunk 1, target=15] ✅ +0 (E:0 M:0 H:0), 11 fail, 292.4s
+  ├─ BIO_6_GENE_EXPRESSION                      [chunk 2, target=30] ❌ fetch failed
+     └─ unit done: +0, 12 failed
+  ├─ BIO_7_NATURAL_SELECTION                    [chunk 1, target=15] ⏩ already at 15 (9.1s)
+  ├─ BIO_7_NATURAL_SELECTION                    [chunk 2, target=30] ⏩ already at 30 (0.7s)
+  ├─ BIO_7_NATURAL_SELECTION                    [chunk 3, target=45] ⏩ already at 45 (0.1s)
+  ├─ BIO_7_NATURAL_SELECTION                    [chunk 4, target=60] ✅ +3 (E:2 M:1 H:0), 7 fail, 240.9s
+  ├─ BIO_7_NATURAL_SELECTION                    [chunk 5, target=62] ✅ +2 (E:0 M:2 H:0), 7 fail, 198.8s
+  ├─ BIO_7_NATURAL_SELECTION                    [chunk 6, target=62] ✅ +2 (E:1 M:0 H:1), 5 fail, 201.1s
+  ├─ BIO_7_NATURAL_SELECTION                    [chunk 7, target=62] ✅ +0 (E:0 M:0 H:0), 5 fail, 136.6s
+     └─ unit done: +7, 24 failed
+  ├─ BIO_8_ECOLOGY                              [chunk 1, target=15] ⏩ already at 15 (0.2s)
+  ├─ BIO_8_ECOLOGY                              [chunk 2, target=30] ⏩ already at 30 (0.1s)
+  ├─ BIO_8_ECOLOGY                              [chunk 3, target=45] ⏩ already at 45 (0.3s)
+  ├─ BIO_8_ECOLOGY                              [chunk 4, target=60] ✅ +1 (E:0 M:1 H:0), 9 fail, 260.8s
+  ├─ BIO_8_ECOLOGY                              [chunk 5, target=62] ✅ +1 (E:1 M:0 H:0), 10 fail, 283.9s
+  ├─ BIO_8_ECOLOGY                              [chunk 6, target=62] ✅ +0 (E:0 M:0 H:0), 10 fail, 232.5s
+     └─ unit done: +2, 29 failed
+
+════════════════════════════════════════
+Total generated: 24
+Total failed:    103
+Elapsed:         117.6 min
+════════════════════════════════════════
+── Pass 2 for AP_BIOLOGY (Thu, Apr 16, 2026 10:09:40 AM) ──
+(node:25452) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/akkil/project/AP_Help/scripts/populate-all.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\akkil\project\AP_Help\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+🔐 Authenticating murprasad@yahoo.com at http://localhost:3002...
+✅ Logged in as murprasad@yahoo.com (ADMIN)
+
+  (filtered to AP_BIOLOGY)
+
+📚 AP_BIOLOGY
+  ├─ BIO_1_CHEMISTRY_OF_LIFE                    [chunk 1, target=15] ⏩ already at 15 (0.1s)
+  ├─ BIO_1_CHEMISTRY_OF_LIFE                    [chunk 2, target=30] ⏩ already at 30 (0.1s)
+  ├─ BIO_1_CHEMISTRY_OF_LIFE                    [chunk 3, target=45] ⏩ already at 45 (0.1s)
+  ├─ BIO_1_CHEMISTRY_OF_LIFE                    [chunk 4, target=60] ⏩ already at 60 (0.1s)
+  ├─ BIO_1_CHEMISTRY_OF_LIFE                    [chunk 5, target=62] ✅ +0 (E:0 M:0 H:0), 1 fail, 18.1s
+     └─ unit done: +0, 1 failed
+  ├─ BIO_2_CELL_STRUCTURE_FUNCTION              [chunk 1, target=15] ⏩ already at 15 (0.1s)
+  ├─ BIO_2_CELL_STRUCTURE_FUNCTION              [chunk 2, target=30] ⏩ already at 30 (0.3s)
+  ├─ BIO_2_CELL_STRUCTURE_FUNCTION              [chunk 3, target=45] ⏩ already at 45 (0.1s)
+  ├─ BIO_2_CELL_STRUCTURE_FUNCTION              [chunk 4, target=60] ✅ +0 (E:0 M:0 H:0), 1 fail, 19.9s
+  ├─ BIO_2_CELL_STRUCTURE_FUNCTION              [chunk 5, target=62] ❌ The operation was aborted due to timeout
+     └─ unit done: +0, 2 failed
+  ├─ BIO_3_CELLULAR_ENERGETICS                  [chunk 1, target=15] 

@@ -1,0 +1,351 @@
+── Pass 1 for AP_WORLD_HISTORY (Thu, Apr 16, 2026  8:11:23 AM) ──
+(node:30428) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/akkil/project/AP_Help/scripts/populate-all.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\akkil\project\AP_Help\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+🔐 Authenticating murprasad@yahoo.com at http://localhost:3002...
+✅ Logged in as murprasad@yahoo.com (ADMIN)
+
+  (filtered to AP_WORLD_HISTORY)
+
+📚 AP_WORLD_HISTORY
+  ├─ UNIT_1_GLOBAL_TAPESTRY                     [chunk 1, target=15] ⏩ already at 15 (0.1s)
+  ├─ UNIT_1_GLOBAL_TAPESTRY                     [chunk 2, target=30] ⏩ already at 30 (0.1s)
+  ├─ UNIT_1_GLOBAL_TAPESTRY                     [chunk 3, target=45] ⏩ already at 45 (0.1s)
+  ├─ UNIT_1_GLOBAL_TAPESTRY                     [chunk 4, target=55] ⏩ already at 55 (0.1s)
+     └─ unit done: +0, 0 failed
+  ├─ UNIT_2_NETWORKS_OF_EXCHANGE                [chunk 1, target=15] ⏩ already at 15 (0.1s)
+  ├─ UNIT_2_NETWORKS_OF_EXCHANGE                [chunk 2, target=30] ⏩ already at 30 (0.1s)
+  ├─ UNIT_2_NETWORKS_OF_EXCHANGE                [chunk 3, target=45] ⏩ already at 45 (0.1s)
+  ├─ UNIT_2_NETWORKS_OF_EXCHANGE                [chunk 4, target=55] ⏩ already at 55 (0.1s)
+     └─ unit done: +0, 0 failed
+  ├─ UNIT_3_LAND_BASED_EMPIRES                  [chunk 1, target=15] ⏩ already at 15 (0.1s)
+  ├─ UNIT_3_LAND_BASED_EMPIRES                  [chunk 2, target=30] ⏩ already at 30 (0.1s)
+  ├─ UNIT_3_LAND_BASED_EMPIRES                  [chunk 3, target=45] ⏩ already at 45 (0.1s)
+  ├─ UNIT_3_LAND_BASED_EMPIRES                  [chunk 4, target=55] ⏩ already at 55 (0.1s)
+     └─ unit done: +0, 0 failed
+  ├─ UNIT_4_TRANSOCEANIC_INTERCONNECTIONS       [chunk 1, target=15] ⏩ already at 15 (0.1s)
+  ├─ UNIT_4_TRANSOCEANIC_INTERCONNECTIONS       [chunk 2, target=30] ⏩ already at 30 (0.1s)
+  ├─ UNIT_4_TRANSOCEANIC_INTERCONNECTIONS       [chunk 3, target=45] ⏩ already at 45 (0.5s)
+  ├─ UNIT_4_TRANSOCEANIC_INTERCONNECTIONS       [chunk 4, target=55] ⏩ already at 55 (0.1s)
+     └─ unit done: +0, 0 failed
+  ├─ UNIT_5_REVOLUTIONS                         [chunk 1, target=15] ⏩ already at 15 (0.1s)
+  ├─ UNIT_5_REVOLUTIONS                         [chunk 2, target=30] ⏩ already at 30 (0.1s)
+  ├─ UNIT_5_REVOLUTIONS                         [chunk 3, target=45] ⏩ already at 45 (0.1s)
+  ├─ UNIT_5_REVOLUTIONS                         [chunk 4, target=55] ⏩ already at 55 (0.1s)
+     └─ unit done: +0, 0 failed
+  ├─ UNIT_6_INDUSTRIALIZATION                   [chunk 1, target=15] ⏩ already at 15 (1.2s)
+  ├─ UNIT_6_INDUSTRIALIZATION                   [chunk 2, target=30] ⏩ already at 30 (0.1s)
+  ├─ UNIT_6_INDUSTRIALIZATION                   [chunk 3, target=45] ⏩ already at 45 (0.1s)
+  ├─ UNIT_6_INDUSTRIALIZATION                   [chunk 4, target=55] ✅ +8 (E:2 M:4 H:2), 2 fail, 266.0s
+  ├─ UNIT_6_INDUSTRIALIZATION                   [chunk 5, target=55] ✅ +0 (E:0 M:0 H:0), 2 fail, 74.3s
+     └─ unit done: +8, 4 failed
+  ├─ UNIT_7_GLOBAL_CONFLICT                     [chunk 1, target=15] ⏩ already at 15 (0.2s)
+  ├─ UNIT_7_GLOBAL_CONFLICT                     [chunk 2, target=30] ✅ +0 (E:0 M:0 H:0), 1 fail, 64.8s
+  ├─ UNIT_7_GLOBAL_CONFLICT                     [chunk 3, target=45] ❌ fetch failed
+     └─ unit done: +0, 2 failed
+  ├─ UNIT_8_COLD_WAR                            [chunk 1, target=15] ⏩ already at 15 (0.3s)
+  ├─ UNIT_8_COLD_WAR                            [chunk 2, target=30] ⏩ already at 30 (0.3s)
+  ├─ UNIT_8_COLD_WAR                            [chunk 3, target=45] ⏩ already at 45 (0.3s)
+  ├─ UNIT_8_COLD_WAR                            [chunk 4, target=55] ⏩ already at 55 (0.4s)
+     └─ unit done: +0, 0 failed
+  ├─ UNIT_9_GLOBALIZATION                       [chunk 1, target=15] ⏩ already at 15 (0.4s)
+  ├─ UNIT_9_GLOBALIZATION                       [chunk 2, target=30] ✅ +0 (E:0 M:0 H:0), 1 fail, 28.9s
+  ├─ UNIT_9_GLOBALIZATION                       [chunk 3, target=45] ❌ fetch failed
+     └─ unit done: +0, 2 failed
+
+════════════════════════════════════════
+Total generated: 8
+Total failed:    8
+Elapsed:         18.3 min
+════════════════════════════════════════
+── Pass 2 for AP_WORLD_HISTORY (Thu, Apr 16, 2026  8:30:02 AM) ──
+(node:30692) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/akkil/project/AP_Help/scripts/populate-all.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\akkil\project\AP_Help\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+🔐 Authenticating murprasad@yahoo.com at http://localhost:3002...
+✅ Logged in as murprasad@yahoo.com (ADMIN)
+
+  (filtered to AP_WORLD_HISTORY)
+
+📚 AP_WORLD_HISTORY
+  ├─ UNIT_1_GLOBAL_TAPESTRY                     [chunk 1, target=15] ⏩ already at 15 (0.9s)
+  ├─ UNIT_1_GLOBAL_TAPESTRY                     [chunk 2, target=30] ⏩ already at 30 (1.5s)
+  ├─ UNIT_1_GLOBAL_TAPESTRY                     [chunk 3, target=45] ⏩ already at 45 (0.3s)
+  ├─ UNIT_1_GLOBAL_TAPESTRY                     [chunk 4, target=55] ⏩ already at 55 (1.0s)
+     └─ unit done: +0, 0 failed
+  ├─ UNIT_2_NETWORKS_OF_EXCHANGE                [chunk 1, target=15] ⏩ already at 15 (2.0s)
+  ├─ UNIT_2_NETWORKS_OF_EXCHANGE                [chunk 2, target=30] ⏩ already at 30 (0.5s)
+  ├─ UNIT_2_NETWORKS_OF_EXCHANGE                [chunk 3, target=45] ⏩ already at 45 (0.6s)
+  ├─ UNIT_2_NETWORKS_OF_EXCHANGE                [chunk 4, target=55] ⏩ already at 55 (0.8s)
+     └─ unit done: +0, 0 failed
+  ├─ UNIT_3_LAND_BASED_EMPIRES                  [chunk 1, target=15] ⏩ already at 15 (0.5s)
+  ├─ UNIT_3_LAND_BASED_EMPIRES                  [chunk 2, target=30] ⏩ already at 30 (1.6s)
+  ├─ UNIT_3_LAND_BASED_EMPIRES                  [chunk 3, target=45] ⏩ already at 45 (1.5s)
+  ├─ UNIT_3_LAND_BASED_EMPIRES                  [chunk 4, target=55] ⏩ already at 55 (1.2s)
+     └─ unit done: +0, 0 failed
+  ├─ UNIT_4_TRANSOCEANIC_INTERCONNECTIONS       [chunk 1, target=15] ⏩ already at 15 (0.5s)
+  ├─ UNIT_4_TRANSOCEANIC_INTERCONNECTIONS       [chunk 2, target=30] ⏩ already at 30 (0.6s)
+  ├─ UNIT_4_TRANSOCEANIC_INTERCONNECTIONS       [chunk 3, target=45] ⏩ already at 45 (0.7s)
+  ├─ UNIT_4_TRANSOCEANIC_INTERCONNECTIONS       [chunk 4, target=55] ⏩ already at 55 (2.0s)
+     └─ unit done: +0, 0 failed
+  ├─ UNIT_5_REVOLUTIONS                         [chunk 1, target=15] ⏩ already at 15 (2.8s)
+  ├─ UNIT_5_REVOLUTIONS                         [chunk 2, target=30] ⏩ already at 30 (1.1s)
+  ├─ UNIT_5_REVOLUTIONS                         [chunk 3, target=45] ⏩ already at 45 (0.9s)
+  ├─ UNIT_5_REVOLUTIONS                         [chunk 4, target=55] ⏩ already at 55 (0.6s)
+     └─ unit done: +0, 0 failed
+  ├─ UNIT_6_INDUSTRIALIZATION                   [chunk 1, target=15] ⏩ already at 15 (0.5s)
+  ├─ UNIT_6_INDUSTRIALIZATION                   [chunk 2, target=30] ⏩ already at 30 (11.7s)
+  ├─ UNIT_6_INDUSTRIALIZATION                   [chunk 3, target=45] ⏩ already at 45 (4.3s)
+  ├─ UNIT_6_INDUSTRIALIZATION                   [chunk 4, target=55] ✅ +1 (E:0 M:1 H:0), 1 fail, 67.7s
+  ├─ UNIT_6_INDUSTRIALIZATION                   [chunk 5, target=55] ✅ +1 (E:0 M:1 H:0), 0 fail, 22.9s
+  ├─ UNIT_6_INDUSTRIALIZATION                   [chunk 6, target=55] ⏩ already at 55 (0.9s)
+     └─ unit done: +2, 1 failed
+  ├─ UNIT_7_GLOBAL_CONFLICT                     [chunk 1, target=15] ⏩ already at 15 (0.5s)
+  ├─ UNIT_7_GLOBAL_CONFLICT                     [chunk 2, target=30] ⏩ already at 30 (0.8s)
+  ├─ UNIT_7_GLOBAL_CONFLICT                     [chunk 3, target=45] ❌ fetch failed
+     └─ unit done: +0, 1 failed
+  ├─ UNIT_8_COLD_WAR                            [chunk 1, target=15] ⏩ already at 15 (0.3s)
+  ├─ UNIT_8_COLD_WAR                            [chunk 2, target=30] ⏩ already at 30 (0.1s)
+  ├─ UNIT_8_COLD_WAR                            [chunk 3, target=45] ⏩ already at 45 (0.1s)
+  ├─ UNIT_8_COLD_WAR                            [chunk 4, target=55] ⏩ already at 55 (0.2s)
+     └─ unit done: +0, 0 failed
+  ├─ UNIT_9_GLOBALIZATION                       [chunk 1, target=15] ⏩ already at 15 (0.2s)
+  ├─ UNIT_9_GLOBALIZATION                       [chunk 2, target=30] ⏩ already at 30 (0.1s)
+  ├─ UNIT_9_GLOBALIZATION                       [chunk 3, target=45] ❌ fetch failed
+     └─ unit done: +0, 1 failed
+
+════════════════════════════════════════
+Total generated: 2
+Total failed:    3
+Elapsed:         13.0 min
+════════════════════════════════════════
+── Pass 3 for AP_WORLD_HISTORY (Thu, Apr 16, 2026  8:43:35 AM) ──
+(node:16792) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/akkil/project/AP_Help/scripts/populate-all.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\akkil\project\AP_Help\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+🔐 Authenticating murprasad@yahoo.com at http://localhost:3002...
+✅ Logged in as murprasad@yahoo.com (ADMIN)
+
+  (filtered to AP_WORLD_HISTORY)
+
+📚 AP_WORLD_HISTORY
+  ├─ UNIT_1_GLOBAL_TAPESTRY                     [chunk 1, target=15] ⏩ already at 15 (0.1s)
+  ├─ UNIT_1_GLOBAL_TAPESTRY                     [chunk 2, target=30] ⏩ already at 30 (0.1s)
+  ├─ UNIT_1_GLOBAL_TAPESTRY                     [chunk 3, target=45] ⏩ already at 45 (0.1s)
+  ├─ UNIT_1_GLOBAL_TAPESTRY                     [chunk 4, target=55] ⏩ already at 55 (0.2s)
+     └─ unit done: +0, 0 failed
+  ├─ UNIT_2_NETWORKS_OF_EXCHANGE                [chunk 1, target=15] ⏩ already at 15 (0.4s)
+  ├─ UNIT_2_NETWORKS_OF_EXCHANGE                [chunk 2, target=30] ⏩ already at 30 (0.2s)
+  ├─ UNIT_2_NETWORKS_OF_EXCHANGE                [chunk 3, target=45] ⏩ already at 45 (0.3s)
+  ├─ UNIT_2_NETWORKS_OF_EXCHANGE                [chunk 4, target=55] ⏩ already at 55 (0.4s)
+     └─ unit done: +0, 0 failed
+  ├─ UNIT_3_LAND_BASED_EMPIRES                  [chunk 1, target=15] ⏩ already at 15 (0.2s)
+  ├─ UNIT_3_LAND_BASED_EMPIRES                  [chunk 2, target=30] ⏩ already at 30 (0.1s)
+  ├─ UNIT_3_LAND_BASED_EMPIRES                  [chunk 3, target=45] ⏩ already at 45 (0.3s)
+  ├─ UNIT_3_LAND_BASED_EMPIRES                  [chunk 4, target=55] ⏩ already at 55 (3.4s)
+     └─ unit done: +0, 0 failed
+  ├─ UNIT_4_TRANSOCEANIC_INTERCONNECTIONS       [chunk 1, target=15] ⏩ already at 15 (0.2s)
+  ├─ UNIT_4_TRANSOCEANIC_INTERCONNECTIONS       [chunk 2, target=30] ⏩ already at 30 (0.4s)
+  ├─ UNIT_4_TRANSOCEANIC_INTERCONNECTIONS       [chunk 3, target=45] ⏩ already at 45 (0.2s)
+  ├─ UNIT_4_TRANSOCEANIC_INTERCONNECTIONS       [chunk 4, target=55] ⏩ already at 55 (0.1s)
+     └─ unit done: +0, 0 failed
+  ├─ UNIT_5_REVOLUTIONS                         [chunk 1, target=15] ⏩ already at 15 (0.1s)
+  ├─ UNIT_5_REVOLUTIONS                         [chunk 2, target=30] ⏩ already at 30 (0.1s)
+  ├─ UNIT_5_REVOLUTIONS                         [chunk 3, target=45] ⏩ already at 45 (0.1s)
+  ├─ UNIT_5_REVOLUTIONS                         [chunk 4, target=55] ⏩ already at 55 (0.1s)
+     └─ unit done: +0, 0 failed
+  ├─ UNIT_6_INDUSTRIALIZATION                   [chunk 1, target=15] ⏩ already at 15 (0.1s)
+  ├─ UNIT_6_INDUSTRIALIZATION                   [chunk 2, target=30] ⏩ already at 30 (0.1s)
+  ├─ UNIT_6_INDUSTRIALIZATION                   [chunk 3, target=45] ⏩ already at 45 (0.1s)
+  ├─ UNIT_6_INDUSTRIALIZATION                   [chunk 4, target=55] ⏩ already at 55 (0.1s)
+     └─ unit done: +0, 0 failed
+  ├─ UNIT_7_GLOBAL_CONFLICT                     [chunk 1, target=15] ⏩ already at 15 (0.1s)
+  ├─ UNIT_7_GLOBAL_CONFLICT                     [chunk 2, target=30] ⏩ already at 30 (0.1s)
+  ├─ UNIT_7_GLOBAL_CONFLICT                     [chunk 3, target=45] ❌ The operation was aborted due to timeout
+     └─ unit done: +0, 1 failed
+  ├─ UNIT_8_COLD_WAR                            [chunk 1, target=15] ⏩ already at 15 (2.5s)
+  ├─ UNIT_8_COLD_WAR                            [chunk 2, target=30] ⏩ already at 30 (6.6s)
+  ├─ UNIT_8_COLD_WAR                            [chunk 3, target=45] ⏩ already at 45 (1.9s)
+  ├─ UNIT_8_COLD_WAR                            [chunk 4, target=55] ⏩ already at 55 (0.2s)
+     └─ unit done: +0, 0 failed
+  ├─ UNIT_9_GLOBALIZATION                       [chunk 1, target=15] ⏩ already at 15 (0.2s)
+  ├─ UNIT_9_GLOBALIZATION                       [chunk 2, target=30] ⏩ already at 30 (0.4s)
+  ├─ UNIT_9_GLOBALIZATION                       [chunk 3, target=45] ❌ fetch failed
+     └─ unit done: +0, 1 failed
+
+════════════════════════════════════════
+Total generated: 0
+Total failed:    2
+Elapsed:         54.8 min
+════════════════════════════════════════
+── Pass 4 for AP_WORLD_HISTORY (Thu, Apr 16, 2026  9:38:42 AM) ──
+(node:29948) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/akkil/project/AP_Help/scripts/populate-all.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\akkil\project\AP_Help\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+🔐 Authenticating murprasad@yahoo.com at http://localhost:3002...
+✅ Logged in as murprasad@yahoo.com (ADMIN)
+
+  (filtered to AP_WORLD_HISTORY)
+
+📚 AP_WORLD_HISTORY
+  ├─ UNIT_1_GLOBAL_TAPESTRY                     [chunk 1, target=15] ⏩ already at 15 (0.1s)
+  ├─ UNIT_1_GLOBAL_TAPESTRY                     [chunk 2, target=30] ⏩ already at 30 (0.1s)
+  ├─ UNIT_1_GLOBAL_TAPESTRY                     [chunk 3, target=45] ⏩ already at 45 (0.3s)
+  ├─ UNIT_1_GLOBAL_TAPESTRY                     [chunk 4, target=55] ⏩ already at 55 (0.4s)
+     └─ unit done: +0, 0 failed
+  ├─ UNIT_2_NETWORKS_OF_EXCHANGE                [chunk 1, target=15] ⏩ already at 15 (0.1s)
+  ├─ UNIT_2_NETWORKS_OF_EXCHANGE                [chunk 2, target=30] ⏩ already at 30 (0.5s)
+  ├─ UNIT_2_NETWORKS_OF_EXCHANGE                [chunk 3, target=45] ⏩ already at 45 (0.1s)
+  ├─ UNIT_2_NETWORKS_OF_EXCHANGE                [chunk 4, target=55] ⏩ already at 55 (0.2s)
+     └─ unit done: +0, 0 failed
+  ├─ UNIT_3_LAND_BASED_EMPIRES                  [chunk 1, target=15] ⏩ already at 15 (1.3s)
+  ├─ UNIT_3_LAND_BASED_EMPIRES                  [chunk 2, target=30] ⏩ already at 30 (0.1s)
+  ├─ UNIT_3_LAND_BASED_EMPIRES                  [chunk 3, target=45] ⏩ already at 45 (0.1s)
+  ├─ UNIT_3_LAND_BASED_EMPIRES                  [chunk 4, target=55] ⏩ already at 55 (0.1s)
+     └─ unit done: +0, 0 failed
+  ├─ UNIT_4_TRANSOCEANIC_INTERCONNECTIONS       [chunk 1, target=15] ⏩ already at 15 (0.1s)
+  ├─ UNIT_4_TRANSOCEANIC_INTERCONNECTIONS       [chunk 2, target=30] ⏩ already at 30 (0.1s)
+  ├─ UNIT_4_TRANSOCEANIC_INTERCONNECTIONS       [chunk 3, target=45] ⏩ already at 45 (0.9s)
+  ├─ UNIT_4_TRANSOCEANIC_INTERCONNECTIONS       [chunk 4, target=55] ⏩ already at 55 (0.3s)
+     └─ unit done: +0, 0 failed
+  ├─ UNIT_5_REVOLUTIONS                         [chunk 1, target=15] ⏩ already at 15 (0.1s)
+  ├─ UNIT_5_REVOLUTIONS                         [chunk 2, target=30] ⏩ already at 30 (0.1s)
+  ├─ UNIT_5_REVOLUTIONS                         [chunk 3, target=45] ⏩ already at 45 (0.1s)
+  ├─ UNIT_5_REVOLUTIONS                         [chunk 4, target=55] ⏩ already at 55 (0.1s)
+     └─ unit done: +0, 0 failed
+  ├─ UNIT_6_INDUSTRIALIZATION                   [chunk 1, target=15] ⏩ already at 15 (0.1s)
+  ├─ UNIT_6_INDUSTRIALIZATION                   [chunk 2, target=30] ⏩ already at 30 (0.1s)
+  ├─ UNIT_6_INDUSTRIALIZATION                   [chunk 3, target=45] ⏩ already at 45 (0.1s)
+  ├─ UNIT_6_INDUSTRIALIZATION                   [chunk 4, target=55] ⏩ already at 55 (0.8s)
+     └─ unit done: +0, 0 failed
+  ├─ UNIT_7_GLOBAL_CONFLICT                     [chunk 1, target=15] ⏩ already at 15 (0.1s)
+  ├─ UNIT_7_GLOBAL_CONFLICT                     [chunk 2, target=30] ⏩ already at 30 (0.1s)
+  ├─ UNIT_7_GLOBAL_CONFLICT                     [chunk 3, target=45] ❌ fetch failed
+     └─ unit done: +0, 1 failed
+  ├─ UNIT_8_COLD_WAR                            [chunk 1, target=15] ⏩ already at 15 (0.1s)
+  ├─ UNIT_8_COLD_WAR                            [chunk 2, target=30] ⏩ already at 30 (0.1s)
+  ├─ UNIT_8_COLD_WAR                            [chunk 3, target=45] ⏩ already at 45 (0.1s)
+  ├─ UNIT_8_COLD_WAR                            [chunk 4, target=55] ⏩ already at 55 (0.1s)
+     └─ unit done: +0, 0 failed
+  ├─ UNIT_9_GLOBALIZATION                       [chunk 1, target=15] ⏩ already at 15 (0.1s)
+  ├─ UNIT_9_GLOBALIZATION                       [chunk 2, target=30] ⏩ already at 30 (0.1s)
+  ├─ UNIT_9_GLOBALIZATION                       [chunk 3, target=45] ✅ +0 (E:0 M:0 H:0), 9 fail, 309.8s
+  ├─ UNIT_9_GLOBALIZATION                       [chunk 4, target=55] ❌ fetch failed
+     └─ unit done: +0, 10 failed
+
+════════════════════════════════════════
+Total generated: 0
+Total failed:    11
+Elapsed:         16.1 min
+════════════════════════════════════════
+── Pass 5 for AP_WORLD_HISTORY (Thu, Apr 16, 2026  9:55:04 AM) ──
+(node:29080) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/akkil/project/AP_Help/scripts/populate-all.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\akkil\project\AP_Help\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+🔐 Authenticating murprasad@yahoo.com at http://localhost:3002...
+✅ Logged in as murprasad@yahoo.com (ADMIN)
+
+  (filtered to AP_WORLD_HISTORY)
+
+📚 AP_WORLD_HISTORY
+  ├─ UNIT_1_GLOBAL_TAPESTRY                     [chunk 1, target=15] ⏩ already at 15 (0.1s)
+  ├─ UNIT_1_GLOBAL_TAPESTRY                     [chunk 2, target=30] ⏩ already at 30 (0.1s)
+  ├─ UNIT_1_GLOBAL_TAPESTRY                     [chunk 3, target=45] ⏩ already at 45 (0.1s)
+  ├─ UNIT_1_GLOBAL_TAPESTRY                     [chunk 4, target=55] ⏩ already at 55 (0.1s)
+     └─ unit done: +0, 0 failed
+  ├─ UNIT_2_NETWORKS_OF_EXCHANGE                [chunk 1, target=15] ⏩ already at 15 (0.1s)
+  ├─ UNIT_2_NETWORKS_OF_EXCHANGE                [chunk 2, target=30] ⏩ already at 30 (0.1s)
+  ├─ UNIT_2_NETWORKS_OF_EXCHANGE                [chunk 3, target=45] ⏩ already at 45 (0.1s)
+  ├─ UNIT_2_NETWORKS_OF_EXCHANGE                [chunk 4, target=55] ⏩ already at 55 (0.1s)
+     └─ unit done: +0, 0 failed
+  ├─ UNIT_3_LAND_BASED_EMPIRES                  [chunk 1, target=15] ⏩ already at 15 (0.1s)
+  ├─ UNIT_3_LAND_BASED_EMPIRES                  [chunk 2, target=30] ⏩ already at 30 (0.1s)
+  ├─ UNIT_3_LAND_BASED_EMPIRES                  [chunk 3, target=45] ⏩ already at 45 (0.2s)
+  ├─ UNIT_3_LAND_BASED_EMPIRES                  [chunk 4, target=55] ⏩ already at 55 (0.1s)
+     └─ unit done: +0, 0 failed
+  ├─ UNIT_4_TRANSOCEANIC_INTERCONNECTIONS       [chunk 1, target=15] ⏩ already at 15 (0.1s)
+  ├─ UNIT_4_TRANSOCEANIC_INTERCONNECTIONS       [chunk 2, target=30] ⏩ already at 30 (0.1s)
+  ├─ UNIT_4_TRANSOCEANIC_INTERCONNECTIONS       [chunk 3, target=45] ⏩ already at 45 (0.1s)
+  ├─ UNIT_4_TRANSOCEANIC_INTERCONNECTIONS       [chunk 4, target=55] ⏩ already at 55 (1.1s)
+     └─ unit done: +0, 0 failed
+  ├─ UNIT_5_REVOLUTIONS                         [chunk 1, target=15] ⏩ already at 15 (0.1s)
+  ├─ UNIT_5_REVOLUTIONS                         [chunk 2, target=30] ⏩ already at 30 (0.3s)
+  ├─ UNIT_5_REVOLUTIONS                         [chunk 3, target=45] ⏩ already at 45 (0.1s)
+  ├─ UNIT_5_REVOLUTIONS                         [chunk 4, target=55] ⏩ already at 55 (0.1s)
+     └─ unit done: +0, 0 failed
+  ├─ UNIT_6_INDUSTRIALIZATION                   [chunk 1, target=15] ⏩ already at 15 (0.1s)
+  ├─ UNIT_6_INDUSTRIALIZATION                   [chunk 2, target=30] ⏩ already at 30 (0.1s)
+  ├─ UNIT_6_INDUSTRIALIZATION                   [chunk 3, target=45] ⏩ already at 45 (0.1s)
+  ├─ UNIT_6_INDUSTRIALIZATION                   [chunk 4, target=55] ⏩ already at 55 (0.1s)
+     └─ unit done: +0, 0 failed
+  ├─ UNIT_7_GLOBAL_CONFLICT                     [chunk 1, target=15] ⏩ already at 15 (0.1s)
+  ├─ UNIT_7_GLOBAL_CONFLICT                     [chunk 2, target=30] ⏩ already at 30 (0.1s)
+  ├─ UNIT_7_GLOBAL_CONFLICT                     [chunk 3, target=45] ✅ +1 (E:0 M:0 H:1), 7 fail, 292.6s
+  ├─ UNIT_7_GLOBAL_CONFLICT                     [chunk 4, target=55] ❌ fetch failed
+     └─ unit done: +1, 8 failed
+  ├─ UNIT_8_COLD_WAR                            [chunk 1, target=15] ⏩ already at 15 (0.3s)
+  ├─ UNIT_8_COLD_WAR                            [chunk 2, target=30] ⏩ already at 30 (0.1s)
+  ├─ UNIT_8_COLD_WAR                            [chunk 3, target=45] ⏩ already at 45 (0.1s)
+  ├─ UNIT_8_COLD_WAR                            [chunk 4, target=55] ⏩ already at 55 (0.2s)
+     └─ unit done: +0, 0 failed
+  ├─ UNIT_9_GLOBALIZATION                       [chunk 1, target=15] ⏩ already at 15 (0.6s)
+  ├─ UNIT_9_GLOBALIZATION                       [chunk 2, target=30] ⏩ already at 30 (0.1s)
+  ├─ UNIT_9_GLOBALIZATION                       [chunk 3, target=45] ✅ +1 (E:0 M:1 H:0), 6 fail, 215.3s
+  ├─ UNIT_9_GLOBALIZATION                       [chunk 4, target=55] ❌ The operation was aborted due to timeout
+     └─ unit done: +1, 7 failed
+
+════════════════════════════════════════
+Total generated: 2
+Total failed:    15
+Elapsed:         40.9 min
+════════════════════════════════════════
+── Pass 6 for AP_WORLD_HISTORY (Thu, Apr 16, 2026 10:36:22 AM) ──
+(node:21888) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/akkil/project/AP_Help/scripts/populate-all.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\akkil\project\AP_Help\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+🔐 Authenticating murprasad@yahoo.com at http://localhost:3002...
+✅ Logged in as murprasad@yahoo.com (ADMIN)
+
+  (filtered to AP_WORLD_HISTORY)
+
+📚 AP_WORLD_HISTORY
+  ├─ UNIT_1_GLOBAL_TAPESTRY                     [chunk 1, target=15] ⏩ already at 15 (0.2s)
+  ├─ UNIT_1_GLOBAL_TAPESTRY                     [chunk 2, target=30] ⏩ already at 30 (0.2s)
+  ├─ UNIT_1_GLOBAL_TAPESTRY                     [chunk 3, target=45] ⏩ already at 45 (0.3s)
+  ├─ UNIT_1_GLOBAL_TAPESTRY                     [chunk 4, target=55] ⏩ already at 55 (0.2s)
+     └─ unit done: +0, 0 failed
+  ├─ UNIT_2_NETWORKS_OF_EXCHANGE                [chunk 1, target=15] ⏩ already at 15 (1.7s)
+  ├─ UNIT_2_NETWORKS_OF_EXCHANGE                [chunk 2, target=30] ⏩ already at 30 (0.2s)
+  ├─ UNIT_2_NETWORKS_OF_EXCHANGE                [chunk 3, target=45] ⏩ already at 45 (0.1s)
+  ├─ UNIT_2_NETWORKS_OF_EXCHANGE                [chunk 4, target=55] ⏩ already at 55 (0.5s)
+     └─ unit done: +0, 0 failed
+  ├─ UNIT_3_LAND_BASED_EMPIRES                  [chunk 1, target=15] ⏩ already at 15 (0.6s)
+  ├─ UNIT_3_LAND_BASED_EMPIRES                  [chunk 2, target=30] ⏩ already at 30 (0.2s)
+  ├─ UNIT_3_LAND_BASED_EMPIRES                  [chunk 3, target=45] ⏩ already at 45 (3.2s)
+  ├─ UNIT_3_LAND_BASED_EMPIRES                  [chunk 4, target=55] ⏩ already at 55 (0.6s)
+     └─ unit done: +0, 0 failed
+  ├─ UNIT_4_TRANSOCEANIC_INTERCONNECTIONS       [chunk 1, target=15] ⏩ already at 15 (0.2s)
+  ├─ UNIT_4_TRANSOCEANIC_INTERCONNECTIONS       [chunk 2, target=30] ⏩ already at 30 (0.3s)
+  ├─ UNIT_4_TRANSOCEANIC_INTERCONNECTIONS       [chunk 3, target=45] ⏩ already at 45 (1.1s)
+  ├─ UNIT_4_TRANSOCEANIC_INTERCONNECTIONS       [chunk 4, target=55] ⏩ already at 55 (0.2s)
+     └─ unit done: +0, 0 failed
+  ├─ UNIT_5_REVOLUTIONS                         [chunk 1, target=15] ⏩ already at 15 (0.1s)
+  ├─ UNIT_5_REVOLUTIONS                         [chunk 2, target=30] ⏩ already at 30 (0.1s)
+  ├─ UNIT_5_REVOLUTIONS                         [chunk 3, target=45] ⏩ already at 45 (0.2s)
+  ├─ UNIT_5_REVOLUTIONS                         [chunk 4, target=55] ⏩ already at 55 (0.1s)
+     └─ unit done: +0, 0 failed
+  ├─ UNIT_6_INDUSTRIALIZATION                   [chunk 1, target=15] ⏩ already at 15 (0.2s)
+  ├─ UNIT_6_INDUSTRIALIZATION                   [chunk 2, target=30] ⏩ already at 30 (0.1s)
+  ├─ UNIT_6_INDUSTRIALIZATION                   [chunk 3, target=45] ⏩ already at 45 (0.2s)
+  ├─ UNIT_6_INDUSTRIALIZATION                   [chunk 4, target=55] ⏩ already at 55 (0.9s)
+     └─ unit done: +0, 0 failed
+  ├─ UNIT_7_GLOBAL_CONFLICT                     [chunk 1, target=15] ⏩ already at 15 (0.2s)
+  ├─ UNIT_7_GLOBAL_CONFLICT                     [chunk 2, target=30] ⏩ already at 30 (0.1s)
+  ├─ UNIT_7_GLOBAL_CONFLICT                     [chunk 3, target=45] ✅ +0 (E:0 M:0 H:0), 2 fail, 70.3s
+  ├─ UNIT_7_GLOBAL_CONFLICT                     [chunk 4, target=55] 

@@ -1233,3 +1233,35 @@ model FrqAttempt {
   @@map("frq_attempts")
 }
 
+
+// ──────────────────────────────────────────────────────────────────────────
+// OfficialSample — reference material scraped from official exam sources.
+//
+// Used as RAG grounding for our question generator (NOT served verbatim
+// to students — those sample questions are copyrighted by their
+// respective bodies). We pull style, rigor, topic coverage, and
+// pseudocode conventions from these rows at generation time.
+//
+// licenseNotes should be set on every row (e.g. "© College Board 2024 —
+// reference-only under fair use; do not serve verbatim").
+// ──────────────────────────────────────────────────────────────────────────
+model OfficialSample {
+  id            String   @id @default(cuid())
+  course        String   // ApCourse value (or "SAT_*", "ACT_*")
+  unit          String?  // ApUnit value; null if the sample spans units
+  year          Int?     // publication / exam year
+  sourceUrl     String
+  sourceName    String   // "CollegeBoard AP Central" / "ACT.org" / "Khan Academy SAT"
+  questionText  String   @db.Text
+  stimulus      String?  @db.Text
+  options       Json?    // mirrors Question.options shape when MCQ
+  correctAnswer String?
+  explanation   String?  @db.Text
+  questionType  String   @default("MCQ") // MCQ | FRQ | SAQ | DBQ | LEQ | etc.
+  licenseNotes  String?  @db.Text
+  ingestedAt    DateTime @default(now())
+
+  @@index([course, unit])
+  @@index([course, questionType])
+  @@map("official_samples")
+}

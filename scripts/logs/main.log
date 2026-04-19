@@ -1,0 +1,7 @@
+=== Parallel overnight started Thu, Apr 16, 2026  8:11:23 AM ===
+Launching AP_WORLD_HISTORY with TARGET_WORLD=55
+Launching AP_COMPUTER_SCIENCE_PRINCIPLES with TARGET_CSP=100
+Launching AP_PHYSICS_1 with TARGET_PHYSICS=50
+Launching AP_PSYCHOLOGY with TARGET_PSYCH=55
+Spawned 5 workers: 2172 2177 2186 2191 2206
+Launching AP_BIOLOGY with TARGET_BIO=62

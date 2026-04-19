@@ -1,0 +1,1122 @@
+{
+  "grandTotal": 5072,
+  "grandFlagged": 104,
+  "bucketTotals": {
+    "malformed_fences": 30,
+    "explanation_answer_mismatch": 15,
+    "option_issues": 37,
+    "ultra_short": 22,
+    "pseudocode_bugs": 2
+  },
+  "results": {
+    "AP_WORLD_HISTORY": {
+      "course": "AP_WORLD_HISTORY",
+      "total": 535,
+      "flagged": 0,
+      "flaggedPct": 0,
+      "buckets": {
+        "malformed_fences": [],
+        "explanation_answer_mismatch": [],
+        "option_issues": [],
+        "ultra_short": [],
+        "pseudocode_bugs": []
+      }
+    },
+    "AP_COMPUTER_SCIENCE_PRINCIPLES": {
+      "course": "AP_COMPUTER_SCIENCE_PRINCIPLES",
+      "total": 500,
+      "flagged": 29,
+      "flaggedPct": 5.8,
+      "buckets": {
+        "malformed_fences": [
+          {
+            "id": "cmo0km97x001ctb0qp0nkgsx2",
+            "unit": "CSP_1_CREATIVE_DEVELOPMENT",
+            "issue": "prose_after_last_fence"
+          },
+          {
+            "id": "cmo0km9dt001etb0qksrzlr8e",
+            "unit": "CSP_1_CREATIVE_DEVELOPMENT",
+            "issue": "prose_after_last_fence"
+          },
+          {
+            "id": "cmo0ks4hp001ktb0qna7ze2be",
+            "unit": "CSP_2_DATA",
+            "issue": "prose_after_last_fence"
+          },
+          {
+            "id": "cmo0kyqod001qtb0q4fct0fmy",
+            "unit": "CSP_3_ALGORITHMS_AND_PROGRAMMING",
+            "issue": "prose_after_last_fence"
+          },
+          {
+            "id": "cmo0l70sn0022tb0q2nq3na12",
+            "unit": "CSP_5_IMPACT_OF_COMPUTING",
+            "issue": "prose_after_last_fence"
+          },
+          {
+            "id": "cmo0l70x20025tb0q4es6m6x6",
+            "unit": "CSP_5_IMPACT_OF_COMPUTING",
+            "issue": "prose_after_last_fence"
+          },
+          {
+            "id": "cmo0wvdd900e0tb0qvwzwxvuk",
+            "unit": "CSP_1_CREATIVE_DEVELOPMENT",
+            "issue": "prose_after_last_fence"
+          },
+          {
+            "id": "cmo0wwej300e2tb0qdnwm5hbq",
+            "unit": "CSP_1_CREATIVE_DEVELOPMENT",
+            "issue": "prose_after_last_fence"
+          },
+          {
+            "id": "cmo0x0c1a00eatb0qvddxr2cp",
+            "unit": "CSP_1_CREATIVE_DEVELOPMENT",
+            "issue": "prose_after_last_fence"
+          },
+          {
+            "id": "cmo0x0xcl00ectb0q6ocuxgou",
+            "unit": "CSP_2_DATA",
+            "issue": "prose_after_last_fence"
+          },
+          {
+            "id": "cmo0x4xqw00egtb0qsthkrpi5",
+            "unit": "CSP_2_DATA",
+            "issue": "prose_after_last_fence"
+          },
+          {
+            "id": "cmo0xr59900fgtb0qjbfrz3ae",
+            "unit": "CSP_4_COMPUTER_SYSTEMS_NETWORKS",
+            "issue": "prose_after_last_fence"
+          },
+          {
+            "id": "cmo0xuqix00fstb0qvz602fhk",
+            "unit": "CSP_5_IMPACT_OF_COMPUTING",
+            "issue": "prose_after_last_fence"
+          },
+          {
+            "id": "cmo1i3fch00jetb0qnjn92pzk",
+            "unit": "CSP_1_CREATIVE_DEVELOPMENT",
+            "issue": "prose_after_last_fence"
+          },
+          {
+            "id": "cmo1yhga4000gx10qy3xxjz03",
+            "unit": "CSP_2_DATA",
+            "issue": "prose_after_last_fence"
+          },
+          {
+            "id": "cmo1z6v3s000rx10q2wl0pvqu",
+            "unit": "CSP_2_DATA",
+            "issue": "prose_after_last_fence"
+          },
+          {
+            "id": "cmo2whcw20040w50t4kurf47o",
+            "unit": "CSP_1_CREATIVE_DEVELOPMENT",
+            "issue": "prose_after_last_fence"
+          },
+          {
+            "id": "cmo2wjbqv004uw50tw08bsaca",
+            "unit": "CSP_1_CREATIVE_DEVELOPMENT",
+            "issue": "prose_after_last_fence"
+          },
+          {
+            "id": "cmo2y133e008gw50t81ommgmp",
+            "unit": "CSP_3_ALGORITHMS_AND_PROGRAMMING",
+            "issue": "prose_after_last_fence"
+          },
+          {
+            "id": "cmo2y5a20008ww50tdx68wctz",
+            "unit": "CSP_3_ALGORITHMS_AND_PROGRAMMING",
+            "issue": "unmatched_opening_fence"
+          },
+          {
+            "id": "cmo2zj45900a5w50tz54bcze5",
+            "unit": "CSP_2_DATA",
+            "issue": "prose_after_last_fence"
+          },
+          {
+            "id": "cmo3s419b000cuuks450wb4u3",
+            "unit": "CSP_3_ALGORITHMS_AND_PROGRAMMING",
+            "issue": "prose_after_last_fence"
+          },
+          {
+            "id": "cmo3t1y10002cuugwec8k7brd",
+            "unit": "CSP_3_ALGORITHMS_AND_PROGRAMMING",
+            "issue": "prose_after_last_fence"
+          },
+          {
+            "id": "cmo3t2cr9002duugwvkkanyls",
+            "unit": "CSP_3_ALGORITHMS_AND_PROGRAMMING",
+            "issue": "prose_after_last_fence"
+          },
+          {
+            "id": "cmo3t3rlw002juugw79u0glfj",
+            "unit": "CSP_3_ALGORITHMS_AND_PROGRAMMING",
+            "issue": "prose_after_last_fence"
+          }
+        ],
+        "explanation_answer_mismatch": [
+          {
+            "id": "cmo3s5dmx000iuuksckvutrew",
+            "unit": "CSP_3_ALGORITHMS_AND_PROGRAMMING",
+            "issue": "explanation_claims_A_vs_correct_B"
+          },
+          {
+            "id": "cmo3t2zvb002guugwye3slgng",
+            "unit": "CSP_3_ALGORITHMS_AND_PROGRAMMING",
+            "issue": "explanation_claims_A_vs_correct_B"
+          }
+        ],
+        "option_issues": [
+          {
+            "id": "cmo2y3ow9008nw50t1avaj3yh",
+            "unit": "CSP_3_ALGORITHMS_AND_PROGRAMMING",
+            "issue": "option_A_single_letter"
+          },
+          {
+            "id": "cmo3s2xwn0008uuksau6f4iy9",
+            "unit": "CSP_3_ALGORITHMS_AND_PROGRAMMING",
+            "issue": "option_A_single_letter"
+          }
+        ],
+        "ultra_short": [],
+        "pseudocode_bugs": [
+          {
+            "id": "cmo1z6v3s000rx10q2wl0pvqu",
+            "unit": "CSP_2_DATA",
+            "issue": "mixed_case_var:INDEX"
+          },
+          {
+            "id": "cmo2y5a20008ww50tdx68wctz",
+            "unit": "CSP_3_ALGORITHMS_AND_PROGRAMMING",
+            "issue": "mixed_case_var:INDEX"
+          }
+        ]
+      }
+    },
+    "AP_PHYSICS_1": {
+      "course": "AP_PHYSICS_1",
+      "total": 545,
+      "flagged": 12,
+      "flaggedPct": 2.2,
+      "buckets": {
+        "malformed_fences": [
+          {
+            "id": "cmo0lpowz002ntb0q4qb62h4e",
+            "unit": "PHY1_4_ENERGY",
+            "issue": "prose_after_last_fence"
+          },
+          {
+            "id": "cmo0y45ds00g8tb0q5gcqsvtg",
+            "unit": "PHY1_1_KINEMATICS",
+            "issue": "prose_after_last_fence"
+          },
+          {
+            "id": "cmo1wqsex0011x60tbuj40u1h",
+            "unit": "PHY1_1_KINEMATICS",
+            "issue": "prose_after_last_fence"
+          },
+          {
+            "id": "cmo1wsxbt0015x60tuayt01qc",
+            "unit": "PHY1_1_KINEMATICS",
+            "issue": "prose_after_last_fence"
+          },
+          {
+            "id": "cmo2wd0wu001sw50t9agbox2o",
+            "unit": "PHY1_1_KINEMATICS",
+            "issue": "prose_after_last_fence"
+          }
+        ],
+        "explanation_answer_mismatch": [
+          {
+            "id": "cmo3swtu4003auutcv9xbc5gg",
+            "unit": "PHY1_8_ELECTRIC_CHARGE_AND_FORCE",
+            "issue": "explanation_claims_A_vs_correct_C"
+          },
+          {
+            "id": "cmo3t8vyc004duutcvgkfyct8",
+            "unit": "PHY1_8_ELECTRIC_CHARGE_AND_FORCE",
+            "issue": "explanation_claims_A_vs_correct_C"
+          },
+          {
+            "id": "cmo3tt38w0069uutc63lcl3bn",
+            "unit": "PHY1_10_WAVES_AND_SOUND",
+            "issue": "explanation_claims_A_vs_correct_B"
+          },
+          {
+            "id": "cmo3tk24w005euutcqll88ldo",
+            "unit": "PHY1_9_DC_CIRCUITS",
+            "issue": "explanation_claims_A_vs_correct_D"
+          },
+          {
+            "id": "cmo3tu02t006cuutcwxjppvjk",
+            "unit": "PHY1_10_WAVES_AND_SOUND",
+            "issue": "explanation_claims_A_vs_correct_D"
+          }
+        ],
+        "option_issues": [
+          {
+            "id": "cmmu1w06a002tuuyc9suxqe0p",
+            "unit": "PHY1_2_FORCES_AND_NEWTONS_LAWS",
+            "issue": "option_A_single_letter"
+          },
+          {
+            "id": "cmo1hup1b00hxtb0q29cmhdmr",
+            "unit": "PHY1_6_SIMPLE_HARMONIC_MOTION",
+            "issue": "option_B_single_letter"
+          }
+        ],
+        "ultra_short": [],
+        "pseudocode_bugs": []
+      }
+    },
+    "AP_CALCULUS_AB": {
+      "course": "AP_CALCULUS_AB",
+      "total": 464,
+      "flagged": 10,
+      "flaggedPct": 2.2,
+      "buckets": {
+        "malformed_fences": [],
+        "explanation_answer_mismatch": [
+          {
+            "id": "cmo3ssyam003kuulwrdaf92xq",
+            "unit": "CALC_AB_4_CONTEXTUAL_APPLICATIONS",
+            "issue": "explanation_claims_B_vs_correct_A"
+          }
+        ],
+        "option_issues": [
+          {
+            "id": "cmmyjltzn0003qj1i1k3z4m96",
+            "unit": "CALC_AB_1_LIMITS",
+            "issue": "options_not_array"
+          },
+          {
+            "id": "cmmyjm4hx0007qj1ipb03qy51",
+            "unit": "CALC_AB_1_LIMITS",
+            "issue": "options_not_array"
+          },
+          {
+            "id": "cmmywkfc10004we1i32f3glld",
+            "unit": "CALC_AB_2_DIFFERENTIATION_BASICS",
+            "issue": "options_not_array"
+          },
+          {
+            "id": "cmmz41yb10004011igg4d1bg4",
+            "unit": "CALC_AB_3_DIFFERENTIATION_COMPOSITE",
+            "issue": "options_not_array"
+          },
+          {
+            "id": "cmmz42rj90009011iekddumjs",
+            "unit": "CALC_AB_3_DIFFERENTIATION_COMPOSITE",
+            "issue": "options_not_array"
+          },
+          {
+            "id": "cmmz4j2540003s11imdofjnip",
+            "unit": "CALC_AB_4_CONTEXTUAL_APPLICATIONS",
+            "issue": "options_not_array"
+          },
+          {
+            "id": "cmmz4jzkj00042a1i3f4un7k3",
+            "unit": "CALC_AB_5_ANALYTICAL_APPLICATIONS",
+            "issue": "options_not_array"
+          },
+          {
+            "id": "cmmz4l2rf0003rb1iayf110yi",
+            "unit": "CALC_AB_6_INTEGRATION",
+            "issue": "options_not_array"
+          },
+          {
+            "id": "cmmz4m29y0007rb1iwzxn76ze",
+            "unit": "CALC_AB_7_DIFFERENTIAL_EQUATIONS",
+            "issue": "options_not_array"
+          }
+        ],
+        "ultra_short": [],
+        "pseudocode_bugs": []
+      }
+    },
+    "AP_CALCULUS_BC": {
+      "course": "AP_CALCULUS_BC",
+      "total": 499,
+      "flagged": 7,
+      "flaggedPct": 1.4,
+      "buckets": {
+        "malformed_fences": [],
+        "explanation_answer_mismatch": [
+          {
+            "id": "cmo3simp0002kuuqgfx90m19u",
+            "unit": "CALC_BC_3_DIFFERENTIATION_COMPOSITE",
+            "issue": "explanation_claims_A_vs_correct_C"
+          },
+          {
+            "id": "cmo3tlekz006huuqg4ndgi84o",
+            "unit": "CALC_BC_5_ANALYTICAL_APPLICATIONS",
+            "issue": "explanation_claims_A_vs_correct_C"
+          }
+        ],
+        "option_issues": [
+          {
+            "id": "cmmz83dsf0000xa1idfv5mfum",
+            "unit": "CALC_BC_4_CONTEXTUAL_APPLICATIONS",
+            "issue": "options_not_array"
+          }
+        ],
+        "ultra_short": [
+          {
+            "id": "cmo3tpxgj006vuuqgl9lq393r",
+            "unit": "CALC_BC_6_INTEGRATION",
+            "issue": "ultra_short_no_stimulus:32",
+            "text": "What is the value of ∫ x·eˣ dx ?"
+          },
+          {
+            "id": "cmo3trmjr0073uuqgrqgf42w5",
+            "unit": "CALC_BC_6_INTEGRATION",
+            "issue": "ultra_short_no_stimulus:31",
+            "text": "What is the value of ∫ x·eˣ dx?"
+          },
+          {
+            "id": "cmo3tx535007ruuqgzqrst85m",
+            "unit": "CALC_BC_6_INTEGRATION",
+            "issue": "ultra_short_no_stimulus:32",
+            "text": "What is the value of ∫ x·eˣ dx ?"
+          },
+          {
+            "id": "cmo3tzufs0083uuqgu5sqom4r",
+            "unit": "CALC_BC_6_INTEGRATION",
+            "issue": "ultra_short_no_stimulus:31",
+            "text": "What is the value of ∫ x·eˣ dx?"
+          }
+        ],
+        "pseudocode_bugs": []
+      }
+    },
+    "AP_STATISTICS": {
+      "course": "AP_STATISTICS",
+      "total": 429,
+      "flagged": 4,
+      "flaggedPct": 0.9,
+      "buckets": {
+        "malformed_fences": [],
+        "explanation_answer_mismatch": [
+          {
+            "id": "cmo3s29ei000cuul4t7z4imyf",
+            "unit": "STATS_1_EXPLORING_DATA",
+            "issue": "explanation_claims_C_vs_correct_A"
+          },
+          {
+            "id": "cmo3s5ppx000nuul46fzmm2g6",
+            "unit": "STATS_2_MODELING_DATA",
+            "issue": "explanation_claims_A_vs_correct_B"
+          },
+          {
+            "id": "cmo4er8yy0002uuzkztay9m52",
+            "unit": "STATS_1_EXPLORING_DATA",
+            "issue": "explanation_claims_B_vs_correct_A"
+          },
+          {
+            "id": "cmo4esmp20005uuzkhi8iflz9",
+            "unit": "STATS_1_EXPLORING_DATA",
+            "issue": "explanation_claims_B_vs_correct_A"
+          }
+        ],
+        "option_issues": [],
+        "ultra_short": [],
+        "pseudocode_bugs": []
+      }
+    },
+    "AP_CHEMISTRY": {
+      "course": "AP_CHEMISTRY",
+      "total": 406,
+      "flagged": 3,
+      "flaggedPct": 0.7,
+      "buckets": {
+        "malformed_fences": [],
+        "explanation_answer_mismatch": [
+          {
+            "id": "cmo3twog3006buuvc10c91kgk",
+            "unit": "CHEM_5_KINETICS",
+            "issue": "explanation_claims_A_vs_correct_B"
+          }
+        ],
+        "option_issues": [
+          {
+            "id": "cmmzbt9n90005zf1iisiuyze9",
+            "unit": "CHEM_1_ATOMIC_STRUCTURE",
+            "issue": "duplicate_options"
+          },
+          {
+            "id": "cmmzouyxp0002tr1i9phwqfcs",
+            "unit": "CHEM_9_ELECTROCHEMISTRY",
+            "issue": "options_not_array"
+          }
+        ],
+        "ultra_short": [],
+        "pseudocode_bugs": []
+      }
+    },
+    "AP_BIOLOGY": {
+      "course": "AP_BIOLOGY",
+      "total": 485,
+      "flagged": 3,
+      "flaggedPct": 0.6,
+      "buckets": {
+        "malformed_fences": [],
+        "explanation_answer_mismatch": [],
+        "option_issues": [
+          {
+            "id": "cmmwj3s1g0000vx1ievge1es6",
+            "unit": "BIO_5_HEREDITY",
+            "issue": "duplicate_options"
+          },
+          {
+            "id": "cmmzyvzpw00031o1it3jq9ds7",
+            "unit": "BIO_3_CELLULAR_ENERGETICS",
+            "issue": "options_not_array"
+          },
+          {
+            "id": "cmn0bxrdh0003xg1ibt2m9wts",
+            "unit": "BIO_7_NATURAL_SELECTION",
+            "issue": "options_not_array"
+          }
+        ],
+        "ultra_short": [],
+        "pseudocode_bugs": []
+      }
+    },
+    "AP_US_HISTORY": {
+      "course": "AP_US_HISTORY",
+      "total": 252,
+      "flagged": 6,
+      "flaggedPct": 2.4,
+      "buckets": {
+        "malformed_fences": [],
+        "explanation_answer_mismatch": [],
+        "option_issues": [
+          {
+            "id": "cmn0by4h20002us1ici3o5lq3",
+            "unit": "APUSH_1_PERIOD_1491_1607",
+            "issue": "options_not_array"
+          },
+          {
+            "id": "cmn0bzxki0006us1ip3ct3of3",
+            "unit": "APUSH_3_PERIOD_1754_1800",
+            "issue": "options_not_array"
+          },
+          {
+            "id": "cmn0o9c210002wb1i22e1bvwk",
+            "unit": "APUSH_4_PERIOD_1800_1848",
+            "issue": "options_not_array"
+          },
+          {
+            "id": "cmn150pik0002se1ibi1r3s0j",
+            "unit": "APUSH_6_PERIOD_1865_1898",
+            "issue": "options_not_array"
+          },
+          {
+            "id": "cmn1516mj00021e1lie7abj3s",
+            "unit": "APUSH_7_PERIOD_1890_1945",
+            "issue": "options_not_array"
+          },
+          {
+            "id": "cmn151miu0002xu1ivtxdie0c",
+            "unit": "APUSH_8_PERIOD_1945_1980",
+            "issue": "options_not_array"
+          }
+        ],
+        "ultra_short": [],
+        "pseudocode_bugs": []
+      }
+    },
+    "AP_PSYCHOLOGY": {
+      "course": "AP_PSYCHOLOGY",
+      "total": 516,
+      "flagged": 8,
+      "flaggedPct": 1.6,
+      "buckets": {
+        "malformed_fences": [],
+        "explanation_answer_mismatch": [],
+        "option_issues": [
+          {
+            "id": "cmn1ekea000041c1i5ny953lh",
+            "unit": "PSYCH_1_SCIENTIFIC_FOUNDATIONS",
+            "issue": "options_not_array"
+          },
+          {
+            "id": "cmn1ekwi80003tz1ior8xae4w",
+            "unit": "PSYCH_2_BIOLOGICAL_BASES",
+            "issue": "options_not_array"
+          },
+          {
+            "id": "cmn1emcu20003tv1i9t9zbgdy",
+            "unit": "PSYCH_3_SENSATION_PERCEPTION",
+            "issue": "options_not_array"
+          },
+          {
+            "id": "cmn1rgb290004xg1if3qkyskb",
+            "unit": "PSYCH_4_LEARNING",
+            "issue": "options_not_array"
+          },
+          {
+            "id": "cmn1rhgvf0009xg1iwresw80y",
+            "unit": "PSYCH_5_COGNITION",
+            "issue": "options_not_array"
+          },
+          {
+            "id": "cmn1rhxy20004xi1i6nawn5mf",
+            "unit": "PSYCH_6_DEVELOPMENTAL",
+            "issue": "options_not_array"
+          },
+          {
+            "id": "cmn23qgro0004un1l59s0q4ew",
+            "unit": "PSYCH_8_CLINICAL",
+            "issue": "options_not_array"
+          },
+          {
+            "id": "cmn23qwq80004y21i61cfo3ow",
+            "unit": "PSYCH_9_SOCIAL",
+            "issue": "options_not_array"
+          }
+        ],
+        "ultra_short": [],
+        "pseudocode_bugs": []
+      }
+    },
+    "SAT_MATH": {
+      "course": "SAT_MATH",
+      "total": 49,
+      "flagged": 5,
+      "flaggedPct": 10.2,
+      "buckets": {
+        "malformed_fences": [],
+        "explanation_answer_mismatch": [],
+        "option_issues": [
+          {
+            "id": "cmmu1w3te004quuyca5bx5fuu",
+            "unit": "SAT_MATH_3_PROBLEM_SOLVING",
+            "issue": "duplicate_options"
+          }
+        ],
+        "ultra_short": [
+          {
+            "id": "cmmumk7he00031f1ox2c935tu",
+            "unit": "SAT_MATH_1_ALGEBRA",
+            "issue": "ultra_short_no_stimulus:26",
+            "text": "Solve for x in 2x + 5 = 11"
+          },
+          {
+            "id": "cmmu1w287003yuuycqqthybmr",
+            "unit": "SAT_MATH_1_ALGEBRA",
+            "issue": "ultra_short_no_stimulus:39",
+            "text": "If 3x + 7 = 22, what is the value of x?"
+          },
+          {
+            "id": "cmmu1w2r90049uuycws7rw4ne",
+            "unit": "SAT_MATH_2_ADVANCED_MATH",
+            "issue": "ultra_short_no_stimulus:36",
+            "text": "If f(x) = x² − 3x + 2, what is f(4)?"
+          },
+          {
+            "id": "cmmwuskef000mtk1ovhqwvk2b",
+            "unit": "SAT_MATH_1_ALGEBRA",
+            "issue": "ultra_short_no_stimulus:26",
+            "text": "Solve for x in 2x + 5 = 11"
+          }
+        ],
+        "pseudocode_bugs": []
+      }
+    },
+    "SAT_READING_WRITING": {
+      "course": "SAT_READING_WRITING",
+      "total": 40,
+      "flagged": 0,
+      "flaggedPct": 0,
+      "buckets": {
+        "malformed_fences": [],
+        "explanation_answer_mismatch": [],
+        "option_issues": [],
+        "ultra_short": [],
+        "pseudocode_bugs": []
+      }
+    },
+    "ACT_MATH": {
+      "course": "ACT_MATH",
+      "total": 40,
+      "flagged": 9,
+      "flaggedPct": 22.5,
+      "buckets": {
+        "malformed_fences": [],
+        "explanation_answer_mismatch": [],
+        "option_issues": [],
+        "ultra_short": [
+          {
+            "id": "cmmu1w6qg0068uuycz2obdgbi",
+            "unit": "ACT_MATH_1_NUMBER",
+            "issue": "ultra_short_no_stimulus:24",
+            "text": "What is the value of 2⁵?"
+          },
+          {
+            "id": "cmmu1w6nm0067uuycjfm4p6d2",
+            "unit": "ACT_MATH_1_NUMBER",
+            "issue": "ultra_short_no_stimulus:18",
+            "text": "What is 3/4 + 5/6?"
+          },
+          {
+            "id": "cmmu1w6x4006buuycfxu67xu3",
+            "unit": "ACT_MATH_1_NUMBER",
+            "issue": "ultra_short_no_stimulus:25",
+            "text": "What is |−15| + |7 − 12|?"
+          },
+          {
+            "id": "cmmu1w70l006duuyc2si7soik",
+            "unit": "ACT_MATH_1_NUMBER",
+            "issue": "ultra_short_no_stimulus:39",
+            "text": "What is the prime factorization of 360?"
+          },
+          {
+            "id": "cmmu1w72m006euuyck9zvc4c2",
+            "unit": "ACT_MATH_2_ALGEBRA",
+            "issue": "ultra_short_no_stimulus:39",
+            "text": "If 3x − 7 = 11, what is the value of x?"
+          },
+          {
+            "id": "cmmu1w76k006huuychyryjoh0",
+            "unit": "ACT_MATH_2_ALGEBRA",
+            "issue": "ultra_short_no_stimulus:38",
+            "text": "Which value of x satisfies 2x − 4 > 8?"
+          },
+          {
+            "id": "cmmu1w78v006juuyco84q5su4",
+            "unit": "ACT_MATH_2_ALGEBRA",
+            "issue": "ultra_short_no_stimulus:32",
+            "text": "What is (x + 3)(x − 5) expanded?"
+          },
+          {
+            "id": "cmmu1w77q006iuuyco2plvcz2",
+            "unit": "ACT_MATH_2_ALGEBRA",
+            "issue": "ultra_short_no_stimulus:36",
+            "text": "If f(x) = x² − 3x + 2, what is f(4)?"
+          },
+          {
+            "id": "cmmu1w7a9006kuuyctqdo903y",
+            "unit": "ACT_MATH_2_ALGEBRA",
+            "issue": "ultra_short_no_stimulus:39",
+            "text": "What are all solutions to |2x − 6| = 4?"
+          }
+        ],
+        "pseudocode_bugs": []
+      }
+    },
+    "ACT_ENGLISH": {
+      "course": "ACT_ENGLISH",
+      "total": 26,
+      "flagged": 0,
+      "flaggedPct": 0,
+      "buckets": {
+        "malformed_fences": [],
+        "explanation_answer_mismatch": [],
+        "option_issues": [],
+        "ultra_short": [],
+        "pseudocode_bugs": []
+      }
+    },
+    "ACT_SCIENCE": {
+      "course": "ACT_SCIENCE",
+      "total": 26,
+      "flagged": 0,
+      "flaggedPct": 0,
+      "buckets": {
+        "malformed_fences": [],
+        "explanation_answer_mismatch": [],
+        "option_issues": [],
+        "ultra_short": [],
+        "pseudocode_bugs": []
+      }
+    },
+    "ACT_READING": {
+      "course": "ACT_READING",
+      "total": 32,
+      "flagged": 0,
+      "flaggedPct": 0,
+      "buckets": {
+        "malformed_fences": [],
+        "explanation_answer_mismatch": [],
+        "option_issues": [],
+        "ultra_short": [],
+        "pseudocode_bugs": []
+      }
+    },
+    "CLEP_COLLEGE_ALGEBRA": {
+      "course": "CLEP_COLLEGE_ALGEBRA",
+      "total": 17,
+      "flagged": 5,
+      "flaggedPct": 29.4,
+      "buckets": {
+        "malformed_fences": [],
+        "explanation_answer_mismatch": [],
+        "option_issues": [],
+        "ultra_short": [
+          {
+            "id": "cmmzqicr40001vo1o2yf166qm",
+            "unit": "CLEP_ALGEBRA_1_FOUNDATIONS",
+            "issue": "ultra_short_no_stimulus:31",
+            "text": "Simplify the expression (2^2)^3"
+          },
+          {
+            "id": "cmmzqj70f000jvo1o9r2za7v0",
+            "unit": "CLEP_ALGEBRA_1_FOUNDATIONS",
+            "issue": "ultra_short_no_stimulus:32",
+            "text": "Simplify the expression (3^4)^2."
+          },
+          {
+            "id": "cmn0iihxg000m2y1odd6nsctd",
+            "unit": "CLEP_ALGEBRA_1_FOUNDATIONS",
+            "issue": "ultra_short_no_stimulus:31",
+            "text": "Simplify the expression (2^3)^5"
+          },
+          {
+            "id": "cmn3h6ejs0001ql1ot7zuxu06",
+            "unit": "CLEP_ALGEBRA_1_FOUNDATIONS",
+            "issue": "ultra_short_no_stimulus:31",
+            "text": "Simplify the expression (3^4)^2"
+          },
+          {
+            "id": "cmmzqid0j0004vo1o9d87xo3u",
+            "unit": "CLEP_ALGEBRA_1_FOUNDATIONS",
+            "issue": "ultra_short_no_stimulus:33",
+            "text": "Simplify the expression 2^3 * 2^4"
+          }
+        ],
+        "pseudocode_bugs": []
+      }
+    },
+    "CLEP_COLLEGE_COMPOSITION": {
+      "course": "CLEP_COLLEGE_COMPOSITION",
+      "total": 16,
+      "flagged": 0,
+      "flaggedPct": 0,
+      "buckets": {
+        "malformed_fences": [],
+        "explanation_answer_mismatch": [],
+        "option_issues": [],
+        "ultra_short": [],
+        "pseudocode_bugs": []
+      }
+    },
+    "CLEP_INTRO_PSYCHOLOGY": {
+      "course": "CLEP_INTRO_PSYCHOLOGY",
+      "total": 20,
+      "flagged": 0,
+      "flaggedPct": 0,
+      "buckets": {
+        "malformed_fences": [],
+        "explanation_answer_mismatch": [],
+        "option_issues": [],
+        "ultra_short": [],
+        "pseudocode_bugs": []
+      }
+    },
+    "CLEP_PRINCIPLES_OF_MARKETING": {
+      "course": "CLEP_PRINCIPLES_OF_MARKETING",
+      "total": 32,
+      "flagged": 0,
+      "flaggedPct": 0,
+      "buckets": {
+        "malformed_fences": [],
+        "explanation_answer_mismatch": [],
+        "option_issues": [],
+        "ultra_short": [],
+        "pseudocode_bugs": []
+      }
+    },
+    "CLEP_PRINCIPLES_OF_MANAGEMENT": {
+      "course": "CLEP_PRINCIPLES_OF_MANAGEMENT",
+      "total": 7,
+      "flagged": 0,
+      "flaggedPct": 0,
+      "buckets": {
+        "malformed_fences": [],
+        "explanation_answer_mismatch": [],
+        "option_issues": [],
+        "ultra_short": [],
+        "pseudocode_bugs": []
+      }
+    },
+    "CLEP_INTRODUCTORY_SOCIOLOGY": {
+      "course": "CLEP_INTRODUCTORY_SOCIOLOGY",
+      "total": 7,
+      "flagged": 0,
+      "flaggedPct": 0,
+      "buckets": {
+        "malformed_fences": [],
+        "explanation_answer_mismatch": [],
+        "option_issues": [],
+        "ultra_short": [],
+        "pseudocode_bugs": []
+      }
+    },
+    "CLEP_AMERICAN_LITERATURE": {
+      "course": "CLEP_AMERICAN_LITERATURE",
+      "total": 5,
+      "flagged": 2,
+      "flaggedPct": 40,
+      "buckets": {
+        "malformed_fences": [],
+        "explanation_answer_mismatch": [],
+        "option_issues": [
+          {
+            "id": "cmnp6zqia0001v41inrfu399s",
+            "unit": "CLEP_AMLIT_4_MODERNISM",
+            "issue": "too_few_options:1"
+          },
+          {
+            "id": "cmnpmjuwf0000tj1icwemg0y2",
+            "unit": "CLEP_AMLIT_5_CONTEMPORARY",
+            "issue": "too_few_options:1"
+          }
+        ],
+        "ultra_short": [],
+        "pseudocode_bugs": []
+      }
+    },
+    "CLEP_ANALYZING_INTERPRETING_LIT": {
+      "course": "CLEP_ANALYZING_INTERPRETING_LIT",
+      "total": 5,
+      "flagged": 0,
+      "flaggedPct": 0,
+      "buckets": {
+        "malformed_fences": [],
+        "explanation_answer_mismatch": [],
+        "option_issues": [],
+        "ultra_short": [],
+        "pseudocode_bugs": []
+      }
+    },
+    "CLEP_COLLEGE_COMP_MODULAR": {
+      "course": "CLEP_COLLEGE_COMP_MODULAR",
+      "total": 6,
+      "flagged": 0,
+      "flaggedPct": 0,
+      "buckets": {
+        "malformed_fences": [],
+        "explanation_answer_mismatch": [],
+        "option_issues": [],
+        "ultra_short": [],
+        "pseudocode_bugs": []
+      }
+    },
+    "CLEP_ENGLISH_LITERATURE": {
+      "course": "CLEP_ENGLISH_LITERATURE",
+      "total": 5,
+      "flagged": 0,
+      "flaggedPct": 0,
+      "buckets": {
+        "malformed_fences": [],
+        "explanation_answer_mismatch": [],
+        "option_issues": [],
+        "ultra_short": [],
+        "pseudocode_bugs": []
+      }
+    },
+    "CLEP_HUMANITIES": {
+      "course": "CLEP_HUMANITIES",
+      "total": 5,
+      "flagged": 0,
+      "flaggedPct": 0,
+      "buckets": {
+        "malformed_fences": [],
+        "explanation_answer_mismatch": [],
+        "option_issues": [],
+        "ultra_short": [],
+        "pseudocode_bugs": []
+      }
+    },
+    "CLEP_AMERICAN_GOVERNMENT": {
+      "course": "CLEP_AMERICAN_GOVERNMENT",
+      "total": 5,
+      "flagged": 0,
+      "flaggedPct": 0,
+      "buckets": {
+        "malformed_fences": [],
+        "explanation_answer_mismatch": [],
+        "option_issues": [],
+        "ultra_short": [],
+        "pseudocode_bugs": []
+      }
+    },
+    "CLEP_US_HISTORY_1": {
+      "course": "CLEP_US_HISTORY_1",
+      "total": 5,
+      "flagged": 0,
+      "flaggedPct": 0,
+      "buckets": {
+        "malformed_fences": [],
+        "explanation_answer_mismatch": [],
+        "option_issues": [],
+        "ultra_short": [],
+        "pseudocode_bugs": []
+      }
+    },
+    "CLEP_US_HISTORY_2": {
+      "course": "CLEP_US_HISTORY_2",
+      "total": 5,
+      "flagged": 0,
+      "flaggedPct": 0,
+      "buckets": {
+        "malformed_fences": [],
+        "explanation_answer_mismatch": [],
+        "option_issues": [],
+        "ultra_short": [],
+        "pseudocode_bugs": []
+      }
+    },
+    "CLEP_HUMAN_GROWTH_DEV": {
+      "course": "CLEP_HUMAN_GROWTH_DEV",
+      "total": 5,
+      "flagged": 0,
+      "flaggedPct": 0,
+      "buckets": {
+        "malformed_fences": [],
+        "explanation_answer_mismatch": [],
+        "option_issues": [],
+        "ultra_short": [],
+        "pseudocode_bugs": []
+      }
+    },
+    "CLEP_MACROECONOMICS": {
+      "course": "CLEP_MACROECONOMICS",
+      "total": 10,
+      "flagged": 0,
+      "flaggedPct": 0,
+      "buckets": {
+        "malformed_fences": [],
+        "explanation_answer_mismatch": [],
+        "option_issues": [],
+        "ultra_short": [],
+        "pseudocode_bugs": []
+      }
+    },
+    "CLEP_MICROECONOMICS": {
+      "course": "CLEP_MICROECONOMICS",
+      "total": 5,
+      "flagged": 0,
+      "flaggedPct": 0,
+      "buckets": {
+        "malformed_fences": [],
+        "explanation_answer_mismatch": [],
+        "option_issues": [],
+        "ultra_short": [],
+        "pseudocode_bugs": []
+      }
+    },
+    "CLEP_WESTERN_CIV_2": {
+      "course": "CLEP_WESTERN_CIV_2",
+      "total": 8,
+      "flagged": 0,
+      "flaggedPct": 0,
+      "buckets": {
+        "malformed_fences": [],
+        "explanation_answer_mismatch": [],
+        "option_issues": [],
+        "ultra_short": [],
+        "pseudocode_bugs": []
+      }
+    },
+    "CLEP_BIOLOGY": {
+      "course": "CLEP_BIOLOGY",
+      "total": 13,
+      "flagged": 0,
+      "flaggedPct": 0,
+      "buckets": {
+        "malformed_fences": [],
+        "explanation_answer_mismatch": [],
+        "option_issues": [],
+        "ultra_short": [],
+        "pseudocode_bugs": []
+      }
+    },
+    "CLEP_CALCULUS": {
+      "course": "CLEP_CALCULUS",
+      "total": 10,
+      "flagged": 0,
+      "flaggedPct": 0,
+      "buckets": {
+        "malformed_fences": [],
+        "explanation_answer_mismatch": [],
+        "option_issues": [],
+        "ultra_short": [],
+        "pseudocode_bugs": []
+      }
+    },
+    "CLEP_CHEMISTRY": {
+      "course": "CLEP_CHEMISTRY",
+      "total": 5,
+      "flagged": 1,
+      "flaggedPct": 20,
+      "buckets": {
+        "malformed_fences": [],
+        "explanation_answer_mismatch": [],
+        "option_issues": [
+          {
+            "id": "cmnmp8e0s0000va1iylpnvx62",
+            "unit": "CLEP_CHEM_4_STATES_SOLUTIONS",
+            "issue": "duplicate_options"
+          }
+        ],
+        "ultra_short": [],
+        "pseudocode_bugs": []
+      }
+    },
+    "CLEP_COLLEGE_MATH": {
+      "course": "CLEP_COLLEGE_MATH",
+      "total": 8,
+      "flagged": 0,
+      "flaggedPct": 0,
+      "buckets": {
+        "malformed_fences": [],
+        "explanation_answer_mismatch": [],
+        "option_issues": [],
+        "ultra_short": [],
+        "pseudocode_bugs": []
+      }
+    },
+    "CLEP_FINANCIAL_ACCOUNTING": {
+      "course": "CLEP_FINANCIAL_ACCOUNTING",
+      "total": 6,
+      "flagged": 0,
+      "flaggedPct": 0,
+      "buckets": {
+        "malformed_fences": [],
+        "explanation_answer_mismatch": [],
+        "option_issues": [],
+        "ultra_short": [],
+        "pseudocode_bugs": []
+      }
+    },
+    "DSST_PRINCIPLES_OF_SUPERVISION": {
+      "course": "DSST_PRINCIPLES_OF_SUPERVISION",
+      "total": 10,
+      "flagged": 0,
+      "flaggedPct": 0,
+      "buckets": {
+        "malformed_fences": [],
+        "explanation_answer_mismatch": [],
+        "option_issues": [],
+        "ultra_short": [],
+        "pseudocode_bugs": []
+      }
+    },
+    "DSST_HUMAN_RESOURCE_MANAGEMENT": {
+      "course": "DSST_HUMAN_RESOURCE_MANAGEMENT",
+      "total": 8,
+      "flagged": 0,
+      "flaggedPct": 0,
+      "buckets": {
+        "malformed_fences": [],
+        "explanation_answer_mismatch": [],
+        "option_issues": [],
+        "ultra_short": [],
+        "pseudocode_bugs": []
+      }
+    }
+  }
+}

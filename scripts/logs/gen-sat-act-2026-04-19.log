@@ -1,0 +1,83 @@
+[2026-04-19T02:50:49.548Z] ════════════════════════════════════════════════════════════
+[2026-04-19T02:50:49.551Z] gen-sat-act-direct START
+[2026-04-19T02:50:49.551Z] TARGET_PER_COURSE=52  BATCH=3  ONLY=SAT_MATH
+[2026-04-19T02:50:49.551Z] Anthropic key present: true
+[2026-04-19T02:50:49.551Z] Log: C:\Users\akkil\project\AP_Help\scripts\logs\gen-sat-act-2026-04-19.log
+[2026-04-19T02:50:50.000Z] Starting counts: {"SAT_MATH":49,"SAT_READING_WRITING":40,"ACT_MATH":40,"ACT_ENGLISH":26,"ACT_SCIENCE":26,"ACT_READING":32}
+[2026-04-19T02:50:50.148Z] [SAT_MATH] start=49 target=52 provider=groq
+[2026-04-19T02:50:51.095Z] [SAT_MATH] ✗ SAT_MATH_3_PROBLEM_SOLVING / MEDIUM: Groq 400: {"error":{"message":"Organization has blocked API access because a spend alert threshold was met. Please visit
+[2026-04-19T02:50:52.284Z] [SAT_MATH] ✗ SAT_MATH_2_ADVANCED_MATH / MEDIUM: Groq 400: {"error":{"message":"Organization has blocked API access because a spend alert threshold was met. Please visit
+[2026-04-19T02:50:52.878Z] [SAT_MATH] ✗ SAT_MATH_3_PROBLEM_SOLVING / MEDIUM: Groq 400: {"error":{"message":"Organization has blocked API access because a spend alert threshold was met. Please visit
+[2026-04-19T02:50:54.076Z] [SAT_MATH] ✗ SAT_MATH_2_ADVANCED_MATH / MEDIUM: Groq 400: {"error":{"message":"Organization has blocked API access because a spend alert threshold was met. Please visit
+[2026-04-19T02:50:55.243Z] [SAT_MATH] ✗ SAT_MATH_4_GEOMETRY_TRIG / MEDIUM: Groq 400: {"error":{"message":"Organization has blocked API access because a spend alert threshold was met. Please visit
+[2026-04-19T02:50:55.835Z] [SAT_MATH] ✗ SAT_MATH_2_ADVANCED_MATH / MEDIUM: Groq 400: {"error":{"message":"Organization has blocked API access because a spend alert threshold was met. Please visit
+[2026-04-19T02:50:57.026Z] [SAT_MATH] ✗ SAT_MATH_4_GEOMETRY_TRIG / MEDIUM: Groq 400: {"error":{"message":"Organization has blocked API access because a spend alert threshold was met. Please visit
+[2026-04-19T02:50:58.211Z] [SAT_MATH] ✗ SAT_MATH_3_PROBLEM_SOLVING / MEDIUM: Groq 400: {"error":{"message":"Organization has blocked API access because a spend alert threshold was met. Please visit
+[2026-04-19T02:50:58.812Z] [SAT_MATH] ✗ SAT_MATH_4_GEOMETRY_TRIG / MEDIUM: Groq 400: {"error":{"message":"Organization has blocked API access because a spend alert threshold was met. Please visit
+[2026-04-19T02:50:59.991Z] [SAT_MATH] ✗ SAT_MATH_3_PROBLEM_SOLVING / MEDIUM: Groq 400: {"error":{"message":"Organization has blocked API access because a spend alert threshold was met. Please visit
+[2026-04-19T02:51:01.208Z] [SAT_MATH] ✗ SAT_MATH_2_ADVANCED_MATH / MEDIUM: Groq 400: {"error":{"message":"Organization has blocked API access because a spend alert threshold was met. Please visit
+[2026-04-19T02:51:01.794Z] [SAT_MATH] ✗ SAT_MATH_3_PROBLEM_SOLVING / MEDIUM: Groq 400: {"error":{"message":"Organization has blocked API access because a spend alert threshold was met. Please visit
+[2026-04-19T02:51:02.973Z] [SAT_MATH] ✗ SAT_MATH_2_ADVANCED_MATH / MEDIUM: Groq 400: {"error":{"message":"Organization has blocked API access because a spend alert threshold was met. Please visit
+[2026-04-19T02:51:04.148Z] [SAT_MATH] ✗ SAT_MATH_4_GEOMETRY_TRIG / MEDIUM: Groq 400: {"error":{"message":"Organization has blocked API access because a spend alert threshold was met. Please visit
+[2026-04-19T02:51:04.757Z] [SAT_MATH] ✗ SAT_MATH_2_ADVANCED_MATH / MEDIUM: Groq 400: {"error":{"message":"Organization has blocked API access because a spend alert threshold was met. Please visit
+[2026-04-19T02:51:05.941Z] [SAT_MATH] ✗ SAT_MATH_4_GEOMETRY_TRIG / MEDIUM: Groq 400: {"error":{"message":"Organization has blocked API access because a spend alert threshold was met. Please visit
+[2026-04-19T02:51:07.225Z] [SAT_MATH] ✗ SAT_MATH_3_PROBLEM_SOLVING / MEDIUM: Groq 400: {"error":{"message":"Organization has blocked API access because a spend alert threshold was met. Please visit
+[2026-04-19T02:51:07.846Z] [SAT_MATH] ✗ SAT_MATH_4_GEOMETRY_TRIG / MEDIUM: Groq 400: {"error":{"message":"Organization has blocked API access because a spend alert threshold was met. Please visit
+[2026-04-19T02:51:09.081Z] [SAT_MATH] ✗ SAT_MATH_3_PROBLEM_SOLVING / MEDIUM: Groq 400: {"error":{"message":"Organization has blocked API access because a spend alert threshold was met. Please visit
+[2026-04-19T02:51:10.312Z] [SAT_MATH] ✗ SAT_MATH_2_ADVANCED_MATH / MEDIUM: Groq 400: {"error":{"message":"Organization has blocked API access because a spend alert threshold was met. Please visit
+[2026-04-19T02:51:10.900Z] [SAT_MATH] ✗ SAT_MATH_3_PROBLEM_SOLVING / MEDIUM: Groq 400: {"error":{"message":"Organization has blocked API access because a spend alert threshold was met. Please visit
+[2026-04-19T02:51:12.068Z] [SAT_MATH] ✗ SAT_MATH_2_ADVANCED_MATH / MEDIUM: Groq 400: {"error":{"message":"Organization has blocked API access because a spend alert threshold was met. Please visit
+[2026-04-19T02:51:13.259Z] [SAT_MATH] ✗ SAT_MATH_4_GEOMETRY_TRIG / MEDIUM: Groq 400: {"error":{"message":"Organization has blocked API access because a spend alert threshold was met. Please visit
+[2026-04-19T02:51:13.851Z] [SAT_MATH] ✗ SAT_MATH_2_ADVANCED_MATH / MEDIUM: Groq 400: {"error":{"message":"Organization has blocked API access because a spend alert threshold was met. Please visit
+[2026-04-19T02:51:15.039Z] [SAT_MATH] ✗ SAT_MATH_4_GEOMETRY_TRIG / MEDIUM: Groq 400: {"error":{"message":"Organization has blocked API access because a spend alert threshold was met. Please visit
+[2026-04-19T02:51:16.219Z] [SAT_MATH] ✗ SAT_MATH_3_PROBLEM_SOLVING / MEDIUM: Groq 400: {"error":{"message":"Organization has blocked API access because a spend alert threshold was met. Please visit
+[2026-04-19T02:51:16.807Z] [SAT_MATH] ✗ SAT_MATH_4_GEOMETRY_TRIG / MEDIUM: Groq 400: {"error":{"message":"Organization has blocked API access because a spend alert threshold was met. Please visit
+[2026-04-19T02:51:17.988Z] [SAT_MATH] ✗ SAT_MATH_3_PROBLEM_SOLVING / MEDIUM: Groq 400: {"error":{"message":"Organization has blocked API access because a spend alert threshold was met. Please visit
+[2026-04-19T02:51:19.169Z] [SAT_MATH] ✗ SAT_MATH_2_ADVANCED_MATH / MEDIUM: Groq 400: {"error":{"message":"Organization has blocked API access because a spend alert threshold was met. Please visit
+[2026-04-19T02:51:19.771Z] [SAT_MATH] ✗ SAT_MATH_3_PROBLEM_SOLVING / MEDIUM: Groq 400: {"error":{"message":"Organization has blocked API access because a spend alert threshold was met. Please visit
+[2026-04-19T02:51:20.940Z] [SAT_MATH] ✗ SAT_MATH_2_ADVANCED_MATH / MEDIUM: Groq 400: {"error":{"message":"Organization has blocked API access because a spend alert threshold was met. Please visit
+[2026-04-19T02:51:22.136Z] [SAT_MATH] ✗ SAT_MATH_4_GEOMETRY_TRIG / MEDIUM: Groq 400: {"error":{"message":"Organization has blocked API access because a spend alert threshold was met. Please visit
+[2026-04-19T02:51:22.725Z] [SAT_MATH] ✗ SAT_MATH_2_ADVANCED_MATH / MEDIUM: Groq 400: {"error":{"message":"Organization has blocked API access because a spend alert threshold was met. Please visit
+[2026-04-19T02:51:24.001Z] [SAT_MATH] ✗ SAT_MATH_4_GEOMETRY_TRIG / MEDIUM: Groq 400: {"error":{"message":"Organization has blocked API access because a spend alert threshold was met. Please visit
+[2026-04-19T02:51:25.193Z] [SAT_MATH] ✗ SAT_MATH_3_PROBLEM_SOLVING / MEDIUM: Groq 400: {"error":{"message":"Organization has blocked API access because a spend alert threshold was met. Please visit
+[2026-04-19T02:51:25.786Z] [SAT_MATH] ✗ SAT_MATH_4_GEOMETRY_TRIG / MEDIUM: Groq 400: {"error":{"message":"Organization has blocked API access because a spend alert threshold was met. Please visit
+[2026-04-19T02:51:26.968Z] [SAT_MATH] ✗ SAT_MATH_3_PROBLEM_SOLVING / MEDIUM: Groq 400: {"error":{"message":"Organization has blocked API access because a spend alert threshold was met. Please visit
+[2026-04-19T02:51:28.144Z] [SAT_MATH] ✗ SAT_MATH_2_ADVANCED_MATH / MEDIUM: Groq 400: {"error":{"message":"Organization has blocked API access because a spend alert threshold was met. Please visit
+[2026-04-19T02:51:28.824Z] [SAT_MATH] ✗ SAT_MATH_3_PROBLEM_SOLVING / MEDIUM: Groq 400: {"error":{"message":"Organization has blocked API access because a spend alert threshold was met. Please visit
+[2026-04-19T02:51:30.001Z] [SAT_MATH] ✗ SAT_MATH_2_ADVANCED_MATH / MEDIUM: Groq 400: {"error":{"message":"Organization has blocked API access because a spend alert threshold was met. Please visit
+[2026-04-19T02:51:31.172Z] [SAT_MATH] ✗ SAT_MATH_4_GEOMETRY_TRIG / MEDIUM: Groq 400: {"error":{"message":"Organization has blocked API access because a spend alert threshold was met. Please visit
+[2026-04-19T02:51:31.769Z] [SAT_MATH] ✗ SAT_MATH_2_ADVANCED_MATH / MEDIUM: Groq 400: {"error":{"message":"Organization has blocked API access because a spend alert threshold was met. Please visit
+[2026-04-19T02:51:32.955Z] [SAT_MATH] ✗ SAT_MATH_4_GEOMETRY_TRIG / MEDIUM: Groq 400: {"error":{"message":"Organization has blocked API access because a spend alert threshold was met. Please visit
+[2026-04-19T02:51:34.137Z] [SAT_MATH] ✗ SAT_MATH_3_PROBLEM_SOLVING / MEDIUM: Groq 400: {"error":{"message":"Organization has blocked API access because a spend alert threshold was met. Please visit
+[2026-04-19T02:51:34.724Z] [SAT_MATH] ✗ SAT_MATH_4_GEOMETRY_TRIG / MEDIUM: Groq 400: {"error":{"message":"Organization has blocked API access because a spend alert threshold was met. Please visit
+[2026-04-19T02:51:35.925Z] [SAT_MATH] ✗ SAT_MATH_3_PROBLEM_SOLVING / MEDIUM: Groq 400: {"error":{"message":"Organization has blocked API access because a spend alert threshold was met. Please visit
+[2026-04-19T02:51:37.103Z] [SAT_MATH] ✗ SAT_MATH_2_ADVANCED_MATH / MEDIUM: Groq 400: {"error":{"message":"Organization has blocked API access because a spend alert threshold was met. Please visit
+[2026-04-19T02:51:37.698Z] [SAT_MATH] ✗ SAT_MATH_3_PROBLEM_SOLVING / MEDIUM: Groq 400: {"error":{"message":"Organization has blocked API access because a spend alert threshold was met. Please visit
+[2026-04-19T02:51:38.871Z] [SAT_MATH] ✗ SAT_MATH_2_ADVANCED_MATH / MEDIUM: Groq 400: {"error":{"message":"Organization has blocked API access because a spend alert threshold was met. Please visit
+[2026-04-19T02:51:40.050Z] [SAT_MATH] ✗ SAT_MATH_4_GEOMETRY_TRIG / MEDIUM: Groq 400: {"error":{"message":"Organization has blocked API access because a spend alert threshold was met. Please visit
+[2026-04-19T02:51:40.649Z] [SAT_MATH] ✗ SAT_MATH_2_ADVANCED_MATH / MEDIUM: Groq 400: {"error":{"message":"Organization has blocked API access because a spend alert threshold was met. Please visit
+[2026-04-19T02:51:41.854Z] [SAT_MATH] ✗ SAT_MATH_4_GEOMETRY_TRIG / MEDIUM: Groq 400: {"error":{"message":"Organization has blocked API access because a spend alert threshold was met. Please visit
+[2026-04-19T02:51:43.042Z] [SAT_MATH] ✗ SAT_MATH_3_PROBLEM_SOLVING / MEDIUM: Groq 400: {"error":{"message":"Organization has blocked API access because a spend alert threshold was met. Please visit
+[2026-04-19T02:51:43.631Z] [SAT_MATH] ✗ SAT_MATH_4_GEOMETRY_TRIG / MEDIUM: Groq 400: {"error":{"message":"Organization has blocked API access because a spend alert threshold was met. Please visit
+[2026-04-19T02:51:44.903Z] [SAT_MATH] ✗ SAT_MATH_3_PROBLEM_SOLVING / MEDIUM: Groq 400: {"error":{"message":"Organization has blocked API access because a spend alert threshold was met. Please visit
+[2026-04-19T02:51:46.098Z] [SAT_MATH] ✗ SAT_MATH_2_ADVANCED_MATH / MEDIUM: Groq 400: {"error":{"message":"Organization has blocked API access because a spend alert threshold was met. Please visit
+[2026-04-19T02:51:46.690Z] [SAT_MATH] ✗ SAT_MATH_3_PROBLEM_SOLVING / MEDIUM: Groq 400: {"error":{"message":"Organization has blocked API access because a spend alert threshold was met. Please visit
+[2026-04-19T02:51:47.889Z] [SAT_MATH] ✗ SAT_MATH_2_ADVANCED_MATH / MEDIUM: Groq 400: {"error":{"message":"Organization has blocked API access because a spend alert threshold was met. Please visit
+[2026-04-19T02:51:49.083Z] [SAT_MATH] ✗ SAT_MATH_4_GEOMETRY_TRIG / MEDIUM: Groq 400: {"error":{"message":"Organization has blocked API access because a spend alert threshold was met. Please visit
+[2026-04-19T02:51:49.678Z] [SAT_MATH] ✗ SAT_MATH_2_ADVANCED_MATH / MEDIUM: Groq 400: {"error":{"message":"Organization has blocked API access because a spend alert threshold was met. Please visit
+[2026-04-19T02:51:50.854Z] [SAT_MATH] ✗ SAT_MATH_4_GEOMETRY_TRIG / MEDIUM: Groq 400: {"error":{"message":"Organization has blocked API access because a spend alert threshold was met. Please visit
+[2026-04-19T02:51:52.035Z] [SAT_MATH] ✗ SAT_MATH_3_PROBLEM_SOLVING / MEDIUM: Groq 400: {"error":{"message":"Organization has blocked API access because a spend alert threshold was met. Please visit
+[2026-04-19T02:51:52.627Z] [SAT_MATH] ✗ SAT_MATH_4_GEOMETRY_TRIG / MEDIUM: Groq 400: {"error":{"message":"Organization has blocked API access because a spend alert threshold was met. Please visit
+[2026-04-19T02:51:53.830Z] [SAT_MATH] ✗ SAT_MATH_3_PROBLEM_SOLVING / MEDIUM: Groq 400: {"error":{"message":"Organization has blocked API access because a spend alert threshold was met. Please visit
+[2026-04-19T02:51:55.018Z] [SAT_MATH] ✗ SAT_MATH_2_ADVANCED_MATH / MEDIUM: Groq 400: {"error":{"message":"Organization has blocked API access because a spend alert threshold was met. Please visit
+[2026-04-19T02:51:55.603Z] [SAT_MATH] ✗ SAT_MATH_3_PROBLEM_SOLVING / MEDIUM: Groq 400: {"error":{"message":"Organization has blocked API access because a spend alert threshold was met. Please visit
+[2026-04-19T02:51:56.793Z] [SAT_MATH] ✗ SAT_MATH_2_ADVANCED_MATH / MEDIUM: Groq 400: {"error":{"message":"Organization has blocked API access because a spend alert threshold was met. Please visit
+[2026-04-19T02:51:57.974Z] [SAT_MATH] ✗ SAT_MATH_4_GEOMETRY_TRIG / MEDIUM: Groq 400: {"error":{"message":"Organization has blocked API access because a spend alert threshold was met. Please visit
+[2026-04-19T02:51:58.571Z] [SAT_MATH] ✗ SAT_MATH_2_ADVANCED_MATH / MEDIUM: Groq 400: {"error":{"message":"Organization has blocked API access because a spend alert threshold was met. Please visit
+[2026-04-19T02:51:59.798Z] [SAT_MATH] ✗ SAT_MATH_4_GEOMETRY_TRIG / MEDIUM: Groq 400: {"error":{"message":"Organization has blocked API access because a spend alert threshold was met. Please visit
+[2026-04-19T02:52:00.975Z] [SAT_MATH] ✗ SAT_MATH_3_PROBLEM_SOLVING / MEDIUM: Groq 400: {"error":{"message":"Organization has blocked API access because a spend alert threshold was met. Please visit
+[2026-04-19T02:52:01.562Z] [SAT_MATH] ✗ SAT_MATH_4_GEOMETRY_TRIG / MEDIUM: Groq 400: {"error":{"message":"Organization has blocked API access because a spend alert threshold was met. Please visit
+[2026-04-19T02:52:02.747Z] [SAT_MATH] ✗ SAT_MATH_3_PROBLEM_SOLVING / MEDIUM: Groq 400: {"error":{"message":"Organization has blocked API access because a spend alert threshold was met. Please visit
+[2026-04-19T02:52:03.920Z] [SAT_MATH] ✗ SAT_MATH_2_ADVANCED_MATH / MEDIUM: Groq 400: {"error":{"message":"Organization has blocked API access because a spend alert threshold was met. Please visit
+[2026-04-19T02:52:04.521Z] [SAT_MATH] ✗ SAT_MATH_3_PROBLEM_SOLVING / MEDIUM: Groq 400: {"error":{"message":"Organization has blocked API access because a spend alert threshold was met. Please visit
+[2026-04-19T02:52:05.701Z] [SAT_MATH] ✗ SAT_MATH_2_ADVANCED_MATH / MEDIUM: Groq 400: {"error":{"message":"Organization has blocked API access because a spend alert threshold was met. Please visit

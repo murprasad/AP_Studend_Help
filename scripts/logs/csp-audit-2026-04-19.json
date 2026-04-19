@@ -1,0 +1,247 @@
+{
+  "total": 500,
+  "buckets": {
+    "missing_referenced_code": [],
+    "malformed_fences": [
+      {
+        "id": "cmo0km97x001ctb0qp0nkgsx2",
+        "unit": "CSP_1_CREATIVE_DEVELOPMENT",
+        "issue": "prose_after_last_fence",
+        "stim": "```\nlockCount <- 0\nattemptLimit <- 3\nREPEAT UNTIL (lockCount >= attemptLimit)\n{\n   userPassword <- INPUT()\n   IF (userPassword = correctPassword)\n   {\n      DIS"
+      },
+      {
+        "id": "cmo0km9dt001etb0qksrzlr8e",
+        "unit": "CSP_1_CREATIVE_DEVELOPMENT",
+        "issue": "prose_after_last_fence",
+        "stim": "```\nPROCEDURE CalculateAverage(numbers)\n  sum <- 0\n  count <- 0\n  REPEAT UNTIL count = LENGTH(numbers)\n    count <- count + 1\n    sum <- sum + numbers[count]\n  "
+      },
+      {
+        "id": "cmo0ks4hp001ktb0qna7ze2be",
+        "unit": "CSP_2_DATA",
+        "issue": "prose_after_last_fence",
+        "stim": "```\nPROCEDURE CountResponses(responses, minValue)\n  total <- 0\n  FOR EACH response IN responses\n    IF response >= minValue\n      total <- total + 1\n  RETURN to"
+      },
+      {
+        "id": "cmo0kyqod001qtb0q4fct0fmy",
+        "unit": "CSP_3_ALGORITHMS_AND_PROGRAMMING",
+        "issue": "prose_after_last_fence",
+        "stim": "```\nPROCEDURE linearSearch(list, target)\n  index <- 0\n  REPEAT UNTIL index >= LENGTH(list)\n    IF list[index] = target\n      RETURN index\n    END IF\n    index <"
+      },
+      {
+        "id": "cmo0l70sn0022tb0q2nq3na12",
+        "unit": "CSP_5_IMPACT_OF_COMPUTING",
+        "issue": "prose_after_last_fence",
+        "stim": "A development team implements the following data collection procedure:\n\n```\nPROCEDURE collectUserData(user)\n  locationData ← getDeviceLocation(user)\n  browsing "
+      },
+      {
+        "id": "cmo0l70x20025tb0q4es6m6x6",
+        "unit": "CSP_5_IMPACT_OF_COMPUTING",
+        "issue": "prose_after_last_fence",
+        "stim": "Consider a health-tracking application that implements the following data-handling procedure:\n\n```\nPROCEDURE anonymizeData(userRecords)\n{\n  FOR EACH record IN u"
+      },
+      {
+        "id": "cmo0wvdd900e0tb0qvwzwxvuk",
+        "unit": "CSP_1_CREATIVE_DEVELOPMENT",
+        "issue": "prose_after_last_fence",
+        "stim": "```\nALGORITHM 1:\nsum ← 0\ncount ← 1\nREPEAT UNTIL (count > 5)\n  sum ← sum + count\n  count ← count + 1\nDISPLAY sum\n\nALGORITHM 2:\nsum ← 0\ncount ← 0\nREPEAT UNTIL (co"
+      },
+      {
+        "id": "cmo0wwej300e2tb0qdnwm5hbq",
+        "unit": "CSP_1_CREATIVE_DEVELOPMENT",
+        "issue": "prose_after_last_fence",
+        "stim": "A team is developing a banking application with a procedure:\n\n```\nPROCEDURE CalculateInterest(principal, rate, years)\n  result ← principal * (1 + rate) ^ years\n"
+      },
+      {
+        "id": "cmo0x0c1a00eatb0qvddxr2cp",
+        "unit": "CSP_1_CREATIVE_DEVELOPMENT",
+        "issue": "prose_after_last_fence",
+        "stim": "A program contains the following procedure with minimal documentation:\n\n```\nPROCEDURE CalculateGrade(scores)\n{\n    sum ← 0\n    FOR EACH score IN scores\n    {\n  "
+      },
+      {
+        "id": "cmo0x0xcl00ectb0q6ocuxgou",
+        "unit": "CSP_2_DATA",
+        "issue": "prose_after_last_fence",
+        "stim": "The following algorithm converts a decimal number to its binary equivalent:\n\n```\nDECIMAL ← 19\nBINARY ← \"\"\nREPEAT UNTIL (DECIMAL = 0)\n{\n  REMAINDER ← DECIMAL MOD"
+      },
+      {
+        "id": "cmo0x4xqw00egtb0qsthkrpi5",
+        "unit": "CSP_2_DATA",
+        "issue": "prose_after_last_fence",
+        "stim": "```\nPROCEDURE FilterAndDisplay(readings)\n  filtered <- []\n  FOR EACH temp IN readings\n    IF temp > 32 AND temp < 100\n      APPEND filtered, temp\n  sorted <- SO"
+      },
+      {
+        "id": "cmo0xr59900fgtb0qjbfrz3ae",
+        "unit": "CSP_4_COMPUTER_SYSTEMS_NETWORKS",
+        "issue": "prose_after_last_fence",
+        "stim": "```\nPROCEDURE validatePassword(pwd)\n  isValid <- TRUE\n  IF LENGTH(pwd) < 10\n    isValid <- FALSE\n  IF NOT(FIND(pwd, \"@\") OR FIND(pwd, \"#\") OR FIND(pwd, \"!\"))\n  "
+      },
+      {
+        "id": "cmo0xuqix00fstb0qvz602fhk",
+        "unit": "CSP_5_IMPACT_OF_COMPUTING",
+        "issue": "prose_after_last_fence",
+        "stim": "```\nALGORITHM: PersonalizedMusicRecommender\nINPUT: userListeningHistory\nFOR EACH song IN userListeningHistory\n    FIND similar songs by genre, artist, tempo\n   "
+      },
+      {
+        "id": "cmo1i3fch00jetb0qnjn92pzk",
+        "unit": "CSP_1_CREATIVE_DEVELOPMENT",
+        "issue": "prose_after_last_fence",
+        "stim": "Consider this pseudocode segment intended to find the average of valid test scores (scores between 0 and 100):\n```\nscores <- [85, 102, 90, -5, 88, 95]\nsum <- 0\n"
+      },
+      {
+        "id": "cmo1yhga4000gx10qy3xxjz03",
+        "unit": "CSP_2_DATA",
+        "issue": "prose_after_last_fence",
+        "stim": "```PROCEDURE AnalyzeData(list)\n  total <- 0\n  count <- 0\n  FOR EACH item IN list\n    total <- total + item\n    count <- count + 1\n  RETURN total / count\n```, wh"
+      },
+      {
+        "id": "cmo1z6v3s000rx10q2wl0pvqu",
+        "unit": "CSP_2_DATA",
+        "issue": "prose_after_last_fence",
+        "stim": "```PROCEDURE ChartTrend(data)\n  trend <- 0\n  REPEAT UNTIL index > LENGTH(data)\n    IF data[index] > data[index - 1]\n      trend <- trend + 1\n    INDEX <- INDEX "
+      },
+      {
+        "id": "cmo2whcw20040w50t4kurf47o",
+        "unit": "CSP_1_CREATIVE_DEVELOPMENT",
+        "issue": "prose_after_last_fence",
+        "stim": "Programmer A's approach:\n```\nPROCEDURE FilterGrades(gradeList)\n  validatedList <- []\n  FOR EACH grade IN gradeList\n    IF grade >= 0 AND grade <= 100\n      APPE"
+      },
+      {
+        "id": "cmo2wjbqv004uw50tw08bsaca",
+        "unit": "CSP_1_CREATIVE_DEVELOPMENT",
+        "issue": "prose_after_last_fence",
+        "stim": "Two programmers are working on separate modules. Programmer A writes:\n```\nPROCEDURE validateID(id)\n  IF (id >= 1000) AND (id <= 9999) THEN\n    RETURN TRUE\n  ELS"
+      },
+      {
+        "id": "cmo2y133e008gw50t81ommgmp",
+        "unit": "CSP_3_ALGORITHMS_AND_PROGRAMMING",
+        "issue": "prose_after_last_fence",
+        "stim": "```PROCEDURE CountEvens(list)\n  count <- 0\n  FOR EACH item IN list\n    IF item MOD 2 = 0\n      count <- count + 1\n  RETURN count\n```\nConsider the following call"
+      },
+      {
+        "id": "cmo2y5a20008ww50tdx68wctz",
+        "unit": "CSP_3_ALGORITHMS_AND_PROGRAMMING",
+        "issue": "unmatched_opening_fence",
+        "stim": "Consider the following list of exam scores: `[85, 92, 78, 95, 88]`. A linear search algorithm is used to find the score `92`. The algorithm checks each score in"
+      },
+      {
+        "id": "cmo2zj45900a5w50tz54bcze5",
+        "unit": "CSP_2_DATA",
+        "issue": "prose_after_last_fence",
+        "stim": "Consider the procedure below in AP pseudocode:\n```\nPROCEDURE DecimalToBinary(n)\n  binary <- \"\"\n  REPEAT UNTIL n = 0\n    remainder <- n MOD 2\n    binary <- STR(r"
+      },
+      {
+        "id": "cmo3s419b000cuuks450wb4u3",
+        "unit": "CSP_3_ALGORITHMS_AND_PROGRAMMING",
+        "issue": "prose_after_last_fence",
+        "stim": "The procedure searches for the value 23 in the sorted list [2, 5, 8, 12, 16, 23, 38, 45, 72, 91] using binary search with 1-based indexing. The REPEAT UNTIL loo"
+      },
+      {
+        "id": "cmo3t1y10002cuugwec8k7brd",
+        "unit": "CSP_3_ALGORITHMS_AND_PROGRAMMING",
+        "issue": "prose_after_last_fence",
+        "stim": ""
+      },
+      {
+        "id": "cmo3t2cr9002duugwvkkanyls",
+        "unit": "CSP_3_ALGORITHMS_AND_PROGRAMMING",
+        "issue": "prose_after_last_fence",
+        "stim": ""
+      },
+      {
+        "id": "cmo3t3rlw002juugw79u0glfj",
+        "unit": "CSP_3_ALGORITHMS_AND_PROGRAMMING",
+        "issue": "prose_after_last_fence",
+        "stim": "List: [2, 5, 8, 12, 16, 23, 38, 45, 56, 72] (indices 1–10)\nTarget: 23\n\nTrace the algorithm step by step:\n- Iteration 1: low=1, high=10, mid=5, numList[5]=16. Is"
+      }
+    ],
+    "mixed_case_vars": [
+      {
+        "id": "cmo1z6v3s000rx10q2wl0pvqu",
+        "unit": "CSP_2_DATA",
+        "vars": "INDEX/index"
+      },
+      {
+        "id": "cmo2y5a20008ww50tdx68wctz",
+        "unit": "CSP_3_ALGORITHMS_AND_PROGRAMMING",
+        "vars": "INDEX/index"
+      }
+    ],
+    "undeclared_vars": [
+      {
+        "id": "cmo0x8sbd00eltb0q3cyn9q14",
+        "unit": "CSP_2_DATA",
+        "issue": "loop_var_undeclared:num"
+      },
+      {
+        "id": "cmo1ibxwb00katb0qguslt0h9",
+        "unit": "CSP_2_DATA",
+        "issue": "loop_var_undeclared:n"
+      },
+      {
+        "id": "cmo1z6v3s000rx10q2wl0pvqu",
+        "unit": "CSP_2_DATA",
+        "issue": "loop_var_undeclared:index"
+      },
+      {
+        "id": "cmo2zj45900a5w50tz54bcze5",
+        "unit": "CSP_2_DATA",
+        "issue": "loop_var_undeclared:n"
+      }
+    ],
+    "option_issues": [
+      {
+        "id": "cmo2y3ow9008nw50t1avaj3yh",
+        "unit": "CSP_3_ALGORITHMS_AND_PROGRAMMING",
+        "issue": "option_A_single_letter"
+      },
+      {
+        "id": "cmo3s2xwn0008uuksau6f4iy9",
+        "unit": "CSP_3_ALGORITHMS_AND_PROGRAMMING",
+        "issue": "option_A_single_letter"
+      }
+    ],
+    "thin_explanation": [],
+    "explanation_answer_mismatch": [
+      {
+        "id": "cmo3s5dmx000iuuksckvutrew",
+        "unit": "CSP_3_ALGORITHMS_AND_PROGRAMMING",
+        "issue": "explanation_claims_A_vs_correct_B"
+      },
+      {
+        "id": "cmo3t2zvb002guugwye3slgng",
+        "unit": "CSP_3_ALGORITHMS_AND_PROGRAMMING",
+        "issue": "explanation_claims_A_vs_correct_B"
+      }
+    ],
+    "ultra_short_no_stimulus": [
+      {
+        "id": "cmmu1vyy90021uuycvmsxnqyb",
+        "unit": "CSP_2_DATA",
+        "text": "What is the decimal value of the binary number 1101?"
+      }
+    ]
+  },
+  "byUnit": {
+    "CSP_1_CREATIVE_DEVELOPMENT": {
+      "flagged": 8,
+      "total": 100
+    },
+    "CSP_2_DATA": {
+      "flagged": 9,
+      "total": 100
+    },
+    "CSP_3_ALGORITHMS_AND_PROGRAMMING": {
+      "flagged": 11,
+      "total": 100
+    },
+    "CSP_4_COMPUTER_SYSTEMS_NETWORKS": {
+      "flagged": 1,
+      "total": 100
+    },
+    "CSP_5_IMPACT_OF_COMPUTING": {
+      "flagged": 3,
+      "total": 100
+    }
+  },
+  "distinctFlagged": 32
+}

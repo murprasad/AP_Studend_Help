@@ -1,0 +1,32 @@
+[2026-04-18T21:58:33.567Z] ════════════════════════════════════════════════════════════
+[2026-04-18T21:58:33.568Z] SAT/ACT bulk-fill-to-500 run START
+[2026-04-18T21:58:33.568Z] BASE=http://localhost:3000  CHUNK_SIZE=15  MAX_CHUNKS_PER_UNIT=40
+[2026-04-18T21:58:33.568Z] Log file: C:\Users\akkil\project\AP_Help\scripts\logs\gen-sat-act-2026-04-18.log
+[2026-04-18T21:58:33.911Z] Starting counts: {"SAT_MATH":49,"SAT_READING_WRITING":40,"ACT_MATH":40,"ACT_ENGLISH":26,"ACT_SCIENCE":26,"ACT_READING":32}
+[2026-04-18T21:58:33.912Z] 🔐 Authenticating murprasad@yahoo.com at http://localhost:3000...
+[2026-04-18T21:58:34.874Z] ✅ Logged in as murprasad@yahoo.com (ADMIN)
+[2026-04-18T21:58:34.874Z] 
+[2026-04-18T21:58:34.874Z] 📚 SAT_MATH  (start=49, target=500)
+  ├─ SAT_MATH_1_ALGEBRA                         [chunk 1, target=15] ⏩ already at 15 (0.1s)
+  ├─ SAT_MATH_1_ALGEBRA                         [chunk 2, target=30] ✅ +0 (E:0 M:0 H:0), 14 fail, 48.8s
+  ├─ SAT_MATH_1_ALGEBRA                         [chunk 3, target=45] ✅ +0 (E:0 M:0 H:0), 29 fail, 20.1s
+  ├─ SAT_MATH_1_ALGEBRA                         [chunk 4, target=60] ✅ +0 (E:0 M:0 H:0), 44 fail, 77.4s
+  ├─ SAT_MATH_1_ALGEBRA                         [chunk 5, target=75] ✅ +0 (E:0 M:0 H:0), 59 fail, 93.5s
+  ├─ SAT_MATH_1_ALGEBRA                         [chunk 6, target=90] ⚠ HTTP 404 (4.1s), retry 1/2 in 5s
+  ├─ SAT_MATH_1_ALGEBRA                         [chunk 6, target=90] ✅ +0 (E:0 M:0 H:0), 74 fail, 97.5s
+  ├─ SAT_MATH_1_ALGEBRA                         [chunk 7, target=105] ✅ +0 (E:0 M:0 H:0), 89 fail, 105.4s
+  ├─ SAT_MATH_1_ALGEBRA                         [chunk 8, target=120] ⚠ HTTP 404 (1.8s), retry 1/2 in 5s
+  ├─ SAT_MATH_1_ALGEBRA                         [chunk 8, target=120] ✅ +0 (E:0 M:0 H:0), 104 fail, 118.1s
+  ├─ SAT_MATH_1_ALGEBRA                         [chunk 9, target=125] ⚠ HTTP 404 (3.9s), retry 1/2 in 5s
+  ├─ SAT_MATH_1_ALGEBRA                         [chunk 9, target=125] ⚠ HTTP 404 (0.3s), retry 2/2 in 10s
+  ├─ SAT_MATH_1_ALGEBRA                         [chunk 9, target=125] ❌ 404 after 2 retries (0.1s): <!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width, initial-s
+  ├─ SAT_MATH_1_ALGEBRA                         [chunk 10, target=125] ⚠ HTTP 500 (0.5s), retry 1/2 in 5s
+  ├─ SAT_MATH_1_ALGEBRA                         [chunk 10, target=125] ⚠ HTTP 500 (0.1s), retry 2/2 in 10s
+  ├─ SAT_MATH_1_ALGEBRA                         [chunk 10, target=125] ❌ 500 after 2 retries (0.0s): <!DOCTYPE html><html><head><style data-next-hide-fouc="true">body{display:none}</style><noscript data-next-hide-fouc="tr
+  ├─ SAT_MATH_1_ALGEBRA                         [chunk 11, target=125] ⚠ HTTP 500 (0.0s), retry 1/2 in 5s
+  ├─ SAT_MATH_1_ALGEBRA                         [chunk 11, target=125] ⚠ HTTP 500 (0.0s), retry 2/2 in 10s
+  ├─ SAT_MATH_1_ALGEBRA                         [chunk 11, target=125] ❌ 500 after 2 retries (0.1s): <!DOCTYPE html><html><head><style data-next-hide-fouc="true">body{display:none}</style><noscript data-next-hide-fouc="tr
+  ├─ SAT_MATH_1_ALGEBRA                         [chunk 12, target=125] ⚠ HTTP 500 (0.0s), retry 1/2 in 5s
+  ├─ SAT_MATH_1_ALGEBRA                         [chunk 12, target=125] ⚠ HTTP 500 (0.0s), retry 2/2 in 10s
+  ├─ SAT_MATH_1_ALGEBRA                         [chunk 12, target=125] ❌ 500 after 2 retries (0.1s): <!DOCTYPE html><html><head><style data-next-hide-fouc="true">body{display:none}</style><noscript data-next-hide-fouc="tr
+  ├─ SAT_MATH_1_ALGEBRA                         [chunk 13, target=125] ⚠ HTTP 500 (0.0s), retry 1/2 in 5s

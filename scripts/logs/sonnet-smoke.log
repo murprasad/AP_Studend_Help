@@ -1,0 +1,23 @@
+(node:7956) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/akkil/project/AP_Help/scripts/populate-all.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\akkil\project\AP_Help\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+🔐 Authenticating murprasad@yahoo.com at http://localhost:3000...
+✅ Logged in as murprasad@yahoo.com (ADMIN)
+
+  (filtered to AP_BIOLOGY)
+
+📚 AP_BIOLOGY
+  ├─ BIO_1_CHEMISTRY_OF_LIFE                    [chunk 1, target=5] ⏩ already at 5 (1.7s)
+  ├─ BIO_1_CHEMISTRY_OF_LIFE                    [chunk 2, target=10] ⏩ already at 10 (0.1s)
+  ├─ BIO_1_CHEMISTRY_OF_LIFE                    [chunk 3, target=15] ⏩ already at 15 (0.1s)
+  ├─ BIO_1_CHEMISTRY_OF_LIFE                    [chunk 4, target=20] ⏩ already at 20 (0.1s)
+     └─ unit done: +0, 0 failed
+  ├─ BIO_2_CELL_STRUCTURE_FUNCTION              [chunk 1, target=5] ⏩ already at 5 (0.1s)
+  ├─ BIO_2_CELL_STRUCTURE_FUNCTION              [chunk 2, target=10] ⏩ already at 10 (0.1s)
+  ├─ BIO_2_CELL_STRUCTURE_FUNCTION              [chunk 3, target=15] ⏩ already at 15 (0.1s)
+  ├─ BIO_2_CELL_STRUCTURE_FUNCTION              [chunk 4, target=20] ⏩ already at 20 (0.1s)
+     └─ unit done: +0, 0 failed
+  ├─ BIO_3_CELLULAR_ENERGETICS                  [chunk 1, target=5] ⏩ already at 5 (0.1s)
+  ├─ BIO_3_CELLULAR_ENERGETICS                  [chunk 2, target=10] ✅ +0 (E:0 M:0 H:0), 1 fail, 64.1s
+  ├─ BIO_3_CELLULAR_ENERGETICS                  [chunk 3, target=15] 

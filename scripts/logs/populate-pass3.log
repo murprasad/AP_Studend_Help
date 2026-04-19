@@ -1,0 +1,77 @@
+(node:3924) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/akkil/project/AP_Help/scripts/populate-all.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\akkil\project\AP_Help\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+🔐 Authenticating murprasad@yahoo.com at http://localhost:3000...
+✅ Logged in as murprasad@yahoo.com (ADMIN)
+
+📚 AP_WORLD_HISTORY
+  ├─ UNIT_1_GLOBAL_TAPESTRY                     [chunk 1, target=0] ⏩ already at 0 (1.7s)
+     └─ unit done: +0, 0 failed
+  ├─ UNIT_2_NETWORKS_OF_EXCHANGE                [chunk 1, target=0] ⏩ already at 0 (0.2s)
+     └─ unit done: +0, 0 failed
+  ├─ UNIT_3_LAND_BASED_EMPIRES                  [chunk 1, target=0] ⏩ already at 0 (0.2s)
+     └─ unit done: +0, 0 failed
+  ├─ UNIT_4_TRANSOCEANIC_INTERCONNECTIONS       [chunk 1, target=0] ⏩ already at 0 (0.3s)
+     └─ unit done: +0, 0 failed
+  ├─ UNIT_5_REVOLUTIONS                         [chunk 1, target=0] ⏩ already at 0 (0.1s)
+     └─ unit done: +0, 0 failed
+  ├─ UNIT_6_INDUSTRIALIZATION                   [chunk 1, target=0] ⏩ already at 0 (0.1s)
+     └─ unit done: +0, 0 failed
+  ├─ UNIT_7_GLOBAL_CONFLICT                     [chunk 1, target=0] ⏩ already at 0 (0.2s)
+     └─ unit done: +0, 0 failed
+  ├─ UNIT_8_COLD_WAR                            [chunk 1, target=0] ⏩ already at 0 (0.2s)
+     └─ unit done: +0, 0 failed
+  ├─ UNIT_9_GLOBALIZATION                       [chunk 1, target=0] ⏩ already at 0 (0.2s)
+     └─ unit done: +0, 0 failed
+📚 AP_COMPUTER_SCIENCE_PRINCIPLES
+  ├─ CSP_1_CREATIVE_DEVELOPMENT                 [chunk 1, target=10] ⏩ already at 10 (0.1s)
+  ├─ CSP_1_CREATIVE_DEVELOPMENT                 [chunk 2, target=20] ⏩ already at 20 (0.2s)
+  ├─ CSP_1_CREATIVE_DEVELOPMENT                 [chunk 3, target=30] ⏩ already at 30 (0.1s)
+     └─ unit done: +0, 0 failed
+  ├─ CSP_2_DATA                                 [chunk 1, target=10] ⏩ already at 10 (0.1s)
+  ├─ CSP_2_DATA                                 [chunk 2, target=20] ⏩ already at 20 (0.2s)
+  ├─ CSP_2_DATA                                 [chunk 3, target=30] ⏩ already at 30 (0.2s)
+     └─ unit done: +0, 0 failed
+  ├─ CSP_3_ALGORITHMS_AND_PROGRAMMING           [chunk 1, target=10] ⏩ already at 10 (0.3s)
+  ├─ CSP_3_ALGORITHMS_AND_PROGRAMMING           [chunk 2, target=20] ✅ +1 (E:1 M:0 H:0), 1 fail, 48.8s
+  ├─ CSP_3_ALGORITHMS_AND_PROGRAMMING           [chunk 3, target=30] ❌ fetch failed
+     └─ unit done: +1, 2 failed
+  ├─ CSP_4_COMPUTER_SYSTEMS_NETWORKS            [chunk 1, target=10] ⏩ already at 10 (0.9s)
+  ├─ CSP_4_COMPUTER_SYSTEMS_NETWORKS            [chunk 2, target=20] ⏩ already at 20 (0.1s)
+  ├─ CSP_4_COMPUTER_SYSTEMS_NETWORKS            [chunk 3, target=30] ⏩ already at 30 (0.1s)
+     └─ unit done: +0, 0 failed
+  ├─ CSP_5_IMPACT_OF_COMPUTING                  [chunk 1, target=10] ⏩ already at 10 (0.1s)
+  ├─ CSP_5_IMPACT_OF_COMPUTING                  [chunk 2, target=20] ⏩ already at 20 (0.2s)
+  ├─ CSP_5_IMPACT_OF_COMPUTING                  [chunk 3, target=30] ⏩ already at 30 (1.0s)
+     └─ unit done: +0, 0 failed
+📚 AP_PHYSICS_1
+  ├─ PHY1_1_KINEMATICS                          [chunk 1, target=10] ⏩ already at 10 (0.1s)
+  ├─ PHY1_1_KINEMATICS                          [chunk 2, target=20] ✅ +0 (E:0 M:0 H:0), 3 fail, 160.8s
+  ├─ PHY1_1_KINEMATICS                          [chunk 3, target=25] ❌ fetch failed
+     └─ unit done: +0, 4 failed
+  ├─ PHY1_2_FORCES_AND_NEWTONS_LAWS             [chunk 1, target=10] ⏩ already at 10 (0.2s)
+  ├─ PHY1_2_FORCES_AND_NEWTONS_LAWS             [chunk 2, target=20] ✅ +0 (E:0 M:0 H:0), 6 fail, 172.5s
+  ├─ PHY1_2_FORCES_AND_NEWTONS_LAWS             [chunk 3, target=25] ❌ fetch failed
+     └─ unit done: +0, 7 failed
+  ├─ PHY1_3_CIRCULAR_MOTION_GRAVITATION         [chunk 1, target=10] ⏩ already at 10 (0.2s)
+  ├─ PHY1_3_CIRCULAR_MOTION_GRAVITATION         [chunk 2, target=20] ⏩ already at 20 (0.1s)
+  ├─ PHY1_3_CIRCULAR_MOTION_GRAVITATION         [chunk 3, target=25] ✅ +0 (E:0 M:0 H:0), 3 fail, 54.2s
+     └─ unit done: +0, 3 failed
+  ├─ PHY1_4_ENERGY                              [chunk 1, target=10] ⏩ already at 10 (0.8s)
+  ├─ PHY1_4_ENERGY                              [chunk 2, target=20] ✅ +0 (E:0 M:0 H:0), 3 fail, 49.8s
+  ├─ PHY1_4_ENERGY                              [chunk 3, target=25] ✅ +1 (E:0 M:0 H:1), 7 fail, 190.5s
+  ├─ PHY1_4_ENERGY                              [chunk 4, target=25] ❌ fetch failed
+     └─ unit done: +1, 11 failed
+  ├─ PHY1_5_MOMENTUM                            [chunk 1, target=10] ✅ +0 (E:0 M:0 H:0), 1 fail, 17.1s
+  ├─ PHY1_5_MOMENTUM                            [chunk 2, target=20] ❌ fetch failed
+     └─ unit done: +0, 2 failed
+  ├─ PHY1_6_SIMPLE_HARMONIC_MOTION              [chunk 1, target=10] ⏩ already at 10 (0.2s)
+  ├─ PHY1_6_SIMPLE_HARMONIC_MOTION              [chunk 2, target=20] ⏩ already at 20 (0.1s)
+  ├─ PHY1_6_SIMPLE_HARMONIC_MOTION              [chunk 3, target=25] ⏩ already at 25 (0.2s)
+     └─ unit done: +0, 0 failed
+  ├─ PHY1_7_TORQUE_AND_ROTATION                 [chunk 1, target=10] ⏩ already at 10 (0.1s)
+  ├─ PHY1_7_TORQUE_AND_ROTATION                 [chunk 2, target=20] ⏩ already at 20 (0.1s)
+  ├─ PHY1_7_TORQUE_AND_ROTATION                 [chunk 3, target=25] ⏩ already at 25 (0.1s)
+     └─ unit done: +0, 0 failed
+  ├─ PHY1_8_ELECTRIC_CHARGE_AND_FORCE           [chunk 1, target=10] 

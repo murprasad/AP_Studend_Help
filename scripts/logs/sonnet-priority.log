@@ -1,0 +1,227 @@
+(node:444) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/akkil/project/AP_Help/scripts/populate-all.ts is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\akkil\project\AP_Help\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+🔐 Authenticating murprasad@yahoo.com at http://localhost:3000...
+✅ Logged in as murprasad@yahoo.com (ADMIN)
+
+📚 AP_WORLD_HISTORY
+  ├─ UNIT_1_GLOBAL_TAPESTRY                     [chunk 1, target=5] ⏩ already at 5 (0.1s)
+  ├─ UNIT_1_GLOBAL_TAPESTRY                     [chunk 2, target=10] ⏩ already at 10 (0.1s)
+  ├─ UNIT_1_GLOBAL_TAPESTRY                     [chunk 3, target=15] ⏩ already at 15 (0.1s)
+  ├─ UNIT_1_GLOBAL_TAPESTRY                     [chunk 4, target=20] ⏩ already at 20 (0.1s)
+  ├─ UNIT_1_GLOBAL_TAPESTRY                     [chunk 5, target=25] ⏩ already at 25 (0.1s)
+  ├─ UNIT_1_GLOBAL_TAPESTRY                     [chunk 6, target=30] ⏩ already at 30 (0.1s)
+  ├─ UNIT_1_GLOBAL_TAPESTRY                     [chunk 7, target=35] ⏩ already at 35 (0.1s)
+  ├─ UNIT_1_GLOBAL_TAPESTRY                     [chunk 8, target=40] ⏩ already at 40 (0.1s)
+  ├─ UNIT_1_GLOBAL_TAPESTRY                     [chunk 9, target=45] ⏩ already at 45 (0.1s)
+  ├─ UNIT_1_GLOBAL_TAPESTRY                     [chunk 10, target=50] ⏩ already at 50 (0.1s)
+     └─ unit done: +0, 0 failed
+  ├─ UNIT_2_NETWORKS_OF_EXCHANGE                [chunk 1, target=5] ⏩ already at 5 (0.1s)
+  ├─ UNIT_2_NETWORKS_OF_EXCHANGE                [chunk 2, target=10] ⏩ already at 10 (0.1s)
+  ├─ UNIT_2_NETWORKS_OF_EXCHANGE                [chunk 3, target=15] ⏩ already at 15 (0.2s)
+  ├─ UNIT_2_NETWORKS_OF_EXCHANGE                [chunk 4, target=20] ⏩ already at 20 (0.3s)
+  ├─ UNIT_2_NETWORKS_OF_EXCHANGE                [chunk 5, target=25] ⏩ already at 25 (0.2s)
+  ├─ UNIT_2_NETWORKS_OF_EXCHANGE                [chunk 6, target=30] ⏩ already at 30 (0.1s)
+  ├─ UNIT_2_NETWORKS_OF_EXCHANGE                [chunk 7, target=35] ⏩ already at 35 (0.1s)
+  ├─ UNIT_2_NETWORKS_OF_EXCHANGE                [chunk 8, target=40] ⏩ already at 40 (0.1s)
+  ├─ UNIT_2_NETWORKS_OF_EXCHANGE                [chunk 9, target=45] ⏩ already at 45 (0.1s)
+  ├─ UNIT_2_NETWORKS_OF_EXCHANGE                [chunk 10, target=50] ✅ +2 (E:1 M:1 H:0), 0 fail, 46.9s
+     └─ unit done: +2, 0 failed
+  ├─ UNIT_3_LAND_BASED_EMPIRES                  [chunk 1, target=5] ⏩ already at 5 (0.1s)
+  ├─ UNIT_3_LAND_BASED_EMPIRES                  [chunk 2, target=10] ⏩ already at 10 (0.1s)
+  ├─ UNIT_3_LAND_BASED_EMPIRES                  [chunk 3, target=15] ⏩ already at 15 (0.1s)
+  ├─ UNIT_3_LAND_BASED_EMPIRES                  [chunk 4, target=20] ⏩ already at 20 (0.1s)
+  ├─ UNIT_3_LAND_BASED_EMPIRES                  [chunk 5, target=25] ⏩ already at 25 (0.1s)
+  ├─ UNIT_3_LAND_BASED_EMPIRES                  [chunk 6, target=30] ⏩ already at 30 (0.1s)
+  ├─ UNIT_3_LAND_BASED_EMPIRES                  [chunk 7, target=35] ⏩ already at 35 (0.1s)
+  ├─ UNIT_3_LAND_BASED_EMPIRES                  [chunk 8, target=40] ⏩ already at 40 (0.1s)
+  ├─ UNIT_3_LAND_BASED_EMPIRES                  [chunk 9, target=45] ⏩ already at 45 (0.1s)
+  ├─ UNIT_3_LAND_BASED_EMPIRES                  [chunk 10, target=50] ⏩ already at 50 (0.1s)
+     └─ unit done: +0, 0 failed
+  ├─ UNIT_4_TRANSOCEANIC_INTERCONNECTIONS       [chunk 1, target=5] ⏩ already at 5 (0.1s)
+  ├─ UNIT_4_TRANSOCEANIC_INTERCONNECTIONS       [chunk 2, target=10] ⏩ already at 10 (0.1s)
+  ├─ UNIT_4_TRANSOCEANIC_INTERCONNECTIONS       [chunk 3, target=15] ⏩ already at 15 (0.1s)
+  ├─ UNIT_4_TRANSOCEANIC_INTERCONNECTIONS       [chunk 4, target=20] ⏩ already at 20 (0.1s)
+  ├─ UNIT_4_TRANSOCEANIC_INTERCONNECTIONS       [chunk 5, target=25] ⏩ already at 25 (0.1s)
+  ├─ UNIT_4_TRANSOCEANIC_INTERCONNECTIONS       [chunk 6, target=30] ⏩ already at 30 (0.1s)
+  ├─ UNIT_4_TRANSOCEANIC_INTERCONNECTIONS       [chunk 7, target=35] ⏩ already at 35 (0.1s)
+  ├─ UNIT_4_TRANSOCEANIC_INTERCONNECTIONS       [chunk 8, target=40] ⏩ already at 40 (0.1s)
+  ├─ UNIT_4_TRANSOCEANIC_INTERCONNECTIONS       [chunk 9, target=45] ⏩ already at 45 (0.1s)
+  ├─ UNIT_4_TRANSOCEANIC_INTERCONNECTIONS       [chunk 10, target=50] ⏩ already at 50 (0.1s)
+     └─ unit done: +0, 0 failed
+  ├─ UNIT_5_REVOLUTIONS                         [chunk 1, target=5] ⏩ already at 5 (0.1s)
+  ├─ UNIT_5_REVOLUTIONS                         [chunk 2, target=10] ⏩ already at 10 (0.1s)
+  ├─ UNIT_5_REVOLUTIONS                         [chunk 3, target=15] ⏩ already at 15 (0.1s)
+  ├─ UNIT_5_REVOLUTIONS                         [chunk 4, target=20] ⏩ already at 20 (0.1s)
+  ├─ UNIT_5_REVOLUTIONS                         [chunk 5, target=25] ⏩ already at 25 (0.1s)
+  ├─ UNIT_5_REVOLUTIONS                         [chunk 6, target=30] ⏩ already at 30 (0.1s)
+  ├─ UNIT_5_REVOLUTIONS                         [chunk 7, target=35] ⏩ already at 35 (0.1s)
+  ├─ UNIT_5_REVOLUTIONS                         [chunk 8, target=40] ⏩ already at 40 (0.1s)
+  ├─ UNIT_5_REVOLUTIONS                         [chunk 9, target=45] ⏩ already at 45 (0.1s)
+  ├─ UNIT_5_REVOLUTIONS                         [chunk 10, target=50] ⏩ already at 50 (0.1s)
+     └─ unit done: +0, 0 failed
+  ├─ UNIT_6_INDUSTRIALIZATION                   [chunk 1, target=5] ⏩ already at 5 (0.1s)
+  ├─ UNIT_6_INDUSTRIALIZATION                   [chunk 2, target=10] ⏩ already at 10 (0.1s)
+  ├─ UNIT_6_INDUSTRIALIZATION                   [chunk 3, target=15] ⏩ already at 15 (0.1s)
+  ├─ UNIT_6_INDUSTRIALIZATION                   [chunk 4, target=20] ⏩ already at 20 (0.1s)
+  ├─ UNIT_6_INDUSTRIALIZATION                   [chunk 5, target=25] ⏩ already at 25 (0.1s)
+  ├─ UNIT_6_INDUSTRIALIZATION                   [chunk 6, target=30] ⏩ already at 30 (0.1s)
+  ├─ UNIT_6_INDUSTRIALIZATION                   [chunk 7, target=35] ⏩ already at 35 (0.1s)
+  ├─ UNIT_6_INDUSTRIALIZATION                   [chunk 8, target=40] ⏩ already at 40 (0.1s)
+  ├─ UNIT_6_INDUSTRIALIZATION                   [chunk 9, target=45] ⏩ already at 45 (0.1s)
+  ├─ UNIT_6_INDUSTRIALIZATION                   [chunk 10, target=50] ⏩ already at 50 (0.1s)
+     └─ unit done: +0, 0 failed
+  ├─ UNIT_7_GLOBAL_CONFLICT                     [chunk 1, target=5] ⏩ already at 5 (0.1s)
+  ├─ UNIT_7_GLOBAL_CONFLICT                     [chunk 2, target=10] ⏩ already at 10 (0.1s)
+  ├─ UNIT_7_GLOBAL_CONFLICT                     [chunk 3, target=15] ⏩ already at 15 (0.1s)
+  ├─ UNIT_7_GLOBAL_CONFLICT                     [chunk 4, target=20] ⏩ already at 20 (0.1s)
+  ├─ UNIT_7_GLOBAL_CONFLICT                     [chunk 5, target=25] ⏩ already at 25 (0.1s)
+  ├─ UNIT_7_GLOBAL_CONFLICT                     [chunk 6, target=30] ⏩ already at 30 (0.1s)
+  ├─ UNIT_7_GLOBAL_CONFLICT                     [chunk 7, target=35] ⏩ already at 35 (0.2s)
+  ├─ UNIT_7_GLOBAL_CONFLICT                     [chunk 8, target=40] ⏩ already at 40 (0.1s)
+  ├─ UNIT_7_GLOBAL_CONFLICT                     [chunk 9, target=45] ⏩ already at 45 (0.1s)
+  ├─ UNIT_7_GLOBAL_CONFLICT                     [chunk 10, target=50] ✅ +3 (E:1 M:1 H:1), 0 fail, 66.2s
+     └─ unit done: +3, 0 failed
+  ├─ UNIT_8_COLD_WAR                            [chunk 1, target=5] ⏩ already at 5 (0.2s)
+  ├─ UNIT_8_COLD_WAR                            [chunk 2, target=10] ⏩ already at 10 (0.1s)
+  ├─ UNIT_8_COLD_WAR                            [chunk 3, target=15] ⏩ already at 15 (0.1s)
+  ├─ UNIT_8_COLD_WAR                            [chunk 4, target=20] ⏩ already at 20 (0.1s)
+  ├─ UNIT_8_COLD_WAR                            [chunk 5, target=25] ⏩ already at 25 (0.1s)
+  ├─ UNIT_8_COLD_WAR                            [chunk 6, target=30] ⏩ already at 30 (0.1s)
+  ├─ UNIT_8_COLD_WAR                            [chunk 7, target=35] ⏩ already at 35 (0.1s)
+  ├─ UNIT_8_COLD_WAR                            [chunk 8, target=40] ⏩ already at 40 (0.1s)
+  ├─ UNIT_8_COLD_WAR                            [chunk 9, target=45] ⏩ already at 45 (0.1s)
+  ├─ UNIT_8_COLD_WAR                            [chunk 10, target=50] ✅ +2 (E:1 M:1 H:0), 0 fail, 60.4s
+     └─ unit done: +2, 0 failed
+  ├─ UNIT_9_GLOBALIZATION                       [chunk 1, target=5] ⏩ already at 5 (0.2s)
+  ├─ UNIT_9_GLOBALIZATION                       [chunk 2, target=10] ⏩ already at 10 (0.1s)
+  ├─ UNIT_9_GLOBALIZATION                       [chunk 3, target=15] ⏩ already at 15 (0.1s)
+  ├─ UNIT_9_GLOBALIZATION                       [chunk 4, target=20] ⏩ already at 20 (0.1s)
+  ├─ UNIT_9_GLOBALIZATION                       [chunk 5, target=25] ⏩ already at 25 (0.1s)
+  ├─ UNIT_9_GLOBALIZATION                       [chunk 6, target=30] ⏩ already at 30 (0.1s)
+  ├─ UNIT_9_GLOBALIZATION                       [chunk 7, target=35] ⏩ already at 35 (0.1s)
+  ├─ UNIT_9_GLOBALIZATION                       [chunk 8, target=40] ⏩ already at 40 (0.1s)
+  ├─ UNIT_9_GLOBALIZATION                       [chunk 9, target=45] ✅ +2 (E:1 M:1 H:0), 0 fail, 47.9s
+  ├─ UNIT_9_GLOBALIZATION                       [chunk 10, target=50] ✅ +5 (E:2 M:2 H:1), 0 fail, 113.1s
+     └─ unit done: +7, 0 failed
+📚 AP_COMPUTER_SCIENCE_PRINCIPLES
+  ├─ CSP_1_CREATIVE_DEVELOPMENT                 [chunk 1, target=5] ⏩ already at 5 (0.1s)
+  ├─ CSP_1_CREATIVE_DEVELOPMENT                 [chunk 2, target=10] ⏩ already at 10 (0.1s)
+  ├─ CSP_1_CREATIVE_DEVELOPMENT                 [chunk 3, target=15] ⏩ already at 15 (0.1s)
+  ├─ CSP_1_CREATIVE_DEVELOPMENT                 [chunk 4, target=20] ⏩ already at 20 (0.1s)
+  ├─ CSP_1_CREATIVE_DEVELOPMENT                 [chunk 5, target=25] ⏩ already at 25 (0.1s)
+     └─ unit done: +0, 0 failed
+  ├─ CSP_2_DATA                                 [chunk 1, target=5] ⏩ already at 5 (0.1s)
+  ├─ CSP_2_DATA                                 [chunk 2, target=10] ⏩ already at 10 (0.1s)
+  ├─ CSP_2_DATA                                 [chunk 3, target=15] ⏩ already at 15 (0.1s)
+  ├─ CSP_2_DATA                                 [chunk 4, target=20] ⏩ already at 20 (0.1s)
+  ├─ CSP_2_DATA                                 [chunk 5, target=25] ⏩ already at 25 (0.1s)
+     └─ unit done: +0, 0 failed
+  ├─ CSP_3_ALGORITHMS_AND_PROGRAMMING           [chunk 1, target=5] ⏩ already at 5 (0.1s)
+  ├─ CSP_3_ALGORITHMS_AND_PROGRAMMING           [chunk 2, target=10] ⏩ already at 10 (0.1s)
+  ├─ CSP_3_ALGORITHMS_AND_PROGRAMMING           [chunk 3, target=15] ⏩ already at 15 (0.3s)
+  ├─ CSP_3_ALGORITHMS_AND_PROGRAMMING           [chunk 4, target=20] ✅ +4 (E:1 M:2 H:1), 1 fail, 113.6s
+  ├─ CSP_3_ALGORITHMS_AND_PROGRAMMING           [chunk 5, target=25] ✅ +6 (E:2 M:3 H:1), 0 fail, 138.5s
+  ├─ CSP_3_ALGORITHMS_AND_PROGRAMMING           [chunk 6, target=25] ⏩ already at 25 (0.9s)
+     └─ unit done: +10, 1 failed
+  ├─ CSP_4_COMPUTER_SYSTEMS_NETWORKS            [chunk 1, target=5] ⏩ already at 5 (0.2s)
+  ├─ CSP_4_COMPUTER_SYSTEMS_NETWORKS            [chunk 2, target=10] ⏩ already at 10 (0.8s)
+  ├─ CSP_4_COMPUTER_SYSTEMS_NETWORKS            [chunk 3, target=15] ⏩ already at 15 (0.1s)
+  ├─ CSP_4_COMPUTER_SYSTEMS_NETWORKS            [chunk 4, target=20] ⏩ already at 20 (0.1s)
+  ├─ CSP_4_COMPUTER_SYSTEMS_NETWORKS            [chunk 5, target=25] ⏩ already at 25 (0.2s)
+     └─ unit done: +0, 0 failed
+  ├─ CSP_5_IMPACT_OF_COMPUTING                  [chunk 1, target=5] ⏩ already at 5 (0.1s)
+  ├─ CSP_5_IMPACT_OF_COMPUTING                  [chunk 2, target=10] ⏩ already at 10 (0.1s)
+  ├─ CSP_5_IMPACT_OF_COMPUTING                  [chunk 3, target=15] ⏩ already at 15 (0.2s)
+  ├─ CSP_5_IMPACT_OF_COMPUTING                  [chunk 4, target=20] ⏩ already at 20 (0.1s)
+  ├─ CSP_5_IMPACT_OF_COMPUTING                  [chunk 5, target=25] ⏩ already at 25 (0.4s)
+     └─ unit done: +0, 0 failed
+📚 AP_PHYSICS_1
+  ├─ PHY1_1_KINEMATICS                          [chunk 1, target=5] ⏩ already at 5 (0.2s)
+  ├─ PHY1_1_KINEMATICS                          [chunk 2, target=10] ⏩ already at 10 (0.1s)
+  ├─ PHY1_1_KINEMATICS                          [chunk 3, target=15] ⏩ already at 15 (0.1s)
+  ├─ PHY1_1_KINEMATICS                          [chunk 4, target=20] ✅ +3 (E:1 M:1 H:1), 0 fail, 64.8s
+  ├─ PHY1_1_KINEMATICS                          [chunk 5, target=25] ✅ +5 (E:2 M:2 H:1), 0 fail, 131.9s
+  ├─ PHY1_1_KINEMATICS                          [chunk 6, target=25] ⏩ already at 25 (0.7s)
+     └─ unit done: +8, 0 failed
+  ├─ PHY1_2_FORCES_AND_NEWTONS_LAWS             [chunk 1, target=5] ⏩ already at 5 (0.5s)
+  ├─ PHY1_2_FORCES_AND_NEWTONS_LAWS             [chunk 2, target=10] ⏩ already at 10 (0.3s)
+  ├─ PHY1_2_FORCES_AND_NEWTONS_LAWS             [chunk 3, target=15] ⏩ already at 15 (0.7s)
+  ├─ PHY1_2_FORCES_AND_NEWTONS_LAWS             [chunk 4, target=20] ✅ +4 (E:1 M:2 H:1), 0 fail, 79.6s
+  ├─ PHY1_2_FORCES_AND_NEWTONS_LAWS             [chunk 5, target=25] ✅ +4 (E:2 M:2 H:0), 1 fail, 136.2s
+  ├─ PHY1_2_FORCES_AND_NEWTONS_LAWS             [chunk 6, target=25] ✅ +1 (E:0 M:1 H:0), 0 fail, 17.5s
+  ├─ PHY1_2_FORCES_AND_NEWTONS_LAWS             [chunk 7, target=25] ⏩ already at 25 (0.1s)
+     └─ unit done: +9, 1 failed
+  ├─ PHY1_3_CIRCULAR_MOTION_GRAVITATION         [chunk 1, target=5] ⏩ already at 5 (0.2s)
+  ├─ PHY1_3_CIRCULAR_MOTION_GRAVITATION         [chunk 2, target=10] ⏩ already at 10 (0.2s)
+  ├─ PHY1_3_CIRCULAR_MOTION_GRAVITATION         [chunk 3, target=15] ⏩ already at 15 (0.1s)
+  ├─ PHY1_3_CIRCULAR_MOTION_GRAVITATION         [chunk 4, target=20] ⏩ already at 20 (0.3s)
+  ├─ PHY1_3_CIRCULAR_MOTION_GRAVITATION         [chunk 5, target=25] ✅ +3 (E:1 M:1 H:1), 0 fail, 77.6s
+  ├─ PHY1_3_CIRCULAR_MOTION_GRAVITATION         [chunk 6, target=25] ⏩ already at 25 (0.1s)
+     └─ unit done: +3, 0 failed
+  ├─ PHY1_4_ENERGY                              [chunk 1, target=5] ⏩ already at 5 (0.1s)
+  ├─ PHY1_4_ENERGY                              [chunk 2, target=10] ⏩ already at 10 (0.1s)
+  ├─ PHY1_4_ENERGY                              [chunk 3, target=15] ⏩ already at 15 (0.1s)
+  ├─ PHY1_4_ENERGY                              [chunk 4, target=20] ⏩ already at 20 (0.2s)
+  ├─ PHY1_4_ENERGY                              [chunk 5, target=25] ✅ +5 (E:2 M:2 H:1), 0 fail, 103.2s
+  ├─ PHY1_4_ENERGY                              [chunk 6, target=25] ⏩ already at 25 (0.3s)
+     └─ unit done: +5, 0 failed
+  ├─ PHY1_5_MOMENTUM                            [chunk 1, target=5] ⏩ already at 5 (0.2s)
+  ├─ PHY1_5_MOMENTUM                            [chunk 2, target=10] ⏩ already at 10 (0.3s)
+  ├─ PHY1_5_MOMENTUM                            [chunk 3, target=15] ✅ +2 (E:1 M:1 H:0), 0 fail, 31.9s
+  ├─ PHY1_5_MOMENTUM                            [chunk 4, target=20] ✅ +5 (E:2 M:2 H:1), 0 fail, 124.6s
+  ├─ PHY1_5_MOMENTUM                            [chunk 5, target=25] ❌ fetch failed
+     └─ unit done: +7, 1 failed
+  ├─ PHY1_6_SIMPLE_HARMONIC_MOTION              [chunk 1, target=5] ❌ fetch failed
+     └─ unit done: +0, 1 failed
+  ├─ PHY1_7_TORQUE_AND_ROTATION                 [chunk 1, target=5] ❌ fetch failed
+     └─ unit done: +0, 1 failed
+  ├─ PHY1_8_ELECTRIC_CHARGE_AND_FORCE           [chunk 1, target=5] ❌ fetch failed
+     └─ unit done: +0, 1 failed
+  ├─ PHY1_9_DC_CIRCUITS                         [chunk 1, target=5] ❌ fetch failed
+     └─ unit done: +0, 1 failed
+  ├─ PHY1_10_WAVES_AND_SOUND                    [chunk 1, target=5] ❌ fetch failed
+     └─ unit done: +0, 1 failed
+📚 AP_PSYCHOLOGY
+  ├─ PSYCH_1_SCIENTIFIC_FOUNDATIONS             [chunk 1, target=0] ❌ fetch failed
+     └─ unit done: +0, 1 failed
+  ├─ PSYCH_2_BIOLOGICAL_BASES                   [chunk 1, target=0] ❌ fetch failed
+     └─ unit done: +0, 1 failed
+  ├─ PSYCH_3_SENSATION_PERCEPTION               [chunk 1, target=0] ❌ fetch failed
+     └─ unit done: +0, 1 failed
+  ├─ PSYCH_4_LEARNING                           [chunk 1, target=0] ❌ fetch failed
+     └─ unit done: +0, 1 failed
+  ├─ PSYCH_5_COGNITION                          [chunk 1, target=0] ❌ fetch failed
+     └─ unit done: +0, 1 failed
+  ├─ PSYCH_6_DEVELOPMENTAL                      [chunk 1, target=0] ❌ fetch failed
+     └─ unit done: +0, 1 failed
+  ├─ PSYCH_7_MOTIVATION_EMOTION                 [chunk 1, target=0] ❌ fetch failed
+     └─ unit done: +0, 1 failed
+  ├─ PSYCH_8_CLINICAL                           [chunk 1, target=0] ❌ fetch failed
+     └─ unit done: +0, 1 failed
+  ├─ PSYCH_9_SOCIAL                             [chunk 1, target=0] ❌ fetch failed
+     └─ unit done: +0, 1 failed
+📚 AP_BIOLOGY
+  ├─ BIO_1_CHEMISTRY_OF_LIFE                    [chunk 1, target=0] ❌ fetch failed
+     └─ unit done: +0, 1 failed
+  ├─ BIO_2_CELL_STRUCTURE_FUNCTION              [chunk 1, target=0] ❌ fetch failed
+     └─ unit done: +0, 1 failed
+  ├─ BIO_3_CELLULAR_ENERGETICS                  [chunk 1, target=0] ❌ fetch failed
+     └─ unit done: +0, 1 failed
+  ├─ BIO_4_CELL_COMMUNICATION                   [chunk 1, target=0] ❌ fetch failed
+     └─ unit done: +0, 1 failed
+  ├─ BIO_5_HEREDITY                             [chunk 1, target=0] ❌ fetch failed
+     └─ unit done: +0, 1 failed
+  ├─ BIO_6_GENE_EXPRESSION                      [chunk 1, target=0] ❌ fetch failed
+     └─ unit done: +0, 1 failed
+  ├─ BIO_7_NATURAL_SELECTION                    [chunk 1, target=0] ❌ fetch failed
+     └─ unit done: +0, 1 failed
+  ├─ BIO_8_ECOLOGY                              [chunk 1, target=0] ❌ fetch failed
+     └─ unit done: +0, 1 failed
+
+════════════════════════════════════════
+Total generated: 56
+Total failed:    25
+Elapsed:         25.0 min
+════════════════════════════════════════
