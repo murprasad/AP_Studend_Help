@@ -83,3 +83,73 @@ export function ensureRawDir(relPath = "data/raw") {
   fs.mkdirSync(abs, { recursive: true });
   return abs;
 }
+
+/**
+ * Extract text from a PDF as per-page column-aware structures.
+ * Returns { pages: { full, left, right, items }[], numPages }.
+ *
+ * - `full` is the whole page joined top-to-bottom (same as extractPdfText).
+ * - `left` is only items with x < viewport.width/2 (sorted top-to-bottom).
+ * - `right` is only items with x >= viewport.width/2.
+ * - `items` is the raw [{x,y,s}] list (sorted y desc, then x asc) for custom parsing.
+ *
+ * SAT practice tests use a two-column question layout, so feeding the text
+ * through the basic extractor interleaves left/right columns line-by-line
+ * which destroys question boundaries. Column-aware extraction fixes this.
+ */
+export async function extractPdfTextColumns(pdfPath) {
+  const data = new Uint8Array(fs.readFileSync(pdfPath));
+  const doc = await pdfjs.getDocument({ data, disableWorker: true }).promise;
+  const pages = [];
+  for (let i = 1; i <= doc.numPages; i++) {
+    const page = await doc.getPage(i);
+    const viewport = page.getViewport({ scale: 1 });
+    const midX = viewport.width / 2;
+    const content = await page.getTextContent();
+    const rawItems = [];
+    for (const it of content.items) {
+      if (!it.str || !it.str.trim()) continue;
+      rawItems.push({
+        x: it.transform[4],
+        y: Math.round(it.transform[5]),
+        s: it.str,
+      });
+    }
+
+    const buildColumn = (xMin, xMax) => {
+      const linesByY = new Map();
+      for (const it of rawItems) {
+        if (it.x < xMin || it.x >= xMax) continue;
+        if (!linesByY.has(it.y)) linesByY.set(it.y, []);
+        linesByY.get(it.y).push(it);
+      }
+      const sortedYs = Array.from(linesByY.keys()).sort((a, b) => b - a);
+      return sortedYs
+        .map((y) =>
+          linesByY
+            .get(y)
+            .sort((a, b) => a.x - b.x)
+            .map((it) => it.s)
+            .join("")
+            .replace(/\s+/g, " ")
+            .trim()
+        )
+        .filter((l) => l.length > 0)
+        .join("\n");
+    };
+
+    const full = buildColumn(0, viewport.width + 10);
+    const left = buildColumn(0, midX);
+    const right = buildColumn(midX, viewport.width + 10);
+
+    pages.push({
+      full,
+      left,
+      right,
+      items: rawItems.sort((a, b) => (b.y - a.y) || (a.x - b.x)),
+      width: viewport.width,
+      height: viewport.height,
+    });
+  }
+  return { pages, numPages: doc.numPages };
+}

@@ -1,0 +1,452 @@
+
+================================================
+  AP FRQ INGESTION ORCHESTRATOR
+================================================
+
+
+########## RUNNING ingest-ap-physics-1.mjs ##########
+
+==== Ingesting OFFICIAL AP_PHYSICS_1 FRQs from CB ====
+
+Removed 0 hand-authored reference rows.
+
+
+— 2025 —
+  [cached] ap25-frq-physics-1.pdf (389 KB)
+  parsed 4 FRQ prompts from 2025
+
+— 2024 —
+  [cached] ap24-frq-physics-1.pdf (4661 KB)
+  parsed 5 FRQ prompts from 2024
+
+— 2023 —
+  [cached] ap23-frq-physics-1.pdf (625 KB)
+  parsed 5 FRQ prompts from 2023
+
+— 2022 —
+  [cached] ap22-frq-physics-1.pdf (472 KB)
+  parsed 5 FRQ prompts from 2022
+
+— 2019 —
+  [cached] ap19-frq-physics-1.pdf (396 KB)
+  parsed 5 FRQ prompts from 2019
+
+==== AP_PHYSICS_1 INGESTION COMPLETE ====
+Created: 0  Updated: 24
+Total AP_PHYSICS_1 OfficialSamples: 24
+By type: FRQ=24
+URLs used: 5
+  https://apcentral.collegeboard.org/media/pdf/ap25-frq-physics-1.pdf
+  https://apcentral.collegeboard.org/media/pdf/ap24-frq-physics-1.pdf
+  https://apcentral.collegeboard.org/media/pdf/ap23-frq-physics-1.pdf
+  https://apcentral.collegeboard.org/media/pdf/ap22-frq-physics-1.pdf
+  https://apcentral.collegeboard.org/media/pdf/ap19-frq-physics-1.pdf
+
+########## RUNNING ingest-ap-biology.mjs ##########
+
+==== Ingesting OFFICIAL AP_BIOLOGY FRQs from CB ====
+
+Removed 8 hand-authored reference rows.
+
+
+— 2025 —
+  downloading https://apcentral.collegeboard.org/media/pdf/ap25-frq-biology.pdf ...
+  saved ap25-frq-biology.pdf (501 KB)
+  parsed 6 FRQ prompts from 2025
+
+— 2024 —
+  downloading https://apcentral.collegeboard.org/media/pdf/ap24-frq-biology.pdf ...
+  saved ap24-frq-biology.pdf (661 KB)
+  parsed 6 FRQ prompts from 2024
+
+— 2023 —
+  downloading https://apcentral.collegeboard.org/media/pdf/ap23-frq-biology.pdf ...
+  saved ap23-frq-biology.pdf (521 KB)
+  parsed 6 FRQ prompts from 2023
+
+— 2022 —
+  downloading https://apcentral.collegeboard.org/media/pdf/ap22-frq-biology.pdf ...
+  saved ap22-frq-biology.pdf (536 KB)
+  parsed 6 FRQ prompts from 2022
+
+— 2021 —
+  downloading https://apcentral.collegeboard.org/media/pdf/ap21-frq-biology.pdf ...
+  saved ap21-frq-biology.pdf (542 KB)
+  parsed 6 FRQ prompts from 2021
+
+— 2019 —
+  downloading https://apcentral.collegeboard.org/media/pdf/ap19-frq-biology.pdf ...
+  saved ap19-frq-biology.pdf (791 KB)
+  parsed 8 FRQ prompts from 2019
+
+==== AP_BIOLOGY INGESTION COMPLETE ====
+Created: 38  Updated: 0
+Total AP_BIOLOGY OfficialSamples: 38
+By type: FRQ=38
+URLs used: 6
+  https://apcentral.collegeboard.org/media/pdf/ap25-frq-biology.pdf
+  https://apcentral.collegeboard.org/media/pdf/ap24-frq-biology.pdf
+  https://apcentral.collegeboard.org/media/pdf/ap23-frq-biology.pdf
+  https://apcentral.collegeboard.org/media/pdf/ap22-frq-biology.pdf
+  https://apcentral.collegeboard.org/media/pdf/ap21-frq-biology.pdf
+  https://apcentral.collegeboard.org/media/pdf/ap19-frq-biology.pdf
+
+########## RUNNING ingest-ap-chemistry.mjs ##########
+
+==== Ingesting OFFICIAL AP_CHEMISTRY FRQs from CB ====
+
+Removed 9 hand-authored reference rows.
+
+
+— 2025 —
+  downloading https://apcentral.collegeboard.org/media/pdf/ap25-frq-chemistry.pdf ...
+  saved ap25-frq-chemistry.pdf (417 KB)
+  parsed 7 FRQ prompts from 2025
+
+— 2024 —
+  downloading https://apcentral.collegeboard.org/media/pdf/ap24-frq-chemistry.pdf ...
+  saved ap24-frq-chemistry.pdf (1008 KB)
+Warning: TT: undefined function: 32
+  parsed 7 FRQ prompts from 2024
+
+— 2023 —
+  downloading https://apcentral.collegeboard.org/media/pdf/ap23-frq-chemistry.pdf ...
+  saved ap23-frq-chemistry.pdf (927 KB)
+Warning: TT: undefined function: 32
+  parsed 7 FRQ prompts from 2023
+
+— 2022 —
+  downloading https://apcentral.collegeboard.org/media/pdf/ap22-frq-chemistry.pdf ...
+    miss ap22-frq-chemistry.pdf: HTTP 404 for https://apcentral.collegeboard.org/media/pdf/ap22-frq-chemistry.pdf
+  downloading https://apcentral.collegeboard.org/media/pdf/ap-chemistry-frq-2022.pdf ...
+    miss ap-chemistry-frq-2022.pdf: HTTP 404 for https://apcentral.collegeboard.org/media/pdf/ap-chemistry-frq-2022.
+
+— 2021 —
+  downloading https://apcentral.collegeboard.org/media/pdf/ap21-frq-chemistry.pdf ...
+  saved ap21-frq-chemistry.pdf (846 KB)
+Warning: TT: undefined function: 32
+  parsed 5 FRQ prompts from 2021
+PrismaClientUnknownRequestError: 
+Invalid `prisma.officialSample.create()` invocation:
+
+
+Error occurred during query execution:
+ConnectorError(ConnectorError { user_facing_error: None, kind: QueryError(PostgresError { code: "22021", message: "invalid byte sequence for encoding \"UTF8\": 0x00", severity: "ERROR", detail: None, column: None, hint: None }), transient: false })
+    at qn.handleRequestError (C:\Users\akkil\project\AP_Help\node_modules\@prisma\client\runtime\library.js:121:7505)
+    at qn.handleAndLogRequestError (C:\Users\akkil\project\AP_Help\node_modules\@prisma\client\runtime\library.js:121:6640)
+    at qn.request (C:\Users\akkil\project\AP_Help\node_modules\@prisma\client\runtime\library.js:121:6347)
+    at async l (C:\Users\akkil\project\AP_Help\node_modules\@prisma\client\runtime\library.js:130:9616)
+    at async upsertSample (file:///C:/Users/akkil/project/AP_Help/scripts/ingest/_shared.mjs:141:3)
+    at async ingestSet (file:///C:/Users/akkil/project/AP_Help/scripts/ingest/ingest-ap-chemistry.mjs:54:17)
+    at async main (file:///C:/Users/akkil/project/AP_Help/scripts/ingest/ingest-ap-chemistry.mjs:78:39) {
+  clientVersion: '6.1.0'
+}
+FAIL: ingest-ap-chemistry.mjs -> scripts\ingest\ingest-ap-chemistry.mjs exited with code 1
+
+########## RUNNING ingest-ap-calculus-ab.mjs ##########
+
+==== Ingesting OFFICIAL AP_CALCULUS_AB FRQs from CB ====
+
+Removed 10 hand-authored reference rows.
+
+
+— 2025 —
+  downloading https://apcentral.collegeboard.org/media/pdf/ap25-frq-calculus-ab.pdf ...
+  saved ap25-frq-calculus-ab.pdf (293 KB)
+  parsed 6 FRQ prompts from 2025
+
+— 2024 —
+  downloading https://apcentral.collegeboard.org/media/pdf/ap24-frq-calculus-ab.pdf ...
+  saved ap24-frq-calculus-ab.pdf (318 KB)
+  parsed 6 FRQ prompts from 2024
+
+— 2023 —
+  downloading https://apcentral.collegeboard.org/media/pdf/ap23-frq-calculus-ab.pdf ...
+  saved ap23-frq-calculus-ab.pdf (274 KB)
+  parsed 6 FRQ prompts from 2023
+
+— 2022 —
+  downloading https://apcentral.collegeboard.org/media/pdf/ap22-frq-calculus-ab.pdf ...
+  saved ap22-frq-calculus-ab.pdf (351 KB)
+  parsed 6 FRQ prompts from 2022
+
+— 2021 —
+  downloading https://apcentral.collegeboard.org/media/pdf/ap21-frq-calculus-ab.pdf ...
+  saved ap21-frq-calculus-ab.pdf (1601 KB)
+  parsed 6 FRQ prompts from 2021
+
+— 2019 —
+  downloading https://apcentral.collegeboard.org/media/pdf/ap19-frq-calculus-ab.pdf ...
+  saved ap19-frq-calculus-ab.pdf (587 KB)
+  parsed 5 FRQ prompts from 2019
+
+==== AP_CALCULUS_AB INGESTION COMPLETE ====
+Created: 35  Updated: 0
+Total AP_CALCULUS_AB OfficialSamples: 35
+By type: FRQ=35
+URLs used: 6
+  https://apcentral.collegeboard.org/media/pdf/ap25-frq-calculus-ab.pdf
+  https://apcentral.collegeboard.org/media/pdf/ap24-frq-calculus-ab.pdf
+  https://apcentral.collegeboard.org/media/pdf/ap23-frq-calculus-ab.pdf
+  https://apcentral.collegeboard.org/media/pdf/ap22-frq-calculus-ab.pdf
+  https://apcentral.collegeboard.org/media/pdf/ap21-frq-calculus-ab.pdf
+  https://apcentral.collegeboard.org/media/pdf/ap19-frq-calculus-ab.pdf
+
+########## RUNNING ingest-ap-calculus-bc.mjs ##########
+
+==== Ingesting OFFICIAL AP_CALCULUS_BC FRQs from CB ====
+
+Removed 10 hand-authored reference rows.
+
+
+— 2025 —
+  downloading https://apcentral.collegeboard.org/media/pdf/ap25-frq-calculus-bc.pdf ...
+  saved ap25-frq-calculus-bc.pdf (290 KB)
+  parsed 6 FRQ prompts from 2025
+
+— 2024 —
+  downloading https://apcentral.collegeboard.org/media/pdf/ap24-frq-calculus-bc.pdf ...
+  saved ap24-frq-calculus-bc.pdf (3280 KB)
+  parsed 5 FRQ prompts from 2024
+
+— 2023 —
+  downloading https://apcentral.collegeboard.org/media/pdf/ap23-frq-calculus-bc.pdf ...
+  saved ap23-frq-calculus-bc.pdf (275 KB)
+  parsed 6 FRQ prompts from 2023
+
+— 2022 —
+  downloading https://apcentral.collegeboard.org/media/pdf/ap22-frq-calculus-bc.pdf ...
+  saved ap22-frq-calculus-bc.pdf (321 KB)
+  parsed 6 FRQ prompts from 2022
+
+— 2021 —
+  downloading https://apcentral.collegeboard.org/media/pdf/ap21-frq-calculus-bc.pdf ...
+  saved ap21-frq-calculus-bc.pdf (1782 KB)
+  parsed 6 FRQ prompts from 2021
+
+— 2019 —
+  downloading https://apcentral.collegeboard.org/media/pdf/ap19-frq-calculus-bc.pdf ...
+  saved ap19-frq-calculus-bc.pdf (697 KB)
+  parsed 4 FRQ prompts from 2019
+
+==== AP_CALCULUS_BC INGESTION COMPLETE ====
+Created: 33  Updated: 0
+Total AP_CALCULUS_BC OfficialSamples: 33
+By type: FRQ=33
+URLs used: 6
+  https://apcentral.collegeboard.org/media/pdf/ap25-frq-calculus-bc.pdf
+  https://apcentral.collegeboard.org/media/pdf/ap24-frq-calculus-bc.pdf
+  https://apcentral.collegeboard.org/media/pdf/ap23-frq-calculus-bc.pdf
+  https://apcentral.collegeboard.org/media/pdf/ap22-frq-calculus-bc.pdf
+  https://apcentral.collegeboard.org/media/pdf/ap21-frq-calculus-bc.pdf
+  https://apcentral.collegeboard.org/media/pdf/ap19-frq-calculus-bc.pdf
+
+########## RUNNING ingest-ap-statistics.mjs ##########
+
+==== Ingesting OFFICIAL AP_STATISTICS FRQs from CB ====
+
+Removed 9 hand-authored reference rows.
+
+
+— 2025 —
+  downloading https://apcentral.collegeboard.org/media/pdf/ap25-frq-statistics.pdf ...
+  saved ap25-frq-statistics.pdf (321 KB)
+  parsed 6 FRQ prompts from 2025
+
+— 2024 —
+  downloading https://apcentral.collegeboard.org/media/pdf/ap24-frq-statistics.pdf ...
+  saved ap24-frq-statistics.pdf (3169 KB)
+  parsed 6 FRQ prompts from 2024
+
+— 2023 —
+  downloading https://apcentral.collegeboard.org/media/pdf/ap23-frq-statistics.pdf ...
+  saved ap23-frq-statistics.pdf (2402 KB)
+  parsed 6 FRQ prompts from 2023
+
+— 2022 —
+  downloading https://apcentral.collegeboard.org/media/pdf/ap22-frq-statistics.pdf ...
+  saved ap22-frq-statistics.pdf (2327 KB)
+  parsed 6 FRQ prompts from 2022
+
+— 2021 —
+  downloading https://apcentral.collegeboard.org/media/pdf/ap21-frq-statistics.pdf ...
+  saved ap21-frq-statistics.pdf (4404 KB)
+  parsed 6 FRQ prompts from 2021
+
+==== AP_STATISTICS INGESTION COMPLETE ====
+Created: 30  Updated: 0
+Total AP_STATISTICS OfficialSamples: 30
+By type: FRQ=30
+URLs used: 5
+  https://apcentral.collegeboard.org/media/pdf/ap25-frq-statistics.pdf
+  https://apcentral.collegeboard.org/media/pdf/ap24-frq-statistics.pdf
+  https://apcentral.collegeboard.org/media/pdf/ap23-frq-statistics.pdf
+  https://apcentral.collegeboard.org/media/pdf/ap22-frq-statistics.pdf
+  https://apcentral.collegeboard.org/media/pdf/ap21-frq-statistics.pdf
+
+########## RUNNING ingest-ap-us-history.mjs ##########
+
+==== Ingesting OFFICIAL AP_US_HISTORY FRQs from CB ====
+
+Removed 10 hand-authored reference rows.
+
+
+— 2025 Set 1 —
+  downloading https://apcentral.collegeboard.org/media/pdf/ap25-frq-us-history-set-1.pdf ...
+  saved ap25-frq-us-history-set-1.pdf (1925 KB)
+  parsed 5 prompts from 2025 Set 1 ({"SAQ":4,"DBQ":1})
+
+— 2025 Set 2 —
+  downloading https://apcentral.collegeboard.org/media/pdf/ap25-frq-us-history-set-2.pdf ...
+  saved ap25-frq-us-history-set-2.pdf (1444 KB)
+  parsed 5 prompts from 2025 Set 2 ({"SAQ":4,"DBQ":1})
+
+— 2024 Set 1 —
+  downloading https://apcentral.collegeboard.org/media/pdf/ap24-frq-us-history-set-1.pdf ...
+  saved ap24-frq-us-history-set-1.pdf (4534 KB)
+  parsed 8 prompts from 2024 Set 1 ({"SAQ":4,"DBQ":1,"LEQ":3})
+
+— 2024 Set 2 —
+  downloading https://apcentral.collegeboard.org/media/pdf/ap24-frq-us-history-set-2.pdf ...
+  saved ap24-frq-us-history-set-2.pdf (3283 KB)
+  parsed 8 prompts from 2024 Set 2 ({"SAQ":4,"DBQ":1,"LEQ":3})
+
+— 2023 Set 1 —
+  downloading https://apcentral.collegeboard.org/media/pdf/ap23-frq-us-history-set-1.pdf ...
+  saved ap23-frq-us-history-set-1.pdf (743 KB)
+  parsed 8 prompts from 2023 Set 1 ({"SAQ":4,"DBQ":1,"LEQ":3})
+
+— 2023 Set 2 —
+  downloading https://apcentral.collegeboard.org/media/pdf/ap23-frq-us-history-set-2.pdf ...
+  saved ap23-frq-us-history-set-2.pdf (849 KB)
+  parsed 8 prompts from 2023 Set 2 ({"SAQ":4,"DBQ":1,"LEQ":3})
+
+==== AP_US_HISTORY INGESTION COMPLETE ====
+Created: 38  Updated: 4
+Total AP_US_HISTORY OfficialSamples: 38
+By type: DBQ=6  LEQ=12  SAQ=20
+URLs used: 6
+  https://apcentral.collegeboard.org/media/pdf/ap25-frq-us-history-set-1.pdf
+  https://apcentral.collegeboard.org/media/pdf/ap25-frq-us-history-set-2.pdf
+  https://apcentral.collegeboard.org/media/pdf/ap24-frq-us-history-set-1.pdf
+  https://apcentral.collegeboard.org/media/pdf/ap24-frq-us-history-set-2.pdf
+  https://apcentral.collegeboard.org/media/pdf/ap23-frq-us-history-set-1.pdf
+  https://apcentral.collegeboard.org/media/pdf/ap23-frq-us-history-set-2.pdf
+
+########## RUNNING ingest-ap-world-history.mjs ##########
+
+==== Ingesting OFFICIAL AP_WORLD_HISTORY FRQs from CB ====
+
+Removed 10 hand-authored reference rows.
+
+
+— 2025 Set 1 —
+  downloading https://apcentral.collegeboard.org/media/pdf/ap25-frq-world-history-modern-set-1.pdf ...
+  saved ap25-frq-world-history-modern-set-1.pdf (3489 KB)
+  parsed 5 prompts from 2025 Set 1 ({"SAQ":4,"DBQ":1})
+
+— 2025 Set 2 —
+  downloading https://apcentral.collegeboard.org/media/pdf/ap25-frq-world-history-modern-set-2.pdf ...
+  saved ap25-frq-world-history-modern-set-2.pdf (1393 KB)
+  parsed 5 prompts from 2025 Set 2 ({"SAQ":4,"DBQ":1})
+
+— 2024 Set 1 —
+  downloading https://apcentral.collegeboard.org/media/pdf/ap24-frq-world-history-set-1.pdf ...
+  saved ap24-frq-world-history-set-1.pdf (1284 KB)
+  parsed 8 prompts from 2024 Set 1 ({"SAQ":4,"DBQ":1,"LEQ":3})
+
+— 2024 Set 2 —
+  downloading https://apcentral.collegeboard.org/media/pdf/ap24-frq-world-history-set-2.pdf ...
+  saved ap24-frq-world-history-set-2.pdf (1793 KB)
+  parsed 8 prompts from 2024 Set 2 ({"SAQ":4,"DBQ":1,"LEQ":3})
+
+— 2023 Set 1 —
+  downloading https://apcentral.collegeboard.org/media/pdf/ap23-frq-world-history-modern-set-1.pdf ...
+  saved ap23-frq-world-history-modern-set-1.pdf (257 KB)
+  parsed 8 prompts from 2023 Set 1 ({"SAQ":4,"DBQ":1,"LEQ":3})
+
+— 2023 Set 2 —
+  downloading https://apcentral.collegeboard.org/media/pdf/ap23-frq-world-history-modern-set-2.pdf ...
+  saved ap23-frq-world-history-modern-set-2.pdf (2044 KB)
+  parsed 8 prompts from 2023 Set 2 ({"SAQ":4,"DBQ":1,"LEQ":3})
+
+==== AP_WORLD_HISTORY INGESTION COMPLETE ====
+Created: 40  Updated: 2
+Total AP_WORLD_HISTORY OfficialSamples: 40
+By type: DBQ=6  LEQ=12  SAQ=22
+URLs used: 6
+  https://apcentral.collegeboard.org/media/pdf/ap25-frq-world-history-modern-set-1.pdf
+  https://apcentral.collegeboard.org/media/pdf/ap25-frq-world-history-modern-set-2.pdf
+  https://apcentral.collegeboard.org/media/pdf/ap24-frq-world-history-set-1.pdf
+  https://apcentral.collegeboard.org/media/pdf/ap24-frq-world-history-set-2.pdf
+  https://apcentral.collegeboard.org/media/pdf/ap23-frq-world-history-modern-set-1.pdf
+  https://apcentral.collegeboard.org/media/pdf/ap23-frq-world-history-modern-set-2.pdf
+
+########## RUNNING ingest-ap-psychology.mjs ##########
+
+==== Ingesting OFFICIAL AP_PSYCHOLOGY FRQs from CB ====
+
+Removed 11 hand-authored reference rows.
+
+
+— 2025 Set 1 (new) —
+  downloading https://apcentral.collegeboard.org/media/pdf/ap25-frq-psychology-set-1.pdf ...
+  saved ap25-frq-psychology-set-1.pdf (282 KB)
+  parsed 3 prompts from 2025 Set 1 ({"AAQ":1,"EBQ":1,"FRQ":1})
+
+— 2025 Set 2 (new) —
+  downloading https://apcentral.collegeboard.org/media/pdf/ap25-frq-psychology-set-2.pdf ...
+  saved ap25-frq-psychology-set-2.pdf (267 KB)
+  parsed 2 prompts from 2025 Set 2 ({"AAQ":1,"EBQ":1})
+
+— 2024 Set 1 (old) —
+  downloading https://apcentral.collegeboard.org/media/pdf/ap24-frq-psychology-set-1.pdf ...
+  saved ap24-frq-psychology-set-1.pdf (281 KB)
+  parsed 2 prompts from 2024 Set 1 ({"FRQ":2})
+
+— 2024 Set 2 (old) —
+  downloading https://apcentral.collegeboard.org/media/pdf/ap24-frq-psychology-set-2.pdf ...
+  saved ap24-frq-psychology-set-2.pdf (194 KB)
+  parsed 2 prompts from 2024 Set 2 ({"FRQ":2})
+
+— 2023 Set 1 (old) —
+  downloading https://apcentral.collegeboard.org/media/pdf/ap23-frq-psychology-set-1.pdf ...
+  saved ap23-frq-psychology-set-1.pdf (104 KB)
+  parsed 2 prompts from 2023 Set 1 ({"FRQ":2})
+
+— 2023 Set 2 (old) —
+  downloading https://apcentral.collegeboard.org/media/pdf/ap23-frq-psychology-set-2.pdf ...
+  saved ap23-frq-psychology-set-2.pdf (102 KB)
+  parsed 2 prompts from 2023 Set 2 ({"FRQ":2})
+
+==== AP_PSYCHOLOGY INGESTION COMPLETE ====
+Created: 13  Updated: 0
+Total AP_PSYCHOLOGY OfficialSamples: 13
+By type: AAQ=2  EBQ=2  FRQ=9
+URLs used: 6
+  https://apcentral.collegeboard.org/media/pdf/ap25-frq-psychology-set-1.pdf
+  https://apcentral.collegeboard.org/media/pdf/ap25-frq-psychology-set-2.pdf
+  https://apcentral.collegeboard.org/media/pdf/ap24-frq-psychology-set-1.pdf
+  https://apcentral.collegeboard.org/media/pdf/ap24-frq-psychology-set-2.pdf
+  https://apcentral.collegeboard.org/media/pdf/ap23-frq-psychology-set-1.pdf
+  https://apcentral.collegeboard.org/media/pdf/ap23-frq-psychology-set-2.pdf
+
+
+================================================
+  GRAND TOTAL REPORT
+  elapsed: 65s
+================================================
+
+  AP_PHYSICS_1                           total= 24  FRQ=24
+  AP_BIOLOGY                             total= 38  FRQ=38
+  AP_CHEMISTRY                           total= 25  FRQ=25
+  AP_CALCULUS_AB                         total= 35  FRQ=35
+  AP_CALCULUS_BC                         total= 33  FRQ=33
+  AP_STATISTICS                          total= 30  FRQ=30
+  AP_US_HISTORY                          total= 38  DBQ=6 LEQ=12 SAQ=20
+  AP_WORLD_HISTORY                       total= 40  DBQ=6 LEQ=12 SAQ=22
+  AP_PSYCHOLOGY                          total= 13  AAQ=2 EBQ=2 FRQ=9
+  AP_COMPUTER_SCIENCE_PRINCIPLES         total=  8  FRQ=8
+
+  GRAND TOTAL OfficialSample rows: 284
+  Unique (course, sourceUrl) pairs: 60
