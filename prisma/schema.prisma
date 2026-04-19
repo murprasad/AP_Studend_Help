@@ -62,8 +62,37 @@ model User {
   dailyQuizSends       DailyQuizSend[]
   masteryTierUps       MasteryTierUp[]
   frqAttempts          FrqAttempt[]
+  dashboardImpressions DashboardImpression[]
 
   @@map("users")
+}
+
+// Dashboard → Coach Card → CTA click funnel instrumentation.
+// One row per dashboard page load. Subsequent events (coach_requested /
+// coach_rendered / coach_clicked) patch the same row so we can measure
+// where users drop off after login without joining multiple tables.
+//
+// Privacy note: no IP / user-agent / device data is captured — only the
+// event timestamps, the course the user was viewing, and the coach's
+// CTA type + rough projected score at render time.
+model DashboardImpression {
+  id                    String   @id @default(cuid())
+  userId                String
+  user                  User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // Which course the user was viewing
+  course                String
+  // Event timeline (per dashboard view)
+  dashboardLoadedAt     DateTime @default(now())
+  coachPlanRequestedAt  DateTime?
+  coachPlanRenderedAt   DateTime?
+  coachPlanCtaClickedAt DateTime?
+  // Content at render time so we can correlate click-through with tier
+  ctaType               String?  // e.g. "diagnostic_soft" | "fix_weak_unit" | "mock_exam" | "daily_review"
+  roughScore            Float?   // projected score shown
+
+  @@index([userId, dashboardLoadedAt])
+  @@index([dashboardLoadedAt])
+  @@map("dashboard_impressions")
 }
 
 // "You fixed it" — mastery tier-up celebration ledger.

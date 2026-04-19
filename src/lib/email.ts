@@ -111,6 +111,43 @@ export async function sendOnboardingBounceEmail(opts: {
   await sendEmail(email, subject, html);
 }
 
+/**
+ * Registration-stall re-engagement email.
+ *
+ * Target: users who registered and verified their email but never completed
+ * onboarding (no course picked). Sibling of sendOnboardingBounceEmail — but
+ * fires one stage earlier in the funnel, so the copy asks the user to
+ * "finish setup" instead of "come see your rough score" (they have no
+ * score yet — they never even picked a course).
+ *
+ * Dedup via TrialReengagement row with emailType="registration_stall".
+ * No course resolution needed since these users never picked one.
+ */
+export async function sendRegistrationStallEmail(opts: {
+  email: string;
+  firstName: string;
+}): Promise<void> {
+  const { email, firstName } = opts;
+  const baseUrl = process.env.APP_URL ?? process.env.NEXT_PUBLIC_APP_URL ?? "https://studentnest.ai";
+  const subject = `You're 30 seconds from a personalized plan`;
+  const onboardingUrl = `${baseUrl}/onboarding?src=registration-stall`;
+  const html = `
+    <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 600px; margin: 0 auto; padding: 24px;">
+      <h1 style="color: #1865F2; margin: 0 0 12px 0; font-size: 22px;">Hi ${firstName},</h1>
+      <p style="color: #334155; line-height: 1.6; margin: 0 0 20px 0; font-size: 15px;">
+        You created an account but haven&apos;t picked a course yet. Takes 30 seconds to finish setup and see your personalized plan. Come back anytime &mdash; your account is ready when you are.
+      </p>
+      <a href="${onboardingUrl}" style="display: inline-block; background: #1865F2; color: white; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 15px; margin: 8px 0 24px 0;">
+        Finish setup &rarr;
+      </a>
+      <p style="color: #94a3b8; font-size: 12px; line-height: 1.5; margin-top: 24px;">
+        One-time email. Unsubscribe by replying.
+      </p>
+    </div>
+  `.trim();
+  await sendEmail(email, subject, html);
+}
+
 export async function sendPasswordResetEmail(
   email: string,
   firstName: string,

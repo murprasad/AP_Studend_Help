@@ -32,7 +32,7 @@ import { CLEPGeneratePlan } from "@/components/dashboard/clep-generate-plan";
 import { DailyGoalCard } from "@/components/dashboard/daily-goal-card";
 import { ProgressUpsellCard } from "@/components/dashboard/progress-upsell-card";
 import { MasteryTierUpCard } from "@/components/dashboard/mastery-tier-up-card";
-import { CoachCard } from "@/components/dashboard/coach-card";
+import { CoachCardInstrumented } from "@/components/dashboard/coach-card-instrumented";
 
 export default async function DashboardPage() {
   const session = await getServerSession(authOptions);
@@ -152,7 +152,7 @@ export default async function DashboardPage() {
           One prescription: projected score + effort-to-target + weakest
           unit + single dominant CTA. Replaces the earlier fragmented top
           zone (separate ReadinessCard + 3-CTA Quick Actions + countdown). */}
-      {!isCLEP && <CoachCard course={selectedCourse} />}
+      {!isCLEP && <CoachCardInstrumented course={selectedCourse} />}
 
       {/* CLEP 7-Day Plan Card */}
       {isCLEP && clepPlan && (

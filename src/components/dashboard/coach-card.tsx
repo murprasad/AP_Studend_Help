@@ -29,6 +29,27 @@ import {
 
 interface Props {
   course: string;
+  // Funnel instrumentation — set by the parent client wrapper after
+  // the /loaded event returns. Null while the impression is still
+  // being created; in that case we simply skip follow-up events
+  // (better to drop one event than block rendering).
+  impressionId?: string | null;
+}
+
+/**
+ * Fire-and-forget analytics POST. Failures are swallowed so a slow
+ * or down analytics route can never break the dashboard.
+ */
+function logDashboardEvent(payload: Record<string, unknown>): void {
+  try {
+    void fetch("/api/analytics/dashboard-event", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    }).catch(() => { /* silent */ });
+  } catch {
+    /* silent */
+  }
 }
 
 interface CoachPlanResponse {
@@ -69,13 +90,19 @@ function scaleSuffix(family: "AP" | "SAT" | "ACT", scaleMax: number): string {
   return `/${scaleMax}`;
 }
 
-export function CoachCard({ course }: Props) {
+export function CoachCard({ course, impressionId }: Props) {
   const [data, setData] = useState<CoachPlanResponse | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     let cancelled = false;
     setLoading(true);
+    // Stamp "coach_requested" BEFORE the fetch so a slow or failing
+    // /api/coach-plan still shows up in the funnel as "requested but
+    // never rendered" (that's exactly the signal we want).
+    if (impressionId) {
+      logDashboardEvent({ impressionId, course, event: "coach_requested" });
+    }
     fetch(`/api/coach-plan?course=${course}`, { cache: "no-store" })
       .then((r) => (r.ok ? r.json() : null))
       .then((d) => {
@@ -84,7 +111,21 @@ export function CoachCard({ course }: Props) {
       .catch(() => { /* graceful degrade — dashboard still renders other cards */ })
       .finally(() => { if (!cancelled) setLoading(false); });
     return () => { cancelled = true; };
-  }, [course]);
+  }, [course, impressionId]);
+
+  // "coach_rendered" — fired once per (impressionId, data) pair so we
+  // don't re-log on every React re-render. If the impression row lands
+  // AFTER the coach plan data (race), the effect re-runs and logs.
+  useEffect(() => {
+    if (!impressionId || !data) return;
+    logDashboardEvent({
+      impressionId,
+      course,
+      event: "coach_rendered",
+      ctaType: data.nextAction?.type,
+      roughScore: data.roughScore,
+    });
+  }, [impressionId, data, course]);
 
   if (loading) {
     return (
@@ -213,7 +254,32 @@ export function CoachCard({ course }: Props) {
         )}
 
         {/* ── 5. THE single dominant CTA ────────────────────────────── */}
-        <Link href={data.nextAction.url} className="block">
+        <Link
+          href={data.nextAction.url}
+          className="block"
+          onClick={() => {
+            // The onClick fires right before navigation — a regular
+            // fetch can be canceled when the page unloads, so we use
+            // navigator.sendBeacon for reliable delivery. Falls back
+            // to fetch where sendBeacon is unavailable.
+            if (!impressionId) return;
+            const payload = JSON.stringify({
+              impressionId,
+              course,
+              event: "coach_clicked",
+            });
+            try {
+              if (typeof navigator !== "undefined" && typeof navigator.sendBeacon === "function") {
+                navigator.sendBeacon(
+                  "/api/analytics/dashboard-event",
+                  new Blob([payload], { type: "application/json" }),
+                );
+                return;
+              }
+            } catch { /* fall through */ }
+            logDashboardEvent({ impressionId, course, event: "coach_clicked" });
+          }}
+        >
           <Button size="lg" className="btn-lift w-full gap-2 h-12 text-base font-semibold">
             {data.nextAction.ctaText}
             <span className="text-xs font-normal opacity-80">· {data.nextAction.minutes} min</span>
