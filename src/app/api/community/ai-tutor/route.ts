@@ -42,7 +42,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Thread not found" }, { status: 404 })
   }
 
-  // Check: only one AI tutor reply per thread
+  // Check: only one Sage Live Tutor reply per thread
   const existing = await prisma.discussionReply.findFirst({
     where: { threadId, isAiTutor: true },
     select: { id: true, body: true, createdAt: true, user: { select: { firstName: true, lastName: true } } },
@@ -61,9 +61,9 @@ Please give a helpful, concise tutoring response for this student's question.`
   try {
     aiBody = await callAIWithCascade(userPrompt, AI_TUTOR_SYSTEM)
   } catch (e) {
-    console.error("[AI Tutor] All providers failed:", e)
+    console.error("[Sage Live Tutor] All providers failed:", e)
     return NextResponse.json(
-      { error: "AI tutor unavailable. Try again in a moment.", debug: { error: String(e) } },
+      { error: "Sage Live Tutor unavailable. Try again in a moment.", debug: { error: String(e) } },
       { status: 503 }
     )
   }
@@ -86,6 +86,6 @@ Please give a helpful, concise tutoring response for this student's question.`
   return NextResponse.json({ reply })
   } catch (e) {
     console.error("POST /api/community/ai-tutor error:", e)
-    return NextResponse.json({ error: "AI tutor reply failed. Please try again." }, { status: 500 })
+    return NextResponse.json({ error: "Sage Live Tutor reply failed. Please try again." }, { status: 500 })
   }
 }

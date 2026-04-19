@@ -372,8 +372,8 @@ export default function DiagnosticPage() {
                     </span>{" "}
                     and {result.weakUnits.length > 1 ? `${result.weakUnits.length - 1} other weak unit${result.weakUnits.length > 2 ? "s" : ""}` : "your identified gap areas"}.
                     {isClep
-                      ? " Unlock unlimited AI tutoring + personalized CLEP study plan."
-                      : " Unlock FRQ practice + unlimited AI tutoring."}
+                      ? " Unlock unlimited Sage Live Tutor + personalized CLEP study plan."
+                      : " Unlock FRQ practice + unlimited Sage Live Tutor."}
                   </p>
                   <div className="flex gap-2 mt-3">
                     <Link href="/billing">

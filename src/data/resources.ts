@@ -109,7 +109,7 @@ export const GLOBAL_RESOURCES: Resource[] = [
   {
     id: "library-of-congress",
     name: "Library of Congress Digital Collections",
-    description: "Millions of free primary source documents, photographs, maps, newspapers, and timelines from American and world history. Used by StudentNest to enrich AI tutor answers.",
+    description: "Millions of free primary source documents, photographs, maps, newspapers, and timelines from American and world history. Used by StudentNest to enrich Sage Live Tutor answers.",
     url: "https://www.loc.gov/collections/",
     type: "primary_source",
     icon: "Library",
@@ -119,7 +119,7 @@ export const GLOBAL_RESOURCES: Resource[] = [
   {
     id: "wikipedia",
     name: "Wikipedia / Wikimedia Foundation",
-    description: "Free encyclopedia with deep articles on every AP topic across all courses. Wikipedia summaries are automatically pulled into AI tutor context to give accurate, sourced answers.",
+    description: "Free encyclopedia with deep articles on every AP topic across all courses. Wikipedia summaries are automatically pulled into Sage Live Tutor context to give accurate, sourced answers.",
     url: "https://en.wikipedia.org",
     type: "reading",
     icon: "BookMarked",

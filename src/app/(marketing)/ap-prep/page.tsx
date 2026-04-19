@@ -189,7 +189,7 @@ export default function ApPrepPage() {
         <div className="rounded-xl border border-border/40 bg-card/50 p-6 space-y-3">
           <p className="font-bold">Free</p>
           <p className="text-2xl font-bold text-muted-foreground">$0</p>
-          {["Unlimited MCQ practice", "5 AI tutor chats/day", "Basic study plan", "Mastery analytics"].map((f) => (
+          {["Unlimited MCQ practice", "5 Sage Live Tutor chats/day", "Basic study plan", "Mastery analytics"].map((f) => (
             <div key={f} className="flex items-center gap-2 text-sm"><CheckCircle className="h-4 w-4 text-emerald-400" />{f}</div>
           ))}
         </div>
@@ -197,7 +197,7 @@ export default function ApPrepPage() {
           <p className="font-bold text-blue-500">AP Premium</p>
           <p className="text-2xl font-bold">$9.99<span className="text-sm font-normal text-muted-foreground">/mo</span></p>
           <p className="text-xs text-green-500 font-medium">or $79.99/yr — save 33%</p>
-          {["Everything in Free", "Unlimited AI tutor chats", "FRQ with AI rubric scoring", "Personalized study plan", "Streaming AI"].map((f) => (
+          {["Everything in Free", "Unlimited Sage Live Tutor chats", "FRQ with AI rubric scoring", "Personalized study plan", "Streaming AI"].map((f) => (
             <div key={f} className="flex items-center gap-2 text-sm"><CheckCircle className="h-4 w-4 text-blue-500" />{f}</div>
           ))}
           <form action="/api/checkout?plan=monthly&module=ap" method="POST" className="pt-2">

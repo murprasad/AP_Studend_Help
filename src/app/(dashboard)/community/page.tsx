@@ -146,15 +146,15 @@ export default function CommunityPage() {
           // AI reply already in list or needs to be appended
           const alreadyInList = replies.some(r => r.id === data.reply.id)
           if (!alreadyInList) setReplies(prev => [...prev, data.reply])
-          toast({ title: "AI Tutor already answered this thread!" })
+          toast({ title: "Sage Live Tutor already answered this thread!" })
         } else {
           setReplies(prev => [...prev, data.reply])
-          toast({ title: "AI Tutor replied!" })
+          toast({ title: "Sage Live Tutor replied!" })
         }
       } else {
         const debugInfo = data.debug ? ` [${JSON.stringify(data.debug)}]` : ""
         toast({
-          title: "AI Tutor unavailable",
+          title: "Sage Live Tutor unavailable",
           description: (data.error || "Try again in a moment.") + debugInfo,
           variant: "destructive",
         })
@@ -208,7 +208,7 @@ export default function CommunityPage() {
             {aiTutorLoading
               ? <Loader2 className="h-3.5 w-3.5 animate-spin" />
               : <Sparkles className="h-3.5 w-3.5" />}
-            {hasAiReply ? "AI Tutor answered" : "Ask AI Tutor"}
+            {hasAiReply ? "Sage Live Tutor answered" : "Ask Sage Live Tutor"}
           </Button>
         </div>
 
@@ -222,7 +222,7 @@ export default function CommunityPage() {
                 <CardContent className="p-4">
                   <div className="flex items-center gap-1.5 mb-2">
                     <Sparkles className="h-3.5 w-3.5 text-blue-500" />
-                    <span className="text-xs font-semibold text-blue-500">AI Tutor</span>
+                    <span className="text-xs font-semibold text-blue-500">Sage Live Tutor</span>
                     <span className="text-xs text-muted-foreground ml-1">· {formatDate(reply.createdAt)}</span>
                   </div>
                   <p className="text-sm whitespace-pre-wrap leading-relaxed">{reply.body}</p>

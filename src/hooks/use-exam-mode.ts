@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * ExamMode — shared context used by Diagnostic / Mock Exam / AI Tutor
+ * ExamMode — shared context used by Diagnostic / Mock Exam / Sage Live Tutor
  * (Sage) to take over the full viewport. When active, the dashboard
  * layout hides its sidebar + mobile header and renders a slim top bar
  * with an exit button, so students aren't distracted while testing.

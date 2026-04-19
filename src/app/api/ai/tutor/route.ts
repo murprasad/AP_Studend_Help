@@ -176,7 +176,7 @@ export async function POST(req: NextRequest) {
     const msg = error instanceof Error ? error.message : "";
     if (msg.includes("No AI provider") || msg.includes("All AI providers failed")) {
       return NextResponse.json(
-        { error: "AI tutor is temporarily unavailable. Please try again in a minute." },
+        { error: "Sage Live Tutor is temporarily unavailable. Please try again in a minute." },
         { status: 503 },
       );
     }

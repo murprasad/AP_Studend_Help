@@ -514,7 +514,7 @@ export default async function ClepPrepPage() {
               <div className="rounded-xl border border-border/40 bg-card/50 p-6 space-y-3 h-full">
                 <p className="font-bold">Free</p>
                 <p className="text-3xl font-bold text-muted-foreground">$0 <span className="text-sm font-normal">forever</span></p>
-                {["Unlimited MCQ practice", "5 AI tutor chats/day", "Basic study plan", "Mastery analytics", "All 34 CLEP courses"].map((f) => (
+                {["Unlimited MCQ practice", "5 Sage Live Tutor chats/day", "Basic study plan", "Mastery analytics", "All 34 CLEP courses"].map((f) => (
                   <div key={f} className="flex items-center gap-2 text-sm"><CheckCircle className="h-4 w-4 text-emerald-400 flex-shrink-0" />{f}</div>
                 ))}
                 <Link href="/register?module=clep" className="block pt-2">
@@ -528,7 +528,7 @@ export default async function ClepPrepPage() {
                 <p className="font-bold text-emerald-400">CLEP Premium</p>
                 <p className="text-3xl font-bold">$9.99<span className="text-sm font-normal text-muted-foreground">/mo</span></p>
                 <p className="text-xs text-green-500 font-medium">or $79.99/yr — save 33%</p>
-                {["Everything in Free", "7-Day Pass Plan (AI-personalized)", "Unlimited AI tutor chats", "Exam Readiness Score", "Save $1,200+ per exam"].map((f) => (
+                {["Everything in Free", "7-Day Pass Plan (AI-personalized)", "Unlimited Sage Live Tutor chats", "Exam Readiness Score", "Save $1,200+ per exam"].map((f) => (
                   <div key={f} className="flex items-center gap-2 text-sm"><CheckCircle className="h-4 w-4 text-emerald-400 flex-shrink-0" />{f}</div>
                 ))}
                 <form action="/api/checkout?plan=monthly&module=clep" method="POST" className="pt-2">

@@ -85,7 +85,7 @@ export interface CourseConfig {
     mcqTimeMinutes: number;
     // Future: frqCount, frqTimeMinutes, splitMode for Calc no-calc / calc sections
   };
-  /** Sample questions shown in the AI Tutor sidebar */
+  /** Sample questions shown in the Sage Live Tutor sidebar */
   suggestedTutorQuestions: string[];
   /**
    * Verbatim curriculum context injected into AI system prompts.
@@ -93,7 +93,7 @@ export interface CourseConfig {
    */
   curriculumContext: string;
   /**
-   * Resource recommendation paragraph injected into the AI tutor prompt.
+   * Resource recommendation paragraph injected into the Sage Live Tutor prompt.
    * One bullet per free resource.
    */
   tutorResources: string;
@@ -109,7 +109,7 @@ export interface CourseConfig {
   /** Describes what the AI explanation should reference */
   explanationGuidance: string;
   /**
-   * Whether the AI tutor should fetch live Wikipedia + Library of Congress
+   * Whether the Sage Live Tutor should fetch live Wikipedia + Library of Congress
    * context for every question. Enable for humanities/history courses.
    */
   enrichWithEduAPIs: boolean;

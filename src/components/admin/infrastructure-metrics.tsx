@@ -26,9 +26,9 @@ interface Alert {
 function getAlerts(m: Metrics): Alert[] {
   const alerts: Alert[] = [];
   if (m.tutorCallsToday > 500) {
-    alerts.push({ level: "red", message: "Groq rate limit risk — AI tutor calls today exceed 500. Consider upgrading your Groq plan." });
+    alerts.push({ level: "red", message: "Groq rate limit risk — Sage Live Tutor calls today exceed 500. Consider upgrading your Groq plan." });
   } else if (m.tutorCallsToday > 200) {
-    alerts.push({ level: "amber", message: "Approaching Groq free tier limit — AI tutor calls today exceed 200." });
+    alerts.push({ level: "amber", message: "Approaching Groq free tier limit — Sage Live Tutor calls today exceed 200." });
   }
   if (m.totalQuestions > 40000) {
     alerts.push({ level: "amber", message: "Approaching Neon 0.5 GB storage limit — over 40,000 questions in DB." });
@@ -88,7 +88,7 @@ export function AdminInfrastructureMetrics() {
 
   const statCards = [
     {
-      label: "AI Tutor Calls Today",
+      label: "Sage Live Tutor Calls Today",
       value: metrics.tutorCallsToday,
       sub: `${metrics.tutorCallsWeek} this week`,
       icon: MessageSquare,

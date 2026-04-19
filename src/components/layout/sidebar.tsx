@@ -58,7 +58,7 @@ const navItems: NavItem[] = [
   { href: "/analytics", icon: BarChart3, label: "Analytics" },
   { href: "/study-plan", icon: BookOpen, label: "Study Plan" },
   { href: "/resources", icon: Library, label: "Resources" },
-  { href: "/ai-tutor", icon: MessageSquare, label: "AI Tutor" },
+  { href: "/ai-tutor", icon: MessageSquare, label: "Sage Live Tutor" },
   { href: "/community", icon: Users, label: "Community" },
   { href: "/billing", icon: Crown, label: "Billing" },
   { href: "/about", icon: Info, label: "About" },

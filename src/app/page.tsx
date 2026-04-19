@@ -308,7 +308,7 @@ export default async function LandingPage() {
           </div>
           <h2 className="text-4xl font-bold mb-4">Meet Sage 🌿</h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-12">
-            Sage is your personal AI tutor — available 24/7, never judges, and always explains in a way that clicks.
+            Sage is your personal Sage Live Tutor — available 24/7, never judges, and always explains in a way that clicks.
           </p>
           <div className="grid md:grid-cols-3 gap-6">
             {[
@@ -464,7 +464,7 @@ export default async function LandingPage() {
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-xs text-blue-500 font-medium">
             <Sparkles className="h-3.5 w-3.5" /> What makes us different
           </div>
-          <h2 className="text-2xl font-bold">Most AI tutors explain. Sage tests you back.</h2>
+          <h2 className="text-2xl font-bold">Most Sage Live Tutors explain. Sage tests you back.</h2>
           <p className="text-muted-foreground">
             After every answer, Sage offers a quick 3-question comprehension check — optional, instant, and built around exactly what it just taught you.
             Your score builds your Comprehension % on the Analytics page. Active recall at zero extra effort.
@@ -695,7 +695,7 @@ export default async function LandingPage() {
             {[
               { icon: "💰", title: "99% Savings", desc: "Pay $93 for an exam. Skip a $1,200 college course." },
               { icon: "⏱️", title: "Faster Graduation", desc: "Earn up to 30 credits before your first class." },
-              { icon: "🤖", title: "Same AI Tutor", desc: "Sage explains CLEP topics with the same depth as AP." },
+              { icon: "🤖", title: "Same Sage Live Tutor", desc: "Sage explains CLEP topics with the same depth as AP." },
             ].map(({ icon, title, desc }) => (
               <div key={title} className="text-center p-5 rounded-xl border border-emerald-500/15 bg-card/50">
                 <span className="text-3xl mb-3 block">{icon}</span>
@@ -797,7 +797,7 @@ export default async function LandingPage() {
               {[
                 `All ${courseCount} courses — ${examLabel}`,
                 "Unlimited MCQ practice",
-                "5 AI tutor chats per day",
+                "5 Sage Live Tutor chats per day",
                 "Basic study plan",
                 "Per-unit mastery analytics",
               ].map((item) => (
@@ -826,7 +826,7 @@ export default async function LandingPage() {
               <p className="text-xs text-muted-foreground/60 mb-3">Less than a single hour of tutoring</p>
               {[
                 "Everything in Free, plus:",
-                "Unlimited AI tutor chats",
+                "Unlimited Sage Live Tutor chats",
                 "FRQ with AI rubric scoring",
                 "Personalized AP study plan",
                 "Streaming AI responses",
@@ -857,7 +857,7 @@ export default async function LandingPage() {
               {[
                 "Everything in Free, plus:",
                 "All 34 CLEP courses (earn college credit)",
-                "Unlimited AI tutor chats",
+                "Unlimited Sage Live Tutor chats",
                 "Personalized CLEP study plan",
                 "Streaming AI responses",
                 "Save $1,200+ per exam passed",

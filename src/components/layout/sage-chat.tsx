@@ -88,7 +88,7 @@ const PROMPTS_BY_PAGE: Record<string, string[]> = {
   ],
   "/ai-tutor": [
     "What can I ask you?",
-    "How is Sage different from AI Tutor?",
+    "How should I use Sage Live Tutor?",
     "What's a knowledge check?",
     "Can you help with homework?",
   ],

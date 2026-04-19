@@ -761,7 +761,7 @@ Include exactly 7 days. Make tasks specific and actionable — not vague.`;
 // Re-export from clep-plan.ts (kept separate so client components can import without pulling in Prisma)
 export { staticCLEP7DayPlan } from "./clep-plan";
 
-// ── AI Tutor ───────────────────────────────────────────────────────────────
+// ── Sage Live Tutor ───────────────────────────────────────────────────────────────
 
 /**
  * askTutor — fast, CF-Workers-safe tutor response.

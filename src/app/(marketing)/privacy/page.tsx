@@ -17,12 +17,12 @@ export default function PrivacyPage() {
     {
       id: "data-collected",
       title: "2. Information We Collect",
-      body: `We collect information you provide directly: your name, email address, school (optional), and grade level when you create an account. If you sign in with Google, we receive your name, email, and profile picture from Google. We also collect usage data: practice session results, AI tutor conversations, mastery scores, and study plan progress. We do NOT collect or store credit card numbers — all payment processing is handled by Stripe.`,
+      body: `We collect information you provide directly: your name, email address, school (optional), and grade level when you create an account. If you sign in with Google, we receive your name, email, and profile picture from Google. We also collect usage data: practice session results, Sage Live Tutor conversations, mastery scores, and study plan progress. We do NOT collect or store credit card numbers — all payment processing is handled by Stripe.`,
     },
     {
       id: "how-used",
       title: "3. How We Use Your Information",
-      body: `We use your data to: (1) provide personalized practice questions and AI tutoring based on your performance, (2) track your progress and generate study plans, (3) send you account-related emails (verification, password reset), (4) improve our AI question quality and platform experience, and (5) process subscription payments via Stripe. We never sell your personal information to third parties.`,
+      body: `We use your data to: (1) provide personalized practice questions and Sage Live Tutor based on your performance, (2) track your progress and generate study plans, (3) send you account-related emails (verification, password reset), (4) improve our AI question quality and platform experience, and (5) process subscription payments via Stripe. We never sell your personal information to third parties.`,
     },
     {
       id: "third-parties",
@@ -37,7 +37,7 @@ export default function PrivacyPage() {
     {
       id: "data-retention",
       title: "6. Data Retention",
-      body: `Your account data, practice history, and AI tutor conversations are retained as long as your account is active. If you delete your account, your personal data will be removed within 30 days. Anonymized, aggregated usage data (e.g., question difficulty statistics) may be retained indefinitely to improve the platform.`,
+      body: `Your account data, practice history, and Sage Live Tutor conversations are retained as long as your account is active. If you delete your account, your personal data will be removed within 30 days. Anonymized, aggregated usage data (e.g., question difficulty statistics) may be retained indefinitely to improve the platform.`,
     },
     {
       id: "children",

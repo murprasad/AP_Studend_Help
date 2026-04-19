@@ -25,7 +25,7 @@ function buildFaqs(clepOn: boolean, dsstOn: boolean) {
   return [
     {
       q: "Is it really free?",
-      a: `Yes. Free accounts get unlimited MCQ practice across all ${courseCount} courses, 5 AI tutor chats per day, a basic study plan, and per-unit mastery analytics. No credit card required, no time limit.`,
+      a: `Yes. Free accounts get unlimited MCQ practice across all ${courseCount} courses, 5 Sage Live Tutor chats per day, a basic study plan, and per-unit mastery analytics. No credit card required, no time limit.`,
     },
     {
       q: "How is this different from ChatGPT?",

@@ -80,12 +80,12 @@ export async function POST(req: NextRequest) {
       tips: [
         "Do 10 practice questions daily for the best results",
         "Read every explanation, even for correct answers",
-        "Use the AI Tutor to clarify any confusing concepts",
+        "Use the Sage Live Tutor to clarify any confusing concepts",
       ],
       dailySchedule: {
         Monday: "Unit 1 practice — 10 MCQs",
         Tuesday: "Unit 2 practice — 10 MCQs",
-        Wednesday: "Review wrong answers + AI Tutor session",
+        Wednesday: "Review wrong answers + Sage Live Tutor session",
         Thursday: "Unit 3 practice — 10 MCQs",
         Friday: "Mixed practice across all units",
         Weekend: "Rest or bonus practice on your weakest unit",

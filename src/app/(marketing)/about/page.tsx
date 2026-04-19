@@ -3,7 +3,7 @@ import { Badge } from "@/components/ui/badge";
 
 export const metadata: Metadata = {
   title: "About StudentNest Prep — Mission, Science & Course Coverage",
-  description: "Learn how StudentNest Prep uses active recall, spaced repetition, and AI tutoring to help students score higher on AP, SAT & ACT exams.",
+  description: "Learn how StudentNest Prep uses active recall, spaced repetition, and Sage Live Tutor to help students score higher on AP, SAT & ACT exams.",
   openGraph: {
     title: "About | StudentNest Prep",
     description: "AI-powered exam prep built on learning science. 16+ courses, free to start.",
@@ -86,7 +86,7 @@ export default function AboutPage() {
           We built StudentNest to solve both problems. A platform that does what a great tutor does: explain <em>why</em>, not just <em>what</em> — then test whether it clicked.
         </p>
         <p className="text-muted-foreground leading-relaxed">
-          Sage, our AI tutor, is the result of that idea: a study partner that&apos;s available 24/7, never gets impatient,
+          Sage, our Sage Live Tutor, is the result of that idea: a study partner that&apos;s available 24/7, never gets impatient,
           and adapts to exactly where you&apos;re struggling — whether you&apos;re aiming for a 5 on AP World, a higher SAT score, or a better ACT composite.
         </p>
       </div>
@@ -298,7 +298,7 @@ export default function AboutPage() {
         <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
           {[
             { value: String(courseCount),   label: "Courses covered" },
-            { value: "24/7", label: "AI tutor availability" },
+            { value: "24/7", label: "Sage Live Tutor availability" },
             { value: "Free", label: "To start, forever" },
             { value: "$9.99", label: "Premium per module/mo ($79.99/yr)" },
           ].map(({ value, label }) => (
@@ -367,7 +367,7 @@ export default function AboutPage() {
       {/* Previous Releases Summary */}
       <div className="text-center py-4">
         <p className="text-sm text-muted-foreground">
-          Previous releases (Beta 1.0 &ndash; 2.0) introduced the core AI tutor Sage, daily streaks, spaced repetition, voice input, automated question bank seeding, admin dashboard redesign, annual billing, and a 7-day money-back guarantee.
+          Previous releases (Beta 1.0 &ndash; 2.0) introduced the core Sage Live Tutor Sage, daily streaks, spaced repetition, voice input, automated question bank seeding, admin dashboard redesign, annual billing, and a 7-day money-back guarantee.
         </p>
       </div>
 

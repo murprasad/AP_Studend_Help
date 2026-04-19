@@ -53,7 +53,7 @@ const faqJsonLd = {
       name: "What happens when I hit the free AI limit?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Free users can start 5 new AI Tutor conversations per day. Your existing conversations are never deleted.",
+        text: "Free users can start 5 new Sage Live Tutor conversations per day. Your existing conversations are never deleted.",
       },
     },
     {

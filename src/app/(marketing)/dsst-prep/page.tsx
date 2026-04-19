@@ -346,7 +346,7 @@ export default async function DsstPrepPage() {
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {[
             { title: "AI-Generated Questions", desc: "Unlimited practice questions that match DSST exam format — 4-choice MCQ at intro college level" },
-            { title: "Sage AI Tutor", desc: "Ask Sage anything about your course material — get instant, detailed explanations" },
+            { title: "Sage Sage Live Tutor", desc: "Ask Sage anything about your course material — get instant, detailed explanations" },
             { title: "Personalized Study Plan", desc: "AI analyzes your diagnostic and builds a week-by-week plan targeting your weak areas" },
             { title: "Progress Analytics", desc: "Track your mastery by unit, see readiness scores, and know exactly when you're prepared" },
             { title: "Free Study Resources", desc: "Curated links to OpenStax, Khan Academy, Saylor Academy — all free, all legal" },

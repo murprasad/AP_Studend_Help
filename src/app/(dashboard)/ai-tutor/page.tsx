@@ -71,7 +71,7 @@ export default function AiTutorPage() {
   const [course, setCourse] = useCourse();
 
   // Full-screen Sage chat — hide sidebar + floating SageChat widget
-  // for an app-like deep-work experience. Matches PrepLion's AI Tutor.
+  // for an app-like deep-work experience. Matches PrepLion's Sage Live Tutor.
   const { enterExamMode, exitExamMode } = useExamMode();
   useEffect(() => { enterExamMode(); return () => exitExamMode(); }, [enterExamMode, exitExamMode]);
 
@@ -173,7 +173,7 @@ export default function AiTutorPage() {
           } else {
             toast({
               title: "AI Unavailable",
-              description: data.error || "Could not reach the AI tutor. Please try again.",
+              description: data.error || "Could not reach the Sage Live Tutor. Please try again.",
               variant: "destructive",
             });
           }
@@ -197,7 +197,7 @@ export default function AiTutorPage() {
       } catch {
         toast({
           title: "Connection error",
-          description: "Failed to reach AI tutor. Check your connection.",
+          description: "Failed to reach Sage Live Tutor. Check your connection.",
           variant: "destructive",
         });
         setMessages((prev) => prev.slice(0, -1));

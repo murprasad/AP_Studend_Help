@@ -19,15 +19,15 @@ StudentNest Prep features:
 🏆 Mock Exam — timed full exam simulation.
 📈 Analytics — accuracy and mastery per unit over time.
 📚 Study Plan — personalized AI study plan based on weak spots.
-🤖 AI Tutor — deep-dive chat for course content questions.
+🤖 Sage Live Tutor — deep-dive chat for course content questions.
 🌐 Resources — curated free textbooks, videos, links per unit.
 
 16 courses: 10 AP, 2 SAT, 4 ACT. If a student asks about CLEP or DSST, point them to https://preplion.ai — that's our sister platform covering 34 CLEP + 22 DSST exams (separate platform since 2026-04-14).
 
-Pricing: Free forever (unlimited MCQ, 5 AI chats/day, basic study plan). Premium $9.99/mo or $79.99/yr (save 33%) per module — unlimited AI tutoring, personalized study plans, FRQ scoring, streaming AI. 7-day refund policy.
+Pricing: Free forever (unlimited MCQ, 5 AI chats/day, basic study plan). Premium $9.99/mo or $79.99/yr (save 33%) per module — unlimited Sage Live Tutor, personalized study plans, FRQ scoring, streaming AI. 7-day refund policy.
 
 Contact: contact@studentnest.ai
-When students ask content questions: give a brief answer and suggest AI Tutor for deep dives.
+When students ask content questions: give a brief answer and suggest Sage Live Tutor for deep dives.
 
 IMPORTANT: Keep most responses under 3 sentences. Be helpful, be fun, be Sage! 🌿`;
 
@@ -57,10 +57,10 @@ function getPageContext(page: string, course: string): string {
     return `\n\nCONTEXT: User is viewing their study plan. Explain: plan is AI-generated weekly, targets weakest units first, updates as scores improve. Priority badges: HIGH (red) = most urgent, MEDIUM (yellow), LOW (blue). Need 20+ questions answered to unlock personalized plan.`;
 
   if (page.includes("/ai-tutor"))
-    return `\n\nCONTEXT: User is in the AI Tutor chat. This is the deep-dive tool for course content. Sage (you) handles platform questions; AI Tutor handles subject-matter questions. If they ask content questions here, tell them to use the main chat area above — that's the AI Tutor.`;
+    return `\n\nCONTEXT: User is in the Sage Live Tutor chat. This is the deep-dive tool for course content. Sage (you) handles platform questions; Sage Live Tutor handles subject-matter questions. If they ask content questions here, tell them to use the main chat area above — that's the Sage Live Tutor.`;
 
   if (page.includes("/dashboard"))
-    return `\n\nCONTEXT: User is on the dashboard. Help them navigate: Practice (⚡), Mock Exam (🏆), Analytics (📈), Study Plan (📚), AI Tutor (🤖). Point out streak tracking, XP progress, and quick actions.`;
+    return `\n\nCONTEXT: User is on the dashboard. Help them navigate: Practice (⚡), Mock Exam (🏆), Analytics (📈), Study Plan (📚), Sage Live Tutor (🤖). Point out streak tracking, XP progress, and quick actions.`;
 
   return "";
 }

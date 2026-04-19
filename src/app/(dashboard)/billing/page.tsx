@@ -219,7 +219,7 @@ export default function BillingPage() {
             <p className="text-sm text-muted-foreground mt-0.5">
               {refreshing && !isPremium
                 ? "Payment confirmed. Waiting for Stripe to activate your account — usually under 10 seconds."
-                : "Your Premium subscription is active. Enjoy unlimited AI tutoring and all premium features!"}
+                : "Your Premium subscription is active. Enjoy unlimited Sage Live Tutor and all premium features!"}
             </p>
           </div>
           {refreshing && !isPremium && (
@@ -367,14 +367,14 @@ export default function BillingPage() {
           <CardContent className="space-y-4">
             <ul className="space-y-2">
               {((session?.user as { track?: string })?.track === "clep" ? [
-                "Unlimited AI Tutor conversations",
+                "Unlimited Sage Live Tutor conversations",
                 "All 34 CLEP courses with full prep",
                 "AI-personalized CLEP study plan",
                 "Streaming AI responses",
                 "Advanced analytics & weak-area insights",
                 "Save $1,200+ per exam passed",
               ] : [
-                "Unlimited AI Tutor conversations",
+                "Unlimited Sage Live Tutor conversations",
                 "AI-personalized study plan (updates weekly)",
                 "Streaming AI responses",
                 "Priority model access",

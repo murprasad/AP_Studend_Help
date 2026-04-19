@@ -308,7 +308,7 @@ export default function PricingClient({ clepEnabled, dsstEnabled }: PricingClien
             { q: "Can I cancel anytime?", a: "Yes. Cancel from your billing page and you'll keep Premium access until the end of your billing period." },
             { q: "Can I pay annually?", a: "Yes — $79.99/year per module saves you 33% compared to monthly billing ($6.67/mo)." },
             { q: "What is your refund policy?", a: "We offer a 7-day money-back guarantee on new Premium subscriptions. If you're not satisfied within 7 days of your first payment, email contact@studentnest.ai and we'll issue a full refund — no questions asked. After 7 days, subscriptions are non-refundable but you can cancel anytime and keep access until the end of your billing period." },
-            { q: "What happens when I hit the free AI limit?", a: "Free users can start 5 new AI Tutor conversations per day. Your existing conversations are never deleted." },
+            { q: "What happens when I hit the free AI limit?", a: "Free users can start 5 new Sage Live Tutor conversations per day. Your existing conversations are never deleted." },
             { q: "Is there a student discount?", a: "We keep the free tier generous so every student can prepare for their exams. Premium is $9.99/month per module — or $79.99/year." },
             { q: "Which payment methods are accepted?", a: "All major credit and debit cards via Stripe. Your payment info is never stored on our servers." },
           ].map(({ q, a }) => (
