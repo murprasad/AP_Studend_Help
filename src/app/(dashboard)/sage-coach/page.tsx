@@ -166,7 +166,7 @@ export default function SageCoachPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hasSpeech])
 
-  const stopRecording = useCallback(async (auto = false) => {
+  const stopRecording = useCallback(async (_auto = false) => {
     if (timerRef.current) { clearInterval(timerRef.current); timerRef.current = null }
     const rec = recognitionRef.current
     if (rec) { try { rec.stop() } catch { /* no-op */ } recognitionRef.current = null }
@@ -176,24 +176,19 @@ export default function SageCoachPage() {
     setProcessingElapsed(0)
     setPhase("processing")
 
-    // Elapsed counter for user visibility during processing.
-    const elapsedTicker = setInterval(() => {
-      setProcessingElapsed(Math.round((Date.now() - processingStartRef.current) / 1000))
-    }, 200)
+    if (!concept) return
 
-    // Hard ceiling: no matter what fetch or AbortController does, force
-    // the UI to error state after 25 seconds. This cannot fail.
+    // 23s fetch abort + 25s hard ceiling as backstop. Elapsed ticker runs
+    // in its own useEffect keyed on phase — see below — so it can't be
+    // starved by a stuck main-thread fetch.
     let resolved = false
     const hardTimeout = setTimeout(() => {
       if (!resolved) {
         resolved = true
-        clearInterval(elapsedTicker)
         setError(`No response after 25 seconds. Tap retry to try again.`)
         setPhase("error")
       }
     }, 25_000)
-
-    if (!concept) { clearInterval(elapsedTicker); clearTimeout(hardTimeout); return }
 
     const controller = new AbortController()
     const abortTimer = setTimeout(() => controller.abort(), 23_000)
@@ -211,7 +206,7 @@ export default function SageCoachPage() {
         signal: controller.signal,
       })
       const data: EvalResult = await res.json()
-      if (resolved) return // hardTimeout already fired
+      if (resolved) return
       resolved = true
       if (!res.ok && !data?.scores) throw new Error("Evaluation failed")
       setEvaluation(data)
@@ -227,9 +222,19 @@ export default function SageCoachPage() {
     } finally {
       clearTimeout(abortTimer)
       clearTimeout(hardTimeout)
-      clearInterval(elapsedTicker)
     }
   }, [concept])
+
+  // Elapsed-time ticker — decoupled from the fetch closure so it keeps
+  // advancing even if React batches or defers state updates around the
+  // awaited fetch. Runs whenever phase === "processing".
+  useEffect(() => {
+    if (phase !== "processing") return
+    const id = setInterval(() => {
+      setProcessingElapsed(Math.round((Date.now() - processingStartRef.current) / 1000))
+    }, 250)
+    return () => clearInterval(id)
+  }, [phase])
 
   const retry = useCallback(() => {
     if (evaluation?.scores) setPreviousScore(evaluation.scores.accuracy)
