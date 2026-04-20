@@ -163,11 +163,26 @@ function tryParseJson(s: string): Record<string, unknown> | null {
   try { return JSON.parse(m[0]); } catch { return null; }
 }
 
-export async function POST(req: NextRequest) {
-  const t0 = Date.now();
-  const log = (stage: string, extra?: Record<string, unknown>) =>
-    console.log(`[sage-coach/evaluate] +${Date.now() - t0}ms ${stage}`, extra || "");
+// Watchdog: NO path through this handler may take longer than this.
+// If anything (auth, DB, evaluator cascade, response bundling) hangs beyond
+// this window, we ship a neutral fallback so the client never sits on
+// "Analyzing" forever.
+const WATCHDOG_MS = 22_000;
 
+function watchdog<T>(promise: Promise<T>, fallback: T, ms = WATCHDOG_MS): Promise<T> {
+  return new Promise((resolve) => {
+    let done = false;
+    const timer = setTimeout(() => {
+      if (!done) { done = true; resolve(fallback); }
+    }, ms);
+    promise.then(
+      (v) => { if (!done) { done = true; clearTimeout(timer); resolve(v); } },
+      () => { if (!done) { done = true; clearTimeout(timer); resolve(fallback); } },
+    );
+  });
+}
+
+async function handlePost(req: NextRequest, t0: number, log: (s: string, e?: Record<string, unknown>) => void): Promise<NextResponse> {
   log("start");
   const session = await getServerSession(authOptions);
   if (!session?.user?.id) {
@@ -279,4 +294,19 @@ Score the student on 0-100 scales. Floor accuracy at 30 even if the answer is ve
 
   log("done");
   return NextResponse.json({ ...result, conceptId, saved: true });
+}
+
+export async function POST(req: NextRequest) {
+  const t0 = Date.now();
+  const log = (stage: string, extra?: Record<string, unknown>) =>
+    console.log(`[sage-coach/evaluate] +${Date.now() - t0}ms ${stage}`, extra || "");
+
+  const fallback = NextResponse.json({
+    ...neutralFallback("watchdog_timeout"),
+    conceptId: null,
+    saved: false,
+    tooShort: false,
+  });
+
+  return watchdog(handlePost(req, t0, log), fallback);
 }
