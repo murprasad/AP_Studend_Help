@@ -34,22 +34,22 @@ import { createHash } from "crypto";
 import fs from "fs";
 import path from "path";
 import "dotenv/config";
+import { validatePlagiarism, validateAi } from "./ai-validator.mjs";
 
 const prisma = new PrismaClient();
 
 // Provider cascade — Groq is currently blocked (spend alert), so we prefer
 // Google AI (Gemini, 1.5k req/day free), Together (free credit), OpenRouter
 // (free models), HuggingFace, Cohere, Anthropic (paid last resort).
-// Provider order: OpenRouter-free first (validated working 2026-04-19),
-// then any paid/quota-bounded as fallbacks.
+// Provider order (2026-04-19, after user topped up Groq + Anthropic):
+//   Groq (fast Llama 3.3 70B) → Anthropic Haiku 4.5 (high quality) →
+//   OpenRouter free → Gemini/Together as last resorts.
 const PROVIDERS = [
+  { name: "groq", envKey: "GROQ_API_KEY" },
+  { name: "anthropic", envKey: "ANTHROPIC_API_KEY" },
   { name: "openrouter", envKey: "OPENROUTER_API_KEY" },
   { name: "gemini", envKey: "GOOGLE_AI_API_KEY" },
   { name: "together", envKey: "TOGETHER_AI_API_KEY" },
-  { name: "cohere", envKey: "COHERE_API_KEY" },
-  { name: "hf", envKey: "HUGGINGFACE_API_KEY" },
-  { name: "anthropic", envKey: "ANTHROPIC_API_KEY" },
-  // Groq skipped — spend alert blocks it as of 2026-04-19
 ];
 
 // Circuit breaker: disable a provider for 10 min after 3 consecutive errors.
@@ -118,13 +118,16 @@ function hashQuestion(questionText) {
 
 async function retrieveExemplars(course, questionType, unit, numExemplars = 5) {
   const qtype = questionType || "MCQ";
+  // Overfetch 8× so we can shuffle + pick a variable subset each call, preventing
+  // identical prompt→identical output convergence across repeat generations for
+  // low-exemplar courses (SAT_MATH has only 60 rows).
   let rows = await prisma.officialSample.findMany({
     where: {
       course,
       ...(unit ? { unit } : {}),
       questionType: qtype,
     },
-    take: numExemplars * 3,
+    take: numExemplars * 8,
   });
   if (rows.length < numExemplars) {
     const extra = await prisma.officialSample.findMany({
@@ -142,7 +145,9 @@ async function retrieveExemplars(course, questionType, unit, numExemplars = 5) {
     const seen = new Set(rows.map((r) => r.id));
     for (const e of extra) if (!seen.has(e.id)) rows.push(e);
   }
-  // Re-rank by source priority
+  // Re-rank by source priority, then shuffle within each tier so repeat calls
+  // pick different exemplars and prompts diverge (prevents duplicate-stem
+  // convergence when Groq is given identical context).
   const priority = (sn) => {
     const s = (sn || "").toLowerCase();
     if (/college board|collegeboard|act, inc|prometric|dantes|fact sheet/.test(s)) return 1;
@@ -150,8 +155,24 @@ async function retrieveExemplars(course, questionType, unit, numExemplars = 5) {
     if (/openstax|mit opencourseware|aops|art of problem solving/.test(s)) return 3;
     return 4;
   };
-  rows.sort((a, b) => priority(a.sourceName) - priority(b.sourceName));
-  return rows.slice(0, numExemplars);
+  // Group by tier, shuffle within tier, then concat tiers.
+  const byTier = new Map();
+  for (const r of rows) {
+    const t = priority(r.sourceName);
+    if (!byTier.has(t)) byTier.set(t, []);
+    byTier.get(t).push(r);
+  }
+  const tiers = Array.from(byTier.keys()).sort((a, b) => a - b);
+  const out = [];
+  for (const t of tiers) {
+    const bucket = byTier.get(t);
+    for (let i = bucket.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [bucket[i], bucket[j]] = [bucket[j], bucket[i]];
+    }
+    out.push(...bucket);
+  }
+  return out.slice(0, numExemplars);
 }
 
 function buildPrompt(course, questionType, difficulty, exemplars) {
@@ -349,13 +370,30 @@ async function callAnthropic(prompt) {
   return data.content?.[0]?.text || "";
 }
 
+async function callGroq(prompt) {
+  const key = process.env.GROQ_API_KEY;
+  const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${key}` },
+    body: JSON.stringify({
+      model: "llama-3.3-70b-versatile",
+      messages: [{ role: "user", content: prompt }],
+      temperature: 0.6,
+      max_tokens: 1400,
+    }),
+  });
+  if (!res.ok) throw new Error(`Groq HTTP ${res.status}: ${(await res.text()).slice(0, 200)}`);
+  const data = await res.json();
+  return data.choices?.[0]?.message?.content || "";
+}
+
 const CALLERS = {
+  groq: callGroq,
+  anthropic: callAnthropic,
   gemini: callGemini,
   together: callTogether,
   openrouter: callOpenRouter,
   cohere: callCohere,
-  anthropic: callAnthropic,
-  hf: async () => { throw new Error("HF not implemented"); }, // skip
 };
 
 async function callAI(prompt) {
@@ -416,7 +454,35 @@ async function generateOne(course, questionType, difficulty) {
   if (!sme.ok) {
     return { ok: false, reason: "sme_failed:" + sme.failures.join(","), exemplarIds: exemplars.map(e => e.id) };
   }
-  return { ok: true, question, exemplarIds: exemplars.map(e => e.id) };
+
+  // Batch 1 Gate A: plagiarism guard — reject if near-paraphrase of any exemplar
+  const plag = validatePlagiarism(question, exemplars, 0.30);
+  if (!plag.ok) {
+    return {
+      ok: false,
+      reason: `plagiarism:${plag.similarity}_vs_${plag.matchedExemplarId}`,
+      exemplarIds: exemplars.map(e => e.id),
+    };
+  }
+
+  // Batch 1 Gate B: Haiku 4.5 factual + consensus review
+  const ai = await validateAi(question, course);
+  if (ai.severity === "reject") {
+    return {
+      ok: false,
+      reason: `ai_reject:${String(ai.reason).slice(0, 80)}`,
+      exemplarIds: exemplars.map(e => e.id),
+      aiAudit: ai,
+    };
+  }
+
+  return {
+    ok: true,
+    question,
+    exemplarIds: exemplars.map(e => e.id),
+    aiAudit: ai,
+    plagiarism: plag,
+  };
 }
 
 async function enumsFor(course) {
@@ -425,9 +491,28 @@ async function enumsFor(course) {
   return { defaultUnit: sample?.unit || null };
 }
 
+async function withDbRetry(fn, attempts = 5) {
+  // Neon serverless auto-suspends on idle; cold-start can miss the first request.
+  // Retry transient connect errors with exponential backoff.
+  let lastErr;
+  for (let i = 0; i < attempts; i++) {
+    try {
+      return await fn();
+    } catch (e) {
+      const msg = String(e.message || e);
+      const transient = /Can't reach database server|ECONNRESET|ETIMEDOUT|fetch failed|connection terminated/i.test(msg);
+      if (!transient || i === attempts - 1) throw e;
+      const wait = 500 * Math.pow(2, i);
+      await new Promise(r => setTimeout(r, wait));
+      lastErr = e;
+    }
+  }
+  throw lastErr;
+}
+
 async function writeQuestion(course, q, defaultUnit) {
   const contentHash = hashQuestion(q.questionText);
-  const existing = await prisma.question.findUnique({ where: { contentHash } });
+  const existing = await withDbRetry(() => prisma.question.findUnique({ where: { contentHash } }));
   if (existing) return { wrote: false, reason: "duplicate_content_hash", id: existing.id };
 
   // Resolve unit: always fall back to defaultUnit unless parsed.unit matches an enum.
@@ -467,7 +552,7 @@ async function writeQuestion(course, q, defaultUnit) {
     bloomLevel: null,
   };
   try {
-    const created = await prisma.question.create({ data });
+    const created = await withDbRetry(() => prisma.question.create({ data }));
     return { wrote: true, id: created.id };
   } catch (e) {
     return { wrote: false, reason: `db_error: ${e.message.slice(0, 100)}` };
@@ -511,13 +596,29 @@ async function runCourse(course, args, logStream) {
     }
     if (args.dryRun) {
       generated++;
-      logStream.write(JSON.stringify({ course, diff, ok: true, dryRun: true, ts: new Date().toISOString() }) + "\n");
+      logStream.write(JSON.stringify({
+        course, diff, ok: true, dryRun: true,
+        exemplarIds: r.exemplarIds,
+        plagiarismSim: r.plagiarism?.similarity,
+        aiVerdict: r.aiAudit?.severity,
+        aiAgrees: r.aiAudit?.agreesWithCandidate,
+        ts: new Date().toISOString()
+      }) + "\n");
       continue;
     }
     const w = await writeQuestion(course, r.question, defaultUnit);
     if (w.wrote) {
       generated++;
-      logStream.write(JSON.stringify({ course, diff, ok: true, id: w.id, ts: new Date().toISOString() }) + "\n");
+      logStream.write(JSON.stringify({
+        course, diff, ok: true, id: w.id,
+        exemplarIds: r.exemplarIds,
+        plagiarismSim: r.plagiarism?.similarity,
+        aiVerdict: r.aiAudit?.severity,
+        aiAgrees: r.aiAudit?.agreesWithCandidate,
+        collegeLevelRigor: r.aiAudit?.collegeLevelRigor,
+        ambiguity: r.aiAudit?.ambiguity,
+        ts: new Date().toISOString()
+      }) + "\n");
     } else {
       failed++;
       logStream.write(JSON.stringify({ course, diff, ok: false, reason: w.reason, ts: new Date().toISOString() }) + "\n");
