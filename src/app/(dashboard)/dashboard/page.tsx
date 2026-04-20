@@ -33,6 +33,7 @@ import { DailyGoalCard } from "@/components/dashboard/daily-goal-card";
 import { ProgressUpsellCard } from "@/components/dashboard/progress-upsell-card";
 import { MasteryTierUpCard } from "@/components/dashboard/mastery-tier-up-card";
 import { CoachCardInstrumented } from "@/components/dashboard/coach-card-instrumented";
+import { ResumeCard } from "@/components/dashboard/resume-card";
 
 export default async function DashboardPage() {
   const session = await getServerSession(authOptions);
@@ -144,6 +145,12 @@ export default async function DashboardPage() {
         </div>
         {/* Dashboard header CTA intentionally removed — the Coach Card below is the single dominant action. */}
       </div>
+
+      {/* Retention hook (task #56) — "Continue where you left off" surfaces
+          an IN_PROGRESS session at the top of the dashboard so returning
+          users have one obvious next action. Renders null when nothing is
+          in progress. */}
+      <ResumeCard course={selectedCourse} />
 
       {/* "You fixed it" — mastery tier-up celebration (renders null when no unread win) */}
       <MasteryTierUpCard />

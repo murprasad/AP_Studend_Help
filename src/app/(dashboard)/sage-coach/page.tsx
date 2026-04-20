@@ -228,10 +228,26 @@ export default function SageCoachPage() {
   // Elapsed-time ticker — decoupled from the fetch closure so it keeps
   // advancing even if React batches or defers state updates around the
   // awaited fetch. Runs whenever phase === "processing".
+  //
+  // Also enforces the 25s hard ceiling IN HERE — a plain setTimeout in the
+  // async flow could be throttled/cancelled, but this setInterval is proven
+  // to run (we see the counter tick). So we trust the same interval to
+  // trigger the hang-exit state transition. Belt-and-braces redundancy with
+  // the setTimeout ceiling in stopRecording().
   useEffect(() => {
     if (phase !== "processing") return
+    let fired = false
     const id = setInterval(() => {
-      setProcessingElapsed(Math.round((Date.now() - processingStartRef.current) / 1000))
+      const elapsed = Math.round((Date.now() - processingStartRef.current) / 1000)
+      setProcessingElapsed(elapsed)
+      if (!fired && elapsed >= 25) {
+        fired = true
+        setError(
+          `Evaluation hung ${elapsed}s. Tap retry — if this keeps happening, ` +
+          `check Chrome DevTools → Network tab for the /api/sage-coach/evaluate request status.`,
+        )
+        setPhase("error")
+      }
     }, 250)
     return () => clearInterval(id)
   }, [phase])
