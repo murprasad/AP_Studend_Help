@@ -491,16 +491,19 @@ async function enumsFor(course) {
   return { defaultUnit: sample?.unit || null };
 }
 
-async function withDbRetry(fn, attempts = 5) {
-  // Neon serverless auto-suspends on idle; cold-start can miss the first request.
-  // Retry transient connect errors with exponential backoff.
+async function withDbRetry(fn, attempts = 6) {
+  // Neon auto-suspends idle pools AND drops long-open sockets (P1017). Retry
+  // all transient connectivity errors with exponential backoff.
   let lastErr;
   for (let i = 0; i < attempts; i++) {
     try {
       return await fn();
     } catch (e) {
       const msg = String(e.message || e);
-      const transient = /Can't reach database server|ECONNRESET|ETIMEDOUT|fetch failed|connection terminated/i.test(msg);
+      const code = e?.code || "";
+      const transient =
+        /Can't reach database server|ECONNRESET|ETIMEDOUT|fetch failed|connection terminated|Server has closed the connection|Closed connection/i.test(msg)
+        || code === "P1001" || code === "P1008" || code === "P1017";
       if (!transient || i === attempts - 1) throw e;
       const wait = 500 * Math.pow(2, i);
       await new Promise(r => setTimeout(r, wait));

@@ -30,6 +30,25 @@ import { validateAi } from "./ai-validator.mjs";
 
 const prisma = new PrismaClient();
 
+// Neon auto-suspends idle pools AND drops long-open sockets (P1017). Retry
+// all transient connectivity errors with exponential backoff up to 6 attempts.
+async function withDbRetry(fn, attempts = 6) {
+  let lastErr;
+  for (let i = 0; i < attempts; i++) {
+    try { return await fn(); } catch (e) {
+      const msg = String(e.message || e);
+      const code = e?.code || "";
+      const transient =
+        /Can't reach database server|ECONNRESET|ETIMEDOUT|fetch failed|connection terminated|Server has closed the connection|Closed connection/i.test(msg)
+        || code === "P1001" || code === "P1008" || code === "P1017";
+      if (!transient || i === attempts - 1) throw e;
+      await new Promise(r => setTimeout(r, 500 * Math.pow(2, i)));
+      lastErr = e;
+    }
+  }
+  throw lastErr;
+}
+
 function parseArgs() {
   const a = { course: null, all: false, limit: 500, batch: 5, resume: true, dryRun: false };
   for (const x of process.argv.slice(2)) {
@@ -59,11 +78,11 @@ async function sweepCourse(course, args, logStream) {
       ],
     } : {}),
   };
-  const rows = await prisma.question.findMany({
+  const rows = await withDbRetry(() => prisma.question.findMany({
     where,
     take: args.limit,
     orderBy: { createdAt: "asc" },
-  });
+  }));
   if (rows.length === 0) {
     console.log(`  ${course}: nothing to sweep`);
     return { course, processed: 0, rejected: 0, approved: 0 };
@@ -104,18 +123,18 @@ async function sweepCourse(course, args, logStream) {
       if (ai.severity === "reject") {
         rejected++;
         if (!args.dryRun) {
-          await prisma.question.update({
+          await withDbRetry(() => prisma.question.update({
             where: { id: q.id },
             data: { isApproved: false, modelUsed: (q.modelUsed || "unknown") + ":swept_rejected" },
-          });
+          }));
         }
       } else {
         approved++;
         if (!args.dryRun) {
-          await prisma.question.update({
+          await withDbRetry(() => prisma.question.update({
             where: { id: q.id },
             data: { modelUsed: (q.modelUsed || "unknown") + ":swept" },
-          });
+          }));
         }
       }
       logStream.write(JSON.stringify(entry) + "\n");
@@ -141,11 +160,11 @@ async function main() {
 
   let courses;
   if (args.all) {
-    const g = await prisma.question.groupBy({
+    const g = await withDbRetry(() => prisma.question.groupBy({
       by: ["course"],
       where: { isApproved: true },
       _count: true,
-    });
+    }));
     courses = g.filter(r => r._count > 0).sort((a, b) => b._count - a._count).map(r => r.course);
   } else if (args.course) {
     courses = [args.course];

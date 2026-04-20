@@ -29,6 +29,7 @@ import {
   Moon,
   Calendar,
   PenLine,
+  Mic,
 } from "lucide-react";
 import { useTheme } from "@/hooks/use-theme";
 import { useState, useEffect } from "react";
@@ -59,6 +60,9 @@ const navItems: NavItem[] = [
   { href: "/study-plan", icon: BookOpen, label: "Study Plan" },
   { href: "/resources", icon: Library, label: "Resources" },
   { href: "/ai-tutor", icon: MessageSquare, label: "Sage Live Tutor" },
+  // Sage Coach — oral-response training. Voice-driven, full-screen.
+  // Currently seeded for AP_WORLD_HISTORY only (2026-04-20 MVP).
+  { href: "/sage-coach", icon: Mic, label: "Sage Coach" },
   { href: "/community", icon: Users, label: "Community" },
   { href: "/billing", icon: Crown, label: "Billing" },
   { href: "/about", icon: Info, label: "About" },
