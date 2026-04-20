@@ -50,11 +50,8 @@ function neutralFallback(reason: string): EvalResult {
 async function callHaiku(prompt: string): Promise<string> {
   const key = process.env.ANTHROPIC_API_KEY;
   if (!key) throw new Error("ANTHROPIC_API_KEY not set");
-  // 22s hard timeout — CF Workers default subrequest budget is 30s and we
-  // need headroom for the DB write + JSON parse. Timed-out calls fall back
-  // to neutral scoring rather than leaving the client hanging.
   const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), 22_000);
+  const timer = setTimeout(() => controller.abort(), 18_000);
   try {
     const res = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
@@ -71,11 +68,58 @@ async function callHaiku(prompt: string): Promise<string> {
       }),
       signal: controller.signal,
     });
-    if (!res.ok) throw new Error(`Anthropic HTTP ${res.status}`);
+    if (!res.ok) {
+      const body = await res.text();
+      throw new Error(`Anthropic HTTP ${res.status}: ${body.slice(0, 120)}`);
+    }
     const data = await res.json() as { content?: Array<{ text?: string }> };
     return data.content?.[0]?.text || "";
   } finally {
     clearTimeout(timer);
+  }
+}
+
+async function callGroq(prompt: string): Promise<string> {
+  const key = process.env.GROQ_API_KEY;
+  if (!key) throw new Error("GROQ_API_KEY not set");
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 18_000);
+  try {
+    const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${key}` },
+      body: JSON.stringify({
+        model: "llama-3.3-70b-versatile",
+        messages: [{ role: "user", content: prompt }],
+        temperature: 0,
+        max_tokens: 700,
+        response_format: { type: "json_object" },
+      }),
+      signal: controller.signal,
+    });
+    if (!res.ok) {
+      const body = await res.text();
+      throw new Error(`Groq HTTP ${res.status}: ${body.slice(0, 120)}`);
+    }
+    const data = await res.json() as { choices?: Array<{ message?: { content?: string } }> };
+    return data.choices?.[0]?.message?.content || "";
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+/**
+ * Haiku first (better reasoning), Groq fallback (still-good reasoning, JSON
+ * mode enforced). Either way we return text the caller parses as JSON.
+ */
+async function callEvaluator(prompt: string, log: (stage: string, extra?: Record<string, unknown>) => void): Promise<string> {
+  try {
+    const text = await callHaiku(prompt);
+    if (text && text.length > 20) { log("haiku ok", { len: text.length }); return text; }
+    throw new Error("haiku empty");
+  } catch (e) {
+    log("haiku fail → groq", { reason: (e as Error).message });
+    return callGroq(prompt);
   }
 }
 
@@ -154,9 +198,9 @@ Score the student on 0-100 scales. Floor accuracy at 30 even if the answer is ve
 
   let result: EvalResult;
   try {
-    log("calling haiku");
-    const text = await callHaiku(prompt);
-    log("haiku returned", { textLen: text.length });
+    log("calling evaluator");
+    const text = await callEvaluator(prompt, log);
+    log("evaluator returned", { textLen: text.length });
     const parsed = tryParseJson(text);
     if (!parsed || typeof parsed !== "object") throw new Error("non-JSON output");
     const s = (parsed.scores || {}) as Record<string, unknown>;
