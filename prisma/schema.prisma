@@ -63,6 +63,7 @@ model User {
   masteryTierUps       MasteryTierUp[]
   frqAttempts          FrqAttempt[]
   dashboardImpressions DashboardImpression[]
+  sageCoachSessions    SageCoachSession[]
 
   @@map("users")
 }
@@ -1264,4 +1265,48 @@ model OfficialSample {
   @@index([course, unit])
   @@index([course, questionType])
   @@map("official_samples")
+}
+
+// ── Sage Coach ───────────────────────────────────────────────────────────
+// Oral-response training: timed voice answers evaluated by Haiku 4.5 across
+// 5 dimensions (accuracy/coverage/structure/clarity/confidence). Positioning
+// is "Explain-to-pass", NOT flashcards-with-voice. See memory
+// project_sage_coach_prd.md for full spec.
+
+model SageCoachConcept {
+  id         String   @id @default(cuid())
+  course     ApCourse
+  unit       ApUnit
+  concept    String
+  question   String   @db.Text
+  difficulty String   @default("basic") // "basic" | "intermediate" | "advanced"
+  keyPoints  String[]
+  createdAt  DateTime @default(now())
+
+  sessions   SageCoachSession[]
+
+  @@index([course, unit, difficulty])
+  @@map("sage_coach_concepts")
+}
+
+model SageCoachSession {
+  id               String   @id @default(cuid())
+  userId           String
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  conceptId        String
+  concept          SageCoachConcept @relation(fields: [conceptId], references: [id], onDelete: Cascade)
+  course           ApCourse
+  transcript       String   @db.Text
+  audioDurationMs  Int      @default(0)
+  scores           Json     // {accuracy, coverage, structure, clarity, confidence}
+  missingKeyPoints String[]
+  summary          String   @db.Text
+  specificFeedback String   @db.Text
+  improvementTip   String   @db.Text
+  retryOf          String?
+  createdAt        DateTime @default(now())
+
+  @@index([userId, course, createdAt])
+  @@index([conceptId])
+  @@map("sage_coach_sessions")
 }
