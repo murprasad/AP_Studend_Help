@@ -130,10 +130,13 @@ async function callHaiku(prompt: string): Promise<string> {
  *   2. Groq (llama-3.3-70b-versatile)              — ~$0.001, very fast
  *   3. Anthropic Haiku 4.5                         — ~$0.003, premium quality
  */
+// Groq demoted-openrouter. Probe showed OpenRouter aborts at 6s on CF
+// Workers even though it works sub-second from local node. Groq consistently
+// responds in <1s on CF, so it's now primary.
 const EVAL_PROVIDERS: Array<{ name: string; call: (p: string) => Promise<string> }> = [
-  { name: "openrouter-free", call: callOpenRouterFree },
   { name: "groq", call: callGroq },
   { name: "anthropic-haiku", call: callHaiku },
+  { name: "openrouter-free", call: callOpenRouterFree },
 ];
 
 async function callEvaluator(prompt: string, log: (stage: string, extra?: Record<string, unknown>) => void): Promise<string> {
@@ -269,31 +272,46 @@ Score the student on 0-100 scales. Floor accuracy at 30 even if the answer is ve
     result = neutralFallback((e as Error).message || "evaluation error");
   }
 
-  // Fire-and-forget DB write so a Neon hiccup can't block feedback delivery.
-  // The student sees their evaluation immediately; the session row lands
-  // async. If the write fails we log but don't fail the response.
-  log("queuing session save (non-blocking)");
-  prisma.sageCoachSession.create({
-    data: {
-      userId: session.user.id,
-      conceptId,
-      course: concept.course,
-      transcript,
-      audioDurationMs,
-      scores: result.scores,
-      missingKeyPoints: result.missingKeyPoints,
-      summary: result.summary,
-      specificFeedback: result.specificFeedback,
-      improvementTip: result.improvementTip,
-      retryOf,
-    },
-  }).then(
-    (r) => log("session saved", { sessionId: r.id }),
-    (e) => log("session save failed", { message: (e as Error).message }),
-  );
+  // Write session row INLINE with a 3s timeout. Fire-and-forget was
+  // causing CF Workers to hang the response — unawaited promises keep
+  // the Worker alive waiting for subrequest completion. Awaiting with a
+  // tight timeout means we always respond fast, and logs show whether
+  // the write succeeded.
+  let sessionId: string | null = null;
+  try {
+    const saveController = new AbortController();
+    const saveTimer = setTimeout(() => saveController.abort(), 3_000);
+    const saved = await Promise.race([
+      prisma.sageCoachSession.create({
+        data: {
+          userId: session.user.id,
+          conceptId,
+          course: concept.course,
+          transcript,
+          audioDurationMs,
+          scores: result.scores,
+          missingKeyPoints: result.missingKeyPoints,
+          summary: result.summary,
+          specificFeedback: result.specificFeedback,
+          improvementTip: result.improvementTip,
+          retryOf,
+        },
+      }),
+      new Promise<null>((resolve) => setTimeout(() => resolve(null), 3_000)),
+    ]);
+    clearTimeout(saveTimer);
+    if (saved) {
+      sessionId = saved.id;
+      log("session saved", { sessionId });
+    } else {
+      log("session save timed out — returning anyway");
+    }
+  } catch (e) {
+    log("session save error", { message: (e as Error).message.slice(0, 120) });
+  }
 
   log("done");
-  return NextResponse.json({ ...result, conceptId, saved: true });
+  return NextResponse.json({ ...result, conceptId, sessionId, saved: !!sessionId });
 }
 
 export async function POST(req: NextRequest) {
