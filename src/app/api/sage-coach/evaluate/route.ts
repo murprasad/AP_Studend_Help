@@ -88,18 +88,29 @@ function tryParseJson(s: string): Record<string, unknown> | null {
 }
 
 export async function POST(req: NextRequest) {
+  const t0 = Date.now();
+  const log = (stage: string, extra?: Record<string, unknown>) =>
+    console.log(`[sage-coach/evaluate] +${Date.now() - t0}ms ${stage}`, extra || "");
+
+  log("start");
   const session = await getServerSession(authOptions);
-  if (!session?.user?.id) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!session?.user?.id) {
+    log("unauthorized");
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+  log("auth ok", { userId: session.user.id });
 
   const body = await req.json().catch(() => ({}));
   const conceptId = String(body.conceptId || "");
   const transcript = String(body.transcript || "").trim();
   const audioDurationMs = Math.max(0, parseInt(String(body.audioDurationMs || 0), 10) || 0);
   const retryOf = typeof body.retryOf === "string" ? body.retryOf : null;
+  log("body parsed", { conceptId, transcriptLen: transcript.length, audioDurationMs });
 
   if (!conceptId) return NextResponse.json({ error: "conceptId required" }, { status: 400 });
 
   const concept = await prisma.sageCoachConcept.findUnique({ where: { id: conceptId } });
+  log("concept fetched", { found: !!concept });
   if (!concept) return NextResponse.json({ error: "concept not found" }, { status: 404 });
 
   // Transcript too short → don't bill Haiku, ask for a retry
@@ -143,7 +154,9 @@ Score the student on 0-100 scales. Floor accuracy at 30 even if the answer is ve
 
   let result: EvalResult;
   try {
+    log("calling haiku");
     const text = await callHaiku(prompt);
+    log("haiku returned", { textLen: text.length });
     const parsed = tryParseJson(text);
     if (!parsed || typeof parsed !== "object") throw new Error("non-JSON output");
     const s = (parsed.scores || {}) as Record<string, unknown>;
@@ -161,11 +174,15 @@ Score the student on 0-100 scales. Floor accuracy at 30 even if the answer is ve
       improvementTip: String(parsed.improvementTip || "Try again with more specific details."),
     };
   } catch (e) {
+    log("haiku error", { message: (e as Error).message });
     result = neutralFallback((e as Error).message || "evaluation error");
   }
 
-  // Persist — never blocks the response
-  const saved = await prisma.sageCoachSession.create({
+  // Fire-and-forget DB write so a Neon hiccup can't block feedback delivery.
+  // The student sees their evaluation immediately; the session row lands
+  // async. If the write fails we log but don't fail the response.
+  log("queuing session save (non-blocking)");
+  prisma.sageCoachSession.create({
     data: {
       userId: session.user.id,
       conceptId,
@@ -179,7 +196,11 @@ Score the student on 0-100 scales. Floor accuracy at 30 even if the answer is ve
       improvementTip: result.improvementTip,
       retryOf,
     },
-  });
+  }).then(
+    (r) => log("session saved", { sessionId: r.id }),
+    (e) => log("session save failed", { message: (e as Error).message }),
+  );
 
-  return NextResponse.json({ ...result, conceptId, sessionId: saved.id, saved: true });
+  log("done");
+  return NextResponse.json({ ...result, conceptId, saved: true });
 }
