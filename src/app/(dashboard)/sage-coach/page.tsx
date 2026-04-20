@@ -84,6 +84,11 @@ export default function SageCoachPage() {
   const timerRef = useRef<NodeJS.Timeout | null>(null)
   const recordStartRef = useRef<number>(0)
   const transcriptRef = useRef<string>("")
+  // Diagnostic: elapsed time during processing phase, so hangs are visible
+  // to the user (and surface in bug reports). Clears when phase leaves
+  // "processing".
+  const [processingElapsed, setProcessingElapsed] = useState(0)
+  const processingStartRef = useRef<number>(0)
 
   const hasSpeech = useMemo(() => typeof window !== "undefined" && !!getSpeechRecognition(), [])
 
@@ -167,18 +172,37 @@ export default function SageCoachPage() {
     if (rec) { try { rec.stop() } catch { /* no-op */ } recognitionRef.current = null }
     const durationMs = Date.now() - recordStartRef.current
     const text = transcriptRef.current.trim()
+    processingStartRef.current = Date.now()
+    setProcessingElapsed(0)
     setPhase("processing")
 
-    if (!concept) return
-    // 28s client timeout — Anthropic call is capped at 22s server-side, this
-    // guards against CF-worker hangs or network stalls so the user never sits
-    // on "Analyzing" forever.
+    // Elapsed counter for user visibility during processing.
+    const elapsedTicker = setInterval(() => {
+      setProcessingElapsed(Math.round((Date.now() - processingStartRef.current) / 1000))
+    }, 200)
+
+    // Hard ceiling: no matter what fetch or AbortController does, force
+    // the UI to error state after 25 seconds. This cannot fail.
+    let resolved = false
+    const hardTimeout = setTimeout(() => {
+      if (!resolved) {
+        resolved = true
+        clearInterval(elapsedTicker)
+        setError(`No response after 25 seconds. Tap retry to try again.`)
+        setPhase("error")
+      }
+    }, 25_000)
+
+    if (!concept) { clearInterval(elapsedTicker); clearTimeout(hardTimeout); return }
+
     const controller = new AbortController()
-    const timer = setTimeout(() => controller.abort(), 28_000)
+    const abortTimer = setTimeout(() => controller.abort(), 23_000)
+
     try {
       const res = await fetch("/api/sage-coach/evaluate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        cache: "no-store",
         body: JSON.stringify({
           conceptId: concept.id,
           transcript: text,
@@ -187,17 +211,23 @@ export default function SageCoachPage() {
         signal: controller.signal,
       })
       const data: EvalResult = await res.json()
+      if (resolved) return // hardTimeout already fired
+      resolved = true
       if (!res.ok && !data?.scores) throw new Error("Evaluation failed")
       setEvaluation(data)
       setPhase("feedback")
     } catch (e) {
+      if (resolved) return
+      resolved = true
       const msg = (e as Error).name === "AbortError"
-        ? "Evaluation timed out — the model took too long. Tap retry to try again."
+        ? "Evaluation timed out — tap retry to try again."
         : (e as Error).message || "Evaluation failed — try again"
       setError(msg)
       setPhase("error")
     } finally {
-      clearTimeout(timer)
+      clearTimeout(abortTimer)
+      clearTimeout(hardTimeout)
+      clearInterval(elapsedTicker)
     }
   }, [concept])
 
@@ -403,7 +433,12 @@ export default function SageCoachPage() {
       <div className="fixed inset-0 bg-neutral-950 text-neutral-50 z-50 flex flex-col items-center justify-center gap-4">
         <Loader2 className="h-8 w-8 animate-spin text-amber-400" />
         <p className="text-neutral-300">Analyzing your answer…</p>
-        <p className="text-xs text-neutral-600">usually 2-5 seconds</p>
+        <p className="text-xs text-neutral-600">
+          usually 2-5 seconds — elapsed <span className="font-mono">{processingElapsed}s</span>
+        </p>
+        {processingElapsed >= 15 && (
+          <p className="text-xs text-amber-400 mt-2">Taking longer than usual…</p>
+        )}
       </div>
     )
   }
