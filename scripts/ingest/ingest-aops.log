@@ -1,0 +1,31 @@
+
+==== Ingesting AoPS AMC 10/12 MCQs as OfficialSample ====
+
+— 2022 AMC 10A (AP_CALCULUS_AB)  parsed=25  ingested=25  skipped=0
+— 2022 AMC 10B (AP_CALCULUS_AB)  parsed=25  ingested=23  skipped=2
+— 2021 AMC 10A (AP_CALCULUS_AB)  parsed=25  ingested=24  skipped=1
+— 2021 AMC 10B (AP_CALCULUS_AB)  parsed=25  ingested=24  skipped=1
+— 2020 AMC 10A (AP_CALCULUS_AB)  parsed=25  ingested=25  skipped=0
+— 2020 AMC 10B (AP_CALCULUS_AB)  parsed=24  ingested=23  skipped=1
+— 2022 AMC 12A (AP_CALCULUS_BC)  parsed=25  ingested=25  skipped=0
+— 2022 AMC 12B (AP_CALCULUS_BC)  parsed=25  ingested=24  skipped=1
+— 2021 AMC 12A (AP_CALCULUS_BC)  parsed=25  ingested=23  skipped=2
+— 2021 AMC 12B (AP_CALCULUS_BC)  parsed=25  ingested=25  skipped=0
+— 2020 AMC 12A (AP_CALCULUS_BC)  parsed=25  ingested=25  skipped=0
+— 2020 AMC 12B (AP_CALCULUS_BC)  parsed=24  ingested=23  skipped=1
+— 2024 AMC 10A (AP_STATISTICS)  parsed=25  ingested=25  skipped=0
+— 2024 AMC 10B (AP_STATISTICS)  parsed=25  ingested=25  skipped=0
+— 2023 AMC 10A (AP_STATISTICS)  parsed=25  ingested=25  skipped=0
+— 2023 AMC 10B (AP_STATISTICS)  parsed=25  ingested=25  skipped=0
+
+==== Summary ====
+  AP_CALCULUS_AB          exams=6  parsed=149  new=144  upd=0  skipped=5  total-AoPS-rows=144
+  AP_CALCULUS_BC          exams=6  parsed=149  new=145  upd=0  skipped=4  total-AoPS-rows=145
+  AP_STATISTICS           exams=4  parsed=100  new=100  upd=0  skipped=0  total-AoPS-rows=100
+
+==== Unserved (AoPS has no archive) ====
+  AP_PHYSICS_1: AoPS wiki has no Physics Bowl / PhysicsOlympiad archive (404s on probes).
+  AP_CHEMISTRY: AoPS wiki has no USNCO archive (404 on probe).
+  AP_BIOLOGY: AoPS wiki has no USABO archive (404 on probe).
+
+Grand totals: created=389  updated=0

@@ -65,15 +65,9 @@ const SOURCES = [
       "https://apcentral.collegeboard.org/media/pdf/ap-psychology-practice-exam-2012.pdf",
     ],
   },
-  {
-    course: "AP_PSYCHOLOGY",
-    label: "Released Exam 1999",
-    year: 1999,
-    numOptions: 5,
-    candidates: [
-      "https://secure-media.collegeboard.org/apc/psychology-released-exam-1999.pdf",
-    ],
-  },
+  // 1999 Psych Released Exam is a scanned image PDF — 0 extractable text
+  // without OCR. Skipped. URL:
+  //   https://secure-media.collegeboard.org/apc/psychology-released-exam-1999.pdf
   {
     course: "AP_STATISTICS",
     label: "Public Practice Exam 2012",
@@ -84,15 +78,9 @@ const SOURCES = [
       "https://secure-media.collegeboard.org/digitalServices/pdf/ap/ap-statistics-practice-exam-2012.pdf",
     ],
   },
-  {
-    course: "AP_STATISTICS",
-    label: "Released Exam 1997",
-    year: 1997,
-    numOptions: 5,
-    candidates: [
-      "https://secure-media.collegeboard.org/apc/255123_1997_Statistics_RE.pdf",
-    ],
-  },
+  // 1997 Statistics Released Exam is a scanned image PDF — 0 extractable
+  // text without OCR. Skipped. URL:
+  //   https://secure-media.collegeboard.org/apc/255123_1997_Statistics_RE.pdf
   {
     course: "AP_CALCULUS_AB",
     label: "Public Practice Exam 2012",
@@ -122,11 +110,11 @@ const SOURCES = [
   },
   {
     course: "AP_US_HISTORY",
-    label: "Public Practice Exam",
-    year: 2014,
+    label: "CED Practice Exam",
+    year: 2020,
     numOptions: 4,
     candidates: [
-      "https://secure-media.collegeboard.org/digitalServices/pdf/ap/ap-us-history-practice-exam.pdf",
+      "https://apcentral.collegeboard.org/media/pdf/ap-united-states-history-ced-practice-exam.pdf",
     ],
   },
   // AP Chemistry, AP Physics 1, and AP CSP do not have publicly-hosted
@@ -139,25 +127,50 @@ const SOURCES = [
 // ---- Download with candidate fallback ----------------------------------
 
 async function tryDownloadCandidates(candidates, destDir) {
+  // CB content-type headers are unreliable (some error HTML pages are
+  // served with Content-Type: application/pdf). The only reliable check
+  // is to fetch the bytes and verify the %PDF magic header.
+  const fs = await import("node:fs");
+  const path = await import("node:path");
   for (const url of candidates) {
     const filename = url.split("/").pop();
-    const pdfPath = `${destDir}/${filename}`;
+    const pdfPath = path.resolve(`${destDir}/${filename}`);
+    // If a previously-good copy is already on disk and starts with %PDF,
+    // reuse it (matches downloadPdf's caching behavior but with a magic check).
     try {
-      // HEAD first to verify alive + pdf
-      const head = await fetch(url, {
-        method: "HEAD",
-        headers: { "User-Agent": "Mozilla/5.0", Accept: "application/pdf,*/*" },
+      if (fs.existsSync(pdfPath) && fs.statSync(pdfPath).size > 1024) {
+        const head = fs.readFileSync(pdfPath, { encoding: null }).slice(0, 5);
+        if (head.toString("utf8").startsWith("%PDF-")) {
+          console.log(`    [cached] ${filename} (${(fs.statSync(pdfPath).size / 1024).toFixed(0)} KB)`);
+          return { url, pdfPath };
+        }
+      }
+    } catch {}
+    try {
+      const res = await fetch(url, {
+        headers: {
+          "User-Agent":
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 Safari/605.1.15",
+          Accept: "application/pdf,*/*",
+        },
       });
-      if (!head.ok) {
-        console.log(`    miss ${filename}: HTTP ${head.status}`);
+      if (!res.ok) {
+        console.log(`    miss ${filename}: HTTP ${res.status}`);
         continue;
       }
-      const ctype = head.headers.get("content-type") || "";
-      if (!ctype.includes("pdf")) {
-        console.log(`    miss ${filename}: content-type=${ctype}`);
+      const buf = Buffer.from(await res.arrayBuffer());
+      if (buf.length < 1024 || !buf.slice(0, 5).toString("utf8").startsWith("%PDF-")) {
+        console.log(
+          `    miss ${filename}: not-a-pdf (${buf.length} bytes, leading: ${buf
+            .slice(0, 16)
+            .toString("utf8")
+            .replace(/[\r\n]/g, " ")})`
+        );
         continue;
       }
-      await downloadPdf(url, pdfPath);
+      fs.mkdirSync(path.dirname(pdfPath), { recursive: true });
+      fs.writeFileSync(pdfPath, buf);
+      console.log(`    saved ${filename} (${(buf.length / 1024).toFixed(0)} KB)`);
       return { url, pdfPath };
     } catch (e) {
       console.log(`    err ${filename}: ${(e.message || "").slice(0, 100)}`);
@@ -188,17 +201,23 @@ function parseAnswerKey(pagesFull, pagesColumns) {
     let score = 0;
     // Strong signals
     if (/Answer\s+Key\s+for\s+AP/i.test(text)) score += 50;
-    // Format A tokens: digit-then-letter pairs
-    const fmtA = text.match(/\b\d{1,3}\s*[A-E]\b/g);
+    if (/Answer Key and Question Alignment/i.test(text)) score += 50;
+    // Format A tokens: digit-then-letter pairs. We do NOT use \b on the
+    // letter side because some keys place a skill word right after the
+    // letter with no whitespace ("1CCausation"). Instead we require the
+    // letter is NOT followed by a lowercase char (so it's either the end
+    // of line OR the next token is a capitalized word like "Causation").
+    const fmtA = text.match(/(?:^|[^A-Za-z0-9])(\d{1,3})\s*([A-E])(?![a-z])/g);
     if (fmtA) score += fmtA.length;
     // Format B tokens: "Question N: Letter"
     const fmtB = text.match(/Question\s*\d{1,3}\s*:\s*[A-E]/g);
     if (fmtB) score += fmtB.length * 2;
-    // Weak negative: if this looks like a TOC (has "Section I:" and
-    // "Free-Response" narrative text), downgrade.
+    // Weak negative: if this looks like a TOC or scoring guidelines,
+    // downgrade it to avoid matching on the table of contents entry
+    // "Multiple-Choice Answer Key ............ 39".
     if (/Contents\s*$/im.test(text) ||
         /Section II: Free-Response Questions/i.test(text) ||
-        /Scoring Worksheet/i.test(text) && /Exam Instructions/i.test(text)) {
+        (/Scoring Worksheet/i.test(text) && /Exam Instructions/i.test(text))) {
       score -= 30;
     }
     return { i, score };
@@ -241,18 +260,28 @@ function parseAnswerKey(pagesFull, pagesColumns) {
   const lines = blob.split(/\n+/).map((l) => l.trim()).filter(Boolean);
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
-    // one-line pattern: "12 C" or "12C"
+    // (a) one-line pattern: "12 C" or "12C"  (letter is the whole rest)
     let inline = line.match(/^(\d{1,3})\s*([A-E])$/);
     if (inline) {
       const n = parseInt(inline[1], 10);
       if (n >= 1 && n <= 200) map.set(n, inline[2]);
       continue;
     }
-    // two-line pattern
+    // (b) two-line pattern: number then letter on next line
     if (/^\d{1,3}$/.test(line) && i + 1 < lines.length && /^[A-E]$/.test(lines[i + 1])) {
       const n = parseInt(line, 10);
       if (n >= 1 && n <= 200) map.set(n, lines[i + 1]);
       i++; // skip letter line
+      continue;
+    }
+    // (c) USH CED table-row pattern: "1CCausationCUL-1.02.2.I.B"
+    //     Q# then letter then skill word (Causation, Contextualization, etc.)
+    //     The letter is followed by a CAPITAL letter (uppercase word start).
+    const row = line.match(/^(\d{1,3})([A-E])[A-Z][a-z]/);
+    if (row) {
+      const n = parseInt(row[1], 10);
+      if (n >= 1 && n <= 200) map.set(n, row[2]);
+      continue;
     }
   }
   return map;
@@ -282,7 +311,11 @@ function extractQuestionsFromPage(pageText, numOptions) {
   // followed by ". " and uppercase/letter.
   // We rely on the (A) ... marker cadence to segment options.
   const out = [];
-  const qRegex = /(?:^|[^A-Za-z0-9])(\d{1,3})\.\s+([\s\S]*?)(?=\s*\(A\))/g;
+  // Start marker: "(non-alnum)(N).(non-digit)" — N is question number,
+  // followed by stem text and the (A) option marker. We allow N. to be
+  // directly followed by a letter (no space) because some USH/CED pages
+  // are laid out "4.Which of the following..." without spaces.
+  const qRegex = /(?:^|[^A-Za-z0-9])(\d{1,3})\.(?=[A-Za-z"'\(\u201c\s])([\s\S]*?)(?=\s*\(A\))/g;
   let startMatch;
   const qStarts = [];
   while ((startMatch = qRegex.exec(text)) !== null) {
@@ -342,15 +375,41 @@ function parseOptions(raw, numOptions) {
 }
 
 function findSectionOneRange(pagesFull) {
+  // Start = first page containing an actual numbered MCQ ("1." + "(A)" + "(B)")
+  //         AND some SECTION I marker appeared recently (last 4 pages).
+  // End   = first page AFTER start that matches a Section-II or answer-key marker.
+  // We NO LONGER end at "Part B" because some exams (Calc AB) keep MCQs
+  // in Section I, Part B — only Section II signifies end of MCQs. USH Part B
+  // is short-answer (FRQ-style) which IS end-of-MCQ, but USH Part B pages
+  // consistently show "Section I, Part B" + no "(A)" options, and the
+  // question-parsing regex will naturally drop them.
+  let sectionIEnteredAt = -1;
   let start = -1;
   let end = pagesFull.length;
   for (let i = 0; i < pagesFull.length; i++) {
-    if (start < 0 && /SECTION\s+I\b/i.test(pagesFull[i]) && /Directions:/i.test(pagesFull[i])) {
-      start = i;
+    const t = pagesFull[i];
+    if (/Section\s+I\b/i.test(t) && !/Section\s+II\b/i.test(t)) {
+      sectionIEnteredAt = i;
     }
-    if (start >= 0 && i > start) {
-      if (/SECTION\s+II\b/i.test(pagesFull[i]) ||
-          /Multiple-Choice Answer Key/i.test(pagesFull[i])) {
+    if (start < 0) {
+      if (sectionIEnteredAt >= 0 && i - sectionIEnteredAt <= 6) {
+        // Real MCQ start: page contains any numbered question (N. or N.X)
+        // followed by (A) ... (B) option markers.
+        // USH CED and some other PDFs omit the space after the dot
+        // ("4.Which of the following..."), so we don't require \s after "\.".
+        const m = t.match(/(^|[^0-9])\d{1,3}\.[A-Z\s][\s\S]{0,600}?\(A\)[\s\S]{0,300}?\(B\)/);
+        if (m) {
+          start = i;
+          continue;
+        }
+      }
+    } else {
+      if (/SECTION\s+II\b/i.test(t) ||
+          /Section\s+II[\s,:]/.test(t) ||
+          /Multiple-Choice Answer Key/i.test(t) ||
+          /Answer Key and Question Alignment/i.test(t) ||
+          /Section I, Part B.*Short-Answer/i.test(t) ||
+          /Part B: Short-Answer/i.test(t)) {
         end = i;
         break;
       }
