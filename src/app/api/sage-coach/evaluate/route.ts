@@ -47,14 +47,61 @@ function neutralFallback(reason: string): EvalResult {
   };
 }
 
+// Per-provider timeouts vary: free providers fail fast (rate limits hang),
+// paid providers get more slack. Worst case total: 3 + 8 + 8 = 19s.
+async function withTimeout<T>(fn: (signal: AbortSignal) => Promise<T>, ms: number): Promise<T> {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), ms);
+  try { return await fn(controller.signal); } finally { clearTimeout(timer); }
+}
+
+async function callOpenRouterFree(prompt: string): Promise<string> {
+  const key = process.env.OPENROUTER_API_KEY;
+  if (!key) throw new Error("no_OPENROUTER_API_KEY");
+  // Fast fail: free tier rate-limit hangs, so abort at 3s so Groq can pick up
+  return withTimeout(async (signal) => {
+    const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+      method: "POST", signal,
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${key}` },
+      body: JSON.stringify({
+        model: "openai/gpt-oss-120b:free",
+        messages: [{ role: "user", content: prompt }],
+        temperature: 0, max_tokens: 700,
+        response_format: { type: "json_object" },
+      }),
+    });
+    if (!res.ok) throw new Error(`openrouter_${res.status}:${(await res.text()).slice(0, 80)}`);
+    const data = await res.json() as { choices?: Array<{ message?: { content?: string } }> };
+    return data.choices?.[0]?.message?.content || "";
+  }, 3_000);
+}
+
+async function callGroq(prompt: string): Promise<string> {
+  const key = process.env.GROQ_API_KEY;
+  if (!key) throw new Error("no_GROQ_API_KEY");
+  return withTimeout(async (signal) => {
+    const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+      method: "POST", signal,
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${key}` },
+      body: JSON.stringify({
+        model: "llama-3.3-70b-versatile",
+        messages: [{ role: "user", content: prompt }],
+        temperature: 0, max_tokens: 700,
+        response_format: { type: "json_object" },
+      }),
+    });
+    if (!res.ok) throw new Error(`groq_${res.status}:${(await res.text()).slice(0, 80)}`);
+    const data = await res.json() as { choices?: Array<{ message?: { content?: string } }> };
+    return data.choices?.[0]?.message?.content || "";
+  }, 8_000);
+}
+
 async function callHaiku(prompt: string): Promise<string> {
   const key = process.env.ANTHROPIC_API_KEY;
-  if (!key) throw new Error("ANTHROPIC_API_KEY not set");
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), 18_000);
-  try {
+  if (!key) throw new Error("no_ANTHROPIC_API_KEY");
+  return withTimeout(async (signal) => {
     const res = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
+      method: "POST", signal,
       headers: {
         "Content-Type": "application/json",
         "x-api-key": key,
@@ -62,65 +109,50 @@ async function callHaiku(prompt: string): Promise<string> {
       },
       body: JSON.stringify({
         model: ANTHROPIC_MODEL,
-        max_tokens: 700,
-        temperature: 0,
+        max_tokens: 700, temperature: 0,
         messages: [{ role: "user", content: prompt }],
       }),
-      signal: controller.signal,
     });
-    if (!res.ok) {
-      const body = await res.text();
-      throw new Error(`Anthropic HTTP ${res.status}: ${body.slice(0, 120)}`);
-    }
+    if (!res.ok) throw new Error(`anthropic_${res.status}:${(await res.text()).slice(0, 80)}`);
     const data = await res.json() as { content?: Array<{ text?: string }> };
     return data.content?.[0]?.text || "";
-  } finally {
-    clearTimeout(timer);
-  }
-}
-
-async function callGroq(prompt: string): Promise<string> {
-  const key = process.env.GROQ_API_KEY;
-  if (!key) throw new Error("GROQ_API_KEY not set");
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), 18_000);
-  try {
-    const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-      method: "POST",
-      headers: { "Content-Type": "application/json", Authorization: `Bearer ${key}` },
-      body: JSON.stringify({
-        model: "llama-3.3-70b-versatile",
-        messages: [{ role: "user", content: prompt }],
-        temperature: 0,
-        max_tokens: 700,
-        response_format: { type: "json_object" },
-      }),
-      signal: controller.signal,
-    });
-    if (!res.ok) {
-      const body = await res.text();
-      throw new Error(`Groq HTTP ${res.status}: ${body.slice(0, 120)}`);
-    }
-    const data = await res.json() as { choices?: Array<{ message?: { content?: string } }> };
-    return data.choices?.[0]?.message?.content || "";
-  } finally {
-    clearTimeout(timer);
-  }
+  }, 8_000);
 }
 
 /**
- * Haiku first (better reasoning), Groq fallback (still-good reasoning, JSON
- * mode enforced). Either way we return text the caller parses as JSON.
+ * Free-first evaluator cascade. Loops through providers in cost order; any
+ * provider returning non-empty text wins. Throws with an aggregated error
+ * list only if ALL providers fail — caller should treat that as "feature
+ * unavailable" and fall back to neutralFallback().
+ *
+ * Order (rationale):
+ *   1. OpenRouter free (openai/gpt-oss-120b:free)  — $0, JSON mode enforced
+ *   2. Groq (llama-3.3-70b-versatile)              — ~$0.001, very fast
+ *   3. Anthropic Haiku 4.5                         — ~$0.003, premium quality
  */
+const EVAL_PROVIDERS: Array<{ name: string; call: (p: string) => Promise<string> }> = [
+  { name: "openrouter-free", call: callOpenRouterFree },
+  { name: "groq", call: callGroq },
+  { name: "anthropic-haiku", call: callHaiku },
+];
+
 async function callEvaluator(prompt: string, log: (stage: string, extra?: Record<string, unknown>) => void): Promise<string> {
-  try {
-    const text = await callHaiku(prompt);
-    if (text && text.length > 20) { log("haiku ok", { len: text.length }); return text; }
-    throw new Error("haiku empty");
-  } catch (e) {
-    log("haiku fail → groq", { reason: (e as Error).message });
-    return callGroq(prompt);
+  const errors: string[] = [];
+  for (const p of EVAL_PROVIDERS) {
+    try {
+      log(`try ${p.name}`);
+      const text = await p.call(prompt);
+      if (text && text.trim().length > 20) {
+        log(`${p.name} ok`, { len: text.length });
+        return text;
+      }
+      errors.push(`${p.name}:empty`);
+    } catch (e) {
+      errors.push(`${p.name}:${(e as Error).message.slice(0, 60)}`);
+      log(`${p.name} fail`, { reason: (e as Error).message });
+    }
   }
+  throw new Error(`all_providers_failed: ${errors.join(" | ")}`);
 }
 
 function tryParseJson(s: string): Record<string, unknown> | null {

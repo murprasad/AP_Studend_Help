@@ -48,7 +48,7 @@ interface EvalResult {
   tooShort?: boolean
 }
 
-type Phase = "intro" | "loading" | "prompt" | "recording" | "processing" | "feedback" | "error"
+type Phase = "checking" | "unavailable" | "intro" | "loading" | "prompt" | "recording" | "processing" | "feedback" | "error"
 
 // Minimal SpeechRecognition typing — the spec types vary by browser.
 type SRInstance = {
@@ -72,7 +72,7 @@ const RECORD_SECONDS = 60
 
 export default function SageCoachPage() {
   const router = useRouter()
-  const [phase, setPhase] = useState<Phase>("intro")
+  const [phase, setPhase] = useState<Phase>("checking")
   const [concept, setConcept] = useState<Concept | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [transcript, setTranscript] = useState("")
@@ -214,7 +214,64 @@ export default function SageCoachPage() {
     if (recognitionRef.current) { try { recognitionRef.current.stop() } catch { /* no-op */ } }
   }, [])
 
+  // ── Startup health check — skip the whole flow if all AI providers are dead
+  useEffect(() => {
+    let cancelled = false
+    ;(async () => {
+      try {
+        const res = await fetch("/api/sage-coach/health", { cache: "no-store" })
+        const data = await res.json()
+        if (cancelled) return
+        if (!data?.available) setPhase("unavailable")
+        else setPhase("intro")
+      } catch {
+        if (!cancelled) setPhase("unavailable")
+      }
+    })()
+    return () => { cancelled = true }
+  }, [])
+
   // ── Render ─────────────────────────────────────────────────────────────
+
+  if (phase === "checking") {
+    return (
+      <div className="fixed inset-0 bg-neutral-950 text-neutral-50 z-50 flex items-center justify-center">
+        <div className="flex items-center gap-3 text-neutral-400">
+          <Loader2 className="h-5 w-5 animate-spin" />
+          <span>Checking availability…</span>
+        </div>
+      </div>
+    )
+  }
+
+  if (phase === "unavailable") {
+    return (
+      <div className="fixed inset-0 bg-neutral-950 text-neutral-50 z-50 flex flex-col items-center justify-center px-6">
+        <div className="max-w-md text-center space-y-5">
+          <AlertCircle className="h-10 w-10 text-amber-400 mx-auto" />
+          <h1 className="text-2xl font-bold">Sage Coach is temporarily unavailable</h1>
+          <p className="text-neutral-300 text-[15px]">
+            We can't reach our evaluation models right now. Try again in a few minutes, or continue with regular practice.
+          </p>
+          <div className="grid grid-cols-2 gap-3 pt-2">
+            <Button
+              variant="outline"
+              className="h-12 rounded-full border-neutral-700 text-neutral-100 hover:bg-neutral-800 hover:text-neutral-50"
+              onClick={() => router.push("/dashboard")}
+            >
+              Back to dashboard
+            </Button>
+            <Button
+              className="h-12 rounded-full bg-amber-500 text-neutral-950 hover:bg-amber-400"
+              onClick={() => router.push("/practice")}
+            >
+              Do a practice session
+            </Button>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   if (phase === "intro") {
     return (
@@ -346,7 +403,7 @@ export default function SageCoachPage() {
       <div className="fixed inset-0 bg-neutral-950 text-neutral-50 z-50 flex flex-col items-center justify-center gap-4">
         <Loader2 className="h-8 w-8 animate-spin text-amber-400" />
         <p className="text-neutral-300">Analyzing your answer…</p>
-        <p className="text-xs text-neutral-600">Haiku 4.5 · usually 2-4 seconds</p>
+        <p className="text-xs text-neutral-600">usually 2-5 seconds</p>
       </div>
     )
   }
