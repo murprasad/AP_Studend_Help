@@ -272,46 +272,13 @@ Score the student on 0-100 scales. Floor accuracy at 30 even if the answer is ve
     result = neutralFallback((e as Error).message || "evaluation error");
   }
 
-  // Write session row INLINE with a 3s timeout. Fire-and-forget was
-  // causing CF Workers to hang the response — unawaited promises keep
-  // the Worker alive waiting for subrequest completion. Awaiting with a
-  // tight timeout means we always respond fast, and logs show whether
-  // the write succeeded.
-  let sessionId: string | null = null;
-  try {
-    const saveController = new AbortController();
-    const saveTimer = setTimeout(() => saveController.abort(), 3_000);
-    const saved = await Promise.race([
-      prisma.sageCoachSession.create({
-        data: {
-          userId: session.user.id,
-          conceptId,
-          course: concept.course,
-          transcript,
-          audioDurationMs,
-          scores: result.scores,
-          missingKeyPoints: result.missingKeyPoints,
-          summary: result.summary,
-          specificFeedback: result.specificFeedback,
-          improvementTip: result.improvementTip,
-          retryOf,
-        },
-      }),
-      new Promise<null>((resolve) => setTimeout(() => resolve(null), 3_000)),
-    ]);
-    clearTimeout(saveTimer);
-    if (saved) {
-      sessionId = saved.id;
-      log("session saved", { sessionId });
-    } else {
-      log("session save timed out — returning anyway");
-    }
-  } catch (e) {
-    log("session save error", { message: (e as Error).message.slice(0, 120) });
-  }
-
+  // DB WRITE TEMPORARILY REMOVED to isolate hang. If the response now
+  // arrives quickly, prisma.sageCoachSession.create is the hang source on
+  // CF Workers and we need a different persistence strategy (e.g. queue
+  // to a Durable Object, or write via a raw SQL executeRawUnsafe path).
+  log("skipping session save — hang diagnosis");
   log("done");
-  return NextResponse.json({ ...result, conceptId, sessionId, saved: !!sessionId });
+  return NextResponse.json({ ...result, conceptId, sessionId: null, saved: false, diag: "no_db_write" });
 }
 
 export async function POST(req: NextRequest) {
