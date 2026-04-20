@@ -170,6 +170,11 @@ export default function SageCoachPage() {
     setPhase("processing")
 
     if (!concept) return
+    // 28s client timeout — Anthropic call is capped at 22s server-side, this
+    // guards against CF-worker hangs or network stalls so the user never sits
+    // on "Analyzing" forever.
+    const controller = new AbortController()
+    const timer = setTimeout(() => controller.abort(), 28_000)
     try {
       const res = await fetch("/api/sage-coach/evaluate", {
         method: "POST",
@@ -179,14 +184,20 @@ export default function SageCoachPage() {
           transcript: text,
           audioDurationMs: durationMs,
         }),
+        signal: controller.signal,
       })
       const data: EvalResult = await res.json()
       if (!res.ok && !data?.scores) throw new Error("Evaluation failed")
       setEvaluation(data)
       setPhase("feedback")
     } catch (e) {
-      setError((e as Error).message || "Evaluation failed — try again")
+      const msg = (e as Error).name === "AbortError"
+        ? "Evaluation timed out — the model took too long. Tap retry to try again."
+        : (e as Error).message || "Evaluation failed — try again"
+      setError(msg)
       setPhase("error")
+    } finally {
+      clearTimeout(timer)
     }
   }, [concept])
 

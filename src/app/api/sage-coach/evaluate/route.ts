@@ -50,23 +50,33 @@ function neutralFallback(reason: string): EvalResult {
 async function callHaiku(prompt: string): Promise<string> {
   const key = process.env.ANTHROPIC_API_KEY;
   if (!key) throw new Error("ANTHROPIC_API_KEY not set");
-  const res = await fetch("https://api.anthropic.com/v1/messages", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "x-api-key": key,
-      "anthropic-version": "2023-06-01",
-    },
-    body: JSON.stringify({
-      model: ANTHROPIC_MODEL,
-      max_tokens: 700,
-      temperature: 0,
-      messages: [{ role: "user", content: prompt }],
-    }),
-  });
-  if (!res.ok) throw new Error(`Anthropic HTTP ${res.status}`);
-  const data = await res.json();
-  return data.content?.[0]?.text || "";
+  // 22s hard timeout — CF Workers default subrequest budget is 30s and we
+  // need headroom for the DB write + JSON parse. Timed-out calls fall back
+  // to neutral scoring rather than leaving the client hanging.
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 22_000);
+  try {
+    const res = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": key,
+        "anthropic-version": "2023-06-01",
+      },
+      body: JSON.stringify({
+        model: ANTHROPIC_MODEL,
+        max_tokens: 700,
+        temperature: 0,
+        messages: [{ role: "user", content: prompt }],
+      }),
+      signal: controller.signal,
+    });
+    if (!res.ok) throw new Error(`Anthropic HTTP ${res.status}`);
+    const data = await res.json() as { content?: Array<{ text?: string }> };
+    return data.content?.[0]?.text || "";
+  } finally {
+    clearTimeout(timer);
+  }
 }
 
 function tryParseJson(s: string): Record<string, unknown> | null {
