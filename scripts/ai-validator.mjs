@@ -18,6 +18,7 @@
 //   ≈ $0.00075 per validation. $7.50 for 10,000 questions.
 
 const ANTHROPIC_MODEL = "claude-haiku-4-5-20251001";
+const GROQ_MODEL = "llama-3.3-70b-versatile";
 
 function normalize(s) {
   return String(s || "").toLowerCase().replace(/[^a-z0-9 ]+/g, " ").replace(/\s+/g, " ").trim();
@@ -72,9 +73,53 @@ export function validatePlagiarism(question, exemplars, threshold = 0.30) {
  *
  * severity: "reject" (always rejects), "warn" (flag but allow), "ok"
  */
-export async function validateAi(question, course) {
+async function callHaikuReview(prompt) {
   const key = process.env.ANTHROPIC_API_KEY;
-  if (!key) return { ok: true, reason: "anthropic_not_configured", agreedAnswer: null, severity: "warn" };
+  if (!key) throw new Error("no_anthropic_key");
+  const res = await fetch("https://api.anthropic.com/v1/messages", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "x-api-key": key,
+      "anthropic-version": "2023-06-01",
+    },
+    body: JSON.stringify({
+      model: ANTHROPIC_MODEL,
+      max_tokens: 600,
+      temperature: 0,
+      messages: [{ role: "user", content: prompt }],
+    }),
+  });
+  if (!res.ok) throw new Error(`anthropic_${res.status}`);
+  const data = await res.json();
+  return data.content?.[0]?.text || "";
+}
+
+async function callGroqReview(prompt) {
+  const key = process.env.GROQ_API_KEY;
+  if (!key) throw new Error("no_groq_key");
+  const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${key}` },
+    body: JSON.stringify({
+      model: GROQ_MODEL,
+      messages: [{ role: "user", content: prompt }],
+      temperature: 0,
+      max_tokens: 600,
+      response_format: { type: "json_object" },
+    }),
+  });
+  if (!res.ok) throw new Error(`groq_${res.status}`);
+  const data = await res.json();
+  return data.choices?.[0]?.message?.content || "";
+}
+
+export async function validateAi(question, course) {
+  const hasAnthropic = !!process.env.ANTHROPIC_API_KEY;
+  const hasGroq = !!process.env.GROQ_API_KEY;
+  if (!hasAnthropic && !hasGroq) {
+    return { ok: true, reason: "no_reviewer_configured", agreedAnswer: null, severity: "warn" };
+  }
 
   const prompt = `You are reviewing a multiple-choice practice question for the ${course} exam. Review independently and rigorously.
 
@@ -102,34 +147,39 @@ TASK: Return ONLY JSON with these fields. No markdown fences, no commentary:
   "reason": "..."                             // One-sentence reason for verdict
 }`;
 
+  // Haiku first (better reasoning); Groq fallback when Haiku unavailable
+  // so the pipeline keeps flowing during Anthropic credit outages.
+  let text = "";
+  let reviewerUsed = "";
   try {
-    const res = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-api-key": key,
-        "anthropic-version": "2023-06-01",
-      },
-      body: JSON.stringify({
-        model: ANTHROPIC_MODEL,
-        max_tokens: 600,
-        temperature: 0,
-        messages: [{ role: "user", content: prompt }],
-      }),
-    });
-    if (!res.ok) {
-      return { ok: true, reason: `anthropic_http_${res.status}`, agreedAnswer: null, severity: "warn" };
+    if (hasAnthropic) {
+      text = await callHaikuReview(prompt);
+      reviewerUsed = "haiku";
+    } else {
+      throw new Error("skip_to_groq");
     }
-    const data = await res.json();
-    const text = data.content?.[0]?.text || "";
+  } catch (e) {
+    if (hasGroq) {
+      try {
+        text = await callGroqReview(prompt);
+        reviewerUsed = "groq";
+      } catch (g) {
+        return { ok: true, reason: `both_failed: ${(e.message || "").slice(0,40)} | ${(g.message || "").slice(0,40)}`, agreedAnswer: null, severity: "warn" };
+      }
+    } else {
+      return { ok: true, reason: `anthropic_fail: ${(e.message || "").slice(0,40)}`, agreedAnswer: null, severity: "warn" };
+    }
+  }
+
+  try {
     const cleaned = text.replace(/^```json\s*/i, "").replace(/```\s*$/, "").trim();
     const match = cleaned.match(/\{[\s\S]*\}/);
-    if (!match) return { ok: true, reason: "haiku_output_not_json", agreedAnswer: null, severity: "warn" };
+    if (!match) return { ok: true, reason: `${reviewerUsed}_output_not_json`, agreedAnswer: null, severity: "warn" };
     let parsed;
     try {
       parsed = JSON.parse(match[0]);
     } catch {
-      return { ok: true, reason: "haiku_json_parse_fail", agreedAnswer: null, severity: "warn" };
+      return { ok: true, reason: `${reviewerUsed}_json_parse_fail`, agreedAnswer: null, severity: "warn" };
     }
 
     const verdict = String(parsed.verdict || "").toLowerCase();
