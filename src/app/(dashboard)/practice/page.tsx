@@ -16,6 +16,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { CourseSelectorInline } from "@/components/layout/course-selector-inline";
 import { SessionFeedbackPopup } from "@/components/feedback/session-feedback-popup";
 import { SessionDeltaCard } from "@/components/practice/session-delta-card";
+import { NextSessionNudge } from "@/components/practice/next-session-nudge";
 import { useExamMode } from "@/hooks/use-exam-mode";
 import {
   Zap,
@@ -532,6 +533,11 @@ export default function PracticePage() {
           totalQuestions={sessionSummary.totalQuestions}
           correctAnswers={sessionSummary.correctAnswers}
         />
+
+        {/* Incomplete-loop retention nudge — surfaces weakest unit +
+            streak protection as a reason to return tomorrow. Renders null
+            if we don't have a weakestUnit to reference. */}
+        <NextSessionNudge course={course} />
 
         <Card className="card-glow">
           <CardContent className="p-6">
