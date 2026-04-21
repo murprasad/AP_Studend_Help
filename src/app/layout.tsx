@@ -77,10 +77,14 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <meta name="apple-mobile-web-app-title" content="StudentNest" />
         <link rel="apple-touch-icon" href="/icons/icon-192.png" />
-        {/* Service Worker registration */}
+        {/* SW disabled 2026-04-20. Previous pass-through SW was returning 503
+            via its .catch when the origin fetch hung on CF Workers, masking
+            real backend errors as a service-worker fallback. This script
+            unregisters any existing SW and purges caches so returning users
+            escape the bad state. */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');`,
+            __html: `if('serviceWorker' in navigator){navigator.serviceWorker.getRegistrations().then(rs=>rs.forEach(r=>r.unregister())).catch(()=>{});if('caches' in self){caches.keys().then(ks=>ks.forEach(k=>caches.delete(k))).catch(()=>{});}}`,
           }}
         />
       </head>
