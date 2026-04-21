@@ -112,9 +112,16 @@ function buildPrompt(course, unit, questions) {
     `--- Sample ${i + 1} ---\n${q.questionText}${q.explanation ? `\n(answer context: ${q.explanation.slice(0, 200)})` : ""}`
   ).join("\n\n");
 
-  return `You are designing a Sage Coach oral-response training system for ${course}, Unit: ${unit}.
+  return `You are designing a Sage Coach oral-response training system for the College Board AP exam in ${course}, Unit: ${unit}.
 
-Below are sample exam questions from this unit. Identify the core CONCEPTS students must be able to EXPLAIN ALOUD to truly understand this unit. For each concept, create an open-ended oral-response prompt and 5-8 key points an expert answer would cover.
+**This feature is GROUNDED STRICTLY IN COLLEGE BOARD CURRICULUM.** Concepts, terminology, and expected key points MUST reflect what's published in the AP Course and Exam Description (CED) and tested on past released CB exams. Use the AP CED's Learning Objectives, Essential Knowledge statements, and Science Practices / Historical Reasoning Skills as the authoritative source.
+
+Do NOT reference:
+- General Wikipedia or textbook phrasing that isn't CB-aligned
+- Material the CB CED explicitly excludes
+- Interpretations outside the AP exam scope
+
+Below are sample exam questions from this unit (real AP exam content from collegeboard.org). Identify the core CONCEPTS students must be able to EXPLAIN ALOUD to pass the AP exam. For each concept, create an open-ended oral-response prompt and 5-8 key points an expert answer would cover — each key point anchored in CB CED language.
 
 IMPORTANT:
 - Questions should invite EXPLANATION, not recall. "Explain…" / "Why did…" / "How does…" / "Compare…"

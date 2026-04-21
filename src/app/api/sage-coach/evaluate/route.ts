@@ -213,17 +213,48 @@ async function handlePost(req: NextRequest, t0: number, log: (s: string, e?: Rec
     return NextResponse.json({ ...fallback, conceptId, saved: false, tooShort: true });
   }
 
-  const prompt = `You are an expert teacher evaluating a student's SPOKEN answer. Be honest but encouraging — the student hears this feedback and we want them to return tomorrow.
+  // Pull 2-3 CB-released reference rows for this (course, unit). These are
+  // real past-exam questions + explanations ingested into OfficialSample —
+  // the evaluator is instructed to grade the student's answer AGAINST this
+  // CB source material, not against generic web knowledge. Prefer rows with
+  // explanations (they carry the CB-sanctioned reasoning).
+  const cbRefs = await prisma.officialSample.findMany({
+    where: {
+      course: concept.course,
+      OR: [{ unit: concept.unit as unknown as string }, { unit: null }],
+    },
+    orderBy: [{ explanation: { sort: "asc", nulls: "last" } }],
+    take: 3,
+    select: { sourceName: true, questionText: true, stimulus: true, explanation: true },
+  });
+  log("cb refs fetched", { count: cbRefs.length });
+
+  const refBlock = cbRefs.length === 0
+    ? "(no CB reference material found for this unit — evaluate strictly from the key points)"
+    : cbRefs.map((r, i) => {
+        const parts = [`--- CB REF ${i + 1} (${r.sourceName}) ---`];
+        if (r.stimulus) parts.push(`STIMULUS: ${String(r.stimulus).slice(0, 500)}`);
+        if (r.questionText) parts.push(`QUESTION: ${String(r.questionText).slice(0, 500)}`);
+        if (r.explanation) parts.push(`CB EXPLANATION: ${String(r.explanation).slice(0, 600)}`);
+        return parts.join("\n");
+      }).join("\n\n");
+
+  const prompt = `You are an expert teacher evaluating a student's SPOKEN answer against the COLLEGE BOARD curriculum (AP/SAT/ACT). Be honest but encouraging — the student hears this feedback and we want them to return tomorrow.
+
+**CRITICAL: Grade against the CB REFERENCE MATERIAL below, NOT against general internet knowledge.** If the student's answer conflicts with CB reference (even if "technically correct" on Wikipedia), mark that as a factualError. CB content is the authoritative source for this exam.
 
 COURSE: ${concept.course}
 UNIT: ${concept.unit}
 CONCEPT: ${concept.concept}
 
-QUESTION:
+QUESTION THE STUDENT ANSWERED:
 ${concept.question}
 
-EXPECTED KEY POINTS (for coverage scoring — student should hit most of these):
+EXPECTED KEY POINTS (drawn from CB curriculum — for coverage scoring):
 ${concept.keyPoints.map((p, i) => `${i + 1}. ${p}`).join("\n")}
+
+COLLEGE BOARD REFERENCE MATERIAL (use ONLY these to verify facts):
+${refBlock}
 
 STUDENT TRANSCRIPT (spoken, ${Math.round(audioDurationMs / 1000)}s):
 """
