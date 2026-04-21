@@ -56,15 +56,29 @@ export function DashboardView() {
   // this id for downstream funnel events (requested / rendered / clicked).
   useEffect(() => {
     if (status !== "authenticated") return;
+    console.log("[funnel] loaded event firing", { course, status });
     setImpressionId(null);
     fetch("/api/analytics/dashboard-event", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ course, event: "loaded" }),
     })
-      .then((r) => (r.ok ? r.json() : null))
-      .then((d) => { if (d?.impressionId) setImpressionId(d.impressionId); })
-      .catch(() => { /* analytics never blocks the UI */ });
+      .then((r) => {
+        console.log("[funnel] loaded event response", { ok: r.ok, status: r.status });
+        return r.ok ? r.json() : null;
+      })
+      .then((d) => {
+        console.log("[funnel] loaded event parsed", d);
+        if (d?.impressionId) {
+          console.log("[funnel] impressionId set →", d.impressionId);
+          setImpressionId(d.impressionId);
+        } else {
+          console.warn("[funnel] NO impressionId in response — downstream events will be skipped");
+        }
+      })
+      .catch((e) => {
+        console.error("[funnel] loaded event failed", e);
+      });
   }, [course, status]);
 
   useEffect(() => {

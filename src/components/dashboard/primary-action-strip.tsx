@@ -84,8 +84,12 @@ export function PrimaryActionStrip({ course, impressionId }: Props) {
   useEffect(() => {
     let cancelled = false;
     setLoading(true);
+    console.log("[funnel] PrimaryActionStrip useEffect", { impressionId, course });
     if (impressionId) {
+      console.log("[funnel] firing coach_requested", impressionId);
       logDashboardEvent({ impressionId, course, event: "coach_requested" });
+    } else {
+      console.warn("[funnel] coach_requested SKIPPED — impressionId not yet available");
     }
     fetch(`/api/coach-plan?course=${course}`, { cache: "no-store" })
       .then((r) => (r.ok ? r.json() : null))
@@ -101,9 +105,13 @@ export function PrimaryActionStrip({ course, impressionId }: Props) {
 
   // ── coach_rendered exactly once per (impressionId, data) pair ───────────
   useEffect(() => {
-    if (!impressionId || !data) return;
+    if (!impressionId || !data) {
+      console.log("[funnel] coach_rendered WAITING", { impressionId: !!impressionId, hasData: !!data });
+      return;
+    }
     if (renderedImpressionRef.current === impressionId) return;
     renderedImpressionRef.current = impressionId;
+    console.log("[funnel] firing coach_rendered", impressionId, data.nextAction?.type);
     logDashboardEvent({
       impressionId,
       course,
@@ -210,6 +218,7 @@ export function PrimaryActionStrip({ course, impressionId }: Props) {
 
   const onClick = () => {
     setPulse(false);
+    console.log("[funnel] hero CTA clicked", { impressionId, href });
     if (impressionId) {
       const payload = JSON.stringify({ impressionId, course, event: "coach_clicked" });
       try {
