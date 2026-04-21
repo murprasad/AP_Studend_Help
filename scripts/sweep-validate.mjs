@@ -22,13 +22,14 @@
 //
 // Output: scripts/logs/sweep-validate-{ts}.jsonl with one row per review.
 
-import { PrismaClient } from "@prisma/client";
 import fs from "fs";
 import path from "path";
 import "dotenv/config";
 import { validateAi } from "./ai-validator.mjs";
+import { makePrisma } from "./_prisma-http.mjs";
 
-const prisma = new PrismaClient();
+// Use Neon HTTP adapter — matches prod behavior.
+const prisma = makePrisma();
 
 // Neon auto-suspends idle pools AND drops long-open sockets (P1017). Retry
 // all transient connectivity errors with exponential backoff up to 6 attempts.

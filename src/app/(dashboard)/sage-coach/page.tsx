@@ -18,6 +18,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
+import { useCourse } from "@/hooks/use-course"
+import { AP_COURSE_SHORT } from "@/lib/utils"
 import { Mic, MicOff, Loader2, RotateCcw, ArrowRight, Sparkles, AlertCircle } from "lucide-react"
 
 interface Concept {
@@ -48,7 +50,7 @@ interface EvalResult {
   tooShort?: boolean
 }
 
-type Phase = "checking" | "unavailable" | "intro" | "loading" | "prompt" | "recording" | "processing" | "feedback" | "error"
+type Phase = "checking" | "unavailable" | "course_unsupported" | "intro" | "loading" | "prompt" | "recording" | "processing" | "feedback" | "error"
 
 // Minimal SpeechRecognition typing — the spec types vary by browser.
 type SRInstance = {
@@ -72,6 +74,7 @@ const RECORD_SECONDS = 60
 
 export default function SageCoachPage() {
   const router = useRouter()
+  const [course] = useCourse()
   const [phase, setPhase] = useState<Phase>("checking")
   const [concept, setConcept] = useState<Concept | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -100,7 +103,7 @@ export default function SageCoachPage() {
     setEvaluation(null)
     transcriptRef.current = ""
     try {
-      const res = await fetch("/api/sage-coach/question?course=AP_WORLD_HISTORY", { cache: "no-store" })
+      const res = await fetch(`/api/sage-coach/question?course=${course}`, { cache: "no-store" })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || "Failed to load question")
       setConcept(data)
@@ -280,14 +283,11 @@ export default function SageCoachPage() {
     if (recognitionRef.current) { try { recognitionRef.current.stop() } catch { /* no-op */ } }
   }, [])
 
-  // ── Startup: admin gate + health check. Admin-only while eval hangs are
-  // being diagnosed on CF Workers (2026-04-20). Non-admins are redirected
-  // back to the dashboard.
+  // ── Startup: admin gate + health + course-supported check.
   useEffect(() => {
     let cancelled = false
     ;(async () => {
       try {
-        // Admin check via the session endpoint
         const authRes = await fetch("/api/auth/session", { cache: "no-store" })
         const authData = await authRes.json()
         if (cancelled) return
@@ -296,17 +296,30 @@ export default function SageCoachPage() {
           return
         }
 
-        const res = await fetch("/api/sage-coach/health", { cache: "no-store" })
-        const data = await res.json()
+        // Parallel: provider health + course-concept availability
+        const [healthRes, conceptRes] = await Promise.all([
+          fetch("/api/sage-coach/health", { cache: "no-store" }),
+          fetch(`/api/sage-coach/question?course=${course}`, { cache: "no-store" }),
+        ])
+        const health = await healthRes.json().catch(() => ({}))
         if (cancelled) return
-        if (!data?.available) setPhase("unavailable")
-        else setPhase("intro")
+
+        if (!health?.available) { setPhase("unavailable"); return }
+
+        // conceptRes returns 404 if no concepts for this course
+        if (!conceptRes.ok) {
+          if (conceptRes.status === 404) { setPhase("course_unsupported"); return }
+          setPhase("unavailable")
+          return
+        }
+        // We'll refetch the concept on loadConcept() — this was just availability probe
+        setPhase("intro")
       } catch {
         if (!cancelled) setPhase("unavailable")
       }
     })()
     return () => { cancelled = true }
-  }, [router])
+  }, [router, course])
 
   // ── Render ─────────────────────────────────────────────────────────────
 
@@ -316,6 +329,36 @@ export default function SageCoachPage() {
         <div className="flex items-center gap-3 text-neutral-400">
           <Loader2 className="h-5 w-5 animate-spin" />
           <span>Checking availability…</span>
+        </div>
+      </div>
+    )
+  }
+
+  if (phase === "course_unsupported") {
+    const courseName = AP_COURSE_SHORT[course as keyof typeof AP_COURSE_SHORT] || course
+    return (
+      <div className="fixed inset-0 bg-neutral-950 text-neutral-50 z-50 flex flex-col items-center justify-center px-6">
+        <div className="max-w-md text-center space-y-5">
+          <AlertCircle className="h-10 w-10 text-amber-400 mx-auto" />
+          <h1 className="text-2xl font-bold">Sage Coach not yet supported for {courseName}</h1>
+          <p className="text-neutral-300 text-[15px]">
+            We haven't seeded concept prompts for {courseName} yet. Switch courses in the sidebar, or check back soon — we're rolling Sage Coach out to more courses this week.
+          </p>
+          <div className="grid grid-cols-2 gap-3 pt-2">
+            <Button
+              variant="outline"
+              className="h-12 rounded-full border-neutral-700 bg-neutral-900 text-neutral-100 hover:bg-neutral-800 hover:text-neutral-50"
+              onClick={() => router.push("/dashboard")}
+            >
+              Back to dashboard
+            </Button>
+            <Button
+              className="h-12 rounded-full bg-amber-500 text-neutral-950 hover:bg-amber-400"
+              onClick={() => router.push("/practice")}
+            >
+              Do a practice session
+            </Button>
+          </div>
         </div>
       </div>
     )
@@ -333,7 +376,7 @@ export default function SageCoachPage() {
           <div className="grid grid-cols-2 gap-3 pt-2">
             <Button
               variant="outline"
-              className="h-12 rounded-full border-neutral-700 text-neutral-100 hover:bg-neutral-800 hover:text-neutral-50"
+              className="h-12 rounded-full border-neutral-700 bg-neutral-900 text-neutral-100 hover:bg-neutral-800 hover:text-neutral-50"
               onClick={() => router.push("/dashboard")}
             >
               Back to dashboard
@@ -356,6 +399,9 @@ export default function SageCoachPage() {
         <div className="max-w-xl text-center space-y-6">
           <Sparkles className="h-10 w-10 mx-auto text-amber-400" />
           <h1 className="text-3xl sm:text-4xl font-bold">Sage Coach</h1>
+          <p className="text-xs uppercase tracking-widest text-amber-400">
+            {AP_COURSE_SHORT[course as keyof typeof AP_COURSE_SHORT] || course}
+          </p>
           <p className="text-neutral-300 text-lg">
             Can you <em>explain it</em>? One concept. One minute. Speak your answer and get specific feedback.
           </p>
@@ -399,7 +445,7 @@ export default function SageCoachPage() {
         <div className="max-w-md text-center space-y-4">
           <AlertCircle className="h-10 w-10 text-amber-400 mx-auto" />
           <p className="text-neutral-200">{error || "Something went wrong."}</p>
-          <Button onClick={loadConcept} variant="outline" className="border-neutral-700 text-neutral-100">Try again</Button>
+          <Button onClick={loadConcept} variant="outline" className="border-neutral-700 bg-neutral-900 text-neutral-100 hover:bg-neutral-800 hover:text-neutral-50">Try again</Button>
         </div>
       </div>
     )
@@ -545,7 +591,7 @@ export default function SageCoachPage() {
             <Button
               onClick={retry}
               variant="outline"
-              className="h-12 rounded-full border-neutral-700 text-neutral-100 hover:bg-neutral-800 hover:text-neutral-50"
+              className="h-12 rounded-full border-neutral-700 bg-neutral-900 text-neutral-100 hover:bg-neutral-800 hover:text-neutral-50"
             >
               <RotateCcw className="h-4 w-4 mr-2" />
               Try again

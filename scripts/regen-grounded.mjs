@@ -29,14 +29,17 @@
 // On SME-validation failure the candidate is discarded and NOT counted
 // toward --count, so we get N good rows, never N bad rows.
 
-import { PrismaClient } from "@prisma/client";
 import { createHash } from "crypto";
 import fs from "fs";
 import path from "path";
 import "dotenv/config";
 import { validatePlagiarism, validateAi } from "./ai-validator.mjs";
+import { makePrisma } from "./_prisma-http.mjs";
 
-const prisma = new PrismaClient();
+// Use Neon HTTP adapter — matches prod behavior and avoids local TCP
+// connection issues that can block the default Prisma driver from some
+// networks.
+const prisma = makePrisma();
 
 // Provider cascade — Groq is currently blocked (spend alert), so we prefer
 // Google AI (Gemini, 1.5k req/day free), Together (free credit), OpenRouter
@@ -644,7 +647,7 @@ async function main() {
 
   let courses;
   if (args.all) {
-    const g = await prisma.officialSample.groupBy({ by: ["course"], _count: true });
+    const g = await withDbRetry(() => prisma.officialSample.groupBy({ by: ["course"], _count: true }));
     courses = g.filter(r => r._count >= 3).map(r => r.course);
   } else if (args.course) {
     courses = [args.course];

@@ -14,10 +14,10 @@
 //
 // Cost: ~$0.001 per Haiku call × 9 units × 1 call/unit = ~$0.01 per course.
 
-import { PrismaClient } from "@prisma/client";
 import "dotenv/config";
+import { makePrisma } from "./_prisma-http.mjs";
 
-const prisma = new PrismaClient();
+const prisma = makePrisma();
 
 function parseArgs() {
   const a = { course: null, perUnit: 3, dryRun: false };
@@ -49,6 +49,51 @@ async function callHaiku(prompt) {
   if (!res.ok) throw new Error(`Anthropic HTTP ${res.status}: ${(await res.text()).slice(0, 200)}`);
   const data = await res.json();
   return data.content?.[0]?.text || "";
+}
+
+async function callGroq(prompt) {
+  const key = process.env.GROQ_API_KEY;
+  if (!key) throw new Error("GROQ_API_KEY not set");
+  const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${key}` },
+    body: JSON.stringify({
+      model: "llama-3.3-70b-versatile",
+      messages: [{ role: "user", content: prompt }],
+      temperature: 0.3,
+      max_tokens: 2000,
+      response_format: { type: "json_object" },
+    }),
+  });
+  if (!res.ok) throw new Error(`Groq HTTP ${res.status}: ${(await res.text()).slice(0, 200)}`);
+  const data = await res.json();
+  return data.choices?.[0]?.message?.content || "";
+}
+
+// Use Haiku if available, otherwise Groq (which understands JSON mode and
+// follows concept-generation instructions well enough for seed data).
+async function callLLM(prompt) {
+  try {
+    if (process.env.ANTHROPIC_API_KEY) return await callHaiku(prompt);
+    throw new Error("no_anthropic");
+  } catch (e) {
+    console.log(`    [fallback→groq] ${e.message.slice(0, 80)}`);
+    // Groq JSON mode needs the prompt to produce a JSON OBJECT (not array).
+    // Wrap the original array-returning prompt with a {concepts:[...]} envelope.
+    const wrapped = prompt.replace(
+      "Return STRICT JSON array",
+      "Return STRICT JSON with shape {\"concepts\": [...]} (wrap the array in a concepts key)",
+    );
+    const raw = await callGroq(wrapped);
+    try {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) return raw;
+      if (Array.isArray(parsed.concepts)) return JSON.stringify(parsed.concepts);
+      return raw;
+    } catch {
+      return raw;
+    }
+  }
 }
 
 function tryParseJsonArray(s) {
@@ -106,9 +151,9 @@ async function seedUnit(course, unit, perUnit, dryRun) {
   const prompt = buildPrompt(course, unit, questions);
   let text;
   try {
-    text = await callHaiku(prompt);
+    text = await callLLM(prompt);
   } catch (e) {
-    console.log(`  ${unit}: Haiku error — ${e.message.slice(0, 100)}`);
+    console.log(`  ${unit}: LLM error — ${e.message.slice(0, 100)}`);
     return 0;
   }
   const concepts = tryParseJsonArray(text);
