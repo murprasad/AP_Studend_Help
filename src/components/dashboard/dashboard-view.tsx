@@ -29,6 +29,7 @@ import { MicroWinCard } from "@/components/dashboard/micro-win-card";
 import { WeaknessFocusCard } from "@/components/dashboard/weakness-focus-card";
 import { PathProgression } from "@/components/dashboard/path-progression";
 import { InviteParentCard } from "@/components/dashboard/invite-parent-card";
+import { DailyGoalCard } from "@/components/dashboard/daily-goal-card";
 
 function DashboardSkeleton() {
   return (
@@ -100,6 +101,9 @@ export function DashboardView() {
 
       {/* 3. Outcome + today's target */}
       <OutcomeProgressStrip course={course as string} />
+
+      {/* 3b. Daily goal — habit-formation loop. Renders null pre-signal. */}
+      <DailyGoalCard course={course as string} />
 
       {/* 4. Retention nudge — renders null when no past mistakes */}
       <MicroWinCard course={course as string} />
