@@ -96,6 +96,10 @@ export default function SageCoachPage() {
   const hasSpeech = useMemo(() => typeof window !== "undefined" && !!getSpeechRecognition(), [])
 
   // ── Load a concept ─────────────────────────────────────────────────────
+  // Dep on `course` is CRITICAL — without it, useCallback captures the
+  // initial AP_WORLD_HISTORY default from useCourse() on first render and
+  // never updates, so clicking Start always loaded the wrong course.
+  // User-reported 2026-04-21: "selected AP Physics, got AP_WORLD_HISTORY".
   const loadConcept = useCallback(async () => {
     setPhase("loading")
     setError(null)
@@ -112,7 +116,7 @@ export default function SageCoachPage() {
       setError((e as Error).message)
       setPhase("error")
     }
-  }, [])
+  }, [course])
 
   // ── Start recording ────────────────────────────────────────────────────
   const startRecording = useCallback(() => {

@@ -16,6 +16,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { ApCourse } from "@prisma/client";
+import { VALID_AP_COURSES } from "@/lib/courses";
 
 export const dynamic = "force-dynamic";
 
@@ -24,7 +25,19 @@ export async function GET(req: NextRequest) {
   if (!session?.user?.id) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { searchParams } = new URL(req.url);
-  const course = (searchParams.get("course") || "AP_WORLD_HISTORY") as ApCourse;
+  const rawCourse = searchParams.get("course");
+
+  // NEVER default to AP_WORLD_HISTORY silently — user-reported bug 2026-04-21
+  // was that a stale client captured the default and always asked for World
+  // History regardless of selected course. Reject missing/invalid course so
+  // the client must pass a real one.
+  if (!rawCourse) {
+    return NextResponse.json({ error: "course param required" }, { status: 400 });
+  }
+  if (!VALID_AP_COURSES.includes(rawCourse as ApCourse)) {
+    return NextResponse.json({ error: `invalid course: ${rawCourse}` }, { status: 400 });
+  }
+  const course = rawCourse as ApCourse;
 
   // 1) Fresh concepts — never attempted by this user
   const seen = await prisma.sageCoachSession.findMany({
