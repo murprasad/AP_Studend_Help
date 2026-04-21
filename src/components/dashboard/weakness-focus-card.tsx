@@ -1,0 +1,73 @@
+"use client";
+
+/**
+ * WeaknessFocusCard — below-fold, one unit only. Uses the weakestUnit
+ * field already returned by /api/coach-plan. Framed with numeric impact
+ * (miss rate) and a single CTA pointing at focused practice for that
+ * unit. Replaces the old 3-unit Focus Areas list.
+ */
+
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { ArrowRight, AlertTriangle } from "lucide-react";
+
+interface Props {
+  course: string;
+}
+
+interface WeakestUnitSnippet {
+  weakestUnit: {
+    unit: string;
+    unitName: string;
+    masteryScore: number;
+    missRatePct: number;
+    likelyMissesOn50Q: number;
+  } | null;
+}
+
+export function WeaknessFocusCard({ course }: Props) {
+  const [data, setData] = useState<WeakestUnitSnippet | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch(`/api/coach-plan?course=${course}`, { cache: "no-store" })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => { if (!cancelled && d && !d.error) setData(d); })
+      .catch(() => { /* silent */ });
+    return () => { cancelled = true; };
+  }, [course]);
+
+  if (!data || !data.weakestUnit) return null;
+  const w = data.weakestUnit;
+
+  // Hide when the "weakest" is actually strong — avoids false alarm on users near ready state.
+  if (w.missRatePct < 25) return null;
+
+  return (
+    <Card className="rounded-[16px] border-border/40">
+      <CardContent className="p-5 space-y-3">
+        <div className="flex items-start gap-3">
+          <div className="w-9 h-9 rounded-lg bg-amber-500/15 flex items-center justify-center flex-shrink-0">
+            <AlertTriangle className="h-4 w-4 text-amber-600 dark:text-amber-400" />
+          </div>
+          <div className="min-w-0 flex-1">
+            <p className="text-[13px] text-muted-foreground">Weakest area</p>
+            <p className="text-[16px] font-semibold leading-tight truncate">{w.unitName}</p>
+            <p className="text-[13px] text-muted-foreground mt-1">
+              You're missing <span className="font-semibold text-amber-600 dark:text-amber-400 tabular-nums">~{w.missRatePct}%</span> here.
+              Fixing this = fastest path to passing.
+            </p>
+          </div>
+        </div>
+        <Link href={`/practice?mode=focused&unit=${encodeURIComponent(w.unit)}&course=${course}`} className="block">
+          <Button size="sm" className="w-full h-10 gap-2 rounded-[10px]">
+            Fix this unit
+            <ArrowRight className="h-4 w-4" />
+          </Button>
+        </Link>
+      </CardContent>
+    </Card>
+  );
+}

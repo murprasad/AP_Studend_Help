@@ -61,3 +61,40 @@ export function projectImprovement(currentPassPercent: number, days: number): nu
   }
   return Math.round(projected);
 }
+
+// ── Tier labels (ported from PrepLion for dashboard simplification) ──
+
+export type TierLabel =
+  | "high_risk"
+  | "below_passing"
+  | "near_passing"
+  | "on_track"
+  | "ready";
+
+export interface TierCopy {
+  tierLabel: TierLabel;
+  heroLabel: string;
+  dotEmoji: string;
+  color: "red" | "amber" | "blue" | "emerald";
+  effortSuffix: string;
+}
+
+/**
+ * Central tier-copy resolver. Consumed by OutcomeProgressStrip,
+ * PrimaryActionStrip, PathProgression.
+ */
+export function tierCopyFor(passPercent: number, hasStrongMock: boolean): TierCopy {
+  if (passPercent < 30) {
+    return { tierLabel: "high_risk", heroLabel: "High risk", dotEmoji: "🔴", color: "red", effortSuffix: "to reach passing range" };
+  }
+  if (passPercent < 60) {
+    return { tierLabel: "below_passing", heroLabel: "Below passing", dotEmoji: "🟡", color: "amber", effortSuffix: "to reach 60% passing" };
+  }
+  if (passPercent < 80) {
+    return { tierLabel: "near_passing", heroLabel: "Near passing", dotEmoji: "🔵", color: "blue", effortSuffix: "to cross the pass line" };
+  }
+  if (!hasStrongMock) {
+    return { tierLabel: "on_track", heroLabel: "On track", dotEmoji: "🟢", color: "emerald", effortSuffix: "to lock it in with a mock" };
+  }
+  return { tierLabel: "ready", heroLabel: "Ready to pass", dotEmoji: "🟢", color: "emerald", effortSuffix: "to keep your edge" };
+}

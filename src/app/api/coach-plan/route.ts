@@ -89,11 +89,52 @@ export async function GET(req: NextRequest) {
       masteryAvg,
     });
 
+    // ── PrepLion-compatible additions (2026-04-20 dashboard port) ─────────
+    // Map AP's 1-5 / SAT's 1600 / ACT's 36 scaled score onto a 0-100 %
+    // "pass equivalent" the cleaner PrepLion dashboard components consume.
+    // Keeps all existing consumers working (they read roughScore) while
+    // letting the new PrimaryActionStrip/OutcomeProgressStrip/etc. use
+    // passPercent + tierLabel directly.
+    const passPercent = Math.max(0, Math.min(100,
+      ((plan.roughScore - 1) / Math.max(1, snapshot.scaleMax - 1)) * 100,
+    ));
+    const tierLabel: "high_risk" | "below_passing" | "near_passing" | "on_track" | "ready" =
+      passPercent < 30 ? "high_risk" :
+      passPercent < 60 ? "below_passing" :
+      passPercent < 80 ? "near_passing" :
+      "on_track";
+
+    // In-progress session lookup so the hero can show "Resume" instead of
+    // "Start" when the student abandoned a session earlier.
+    const ipRow = await prisma.practiceSession.findFirst({
+      where: { userId: session.user.id, course: course as ApCourse, status: "IN_PROGRESS" },
+      orderBy: { startedAt: "desc" },
+      select: { id: true, sessionType: true, totalQuestions: true, startedAt: true },
+    });
+    let inProgressSession = null as null | {
+      id: string; startedAt: string; answered: number; total: number; sessionType: string;
+    };
+    if (ipRow) {
+      const answered = await prisma.studentResponse.count({
+        where: { sessionId: ipRow.id, userId: session.user.id },
+      });
+      inProgressSession = {
+        id: ipRow.id,
+        sessionType: String(ipRow.sessionType),
+        startedAt: ipRow.startedAt.toISOString(),
+        total: ipRow.totalQuestions ?? 0,
+        answered,
+      };
+    }
+
     return NextResponse.json(
       {
         ...plan,
         family: snapshot.family,
         scaleMax: snapshot.scaleMax,
+        passPercent,
+        tierLabel,
+        inProgressSession,
       },
       { headers: { "Cache-Control": "no-store, max-age=0" } },
     );
