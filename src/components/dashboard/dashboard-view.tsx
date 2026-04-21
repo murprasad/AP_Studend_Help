@@ -30,6 +30,7 @@ import { WeaknessFocusCard } from "@/components/dashboard/weakness-focus-card";
 import { PathProgression } from "@/components/dashboard/path-progression";
 import { InviteParentCard } from "@/components/dashboard/invite-parent-card";
 import { DailyGoalCard } from "@/components/dashboard/daily-goal-card";
+import { CLEPUpsellCard } from "@/components/dashboard/clep-upsell-card";
 
 function DashboardSkeleton() {
   return (
@@ -116,6 +117,9 @@ export function DashboardView() {
 
       {/* 7. Conversion hook — renders null until ≥3 sessions practiced */}
       <InviteParentCard />
+
+      {/* 8. Cross-sell — renders null until ≥10 sessions, dismissable */}
+      <CLEPUpsellCard />
     </div>
   );
 }
