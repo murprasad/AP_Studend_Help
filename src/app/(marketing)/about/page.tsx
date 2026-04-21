@@ -62,7 +62,7 @@ export default function AboutPage() {
           </div>
           <div className="flex items-center gap-2 flex-wrap">
             <h1 className="text-3xl font-bold gradient-text">About StudentNest Prep</h1>
-            <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30 text-xs font-semibold">Beta 2.5</Badge>
+            <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30 text-xs font-semibold">Beta 5</Badge>
           </div>
         </div>
         <p className="text-muted-foreground leading-relaxed max-w-2xl mx-auto">
@@ -310,19 +310,21 @@ export default function AboutPage() {
         </div>
       </div>
 
-      {/* Section 7: What's New in Beta 2.5 */}
+      {/* Section 7: What's New in Beta 5 */}
       <div className="space-y-6">
         <div className="text-center space-y-1">
           <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30 text-xs font-semibold mb-2">Latest Release</Badge>
-          <h2 className="text-xl font-bold">What&apos;s New in Beta 2.5</h2>
-          <p className="text-sm text-muted-foreground">AP question quality upgrade — College Board-aligned pipeline for AP World History, AP CSP, and AP Physics 1.</p>
+          <h2 className="text-xl font-bold">What&apos;s New in Beta 5</h2>
+          <p className="text-sm text-muted-foreground">All 16 StudentNest courses at 500+ College Board-validated questions. Sage Coach oral training. Parent Invite + retention email engine.</p>
         </div>
         <div className="grid sm:grid-cols-2 gap-3 text-left">
           {[
-            { icon: ShieldCheck, color: "text-blue-500", bg: "bg-blue-500/10", title: "College Board-Aligned 3 AP Courses", desc: "AP World History, AP Computer Science Principles, and AP Physics 1 now use paraphrased CB-style calibration examples, cross-model validation, and CB official topic weights for proportional practice coverage." },
-            { icon: GraduationCap, color: "text-blue-500", bg: "bg-blue-500/10", title: "About-the-Exam Detail Pages", desc: "New /ap-prep/[slug] pages for the 3 flagship AP courses showing exact exam format, unit weights, skills tested, and College Board resources — matching the official CED verbatim where possible." },
-            { icon: LayoutDashboard, color: "text-blue-500", bg: "bg-blue-500/10", title: "Admin Users & Revenue Dashboard", desc: "Admin tab showing all users (free + premium) with date range filtering, search, tier breakdown, and revenue metrics (MRR/ARR)." },
-            { icon: Target, color: "text-blue-500", bg: "bg-blue-500/10", title: "Quality Audit Tooling", desc: "Two new CLI tools — rule-based structural audit and AI-driven semantic review — run against every approved AP question to guarantee College Board rigor at scale." },
+            { icon: ShieldCheck, color: "text-blue-500", bg: "bg-blue-500/10", title: "All 16 Courses at 500+ Questions", desc: "10 AP + 2 SAT + 4 ACT courses each reached 500 College Board-grounded questions. 6,267 questions validated by Haiku 4.5 / Groq Llama 3.3 70B with 0.6% rejection rate — CB source material is the authority, not the open web." },
+            { icon: GraduationCap, color: "text-blue-500", bg: "bg-blue-500/10", title: "Sage Coach — Oral AP Training", desc: "Explain a concept out loud; Haiku 4.5 evaluates your answer against real College Board past-exam content. 8 AP courses seeded with 204 concepts. Free tier: 1 session/day." },
+            { icon: LayoutDashboard, color: "text-blue-500", bg: "bg-blue-500/10", title: "Clutter-Free Dashboard", desc: "Ported the PrepLion 7-card Duolingo-style layout. One dominant next action. Resume card for in-progress sessions. Daily goal + streak loop. Weakest unit surfaced below fold." },
+            { icon: Target, color: "text-blue-500", bg: "bg-blue-500/10", title: "Parent Invite + Weekly Digest", desc: "Students ask their parent to unlock $9.99/mo via a one-click upgrade email. Weekly progress digest to parents keeps subscriptions justified: sessions, accuracy delta, streak, weakest unit, CTA back to dashboard." },
+            { icon: ShieldCheck, color: "text-blue-500", bg: "bg-blue-500/10", title: "Auto-Quarantine on Reports", desc: "Three student reports on a single question and it's pulled from circulation immediately, pending admin review. Prevents a bad question from compounding into public feedback." },
+            { icon: Sparkles, color: "text-blue-500", bg: "bg-blue-500/10", title: "Post-Session Retention Nudge", desc: "At session end, a dedicated card surfaces your weakest unit and streak — incomplete-loop psychology that pulls students back tomorrow. Previews tomorrow's focused session in one tap." },
           ].map(({ icon: Icon, color, bg, title, desc }) => (
             <div key={title} className="flex gap-3 p-4 rounded-xl border border-border/40 bg-card">
               <div className={`w-8 h-8 rounded-lg ${bg} flex items-center justify-center flex-shrink-0 mt-0.5`}>
