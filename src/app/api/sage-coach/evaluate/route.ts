@@ -194,6 +194,31 @@ async function handlePost(req: NextRequest, t0: number, log: (s: string, e?: Rec
   }
   log("auth ok", { userId: session.user.id });
 
+  // Free-tier daily cap: 1 Sage Coach evaluation per 24h. Admins + paid
+  // tiers bypass. Evaluated BEFORE body parse so we fast-fail without
+  // spending any LLM budget on rate-limited requests.
+  const userRecord = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: { role: true, subscriptionTier: true },
+  });
+  const isAdmin = userRecord?.role === "ADMIN";
+  const isPaid = userRecord?.subscriptionTier && userRecord.subscriptionTier !== "FREE";
+  const isPremium = isAdmin || isPaid;
+  if (!isPremium) {
+    const oneDayAgo = new Date(Date.now() - 24 * 3600 * 1000);
+    const todayCount = await prisma.sageCoachSession.count({
+      where: { userId: session.user.id, createdAt: { gte: oneDayAgo } },
+    });
+    if (todayCount >= 1) {
+      log("rate_limited", { todayCount });
+      return NextResponse.json({
+        error: "daily_limit",
+        message: "Free accounts get 1 Sage Coach session per day. Upgrade for unlimited.",
+        upgradeUrl: "/pricing",
+      }, { status: 429 });
+    }
+  }
+
   const body = await req.json().catch(() => ({}));
   const conceptId = String(body.conceptId || "");
   const transcript = String(body.transcript || "").trim();

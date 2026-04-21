@@ -50,7 +50,7 @@ interface EvalResult {
   tooShort?: boolean
 }
 
-type Phase = "checking" | "unavailable" | "course_unsupported" | "intro" | "loading" | "prompt" | "recording" | "processing" | "feedback" | "error"
+type Phase = "checking" | "unavailable" | "course_unsupported" | "daily_limit" | "intro" | "loading" | "prompt" | "recording" | "processing" | "feedback" | "error"
 
 // Minimal SpeechRecognition typing — the spec types vary by browser.
 type SRInstance = {
@@ -209,6 +209,11 @@ export default function SageCoachPage() {
       const data: EvalResult = await res.json()
       if (resolved) return
       resolved = true
+      // Free-tier daily cap hit → show upgrade screen instead of generic error
+      if (res.status === 429 && (data as unknown as { error?: string })?.error === "daily_limit") {
+        setPhase("daily_limit")
+        return
+      }
       if (!res.ok && !data?.scores) throw new Error("Evaluation failed")
       setEvaluation(data)
       setPhase("feedback")
@@ -283,20 +288,12 @@ export default function SageCoachPage() {
     if (recognitionRef.current) { try { recognitionRef.current.stop() } catch { /* no-op */ } }
   }, [])
 
-  // ── Startup: admin gate + health + course-supported check.
+  // ── Startup: health + course-supported check (no admin gate; open to all,
+  // free users rate-limited by the evaluate endpoint to 1/day).
   useEffect(() => {
     let cancelled = false
     ;(async () => {
       try {
-        const authRes = await fetch("/api/auth/session", { cache: "no-store" })
-        const authData = await authRes.json()
-        if (cancelled) return
-        if (authData?.user?.role !== "ADMIN") {
-          router.push("/dashboard")
-          return
-        }
-
-        // Parallel: provider health + course-concept availability
         const [healthRes, conceptRes] = await Promise.all([
           fetch("/api/sage-coach/health", { cache: "no-store" }),
           fetch(`/api/sage-coach/question?course=${course}`, { cache: "no-store" }),
@@ -305,14 +302,11 @@ export default function SageCoachPage() {
         if (cancelled) return
 
         if (!health?.available) { setPhase("unavailable"); return }
-
-        // conceptRes returns 404 if no concepts for this course
         if (!conceptRes.ok) {
           if (conceptRes.status === 404) { setPhase("course_unsupported"); return }
           setPhase("unavailable")
           return
         }
-        // We'll refetch the concept on loadConcept() — this was just availability probe
         setPhase("intro")
       } catch {
         if (!cancelled) setPhase("unavailable")
@@ -329,6 +323,35 @@ export default function SageCoachPage() {
         <div className="flex items-center gap-3 text-neutral-400">
           <Loader2 className="h-5 w-5 animate-spin" />
           <span>Checking availability…</span>
+        </div>
+      </div>
+    )
+  }
+
+  if (phase === "daily_limit") {
+    return (
+      <div className="fixed inset-0 bg-neutral-950 text-neutral-50 z-50 flex flex-col items-center justify-center px-6">
+        <div className="max-w-md text-center space-y-5">
+          <Sparkles className="h-10 w-10 text-amber-400 mx-auto" />
+          <h1 className="text-2xl font-bold">You've done today's Sage Coach</h1>
+          <p className="text-neutral-300 text-[15px]">
+            Free accounts get 1 oral-response session per day. Come back tomorrow — or unlock unlimited for <strong>$9.99/mo</strong>.
+          </p>
+          <div className="grid grid-cols-2 gap-3 pt-2">
+            <Button
+              variant="outline"
+              className="h-12 rounded-full border-neutral-700 bg-neutral-900 text-neutral-100 hover:bg-neutral-800 hover:text-neutral-50"
+              onClick={() => router.push("/dashboard")}
+            >
+              Back to dashboard
+            </Button>
+            <Button
+              className="h-12 rounded-full bg-amber-500 text-neutral-950 hover:bg-amber-400"
+              onClick={() => router.push("/pricing?ref=sage-coach-daily-limit")}
+            >
+              Unlock unlimited
+            </Button>
+          </div>
         </div>
       </div>
     )

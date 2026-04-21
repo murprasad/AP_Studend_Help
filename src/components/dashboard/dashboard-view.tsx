@@ -28,6 +28,7 @@ import { OutcomeProgressStrip } from "@/components/dashboard/outcome-progress-st
 import { MicroWinCard } from "@/components/dashboard/micro-win-card";
 import { WeaknessFocusCard } from "@/components/dashboard/weakness-focus-card";
 import { PathProgression } from "@/components/dashboard/path-progression";
+import { InviteParentCard } from "@/components/dashboard/invite-parent-card";
 
 function DashboardSkeleton() {
   return (
@@ -94,6 +95,9 @@ export function DashboardView() {
 
       {/* 6. Vertical path + mock milestone */}
       <PathProgression course={course as string} />
+
+      {/* 7. Conversion hook — renders null until ≥3 sessions practiced */}
+      <InviteParentCard />
     </div>
   );
 }

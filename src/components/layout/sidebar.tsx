@@ -62,9 +62,9 @@ const navItems: NavItem[] = [
   { href: "/study-plan", icon: BookOpen, label: "Study Plan" },
   { href: "/resources", icon: Library, label: "Resources" },
   { href: "/ai-tutor", icon: MessageSquare, label: "Sage Live Tutor" },
-  // Sage Coach — oral-response training. Admin-gated until eval reliability
-  // is confirmed on prod (2026-04-20 — evaluator hangs being diagnosed).
-  { href: "/sage-coach", icon: Mic, label: "Sage Coach", adminOnly: true },
+  // Sage Coach — oral-response training. Available to all users (2026-04-21).
+  // Free users get 1 evaluation per day; unlimited on paid.
+  { href: "/sage-coach", icon: Mic, label: "Sage Coach" },
   { href: "/community", icon: Users, label: "Community" },
   { href: "/billing", icon: Crown, label: "Billing" },
   { href: "/about", icon: Info, label: "About" },
