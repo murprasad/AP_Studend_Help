@@ -149,15 +149,13 @@ export default function SageCoachPage() {
       recordStartRef.current = Date.now()
       setSecondsLeft(RECORD_SECONDS)
       setPhase("recording")
+      // Tick-down timer. Calling stopRecording from inside the state-updater
+      // callback was unreliable — React can bail on/batch nested updates,
+      // which is why auto-stop at 60s silently failed. Tick the counter
+      // here; a useEffect below watches secondsLeft and fires stopRecording
+      // exactly once when it reaches 0.
       timerRef.current = setInterval(() => {
-        setSecondsLeft((s) => {
-          if (s <= 1) {
-            // Auto-stop at 0
-            stopRecording(true)
-            return 0
-          }
-          return s - 1
-        })
+        setSecondsLeft((s) => (s <= 1 ? 0 : s - 1))
       }, 1000)
     } catch (e) {
       setError("Could not start recording. Check mic permissions.")
@@ -224,6 +222,23 @@ export default function SageCoachPage() {
       clearTimeout(hardTimeout)
     }
   }, [concept])
+
+  // Auto-stop watcher: when the recording timer hits 0, fire stopRecording
+  // exactly once. Putting this in a dedicated effect (rather than inside the
+  // setInterval's state-updater) avoids the React-batching bug where nested
+  // setPhase/setState calls from inside a state-updater callback were
+  // silently dropped, causing auto-stop at 60s to never fire.
+  const autoStoppedRef = useRef(false)
+  useEffect(() => {
+    if (phase !== "recording") {
+      autoStoppedRef.current = false
+      return
+    }
+    if (secondsLeft === 0 && !autoStoppedRef.current) {
+      autoStoppedRef.current = true
+      void stopRecording(true)
+    }
+  }, [secondsLeft, phase, stopRecording])
 
   // Elapsed-time ticker — decoupled from the fetch closure so it keeps
   // advancing even if React batches or defers state updates around the
