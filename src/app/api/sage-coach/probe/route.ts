@@ -18,6 +18,8 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 
@@ -81,6 +83,18 @@ export async function GET(req: NextRequest) {
   const mark = (stage: string, detail?: unknown) => trail.push({ stage, ms: Date.now() - t0, detail });
 
   mark("start");
+
+  // Step 6 — getServerSession timing check (works even without session cookie —
+  // returns null fast). Any user-agent can hit this to measure auth decode cost.
+  if (step === 6) {
+    try {
+      const ses = await getServerSession(authOptions);
+      mark("session-done", { hasUser: !!ses?.user?.id });
+    } catch (e) {
+      mark("session-fail", { message: (e as Error).message.slice(0, 120) });
+    }
+    return NextResponse.json({ step, ms: Date.now() - t0, trail });
+  }
 
   if (step < 2) {
     mark("done-touch");

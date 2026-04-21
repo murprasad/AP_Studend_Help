@@ -265,11 +265,22 @@ export default function SageCoachPage() {
     if (recognitionRef.current) { try { recognitionRef.current.stop() } catch { /* no-op */ } }
   }, [])
 
-  // ── Startup health check — skip the whole flow if all AI providers are dead
+  // ── Startup: admin gate + health check. Admin-only while eval hangs are
+  // being diagnosed on CF Workers (2026-04-20). Non-admins are redirected
+  // back to the dashboard.
   useEffect(() => {
     let cancelled = false
     ;(async () => {
       try {
+        // Admin check via the session endpoint
+        const authRes = await fetch("/api/auth/session", { cache: "no-store" })
+        const authData = await authRes.json()
+        if (cancelled) return
+        if (authData?.user?.role !== "ADMIN") {
+          router.push("/dashboard")
+          return
+        }
+
         const res = await fetch("/api/sage-coach/health", { cache: "no-store" })
         const data = await res.json()
         if (cancelled) return
@@ -280,7 +291,7 @@ export default function SageCoachPage() {
       }
     })()
     return () => { cancelled = true }
-  }, [])
+  }, [router])
 
   // ── Render ─────────────────────────────────────────────────────────────
 

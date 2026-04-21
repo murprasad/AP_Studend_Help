@@ -47,6 +47,8 @@ interface NavItem {
   label: string;
   /** If set, item only renders when userTrack matches one of these values. */
   tracks?: string[];
+  /** When true, only ADMIN role sees this nav item. */
+  adminOnly?: boolean;
 }
 
 const navItems: NavItem[] = [
@@ -60,9 +62,9 @@ const navItems: NavItem[] = [
   { href: "/study-plan", icon: BookOpen, label: "Study Plan" },
   { href: "/resources", icon: Library, label: "Resources" },
   { href: "/ai-tutor", icon: MessageSquare, label: "Sage Live Tutor" },
-  // Sage Coach — oral-response training. Voice-driven, full-screen.
-  // Currently seeded for AP_WORLD_HISTORY only (2026-04-20 MVP).
-  { href: "/sage-coach", icon: Mic, label: "Sage Coach" },
+  // Sage Coach — oral-response training. Admin-gated until eval reliability
+  // is confirmed on prod (2026-04-20 — evaluator hangs being diagnosed).
+  { href: "/sage-coach", icon: Mic, label: "Sage Coach", adminOnly: true },
   { href: "/community", icon: Users, label: "Community" },
   { href: "/billing", icon: Crown, label: "Billing" },
   { href: "/about", icon: Info, label: "About" },
@@ -325,6 +327,8 @@ export function Sidebar({ userRole, userTrack, isOpen = false, onClose = () => {
           {navItems
             .filter((item) => !hiddenPages.has(item.href))
             .filter((item) => {
+              // Admin-only items (e.g. Sage Coach while in diagnosis).
+              if (item.adminOnly && userRole !== "ADMIN") return false;
               // Track-scoped items (e.g. FRQ Practice is AP-only). Admins see all.
               if (!item.tracks) return true;
               if (userRole === "ADMIN") return true;
