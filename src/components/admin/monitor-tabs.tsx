@@ -18,6 +18,11 @@ interface RecentUser {
   email: string;
   gradeLevel: string | null;
   subscriptionTier: string;
+  // CF-header location captured on last dashboard load. All nullable —
+  // unauth routes or missing CF headers leave these blank.
+  lastLoginCountry?: string | null;
+  lastLoginRegion?: string | null;
+  lastLoginCity?: string | null;
 }
 
 interface Stats {
@@ -102,20 +107,30 @@ export function AdminMonitorTabs({ stats, recentUsers }: Props) {
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
-                {recentUsers.map((user) => (
-                  <div key={user.id} className="flex items-center justify-between p-2 rounded-lg hover:bg-secondary/50">
-                    <div>
-                      <p className="text-sm font-medium">{user.firstName} {user.lastName}</p>
-                      <p className="text-xs text-muted-foreground">{user.email}</p>
+                {recentUsers.map((user) => {
+                  // Compose a compact "City, Region, Country" location string.
+                  // Skip any blanks; show "—" if nothing captured yet (user
+                  // hasn't loaded the dashboard since the location columns
+                  // were added, so no CF headers were ever captured).
+                  const locParts = [user.lastLoginCity, user.lastLoginRegion, user.lastLoginCountry]
+                    .filter((x): x is string => !!x);
+                  const loc = locParts.length > 0 ? locParts.join(", ") : "—";
+                  return (
+                    <div key={user.id} className="flex items-center justify-between p-2 rounded-lg hover:bg-secondary/50">
+                      <div className="min-w-0 flex-1">
+                        <p className="text-sm font-medium">{user.firstName} {user.lastName}</p>
+                        <p className="text-xs text-muted-foreground truncate">{user.email}</p>
+                        <p className="text-[11px] text-muted-foreground/70 mt-0.5">📍 {loc}</p>
+                      </div>
+                      <div className="text-right flex-shrink-0 ml-2">
+                        <Badge variant={isAnyPremium(user.subscriptionTier) ? "default" : "outline"} className="text-xs">
+                          {tierLabel(user.subscriptionTier)}
+                        </Badge>
+                        <p className="text-xs text-muted-foreground mt-1">Grade {user.gradeLevel}</p>
+                      </div>
                     </div>
-                    <div className="text-right">
-                      <Badge variant={isAnyPremium(user.subscriptionTier) ? "default" : "outline"} className="text-xs">
-                        {tierLabel(user.subscriptionTier)}
-                      </Badge>
-                      <p className="text-xs text-muted-foreground mt-1">Grade {user.gradeLevel}</p>
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </CardContent>
           </Card>

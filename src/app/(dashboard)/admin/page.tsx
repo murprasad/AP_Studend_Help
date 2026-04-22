@@ -24,6 +24,10 @@ export default async function AdminPage() {
         email: true,
         gradeLevel: true,
         subscriptionTier: true,
+        // Location captured from CF Workers headers on dashboard load.
+        lastLoginCountry: true,
+        lastLoginRegion: true,
+        lastLoginCity: true,
       },
     }),
   ]);
@@ -49,6 +53,9 @@ export default async function AdminPage() {
             email: u.email,
             gradeLevel: u.gradeLevel ? String(u.gradeLevel) : null,
             subscriptionTier: u.subscriptionTier,
+            lastLoginCountry: u.lastLoginCountry,
+            lastLoginRegion: u.lastLoginRegion,
+            lastLoginCity: u.lastLoginCity,
           }))}
         />
       </Suspense>

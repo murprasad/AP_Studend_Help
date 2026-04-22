@@ -94,6 +94,36 @@ export async function POST(req: NextRequest) {
         data: { userId, course: courseStr },
         select: { id: true },
       });
+
+      // Capture location from Cloudflare Workers request headers. Free,
+      // automatic via the CF edge; no paid geolocation service. Stored
+      // on User so admin Recent Signups + Users list show country / city.
+      // Fire-and-forget — raw SQL for the same CF Workers HTTP-adapter
+      // reliability reason as the coach-funnel UPDATE fixes.
+      try {
+        const h = req.headers;
+        const country = (h.get("cf-ipcountry") ?? h.get("x-vercel-ip-country") ?? "").slice(0, 8) || null;
+        const region  = (h.get("cf-region")    ?? h.get("x-vercel-ip-country-region") ?? "").slice(0, 64) || null;
+        const city    = (h.get("cf-city")      ?? h.get("x-vercel-ip-city") ?? "").slice(0, 64) || null;
+        const postal  = (h.get("cf-postal-code") ?? "").slice(0, 16) || null;
+        // Only write if we got at least one field — no point dirtying
+        // updatedAt when nothing changes.
+        if (country || region || city || postal) {
+          await prisma.$executeRawUnsafe(
+            `UPDATE "users"
+             SET "lastLoginCountry" = COALESCE($1, "lastLoginCountry"),
+                 "lastLoginRegion"  = COALESCE($2, "lastLoginRegion"),
+                 "lastLoginCity"    = COALESCE($3, "lastLoginCity"),
+                 "lastLoginPostalCode" = COALESCE($4, "lastLoginPostalCode"),
+                 "lastLoginLocationAt" = NOW()
+             WHERE id = $5`,
+            country, region, city, postal, userId,
+          );
+        }
+      } catch {
+        // Never let a geolocation write block the impression return.
+      }
+
       return ok({ impressionId: row.id });
     }
 

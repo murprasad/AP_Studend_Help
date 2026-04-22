@@ -40,6 +40,16 @@ model User {
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
 
+  // Location captured on most recent dashboard load via CF Workers request
+  // headers (cf-ipcountry / cf-region / cf-city / cf-postal-code). Free of
+  // charge with CF, no paid geolocation service. Used in the admin Recent
+  // Signups + Users tabs to understand acquisition geography.
+  lastLoginCountry      String?
+  lastLoginRegion       String?
+  lastLoginCity         String?
+  lastLoginPostalCode   String?
+  lastLoginLocationAt   DateTime?
+
   sessions          Session[]
   accounts          Account[]
   verificationTokens VerificationToken[]
