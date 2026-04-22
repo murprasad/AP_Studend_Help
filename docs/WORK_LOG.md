@@ -10,6 +10,73 @@ Conventions:
 
 ---
 
+## Session 2026-04-21 — AP catalog expansion (Task #13)
+
+**Context:** User flagged Reddit-user negative feedback on existing question quality (2026-04-21). Expansion pipeline must hit a HIGHER bar than the current bank. Every new question must be grounded in real CB material, pass the 5-criterion SME validator (factual, single answer, distractor quality, cognitive level, exam alignment), and mirror AP CED unit weights.
+
+**Scope:** 5 new AP courses — `AP_ENGLISH_LANGUAGE`, `AP_HUMAN_GEOGRAPHY`, `AP_US_GOVERNMENT`, `AP_PRECALCULUS`, `AP_ENVIRONMENTAL_SCIENCE`.
+
+### Unit structures (from https://apstudents.collegeboard.org/courses)
+
+| Course | Units × weights | FRQ types |
+|---|---|---|
+| AP English Language | 9 units (writing/rhetoric skill bands, no formal weights listed — CED has rubric weights) | Synthesis Essay, Rhetorical Analysis, Argument |
+| AP Human Geography | Unit 1 8–10%, U2–7 each 12–17% (7 units total) | Q1 no stimulus · Q2 one stimulus · Q3 two stimuli |
+| AP US Government | U1 15–22%, U2 25–36%, U3 13–18%, U4 10–15%, U5 20–27% (5 units) | SCOTUS comparison · Argument essay · Concept application · Quantitative analysis |
+| AP Precalculus | U1 30–40%, U2 27–40%, U3 30–35%, U4 not assessed on exam (4 units, 3 tested) | Function-based Q, modeling Q |
+| AP Environmental Science | U1 6–8%, U2 6–8%, U3–6 each 10–15%, U7 7–10%, U8 7–10%, U9 15–20% (9 units) | Design investigation, Analyze environmental issue, Solve (quantitative) |
+
+### Quality plan (addresses Reddit feedback)
+
+- **Only grounded generation.** Phase C `regen-grounded.mjs` requires ≥3 OfficialSample rows/course to run. No hallucinated Qs.
+- **Haiku 4.5 sweep** (Phase D) on every new row before exposure to users.
+- **Unit-weight ratio check.** Count of generated Qs per unit must fall within the CED weight band, ±3pp. Add a post-gen audit step.
+- **Distractor-quality 5-criterion validator** (existing in `src/lib/ai.ts`): factual / single answer / distractor quality / cognitive level / exam alignment. Keep existing threshold.
+- **Reddit defense already live**: auto-quarantine at 3 user reports (commit `a2700c4`).
+
+### Per-course recipe
+
+1. Fetch CED + past FRQ PDFs from `https://apcentral.collegeboard.org/media/pdf/` (pattern: `ap{YY}-frq-<slug>.pdf` or `-set-1`/`-set-2` for courses with two forms).
+2. Schema: add `ApCourse` enum value + per-course `ApUnit` enum values. `npx prisma db push` (user-run).
+3. `src/lib/courses.ts`: add `CourseConfig` block with unit meta + weights.
+4. `scripts/ingest/ingest-ap-<slug>.mjs`: downloads PDFs, parses FRQs, upserts into `OfficialSample`.
+5. Phase C: `node scripts/regen-grounded.mjs --course=AP_<X> --mode=fill-to-target --target=500`.
+6. Phase D: `node scripts/sweep-validate.mjs --course=AP_<X>`.
+7. Phase E: `ap-audit-questions.js --fix` + `ap-ai-review-questions.js --fix`.
+8. Verify unit-weight distribution against CED before flipping on landing page.
+
+### Pilot — AP Human Geography (first course to ship)
+
+- [x] Schema: `AP_HUMAN_GEOGRAPHY` + 7 `HUGEO_*` enum values → applied to prod via `scripts/apply-hugeo-enum-values.mjs`
+- [x] `courses.ts` CourseConfig (unit names + keyThemes + weights + curriculumContext + tutorResources + examAlignmentNotes + stimulusRequirement + questionTypeFormats MCQ/FRQ)
+- [x] `scripts/ingest/ingest-ap-human-geography.mjs` — Q1/Q2/Q3 FRQ parser, 2023–2025 Set 1/Set 2 URLs confirmed from CB past-exam index
+- [x] Ingest run: **6/6 FRQ PDFs downloaded, 18 OfficialSample rows (all FRQ) written**
+- [ ] Kick off Phase C: `node scripts/regen-grounded.mjs --course=AP_HUMAN_GEOGRAPHY --mode=fill-to-target --target=500`
+- [ ] Phase D sweep-validate: `node scripts/sweep-validate.mjs --course=AP_HUMAN_GEOGRAPHY`
+- [ ] Verify unit distribution matches CED weights ±3pp
+- [ ] Expose in sidebar via COURSE_REGISTRY (already auto-wires)
+- [ ] Deploy
+
+**Sample count benchmark** (from count-qs-all.mjs 2026-04-21):
+| Course | Samples | Approved Qs |
+|---|---|---|
+| AP_BIOLOGY | 926 | 500 |
+| AP_PSYCHOLOGY | 440 | 500 |
+| AP_CALCULUS_BC | 224 | 497 |
+| AP_STATISTICS | 193 | 500 |
+| AP_WORLD_HISTORY | 110 | ~500 |
+| AP_PHYSICS_1 | 35 | ~500 |
+| AP_CSP | 22 | ~500 |
+| **AP_HUMAN_GEOGRAPHY** | **18** | **0 (ready for gen)** |
+
+HuGeo has fewer samples than CSP; still above regen-grounded's min (3). If quality is thin, add CED-sample ingest as a follow-up.
+
+### Other 4 courses — replicate once HuGeo is green
+
+Each is ~1 day + ingest time. Order: Gov → EnvSci → Precalculus → EnglishLang (Lang is hardest because essays don't parse cleanly; save for last).
+
+---
+
 ## Session 2026-04-21 — Conversion funnel + SEO landing pages
 
 ### Tranche 1 — Ship the uncommitted conversion-fix bundle + readiness wiring
@@ -28,7 +95,8 @@ Conventions:
 - [x] `/how-hard-is/[slug]` dynamic route — 16 pages (one per AP/SAT/ACT course) with FAQPage JSON-LD — typecheck passes, uncommitted yet
 - [x] `/pass-rates` static reference page — AP 3+ rates, SAT/ACT percentile tables — typecheck passes
 - [x] `/wall-of-fame` — adapted from PrepLion CLEP version for AP/SAT/ACT, reads from existing `/api/leaderboard`
-- [~] Commit SEO tranche + deploy
+- [x] Commit SEO tranche — `e896691`
+- [x] Deploy SEO tranche — live at https://studentnest.ai (preview https://9110a5cc.studentnest.pages.dev), 15/15 smoke tests pass
 
 ### Pending user action (blocks completion)
 

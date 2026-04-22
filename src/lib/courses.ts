@@ -1707,6 +1707,144 @@ AP Exam: Section I — 100 MCQ (70 min). Section II — 2 FRQ (50 min).`,
     },
   },
 
+  // ── AP Human Geography ────────────────────────────────────────────────────
+  // 2026 catalog expansion. CED source: https://apcentral.collegeboard.org —
+  // exam format is 60 MCQ / 60 min + 3 FRQ / 75 min. Unit weights from CB
+  // 2022 CED. Per-Q MCQ pace = 60s. FRQ types: Q1 no-stim concept (6pts),
+  // Q2 single stimulus (7pts), Q3 two-stimulus (7pts) → 20 pts total.
+  AP_HUMAN_GEOGRAPHY: {
+    name: "AP Human Geography",
+    shortName: "AP HuGeo",
+    examSecsPerQuestion: 60, // 60 MCQ in 60 min
+    mockExam: { mcqCount: 60, mcqTimeMinutes: 60 },
+    enrichWithEduAPIs: true,
+    openStaxSubject: "world-history",
+    questionTypeFormats: {
+      MCQ: {
+        generationPrompt:
+          "Generate a College Board AP Human Geography MCQ. The question must be " +
+          "grounded in the CED and test a specific content standard (e.g., demographic " +
+          "transition model, Christaller's central place theory, Von Thunen land-use, " +
+          "Weber's industrial location, rostow's stages of economic development, " +
+          "the gravity model, Ravenstein's laws). " +
+          "Often include a stimulus: map, chart, graph, data table, or excerpt. " +
+          "Three wrong answers must each represent a realistic student misconception " +
+          "(common confusion with related concepts, inverted cause/effect, or " +
+          "conflating two theories). " +
+          "Single unambiguous correct answer only. Distractors plausible-but-wrong.",
+        responseFormat:
+          '{"topic":"...", "subtopic":"...", "questionText":"question stem", "stimulus":"map/chart/excerpt text or null", ' +
+          '"wikiImageTopic":"e.g., Demographic transition, Central place theory, or null", ' +
+          '"apSkill":"Spatial Patterns | Scale Analysis | Data Analysis | Source Analysis | Geographic Models", ' +
+          '"bloomLevel":"remember | apply | analyze", ' +
+          '"options":["A) ...","B) ...","C) ...","D) ..."], "correctAnswer":"A", ' +
+          '"explanation":"Why correct + why each distractor is wrong, citing CED content standard"}',
+        estimatedMinutes: 1,
+      },
+      FRQ: {
+        generationPrompt:
+          "Generate a College Board AP Human Geography FRQ. Three valid FRQ shapes: " +
+          "(i) Q1 no-stimulus concept application (6 pts, parts A-C); " +
+          "(ii) Q2 single-stimulus (map/chart/image) analysis (7 pts, parts A-D); " +
+          "(iii) Q3 two-stimulus comparison (7 pts, parts A-E). " +
+          "Each lettered part asks for Describe / Explain / Compare / Apply. " +
+          "Scoring: 1 pt per part, graded against model responses.",
+        responseFormat:
+          '{"topic":"...", "subtopic":"...", "questionText":"Full FRQ prompt with lettered parts (A)(B)(C)...", ' +
+          '"stimulus":"stimulus text or null for Q1-style", ' +
+          '"correctAnswer":"Complete model response for each part", ' +
+          '"explanation":"Rubric — what earns each point per part"}',
+        estimatedMinutes: 25,
+      },
+    },
+    units: {
+      HUGEO_1_THINKING_GEOGRAPHICALLY: {
+        name: "Unit 1: Thinking Geographically",
+        keyThemes: ["Maps & projections", "Spatial concepts", "Types of regions", "Scales of analysis", "Geographic data"],
+        fiveableUrl: "https://library.fiveable.me/ap-hug/unit-1",
+        khanPlaylistId: "PLCspJkUtmbZHYFsrpvmoDv_ii5ujUK7Pi",
+      },
+      HUGEO_2_POPULATION_MIGRATION: {
+        name: "Unit 2: Population and Migration Patterns",
+        keyThemes: ["Population distribution", "Demographic transition model", "Malthusian theory", "Ravenstein's laws", "Push & pull factors"],
+        fiveableUrl: "https://library.fiveable.me/ap-hug/unit-2",
+        khanPlaylistId: "PLCspJkUtmbZHYFsrpvmoDv_ii5ujUK7Pi",
+      },
+      HUGEO_3_CULTURAL_PATTERNS: {
+        name: "Unit 3: Cultural Patterns and Processes",
+        keyThemes: ["Cultural landscapes", "Language diffusion", "Religion distribution", "Cultural diffusion types", "Globalization of culture"],
+        fiveableUrl: "https://library.fiveable.me/ap-hug/unit-3",
+        khanPlaylistId: "PLCspJkUtmbZHYFsrpvmoDv_ii5ujUK7Pi",
+      },
+      HUGEO_4_POLITICAL_PATTERNS: {
+        name: "Unit 4: Political Patterns and Processes",
+        keyThemes: ["States, nations, nation-states", "Boundaries & geopolitics", "Centripetal & centrifugal forces", "Devolution", "Supranational organizations"],
+        fiveableUrl: "https://library.fiveable.me/ap-hug/unit-4",
+        khanPlaylistId: "PLCspJkUtmbZHYFsrpvmoDv_ii5ujUK7Pi",
+      },
+      HUGEO_5_AGRICULTURE_RURAL: {
+        name: "Unit 5: Agriculture and Rural Land-Use",
+        keyThemes: ["Agricultural revolutions", "Von Thunen model", "Intensive vs extensive", "Agribusiness", "Food security"],
+        fiveableUrl: "https://library.fiveable.me/ap-hug/unit-5",
+        khanPlaylistId: "PLCspJkUtmbZHYFsrpvmoDv_ii5ujUK7Pi",
+      },
+      HUGEO_6_URBAN_LAND_USE: {
+        name: "Unit 6: Cities and Urban Land-Use",
+        keyThemes: ["Christaller's central place theory", "Rank-size rule & primate cities", "Burgess concentric, Hoyt sector, Harris-Ullman models", "Urban sprawl & gentrification", "Sustainability"],
+        fiveableUrl: "https://library.fiveable.me/ap-hug/unit-6",
+        khanPlaylistId: "PLCspJkUtmbZHYFsrpvmoDv_ii5ujUK7Pi",
+      },
+      HUGEO_7_INDUSTRIAL_ECONOMIC: {
+        name: "Unit 7: Industrial and Economic Development",
+        keyThemes: ["Weber's industrial location", "Rostow's stages", "Wallerstein's world-systems", "Economic sectors", "Women & development (GII)"],
+        fiveableUrl: "https://library.fiveable.me/ap-hug/unit-7",
+        khanPlaylistId: "PLCspJkUtmbZHYFsrpvmoDv_ii5ujUK7Pi",
+      },
+    },
+    suggestedTutorQuestions: [
+      "Explain the demographic transition model and give a country example for each stage",
+      "Compare Christaller's central place theory with Burgess's concentric zone model",
+      "How do centripetal and centrifugal forces affect state cohesion?",
+      "What are the differences between Ravenstein's push and pull migration factors?",
+      "Describe Wallerstein's world-systems theory with core, semi-periphery, periphery examples",
+    ],
+    curriculumContext: `
+AP Human Geography is a yearlong introductory college course on the spatial
+patterns of human activity. The exam is 60 MCQs (60 min, 50% score) + 3 FRQs
+(75 min, 50% score).
+
+Unit weights on the exam (CED 2022):
+  Unit 1 Thinking Geographically — 8–10%
+  Unit 2 Population & Migration — 12–17%
+  Unit 3 Cultural Patterns & Processes — 12–17%
+  Unit 4 Political Patterns & Processes — 12–17%
+  Unit 5 Agriculture & Rural Land-Use — 12–17%
+  Unit 6 Cities & Urban Land-Use — 12–17%
+  Unit 7 Industrial & Economic Development — 12–17%
+
+Core skills assessed: interpreting spatial patterns, analyzing scale (local →
+regional → global), reading maps/charts/data, applying geographic models
+(DTM, Von Thunen, Christaller, Weber, Rostow, Wallerstein), and comparing
+geographic concepts across regions.
+    `.trim(),
+    tutorResources: `
+- Fiveable AP HuGeo — https://library.fiveable.me/ap-hug
+- Khan Academy AP Human Geography — dedicated playlist with unit videos
+- Mr. Sinn YouTube — full CED walkthroughs
+- CB AP Central — official released FRQs (2022–2025) for self-grading
+- National Geographic Education — spatial-thinking concepts + case studies
+    `.trim(),
+    examAlignmentNotes: `AP Human Geography exam alignment:
+- 60 MCQs include stimulus-based sets (map/chart/excerpt + 2–3 Qs each) and stand-alone concept Qs
+- Questions test CED-defined content standards, not memorization of country trivia
+- Distractors should reflect common misconceptions: confusing DTM stages, conflating Weber with Von Thunen, assuming rank-size rule == primate city
+- FRQs require defined terminology + specific examples + causal reasoning; no thesis essay format
+- Each FRQ part earns 1 point from a rubric; partial credit common when reasoning is clear but example is wrong`,
+    stimulusRequirement: "When appropriate, include a stimulus: a map description (choropleth / dot-density / flow), a data table (population pyramid, DTM-stage table), a chart (rank-size graph, Lorenz curve), or a brief excerpt from a geographer (Sauer, Hagerstrand, Castells). Stimuli should be analyzable without requiring external data lookups.",
+    stimulusDescription: "Concrete text-only description of a map/chart/excerpt that the question interprets. Null if the question is concept-only.",
+    explanationGuidance: "Explanations should name the CED content standard (e.g., 'CED 2.2.A Population distribution'), identify which AP Geography skill was tested (Spatial Patterns / Scale / Data / Source / Models), cite the specific geographer or model when applicable, and explain WHY each distractor is wrong — not just that it's wrong.",
+  },
+
   // ── SAT Math ──────────────────────────────────────────────────────────────
   SAT_MATH: {
     name: "SAT Math",
