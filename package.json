@@ -18,6 +18,9 @@
     "smoke-tests": "node scripts/smoke-tests.js",
     "integration-tests": "node scripts/integration-tests.js",
     "check-pwa": "node scripts/check-pwa.js",
+    "test:e2e": "playwright test",
+    "test:e2e:install": "playwright install chromium",
+    "test:e2e:preview": "node -e \"process.env.E2E_BASE_URL=process.env.E2E_BASE_URL||'https://studentnest.pages.dev'\" && playwright test",
     "ap:audit": "node scripts/ap-audit-questions.js",
     "ap:audit:fix": "node scripts/ap-audit-questions.js --fix",
     "ap:review": "node scripts/ap-ai-review-questions.js",
@@ -76,6 +79,7 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@playwright/test": "^1.59.1",
     "@types/bcryptjs": "^2.4.6",
     "@types/canvas-confetti": "^1.9.0",
     "@types/node": "^20.17.6",
