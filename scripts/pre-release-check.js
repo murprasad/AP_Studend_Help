@@ -216,6 +216,70 @@ try {
   fail(`PWA check failed:\n${output.slice(0, 600)}`);
 }
 
+// ─── 9. Cross-platform branding — no "PrepLion" in user-facing copy ─────────
+// Added 2026-04-22 after a live feedback popup leaked "improve PrepLion"
+// copy on StudentNest. Scans user-facing components + pages for "PrepLion"
+// in JSX text or user-visible string literals. Allowlists the handful of
+// legitimate references: sister-site callouts ("preplion.ai"), cross-sell
+// card copy, code comments (// Ported from PrepLion ...), trademark
+// footnotes in the marketing layout.
+section("9. No PrepLion branding leaks in user-facing copy");
+{
+  const glob = require("glob");
+  const SEARCH_ROOTS = [
+    "src/app/(dashboard)/**/*.{tsx,ts}",
+    "src/app/page.tsx",
+    "src/components/dashboard/**/*.{tsx,ts}",
+    "src/components/practice/**/*.{tsx,ts}",
+    "src/components/feedback/**/*.{tsx,ts}",
+    "src/components/tutor/**/*.{tsx,ts}",
+    "src/components/diagnostic/**/*.{tsx,ts}",
+    "src/components/layout/**/*.{tsx,ts}",
+    "src/components/landing/**/*.{tsx,ts}",
+  ];
+  // Paths/files that are allowed to reference PrepLion because it's
+  // intentional cross-platform language (sister site callouts, code
+  // comments). Full string match; keep this list short.
+  const ALLOWED_FILES = new Set([
+    "src/components/dashboard/clep-upsell-card.tsx", // "Explore PrepLion (CLEP/DSST)" — intentional cross-sell
+  ]);
+  let leaks = 0;
+  const leakDetails = [];
+  for (const pattern of SEARCH_ROOTS) {
+    const files = glob.sync(pattern, { cwd: ROOT, nodir: true });
+    for (const rel of files) {
+      if (ALLOWED_FILES.has(rel.replace(/\\/g, "/"))) continue;
+      const content = read(rel);
+      // Skip pure-comment mentions (lines whose trimmed start is // or * or
+      // /* or @)  — those are code documentation, never user-visible.
+      const lines = content.split("\n");
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+        if (!line.includes("PrepLion")) continue;
+        const trimmed = line.trimStart();
+        // Skip standard JS/TS comment forms (//, /*, *, @ docblock).
+        if (
+          trimmed.startsWith("//") ||
+          trimmed.startsWith("*") ||
+          trimmed.startsWith("/*") ||
+          trimmed.startsWith("@")
+        ) continue;
+        // Skip JSX inline comments of the form `{/* ... PrepLion ... */}`.
+        // The open/close pair is always on the same-or-nearby lines and
+        // the whole block is stripped at build.
+        if (/\{\s*\/\*/.test(line) || line.includes("*/}") ) continue;
+        leaks++;
+        leakDetails.push(`${rel}:${i + 1} — ${line.trim().slice(0, 100)}`);
+      }
+    }
+  }
+  if (leaks === 0) {
+    ok("No 'PrepLion' references in user-facing StudentNest copy");
+  } else {
+    fail(`Found ${leaks} PrepLion reference(s) in user-facing code:\n  ${leakDetails.slice(0, 5).join("\n  ")}`);
+  }
+}
+
 // ─── Summary ─────────────────────────────────────────────────────────────────
 console.log(`\n${"─".repeat(50)}`);
 if (failed === 0) {
