@@ -6,6 +6,7 @@ import { useEffect, useState, useRef } from "react";
 import { Sidebar } from "@/components/layout/sidebar";
 import { SageChat } from "@/components/layout/sage-chat";
 import { TrialBanner } from "@/components/dashboard/trial-banner";
+import { BottomNav } from "@/components/layout/bottom-nav";
 import { Sparkles, Menu, LayoutDashboard } from "lucide-react";
 import Link from "next/link";
 import { ExamModeContext, useExamModeState } from "@/hooks/use-exam-mode";
@@ -179,6 +180,9 @@ export default function DashboardLayout({
         </main>
         {/* Hide Sage chat widget while in exam mode — full-screen test UX */}
         {!inExamMode && <SageChat />}
+        {/* Mobile bottom nav — hidden in exam mode + onboarding. md:hidden
+            inside the component itself so desktop stays untouched. */}
+        {!onOnboarding && <BottomNav examMode={inExamMode} />}
       </div>
     </ExamModeContext.Provider>
   );
