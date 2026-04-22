@@ -15,11 +15,12 @@
 //
 // Usage: node scripts/ingest/ingest-all-ced.mjs [--course=AP_PHYSICS_1]
 
-import { PrismaClient } from "@prisma/client";
 import { downloadPdf, extractPdfText, ensureRawDir } from "./pdf-utils.mjs";
 import { cleanPrompt } from "./_shared.mjs";
+import { makePrisma } from "../_prisma-http.mjs";
 
-const prisma = new PrismaClient();
+// HTTP adapter: matches prod, avoids TCP/5432 Neon pooler issue.
+const prisma = makePrisma();
 
 const LICENSE =
   "\u00a9 College Board \u2014 used as AI training/grounding reference under " +
@@ -113,9 +114,30 @@ const CEDS = [
       "https://apcentral.collegeboard.org/media/pdf/ap-world-history-course-and-exam-description.pdf",
     ],
   },
+  // ── 2026 catalog expansion (Task #13) ───────────────────────────────────
+  {
+    course: "AP_HUMAN_GEOGRAPHY",
+    slug: "human-geography",
+    name: "AP Human Geography",
+    urls: [
+      "https://apcentral.collegeboard.org/media/pdf/ap-human-geography-course-and-exam-description.pdf",
+    ],
+  },
+  {
+    course: "AP_US_GOVERNMENT",
+    slug: "us-government",
+    name: "AP U.S. Government and Politics",
+    urls: [
+      "https://apcentral.collegeboard.org/media/pdf/ap-united-states-government-and-politics-course-and-exam-description.pdf",
+      "https://apcentral.collegeboard.org/media/pdf/ap-us-government-and-politics-course-and-exam-description.pdf",
+      "https://apcentral.collegeboard.org/media/pdf/ap-us-gov-and-pol-course-and-exam-description.pdf",
+    ],
+  },
 ];
 
-// Priority order for time-boxed runs (see task spec).
+// Priority order for time-boxed runs (see task spec). 2026 catalog
+// expansion courses go LAST so they don't slow down re-runs of existing
+// AP CED ingests.
 const PRIORITY = [
   "AP_COMPUTER_SCIENCE_PRINCIPLES",
   "AP_PHYSICS_1",
@@ -127,6 +149,8 @@ const PRIORITY = [
   "AP_STATISTICS",
   "AP_PSYCHOLOGY",
   "AP_WORLD_HISTORY",
+  "AP_HUMAN_GEOGRAPHY",
+  "AP_US_GOVERNMENT",
 ];
 
 function sortedCeds() {
