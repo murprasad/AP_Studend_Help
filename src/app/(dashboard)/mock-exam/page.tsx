@@ -92,6 +92,11 @@ export default function MockExamPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [result, setResult] = useState<ExamResult | null>(null);
+  // Conversion-lever item #3 (feedback 2026-04-22): partial-lock mock
+  // for FREE users after Q5. Track correct-count on the fly so the
+  // paywall can reveal a projected score based on mid-exam performance.
+  const [correctCount, setCorrectCount] = useState(0);
+  const [showPartialPaywall, setShowPartialPaywall] = useState(false);
 
   // Resolve both Full + Quick configs so the toggle can preview each without
   // waiting for re-render. Pacing (secsPerQuestion) is identical between the
@@ -172,6 +177,8 @@ export default function MockExamPage() {
         return;
       }
       setFeedback(data);
+      // Track correctness for the mid-exam projected-score reveal.
+      if (data.isCorrect) setCorrectCount((c) => c + 1);
     } catch {
       toast({ title: "Error", variant: "destructive" });
     } finally {
@@ -197,6 +204,13 @@ export default function MockExamPage() {
 
   function nextQuestion() {
     const total = questionsRef.current.length;
+    // Partial-lock gate for FREE users: after Q5 (currentIndex=4 since
+    // 0-indexed), surface the projected-score paywall instead of
+    // advancing. Premium users flow through normally.
+    if (!hasPremium && currentIndex === 4 && currentIndex + 1 < total) {
+      setShowPartialPaywall(true);
+      return;
+    }
     if (currentIndex + 1 >= total) {
       completeExam();
     } else {
@@ -402,6 +416,54 @@ export default function MockExamPage() {
   // ── Section 1 ─────────────────────────────────────────────────────────────
   if (phase === "section1" && currentQ) {
     const total = questionsRef.current.length;
+
+    // Mid-exam partial paywall (conversion item #3, feedback 2026-04-22).
+    // At Q5 with nextQuestion() blocked, reveal a projected score so
+    // the user feels the mid-investment moment, then gate continuation.
+    if (showPartialPaywall) {
+      const pct = Math.round((correctCount / 5) * 100);
+      // AP 1-5 mapping: ≥80% = 5, ≥65% = 4, ≥50% = 3, ≥35% = 2, else 1
+      const projected = pct >= 80 ? 5 : pct >= 65 ? 4 : pct >= 50 ? 3 : pct >= 35 ? 2 : 1;
+      const passing = projected >= 3;
+      const cardBorder = passing ? "border-blue-500/60" : "border-red-500/60";
+      const cardBg = passing
+        ? "bg-gradient-to-br from-blue-500/10 via-card to-emerald-500/5"
+        : "bg-gradient-to-br from-red-500/10 via-card to-amber-500/10";
+      return (
+        <div className="max-w-md mx-auto pt-8">
+          <Card className={`border-2 shadow-2xl ${cardBorder} ${cardBg}`}>
+            <CardContent className="p-6 text-center space-y-4">
+              <p className="text-xs uppercase tracking-wider text-muted-foreground">Halfway preview</p>
+              <div>
+                <p className="text-[11px] text-muted-foreground mb-1">Projected AP Score</p>
+                <p className={`text-7xl font-bold leading-none ${passing ? "text-blue-500" : "text-red-500"}`}>
+                  {projected}
+                </p>
+                <p className="text-sm text-muted-foreground mt-2">
+                  {correctCount}/5 correct so far
+                </p>
+              </div>
+              <p className="text-sm leading-relaxed">
+                {passing
+                  ? "You're trending toward passing — finish the full exam to see your real score and claim your path to a higher number."
+                  : `You're trending toward a ${projected}. Finish the full exam to see your real score and unlock the week-by-week plan that gets you to a 3.`}
+              </p>
+              <Link href={`/billing?utm_source=mock_exam&utm_campaign=q5_paywall&course=${course}`}>
+                <Button size="lg" className={`w-full h-12 text-base font-semibold shadow-lg ${passing ? "bg-blue-600 hover:bg-blue-700" : "bg-red-600 hover:bg-red-700"} text-white`}>
+                  Finish Full Exam — 7-Day Free Trial
+                </Button>
+              </Link>
+              <button
+                onClick={() => { setShowPartialPaywall(false); completeExam(); }}
+                className="text-xs text-muted-foreground hover:text-foreground"
+              >
+                End here instead — see limited results
+              </button>
+            </CardContent>
+          </Card>
+        </div>
+      );
+    }
 
     return (
       <div className="max-w-3xl mx-auto space-y-4">

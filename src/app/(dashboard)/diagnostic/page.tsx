@@ -328,7 +328,26 @@ export default function DiagnosticPage() {
           )
         })()}
 
-        <LockedInsightOverlay locked={locked} course={course}>
+        {(() => {
+          // Pass family + passing threshold to the overlay so the paywall
+          // headline can read the student's specific gap ("Predicted 2 —
+          // need 3 to pass"). AP passing = 3, SAT college-ready = 1200,
+          // ACT college-ready = 24.
+          const examFamily: "AP" | "SAT" | "ACT" = course.startsWith("SAT_")
+            ? "SAT"
+            : course.startsWith("ACT_")
+            ? "ACT"
+            : "AP";
+          const passingScore =
+            examFamily === "AP" ? 3 : examFamily === "SAT" ? 1200 : 24;
+          return (
+            <LockedInsightOverlay
+              locked={locked}
+              course={course}
+              predictedScore={predictedScore}
+              passingScore={passingScore}
+              family={examFamily}
+            >
           <Card className="border-blue-500/20 bg-blue-500/5">
             <CardContent className="p-6">
               <p className="text-sm text-muted-foreground mb-1 font-medium">AI Recommendation</p>
@@ -398,6 +417,8 @@ export default function DiagnosticPage() {
             </CardContent>
           </Card>
         </LockedInsightOverlay>
+          );
+        })()}
 
         {/* Study Plan CTA — always visible after results */}
         {result.weakUnits.length > 0 && (

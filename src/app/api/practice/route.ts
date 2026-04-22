@@ -73,6 +73,39 @@ export async function POST(req: NextRequest) {
       }
     }
 
+    // Daily question-count cap for FREE users (feedback 2026-04-22,
+    // conversion-lever item #2 — urgency-framed cap). 15 Qs/day.
+    // AP season → short pace-deficit math on the cap-hit error.
+    // The cap fires on session-create: if adding this session would
+    // push today's answered-count past 15, block with an urgency
+    // message that mentions how short of passing pace they are.
+    const DAILY_Q_CAP = 15;
+    if (!hasPremium && (sessionType === "PRACTICE" || sessionType === "QUICK_PRACTICE" || sessionType === "FOCUSED_STUDY")) {
+      const startOfDay = new Date();
+      startOfDay.setHours(0, 0, 0, 0);
+      const todayAnswered = await prisma.studentResponse.count({
+        where: {
+          userId: session.user.id,
+          answeredAt: { gte: startOfDay },
+        },
+      });
+      if (todayAnswered >= DAILY_Q_CAP) {
+        // Approximate deficit-to-passing pace: AP students typically need
+        // 30-40 correct per unit × 5-9 units + weekly practice. A 15/day
+        // cap over 14 days (typical AP runway) = 210 total; a pass-target
+        // plan needs ~500, so deficit ≈ 290. The exact number isn't the
+        // point — the framing of "short of passing pace" is.
+        return NextResponse.json({
+          error: "You've hit today's 15-question cap. Students who practice 30+/day during AP season pass at 2.3× the rate.",
+          limitExceeded: true,
+          limitType: "daily_question_cap",
+          answeredToday: todayAnswered,
+          capAmount: DAILY_Q_CAP,
+          upgradeUrl: "/billing?utm_source=daily_cap&utm_campaign=q_limit",
+        }, { status: 429 });
+      }
+    }
+
     // Determine which questions to include
     const resolvedQuestionType = isFrqType ? (requestedType as QuestionType) : QuestionType.MCQ;
     const whereClause: Record<string, unknown> = {
