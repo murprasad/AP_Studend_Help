@@ -5,6 +5,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { useEffect, useState, useRef } from "react";
 import { Sidebar } from "@/components/layout/sidebar";
 import { SageChat } from "@/components/layout/sage-chat";
+import { TrialBanner } from "@/components/dashboard/trial-banner";
 import { Sparkles, Menu, LayoutDashboard } from "lucide-react";
 import Link from "next/link";
 import { ExamModeContext, useExamModeState } from "@/hooks/use-exam-mode";
@@ -169,6 +170,10 @@ export default function DashboardLayout({
             "px-4 py-4 sm:px-6 sm:py-6 mx-auto",
             inExamMode ? "max-w-5xl" : "max-w-7xl"
           )}>
+            {/* Trial banner renders nothing unless user is on a FREE trial
+                with ≤3 days left. Hidden in exam mode + onboarding to
+                avoid distracting from focused flows. */}
+            {!inExamMode && !onOnboarding && <TrialBanner />}
             {children}
           </div>
         </main>

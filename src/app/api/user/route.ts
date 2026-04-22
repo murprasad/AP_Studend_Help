@@ -71,6 +71,8 @@ export async function GET(req: NextRequest) {
           track: true,
           onboardingCompletedAt: true,
           createdAt: true,
+          freeTrialExpiresAt: true,
+          freeTrialCourse: true,
         },
       }),
       isClepEnabled(),
