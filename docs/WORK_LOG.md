@@ -75,6 +75,31 @@ HuGeo has fewer samples than CSP; still above regen-grounded's min (3). If quali
 
 Each is ~1 day + ingest time. Order: Gov → EnvSci → Precalculus → EnglishLang (Lang is hardest because essays don't parse cleanly; save for last).
 
+**Progress so far (2026-04-21):**
+- [x] AP Human Geography: schema + code + 18 FRQ samples (commit `1595211`)
+- [x] AP US Government: schema + code + 24 FRQ samples (commit `c63d5d0`)
+- [ ] AP Environmental Science — URLs confirmed, not yet ingested
+- [ ] AP Precalculus — URLs confirmed, not yet ingested
+- [ ] AP English Language — URLs confirmed, not yet ingested
+
+**Confirmed FRQ URL patterns (from CB past-exam index pages):**
+| Course | Filename pattern | Sets | Years available |
+|---|---|---|---|
+| AP_HUMAN_GEOGRAPHY | `ap{YY}-frq-human-geography-set-{1,2}.pdf` | 1 + 2 | 2023, 2024, 2025 |
+| AP_US_GOVERNMENT | `ap{YY}-frq-us-gov-pol-set-{1,2}.pdf` | 1 + 2 | 2023, 2024, 2025 |
+| AP_ENVIRONMENTAL_SCIENCE | `ap{YY}-frq-environmental-science-set-{1,2}.pdf` | 1 + 2 | 2023, 2024, 2025 |
+| AP_PRECALCULUS | `ap{YY}-frq-precalculus.pdf` | single per year | 2024, 2025 only (new exam) |
+| AP_ENGLISH_LANGUAGE | `ap{YY}-frq-english-language-set-{1,2}.pdf` | 1 + 2 | 2023, 2024, 2025 |
+
+**Replication recipe per course (proven on HuGeo + USGOV):**
+1. Add `AP_<COURSE>` to `ApCourse` enum + N unit values to `ApUnit` enum in `prisma/schema.prisma`
+2. `npx prisma generate` → `node --env-file=.env scripts/apply-<slug>-enum-values.mjs` (copy the apply-hugeo template; swap values)
+3. Add `CourseConfig` block to `COURSE_REGISTRY` in `src/lib/courses.ts` (mimic HuGeo or USGOV — drop `openStaxSubject` since expansion courses aren't covered there)
+4. Add `UNIT_DATA` entry in `prisma/generate-questions.ts` (mirror HuGeo or USGOV structure)
+5. Copy `scripts/ingest/ingest-ap-human-geography.mjs` as template; swap COURSE const + SOURCES URLs; adjust genericFrqParse minLen/maxQ per FRQ count (3 for HuGeo, 4 for USGOV/EnvSci, 2-3 for Precalc, 3 for EngLang)
+6. `node --env-file=.env scripts/ingest/ingest-ap-<slug>.mjs` to populate OfficialSample
+7. Commit course-by-course with consistent message template
+
 ---
 
 ## Session 2026-04-21 — Conversion funnel + SEO landing pages
@@ -89,6 +114,18 @@ Each is ~1 day + ingest time. Order: Gov → EnvSci → Precalculus → EnglishL
 - [x] Port diagnostic → focused-practice funnel: `buildFocusedPracticeUrl` helper + inline CTA on results page + URL-param auto-launch on `/practice` — commit `afe17c3`
 - [x] Trial days-remaining banner (≤3d threshold, severity at ≤1d) + CLEP cleanup script + per-course count script — commit `e1d9656`
 - [x] Second deploy: `2bde17b` + `afe17c3` + `e1d9656` — live (smoke 15/15 pass)
+
+### Tranche 4 — AP catalog expansion + bug fixes + mobile + flashcards foundation
+
+- [x] Schema + CourseConfig + FRQ+CED ingest for all 5 new AP courses (commits `1595211`, `c63d5d0`, `1386ee0`, `248de9e`)
+- [x] Critical bug fix: `regen-grounded.mjs` unit-bootstrap (commit `b7d9648`)
+  - Before: 0/60 good on new courses (no_unit_resolvable); After: 5/6 good on USGov
+- [x] Mobile hooks + haptics wired into practice + test plan (commit `b7d9648`)
+- [x] OpenStax American Government 3e ingest → USGov jumped 39→230 samples
+- [x] SM-2 spaced-repetition ported to `src/lib/spaced-repetition.ts` (flashcard foundation)
+- [ ] **Quality concern to address before scaling Phase C**: generated Qs use "primary" / superlative framings that permit multiple defensible answers. 1/3 of sampled USGov Qs had this issue. Need to tighten generator prompt to explicitly reject superlative framings, OR add a second-pass ambiguity detector to the validator.
+- [ ] Flashcards remaining: schema (Flashcard model), API routes (generate + review), `/flashcards` page, card-renderer UI with swipe + SM-2 state persistence, flashcard-gen.ts for 6-type concept extraction
+- [ ] Phase C scale-up: once prompt is tightened, run regen-grounded with `--count=50` per course, review quality, then scale to `--target=500` if clean
 
 ### Tranche 2 — SEO marketing pages (PrepLion port)
 
