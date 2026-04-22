@@ -1977,6 +1977,287 @@ Analysis, Argumentation.
     explanationGuidance: "Explanations should cite the exact CED content standard, name the required document or SCOTUS case when applicable (e.g., 'CED 2.4 — Interactions; cites Federalist 70 on unitary executive'), and explicitly rule out each distractor by naming its misconception.",
   },
 
+  // ── AP Environmental Science ──────────────────────────────────────────────
+  // 2026 expansion. Format: 80 MCQ / 90 min + 3 FRQ / 70 min. Unit weights
+  // from CED 2020. Strong lab + field-investigation component.
+  AP_ENVIRONMENTAL_SCIENCE: {
+    name: "AP Environmental Science",
+    shortName: "AP Env Sci",
+    examSecsPerQuestion: 68, // 80 MCQ in 90 min = 68s each
+    mockExam: { mcqCount: 80, mcqTimeMinutes: 90 },
+    enrichWithEduAPIs: true,
+    questionTypeFormats: {
+      MCQ: {
+        generationPrompt:
+          "Generate a College Board AP Environmental Science MCQ. Grounded in the " +
+          "CED with a specific environmental concept (e.g., carbon cycle feedback loops, " +
+          "tragedy of the commons, biomagnification, trophic efficiency, LD50, K vs r " +
+          "selection, Coriolis effect, watershed dynamics). Frequent stimulus types: " +
+          "data table (species counts, water-quality metrics), graph (exponential " +
+          "vs logistic growth), map (biome/ecoregion), lab scenario (DO/BOD, half-life " +
+          "calculation). Three wrong answers each reflect common misconceptions (confusing " +
+          "primary vs secondary succession, conflating weather with climate, mixing up " +
+          "point vs non-point source pollution).",
+        responseFormat:
+          '{"topic":"...", "subtopic":"...", "questionText":"question stem", "stimulus":"data/lab/scenario or null", ' +
+          '"wikiImageTopic":"e.g., Biogeochemical cycle, Food web, or null", ' +
+          '"apSkill":"Concept Explanation | Visual Analysis | Data Analysis | Scientific Argument | Environmental Solutions", ' +
+          '"bloomLevel":"remember | apply | analyze", ' +
+          '"options":["A) ...","B) ...","C) ...","D) ..."], "correctAnswer":"A", ' +
+          '"explanation":"Why correct + why each distractor wrong, citing CED standard and natural-process mechanism"}',
+        estimatedMinutes: 1,
+      },
+      FRQ: {
+        generationPrompt:
+          "Generate a College Board AP Environmental Science FRQ. Three shapes: " +
+          "(i) Design an Investigation (10 pts), (ii) Analyze an Environmental " +
+          "Problem and Propose a Solution (10 pts), (iii) Analyze an Environmental " +
+          "Problem and Propose a Solution Doing Calculations (10 pts). Each has " +
+          "~8-10 lettered parts (Describe / Explain / Calculate / Justify).",
+        responseFormat:
+          '{"topic":"...", "subtopic":"...", "questionText":"Full FRQ prompt with lettered parts", ' +
+          '"stimulus":"scenario, data table, or lab setup description", ' +
+          '"correctAnswer":"Complete model response for each part incl. calculation work", ' +
+          '"explanation":"Rubric — pts per part with required elements"}',
+        estimatedMinutes: 23,
+      },
+    },
+    units: {
+      APES_1_ECOSYSTEMS: { name: "Unit 1: The Living World: Ecosystems", keyThemes: ["Biosphere & biomes", "Energy flow (10% rule)", "Biogeochemical cycles (C, N, P, H2O)", "Primary productivity", "Trophic levels"] },
+      APES_2_BIODIVERSITY: { name: "Unit 2: The Living World: Biodiversity", keyThemes: ["Species / genetic / ecosystem diversity", "Ecological tolerance", "Natural disruptions", "Adaptations", "Ecological succession"] },
+      APES_3_POPULATIONS: { name: "Unit 3: Populations", keyThemes: ["Generalist vs specialist species", "K vs r selection", "Survivorship curves", "Logistic vs exponential growth", "Demographic transition"] },
+      APES_4_EARTH_SYSTEMS: { name: "Unit 4: Earth Systems and Resources", keyThemes: ["Plate tectonics", "Soil formation & erosion", "Earth's atmosphere", "Global wind patterns & Coriolis", "El Niño / La Niña"] },
+      APES_5_LAND_WATER_USE: { name: "Unit 5: Land and Water Use", keyThemes: ["Tragedy of the commons", "Agricultural practices", "Irrigation & fertilizer impacts", "Urbanization & ecological footprints", "Mining impacts"] },
+      APES_6_ENERGY: { name: "Unit 6: Energy Resources and Consumption", keyThemes: ["Fossil fuels formation", "Nuclear fission", "Renewable sources", "Energy conservation", "Distributed vs centralized generation"] },
+      APES_7_ATMOSPHERIC_POLLUTION: { name: "Unit 7: Atmospheric Pollution", keyThemes: ["Acid rain", "Photochemical smog", "Ozone depletion vs tropospheric ozone", "Noise pollution", "Thermal inversions"] },
+      APES_8_AQUATIC_TERRESTRIAL_POLLUTION: { name: "Unit 8: Aquatic and Terrestrial Pollution", keyThemes: ["Point vs non-point sources", "Eutrophication & DO/BOD", "Biomagnification of toxins", "LD50 & dose-response", "Solid & hazardous waste"] },
+      APES_9_GLOBAL_CHANGE: { name: "Unit 9: Global Change", keyThemes: ["Greenhouse gases & radiative forcing", "Ocean acidification", "Invasive species", "Habitat fragmentation & HIPPCO", "Sustainability & IPAT"] },
+    },
+    suggestedTutorQuestions: [
+      "Explain the 10% rule and why trophic efficiency limits food chain length",
+      "Compare the carbon cycle with the nitrogen cycle — what sources and sinks differ?",
+      "Walk me through a logistic growth curve — what is K and why is it reached?",
+      "How does biomagnification differ from bioaccumulation?",
+      "What causes ocean acidification and how does it connect to CO2 emissions?",
+    ],
+    curriculumContext: `
+AP Environmental Science is a college-level introductory environmental science
+course. Exam: 80 MCQ (90 min, 60% score) + 3 FRQ (70 min, 40% score).
+
+Unit weights (CED 2020):
+  Unit 1 Ecosystems — 6-8%    Unit 2 Biodiversity — 6-8%
+  Unit 3 Populations — 10-15%  Unit 4 Earth Systems — 10-15%
+  Unit 5 Land & Water Use — 10-15%  Unit 6 Energy — 10-15%
+  Unit 7 Atmospheric Pollution — 7-10%
+  Unit 8 Aquatic/Terrestrial Pollution — 7-10%
+  Unit 9 Global Change — 15-20%
+
+Required lab/field component. Frequent FRQ calculations: half-life, energy
+conversion, population growth rate, carbon sequestration.
+    `.trim(),
+    tutorResources: `
+- Fiveable AP Env Sci — https://library.fiveable.me/ap-enviro
+- Bozeman Science YouTube — CED-aligned video walkthroughs
+- EPA, NOAA, USGS — authoritative primary data sources
+- Khan Academy AP Environmental Science — full playlist
+- CB AP Central — released FRQs 2023-25
+    `.trim(),
+    examAlignmentNotes: `AP Environmental Science exam alignment:
+- 80 MCQs heavily weighted toward Concept Explanation + Data Analysis skills
+- Distractors should mirror common misconceptions: confusing weather/climate, primary/secondary succession, bioaccumulation/biomagnification, acid rain/ozone depletion
+- FRQs always test one Calculation path with partial credit for shown work
+- Data interpretation is central: ~40% of MCQs include a stimulus (graph, table, map, lab scenario)`,
+    stimulusRequirement: "Include stimulus often: data table (species counts, water quality indicators), graph (DTM, DO vs depth, species-area), map (biomes, ecoregions), lab scenario (DO/BOD measurement, half-life), or chemistry problem (radioactive decay, reaction stoichiometry).",
+    stimulusDescription: "Concrete description of a data source, graph, map, or lab scenario. Null if the question is purely conceptual.",
+    explanationGuidance: "Explanations should name the CED standard, cite the natural process or mechanism (not just the outcome), include any calculation steps, and explain WHY each distractor reflects a common misconception.",
+  },
+
+  // ── AP Precalculus ────────────────────────────────────────────────────────
+  // New exam (first admin 2024). Format: 40 MCQ Sec I (80 min + 40 min =
+  // Part A no calc, Part B calc) + 4 FRQs (3 Units 1-3 tested, Unit 4 not
+  // on exam). CED 2023.
+  AP_PRECALCULUS: {
+    name: "AP Precalculus",
+    shortName: "AP Precalc",
+    examSecsPerQuestion: 120, // 40 MCQ in 80 min avg (2 min per Q)
+    mockExam: { mcqCount: 40, mcqTimeMinutes: 80 },
+    enrichWithEduAPIs: true,
+    questionTypeFormats: {
+      MCQ: {
+        generationPrompt:
+          "Generate a College Board AP Precalculus MCQ. Cover concepts from " +
+          "CED Units 1-3 (Polynomial & Rational Functions, Exp & Log Functions, " +
+          "Trig & Polar Functions). Questions test function behavior (domain, " +
+          "range, asymptotes, end behavior, transformations), modeling, and " +
+          "rate of change analysis. Split between no-calculator (Part A, ~30) " +
+          "and calculator-required (Part B, ~10). Three distractors must each " +
+          "reflect a specific procedural error (sign error in log rule, " +
+          "quadrant error in arcsin, wrong asymptote direction).",
+        responseFormat:
+          '{"topic":"...", "subtopic":"...", "questionText":"question stem with math expressions in LaTeX syntax", "stimulus":"graph/table or null", ' +
+          '"apSkill":"Procedural | Conceptual | Modeling | Functional Analysis", ' +
+          '"bloomLevel":"remember | apply | analyze", ' +
+          '"calculatorAllowed":"yes | no", ' +
+          '"options":["A) ...","B) ...","C) ...","D) ..."], "correctAnswer":"A", ' +
+          '"explanation":"Complete worked solution with each step justified + why each distractor is a common procedural error"}',
+        estimatedMinutes: 2,
+      },
+      FRQ: {
+        generationPrompt:
+          "Generate a College Board AP Precalculus FRQ. Four FRQs per exam, 2 " +
+          "no-calculator + 2 calculator. Each has parts A-F testing modeling, " +
+          "computational work, and function-behavior analysis with justification.",
+        responseFormat:
+          '{"topic":"...", "subtopic":"...", "questionText":"Full FRQ prompt with lettered parts", ' +
+          '"stimulus":"graph / table / function description", ' +
+          '"correctAnswer":"Complete worked solution showing all steps", ' +
+          '"explanation":"Rubric — pts per part and what must be shown"}',
+        estimatedMinutes: 15,
+      },
+    },
+    units: {
+      PRECALC_1_POLYNOMIAL_RATIONAL: { name: "Unit 1: Polynomial and Rational Functions", keyThemes: ["Polynomial end behavior", "Rational asymptotes (horizontal, vertical, slant)", "Zeros & multiplicity", "Polynomial long division", "Complex zeros"] },
+      PRECALC_2_EXPONENTIAL_LOGARITHMIC: { name: "Unit 2: Exponential and Logarithmic Functions", keyThemes: ["Exp growth/decay models", "Log rules", "Change of base", "Solving exp/log equations", "Inverse functions"] },
+      PRECALC_3_TRIGONOMETRIC_POLAR: { name: "Unit 3: Trigonometric and Polar Functions", keyThemes: ["Unit circle values", "Transformations of sin/cos/tan", "Inverse trig & principal values", "Polar coordinates & graphs", "Parametric equations"] },
+      PRECALC_4_FUNCTIONS_PARAMETERS_VECTORS_MATRICES: { name: "Unit 4: Functions Involving Parameters, Vectors, and Matrices (not assessed on exam)", keyThemes: ["Vectors", "Matrix operations", "Vector-valued functions"] },
+    },
+    suggestedTutorQuestions: [
+      "Find all zeros (real and complex) of a polynomial step by step",
+      "Explain the difference between horizontal and oblique asymptotes",
+      "Walk through a log-solving problem using change of base",
+      "How do I know which quadrant an arcsin result is in?",
+      "Compare exponential growth with logistic growth equations",
+    ],
+    curriculumContext: `
+AP Precalculus is a college-level precalculus course bridging Algebra 2 and
+Calculus. Exam: 40 MCQ (Section I, 80 min, 62.5% score) + 4 FRQs (Section II,
+60 min, 37.5% score). Unit 4 content NOT assessed on the May exam.
+
+Unit weights (CED 2023):
+  Unit 1 Polynomial & Rational — 30-40%
+  Unit 2 Exponential & Logarithmic — 27-40%
+  Unit 3 Trigonometric & Polar — 30-35%
+  Unit 4 Functions/Vectors/Matrices — not on exam
+
+Calculator policy: Section I Part A no calc (≤30 min), Part B calculator
+allowed. Section II is 2 no-calc + 2 calc.
+    `.trim(),
+    tutorResources: `
+- Khan Academy AP Precalculus — full playlist
+- Fiveable AP Precalc — https://library.fiveable.me/ap-precalc
+- Professor Leonard YouTube — rigorous worked examples
+- AoPS intro + intermediate texts — problem-solving depth
+- CB AP Central — released FRQs 2024-25
+    `.trim(),
+    examAlignmentNotes: `AP Precalculus exam alignment:
+- Each MCQ test either a procedural or conceptual skill
+- Distractors must reflect specific errors (not just wrong numbers): sign-flip in log rule, missed quadrant in inverse trig, confused vertical vs horizontal asymptote
+- No-calc section requires exact values; calc section allows decimal approximations
+- FRQs score with partial credit — show ALL work for full points`,
+    stimulusRequirement: "Include a stimulus when appropriate: a graph (function, data plot), a table of function values, or a function expression to analyze. Keep numeric values clean (integer or simple fraction coefficients) unless the problem specifically tests decimal/calculator use.",
+    stimulusDescription: "Concrete description of a graph, table, or function expression. Null if the question is algebraic-only.",
+    explanationGuidance: "Explanations should show every step of the worked solution, flag the specific procedural rule used, and explain precisely what error produced each distractor.",
+  },
+
+  // ── AP English Language and Composition ──────────────────────────────────
+  // 2026 expansion. Format: 45 MCQ Sec I / 60 min (45% score) + 3 FRQs Sec II /
+  // 135 min (55% score). FRQs: Synthesis Essay, Rhetorical Analysis, Argument.
+  AP_ENGLISH_LANGUAGE: {
+    name: "AP English Language and Composition",
+    shortName: "AP Eng Lang",
+    examSecsPerQuestion: 80, // 45 MCQ in 60 min
+    mockExam: { mcqCount: 45, mcqTimeMinutes: 60 },
+    enrichWithEduAPIs: true,
+    questionTypeFormats: {
+      MCQ: {
+        generationPrompt:
+          "Generate a College Board AP English Language MCQ. Always include a " +
+          "passage excerpt (approximately 200-400 words) from non-fiction prose: " +
+          "essay, speech, letter, memoir, or journalistic piece. Two MCQ types: " +
+          "(i) Reading — rhetorical analysis of an existing passage; " +
+          "(ii) Writing — targeted edits to an unfinished student draft. " +
+          "Test skills: identify rhetorical situation (audience, purpose, " +
+          "context), trace claims & evidence, evaluate word choice, recognize " +
+          "syntactic patterns. Three distractors reflect common errors: " +
+          "mistaking subject for theme, conflating ethos with logos, choosing " +
+          "grammatically-correct-but-rhetorically-weak answer.",
+        responseFormat:
+          '{"topic":"...", "subtopic":"...", "questionText":"question stem", "stimulus":"the 200-400 word passage excerpt (required)", ' +
+          '"apSkill":"Rhetorical Situation | Claims & Evidence | Reasoning & Organization | Style", ' +
+          '"bloomLevel":"remember | apply | analyze", ' +
+          '"passageType":"essay | speech | letter | memoir | journalism", ' +
+          '"options":["A) ...","B) ...","C) ...","D) ..."], "correctAnswer":"A", ' +
+          '"explanation":"Why correct is the strongest + why each distractor is rhetorically weaker, citing specific line references"}',
+        estimatedMinutes: 1.3,
+      },
+      FRQ: {
+        generationPrompt:
+          "Generate a College Board AP English Language FRQ. Three shapes: " +
+          "(i) Synthesis Essay — prompt + 6-7 sources on a contemporary topic " +
+          "(must cite 3+ sources in a coherent argument); " +
+          "(ii) Rhetorical Analysis — passage + prompt to analyze author's " +
+          "rhetorical choices; " +
+          "(iii) Argument Essay — open claim prompt, no sources required. " +
+          "Each scored 0-6 on the CB rubric (Thesis 1, Evidence 4, Sophistication 1).",
+        responseFormat:
+          '{"topic":"...", "subtopic":"...", "questionText":"Full FRQ prompt", ' +
+          '"stimulus":"passage text (for Rhetorical Analysis) OR synthesis source-set summaries (for Synthesis) OR null (for Argument)", ' +
+          '"correctAnswer":"Strong sample thesis + 2-3 sentence outline of evidence/reasoning", ' +
+          '"explanation":"Rubric: Thesis (1pt), Evidence & Commentary (4pts), Sophistication (1pt). Describe what earns each bucket."}',
+        estimatedMinutes: 45,
+      },
+    },
+    units: {
+      ENGLANG_1_CLAIMS_EVIDENCE: { name: "Unit 1: Claims, Reasoning, and Evidence Analysis", keyThemes: ["Thesis identification", "Claim-evidence linkage", "Strength of evidence", "Reasoning quality"] },
+      ENGLANG_2_ORGANIZATION_AUDIENCE: { name: "Unit 2: Organization and Audience Appeals", keyThemes: ["Text structure", "Audience targeting", "Appeals (ethos, pathos, logos)", "Introduction & conclusion strategy"] },
+      ENGLANG_3_MULTIPLE_PERSPECTIVES: { name: "Unit 3: Multiple Perspectives and Counterarguments", keyThemes: ["Perspective identification", "Counterargument structure", "Concession vs refutation"] },
+      ENGLANG_4_DEVELOPMENT_METHODS: { name: "Unit 4: Development Methods", keyThemes: ["Narration, description, comparison", "Cause-effect", "Examples & anecdotes"] },
+      ENGLANG_5_SENTENCE_WRITING: { name: "Unit 5: Sentence-Level Writing Choices", keyThemes: ["Syntax variation", "Punctuation for effect", "Diction", "Tone"] },
+      ENGLANG_6_POSITION_BIAS: { name: "Unit 6: Position, Perspective, and Bias", keyThemes: ["Author's stance", "Acknowledging bias", "Qualified claims"] },
+      ENGLANG_7_ARGUMENT_COMPLEXITY: { name: "Unit 7: Argument Complexity and Effectiveness", keyThemes: ["Nuance", "Qualified argumentation", "Complex reasoning"] },
+      ENGLANG_8_STYLISTIC_CHOICES: { name: "Unit 8: Stylistic Choices and Audience Perception", keyThemes: ["Figurative language", "Stylistic patterns", "Effect on audience"] },
+      ENGLANG_9_COMPLEX_ARGUMENTATION: { name: "Unit 9: Complex Argumentation with Multiple Viewpoints", keyThemes: ["Sophisticated thesis", "Multiple viewpoints synthesis", "Rhetorical sophistication"] },
+    },
+    suggestedTutorQuestions: [
+      "What's the difference between ethos, pathos, and logos?",
+      "How do I write a strong thesis for a synthesis essay?",
+      "Compare the rhetorical strategies in MLK's Letter from Birmingham Jail vs Lincoln's Gettysburg Address",
+      "What counts as 'sophistication' on the AP Lang rubric?",
+      "How do I quickly identify the author's tone in a passage?",
+    ],
+    curriculumContext: `
+AP English Language and Composition is a college-level rhetoric and writing
+course. Exam: 45 MCQ Sec I (60 min, 45% score) + 3 FRQs Sec II (135 min, 55%).
+
+Section I MCQs split:
+  Reading set (~23-25 Qs) — 5 passages, analyze rhetoric
+  Writing set (~20-22 Qs) — 4 student drafts, targeted revisions
+
+Section II FRQs (each 0-6 pts):
+  Q1 Synthesis Essay — prompt + 6-7 sources
+  Q2 Rhetorical Analysis — one non-fiction passage
+  Q3 Argument Essay — open claim, no sources
+
+CED units are skill bands, not content domains. FRQs score against a unified
+6-point rubric: Thesis (1) + Evidence/Commentary (4) + Sophistication (1).
+    `.trim(),
+    tutorResources: `
+- Fiveable AP Lang — https://library.fiveable.me/ap-lang
+- CB AP Central — released FRQs 2023-25 with scoring guidelines
+- Khan Academy AP Lang — rubric walkthroughs + sample essays
+- Perrin's Pocket Handbook (style reference)
+- Purdue OWL (rhetoric + writing mechanics)
+    `.trim(),
+    examAlignmentNotes: `AP English Language exam alignment:
+- Reading MCQs: line-referenced questions about WHY an author made a rhetorical choice (not WHAT they said)
+- Writing MCQs: pick the revision that best accomplishes a stated rhetorical purpose
+- Distractors should be grammatically plausible but rhetorically weaker
+- FRQs are hand-scored — rubric-aligned thesis + specific textual evidence + sophisticated complexity earn the 6`,
+    stimulusRequirement: "MCQs ALWAYS include a 200-400 word passage. FRQs include either a passage (Rhetorical Analysis), a source-set (Synthesis), or no stimulus (Argument).",
+    stimulusDescription: "The passage excerpt (non-fiction prose) or source summaries the question is built on.",
+    explanationGuidance: "Explanations should cite specific lines of the passage, name the rhetorical move (anaphora, antithesis, concession, etc.), and explain WHY each distractor is rhetorically weaker.",
+  },
+
   // ── SAT Math ──────────────────────────────────────────────────────────────
   SAT_MATH: {
     name: "SAT Math",

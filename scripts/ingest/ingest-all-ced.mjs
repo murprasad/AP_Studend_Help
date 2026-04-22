@@ -133,6 +133,30 @@ const CEDS = [
       "https://apcentral.collegeboard.org/media/pdf/ap-us-gov-and-pol-course-and-exam-description.pdf",
     ],
   },
+  {
+    course: "AP_ENVIRONMENTAL_SCIENCE",
+    slug: "environmental-science",
+    name: "AP Environmental Science",
+    urls: [
+      "https://apcentral.collegeboard.org/media/pdf/ap-environmental-science-course-and-exam-description.pdf",
+    ],
+  },
+  {
+    course: "AP_PRECALCULUS",
+    slug: "precalculus",
+    name: "AP Precalculus",
+    urls: [
+      "https://apcentral.collegeboard.org/media/pdf/ap-precalculus-course-and-exam-description.pdf",
+    ],
+  },
+  {
+    course: "AP_ENGLISH_LANGUAGE",
+    slug: "english-language",
+    name: "AP English Language and Composition",
+    urls: [
+      "https://apcentral.collegeboard.org/media/pdf/ap-english-language-and-composition-course-and-exam-description.pdf",
+    ],
+  },
 ];
 
 // Priority order for time-boxed runs (see task spec). 2026 catalog
@@ -151,6 +175,9 @@ const PRIORITY = [
   "AP_WORLD_HISTORY",
   "AP_HUMAN_GEOGRAPHY",
   "AP_US_GOVERNMENT",
+  "AP_ENVIRONMENTAL_SCIENCE",
+  "AP_PRECALCULUS",
+  "AP_ENGLISH_LANGUAGE",
 ];
 
 function sortedCeds() {
