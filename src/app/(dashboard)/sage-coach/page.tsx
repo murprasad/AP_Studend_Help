@@ -19,6 +19,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { useCourse } from "@/hooks/use-course"
+import { useExamMode } from "@/hooks/use-exam-mode"
 import { AP_COURSE_SHORT } from "@/lib/utils"
 import { Mic, MicOff, Loader2, RotateCcw, ArrowRight, Sparkles, AlertCircle } from "lucide-react"
 
@@ -75,6 +76,13 @@ const RECORD_SECONDS = 60
 export default function SageCoachPage() {
   const router = useRouter()
   const [course] = useCourse()
+
+  // Full-screen mode — sidebar, SageChat, and bottom nav hidden so the
+  // oral-response flow gets full focus. Header comment above already
+  // calls this a "Full-screen experience" — wiring up the hook now.
+  const { enterExamMode, exitExamMode } = useExamMode()
+  useEffect(() => { enterExamMode(); return () => exitExamMode() }, [enterExamMode, exitExamMode])
+
   const [phase, setPhase] = useState<Phase>("checking")
   const [concept, setConcept] = useState<Concept | null>(null)
   const [error, setError] = useState<string | null>(null)

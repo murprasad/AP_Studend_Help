@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useExamMode } from "@/hooks/use-exam-mode";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
@@ -67,6 +68,11 @@ export default function AnalyticsPage() {
   const [course] = useCourse();
   const { data: session } = useSession();
   const { toast } = useToast();
+
+  // Full-screen mode — hide sidebar + SageChat + bottom nav for chart
+  // breathing room. Slim top bar with "← Dashboard" still available.
+  const { enterExamMode, exitExamMode } = useExamMode();
+  useEffect(() => { enterExamMode(); return () => exitExamMode(); }, [enterExamMode, exitExamMode]);
   const [masteryData, setMasteryData] = useState<MasteryData[]>([]);
   const [accuracyTimeline, setAccuracyTimeline] = useState<AccuracyPoint[]>([]);
   const [stats, setStats] = useState<Stats | null>(null);

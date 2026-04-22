@@ -119,14 +119,16 @@ export default function DashboardLayout({
   return (
     <ExamModeContext.Provider value={examModeState}>
       <div className="flex h-screen bg-background overflow-hidden">
-        {/* Exam mode top bar — slim bar with exit button. Desktop only;
-            mobile users use their OS back gesture or tap the X in the
-            exam UI itself. */}
+        {/* Exam mode top bar — slim bar with exit button, now visible on
+            BOTH desktop and mobile (was hidden lg:flex; flipped 2026-04-22
+            because mobile users were left with no in-app escape hatch back
+            to dashboard during exam-mode pages). */}
         {inExamMode && (
-          <div className="fixed top-0 left-0 right-0 h-10 bg-background/95 backdrop-blur border-b border-border/40 z-30 hidden lg:flex items-center px-4">
+          <div className="fixed top-0 left-0 right-0 h-10 bg-background/95 backdrop-blur border-b border-border/40 z-30 flex items-center px-3 sm:px-4">
             <button
               onClick={() => examModeState.exitExamMode()}
               className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors px-2.5 py-1.5 rounded-lg hover:bg-accent"
+              aria-label="Exit full-screen mode, return to dashboard"
             >
               <LayoutDashboard className="h-3.5 w-3.5" />
               <span>Dashboard</span>
@@ -165,7 +167,9 @@ export default function DashboardLayout({
 
         <main className={cn(
           "flex-1 min-w-0 overflow-y-auto overflow-x-hidden",
-          inExamMode ? "pt-0 lg:pt-10" : "pt-14 lg:pt-0"
+          // Exam mode: 10-tall top bar now on all breakpoints.
+          // Non-exam: mobile has 14-tall header, desktop has none.
+          inExamMode ? "pt-10" : "pt-14 lg:pt-0"
         )}>
           <div className={cn(
             "px-4 py-4 sm:px-6 sm:py-6 mx-auto",

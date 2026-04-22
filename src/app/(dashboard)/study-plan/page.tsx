@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { useCourse } from "@/hooks/use-course";
+import { useExamMode } from "@/hooks/use-exam-mode";
 import { AP_COURSES } from "@/lib/utils";
 import {
   BookOpen,
@@ -64,6 +65,11 @@ const PRIORITY_COLORS = {
 export default function StudyPlanPage() {
   const { toast } = useToast();
   const [course] = useCourse();
+
+  // Full-screen mode — sidebar hidden for wider plan tables.
+  const { enterExamMode, exitExamMode } = useExamMode();
+  useEffect(() => { enterExamMode(); return () => exitExamMode(); }, [enterExamMode, exitExamMode]);
+
   const [plan, setPlan] = useState<StudyPlan | null>(null);
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);

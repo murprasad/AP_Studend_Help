@@ -106,31 +106,46 @@ export async function POST(req: NextRequest) {
     // this user. If the row doesn't exist (e.g. user opened multiple
     // tabs or the page crashed before `loaded` landed), this is a
     // no-op — updateMany returns count: 0 and we don't throw.
+    // HOTFIX 2026-04-22: Prisma `updateMany` on the HTTP adapter was
+    // silently dropping updates on CF Workers — 49 real-CUID
+    // coach_requested events fired in 48h but 0 updated the aggregate
+    // row (verified by direct DB read showing coachPlanRequestedAt
+    // still null on rows whose id+userId matched the inbound event).
+    // Switched to $executeRawUnsafe which CLAUDE.md Architecture §2
+    // already documents as the known-good path for write-path writes
+    // on the HTTP adapter.
     if (event === "coach_requested") {
-      await prisma.dashboardImpression.updateMany({
-        where: { id: impressionId, userId },
-        data: { coachPlanRequestedAt: new Date() },
-      });
+      await prisma.$executeRawUnsafe(
+        `UPDATE "dashboard_impressions" SET "coachPlanRequestedAt" = NOW() WHERE id = $1 AND "userId" = $2`,
+        impressionId,
+        userId,
+      );
       return ok();
     }
 
     if (event === "coach_rendered") {
-      await prisma.dashboardImpression.updateMany({
-        where: { id: impressionId, userId },
-        data: {
-          coachPlanRenderedAt: new Date(),
-          ctaType: ctaType ? String(ctaType).slice(0, 64) : null,
-          roughScore: typeof roughScore === "number" && Number.isFinite(roughScore) ? roughScore : null,
-        },
-      });
+      const ctaTypeStr = ctaType ? String(ctaType).slice(0, 64) : null;
+      const roughScoreNum = typeof roughScore === "number" && Number.isFinite(roughScore) ? roughScore : null;
+      await prisma.$executeRawUnsafe(
+        `UPDATE "dashboard_impressions"
+         SET "coachPlanRenderedAt" = NOW(),
+             "ctaType" = $3,
+             "roughScore" = $4
+         WHERE id = $1 AND "userId" = $2`,
+        impressionId,
+        userId,
+        ctaTypeStr,
+        roughScoreNum,
+      );
       return ok();
     }
 
     if (event === "coach_clicked") {
-      await prisma.dashboardImpression.updateMany({
-        where: { id: impressionId, userId },
-        data: { coachPlanCtaClickedAt: new Date() },
-      });
+      await prisma.$executeRawUnsafe(
+        `UPDATE "dashboard_impressions" SET "coachPlanCtaClickedAt" = NOW() WHERE id = $1 AND "userId" = $2`,
+        impressionId,
+        userId,
+      );
       return ok();
     }
 
