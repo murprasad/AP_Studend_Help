@@ -135,6 +135,11 @@ export async function GET(req: NextRequest) {
         passPercent,
         tierLabel,
         inProgressSession,
+        // Anti-demoralization flags — PrepLion REQ-025 port. Consumers can
+        // hide the raw percent when showScore=false (zero-signal users)
+        // and soften copy when hasDiagnostic=false.
+        showScore: snapshot.showScore,
+        hasDiagnostic: snapshot.hasDiagnostic,
       },
       { headers: { "Cache-Control": "no-store, max-age=0" } },
     );

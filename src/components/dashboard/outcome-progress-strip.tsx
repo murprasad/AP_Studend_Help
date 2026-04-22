@@ -23,6 +23,10 @@ interface CoachPlanSnippet {
   tierLabel?: TierLabel;
   questionsToTarget: number;
   accuracyDelta?: { from: number; to: number; deltaPct: number } | null;
+  // Zero-signal users get the raw % hidden with a qualitative label
+  // instead. Forwarded from loadReadinessSnapshot through /api/coach-plan.
+  showScore?: boolean;
+  hasDiagnostic?: boolean;
 }
 
 interface TodaySnippet {
@@ -101,26 +105,41 @@ export function OutcomeProgressStrip({ course }: Props) {
   return (
     <Card className="rounded-[16px] border-border/40">
       <CardContent className="p-5 space-y-3">
-        {/* ── 1. The number ───────────────────────────────────────────── */}
-        <div className="flex items-baseline gap-2 flex-wrap">
-          <span className={`text-[28px] leading-none font-bold tabular-nums ${palette.number}`}>
-            {passPct}%
-          </span>
-          <span className="text-[13px] text-muted-foreground">pass probability</span>
-          <span
-            className={`ml-auto text-[12px] font-medium px-2 py-0.5 rounded-full border ${palette.chipText} ${palette.chipBg}`}
-          >
-            {copy.dotEmoji} {copy.heroLabel}
-          </span>
-        </div>
+        {/* ── 1. The number (or rough-estimate label) ─────────────────── */}
+        {coach.showScore !== false ? (
+          <div className="flex items-baseline gap-2 flex-wrap">
+            <span className={`text-[28px] leading-none font-bold tabular-nums ${palette.number}`}>
+              {passPct}%
+            </span>
+            <span className="text-[13px] text-muted-foreground">pass probability</span>
+            <span
+              className={`ml-auto text-[12px] font-medium px-2 py-0.5 rounded-full border ${palette.chipText} ${palette.chipBg}`}
+            >
+              {copy.dotEmoji} {copy.heroLabel}
+            </span>
+          </div>
+        ) : (
+          // REQ-025 anti-demoralization: zero-signal users see a directional
+          // label instead of a raw "0%" number that crushes motivation.
+          <div className="flex items-baseline gap-2 flex-wrap">
+            <span className="text-[20px] leading-tight font-semibold text-foreground/90">
+              Rough estimate
+            </span>
+            <span className="text-[13px] text-muted-foreground">
+              — a 10-min diagnostic sharpens this
+            </span>
+          </div>
+        )}
 
-        {/* ── 2. The bar ──────────────────────────────────────────────── */}
-        <div className="relative h-2 w-full overflow-hidden rounded-full bg-muted">
-          <div
-            className={`h-full ${palette.bar} transition-[width] duration-[600ms] ease-out`}
-            style={{ width: `${animatedPct}%` }}
-          />
-        </div>
+        {/* ── 2. The bar (suppressed for zero-signal so the 0% isn't implied) ── */}
+        {coach.showScore !== false && (
+          <div className="relative h-2 w-full overflow-hidden rounded-full bg-muted">
+            <div
+              className={`h-full ${palette.bar} transition-[width] duration-[600ms] ease-out`}
+              style={{ width: `${animatedPct}%` }}
+            />
+          </div>
+        )}
 
         {/* ── 3. Effort line ─────────────────────────────────────────── */}
         {coach.questionsToTarget > 0 && passPct < 80 && (
