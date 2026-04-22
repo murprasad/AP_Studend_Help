@@ -81,16 +81,33 @@ export function PrimaryActionStrip({ course, impressionId }: Props) {
   const renderedImpressionRef = useRef<string | null>(null);
 
   // ── Fetch coach plan ────────────────────────────────────────────────────
+  //
+  // Fires `coach_requested` when impressionId is known, and also falls
+  // back to a synthetic id after 1s so the funnel captures the request
+  // even when analytics is down. The coach-plan fetch itself runs
+  // regardless so the card still renders.
+  const requestedRef = useRef<string | null>(null);
   useEffect(() => {
     let cancelled = false;
     setLoading(true);
-    console.log("[funnel] PrimaryActionStrip useEffect", { impressionId, course });
-    if (impressionId) {
-      console.log("[funnel] firing coach_requested", impressionId);
+
+    // Primary path — impressionId available
+    if (impressionId && requestedRef.current !== impressionId) {
+      requestedRef.current = impressionId;
       logDashboardEvent({ impressionId, course, event: "coach_requested" });
-    } else {
-      console.warn("[funnel] coach_requested SKIPPED — impressionId not yet available");
     }
+
+    // Fallback — if impressionId hasn't arrived within 1s, fire anyway
+    // with a synthetic id. Better to over-count than under-count; reports
+    // can filter the `fallback_` prefix to see true instrumentation rate.
+    const fallbackTimer = setTimeout(() => {
+      if (!impressionId && requestedRef.current === null) {
+        const synth = `fallback_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+        requestedRef.current = synth;
+        logDashboardEvent({ impressionId: synth, course, event: "coach_requested" });
+      }
+    }, 1000);
+
     fetch(`/api/coach-plan?course=${course}`, { cache: "no-store" })
       .then((r) => (r.ok ? r.json() : null))
       .then((d) => {
@@ -100,20 +117,21 @@ export function PrimaryActionStrip({ course, impressionId }: Props) {
         /* silent — we render nothing on failure, leaving space for the sub-cards */
       })
       .finally(() => { if (!cancelled) setLoading(false); });
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+      clearTimeout(fallbackTimer);
+    };
   }, [course, impressionId]);
 
   // ── coach_rendered exactly once per (impressionId, data) pair ───────────
   useEffect(() => {
-    if (!impressionId || !data) {
-      console.log("[funnel] coach_rendered WAITING", { impressionId: !!impressionId, hasData: !!data });
-      return;
-    }
-    if (renderedImpressionRef.current === impressionId) return;
-    renderedImpressionRef.current = impressionId;
-    console.log("[funnel] firing coach_rendered", impressionId, data.nextAction?.type);
+    if (!data) return;
+    const id = impressionId ?? requestedRef.current;
+    if (!id) return;
+    if (renderedImpressionRef.current === id) return;
+    renderedImpressionRef.current = id;
     logDashboardEvent({
-      impressionId,
+      impressionId: id,
       course,
       event: "coach_rendered",
       ctaType: data.nextAction?.type,
@@ -174,33 +192,54 @@ export function PrimaryActionStrip({ course, impressionId }: Props) {
     detail = inProgressSession.total > 0
       ? `${inProgressSession.total} question${inProgressSession.total === 1 ? "" : "s"} waiting`
       : "Pick up where you left off";
-    // Route to the right page based on session type when we know it.
     const t = inProgressSession.sessionType;
     if (t === "DIAGNOSTIC") href = "/diagnostic";
     else if (t === "MOCK_EXAM") href = "/mock-exam";
     else href = `/practice?resume=${inProgressSession.id}`;
   } else if (tierLabel === "high_risk" && !weakestUnit) {
-    // Zero signal → 60-second warmup framing.
-    //
-    // The old "Start Your Diagnostic / 15 questions / finds your starting
-    // point" copy was driving ~14% view→start on PrepLion (2026-04-19
-    // 24h metric). ChatGPT behavioral review flagged the "judgment"
-    // framing as the blocker. Warmup framing is "exploration": 3 Qs, 60s,
-    // no test feel, evaluation shown AFTER engagement not before. See
-    // memory project_activation_retention_backlog.
+    // Zero-signal warmup kept intact — activation step, not conversion.
     title = "Warm up. See your level.";
     buttonLabel = "TRY IT — 60 SEC";
     subtitle = "3 questions · about 60 seconds";
     detail = "Quick practice. No test feel.";
     href = "/warmup";
+  } else if (tierLabel === "ready") {
+    // On-track + mock complete — push them to take the full mock exam.
+    title = "Take the Mock Exam";
+    buttonLabel = "START MOCK";
+    subtitle = "Full-length timed exam";
+    detail = "Verify you're ready for test day";
+    href = "/mock-exam";
+  } else if (tierLabel && (tierLabel === "high_risk" || tierLabel === "below_passing")) {
+    // At-risk with signal — outcome-framed CTA. User's feedback: stateful
+    // copy beats generic action verbs. Reveal what they'll learn.
+    title = "See Your Pass Probability";
+    buttonLabel = "SEE MY SCORE →";
+    subtitle = weakestUnit ? weakestUnit.unitName : "Your predicted AP score";
+    detail = weakestUnit
+      ? `Biggest gap: ${weakestUnit.missRatePct}% miss rate. Fix this → +score.`
+      : "Based on what you've answered so far";
+    href = weakestUnit
+      ? `/practice?mode=focused&unit=${encodeURIComponent(weakestUnit.unit)}`
+      : (nextAction.url || "/practice");
+  } else if (tierLabel === "near_passing") {
+    title = "Close Your Score Gap";
+    buttonLabel = "BOOST MY SCORE →";
+    subtitle = weakestUnit ? weakestUnit.unitName : "You're close to passing";
+    detail = weakestUnit
+      ? `${weakestUnit.missRatePct}% miss here — fix and you pass.`
+      : "A few focused sessions closes the gap";
+    href = weakestUnit
+      ? `/practice?mode=focused&unit=${encodeURIComponent(weakestUnit.unit)}`
+      : (nextAction.url || "/practice");
   } else if (weakestUnit) {
+    // on_track with a weak unit, or unknown tier — keep the fix-unit framing.
     title = "Continue Your Pass Plan";
-    buttonLabel = inProgressSession ? "RESUME" : "CONTINUE";
+    buttonLabel = "CONTINUE";
     subtitle = weakestUnit.unitName;
     detail = `You're missing ${weakestUnit.missRatePct}% of questions here`;
     href = `/practice?mode=focused&unit=${encodeURIComponent(weakestUnit.unit)}`;
   } else {
-    // Fallback: no weak unit, no in-progress, not high-risk
     title = "Continue Your Pass Plan";
     buttonLabel = "CONTINUE";
     subtitle = "Daily practice";
@@ -218,9 +257,12 @@ export function PrimaryActionStrip({ course, impressionId }: Props) {
 
   const onClick = () => {
     setPulse(false);
-    console.log("[funnel] hero CTA clicked", { impressionId, href });
-    if (impressionId) {
-      const payload = JSON.stringify({ impressionId, course, event: "coach_clicked" });
+    // Use the impressionId OR the synthetic fallback id we stamped in the
+    // request-firing effect, so clicks are always attributable even if the
+    // server `loaded` POST failed.
+    const id = impressionId ?? requestedRef.current;
+    if (id) {
+      const payload = JSON.stringify({ impressionId: id, course, event: "coach_clicked" });
       try {
         if (typeof navigator !== "undefined" && typeof navigator.sendBeacon === "function") {
           navigator.sendBeacon(
@@ -228,10 +270,10 @@ export function PrimaryActionStrip({ course, impressionId }: Props) {
             new Blob([payload], { type: "application/json" }),
           );
         } else {
-          logDashboardEvent({ impressionId, course, event: "coach_clicked" });
+          logDashboardEvent({ impressionId: id, course, event: "coach_clicked" });
         }
       } catch {
-        logDashboardEvent({ impressionId, course, event: "coach_clicked" });
+        logDashboardEvent({ impressionId: id, course, event: "coach_clicked" });
       }
     }
     router.push(href);

@@ -17,6 +17,7 @@ import { CourseSelectorInline } from "@/components/layout/course-selector-inline
 import { SessionFeedbackPopup } from "@/components/feedback/session-feedback-popup";
 import { SessionDeltaCard } from "@/components/practice/session-delta-card";
 import { NextSessionNudge } from "@/components/practice/next-session-nudge";
+import { DiagnosticNudgeModal } from "@/components/practice/diagnostic-nudge-modal";
 import { useExamMode } from "@/hooks/use-exam-mode";
 import {
   Zap,
@@ -355,6 +356,15 @@ export default function PracticePage() {
       setFeedback(data);
       setResults((prev) => [...prev, { correct: data.isCorrect, timeSecs }]);
 
+      // Fire the diagnostic nudge check after each successful submit. The
+      // modal self-gates against: already-shown-today / already-has-diagnostic /
+      // not-at-threshold. See DiagnosticNudgeModal for the rules.
+      if (typeof window !== "undefined") {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const fn = (window as any).__preplion_checkDiagnosticNudge;
+        if (typeof fn === "function") void fn();
+      }
+
       // A22.4 port — Fail-downshift. If this is the 2nd consecutive wrong
       // in the current unit, reorder the upcoming queue so the student sees
       // a different-unit (or easier) question next. Pure helper at
@@ -655,6 +665,11 @@ export default function PracticePage() {
   if (mode === "practicing" && currentQuestion) {
     return (
       <div className="max-w-3xl mx-auto space-y-4">
+        {/* Diagnostic nudge — shows at 5 and 10 lifetime responses if
+            user has no diagnostic yet. Self-gated. Exposes a hook on
+            window that submitAnswer() calls after each successful submit. */}
+        <DiagnosticNudgeModal course={course as string} />
+
         {/* Progress header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">

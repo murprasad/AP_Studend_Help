@@ -66,6 +66,26 @@ export async function POST(req: NextRequest) {
     const { event, course, impressionId, ctaType, roughScore } = body;
     if (!event) return silentFail();
 
+    // Hard log: write every inbound event into funnel_events before the
+    // aggregated DashboardImpression logic runs. If the aggregated counters
+    // later show 0 for `coach_requested`, we can diff against this table to
+    // see whether the client was actually firing and the problem is in the
+    // join (impressionId mismatch) rather than the event itself.
+    try {
+      await prisma.funnelEvent.create({
+        data: {
+          userId,
+          event: String(event).slice(0, 32),
+          course: course ? String(course).slice(0, 64) : null,
+          impressionId: impressionId ? String(impressionId).slice(0, 64) : null,
+          ctaType: ctaType ? String(ctaType).slice(0, 64) : null,
+          roughScore: typeof roughScore === "number" && Number.isFinite(roughScore) ? roughScore : null,
+        },
+      });
+    } catch {
+      // Never let the raw log block the aggregate update.
+    }
+
     if (event === "loaded") {
       if (!course) return silentFail();
       // Defensive clamp — keep the column small and predictable.
@@ -78,6 +98,9 @@ export async function POST(req: NextRequest) {
     }
 
     if (!impressionId) return silentFail();
+    // Synthetic ids from the client-side race fallback won't match any
+    // DashboardImpression row. That's fine — the funnel_events row above
+    // captures them. `updateMany` returns count:0 silently for no match.
 
     // For all the downstream events, scope writes to rows owned by
     // this user. If the row doesn't exist (e.g. user opened multiple

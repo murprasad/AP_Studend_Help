@@ -96,6 +96,26 @@ model DashboardImpression {
   @@map("dashboard_impressions")
 }
 
+// Append-only raw funnel event log. Exists alongside DashboardImpression
+// so that every event POST writes a row regardless of whether the client's
+// impressionId joins to a real row. Synthetic `client_*` / `fallback_*`
+// ids from the client race-fallback path still land here. Reports read
+// this table when the aggregated counters disagree with activity data.
+model FunnelEvent {
+  id            String   @id @default(cuid())
+  userId        String
+  event         String   // "loaded" | "coach_requested" | "coach_rendered" | "coach_clicked"
+  course        String?
+  impressionId  String?  // may be a synthetic client_/fallback_ id
+  ctaType       String?
+  roughScore    Float?
+  createdAt     DateTime @default(now())
+
+  @@index([userId, createdAt])
+  @@index([event, createdAt])
+  @@map("funnel_events")
+}
+
 // "You fixed it" — mastery tier-up celebration ledger.
 // One row inserted whenever a practice session pushes a unit's masteryScore
 // across a tier boundary (0→20, 20→40, 40→60, 60→80, 80→100). The dashboard

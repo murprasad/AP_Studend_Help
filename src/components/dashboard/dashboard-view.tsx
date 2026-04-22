@@ -17,7 +17,7 @@
  * fetch their own data. The page ships a skeleton until session resolves.
  */
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useCourse } from "@/hooks/use-course";
@@ -54,33 +54,51 @@ export function DashboardView() {
   const [course] = useCourse();
   const [impressionId, setImpressionId] = useState<string | null>(null);
 
-  // Fire one impression row per dashboard load. The coach components use
-  // this id for downstream funnel events (requested / rendered / clicked).
+  // Fire one `loaded` POST per (user, course) pair.
+  //
+  // The previous version raced: `useCourse()` returns the default
+  // `AP_WORLD_HISTORY` on first render, then flips to the selected course
+  // once localStorage is read. Both values ran through this effect back-to-
+  // back, creating two impression rows within 10ms and clobbering
+  // `impressionId` mid-flight. Downstream `coach_requested` then never
+  // fired because `PrimaryActionStrip` saw `impressionId=null` for most of
+  // its lifetime. Funnel ran 0/67 for 24h until this fix.
+  //
+  // Guard with a ref of courses we've already fired for, plus a 120ms
+  // debounce so the default→selected transition settles into a single
+  // `loaded` event.
+  const loadedForCoursesRef = useRef<Set<string>>(new Set());
   useEffect(() => {
     if (status !== "authenticated") return;
-    console.log("[funnel] loaded event firing", { course, status });
-    setImpressionId(null);
-    fetch("/api/analytics/dashboard-event", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ course, event: "loaded" }),
-    })
-      .then((r) => {
-        console.log("[funnel] loaded event response", { ok: r.ok, status: r.status });
-        return r.ok ? r.json() : null;
+    if (!course) return;
+    if (loadedForCoursesRef.current.has(course as string)) return;
+
+    const t = setTimeout(() => {
+      loadedForCoursesRef.current.add(course as string);
+      setImpressionId(null);
+      fetch("/api/analytics/dashboard-event", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ course, event: "loaded" }),
       })
-      .then((d) => {
-        console.log("[funnel] loaded event parsed", d);
-        if (d?.impressionId) {
-          console.log("[funnel] impressionId set →", d.impressionId);
-          setImpressionId(d.impressionId);
-        } else {
-          console.warn("[funnel] NO impressionId in response — downstream events will be skipped");
-        }
-      })
-      .catch((e) => {
-        console.error("[funnel] loaded event failed", e);
-      });
+        .then((r) => (r.ok ? r.json() : null))
+        .then((d) => {
+          if (d?.impressionId) {
+            setImpressionId(d.impressionId);
+          } else {
+            // Fallback so downstream funnel events still fire with a client-
+            // side stamp. Flagged with prefix so we can filter in reports.
+            const synthetic = `client_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+            setImpressionId(synthetic);
+          }
+        })
+        .catch(() => {
+          const synthetic = `client_err_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+          setImpressionId(synthetic);
+        });
+    }, 120);
+
+    return () => clearTimeout(t);
   }, [course, status]);
 
   useEffect(() => {

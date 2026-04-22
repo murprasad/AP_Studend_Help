@@ -13,6 +13,7 @@ import { COURSE_UNITS, AP_COURSES } from "@/lib/utils"
 import { COURSE_REGISTRY, getCourseModule } from "@/lib/courses"
 import { ApUnit } from "@prisma/client"
 import Link from "next/link"
+import { LockedInsightOverlay } from "@/components/diagnostic/locked-insight-overlay"
 import {
   ClipboardList, CheckCircle, XCircle, ChevronRight,
   Loader2, TrendingUp, TrendingDown, Target, Crown, Sparkles, BookOpen,
@@ -254,6 +255,18 @@ export default function DiagnosticPage() {
   if (mode === "results" && result) {
     const sortedUnits = Object.entries(result.unitScores).sort((a, b) => a[1] - b[1])
 
+    // Overall predicted score — crude mapping from mean unit score to 1-5
+    // scale. Used as the FREE-tier reveal that creates curiosity for the
+    // paywalled detail below. Intentionally does NOT show unit-level detail.
+    const scores = Object.values(result.unitScores)
+    const meanPct = scores.length ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length) : 0
+    const predictedScore = meanPct >= 80 ? 5 : meanPct >= 65 ? 4 : meanPct >= 50 ? 3 : meanPct >= 35 ? 2 : 1
+    const scoreLabel = predictedScore >= 3 ? "Passing" : "Needs Work"
+    const scoreColor = predictedScore === 5 ? "emerald" : predictedScore === 4 ? "emerald" : predictedScore === 3 ? "blue" : predictedScore === 2 ? "amber" : "red"
+
+    const tier = (session?.user as { subscriptionTier?: string })?.subscriptionTier ?? "FREE"
+    const locked = !(tier === "PREMIUM" || tier === "AP_PREMIUM" || tier === "CLEP_PREMIUM")
+
     return (
       <div className="max-w-2xl mx-auto space-y-6">
         <div>
@@ -264,74 +277,92 @@ export default function DiagnosticPage() {
           <p className="text-muted-foreground mt-1">{courseName} — personalized breakdown</p>
         </div>
 
-        <Card className="border-blue-500/20 bg-blue-500/5">
-          <CardContent className="p-6">
-            <p className="text-sm text-muted-foreground mb-1 font-medium">AI Recommendation</p>
-            <p className="text-sm leading-relaxed">{result.recommendation}</p>
+        {/* FREE reveal — predicted score headline. Creates curiosity for the
+            gated detail below. Shown to everyone (free + paid). */}
+        <Card className={`border-${scoreColor}-500/30 bg-${scoreColor}-500/5`}>
+          <CardContent className="p-6 text-center">
+            <p className="text-xs uppercase tracking-wide text-muted-foreground mb-2">
+              Your Predicted AP Score
+            </p>
+            <p className={`text-7xl font-bold text-${scoreColor}-500 leading-none`}>
+              {predictedScore}
+            </p>
+            <p className="text-sm text-muted-foreground mt-2">
+              {scoreLabel} · based on your {scores.length} unit{scores.length === 1 ? "" : "s"} tested
+            </p>
           </CardContent>
         </Card>
 
-        <div className="grid sm:grid-cols-2 gap-4">
-          <Card className="border-red-500/20 bg-red-500/5">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm flex items-center gap-2 text-red-400">
-                <TrendingDown className="h-4 w-4" />
-                Focus Areas
-              </CardTitle>
+        <LockedInsightOverlay locked={locked} course={course}>
+          <Card className="border-blue-500/20 bg-blue-500/5">
+            <CardContent className="p-6">
+              <p className="text-sm text-muted-foreground mb-1 font-medium">AI Recommendation</p>
+              <p className="text-sm leading-relaxed">{result.recommendation}</p>
+            </CardContent>
+          </Card>
+
+          <div className="grid sm:grid-cols-2 gap-4 mt-4">
+            <Card className="border-red-500/20 bg-red-500/5">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm flex items-center gap-2 text-red-400">
+                  <TrendingDown className="h-4 w-4" />
+                  Focus Areas
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-1">
+                {result.weakUnits.map(u => (
+                  <div key={u} className="flex items-center gap-2 text-sm">
+                    <XCircle className="h-3.5 w-3.5 text-red-400 flex-shrink-0" />
+                    <span className="truncate">{courseUnits[u as ApUnit] || u}</span>
+                    <span className="ml-auto text-xs text-muted-foreground">{result.unitScores[u]}%</span>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+
+            <Card className="border-emerald-500/20 bg-emerald-500/5">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm flex items-center gap-2 text-emerald-400">
+                  <TrendingUp className="h-4 w-4" />
+                  Strengths
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-1">
+                {result.strongUnits.map(u => (
+                  <div key={u} className="flex items-center gap-2 text-sm">
+                    <CheckCircle className="h-3.5 w-3.5 text-emerald-400 flex-shrink-0" />
+                    <span className="truncate">{courseUnits[u as ApUnit] || u}</span>
+                    <span className="ml-auto text-xs text-muted-foreground">{result.unitScores[u]}%</span>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+          </div>
+
+          <Card className="mt-4">
+            <CardHeader>
+              <CardTitle className="text-sm">All Unit Scores</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-1">
-              {result.weakUnits.map(u => (
-                <div key={u} className="flex items-center gap-2 text-sm">
-                  <XCircle className="h-3.5 w-3.5 text-red-400 flex-shrink-0" />
-                  <span className="truncate">{courseUnits[u as ApUnit] || u}</span>
-                  <span className="ml-auto text-xs text-muted-foreground">{result.unitScores[u]}%</span>
+            <CardContent className="space-y-3">
+              {sortedUnits.map(([unit, score]) => (
+                <div key={unit} className="space-y-1">
+                  <div className="flex justify-between text-xs">
+                    <span className="text-muted-foreground truncate pr-2">
+                      {courseUnits[unit as ApUnit] || unit}
+                    </span>
+                    <span className={score >= 70 ? "text-emerald-400" : score >= 50 ? "text-yellow-400" : "text-red-400"}>
+                      {score}%
+                    </span>
+                  </div>
+                  <Progress
+                    value={score}
+                    className="h-1.5"
+                  />
                 </div>
               ))}
             </CardContent>
           </Card>
-
-          <Card className="border-emerald-500/20 bg-emerald-500/5">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm flex items-center gap-2 text-emerald-400">
-                <TrendingUp className="h-4 w-4" />
-                Strengths
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-1">
-              {result.strongUnits.map(u => (
-                <div key={u} className="flex items-center gap-2 text-sm">
-                  <CheckCircle className="h-3.5 w-3.5 text-emerald-400 flex-shrink-0" />
-                  <span className="truncate">{courseUnits[u as ApUnit] || u}</span>
-                  <span className="ml-auto text-xs text-muted-foreground">{result.unitScores[u]}%</span>
-                </div>
-              ))}
-            </CardContent>
-          </Card>
-        </div>
-
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-sm">All Unit Scores</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            {sortedUnits.map(([unit, score]) => (
-              <div key={unit} className="space-y-1">
-                <div className="flex justify-between text-xs">
-                  <span className="text-muted-foreground truncate pr-2">
-                    {courseUnits[unit as ApUnit] || unit}
-                  </span>
-                  <span className={score >= 70 ? "text-emerald-400" : score >= 50 ? "text-yellow-400" : "text-red-400"}>
-                    {score}%
-                  </span>
-                </div>
-                <Progress
-                  value={score}
-                  className="h-1.5"
-                />
-              </div>
-            ))}
-          </CardContent>
-        </Card>
+        </LockedInsightOverlay>
 
         {/* Study Plan CTA — always visible after results */}
         {result.weakUnits.length > 0 && (

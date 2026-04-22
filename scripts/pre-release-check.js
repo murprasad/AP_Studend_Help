@@ -103,14 +103,23 @@ const LOGO_FILES = [
   "src/components/layout/sidebar.tsx",
   "src/app/page.tsx",
 ];
+// The (marketing) layout delegates its logo to the MarketingHeader component.
+// Follow one level of component composition when the file itself doesn't
+// contain the markers but imports a logo-owning component.
+const LOGO_DELEGATES = {
+  "src/app/(marketing)/layout.tsx": "src/components/layout/marketing-header.tsx",
+};
 for (const f of LOGO_FILES) {
   const c = read(f);
   if (!c) { fail(`Logo file missing: ${f}`); continue; }
-  const hasSparkles    = c.includes("Sparkles");
-  const hasGradient    = c.includes("gradient-text");
-  const hasNest        = c.includes("Nest");
+  const delegate = LOGO_DELEGATES[f];
+  const delegateContent = delegate ? read(delegate) : "";
+  const pool = c + "\n" + delegateContent;
+  const hasSparkles    = pool.includes("Sparkles");
+  const hasGradient    = pool.includes("gradient-text");
+  const hasNest        = pool.includes("Nest");
   if (hasSparkles && hasGradient && hasNest) {
-    ok(`${f} — logo consistent`);
+    ok(`${f} — logo consistent${delegate && !c.includes("Sparkles") ? " (via " + delegate + ")" : ""}`);
   } else {
     const issues = [
       !hasSparkles && "missing Sparkles icon",
