@@ -1718,7 +1718,6 @@ AP Exam: Section I — 100 MCQ (70 min). Section II — 2 FRQ (50 min).`,
     examSecsPerQuestion: 60, // 60 MCQ in 60 min
     mockExam: { mcqCount: 60, mcqTimeMinutes: 60 },
     enrichWithEduAPIs: true,
-    openStaxSubject: "world-history",
     questionTypeFormats: {
       MCQ: {
         generationPrompt:
@@ -1843,6 +1842,139 @@ geographic concepts across regions.
     stimulusRequirement: "When appropriate, include a stimulus: a map description (choropleth / dot-density / flow), a data table (population pyramid, DTM-stage table), a chart (rank-size graph, Lorenz curve), or a brief excerpt from a geographer (Sauer, Hagerstrand, Castells). Stimuli should be analyzable without requiring external data lookups.",
     stimulusDescription: "Concrete text-only description of a map/chart/excerpt that the question interprets. Null if the question is concept-only.",
     explanationGuidance: "Explanations should name the CED content standard (e.g., 'CED 2.2.A Population distribution'), identify which AP Geography skill was tested (Spatial Patterns / Scale / Data / Source / Models), cite the specific geographer or model when applicable, and explain WHY each distractor is wrong — not just that it's wrong.",
+  },
+
+  // ── AP U.S. Government and Politics ───────────────────────────────────────
+  // 2026 catalog expansion. Format: 55 MCQ / 80 min + 4 FRQs / 100 min.
+  // Unit weights from CB 2019 CED. FRQ types are distinctive: Concept
+  // Application (3 pts), Quantitative Analysis (4 pts), SCOTUS Case
+  // Comparison (4 pts), Argument Essay (6 pts).
+  AP_US_GOVERNMENT: {
+    name: "AP U.S. Government and Politics",
+    shortName: "AP US Gov",
+    examSecsPerQuestion: 87, // 55 MCQ in 80 min = 87s each
+    mockExam: { mcqCount: 55, mcqTimeMinutes: 80 },
+    enrichWithEduAPIs: true,
+    questionTypeFormats: {
+      MCQ: {
+        generationPrompt:
+          "Generate a College Board AP US Government MCQ. Test a specific CED " +
+          "content standard. Stimuli are common: excerpts from foundational " +
+          "documents (Constitution, Federalist/Anti-Federalist papers, MLK's " +
+          "Letter from Birmingham Jail, SCOTUS opinions), visual sources " +
+          "(political cartoons, maps, data tables on turnout/polling), or " +
+          "quantitative data (line chart, bar graph). " +
+          "Three wrong answers each represent a common misconception " +
+          "(confusing enumerated vs implied powers, formal vs informal " +
+          "amendment, federalism misreading). Single unambiguous answer.",
+        responseFormat:
+          '{"topic":"...", "subtopic":"...", "questionText":"question stem", "stimulus":"source excerpt or chart description or null", ' +
+          '"wikiImageTopic":"e.g., Federalist Papers, McCulloch v. Maryland, or null", ' +
+          '"apSkill":"Concept Application | SCOTUS Case | Data Analysis | Source Analysis | Argumentation", ' +
+          '"bloomLevel":"remember | apply | analyze", ' +
+          '"options":["A) ...","B) ...","C) ...","D) ..."], "correctAnswer":"A", ' +
+          '"explanation":"Why correct + why each distractor wrong, citing CED standard and relevant foundational document/case"}',
+        estimatedMinutes: 1,
+      },
+      FRQ: {
+        generationPrompt:
+          "Generate a College Board AP US Government FRQ. Four valid shapes: " +
+          "(i) Concept Application — scenario + parts A-C testing 3 different " +
+          "concepts (3 pts); (ii) Quantitative Analysis — data source + parts " +
+          "A-D interpreting it (4 pts); (iii) SCOTUS Case Comparison — a " +
+          "non-required case + parts A-C comparing it to a required case " +
+          "(4 pts); (iv) Argument Essay — thesis defending a position using " +
+          "two required foundational documents (6 pts). " +
+          "Required foundational documents: Declaration of Independence, " +
+          "Articles of Confederation, Constitution, Brutus No. 1, " +
+          "Federalist 10/51/70/78, MLK Letter from Birmingham Jail. " +
+          "Required SCOTUS cases: Marbury v. Madison, McCulloch v. Maryland, " +
+          "US v. Lopez, Engel v. Vitale, Wisconsin v. Yoder, Tinker v. Des " +
+          "Moines, NYT v. US, Schenck v. US, Gideon v. Wainwright, Roe v. " +
+          "Wade (historical), McDonald v. Chicago, Brown v. Board, Citizens " +
+          "United v. FEC, Baker v. Carr, Shaw v. Reno.",
+        responseFormat:
+          '{"topic":"...", "subtopic":"...", "questionText":"Full FRQ prompt with lettered parts", ' +
+          '"stimulus":"scenario/data/case excerpt or null", "correctAnswer":"Complete model response", ' +
+          '"explanation":"Rubric — what earns each point"}',
+        estimatedMinutes: 25,
+      },
+    },
+    units: {
+      USGOV_1_FOUNDATIONS: {
+        name: "Unit 1: Foundations of American Democracy",
+        keyThemes: ["Declaration of Independence", "Articles of Confederation", "Constitution ratification", "Federalism", "Separation of powers"],
+        fiveableUrl: "https://library.fiveable.me/ap-gov/unit-1",
+        khanPlaylistId: "PLSQl0a2vh4HCbqUz4B1IBHGWOLcbsCx0r",
+      },
+      USGOV_2_INTERACTIONS_BRANCHES: {
+        name: "Unit 2: Interactions Among Branches of Government",
+        keyThemes: ["Congress (structure, powers, committees)", "Presidency (formal & informal powers)", "Federal judiciary (judicial review)", "Bureaucracy (iron triangles, rulemaking)", "Checks & balances"],
+        fiveableUrl: "https://library.fiveable.me/ap-gov/unit-2",
+        khanPlaylistId: "PLSQl0a2vh4HCbqUz4B1IBHGWOLcbsCx0r",
+      },
+      USGOV_3_CIVIL_LIBERTIES_RIGHTS: {
+        name: "Unit 3: Civil Liberties and Civil Rights",
+        keyThemes: ["Bill of Rights (1st, 2nd, 4th, 5th, 6th, 8th)", "Incorporation doctrine", "Equal Protection Clause", "Selective incorporation cases", "Civil rights movement"],
+        fiveableUrl: "https://library.fiveable.me/ap-gov/unit-3",
+        khanPlaylistId: "PLSQl0a2vh4HCbqUz4B1IBHGWOLcbsCx0r",
+      },
+      USGOV_4_IDEOLOGIES_BELIEFS: {
+        name: "Unit 4: American Political Ideologies and Beliefs",
+        keyThemes: ["Liberal vs conservative ideologies", "Core American values", "Political socialization", "Public opinion polling", "Voting behavior correlates"],
+        fiveableUrl: "https://library.fiveable.me/ap-gov/unit-4",
+        khanPlaylistId: "PLSQl0a2vh4HCbqUz4B1IBHGWOLcbsCx0r",
+      },
+      USGOV_5_POLITICAL_PARTICIPATION: {
+        name: "Unit 5: Political Participation",
+        keyThemes: ["Voting rights & turnout", "Political parties (realignment, polarization)", "Interest groups (pluralism, free-rider)", "Campaign finance (Citizens United)", "Media & elections"],
+        fiveableUrl: "https://library.fiveable.me/ap-gov/unit-5",
+        khanPlaylistId: "PLSQl0a2vh4HCbqUz4B1IBHGWOLcbsCx0r",
+      },
+    },
+    suggestedTutorQuestions: [
+      "Explain the difference between enumerated, implied, and inherent powers of Congress",
+      "How did McCulloch v. Maryland expand federal power over states?",
+      "Compare Federalist 10 and Brutus No. 1 on factions",
+      "What are the differences between selective and total incorporation?",
+      "How did Citizens United v. FEC change campaign finance?",
+    ],
+    curriculumContext: `
+AP U.S. Government and Politics is a college-level introductory course on
+American political institutions, behaviors, and ideologies. Exam: 55 MCQ
+(80 min, 50% score) + 4 FRQs (100 min, 50% score).
+
+Unit weights (CED 2019):
+  Unit 1 Foundations — 15–22%
+  Unit 2 Interactions Among Branches — 25–36%
+  Unit 3 Civil Liberties & Civil Rights — 13–18%
+  Unit 4 Ideologies & Beliefs — 10–15%
+  Unit 5 Political Participation — 20–27%
+
+Required content (tested directly):
+  9 foundational documents — Dec Independence, Articles, Constitution,
+  Federalist 10/51/70/78, Brutus No. 1, MLK Letter from Birmingham Jail
+  15 required SCOTUS cases — from Marbury v Madison to Baker v Carr
+
+Skills: Concept Application, SCOTUS Case Analysis, Data Analysis, Source
+Analysis, Argumentation.
+    `.trim(),
+    tutorResources: `
+- Fiveable AP Gov — https://library.fiveable.me/ap-gov
+- Khan Academy AP US Government — dedicated playlist per CED unit
+- Oyez.org — authoritative SCOTUS case briefs with audio
+- Constitution Annotated (congress.gov) — authoritative document commentary
+- CB AP Central — released FRQs 2023-2025 for self-grading
+    `.trim(),
+    examAlignmentNotes: `AP US Government exam alignment:
+- 55 MCQs blend source-based sets (document excerpt + 2-3 Qs) and stand-alone concept Qs
+- Distractors must hinge on common misconceptions: confusing enumerated vs implied powers, selective vs total incorporation, Citizens United vs BCRA particulars
+- FRQs are SHORT answers — each lettered part is 1-3 sentences, graded against a rubric
+- Argument Essay FRQ requires a thesis + two required foundational documents as evidence
+- SCOTUS Case Comparison requires naming facts, holding, and reasoning for both cases`,
+    stimulusRequirement: "When appropriate include a stimulus: a foundational-document excerpt (Federalist/Brutus/Constitution), a SCOTUS majority/dissent excerpt, a political cartoon description, a data table (turnout by demographic, confidence in institutions poll), or a line/bar graph. Stimuli should be self-contained.",
+    stimulusDescription: "Concrete text-only description of a document excerpt, case opinion, cartoon, or data visual the question interprets. Null if the question is concept-only.",
+    explanationGuidance: "Explanations should cite the exact CED content standard, name the required document or SCOTUS case when applicable (e.g., 'CED 2.4 — Interactions; cites Federalist 70 on unitary executive'), and explicitly rule out each distractor by naming its misconception.",
   },
 
   // ── SAT Math ──────────────────────────────────────────────────────────────

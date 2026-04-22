@@ -49,6 +49,28 @@ const UNIT_DATA: Record<ApCourse, Array<{
   examNotes: string;
   stimulusGuide: string;
 }>> = {
+  AP_US_GOVERNMENT: [
+    { unit: ApUnit.USGOV_1_FOUNDATIONS, name: "Unit 1: Foundations of American Democracy",
+      keyThemes: ["Declaration of Independence", "Articles of Confederation", "Constitution ratification debates", "Federalism", "Separation of powers", "Federalist 10/51", "Brutus No. 1"],
+      examNotes: "Unit 1 weights 15-22%. Heavy on foundational docs. Compare Federalist 10 (factions) with Brutus No. 1 (anti-federalism) — classic FRQ pairing.",
+      stimulusGuide: "Excerpt from a required foundational document (Dec of Independence, Constitution article, Federalist/Brutus paper)" },
+    { unit: ApUnit.USGOV_2_INTERACTIONS_BRANCHES, name: "Unit 2: Interactions Among Branches of Government",
+      keyThemes: ["Congress structure/powers", "Presidency (formal/informal powers)", "Federal courts (judicial review, stare decisis)", "Bureaucracy & iron triangles", "Checks and balances in practice"],
+      examNotes: "Unit 2 is the heaviest at 25-36%. Test specific congressional procedure, presidential power limits, judicial activism vs restraint. Marbury v Madison, McCulloch v Maryland are required cases.",
+      stimulusGuide: "SCOTUS opinion excerpt, congressional procedure description, or bureaucracy scenario" },
+    { unit: ApUnit.USGOV_3_CIVIL_LIBERTIES_RIGHTS, name: "Unit 3: Civil Liberties and Civil Rights",
+      keyThemes: ["Bill of Rights (1st, 2nd, 4th, 5th, 6th, 8th)", "Incorporation doctrine", "Equal Protection Clause", "Selective incorporation cases", "Civil rights movement & legislation"],
+      examNotes: "Unit 3 weights 13-18%. Required cases include Gideon v Wainwright, Tinker v Des Moines, NYT v US, Schenck v US, Brown v Board, McDonald v Chicago.",
+      stimulusGuide: "SCOTUS majority/dissent excerpt, or civil rights movement primary source" },
+    { unit: ApUnit.USGOV_4_IDEOLOGIES_BELIEFS, name: "Unit 4: American Political Ideologies and Beliefs",
+      keyThemes: ["Liberal vs conservative ideologies", "Core American values (individualism, equality of opportunity, rule of law)", "Political socialization", "Public opinion polling (sampling, margin of error)", "Voting behavior correlates"],
+      examNotes: "Unit 4 weights 10-15%. Classic MCQ: interpret a polling margin of error. FRQ: explain why demographic X leans party Y.",
+      stimulusGuide: "Polling data table, ideological-scale chart, or party-platform excerpt" },
+    { unit: ApUnit.USGOV_5_POLITICAL_PARTICIPATION, name: "Unit 5: Political Participation",
+      keyThemes: ["Voting rights history (15th/19th/24th/26th Amendments, VRA)", "Voter turnout factors", "Political parties (realignment, polarization, third parties)", "Interest groups (pluralism vs elitism, free-rider problem)", "Campaign finance (FECA, BCRA, Citizens United)", "Media & elections"],
+      examNotes: "Unit 5 weights 20-27%. Test Citizens United v FEC impact, polarization trends, interest-group tactics, PACs vs Super PACs.",
+      stimulusGuide: "Voter turnout chart, campaign spending graph, or news article on interest group activity" },
+  ],
   AP_HUMAN_GEOGRAPHY: [
     { unit: ApUnit.HUGEO_1_THINKING_GEOGRAPHICALLY, name: "Unit 1: Thinking Geographically",
       keyThemes: ["Map projections", "Spatial concepts", "Types of regions", "Scales of analysis", "Geographic data"],
