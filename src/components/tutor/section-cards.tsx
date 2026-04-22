@@ -3,6 +3,9 @@
 import { useEffect, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
+import "katex/dist/katex.min.css";
 import { AlertTriangle, Zap, Target, BarChart2, BookOpen } from "lucide-react";
 import type { TutorSections } from "./section-parser";
 
@@ -165,7 +168,8 @@ export function MarkdownContent({ content, useMermaid = false }: { content: stri
       prose-ul:my-1 prose-ol:my-1"
     >
       <ReactMarkdown
-        remarkPlugins={[remarkGfm]}
+        remarkPlugins={[remarkGfm, remarkMath]}
+        rehypePlugins={[rehypeKatex]}
         components={useMermaid ? mermaidComponents : tableComponents}
       >
         {normalizeMarkdownTables(content)}

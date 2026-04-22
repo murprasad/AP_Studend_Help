@@ -197,12 +197,18 @@ export function PrimaryActionStrip({ course, impressionId }: Props) {
     else if (t === "MOCK_EXAM") href = "/mock-exam";
     else href = `/practice?resume=${inProgressSession.id}`;
   } else if (tierLabel === "high_risk" && !weakestUnit) {
-    // Zero-signal warmup kept intact — activation step, not conversion.
+    // Zero-signal warmup — activation step, not conversion.
+    // HOTFIX 2026-04-22: /warmup page doesn't exist; user-reported 404.
+    // Redirect to the existing focused-practice auto-launch (3 Qs, any
+    // unit, no time pressure) which gives the same "try it" UX without
+    // a new page build. The practice page already handles
+    // ?mode=focused&count=3 via its auto-launch effect (see useSearchParams
+    // block at src/app/(dashboard)/practice/page.tsx).
     title = "Warm up. See your level.";
     buttonLabel = "TRY IT — 60 SEC";
     subtitle = "3 questions · about 60 seconds";
     detail = "Quick practice. No test feel.";
-    href = "/warmup";
+    href = "/practice?mode=focused&count=3";
   } else if (tierLabel === "ready") {
     // On-track + mock complete — push them to take the full mock exam.
     title = "Take the Mock Exam";
