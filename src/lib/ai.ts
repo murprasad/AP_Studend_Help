@@ -547,9 +547,24 @@ export async function generateQuestion(
   const estimatedMinutes = typeFormatForReturn?.estimatedMinutes
     ?? (difficulty === "EASY" ? 1 : difficulty === "MEDIUM" ? 2 : 3);
 
-  // Fetch Wikipedia image for World History questions with a wikiImageTopic hint
+  // Fetch Wikipedia image for any course whose MCQ prompt asks for
+  // `wikiImageTopic` — real CB exams use visual stimuli ~40-60% of the
+  // time and users flagged that our text-only questions feel less real.
+  // Son-of-user feedback 2026-04-22. Extended 2026-04-22 from
+  // AP_WORLD_HISTORY alone to all courses that request the field: new
+  // 2026 catalog expansion courses (HuGeo, USGov, EnvSci) plus World.
+  const IMAGE_COURSES = new Set<string>([
+    "AP_WORLD_HISTORY",
+    "AP_HUMAN_GEOGRAPHY",
+    "AP_US_GOVERNMENT",
+    "AP_ENVIRONMENTAL_SCIENCE",
+  ]);
   let stimulusImageUrl: string | undefined;
-  if (inferredCourseForReturn === "AP_WORLD_HISTORY" && parsed.wikiImageTopic && parsed.wikiImageTopic !== "null") {
+  if (
+    IMAGE_COURSES.has(inferredCourseForReturn) &&
+    parsed.wikiImageTopic &&
+    parsed.wikiImageTopic !== "null"
+  ) {
     try {
       const wikiResult = await Promise.race([
         getWikipediaSummary(parsed.wikiImageTopic as string),
