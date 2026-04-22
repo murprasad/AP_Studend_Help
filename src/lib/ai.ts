@@ -190,6 +190,21 @@ export function buildQuestionPrompt(
 
   const distractorSection = `\nDISTRACTOR CONSTRUCTION RULES:\n${config.distractorTaxonomy ?? "Each wrong answer should represent a distinct common misconception."}`;
 
+  // Universal anti-ambiguity guardrail — added 2026-04-22 after Reddit-type
+  // complaints on live content and a post-generation spot-check showed 2/3
+  // sampled questions used "primary" / superlative framings that permit
+  // multiple defensible answers. This section is appended to EVERY prompt
+  // (not just the new 2026 catalog courses) so quality improves across the
+  // whole bank the next time we sweep-regenerate.
+  const ambiguityGuardSection = `
+UNAMBIGUITY REQUIREMENT (MANDATORY — violation = rejection):
+- The correct answer must be DEFINITIVELY correct; each distractor must be DEFINITIVELY incorrect on factual / doctrinal / procedural grounds.
+- NEVER write questions with "primary", "main", "most important", "best example of", "chief purpose", or any other superlative framing UNLESS the correct answer is explicitly singled out by a specific CED content standard, named case / document, or named theory.
+  * WRONG: "What is the primary responsibility of the Senate?" (ratifying treaties, impeachment trials, and confirming appointments are ALL Senate responsibilities).
+  * RIGHT: "According to Article I, Section 3 of the Constitution, who has the sole power to conduct impeachment trials of federal officials?" (one textual answer).
+- Before finalizing, read each distractor as if it WERE the answer. If a defensible argument exists that it is also correct, rewrite the stem to be more specific — cite the exact case, document, formula, or process that disambiguates.
+- Reject the whole question and regenerate if two or more options are both partially correct given the stem as written. This is the single largest source of student complaints; do not ship ambiguous questions.`;
+
   const wordCountSection = `\nWORD COUNT TARGETS:\n- questionText: 15–40 words\n- stimulus: 40–120 words (or null if not applicable)\n- each option: 8–25 words\n- explanation: 80–150 words (name the correct answer + explain each distractor's trap)`;
 
   // SAT-specific format rules injected after the standard sections
@@ -267,7 +282,7 @@ ${config.examAlignmentNotes ? `EXAM CONTENT WEIGHTS:\n${config.examAlignmentNote
 
 ${unitHeader}
 
-${config.examAlignmentNotes}${difficultySection}${skillsSection}${stimulusSection}${distractorSection}${wordCountSection}${satFormatSection}${actFormatSection}${clepSection}
+${config.examAlignmentNotes}${difficultySection}${skillsSection}${stimulusSection}${distractorSection}${ambiguityGuardSection}${wordCountSection}${satFormatSection}${actFormatSection}${clepSection}
 
 GENERATION TASK:
 ${generationInstruction}

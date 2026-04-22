@@ -763,7 +763,7 @@ export async function validateQuestion(
 
   const validatorPrompt = `You are a College Board AP exam quality reviewer. Evaluate this question on ${criteriaCount} criteria:
 1. Factual accuracy — Is the content and explanation factually correct?
-2. Single unambiguous answer — Only one choice is clearly correct; the others are definitively wrong.
+2. Single unambiguous answer — Only one choice is clearly correct; ALL others must be definitively wrong on a factual / doctrinal / procedural basis. FAIL this criterion if the stem uses "primary", "main", "most important", "best example", "chief purpose", or any superlative framing where two or more options are each defensibly correct interpretations. A question with three Senate powers (ratify treaties, impeachment trials, confirm appointees) asking for the "primary" one MUST FAIL this criterion — there is no single textual answer.
 3. Distractor quality — Wrong answers are plausible but clearly incorrect on careful reflection; each represents a distinct common misconception.
 4. Cognitive level — Tests understanding, analysis, or application (NOT pure rote memorization or trivia).
 5. Exam alignment — Matches AP/SAT/ACT/CLEP exam style (appropriate stimulus if needed, appropriate stem verb, no trick questions).${allExtraCriteria}
