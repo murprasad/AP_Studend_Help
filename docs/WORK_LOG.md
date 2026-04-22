@@ -123,7 +123,8 @@ Each is ~1 day + ingest time. Order: Gov → EnvSci → Precalculus → EnglishL
 - [x] Mobile hooks + haptics wired into practice + test plan (commit `b7d9648`)
 - [x] OpenStax American Government 3e ingest → USGov jumped 39→230 samples
 - [x] SM-2 spaced-repetition ported to `src/lib/spaced-repetition.ts` (flashcard foundation)
-- [ ] **Quality concern to address before scaling Phase C**: generated Qs use "primary" / superlative framings that permit multiple defensible answers. 1/3 of sampled USGov Qs had this issue. Need to tighten generator prompt to explicitly reject superlative framings, OR add a second-pass ambiguity detector to the validator.
+- [ ] **Quality concern to address before scaling Phase C**: generated Qs use "primary" / superlative framings that permit multiple defensible answers. 1/3 of sampled USGov Qs had this issue. Need to tighten generator prompt to explicitly reject superlative framings, OR add a second-pass ambiguity detector to the validator. *(Partial fix shipped `ece79e5` — 2/3 clean after guardrail; scenario-uniqueness residual.)*
+- [ ] **Visual-stimulus authenticity** (user-flagged 2026-04-22, son's feedback): real AP exams have maps/graphs/diagrams; ours are text-only. 4-phase plan documented in `project_visual_stimulus_plan.md` (memory). Phase 1 = Wikipedia Commons wiring for history/geo/bio/psych courses — ~1 day, ships first.
 - [ ] Flashcards remaining: schema (Flashcard model), API routes (generate + review), `/flashcards` page, card-renderer UI with swipe + SM-2 state persistence, flashcard-gen.ts for 6-type concept extraction
 - [ ] Phase C scale-up: once prompt is tightened, run regen-grounded with `--count=50` per course, review quality, then scale to `--target=500` if clean
 

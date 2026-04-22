@@ -310,21 +310,21 @@ export default function AboutPage() {
         </div>
       </div>
 
-      {/* Section 7: What's New in Beta 5 */}
+      {/* Section 7: What's New in Beta 6.0 */}
       <div className="space-y-6">
         <div className="text-center space-y-1">
           <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30 text-xs font-semibold mb-2">Latest Release</Badge>
-          <h2 className="text-xl font-bold">What&apos;s New in Beta 5</h2>
-          <p className="text-sm text-muted-foreground">All 16 StudentNest courses at 500+ College Board-validated questions. Sage Coach oral training. Parent Invite + retention email engine.</p>
+          <h2 className="text-xl font-bold">What&apos;s New in Beta 6.0</h2>
+          <p className="text-sm text-muted-foreground">Conversion funnel overhaul, 5 new AP courses in preparation, and question-quality guardrails responding to community feedback.</p>
         </div>
         <div className="grid sm:grid-cols-2 gap-3 text-left">
           {[
-            { icon: ShieldCheck, color: "text-blue-500", bg: "bg-blue-500/10", title: "All 16 Courses at 500+ Questions", desc: "10 AP + 2 SAT + 4 ACT courses each reached 500 College Board-grounded questions. 6,267 questions validated by Haiku 4.5 / Groq Llama 3.3 70B with 0.6% rejection rate — CB source material is the authority, not the open web." },
-            { icon: GraduationCap, color: "text-blue-500", bg: "bg-blue-500/10", title: "Sage Coach — Oral AP Training", desc: "Explain a concept out loud; Haiku 4.5 evaluates your answer against real College Board past-exam content. 8 AP courses seeded with 204 concepts. Free tier: 1 session/day." },
-            { icon: LayoutDashboard, color: "text-blue-500", bg: "bg-blue-500/10", title: "Clutter-Free Dashboard", desc: "Ported the PrepLion 7-card Duolingo-style layout. One dominant next action. Resume card for in-progress sessions. Daily goal + streak loop. Weakest unit surfaced below fold." },
-            { icon: Target, color: "text-blue-500", bg: "bg-blue-500/10", title: "Parent Invite + Weekly Digest", desc: "Students ask their parent to unlock $9.99/mo via a one-click upgrade email. Weekly progress digest to parents keeps subscriptions justified: sessions, accuracy delta, streak, weakest unit, CTA back to dashboard." },
-            { icon: ShieldCheck, color: "text-blue-500", bg: "bg-blue-500/10", title: "Auto-Quarantine on Reports", desc: "Three student reports on a single question and it's pulled from circulation immediately, pending admin review. Prevents a bad question from compounding into public feedback." },
-            { icon: Sparkles, color: "text-blue-500", bg: "bg-blue-500/10", title: "Post-Session Retention Nudge", desc: "At session end, a dedicated card surfaces your weakest unit and streak — incomplete-loop psychology that pulls students back tomorrow. Previews tomorrow's focused session in one tap." },
+            { icon: Target, color: "text-blue-500", bg: "bg-blue-500/10", title: "Diagnostic → Focused Practice Bridge", desc: "After your diagnostic, see your predicted AP score + a 2-minute focused session on your weakest unit in one click. Insight lands on action, not a dead end." },
+            { icon: Sparkles, color: "text-blue-500", bg: "bg-blue-500/10", title: "Question Quality Guardrail", desc: "New anti-ambiguity rule rejects exam questions where multiple answers could be defensible — the 'primary / main / most important' trap that Reddit users flagged. Applied to both the generator prompt and the second-pass validator." },
+            { icon: GraduationCap, color: "text-blue-500", bg: "bg-blue-500/10", title: "5 New AP Courses (In Preparation)", desc: "AP Human Geography, AP U.S. Government, AP Environmental Science, AP Precalculus, and AP English Language scaffolded end-to-end. AP HuGeo and AP Environmental Science already at 500+ College Board-grounded questions; the rest visible to admins while Phase C completes." },
+            { icon: LayoutDashboard, color: "text-blue-500", bg: "bg-blue-500/10", title: "Mobile Bottom Nav + Haptics", desc: "Four-tab bar for Home / Practice / Mock / Progress on mobile, hidden during exams. Haptic feedback on every answer — short success pattern on correct, error pattern on wrong. Works on Android; graceful no-op on desktop + iOS pre-18." },
+            { icon: Target, color: "text-blue-500", bg: "bg-blue-500/10", title: "Trial Days-Remaining Banner", desc: "A 3-day countdown banner appears at the top of the app once your free trial is within its final 72 hours. Severity escalates on the last day with a direct path to upgrade, so you never miss the renewal window by accident." },
+            { icon: ShieldCheck, color: "text-blue-500", bg: "bg-blue-500/10", title: "Funnel Instrumentation + Paywall Repair", desc: "Fixed a silent race condition that was blocking 100% of our coach-funnel metrics. Locked-insight overlay now surfaces your full predicted breakdown only after you start a trial, turning the diagnostic into the cleanest path into the paid tier." },
           ].map(({ icon: Icon, color, bg, title, desc }) => (
             <div key={title} className="flex gap-3 p-4 rounded-xl border border-border/40 bg-card">
               <div className={`w-8 h-8 rounded-lg ${bg} flex items-center justify-center flex-shrink-0 mt-0.5`}>
@@ -336,6 +336,15 @@ export default function AboutPage() {
               </div>
             </div>
           ))}
+        </div>
+      </div>
+
+      {/* Section 7a: Beta 5 history (moved from Latest) */}
+      <div className="space-y-6">
+        <div className="text-center space-y-1">
+          <Badge className="bg-border/60 text-muted-foreground border-border/40 text-xs font-semibold mb-2">Beta 5</Badge>
+          <h2 className="text-xl font-bold">Beta 5 — College Board-Grounded Catalog</h2>
+          <p className="text-sm text-muted-foreground">16 courses at 500+ CB-validated questions. Sage Coach oral training. Parent Invite + retention engine. Auto-quarantine on student reports.</p>
         </div>
       </div>
 
