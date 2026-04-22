@@ -223,9 +223,14 @@ export default function PracticePage() {
   //   - Only fire once per mount (autoLaunchedRef)
   //   - Only if course is loaded
   const searchParams = useSearchParams();
-  const autoLaunchedRef = useRef(false);
+  // Track the last URL signature we auto-launched against — bumps when
+  // the user navigates /practice?mode=focused&... again from a different
+  // origin (NextSessionNudge on the summary screen, PrimaryActionStrip
+  // on the dashboard, etc.) so clicking the same CTA twice actually
+  // re-triggers the session. Previously a plain boolean ref blocked all
+  // re-launches after the first — user-reported bug 2026-04-22.
+  const autoLaunchedRef = useRef<string | null>(null);
   useEffect(() => {
-    if (autoLaunchedRef.current) return;
     if (!course || subscriptionTier === null) return;
     if (searchParams?.get("mode") !== "focused") return;
 
@@ -233,7 +238,13 @@ export default function PracticePage() {
     const countParam = Number(searchParams.get("count") || "5");
     const count = Number.isFinite(countParam) && countParam > 0 ? Math.min(20, Math.floor(countParam)) : 5;
 
-    autoLaunchedRef.current = true;
+    // Signature = every input that determines the session shape, plus
+    // the `src` or `t` query params if present so explicit "do it again"
+    // clicks can re-trigger.
+    const sig = `${course}|${unitParam ?? "ALL"}|${count}|${searchParams.get("src") ?? ""}|${searchParams.get("t") ?? ""}`;
+    if (autoLaunchedRef.current === sig) return;
+    autoLaunchedRef.current = sig;
+
     if (unitParam) setSelectedUnit(unitParam);
     setSelectedDifficulty("ALL");
     setQuestionCount(count);

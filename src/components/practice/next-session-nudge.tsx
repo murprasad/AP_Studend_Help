@@ -20,7 +20,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
-import { Flame, Target, ArrowRight, Calendar } from "lucide-react";
+import { Flame, Target, ArrowRight, Zap } from "lucide-react";
 
 interface CoachPlanResponse {
   weakestUnit?: { unit: string; unitName: string; missRatePct: number } | null;
@@ -66,10 +66,10 @@ export function NextSessionNudge({ course }: Props) {
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-[15px] font-semibold leading-tight">
-              Come back tomorrow — {weakestUnit.unitName} is waiting
+              Keep going — close the gap on {weakestUnit.unitName}
             </p>
             <p className="text-[13px] text-muted-foreground mt-1 leading-relaxed">
-              You&apos;re missing {weakestUnit.missRatePct}% of questions here. A short session tomorrow closes the gap faster than any other unit.
+              You&apos;re missing {weakestUnit.missRatePct}% of questions here. 5 focused questions here move your score faster than any other unit.
             </p>
           </div>
         </div>
@@ -78,18 +78,24 @@ export function NextSessionNudge({ course }: Props) {
           <div className="flex items-center gap-2 rounded-lg bg-orange-500/10 border border-orange-500/20 px-3 py-2">
             <Flame className="h-4 w-4 text-orange-500 shrink-0" />
             <p className="text-[13px] leading-snug">
-              <strong>{streakDays}-day streak.</strong> Keep it alive — one session tomorrow locks it in.
+              <strong>{streakDays}-day streak.</strong> Another session today extends it.
             </p>
           </div>
         )}
 
-        <Link
-          href={`/practice?mode=focused&unit=${encodeURIComponent(weakestUnit.unit)}&course=${course}`}
-          className="inline-flex items-center gap-1.5 text-[13px] font-medium text-amber-700 hover:text-amber-800"
+        {/* Full-navigation link (window.location) forces the practice page
+            to re-mount so the focused-practice auto-launch fires cleanly.
+            A Next.js Link doesn't unmount the page when navigating to the
+            same /practice route, so the autoLaunchedRef guard blocks the
+            re-trigger and the user's click appears to do nothing. Bug
+            reported by user 2026-04-22 — same-URL click-through broken. */}
+        <a
+          href={`/practice?mode=focused&unit=${encodeURIComponent(weakestUnit.unit)}&count=5&course=${course}&src=next_session`}
+          className="inline-flex items-center gap-1.5 text-[14px] font-semibold text-amber-700 hover:text-amber-800 underline-offset-2 hover:underline"
         >
-          <Calendar className="h-4 w-4" />
-          Preview tomorrow&apos;s session →
-        </Link>
+          <Zap className="h-4 w-4" />
+          Start 5 more questions →
+        </a>
       </CardContent>
     </Card>
   );

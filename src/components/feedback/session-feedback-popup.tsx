@@ -109,7 +109,7 @@ export function SessionFeedbackPopup({ sessionId, triggerCondition, source, cour
   const primaryQuestion = context === "abandon" ? "Why did you pause?" : "How was this session?";
   const primarySubtext = context === "abandon"
     ? "Quick take helps us fix what made you stop."
-    : "Your feedback helps us improve PrepLion";
+    : "Your feedback helps us improve StudentNest";
   const goodLabel = context === "abandon" ? "Just taking a break" : "Good";
   const badLabel = context === "abandon" ? "Ran into a problem" : "Needs work";
 
@@ -146,12 +146,9 @@ export function SessionFeedbackPopup({ sessionId, triggerCondition, source, cour
                   <ThumbsDown className="h-6 w-6" /> {badLabel}
                 </Button>
               </div>
-              <button
-                onClick={() => setOpen(false)}
-                className="text-xs text-muted-foreground/60 hover:text-muted-foreground transition-colors"
-              >
-                Skip
-              </button>
+              {/* Skip removed 2026-04-22 — user wants to force engagement
+                  on the first feedback moment. Users can still dismiss by
+                  clicking outside the dialog / pressing Escape. */}
             </>
           ) : (
             /* phase === "reason" — thumbs-down text capture */
