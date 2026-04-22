@@ -19,6 +19,7 @@ import { SessionDeltaCard } from "@/components/practice/session-delta-card";
 import { NextSessionNudge } from "@/components/practice/next-session-nudge";
 import { DiagnosticNudgeModal } from "@/components/practice/diagnostic-nudge-modal";
 import { useExamMode } from "@/hooks/use-exam-mode";
+import { useSearchParams } from "next/navigation";
 import {
   Zap,
   BookOpen,
@@ -205,6 +206,83 @@ export default function PracticePage() {
   useEffect(() => {
     setSelectedUnit("ALL");
   }, [course]);
+
+  // ── Focused-practice auto-launch (diagnostic funnel port) ──────────────
+  //
+  // When the URL carries `?mode=focused&unit=X&count=N`, skip the select
+  // screen and POST directly to /api/practice. The diagnostic results page
+  // generates these links via `buildFocusedPracticeUrl` so a student who
+  // just saw their weakest unit can land in a 5-Q session in one click.
+  //
+  // Guards:
+  //   - Wait until subscriptionTier is set so we don't race the user fetch
+  //   - Only fire once per mount (autoLaunchedRef)
+  //   - Only if course is loaded
+  const searchParams = useSearchParams();
+  const autoLaunchedRef = useRef(false);
+  useEffect(() => {
+    if (autoLaunchedRef.current) return;
+    if (!course || subscriptionTier === null) return;
+    if (searchParams?.get("mode") !== "focused") return;
+
+    const unitParam = searchParams.get("unit");
+    const countParam = Number(searchParams.get("count") || "5");
+    const count = Number.isFinite(countParam) && countParam > 0 ? Math.min(20, Math.floor(countParam)) : 5;
+
+    autoLaunchedRef.current = true;
+    if (unitParam) setSelectedUnit(unitParam);
+    setSelectedDifficulty("ALL");
+    setQuestionCount(count);
+    setSessionType("QUICK_PRACTICE");
+    setQuestionType("MCQ");
+
+    // Defer to next tick so React applies the state updates above before
+    // startSession reads selectedUnit/questionCount from closure. We pass
+    // the values explicitly to startSession below to avoid the closure race.
+    void startSessionWithOverrides({ unit: unitParam ?? "ALL", count });
+  }, [course, subscriptionTier, searchParams]);
+
+  async function startSessionWithOverrides(opts: { unit: string; count: number }) {
+    // Mirror of startSession with explicit params so we don't depend on
+    // React state that may not have flushed yet from the URL-param effect.
+    setIsStarting(true);
+    setSessionLimitReached(false);
+    try {
+      const response = await fetch("/api/practice", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          sessionType: "QUICK_PRACTICE",
+          unit: opts.unit,
+          difficulty: "ALL",
+          questionCount: opts.count,
+          course,
+        }),
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        if (data.limitExceeded) { setSessionLimitReached(true); return; }
+        toast({ title: "Error", description: data.error || "Failed to start session", variant: "destructive" });
+        return;
+      }
+      if (data.aiGenerationWarning) {
+        toast({ title: "AI questions generated", description: data.aiGenerationWarning });
+      }
+      const qs: Question[] = data.questions ?? [];
+      questionsRef.current = qs;
+      setSessionId(data.sessionId);
+      setQuestions(qs);
+      setCurrentIndex(0);
+      setResults([]);
+      setFeedback(null);
+      setSelectedAnswer(null);
+      setStartTime(new Date());
+      setQuestionStartTime(new Date());
+      setMode("practicing");
+    } finally {
+      setIsStarting(false);
+    }
+  }
 
   useEffect(() => {
     if (!isStarting || questionType === "MCQ") return;

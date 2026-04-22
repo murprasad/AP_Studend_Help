@@ -14,9 +14,10 @@ import { COURSE_REGISTRY, getCourseModule } from "@/lib/courses"
 import { ApUnit } from "@prisma/client"
 import Link from "next/link"
 import { LockedInsightOverlay } from "@/components/diagnostic/locked-insight-overlay"
+import { buildFocusedPracticeUrl } from "@/lib/diagnostic-helpers"
 import {
   ClipboardList, CheckCircle, XCircle, ChevronRight,
-  Loader2, TrendingUp, TrendingDown, Target, Crown, Sparkles, BookOpen,
+  Loader2, TrendingUp, TrendingDown, Target, Crown, Sparkles, BookOpen, Zap,
 } from "lucide-react"
 
 interface DiagQuestion {
@@ -292,6 +293,40 @@ export default function DiagnosticPage() {
             </p>
           </CardContent>
         </Card>
+
+        {/* Focused-practice hook (PrepLion REQ-023 port). Single weakest unit
+            is revealed outside the paywall as the hook — "you have a gap,
+            fix it in 2 min." Converts post-diagnostic insight into an
+            immediate practice session without asking for an upgrade first. */}
+        {sortedUnits.length > 0 && sortedUnits[0][1] < 70 && (() => {
+          const [weakestUnitKey, weakestScore] = sortedUnits[0]
+          const weakestName = courseUnits[weakestUnitKey as ApUnit] || weakestUnitKey
+          return (
+            <Card className="border-amber-500/30 bg-amber-500/5">
+              <CardContent className="p-5">
+                <div className="flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-lg bg-amber-500/20 flex items-center justify-center flex-shrink-0">
+                    <Zap className="h-5 w-5 text-amber-600" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-semibold">Fix your weakest unit in 2 min</p>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      <span className="font-medium text-foreground/80">{weakestName}</span>
+                      {" · "}
+                      you scored {weakestScore}% here — five focused questions will move the needle.
+                    </p>
+                    <Link href={buildFocusedPracticeUrl(weakestUnitKey, 5)} className="inline-block mt-3">
+                      <Button size="sm" className="gap-1.5 bg-amber-600 hover:bg-amber-700 text-white">
+                        <Zap className="h-3.5 w-3.5" />
+                        Start 5 Questions
+                      </Button>
+                    </Link>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )
+        })()}
 
         <LockedInsightOverlay locked={locked} course={course}>
           <Card className="border-blue-500/20 bg-blue-500/5">
