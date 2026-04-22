@@ -64,6 +64,7 @@ model User {
   frqAttempts          FrqAttempt[]
   dashboardImpressions DashboardImpression[]
   sageCoachSessions    SageCoachSession[]
+  flashcardReviews     FlashcardReview[]
 
   @@map("users")
 }
@@ -114,6 +115,78 @@ model FunnelEvent {
   @@index([userId, createdAt])
   @@index([event, createdAt])
   @@map("funnel_events")
+}
+
+// ── Flashcard System (ported from PrepLion 2026-04-22) ──────────────────
+//
+// Flashcards differentiate StudentNest from Khan Academy by offering
+// SM-2 spaced-repetition with 8 card shapes optimized for exam prep.
+// See src/lib/spaced-repetition.ts for the scheduler and (soon)
+// src/lib/flashcard-gen.ts for the content generator.
+
+enum FlashcardType {
+  RECALL
+  APPLICATION
+  CLOZE
+  MISCONCEPTION
+  COMPARE_CONTRAST
+  SEQUENCE
+  DIAGRAM
+  EXAM_TIP
+}
+
+model Flashcard {
+  id            String        @id @default(cuid())
+  course        ApCourse
+  unit          ApUnit
+  topic         String
+  concept       String
+  cardType      FlashcardType
+  difficulty    Difficulty    @default(MEDIUM)
+  front         String        @db.Text
+  back          String        @db.Text
+  explanation   String        @db.Text
+  cardData      Json?
+  hints         Json?
+  examRelevance Float         @default(0.5)
+  bloomLevel    String?
+  contentHash   String        @unique
+  isApproved    Boolean       @default(true)
+  version       Int           @default(1)
+  modelUsed     String?
+  // userId is nullable — global deck rows have null; per-user decks set it
+  userId        String?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  reviews       FlashcardReview[]
+
+  @@index([course, unit, cardType, difficulty])
+  @@index([course, concept])
+  @@index([userId, unit, cardType])
+  @@map("flashcards")
+}
+
+model FlashcardReview {
+  id              String    @id @default(cuid())
+  userId          String
+  flashcardId     String
+  rating          Int       // 0=Forgot, 1=Hard, 2=Good, 3=Easy
+  responseTimeMs  Int       @default(0)
+  // SM-2 state at the moment of this review — denormalized so we can
+  // rebuild the history without relying on a separate state table.
+  easeFactor      Float     @default(2.5)
+  interval        Int       @default(1)
+  repetitions     Int       @default(0)
+  nextReviewAt    DateTime
+  reviewedAt      DateTime  @default(now())
+
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  flashcard       Flashcard @relation(fields: [flashcardId], references: [id], onDelete: Cascade)
+
+  @@index([userId, flashcardId, reviewedAt])
+  @@index([userId, nextReviewAt])
+  @@map("flashcard_reviews")
 }
 
 // "You fixed it" — mastery tier-up celebration ledger.
