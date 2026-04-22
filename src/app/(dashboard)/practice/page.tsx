@@ -20,6 +20,7 @@ import { NextSessionNudge } from "@/components/practice/next-session-nudge";
 import { DiagnosticNudgeModal } from "@/components/practice/diagnostic-nudge-modal";
 import { useExamMode } from "@/hooks/use-exam-mode";
 import { useSearchParams } from "next/navigation";
+import { hapticSuccess, hapticError } from "@/lib/haptics";
 import {
   Zap,
   BookOpen,
@@ -433,6 +434,12 @@ export default function PracticePage() {
       }
       setFeedback(data);
       setResults((prev) => [...prev, { correct: data.isCorrect, timeSecs }]);
+
+      // Haptic feedback — success pattern on correct, error pattern on wrong.
+      // No-op on platforms without navigator.vibrate (desktop, iOS Safari
+      // pre-18). Fire-and-forget; never blocks.
+      if (data.isCorrect) void hapticSuccess();
+      else void hapticError();
 
       // Fire the diagnostic nudge check after each successful submit. The
       // modal self-gates against: already-shown-today / already-has-diagnostic /

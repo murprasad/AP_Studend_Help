@@ -488,10 +488,33 @@ async function generateOne(course, questionType, difficulty) {
   };
 }
 
+// Bootstrap-time fallback for courses that have ZERO existing Question rows
+// yet (e.g. 2026 catalog expansion). Without this, enumsFor() would return
+// defaultUnit=null and writeQuestion() would reject every generated question
+// with "no_unit_resolvable" — that's what happened to the first HuGeo +
+// USGov pilots. Once the first Q lands the sample query self-populates.
+const BOOTSTRAP_DEFAULT_UNITS = {
+  AP_HUMAN_GEOGRAPHY:       "HUGEO_1_THINKING_GEOGRAPHICALLY",
+  AP_US_GOVERNMENT:         "USGOV_1_FOUNDATIONS",
+  AP_ENVIRONMENTAL_SCIENCE: "APES_1_ECOSYSTEMS",
+  AP_PRECALCULUS:           "PRECALC_1_POLYNOMIAL_RATIONAL",
+  AP_ENGLISH_LANGUAGE:      "ENGLANG_1_CLAIMS_EVIDENCE",
+};
+
 async function enumsFor(course) {
   // Query an existing Question row for this course to learn the `unit` enum
   const sample = await prisma.question.findFirst({ where: { course }, select: { unit: true } });
-  return { defaultUnit: sample?.unit || null };
+  // Fall back to the bootstrap map when no Questions exist yet. Also try an
+  // OfficialSample row with a non-null unit as a secondary signal.
+  let defaultUnit = sample?.unit || null;
+  if (!defaultUnit) {
+    const offSample = await prisma.officialSample.findFirst({
+      where: { course, unit: { not: null } },
+      select: { unit: true },
+    });
+    defaultUnit = offSample?.unit || BOOTSTRAP_DEFAULT_UNITS[course] || null;
+  }
+  return { defaultUnit };
 }
 
 async function withDbRetry(fn, attempts = 6) {
@@ -502,11 +525,11 @@ async function withDbRetry(fn, attempts = 6) {
     try {
       return await fn();
     } catch (e) {
-      const msg = String(e.message || e);
-      const code = e?.code || "";
+      const msg = String(e.message || e) + " " + String(e?.cause?.message || "") + " " + String(e?.cause?.code || "");
+      const code = e?.code || e?.cause?.code || "";
       const transient =
-        /Can't reach database server|ECONNRESET|ETIMEDOUT|fetch failed|connection terminated|Server has closed the connection|Closed connection/i.test(msg)
-        || code === "P1001" || code === "P1008" || code === "P1017";
+        /Can't reach database server|ECONNRESET|ETIMEDOUT|ENOTFOUND|getaddrinfo|fetch failed|connection terminated|Server has closed the connection|Closed connection|EAI_AGAIN/i.test(msg)
+        || code === "P1001" || code === "P1008" || code === "P1017" || code === "ENOTFOUND";
       if (!transient || i === attempts - 1) throw e;
       const wait = 500 * Math.pow(2, i);
       await new Promise(r => setTimeout(r, wait));
