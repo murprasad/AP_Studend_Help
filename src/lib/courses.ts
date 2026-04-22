@@ -102,6 +102,16 @@ export interface CourseConfig {
    * Describes how questions should map to the real AP exam.
    */
   examAlignmentNotes: string;
+  /**
+   * When true, hide from sidebar / landing pickers / marketing routes for
+   * non-ADMIN users. ADMIN users still see everything so they can QA the
+   * course before exposing it. Introduced 2026-04-22 for the 2026 AP
+   * catalog expansion so new courses don't surface empty question banks
+   * (would error with 400 "No questions available") while Phase C is
+   * still generating. Remove this flag per-course once Phase C reaches
+   * a reasonable question density.
+   */
+  hidden?: boolean;
   /** Describes the stimulus type for question generation + JSON format hint */
   stimulusRequirement: string;
   /** One-liner for the JSON "stimulus" field description */
@@ -1715,6 +1725,7 @@ AP Exam: Section I — 100 MCQ (70 min). Section II — 2 FRQ (50 min).`,
   AP_HUMAN_GEOGRAPHY: {
     name: "AP Human Geography",
     shortName: "AP HuGeo",
+    hidden: true, // 2026-04-22 — populate via Phase C before exposing
     examSecsPerQuestion: 60, // 60 MCQ in 60 min
     mockExam: { mcqCount: 60, mcqTimeMinutes: 60 },
     enrichWithEduAPIs: true,
@@ -1852,6 +1863,7 @@ geographic concepts across regions.
   AP_US_GOVERNMENT: {
     name: "AP U.S. Government and Politics",
     shortName: "AP US Gov",
+    hidden: true, // 2026-04-22 — has 15 Qs from pilots, need target=500 before exposing
     examSecsPerQuestion: 87, // 55 MCQ in 80 min = 87s each
     mockExam: { mcqCount: 55, mcqTimeMinutes: 80 },
     enrichWithEduAPIs: true,
@@ -1983,6 +1995,7 @@ Analysis, Argumentation.
   AP_ENVIRONMENTAL_SCIENCE: {
     name: "AP Environmental Science",
     shortName: "AP Env Sci",
+    hidden: true, // 2026-04-22 — populate via Phase C before exposing
     examSecsPerQuestion: 68, // 80 MCQ in 90 min = 68s each
     mockExam: { mcqCount: 80, mcqTimeMinutes: 90 },
     enrichWithEduAPIs: true,
@@ -2079,6 +2092,7 @@ conversion, population growth rate, carbon sequestration.
   AP_PRECALCULUS: {
     name: "AP Precalculus",
     shortName: "AP Precalc",
+    hidden: true, // 2026-04-22 — populate via Phase C before exposing
     examSecsPerQuestion: 120, // 40 MCQ in 80 min avg (2 min per Q)
     mockExam: { mcqCount: 40, mcqTimeMinutes: 80 },
     enrichWithEduAPIs: true,
@@ -2165,6 +2179,7 @@ allowed. Section II is 2 no-calc + 2 calc.
   AP_ENGLISH_LANGUAGE: {
     name: "AP English Language and Composition",
     shortName: "AP Eng Lang",
+    hidden: true, // 2026-04-22 — thin grounding (8 samples); needs passage-aware CED parser + Phase C
     examSecsPerQuestion: 80, // 45 MCQ in 60 min
     mockExam: { mcqCount: 45, mcqTimeMinutes: 60 },
     enrichWithEduAPIs: true,
@@ -6087,6 +6102,28 @@ Topics: antebellum America (20%), secession/early war (20%), major campaigns (20
  * Use this in API route validation instead of a hardcoded array.
  */
 export const VALID_AP_COURSES = Object.keys(COURSE_REGISTRY) as ApCourse[];
+
+/**
+ * Courses visible to NON-ADMIN users. Hides any course where `hidden: true`
+ * is set in its CourseConfig. ADMIN callers should use VALID_AP_COURSES
+ * directly so they can QA hidden courses before flipping them public.
+ *
+ * Use this for: sidebar, landing picker, am-i-ready marketing, how-hard-is
+ * generateStaticParams, study-plan picker — anywhere a non-admin user sees
+ * a course catalog.
+ */
+export const VISIBLE_AP_COURSES = VALID_AP_COURSES.filter(
+  (c) => !COURSE_REGISTRY[c].hidden,
+);
+
+/**
+ * Role-aware course list. Returns all courses for ADMIN; filtered to visible
+ * for everyone else. Use this in server components where `session.user.role`
+ * is known.
+ */
+export function coursesForRole(role: string | undefined | null): ApCourse[] {
+  return role === "ADMIN" ? VALID_AP_COURSES : VISIBLE_AP_COURSES;
+}
 
 /**
  * Returns the CourseConfig for the given course.

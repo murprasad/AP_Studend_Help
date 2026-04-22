@@ -1,7 +1,7 @@
 /**
  * /how-hard-is/[slug] — per-exam difficulty guide (SEO landing page).
  *
- * Dynamic route that renders one page per course in VALID_AP_COURSES.
+ * Dynamic route that renders one page per course in VISIBLE_AP_COURSES.
  * Uses real CB / CollegeBoard pass-rate bands for AP (public data) and
  * published ACT / SAT score distributions for the other two families.
  *
@@ -13,7 +13,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { COURSE_REGISTRY, VALID_AP_COURSES } from "@/lib/courses";
+import { COURSE_REGISTRY, VISIBLE_AP_COURSES } from "@/lib/courses";
+// Uses VISIBLE_AP_COURSES (not VALID) so hidden courses (new 2026 catalog
+// expansion in pre-Phase-C state) don't pre-render or accept direct URLs.
 import { ApCourse } from "@prisma/client";
 import { ArrowRight, BarChart3, Target, CheckCircle } from "lucide-react";
 import { prisma } from "@/lib/prisma";
@@ -24,7 +26,7 @@ function courseToSlug(course: string): string {
 
 function slugToCourse(slug: string): ApCourse | null {
   const enumValue = slug.toUpperCase().replace(/-/g, "_");
-  if ((VALID_AP_COURSES as string[]).includes(enumValue)) return enumValue as ApCourse;
+  if ((VISIBLE_AP_COURSES as string[]).includes(enumValue)) return enumValue as ApCourse;
   return null;
 }
 
@@ -49,7 +51,7 @@ function secondsPerQuestion(examType: "AP" | "SAT" | "ACT"): number {
 }
 
 export function generateStaticParams() {
-  return VALID_AP_COURSES.map((c) => ({ slug: courseToSlug(c) }));
+  return VISIBLE_AP_COURSES.map((c) => ({ slug: courseToSlug(c) }));
 }
 
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {

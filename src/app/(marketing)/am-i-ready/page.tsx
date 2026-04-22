@@ -1,4 +1,4 @@
-import { COURSE_REGISTRY, VALID_AP_COURSES } from "@/lib/courses";
+import { COURSE_REGISTRY, VISIBLE_AP_COURSES } from "@/lib/courses";
 import { ApCourse } from "@prisma/client";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
@@ -20,9 +20,9 @@ export const metadata: Metadata = {
 
 // StudentNest post-sunset: only AP/SAT/ACT live here. CLEP/DSST moved
 // to preplion.ai but still exist in the ApCourse enum — filter them out.
-const apCourses = VALID_AP_COURSES.filter((c) => c.startsWith("AP_"));
-const satCourses = VALID_AP_COURSES.filter((c) => c.startsWith("SAT_"));
-const actCourses = VALID_AP_COURSES.filter((c) => c.startsWith("ACT_"));
+const apCourses = VISIBLE_AP_COURSES.filter((c) => c.startsWith("AP_"));
+const satCourses = VISIBLE_AP_COURSES.filter((c) => c.startsWith("SAT_"));
+const actCourses = VISIBLE_AP_COURSES.filter((c) => c.startsWith("ACT_"));
 
 function courseSlug(course: ApCourse): string {
   return course.toLowerCase().replace(/_/g, "-");

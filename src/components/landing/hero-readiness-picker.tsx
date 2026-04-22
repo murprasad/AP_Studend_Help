@@ -4,7 +4,7 @@ import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
-import { COURSE_REGISTRY, VALID_AP_COURSES } from "@/lib/courses";
+import { COURSE_REGISTRY, VISIBLE_AP_COURSES } from "@/lib/courses";
 
 /**
  * Hero CTA: "Find out in 3 minutes what you'd score on [exam]" — the
@@ -20,13 +20,13 @@ export function HeroReadinessPicker() {
   const [course, setCourse] = useState<string>("AP_WORLD_HISTORY");
 
   const options = useMemo(() => {
-    const ap = VALID_AP_COURSES
+    const ap = VISIBLE_AP_COURSES
       .filter((c) => c.startsWith("AP_"))
       .map((c) => ({ value: c, label: COURSE_REGISTRY[c]?.name ?? c }));
-    const sat = VALID_AP_COURSES
+    const sat = VISIBLE_AP_COURSES
       .filter((c) => c.startsWith("SAT_"))
       .map((c) => ({ value: c, label: COURSE_REGISTRY[c]?.name ?? c }));
-    const act = VALID_AP_COURSES
+    const act = VISIBLE_AP_COURSES
       .filter((c) => c.startsWith("ACT_"))
       .map((c) => ({ value: c, label: COURSE_REGISTRY[c]?.name ?? c }));
     return { ap, sat, act };

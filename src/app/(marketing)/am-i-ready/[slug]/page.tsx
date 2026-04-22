@@ -1,4 +1,4 @@
-import { COURSE_REGISTRY, VALID_AP_COURSES } from "@/lib/courses";
+import { COURSE_REGISTRY, VISIBLE_AP_COURSES } from "@/lib/courses";
 import { ApCourse } from "@prisma/client";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -15,7 +15,7 @@ function isStudentNestCourse(course: string): boolean {
 }
 
 export function generateStaticParams() {
-  return VALID_AP_COURSES.filter(isStudentNestCourse).map((course) => ({
+  return VISIBLE_AP_COURSES.filter(isStudentNestCourse).map((course) => ({
     slug: course.toLowerCase().replace(/_/g, "-"),
   }));
 }
@@ -23,7 +23,7 @@ export function generateStaticParams() {
 function courseFromSlug(slug: string): ApCourse | null {
   const enumValue = slug.toUpperCase().replace(/-/g, "_");
   if (
-    VALID_AP_COURSES.includes(enumValue as ApCourse) &&
+    VISIBLE_AP_COURSES.includes(enumValue as ApCourse) &&
     isStudentNestCourse(enumValue)
   ) {
     return enumValue as ApCourse;
