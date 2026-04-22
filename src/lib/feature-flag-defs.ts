@@ -75,6 +75,14 @@ export const FEATURE_FLAG_DEFS = [
     default: "true",
     dangerous: false,
   },
+  {
+    key: "knowledge_check_enabled",
+    label: "Knowledge Check After Wrong Answers",
+    description:
+      "When ON (default), students who answer an MCQ incorrectly see a follow-up 1-question knowledge check to close the learning loop. When OFF, the quick-check step is suppressed — feedback is shown and the session continues directly to the next question.",
+    default: "true",
+    dangerous: false,
+  },
   // Auto-populate settings (not boolean flags — managed by AdminAutoPopulateSettings)
   { key: "auto_populate_enabled", label: "Auto-Populate Enabled", description: "Master on/off for scheduled question bank auto-populate.", default: "false", dangerous: false },
   { key: "auto_populate_threshold", label: "Auto-Populate Threshold", description: "Units with fewer questions than this are topped up.", default: "10", dangerous: false },

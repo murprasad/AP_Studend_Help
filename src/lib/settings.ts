@@ -74,6 +74,16 @@ export async function isStudyPlanEnabled(): Promise<boolean> {
 }
 
 /**
+ * Admin-toggleable feature flag. When ON (default), wrong MCQ answers
+ * trigger a follow-up 1-question knowledge check. When OFF, the check
+ * step is suppressed — students see feedback and move to the next
+ * question directly, removing one UI layer during practice.
+ */
+export async function isKnowledgeCheckEnabled(): Promise<boolean> {
+  return (await getSetting("knowledge_check_enabled", "true")) === "true";
+}
+
+/**
  * Returns true if premium feature restrictions are enforced.
  * When false (default), all users have full access regardless of subscription tier.
  * Use this flag to test premium features without requiring a paid subscription.

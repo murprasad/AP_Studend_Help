@@ -98,6 +98,8 @@ export default function PracticePage() {
   const [userTrack, setUserTrack] = useState<string>("ap");
   const [premiumRestricted, setPremiumRestricted] = useState(false);
   const [sessionLimitReached, setSessionLimitReached] = useState(false);
+  // Admin-toggleable knowledge check after wrong MCQs. Default ON.
+  const [knowledgeCheckEnabled, setKnowledgeCheckEnabled] = useState(true);
 
   const [mode, setMode] = useState<PracticeMode>("select");
 
@@ -132,6 +134,7 @@ export default function PracticePage() {
       }
       if (flagsRes.status === "fulfilled") {
         setPremiumRestricted(flagsRes.value.premiumRestrictionEnabled ?? false);
+        setKnowledgeCheckEnabled(flagsRes.value.knowledgeCheckEnabled ?? true);
       } else {
         setPremiumRestricted(false);
       }
@@ -474,8 +477,10 @@ export default function PracticePage() {
         }
       }
 
-      // Auto-trigger embedded knowledge check for wrong MCQ answers
-      if (!data.isCorrect && parsedOptions.length > 0) {
+      // Auto-trigger embedded knowledge check for wrong MCQ answers.
+      // Gated by the admin-toggleable knowledge_check_enabled flag so
+      // admins can suppress this extra layer if it's confusing users.
+      if (knowledgeCheckEnabled && !data.isCorrect && parsedOptions.length > 0) {
         setCheckQuestion(null);
         setCheckAnswer(null);
         setCheckLoading(true);
