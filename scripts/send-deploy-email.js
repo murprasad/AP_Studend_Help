@@ -23,10 +23,15 @@ if (!process.env.RESEND_API_KEY) {
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
 const TO_EMAIL = "contact@studentnest.ai";
 const FROM_EMAIL = "noreply@studentnest.ai";
-// DEPLOY_STATUS is set by pages:deploy pipeline to "success" after the
-// full chain, or "failed" when any step failed. Default to "success"
-// for backward-compat (manual invocations).
-const DEPLOY_STATUS = process.env.DEPLOY_STATUS || "success";
+// Read deploy status from --status=success|failed CLI arg. Cross-platform
+// (inline env-var syntax `DEPLOY_STATUS=xxx node ...` fails on Windows cmd).
+// Default: "success" for backward-compat with manual invocations.
+function getDeployStatus() {
+  const arg = process.argv.find((a) => a.startsWith("--status="));
+  if (arg) return arg.slice("--status=".length).trim();
+  return process.env.DEPLOY_STATUS || "success";
+}
+const DEPLOY_STATUS = getDeployStatus();
 const IS_SUCCESS = DEPLOY_STATUS === "success";
 
 async function main() {

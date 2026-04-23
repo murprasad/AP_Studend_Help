@@ -25,7 +25,7 @@
     "ap:audit:fix": "node scripts/ap-audit-questions.js --fix",
     "ap:review": "node scripts/ap-ai-review-questions.js",
     "ap:review:fix": "node scripts/ap-ai-review-questions.js --fix",
-    "pages:deploy": "(node scripts/pre-release-check.js && npm run pages:build && wrangler pages deploy .cf-deploy --project-name=studentnest --commit-dirty=true && node scripts/smoke-tests.js && node scripts/functional-tests.js && node scripts/integration-tests.js && playwright test --reporter=list && node scripts/update-test-plan.js && node scripts/archive-release.js) && (DEPLOY_STATUS=success node scripts/send-deploy-email.js) || (DEPLOY_STATUS=failed node scripts/send-deploy-email.js; exit 1)",
+    "pages:deploy": "(node scripts/pre-release-check.js && npm run pages:build && wrangler pages deploy .cf-deploy --project-name=studentnest --commit-dirty=true && node scripts/smoke-tests.js && node scripts/functional-tests.js && node scripts/integration-tests.js && playwright test --reporter=list && node scripts/update-test-plan.js && node scripts/archive-release.js) && (node scripts/send-deploy-email.js --status=success) || (node scripts/send-deploy-email.js --status=failed && exit 1)",
     "pages:preview": "npm run pages:build && wrangler pages dev .cf-deploy"
   },
   "dependencies": {
