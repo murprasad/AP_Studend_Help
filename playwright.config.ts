@@ -1,4 +1,10 @@
 import { defineConfig, devices } from "@playwright/test";
+import * as path from "path";
+import * as dotenv from "dotenv";
+
+// Load .env so CRON_SECRET (needed by auth.setup.ts) is available
+// without requiring the user to prefix every test invocation.
+dotenv.config({ path: path.resolve(__dirname, ".env") });
 
 /**
  * Playwright E2E configuration for StudentNest.
@@ -8,10 +14,19 @@ import { defineConfig, devices } from "@playwright/test";
  *   npm run test:e2e                     -> tests against studentnest.ai
  *   E2E_BASE_URL=... npm run test:e2e    -> tests against a preview URL
  *
- * Kept intentionally minimal — one chromium project, no webServer, so
- * a sandbox / CI that already has a deploy URL doesn't have to spin a
- * local dev server.
+ * Project layout:
+ *   - "setup"        — runs auth.setup.ts FIRST. Provisions a test user
+ *                      via the CRON_SECRET-gated /api/test/auth endpoint
+ *                      and writes storage state to tests/e2e/.auth/user.json.
+ *                      Skipped automatically if no CRON_SECRET (e.g. PR CI
+ *                      without prod secrets) — public tests still run.
+ *   - "chromium-public" — public-paths.spec.ts (no auth needed)
+ *   - "chromium-authed" — authed-flows.spec.ts (depends on setup)
  */
+
+const AUTH_FILE = path.join(__dirname, "tests", "e2e", ".auth", "user.json");
+const HAS_CRON_SECRET = !!process.env.CRON_SECRET;
+
 export default defineConfig({
   testDir: "./tests/e2e",
   timeout: 30_000,
@@ -26,9 +41,32 @@ export default defineConfig({
     screenshot: "only-on-failure",
   },
   projects: [
+    // Setup project — only runs if CRON_SECRET is set. Runs before authed.
+    ...(HAS_CRON_SECRET
+      ? [
+          {
+            name: "setup",
+            testMatch: /auth\.setup\.ts/,
+          },
+        ]
+      : []),
     {
-      name: "chromium",
+      name: "chromium-public",
       use: { ...devices["Desktop Chrome"] },
+      testMatch: /public-paths\.spec\.ts/,
     },
+    ...(HAS_CRON_SECRET
+      ? [
+          {
+            name: "chromium-authed",
+            use: {
+              ...devices["Desktop Chrome"],
+              storageState: AUTH_FILE,
+            },
+            testMatch: /authed-flows\.spec\.ts/,
+            dependencies: ["setup"],
+          },
+        ]
+      : []),
   ],
 });
