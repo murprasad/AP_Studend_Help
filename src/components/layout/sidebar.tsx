@@ -30,6 +30,7 @@ import {
   Calendar,
   PenLine,
   Mic,
+  Layers,
 } from "lucide-react";
 import { useTheme } from "@/hooks/use-theme";
 import { useState, useEffect } from "react";
@@ -58,6 +59,7 @@ const navItems: NavItem[] = [
   { href: "/frq-practice", icon: PenLine, label: "FRQ Practice", tracks: ["ap"] },
   { href: "/mock-exam", icon: Trophy, label: "Mock Exam" },
   { href: "/diagnostic", icon: ClipboardList, label: "Diagnostic" },
+  { href: "/flashcards", icon: Layers, label: "Flashcards" },
   { href: "/analytics", icon: BarChart3, label: "Analytics" },
   { href: "/study-plan", icon: BookOpen, label: "Study Plan" },
   { href: "/resources", icon: Library, label: "Resources" },
