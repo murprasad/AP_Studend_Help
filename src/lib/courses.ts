@@ -1863,7 +1863,7 @@ geographic concepts across regions.
   AP_US_GOVERNMENT: {
     name: "AP U.S. Government and Politics",
     shortName: "AP US Gov",
-    hidden: true, // 2026-04-22 — has 15 Qs from pilots, need target=500 before exposing
+    hidden: false, // 2026-04-23 — flipped after Phase C crossed the 300+ threshold
     examSecsPerQuestion: 87, // 55 MCQ in 80 min = 87s each
     mockExam: { mcqCount: 55, mcqTimeMinutes: 80 },
     enrichWithEduAPIs: true,
@@ -2092,7 +2092,7 @@ conversion, population growth rate, carbon sequestration.
   AP_PRECALCULUS: {
     name: "AP Precalculus",
     shortName: "AP Precalc",
-    hidden: true, // 2026-04-22 — populate via Phase C before exposing
+    hidden: false, // 2026-04-23 — flipped after Phase C crossed the 300+ threshold
     examSecsPerQuestion: 120, // 40 MCQ in 80 min avg (2 min per Q)
     mockExam: { mcqCount: 40, mcqTimeMinutes: 80 },
     enrichWithEduAPIs: true,

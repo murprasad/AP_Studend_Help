@@ -19,12 +19,20 @@ const courses = [
   "AP_ENGLISH_LANGUAGE",
 ];
 
+// Visibility threshold lowered from 500 → 300+ on 2026-04-23 per user.
+// Continuing to grow the bank past 300 is still desirable (more variety,
+// less repetition) but the course can be exposed to students at 300+.
+const VISIBLE_AT = 300;
 const TARGET = 500;
-console.log(`Coverage of new AP courses (target = ${TARGET}, approved MCQ only):\n`);
+console.log(`Coverage of new AP courses (visible at ${VISIBLE_AT}+, target ${TARGET}):\n`);
 for (const c of courses) {
   const count = await prisma.question.count({
     where: { course: c, isApproved: true, questionType: "MCQ" },
   });
-  const ready = count >= TARGET ? "✅ READY" : `⏳ ${count}/${TARGET} (${TARGET - count} remaining)`;
-  console.log(`  ${c.padEnd(30)} ${String(count).padStart(4)} — ${ready}`);
+  const status = count >= TARGET
+    ? "✅ AT TARGET"
+    : count >= VISIBLE_AT
+      ? `✅ VISIBLE (${count}/${TARGET} → still growing)`
+      : `⏳ ${count}/${VISIBLE_AT} (${VISIBLE_AT - count} below visibility threshold)`;
+  console.log(`  ${c.padEnd(30)} ${String(count).padStart(4)} — ${status}`);
 }

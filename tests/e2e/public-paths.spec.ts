@@ -39,16 +39,14 @@ test.describe("Public marketing paths", () => {
     await expect(page.locator("body")).toContainText(/7-day|money-back/i);
   });
 
-  test("/am-i-ready picker shows AP/SAT/ACT (incl. HuGeo + EnvSci, others still hidden)", async ({ page }) => {
+  test("/am-i-ready picker shows AP/SAT/ACT (4 of 5 new APs visible; EngLang still hidden)", async ({ page }) => {
     await page.goto("/am-i-ready");
     const body = page.locator("body");
     await expect(body).toContainText("AP");
-    // HuGeo + EnvSci flipped visible 2026-04-22 after Phase C populated
-    // 500+ MCQs each. The other 3 (Precalc, EngLang, U.S. Government)
-    // stay hidden until they cross 500.
-    await expect(body).not.toContainText("Precalculus");
+    // 2026-04-23: threshold lowered from 500 → 300+ approved Qs. HuGeo,
+    // EnvSci, USGov, and Precalc all visible. Only EngLang (still 0 Qs)
+    // stays hidden pending Phase A ingest.
     await expect(body).not.toContainText("English Language");
-    await expect(body).not.toContainText("U.S. Government");
   });
 });
 
