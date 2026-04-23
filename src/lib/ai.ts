@@ -5,6 +5,7 @@ import { COURSE_REGISTRY, getCourseForUnit } from "./courses";
 import { callAIWithCascade, callAIForTier, callAIForCLEP, callSonnetDirect, validateQuestion, AICallResult } from "./ai-providers";
 import { prisma } from "./prisma";
 import { getWikipediaSummary, getEduContextForQuery, searchStackExchange, getEnrichedContext, fetchMITOCWContent, fetchDIGContent, fetchOpenStaxContent, fetchSmithsonianContent, fetchCollegeBoardSATTopics, fetchACTTopics, fetchCBFRQContent, getCBFRQUrl, fetchKhanAcademyContext } from "./edu-apis";
+import { checkOptionsForEquivalence } from "./option-evaluator";
 
 // ── Unified helpers (thin wrappers over the cascade engine) ────────────────
 async function callAI(prompt: string, systemPrompt?: string): Promise<string> {
@@ -205,6 +206,22 @@ UNAMBIGUITY REQUIREMENT (MANDATORY — violation = rejection):
 - Before finalizing, read each distractor as if it WERE the answer. If a defensible argument exists that it is also correct, rewrite the stem to be more specific — cite the exact case, document, formula, or process that disambiguates.
 - Reject the whole question and regenerate if two or more options are both partially correct given the stem as written. This is the single largest source of student complaints; do not ship ambiguous questions.`;
 
+  // Universal numeric-uniqueness guardrail — added 2026-04-22 after a real
+  // tester flagged math/physics MCQs whose distractors all reduced to the
+  // same value (e.g. correct=2, with distractors 4/2, 6/3, 8/4 — all = 2).
+  // Cheap to ship on every prompt because the words are short; the
+  // catastrophic UX cost of a "no correct answer" question is enormous.
+  // NOTE: a deterministic post-generation evaluator in src/lib/option-evaluator.ts
+  // also catches this — the prompt rule reduces retries; the runtime check is
+  // load-bearing because LLMs cannot reliably do arithmetic.
+  const numericUniquenessSection = `
+NUMERIC UNIQUENESS REQUIREMENT (MANDATORY — violation = rejection):
+- If the correct answer is a number, fraction, decimal, percent, or arithmetic expression, ALL FOUR options must evaluate to FOUR DIFFERENT numeric values.
+- 4/2, 6/3, 8/4, 2/1 all equal 2 — using these as four options is a CRITICAL failure: the question has no unique correct answer.
+- Same rule for: 0.5 vs 1/2 vs 50% (all equal 0.5); 1.5 vs 3/2 vs "1 1/2" (all equal 1.5); "2 × 3" vs 6 (both equal 6).
+- Before returning, mentally evaluate every option to a single number. If any two values match, REGENERATE — do not ship.
+- This applies to AP Calc, AP Stats, AP Physics, AP Chem, SAT Math, ACT Math, AP Precalc, and any unit (in any course) where a numeric answer is the natural form.`;
+
   const wordCountSection = `\nWORD COUNT TARGETS:\n- questionText: 15–40 words\n- stimulus: 40–120 words (or null if not applicable)\n- each option: 8–25 words\n- explanation: 80–150 words (name the correct answer + explain each distractor's trap)`;
 
   // SAT-specific format rules injected after the standard sections
@@ -282,7 +299,7 @@ ${config.examAlignmentNotes ? `EXAM CONTENT WEIGHTS:\n${config.examAlignmentNote
 
 ${unitHeader}
 
-${config.examAlignmentNotes}${difficultySection}${skillsSection}${stimulusSection}${distractorSection}${ambiguityGuardSection}${wordCountSection}${satFormatSection}${actFormatSection}${clepSection}
+${config.examAlignmentNotes}${difficultySection}${skillsSection}${stimulusSection}${distractorSection}${ambiguityGuardSection}${numericUniquenessSection}${wordCountSection}${satFormatSection}${actFormatSection}${clepSection}
 
 GENERATION TASK:
 ${generationInstruction}
@@ -514,6 +531,18 @@ export async function generateQuestion(
         }
         if (explStr.length < 100) {
           lastRejectionReason = `Explanation too short (${explStr.length} chars, need ≥100)`;
+          lastError = lastRejectionReason;
+          continue;
+        }
+
+        // Numeric-equivalence check (added 2026-04-22 after a real tester
+        // reported MCQs whose distractors all reduced to the same value).
+        // Deterministic — does NOT rely on LLM arithmetic. See
+        // src/lib/option-evaluator.ts. Conservative: returns ok=true when
+        // fewer than 2 options parse, so non-numeric MCQs sail through.
+        const eqCheck = checkOptionsForEquivalence(opts);
+        if (!eqCheck.ok) {
+          lastRejectionReason = `Equivalent distractors: ${eqCheck.reason}`;
           lastError = lastRejectionReason;
           continue;
         }
