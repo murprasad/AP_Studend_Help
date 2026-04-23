@@ -1,0 +1,41 @@
+name: Hourly Stripe Reconcile
+
+on:
+  schedule:
+    # Every hour at :00. Catches webhook failures within ~60 min.
+    - cron: '0 * * * *'
+  workflow_dispatch:
+
+jobs:
+  stripe-reconcile:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Hit /api/cron/stripe-reconcile
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          response=$(curl -s -w "\n%{http_code}" \
+            https://studentnest.ai/api/cron/stripe-reconcile \
+            -H "Authorization: Bearer ${CRON_SECRET}" \
+            --max-time 90)
+          body=$(echo "$response" | head -n -1)
+          status=$(echo "$response" | tail -n 1)
+
+          echo "Status: $status"
+          echo "Body: $body"
+
+          if [ "$status" = "401" ]; then
+            echo "❌ 401 — CRON_SECRET mismatch"; exit 1
+          fi
+          if [ "$status" != "200" ]; then
+            echo "❌ Status $status"; exit 1
+          fi
+
+          checked=$(echo "$body" | grep -o '"checked":[0-9]*' | grep -o '[0-9]*' || echo 0)
+          reconciled=$(echo "$body" | grep -o '"reconciled":[0-9]*' | grep -o '[0-9]*' || echo 0)
+          echo "## Stripe reconcile" >> $GITHUB_STEP_SUMMARY
+          echo "- Checked: $checked active Stripe subs" >> $GITHUB_STEP_SUMMARY
+          echo "- Reconciled (FREE → PREMIUM): $reconciled" >> $GITHUB_STEP_SUMMARY
+          if [ "$reconciled" != "0" ]; then
+            echo "- ⚠️  Email sent to contact@studentnest.ai" >> $GITHUB_STEP_SUMMARY
+          fi
