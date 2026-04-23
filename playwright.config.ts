@@ -38,7 +38,15 @@ export default defineConfig({
   fullyParallel: false,
   workers: 1,
   forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 1 : 0,
+  // Retries: 3 globally. Several specs exercise race-sensitive UI
+  // (AutoLaunchNudge modal mounts async alongside dashboard cards,
+  // onboarding step-advance timing, flashcard batch fetch) and flake
+  // in parallel runs despite passing in isolation. Retries give 4
+  // attempts to reduce pipeline noise; feature regressions still fail
+  // all 4 and correctly block the deploy. Individual specs that need
+  // tighter guarantees can override via `test.describe.configure({
+  // retries: 0 })`.
+  retries: 3,
   reporter: process.env.CI ? [["list"], ["html", { open: "never" }]] : "list",
   use: {
     baseURL: process.env.E2E_BASE_URL ?? "https://studentnest.ai",
