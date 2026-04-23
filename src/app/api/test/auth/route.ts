@@ -92,7 +92,7 @@ export async function POST(req: NextRequest) {
       // Find or create test user
       let user = await prisma.user.findUnique({
         where: { email: TEST_EMAIL },
-        select: { id: true, role: true, subscriptionTier: true, track: true },
+        select: { id: true, role: true, subscriptionTier: true, track: true, onboardingCompletedAt: true },
       });
 
       if (!user) {
@@ -105,8 +105,19 @@ export async function POST(req: NextRequest) {
             gradeLevel: "11",
             track: "ap",
             emailVerified: new Date(),
+            // Skip onboarding redirect — this is a test user; tests that
+            // specifically exercise onboarding can null this back via a
+            // separate action if needed.
+            onboardingCompletedAt: new Date(),
           },
-          select: { id: true, role: true, subscriptionTier: true, track: true },
+          select: { id: true, role: true, subscriptionTier: true, track: true, onboardingCompletedAt: true },
+        });
+      } else if (!user.onboardingCompletedAt) {
+        // Existing test user was created before we added this field.
+        // Mark onboarded so dashboard doesn't redirect in tests.
+        await prisma.user.update({
+          where: { id: user.id },
+          data: { onboardingCompletedAt: new Date() },
         });
       }
 

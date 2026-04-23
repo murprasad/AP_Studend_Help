@@ -58,22 +58,32 @@ setup("authenticate as functional test user", async ({ request, page }) => {
     },
   ]);
 
+  // Inject init script BEFORE navigating. addInitScript runs on every
+  // page load within this context — this beats the dashboard layout's
+  // client-side onboarding redirect useEffect, which otherwise races
+  // the localStorage hydration. storageState captures this so downstream
+  // authed projects inherit the flag.
+  await page.context().addInitScript(() => {
+    try {
+      localStorage.setItem("onboarding_completed", "true");
+      localStorage.setItem("ap_selected_course", "AP_WORLD_HISTORY");
+    } catch { /* private mode — fall through */ }
+  });
+
   // Hit the dashboard once to confirm the session is honored — if the JWT
   // is rejected we fail fast here instead of in the first real test.
   await page.goto(`${baseURL}/dashboard`);
   const url2 = page.url();
   expect(url2, `Expected dashboard or onboarding, got: ${url2}`).not.toContain("/login");
 
-  // Pre-set the onboarding-completed flag so downstream authed tests don't
-  // redirect to /onboarding (which breaks specs that target /flashcards,
-  // /practice, etc.). localStorage persists into storageState so every
-  // authed project starts past onboarding. The dashboard layout reads
-  // this flag and skips the redirect.
+  // Belt-and-suspenders: also set directly after load, in case the init
+  // script somehow doesn't persist (has been seen when storage is cleared
+  // mid-navigation).
   await page.evaluate(() => {
     try {
       localStorage.setItem("onboarding_completed", "true");
       localStorage.setItem("ap_selected_course", "AP_WORLD_HISTORY");
-    } catch { /* private mode — fall through; tests that care will skip */ }
+    } catch { /* private mode — fall through */ }
   });
 
   // Persist the storage state to disk for the authed project to pick up.

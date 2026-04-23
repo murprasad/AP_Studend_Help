@@ -31,7 +31,12 @@ export default defineConfig({
   testDir: "./tests/e2e",
   timeout: 30_000,
   expect: { timeout: 5_000 },
-  fullyParallel: true,
+  // Serial execution. Every authed spec shares the SAME test user (provisioned
+  // by auth.setup.ts with a known email). Parallel workers cause nawal-nudge
+  // and authed-flows to stomp on each other's DashboardImpression rows.
+  // Runtime trade-off: ~2-3x slower, but deterministic and stable in CI.
+  fullyParallel: false,
+  workers: 1,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,
   reporter: process.env.CI ? [["list"], ["html", { open: "never" }]] : "list",
