@@ -51,19 +51,26 @@ function stripLabel(s) {
 }
 
 // Strip common noise around a numeric expression so we can focus on the number.
-// We deliberately keep this conservative: if the residue isn't a shape we
-// explicitly recognize, we return null and the row is "unparseable".
+// Returns { body, unit } — `unit` is the trailing unit token (or "" if none).
+// Fix 2026-04-23: previous version discarded the unit, causing two options
+// with the SAME value but DIFFERENT units (e.g. "1.23 kPa" vs "1.23 atm")
+// to false-positive as equivalent. They're pedagogically valid
+// unit-discrimination distractors — the student must know kPa ≠ atm.
+// Now we capture the unit and the caller will skip pairs whose units differ.
 function normalize(raw) {
-  if (raw == null) return "";
+  if (raw == null) return { body: "", unit: "" };
   let s = String(raw).trim();
-  // Strip leading "= " / "≈ " / "is " / "answer: "
   s = s.replace(/^(?:=|≈|is|answer\s*:?|value\s*:?)\s*/i, "");
-  // Strip surrounding $ and trailing units like "m/s", "kg", "kPa", "%".
-  // Keep "%" since we handle it explicitly below.
   s = s.replace(/^\$/, "");
-  // Trim trailing non-numeric words (crude; only for 1-word trailing units).
-  s = s.replace(/\s+[a-zA-ZµΩ°]+(?:\/[a-zA-Z²³]+)?\.?$/, "");
-  return s.trim();
+  // Capture trailing unit token if present (preserves the raw unit so
+  // downstream can compare kg vs g, J vs N, kPa vs atm).
+  let unit = "";
+  const unitMatch = s.match(/^(.*?)\s+([a-zA-ZµΩ°]+(?:\/[a-zA-Z²³]+)?\.?)$/);
+  if (unitMatch) {
+    s = unitMatch[1].trim();
+    unit = unitMatch[2].toLowerCase().replace(/\.$/, "");
+  }
+  return { body: s.trim(), unit };
 }
 
 function parseNumber(str) {
@@ -74,22 +81,23 @@ function parseNumber(str) {
 }
 
 // Evaluate a single raw option to a number (or null if unparseable in our
-// conservative subset). Returns { value, form } where form describes what
-// we matched — used to report back to the reviewer for debugging.
+// conservative subset). Returns { value, form, unit } where form describes
+// what we matched and unit is the trailing unit token (or "" if none).
+// Unit is preserved so the caller can skip unit-discrimination pairs.
 function evalOption(raw) {
-  let s = normalize(raw);
+  const { body: s, unit } = normalize(raw);
   if (!s) return null;
 
   // Percent: "50%" → 0.5
   const pct = s.match(/^([+-]?(?:\d+\.?\d*|\.\d+))\s*%$/);
   if (pct) {
     const n = Number(pct[1]);
-    if (Number.isFinite(n)) return { value: n / 100, form: "percent" };
+    if (Number.isFinite(n)) return { value: n / 100, form: "percent", unit };
   }
 
   // Plain number
   const asNum = parseNumber(s);
-  if (asNum != null) return { value: asNum, form: "int_or_decimal" };
+  if (asNum != null) return { value: asNum, form: "int_or_decimal", unit };
 
   // Mixed fraction: "a b/c"
   const mixed = s.match(/^([+-]?\d+)\s+(\d+)\s*\/\s*(\d+)$/);
@@ -99,7 +107,7 @@ function evalOption(raw) {
     const den = Number(mixed[3]);
     if (den !== 0 && Number.isFinite(whole) && Number.isFinite(num) && Number.isFinite(den)) {
       const sign = whole < 0 || String(mixed[1]).startsWith("-") ? -1 : 1;
-      return { value: sign * (Math.abs(whole) + num / den), form: "mixed_fraction" };
+      return { value: sign * (Math.abs(whole) + num / den), form: "mixed_fraction", unit };
     }
   }
 
@@ -109,7 +117,7 @@ function evalOption(raw) {
     const a = Number(frac[1]);
     const b = Number(frac[2]);
     if (b !== 0 && Number.isFinite(a) && Number.isFinite(b)) {
-      return { value: a / b, form: "fraction" };
+      return { value: a / b, form: "fraction", unit };
     }
   }
 
@@ -118,7 +126,7 @@ function evalOption(raw) {
   if (mul) {
     const a = Number(mul[1]);
     const b = Number(mul[2]);
-    if (Number.isFinite(a) && Number.isFinite(b)) return { value: a * b, form: "multiplication" };
+    if (Number.isFinite(a) && Number.isFinite(b)) return { value: a * b, form: "multiplication", unit };
   }
 
   // Parenthesized implicit multiplication: "(a)(b)" or "a(b)"
@@ -126,7 +134,7 @@ function evalOption(raw) {
   if (paren) {
     const a = Number(paren[1]);
     const b = Number(paren[2]);
-    if (Number.isFinite(a) && Number.isFinite(b)) return { value: a * b, form: "paren_multiplication" };
+    if (Number.isFinite(a) && Number.isFinite(b)) return { value: a * b, form: "paren_multiplication", unit };
   }
 
   return null; // unparseable in our conservative subset
@@ -181,13 +189,16 @@ async function main() {
     if (parsedCount < 2) continue;
     numericCandidates++;
 
-    // Group by near-equal numeric value
+    // Group by (near-equal numeric value) AND matching unit. Fix
+    // 2026-04-23: options with the same value but DIFFERENT units are
+    // pedagogically valid (unit-discrimination distractors — the student
+    // must know kPa ≠ atm, J ≠ N). Grouping by (value, unit) skips those.
     const groups = [];
     for (const e of evals) {
       if (!e.ev) continue;
-      const g = groups.find((g) => nearlyEqual(g.value, e.ev.value));
+      const g = groups.find((g) => nearlyEqual(g.value, e.ev.value) && g.unit === (e.ev.unit || ""));
       if (g) g.members.push(e);
-      else groups.push({ value: e.ev.value, members: [e] });
+      else groups.push({ value: e.ev.value, unit: e.ev.unit || "", members: [e] });
     }
     const dupGroups = groups.filter((g) => g.members.length >= 2);
     if (dupGroups.length === 0) continue;

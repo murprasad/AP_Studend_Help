@@ -9,6 +9,7 @@
 //
 // Shows before / after counts and uses ApCourse::text LIKE because
 // Postgres enum columns don't support LIKE directly.
+import "dotenv/config";
 import { neon } from "@neondatabase/serverless";
 
 const sql = neon(process.env.DATABASE_URL);
