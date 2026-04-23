@@ -206,25 +206,63 @@ export default function BillingPage() {
         <p className="text-muted-foreground mt-1">Manage your subscription and payment details.</p>
       </div>
 
-      {/* Payment success banner */}
+      {/* Payment success banner — three states:
+            1. Polling (refreshing && !isPremium): "Activating..."
+            2. Confirmed PREMIUM (isPremium): "Welcome to Premium!"
+            3. Polling timed out but still FREE (!refreshing && !isPremium):
+               honest "We received payment but activation is delayed" — never
+               claim Premium when the DB doesn't show it. */}
       {justUpgraded && (
-        <div className="mb-6 rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-4 flex items-start gap-3">
-          <div className="w-9 h-9 rounded-lg bg-emerald-500/20 flex items-center justify-center flex-shrink-0">
-            <PartyPopper className="h-5 w-5 text-emerald-400" />
+        <div
+          className={`mb-6 rounded-xl border p-4 flex items-start gap-3 ${
+            isPremium
+              ? "border-emerald-500/30 bg-emerald-500/10"
+              : refreshing
+                ? "border-emerald-500/30 bg-emerald-500/10"
+                : "border-amber-500/30 bg-amber-500/10"
+          }`}
+        >
+          <div
+            className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 ${
+              isPremium || refreshing ? "bg-emerald-500/20" : "bg-amber-500/20"
+            }`}
+          >
+            {isPremium ? (
+              <PartyPopper className="h-5 w-5 text-emerald-400" />
+            ) : refreshing ? (
+              <Loader2 className="h-5 w-5 animate-spin text-emerald-400" />
+            ) : (
+              <Calendar className="h-5 w-5 text-amber-400" />
+            )}
           </div>
           <div className="flex-1">
-            <p className="font-semibold text-emerald-400">
-              {refreshing && !isPremium ? "Activating your Premium account…" : "Welcome to Premium!"}
-            </p>
-            <p className="text-sm text-muted-foreground mt-0.5">
-              {refreshing && !isPremium
-                ? "Payment confirmed. Waiting for Stripe to activate your account — usually under 10 seconds."
-                : "Your Premium subscription is active. Enjoy unlimited Sage Live Tutor and all premium features!"}
-            </p>
+            {isPremium ? (
+              <>
+                <p className="font-semibold text-emerald-400">Welcome to Premium!</p>
+                <p className="text-sm text-muted-foreground mt-0.5">
+                  Your Premium subscription is active. Enjoy unlimited Sage Live Tutor and all premium features!
+                </p>
+              </>
+            ) : refreshing ? (
+              <>
+                <p className="font-semibold text-emerald-400">Activating your Premium account…</p>
+                <p className="text-sm text-muted-foreground mt-0.5">
+                  Payment confirmed. Waiting for Stripe to activate your account — usually under 10 seconds.
+                </p>
+              </>
+            ) : (
+              <>
+                <p className="font-semibold text-amber-400">Payment received — activation pending</p>
+                <p className="text-sm text-muted-foreground mt-0.5">
+                  We&rsquo;ve received your payment but your account hasn&rsquo;t activated yet. Please refresh this page in a few minutes. If it still shows Free, email{" "}
+                  <a href="mailto:contact@studentnest.ai" className="text-amber-300 underline">
+                    contact@studentnest.ai
+                  </a>{" "}
+                  with your purchase email and we&rsquo;ll fix it within an hour.
+                </p>
+              </>
+            )}
           </div>
-          {refreshing && !isPremium && (
-            <Loader2 className="h-4 w-4 animate-spin text-emerald-400 flex-shrink-0 mt-1" />
-          )}
         </div>
       )}
 

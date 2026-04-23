@@ -11,20 +11,25 @@ async function getUserIdFromSubscription(
   stripe: Stripe,
   subscription: Stripe.Subscription
 ): Promise<string | null> {
-  // Try metadata first (most reliable)
+  // Try metadata first (most reliable — set by /api/checkout for full Checkout Session path)
   if (subscription.metadata?.userId) {
     return subscription.metadata.userId;
   }
 
-  // Fall back to customer email lookup
+  // Email fallback — works for Payment Links that drop client_reference_id.
   const customerId = typeof subscription.customer === "string"
     ? subscription.customer
     : subscription.customer.id;
 
-  const customer = await stripe.customers.retrieve(customerId);
-  if (customer.deleted) return null;
-
-  const email = (customer as Stripe.Customer).email;
+  let email: string | null = null;
+  try {
+    const customer = await stripe.customers.retrieve(customerId);
+    if ("deleted" in customer && customer.deleted) return null;
+    email = (customer as Stripe.Customer).email;
+  } catch (e) {
+    console.warn(`[webhook] customer.retrieve failed for ${customerId}:`, e);
+    return null;
+  }
   if (!email) return null;
 
   const user = await prisma.user.findUnique({ where: { email }, select: { id: true } });
@@ -83,9 +88,32 @@ export async function POST(req: NextRequest) {
         // client_reference_id may be "userId::module" (from payment links) or plain userId
         const rawRef = checkoutSession.client_reference_id || "";
         const [refUserId, refModule] = rawRef.includes("::") ? rawRef.split("::") : [rawRef, ""];
-        const userId = checkoutSession.metadata?.userId || refUserId;
+        let userId = checkoutSession.metadata?.userId || refUserId;
+        let resolvedModule = refModule;
+        // EMAIL FALLBACK: Stripe Payment Links can drop client_reference_id
+        // if "Allow customer to set client reference ID" isn't enabled on the
+        // link. When that happens we get a checkout.session.completed event
+        // with no userId at all. Fall back to looking the user up by the
+        // customer email Stripe captured during checkout.
+        if (!userId) {
+          const fallbackEmail =
+            checkoutSession.customer_details?.email || checkoutSession.customer_email;
+          if (fallbackEmail) {
+            const found = await prisma.user.findUnique({
+              where: { email: fallbackEmail },
+              select: { id: true, track: true },
+            });
+            if (found) {
+              userId = found.id;
+              if (!resolvedModule && found.track) resolvedModule = found.track;
+              console.log(`[webhook] checkout.session.completed: matched user by email=${fallbackEmail} userId=${userId} (event=${event.id})`);
+            } else {
+              console.warn(`[webhook] checkout.session.completed: no user found for email=${fallbackEmail} (event=${event.id})`);
+            }
+          }
+        }
         if (userId && checkoutSession.mode === "subscription") {
-          const module = checkoutSession.metadata?.module || checkoutSession.metadata?.track || refModule || "ap";
+          const module = checkoutSession.metadata?.module || checkoutSession.metadata?.track || resolvedModule || "ap";
           // Write to ModuleSubscription table (new)
           try {
             await prisma.moduleSubscription.upsert({
