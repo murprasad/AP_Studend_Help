@@ -94,11 +94,11 @@ export function AutoLaunchNudge({ course }: Props) {
             </div>
             <div>
               <p id="auto-launch-title" className="text-[17px] font-bold leading-tight">
-                Start with a 3-question warmup?
+                Ready to get your score moving?
               </p>
               <p className="text-[13px] text-muted-foreground mt-1.5">
-                You&apos;ve opened the dashboard a few times today. Get your
-                score moving with a quick warmup — takes about a minute.
+                A quick 3-question warmup takes about a minute. It&apos;s
+                the fastest way to see what your predicted score looks like.
               </p>
             </div>
           </div>

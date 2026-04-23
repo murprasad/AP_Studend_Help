@@ -995,8 +995,10 @@ export default function PracticePage() {
                 </div>
               )}
 
-              {/* Embedded knowledge check — auto-appears after wrong MCQ */}
-              {!feedback.isCorrect && !feedback.frqScore && (
+              {/* Embedded knowledge check — auto-appears after wrong MCQ.
+                  Gated on knowledgeCheckEnabled so the header doesn't
+                  render with an empty body when admin disables the flag. */}
+              {knowledgeCheckEnabled && !feedback.isCorrect && !feedback.frqScore && (
                 <div className="border-t border-border/40 pt-4 space-y-3">
                   <p className="text-xs font-semibold text-amber-400 uppercase tracking-wide flex items-center gap-1.5">
                     <Sparkles className="h-3.5 w-3.5" />

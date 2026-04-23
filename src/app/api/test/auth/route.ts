@@ -40,6 +40,12 @@ export async function POST(req: NextRequest) {
       const count = Math.min(20, Math.max(0, Number(body.count ?? 2)));
       const course = String(body.course ?? "AP_WORLD_HISTORY").slice(0, 64);
       const clearFirst = body.clearFirst === true;
+      // spreadMinutes: if set, backdate the first impression by this many
+      // minutes so the DB rows span a realistic time window. Needed for
+      // the AutoLaunchNudge rule added 2026-04-23 that requires >= 30 min
+      // spread between first and last impression (prevents SSR/hydrate
+      // bursts from triggering the nudge for brand-new users).
+      const spreadMinutes = Math.max(0, Number(body.spreadMinutes ?? 0));
       const user = await prisma.user.findUnique({ where: { email: TEST_EMAIL }, select: { id: true } });
       if (!user) return NextResponse.json({ error: "Test user not found — create first" }, { status: 404 });
 
@@ -49,13 +55,20 @@ export async function POST(req: NextRequest) {
         await prisma.dashboardImpression.deleteMany({ where: { userId: user.id } });
       }
 
-      // Create N impressions — same course, recent timestamps.
+      // Create N impressions across a spread window. Row i gets timestamp
+      // (now - spreadMinutes) + (i / (count-1)) * spreadMinutes, so the
+      // first is `spreadMinutes` old and the last is now-ish.
+      const now = Date.now();
       for (let i = 0; i < count; i++) {
+        const offsetMinutes = count > 1
+          ? spreadMinutes - (i / (count - 1)) * spreadMinutes
+          : 0;
+        const when = new Date(now - offsetMinutes * 60_000);
         await prisma.dashboardImpression.create({
-          data: { userId: user.id, course },
+          data: { userId: user.id, course, dashboardLoadedAt: when },
         });
       }
-      return NextResponse.json({ seeded: count, userId: user.id, course, clearedFirst: clearFirst });
+      return NextResponse.json({ seeded: count, userId: user.id, course, clearedFirst: clearFirst, spreadMinutes });
     }
 
     if (action === "cleanup") {

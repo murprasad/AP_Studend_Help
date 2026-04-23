@@ -24,11 +24,20 @@ test.describe("AutoLaunchNudge — Nawal-pattern", () => {
 
   test.beforeEach(async ({ baseURL }) => {
     // Reset the test user's dashboard + response state, then seed 2
-    // impressions so the nudge should fire on the first dashboard load.
+    // impressions spread across 45 minutes so they pass the new rule
+    // (account age >= 30 min + impression spread >= 30 min). The test
+    // user is long-lived in prod DB so account-age is always satisfied
+    // after the first run.
     const api = await apiRequest.newContext();
     const res = await api.post(`${baseURL}/api/test/auth`, {
       headers: { Authorization: `Bearer ${CRON_SECRET}`, "Content-Type": "application/json" },
-      data: { action: "seed-dashboard-impressions", count: 2, clearFirst: true, course: "AP_WORLD_HISTORY" },
+      data: {
+        action: "seed-dashboard-impressions",
+        count: 2,
+        clearFirst: true,
+        course: "AP_WORLD_HISTORY",
+        spreadMinutes: 45, // ≥ 30 so MIN_IMPRESSION_SPREAD_MINUTES passes
+      },
     });
     expect(res.ok(), `Fixture seed failed: ${res.status()}`).toBe(true);
     await api.dispose();
@@ -98,6 +107,29 @@ test.describe("AutoLaunchNudge — negative cases", () => {
     if (page.url().includes("/onboarding")) test.skip();
     // Give the check a moment to resolve + the modal to be decided.
     await page.waitForTimeout(2000);
-    await expect(page.getByRole("dialog", { name: /3-question warmup/i })).not.toBeVisible();
+    await expect(page.getByRole("dialog", { name: /warmup/i })).not.toBeVisible();
+  });
+
+  test("does NOT render when impressions are clustered (< 30 min spread)", async ({ page, baseURL }) => {
+    // Simulates the SSR+hydrate burst that brand-new users experience —
+    // multiple DashboardImpressions in seconds, not the Nawal pattern.
+    // Real user bug 2026-04-23: first-time signup saw the modal because
+    // of this exact scenario. This test would have caught it.
+    const api = await apiRequest.newContext();
+    await api.post(`${baseURL}/api/test/auth`, {
+      headers: { Authorization: `Bearer ${CRON_SECRET}`, "Content-Type": "application/json" },
+      data: {
+        action: "seed-dashboard-impressions",
+        count: 3,
+        clearFirst: true,
+        spreadMinutes: 0, // all impressions within seconds — NOT the pattern
+      },
+    });
+    await api.dispose();
+
+    await page.goto("/dashboard");
+    if (page.url().includes("/onboarding")) test.skip();
+    await page.waitForTimeout(2000);
+    await expect(page.getByRole("dialog", { name: /warmup/i })).not.toBeVisible();
   });
 });
