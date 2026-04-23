@@ -1725,7 +1725,7 @@ AP Exam: Section I — 100 MCQ (70 min). Section II — 2 FRQ (50 min).`,
   AP_HUMAN_GEOGRAPHY: {
     name: "AP Human Geography",
     shortName: "AP HuGeo",
-    hidden: true, // 2026-04-22 — populate via Phase C before exposing
+    hidden: false, // 2026-04-22 — flipped after Phase C populated 500 MCQs
     examSecsPerQuestion: 60, // 60 MCQ in 60 min
     mockExam: { mcqCount: 60, mcqTimeMinutes: 60 },
     enrichWithEduAPIs: true,
@@ -1995,7 +1995,7 @@ Analysis, Argumentation.
   AP_ENVIRONMENTAL_SCIENCE: {
     name: "AP Environmental Science",
     shortName: "AP Env Sci",
-    hidden: true, // 2026-04-22 — populate via Phase C before exposing
+    hidden: false, // 2026-04-22 — flipped after Phase C populated 501 MCQs
     examSecsPerQuestion: 68, // 80 MCQ in 90 min = 68s each
     mockExam: { mcqCount: 80, mcqTimeMinutes: 90 },
     enrichWithEduAPIs: true,
