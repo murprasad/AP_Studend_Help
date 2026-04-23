@@ -36,6 +36,20 @@ export async function POST(req: NextRequest) {
     // patterns (e.g. "2+ visits with 0 practice" for the Nawal-pattern
     // AutoLaunchNudge). Optionally clears existing DB state first so tests
     // are deterministic.
+    // Reset the test user's onboarding flag so E2E can walk through the
+    // full wizard (course picker → how it works → you're set → pick plan).
+    // Does NOT touch other user state — safe to call before an onboarding
+    // walkthrough test.
+    if (action === "reset-onboarding") {
+      const user = await prisma.user.findUnique({ where: { email: TEST_EMAIL }, select: { id: true } });
+      if (!user) return NextResponse.json({ error: "Test user not found — create first" }, { status: 404 });
+      await prisma.user.update({
+        where: { id: user.id },
+        data: { onboardingCompletedAt: null },
+      });
+      return NextResponse.json({ reset: true, userId: user.id });
+    }
+
     if (action === "seed-dashboard-impressions") {
       const count = Math.min(20, Math.max(0, Number(body.count ?? 2)));
       const course = String(body.course ?? "AP_WORLD_HISTORY").slice(0, 64);

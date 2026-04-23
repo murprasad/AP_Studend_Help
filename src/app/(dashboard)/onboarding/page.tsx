@@ -14,7 +14,7 @@ import { staticCLEP7DayPlan } from "@/lib/clep-plan";
 
 const ONBOARDING_KEY = "onboarding_completed";
 
-type Step = 1 | 2 | 3;
+type Step = 1 | 2 | 3 | 4;
 
 const AP_COURSE_GROUPS = [
   {
@@ -111,8 +111,10 @@ export default function OnboardingPage() {
       });
   }, [router]);
 
-  function completeOnboarding() {
-    // If CLEP track, auto-generate 7-day plan (fire-and-forget)
+  // completeOnboarding — finishes the flow. Optional `then` lets the
+  // plan-choice step route to /billing after marking onboarded (for
+  // users who picked Premium).
+  function completeOnboarding(then: "dashboard" | "billing" = "dashboard") {
     if (effectiveTrack === "clep") {
       fetch("/api/study-plan", {
         method: "POST",
@@ -120,8 +122,6 @@ export default function OnboardingPage() {
         body: JSON.stringify({ course, mode: "7day" }),
       }).catch(() => {});
     }
-    // Write DB flag so admin reset can null it later. localStorage is
-    // kept as a fast-path fallback; the DB flag is authoritative.
     fetch("/api/user", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
@@ -132,13 +132,18 @@ export default function OnboardingPage() {
     } catch {
       // ignore
     }
-    router.push("/dashboard");
+    if (then === "billing") {
+      router.push("/billing?utm_source=onboarding&utm_campaign=plan_choice");
+    } else {
+      router.push("/dashboard");
+    }
   }
 
   const steps = [
     { num: 1, label: "Choose Course" },
     { num: 2, label: "How It Works" },
-    { num: 3, label: "Your Plan" },
+    { num: 3, label: "You're set" },
+    { num: 4, label: "Pick Plan" },
   ];
 
   return (
@@ -367,7 +372,7 @@ export default function OnboardingPage() {
                 variant="ghost"
                 size="sm"
                 className="text-muted-foreground"
-                onClick={completeOnboarding}
+                onClick={() => completeOnboarding("dashboard")}
               >
                 Skip to dashboard
               </Button>
@@ -395,15 +400,92 @@ export default function OnboardingPage() {
             <Button
               size="lg"
               className="w-full gap-2 bg-blue-600 hover:bg-blue-700"
-              onClick={completeOnboarding}
+              onClick={() => setStep(4)}
             >
-              Go to dashboard <ChevronRight className="h-5 w-5" />
+              Continue <ChevronRight className="h-5 w-5" />
             </Button>
             <p className="text-[11px] text-muted-foreground text-center">
-              You&apos;ll see a rough projected score on the dashboard based on your track — sharpen it whenever you&apos;re ready.
+              One more step — pick your plan.
             </p>
             <div className="flex gap-2">
               <Button variant="outline" size="sm" onClick={() => setStep(2)} className="text-xs">
+                Back
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* ── Step 4: Pick your plan ──────────────────────────────────────────
+          Single source of truth for what each tier gets is src/lib/tier-limits.ts.
+          If you change FREE_LIMITS, reflect the change here AND on /billing. */}
+      {step === 4 && (
+        <Card className="border-border/40">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center">
+                <GraduationCap className="h-5 w-5 text-blue-400" />
+              </div>
+              Pick your plan
+            </CardTitle>
+            <CardDescription>
+              Cancel anytime · 7-day money-back guarantee
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {/* Free card */}
+              <div className="rounded-xl border border-border/40 bg-card p-4 flex flex-col">
+                <div className="space-y-1 mb-3">
+                  <p className="text-[11px] uppercase tracking-wide text-muted-foreground font-semibold">Free</p>
+                  <p className="text-2xl font-bold">$0<span className="text-sm font-normal text-muted-foreground"> forever</span></p>
+                </div>
+                <ul className="space-y-1.5 text-[13px] text-foreground/90 flex-1 mb-4">
+                  <li className="flex gap-2"><Check className="h-3.5 w-3.5 text-emerald-500 mt-0.5 shrink-0" />20 practice questions / day</li>
+                  <li className="flex gap-2"><Check className="h-3.5 w-3.5 text-emerald-500 mt-0.5 shrink-0" />Mock exam preview (5 Qs)</li>
+                  <li className="flex gap-2"><Check className="h-3.5 w-3.5 text-emerald-500 mt-0.5 shrink-0" />Unlimited flashcards</li>
+                  <li className="flex gap-2"><Check className="h-3.5 w-3.5 text-emerald-500 mt-0.5 shrink-0" />Predicted AP/SAT/ACT score</li>
+                  <li className="flex gap-2"><Check className="h-3.5 w-3.5 text-emerald-500 mt-0.5 shrink-0" />3 Sage tutor chats / day</li>
+                  <li className="flex gap-2"><Check className="h-3.5 w-3.5 text-emerald-500 mt-0.5 shrink-0" />Diagnostic every 30 days</li>
+                </ul>
+                <Button
+                  variant="outline"
+                  size="lg"
+                  className="w-full"
+                  onClick={() => completeOnboarding("dashboard")}
+                >
+                  Start Free
+                </Button>
+              </div>
+
+              {/* Premium card */}
+              <div className="rounded-xl border-2 border-blue-500/40 bg-gradient-to-br from-blue-500/5 to-primary/5 p-4 flex flex-col relative">
+                <div className="absolute -top-2 right-3 text-[10px] uppercase tracking-wide font-bold bg-blue-500 text-white rounded-full px-2 py-0.5">
+                  Recommended
+                </div>
+                <div className="space-y-1 mb-3">
+                  <p className="text-[11px] uppercase tracking-wide text-blue-400 font-semibold">Premium</p>
+                  <p className="text-2xl font-bold">$9.99<span className="text-sm font-normal text-muted-foreground"> / month</span></p>
+                </div>
+                <ul className="space-y-1.5 text-[13px] text-foreground/90 flex-1 mb-4">
+                  <li className="flex gap-2"><Sparkles className="h-3.5 w-3.5 text-blue-400 mt-0.5 shrink-0" />Unlimited practice + FRQ with AI scoring</li>
+                  <li className="flex gap-2"><Sparkles className="h-3.5 w-3.5 text-blue-400 mt-0.5 shrink-0" />Full mock exams + unlimited retakes</li>
+                  <li className="flex gap-2"><Sparkles className="h-3.5 w-3.5 text-blue-400 mt-0.5 shrink-0" />Unlimited Sage tutor chats</li>
+                  <li className="flex gap-2"><Sparkles className="h-3.5 w-3.5 text-blue-400 mt-0.5 shrink-0" />Full analytics: exactly what to fix</li>
+                  <li className="flex gap-2"><Sparkles className="h-3.5 w-3.5 text-blue-400 mt-0.5 shrink-0" />Personalized Sage Coach week-by-week plan</li>
+                  <li className="flex gap-2"><Sparkles className="h-3.5 w-3.5 text-blue-400 mt-0.5 shrink-0" />Unlimited diagnostic retakes</li>
+                </ul>
+                <Button
+                  size="lg"
+                  className="w-full bg-blue-600 hover:bg-blue-700"
+                  onClick={() => completeOnboarding("billing")}
+                >
+                  Start Premium — $9.99/mo
+                </Button>
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <Button variant="outline" size="sm" onClick={() => setStep(3)} className="text-xs">
                 Back
               </Button>
             </div>
