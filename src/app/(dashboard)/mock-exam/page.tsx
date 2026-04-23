@@ -27,7 +27,7 @@ import {
 } from "lucide-react";
 import { CourseSelectorInline } from "@/components/layout/course-selector-inline";
 import Link from "next/link";
-import { FREE_LIMITS, LOCK_COPY } from "@/lib/tier-limits";
+import { FREE_LIMITS, LOCK_COPY, projectedDaysToTarget } from "@/lib/tier-limits";
 
 type ExamPhase = "intro" | "section1" | "complete";
 type ExamMode = "full" | "quick";
@@ -454,9 +454,25 @@ export default function MockExamPage() {
                   ? "You're trending toward passing — finish the full exam to see your real score and claim your path to a higher number."
                   : `You're trending toward a ${projected}. Finish the full exam to see your real score and unlock the week-by-week plan that gets you to a 3.`}
               </p>
+              {/* Projected time-to-pass comparison — Option B conversion lever
+                  (reviewer 2026-04-22). Roughly 300 Qs to go from 2 → 3 on
+                  most AP exams; the math is coarse on purpose so students
+                  feel the compression, not chase precision. */}
+              {!passing && (() => {
+                const approxQsToTarget = 300;
+                const { freeDays, premiumDays } = projectedDaysToTarget(approxQsToTarget);
+                return (
+                  <div className="rounded-lg border border-border/40 bg-muted/40 p-3 text-[12px] text-left">
+                    <p className="text-muted-foreground">At your current pace</p>
+                    <p className="font-semibold text-foreground tabular-nums">~{freeDays} days to passing</p>
+                    <p className="text-muted-foreground mt-2">With unlimited practice</p>
+                    <p className="font-semibold text-emerald-600 tabular-nums">~{premiumDays} days to passing</p>
+                  </div>
+                );
+              })()}
               <Link href={`/billing?utm_source=mock_exam&utm_campaign=q5_paywall&course=${course}`}>
                 <Button size="lg" className={`w-full h-12 text-base font-semibold shadow-lg ${passing ? "bg-blue-600 hover:bg-blue-700" : "bg-red-600 hover:bg-red-700"} text-white`}>
-                  Finish Full Exam — 7-Day Free Trial
+                  Finish Full Exam — Upgrade $9.99/mo
                 </Button>
               </Link>
               <button

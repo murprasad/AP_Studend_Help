@@ -21,6 +21,8 @@ import { DiagnosticNudgeModal } from "@/components/practice/diagnostic-nudge-mod
 import { useExamMode } from "@/hooks/use-exam-mode";
 import { useSearchParams } from "next/navigation";
 import { hapticSuccess, hapticError } from "@/lib/haptics";
+import { FirstSessionCelebration } from "@/components/practice/first-session-celebration";
+import { SessionLimitHitCard } from "@/components/practice/session-limit-hit-card";
 import {
   Zap,
   BookOpen,
@@ -611,6 +613,11 @@ export default function PracticePage() {
   if (mode === "summary" && sessionSummary) {
     return (
       <div className="max-w-2xl mx-auto space-y-6">
+        {/* First-session celebration — fires confetti once on the very
+            first summary screen the user ever sees, and a smaller Medium
+            celebration on subsequent ≥80% sessions. Gated by
+            sessionStorage so a hot reload / tab reopen doesn't retrigger. */}
+        <FirstSessionCelebration accuracy={sessionSummary.accuracy} />
         {/* A22.6 port — Session feedback popup. Shows once per source+course
             after the first completed session, asks rating + text on thumbs-down. */}
         <SessionFeedbackPopup
@@ -1166,29 +1173,9 @@ export default function PracticePage() {
         })()}
       </div>
 
-      {/* Session limit reached */}
-      {sessionLimitReached && (
-        <Card className="card-glow border-yellow-500/30 bg-yellow-500/5">
-          <CardContent className="p-5">
-            <div className="flex items-start gap-3">
-              <Crown className="h-5 w-5 text-yellow-400 flex-shrink-0 mt-0.5" />
-              <div className="space-y-2">
-                <p className="font-semibold text-yellow-300">You&apos;ve used your 3 free sessions today</p>
-                <p className="text-sm text-muted-foreground">
-                  {userTrack === "clep"
-                    ? "Unlock unlimited CLEP practice with CLEP Premium."
-                    : "Unlock unlimited practice + FRQ with AI scoring with AP Premium."}
-                </p>
-                <Link href="/pricing">
-                  <Button size="sm" className={`gap-2 mt-1 ${userTrack === "clep" ? "bg-emerald-600 hover:bg-emerald-700" : "bg-blue-600 hover:bg-blue-700"}`}>
-                    <Crown className="h-4 w-4" /> Upgrade to {userTrack === "clep" ? "CLEP Premium" : "AP Premium"}
-                  </Button>
-                </Link>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      )}
+      {/* Session limit reached — sharpened lock copy + projected-time-
+          to-pass comparison (Option B, reviewer 2026-04-22). */}
+      {sessionLimitReached && <SessionLimitHitCard course={course} />}
 
       {/* Premium upsell — only when the premium-restriction flag is ON.
           When the flag is OFF (dev/QA), non-premium users have full FRQ
