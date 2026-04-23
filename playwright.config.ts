@@ -63,7 +63,9 @@ export default defineConfig({
               ...devices["Desktop Chrome"],
               storageState: AUTH_FILE,
             },
-            testMatch: /authed-flows\.spec\.ts/,
+            // Match any authed spec. Currently: authed-flows + nawal-nudge.
+            // New authed specs drop in without config changes.
+            testMatch: /(authed-flows|nawal-nudge)\.spec\.ts/,
             dependencies: ["setup"],
           },
         ]

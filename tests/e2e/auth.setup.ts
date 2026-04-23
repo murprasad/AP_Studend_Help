@@ -61,11 +61,20 @@ setup("authenticate as functional test user", async ({ request, page }) => {
   // Hit the dashboard once to confirm the session is honored — if the JWT
   // is rejected we fail fast here instead of in the first real test.
   await page.goto(`${baseURL}/dashboard`);
-  // Either the dashboard renders OR we get redirected to /onboarding (also
-  // a logged-in state). Either is fine — the failure mode we're guarding
-  // against is /login.
   const url2 = page.url();
   expect(url2, `Expected dashboard or onboarding, got: ${url2}`).not.toContain("/login");
+
+  // Pre-set the onboarding-completed flag so downstream authed tests don't
+  // redirect to /onboarding (which breaks specs that target /flashcards,
+  // /practice, etc.). localStorage persists into storageState so every
+  // authed project starts past onboarding. The dashboard layout reads
+  // this flag and skips the redirect.
+  await page.evaluate(() => {
+    try {
+      localStorage.setItem("onboarding_completed", "true");
+      localStorage.setItem("ap_selected_course", "AP_WORLD_HISTORY");
+    } catch { /* private mode — fall through; tests that care will skip */ }
+  });
 
   // Persist the storage state to disk for the authed project to pick up.
   fs.mkdirSync(path.dirname(AUTH_FILE), { recursive: true });
