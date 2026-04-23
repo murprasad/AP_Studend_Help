@@ -26,12 +26,18 @@ import { Input } from "@/components/ui/input";
 import { Lock, Check, Loader2, ArrowRight } from "lucide-react";
 import Link from "next/link";
 
-interface UserResponse {
-  subscriptionTier?: "FREE" | "PREMIUM";
+interface LimitsResponse {
+  tier: "FREE" | "PREMIUM";
+  unlimited: boolean;
+  usage?: {
+    practice: { used: number; limit: number; remaining: number };
+    tutor: { used: number; limit: number; remaining: number };
+    mockExam: { previewQuestions: number };
+  } | null;
 }
 
 export function LockedValueCard() {
-  const [tier, setTier] = useState<"FREE" | "PREMIUM" | null>(null);
+  const [data, setData] = useState<LimitsResponse | null>(null);
   const [open, setOpen] = useState(false);
   const [email, setEmail] = useState("");
   const [parentName, setParentName] = useState("");
@@ -41,17 +47,17 @@ export function LockedValueCard() {
 
   useEffect(() => {
     let cancelled = false;
-    fetch("/api/user", { cache: "no-store" })
+    fetch("/api/user/limits", { cache: "no-store" })
       .then((r) => (r.ok ? r.json() : null))
-      .then((d: UserResponse | null) => {
-        if (!cancelled && d) setTier(d.subscriptionTier === "PREMIUM" ? "PREMIUM" : "FREE");
+      .then((d: LimitsResponse | null) => {
+        if (!cancelled && d) setData(d);
       })
-      .catch(() => { if (!cancelled) setTier("FREE"); });
+      .catch(() => { /* silent — component hides on fetch failure */ });
     return () => { cancelled = true; };
   }, []);
 
-  // PREMIUM users see nothing. Loading also hides (no flash of lock).
-  if (tier !== "FREE") return null;
+  // PREMIUM or loading — hide entirely. Never flash a lock at a paying user.
+  if (!data || data.tier !== "FREE" || data.unlimited) return null;
   if (sent) {
     return (
       <Card className="rounded-[16px] border-emerald-500/30 bg-emerald-500/5">
@@ -109,15 +115,23 @@ export function LockedValueCard() {
           </div>
         </div>
 
-        {/* The locks — framed emotionally, not as a feature list */}
+        {/* The locks — framed emotionally, not as a feature list.
+            Numbers pulled from /api/user/limits so they match the
+            actual cap (single source of truth in tier-limits.ts). */}
         <ul className="space-y-2 text-[13px]">
           <li className="flex gap-2">
             <Lock className="h-3.5 w-3.5 text-muted-foreground/70 mt-0.5 shrink-0" />
-            <span><span className="font-medium text-foreground">Unlimited practice</span> — 20/day is too slow to pass</span>
+            <span>
+              <span className="font-medium text-foreground">Unlimited practice</span>
+              {data.usage && ` — ${data.usage.practice.limit}/day is too slow to pass`}
+            </span>
           </li>
           <li className="flex gap-2">
             <Lock className="h-3.5 w-3.5 text-muted-foreground/70 mt-0.5 shrink-0" />
-            <span><span className="font-medium text-foreground">Full mock exams</span> — simulate test day, not just Q1&ndash;5</span>
+            <span>
+              <span className="font-medium text-foreground">Full mock exams</span>
+              {data.usage && ` — simulate test day, not just Q1–${data.usage.mockExam.previewQuestions}`}
+            </span>
           </li>
           <li className="flex gap-2">
             <Lock className="h-3.5 w-3.5 text-muted-foreground/70 mt-0.5 shrink-0" />

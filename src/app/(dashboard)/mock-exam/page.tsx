@@ -27,6 +27,7 @@ import {
 } from "lucide-react";
 import { CourseSelectorInline } from "@/components/layout/course-selector-inline";
 import Link from "next/link";
+import { FREE_LIMITS, LOCK_COPY } from "@/lib/tier-limits";
 
 type ExamPhase = "intro" | "section1" | "complete";
 type ExamMode = "full" | "quick";
@@ -204,10 +205,11 @@ export default function MockExamPage() {
 
   function nextQuestion() {
     const total = questionsRef.current.length;
-    // Partial-lock gate for FREE users: after Q5 (currentIndex=4 since
-    // 0-indexed), surface the projected-score paywall instead of
-    // advancing. Premium users flow through normally.
-    if (!hasPremium && currentIndex === 4 && currentIndex + 1 < total) {
+    // Partial-lock gate for FREE users: after the tier-limit-configured
+    // preview (default 5 Qs), surface the projected-score paywall instead
+    // of advancing. Premium users flow through normally. Limit lives in
+    // src/lib/tier-limits.ts so a future spec change is one-file.
+    if (!hasPremium && currentIndex === FREE_LIMITS.mockExamQuestions - 1 && currentIndex + 1 < total) {
       setShowPartialPaywall(true);
       return;
     }
@@ -421,7 +423,8 @@ export default function MockExamPage() {
     // At Q5 with nextQuestion() blocked, reveal a projected score so
     // the user feels the mid-investment moment, then gate continuation.
     if (showPartialPaywall) {
-      const pct = Math.round((correctCount / 5) * 100);
+      const previewCount = FREE_LIMITS.mockExamQuestions;
+      const pct = Math.round((correctCount / previewCount) * 100);
       // AP 1-5 mapping: ≥80% = 5, ≥65% = 4, ≥50% = 3, ≥35% = 2, else 1
       const projected = pct >= 80 ? 5 : pct >= 65 ? 4 : pct >= 50 ? 3 : pct >= 35 ? 2 : 1;
       const passing = projected >= 3;
@@ -440,7 +443,10 @@ export default function MockExamPage() {
                   {projected}
                 </p>
                 <p className="text-sm text-muted-foreground mt-2">
-                  {correctCount}/5 correct so far
+                  {correctCount}/{FREE_LIMITS.mockExamQuestions} correct so far
+                </p>
+                <p className="text-xs text-muted-foreground mt-1 italic">
+                  {LOCK_COPY.mockExamPaywall}
                 </p>
               </div>
               <p className="text-sm leading-relaxed">

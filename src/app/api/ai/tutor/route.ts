@@ -8,6 +8,7 @@ import { VALID_AP_COURSES } from "@/lib/courses";
 import { isAiLimitEnabled, isPaymentsEnabled } from "@/lib/settings";
 import { rateLimit } from "@/lib/rate-limit";
 import { isPremiumForTrack, hasAnyPremium, type ModuleSub } from "@/lib/tiers";
+import { FREE_LIMITS, LOCK_COPY } from "@/lib/tier-limits";
 
 async function computeCacheKey(message: string, course: string): Promise<string> {
   const input = `${message.toLowerCase().trim()}|${course}`;
@@ -39,7 +40,9 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Invalid course" }, { status: 400 });
     }
 
-    // Daily limit for non-premium users (only for new conversations)
+    // Daily Sage chat cap for FREE users (Option B — 2026-04-22).
+    // Sharpened 5 → 3 per reviewer feedback: "I need one more explanation"
+    // should become a pay moment, not a near-unlimited free allowance.
     const moduleSubs: ModuleSub[] = (session.user as { moduleSubs?: ModuleSub[] }).moduleSubs ?? [];
     const hasPremium = hasAnyPremium(moduleSubs) || isPremiumForTrack(session.user.subscriptionTier, session.user.track ?? "ap");
     if (!conversationId && !hasPremium) {
@@ -50,11 +53,14 @@ export async function POST(req: NextRequest) {
         const dailyCount = await prisma.tutorConversation.count({
           where: { userId: session.user.id, createdAt: { gte: startOfDay } },
         });
-        if (dailyCount >= 5) {
+        if (dailyCount >= FREE_LIMITS.tutorChatsPerDay) {
           return NextResponse.json({
-            error: "Daily limit reached. Free accounts can start 5 new conversations per day. Upgrade to Premium for unlimited access.",
+            error: LOCK_COPY.tutorCap,
             limitExceeded: true,
-            upgradeUrl: "/pricing",
+            limitType: "daily_tutor_cap",
+            dailyCount,
+            capAmount: FREE_LIMITS.tutorChatsPerDay,
+            upgradeUrl: "/billing?utm_source=tutor_cap&utm_campaign=sage_limit",
           }, { status: 429 });
         }
       }

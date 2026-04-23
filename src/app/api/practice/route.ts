@@ -8,6 +8,7 @@ import { generateQuestion } from "@/lib/ai";
 import { isPremiumRestrictionEnabled, getSetting } from "@/lib/settings";
 import { rateLimit } from "@/lib/rate-limit";
 import { isPremiumForTrack, isAnyPremium, hasModulePremium, hasAnyPremium, type ModuleSub } from "@/lib/tiers";
+import { FREE_LIMITS, LOCK_COPY } from "@/lib/tier-limits";
 
 // Create a new practice session
 export async function POST(req: NextRequest) {
@@ -41,45 +42,23 @@ export async function POST(req: NextRequest) {
       getSetting("ai_generation_enabled", "true").then((v) => v === "true"),
     ]);
 
-    // Gate FRQ/SAQ/LEQ/DBQ behind Premium (only when premium restriction is enabled)
+    // FRQ/SAQ/LEQ/DBQ are Premium-only under Option B. No feature-flag
+    // dependency — FRQ access is simply not in FREE_LIMITS.frqAccess.
     const isFrqType = requestedType && requestedType !== "MCQ";
-    if (premiumRestricted && isFrqType && !hasPremium) {
+    if (isFrqType && !hasPremium && !FREE_LIMITS.frqAccess) {
       return NextResponse.json({
-        error: "FRQ practice (SAQ, LEQ, DBQ) requires a Premium subscription.",
+        error: LOCK_COPY.frqLocked,
         limitExceeded: true,
-        upgradeUrl: "/pricing",
+        limitType: "frq_locked",
+        upgradeUrl: "/billing?utm_source=frq_lock&utm_campaign=frq",
       }, { status: 403 });
     }
 
-    // Gate FREE users to 3 practice sessions/day (mock exams excluded, only when restriction is enabled)
-    if (premiumRestricted && (sessionType === "PRACTICE" || sessionType === "QUICK_PRACTICE" || sessionType === "FOCUSED_STUDY")) {
-      if (!hasPremium) {
-        const startOfDay = new Date();
-        startOfDay.setHours(0, 0, 0, 0);
-        const todaySessions = await prisma.practiceSession.count({
-          where: {
-            userId: session.user.id,
-            startedAt: { gte: startOfDay },
-            status: { not: "ABANDONED" },
-          },
-        });
-        if (todaySessions >= 3) {
-          return NextResponse.json({
-            error: "Free accounts get 3 practice sessions per day. Upgrade to Premium for unlimited practice.",
-            limitExceeded: true,
-            upgradeUrl: "/pricing",
-          }, { status: 429 });
-        }
-      }
-    }
-
-    // Daily question-count cap for FREE users (feedback 2026-04-22,
-    // conversion-lever item #2 — urgency-framed cap). 15 Qs/day.
-    // AP season → short pace-deficit math on the cap-hit error.
-    // The cap fires on session-create: if adding this session would
-    // push today's answered-count past 15, block with an urgency
-    // message that mentions how short of passing pace they are.
-    const DAILY_Q_CAP = 15;
+    // Single daily question cap for FREE users (Option B — 2026-04-22).
+    // Replaces the prior overlapping 15 Qs/day + 3 sessions/day rules
+    // (two overlapping caps confused students per reviewer feedback).
+    // One cap. One number. Urgency-framed copy via LOCK_COPY.practiceCap.
+    // Mock exams intentionally excluded — they have their own Q5 paywall.
     if (!hasPremium && (sessionType === "PRACTICE" || sessionType === "QUICK_PRACTICE" || sessionType === "FOCUSED_STUDY")) {
       const startOfDay = new Date();
       startOfDay.setHours(0, 0, 0, 0);
@@ -89,18 +68,13 @@ export async function POST(req: NextRequest) {
           answeredAt: { gte: startOfDay },
         },
       });
-      if (todayAnswered >= DAILY_Q_CAP) {
-        // Approximate deficit-to-passing pace: AP students typically need
-        // 30-40 correct per unit × 5-9 units + weekly practice. A 15/day
-        // cap over 14 days (typical AP runway) = 210 total; a pass-target
-        // plan needs ~500, so deficit ≈ 290. The exact number isn't the
-        // point — the framing of "short of passing pace" is.
+      if (todayAnswered >= FREE_LIMITS.practiceQuestionsPerDay) {
         return NextResponse.json({
-          error: "You've hit today's 15-question cap. Students who practice 30+/day during AP season pass at 2.3× the rate.",
+          error: LOCK_COPY.practiceCap,
           limitExceeded: true,
           limitType: "daily_question_cap",
           answeredToday: todayAnswered,
-          capAmount: DAILY_Q_CAP,
+          capAmount: FREE_LIMITS.practiceQuestionsPerDay,
           upgradeUrl: "/billing?utm_source=daily_cap&utm_campaign=q_limit",
         }, { status: 429 });
       }
