@@ -1,8 +1,9 @@
 /**
  * tier-limits.ts — single source of truth for FREE / PREMIUM tier gates.
  *
- * Governing principle (DO NOT delete):
- *   Free users should feel progress — but not certainty.
+ * Governing principle (DO NOT delete — refined 2026-04-23 by reviewer):
+ *   Free users should feel progress, curiosity, and limits — but never
+ *   completion.
  *
  * Every API route that gates functionality and every UI component that
  * renders a lock MUST import from this file. Do not hardcode limit
@@ -11,12 +12,15 @@
  * way a future limit change requires editing exactly one file and
  * redeploying, with no chance of UI/API drift.
  *
- * Approved 2026-04-22 — replaces the prior hybrid model (scattered
- * flags, 7-day trial enforcement, daily-question + session-count double
- * cap, 5 tutor chats). Sharpened per reviewer feedback: tutor chats
- * dropped from 5 → 3 so "I need one more explanation" becomes a pay
- * moment; full-analytics split so diagnosis is free but prescription
- * is locked.
+ * Evolution:
+ * - 2026-04-22: Replaced hybrid model (scattered flags, 7-day trial,
+ *   double cap). Single source of truth. Sharpened tutor chats 5 → 3.
+ * - 2026-04-23: Reviewer sharpening pass. Diagnostic 30 → 14 days so
+ *   the retake rhythm matches product cadence. 1 free FRQ attempt
+ *   lifetime to let users experience AI scoring once (strong
+ *   conversion trigger). Flashcards stay unlimited but lose SM-2
+ *   smart scheduling for free (linear order). Analytics moved from
+ *   label-free to explanation-locked.
  */
 
 export type SubTier = "FREE" | "PREMIUM";
@@ -33,14 +37,18 @@ export const FREE_LIMITS = {
   tutorChatsPerDay: 3,
   /** How many mock-exam questions the student sees before the paywall. */
   mockExamQuestions: 5,
-  /** Whether FRQ (SAQ, LEQ, DBQ, Coding) practice is available. */
+  /** Whether FRQ (SAQ, LEQ, DBQ, Coding) practice is available at all. */
   frqAccess: false,
+  /** Free FRQ attempts LIFETIME. 1 = experience AI scoring once, then lock. */
+  frqFreeAttempts: 1,
   /** Whether analytics shows prescriptive detail (what to fix) vs just diagnosis (where they're weak). */
   fullAnalytics: false,
   /** Whether Sage Coach produces a deep personalized plan (free users get a brief snippet). */
   sageCoachDeepPlan: false,
-  /** Cooldown between diagnostics in days. Premium is uncapped. */
-  diagnosticCooldownDays: 30,
+  /** Whether flashcards use SM-2 smart scheduling. Free = linear order; Premium = spaced-repetition optimized. */
+  flashcardSmartScheduling: false,
+  /** Cooldown between diagnostics in days. Premium is uncapped. Cadence matches product loop. */
+  diagnosticCooldownDays: 14,
 } as const;
 
 export type FreeLimits = typeof FREE_LIMITS;
@@ -52,20 +60,23 @@ export type FreeLimits = typeof FREE_LIMITS;
  * so the product speaks with one voice.
  */
 export const LOCK_COPY = {
+  // Refined 2026-04-23 per reviewer — less aggressive, more credible.
   practiceCap:
-    "You're improving — but this pace is too slow to pass.",
+    "Daily practice limit reached. More practice = faster score improvement.",
   mockExamPaywall:
     "You can't simulate the real exam without Premium.",
+  // Refined 2026-04-23 — exam-specific + more direct.
   frqLocked:
-    "Colleges grade written answers — you're not practicing this.",
+    "AP exams are graded on written answers — you're not practicing this.",
   analyticsLocked:
     "See exactly what to fix, not just where you're weak.",
   tutorCap:
     "Students who ask one more question on the concepts they miss pass 2.3× more often. Keep going — unlimited on Premium.",
   sageCoachLocked:
     "Personalized week-by-week plan — not a generic template.",
+  // Refined 2026-04-23 with new 14-day cadence.
   diagnosticCooldown:
-    "Your diagnostic is good for 30 days. Premium unlocks unlimited retakes so you can measure progress weekly.",
+    "Your diagnostic updates every 14 days. Upgrade to track progress anytime.",
 } as const;
 
 /**

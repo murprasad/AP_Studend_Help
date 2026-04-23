@@ -38,13 +38,16 @@ test.describe("Onboarding plan-choice", () => {
   // is visible only when that step is active.
   async function walkToPlanStep(page: import("@playwright/test").Page) {
     await page.goto("/onboarding");
-    // Step 1 → 2 (course selection has its own continue button — we use the
-    // default AP World History and click Continue/Next)
-    await page.getByRole("button", { name: /^(continue|next)/i }).first().click();
-    // Step 2 → 3
-    await page.getByRole("button", { name: /^(continue|next)/i }).first().click();
-    // Step 3 → 4
-    await page.getByRole("button", { name: /^(continue|next)/i }).first().click();
+    // Step 1: "Continue with {course}" button — specific text
+    const step1 = page.getByRole("button", { name: /continue with/i });
+    await step1.waitFor({ state: "visible", timeout: 15000 });
+    await step1.click();
+    // Step 2: generic "Continue" button
+    await page.waitForTimeout(400);
+    await page.getByRole("button", { name: /^continue$/i }).first().click();
+    // Step 3: generic "Continue" button
+    await page.waitForTimeout(400);
+    await page.getByRole("button", { name: /^continue$/i }).first().click();
   }
 
   test("step 4 renders both Free and Premium cards", async ({ page }) => {
@@ -63,7 +66,7 @@ test.describe("Onboarding plan-choice", () => {
     await expect(body).toContainText(/Unlimited flashcards/i);
     await expect(body).toContainText(/Predicted AP\/SAT\/ACT/i);
     await expect(body).toContainText(/3 Sage tutor chats/i);
-    await expect(body).toContainText(/Diagnostic every 30 days/i);
+    await expect(body).toContainText(/Diagnostic every 14 days/i);
   });
 
   test("Premium card shows $9.99 anchor + unlimited features", async ({ page }) => {

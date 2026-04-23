@@ -38,28 +38,35 @@ test.describe("First-time-user FMEA — end-to-end walkthrough", () => {
     await api.dispose();
   });
 
-  test("FMEA-1: onboarding wizard walks 1 → 2 → 3 → 4 with sensible copy", async ({ page }) => {
+  // Helper — walk steps 1..4. Step 1 has a specific "Continue with {course}"
+  // button; steps 2 & 3 have generic "Continue" buttons. Each call waits
+  // for the next step's presence to confirm the transition completed.
+  async function walkOnboarding(page: import("@playwright/test").Page) {
     await page.goto("/onboarding");
-    // Step 1: course picker
-    await expect(page.locator("body")).toContainText(/AP World History|choose.*course/i);
-    await page.getByRole("button", { name: /^(continue|next)/i }).first().click();
-    // Step 2: How It Works
-    await page.waitForTimeout(500);
-    // Step 3: You're set
-    await page.getByRole("button", { name: /^(continue|next)/i }).first().click();
-    await page.waitForTimeout(500);
-    await page.getByRole("button", { name: /^(continue|next)/i }).first().click();
+    // Step 1: click "Continue with AP World Hist" (course picker)
+    const step1 = page.getByRole("button", { name: /continue with/i });
+    await step1.waitFor({ state: "visible", timeout: 15000 });
+    await step1.click();
+    // Step 2: "Here's how StudentNest works" → Continue
+    await page.waitForTimeout(400);
+    const step2 = page.getByRole("button", { name: /^continue$/i }).first();
+    await step2.waitFor({ state: "visible", timeout: 10000 });
+    await step2.click();
+    // Step 3: "You're all set!" → Continue
+    await page.waitForTimeout(400);
+    const step3 = page.getByRole("button", { name: /^continue$/i }).first();
+    await step3.waitFor({ state: "visible", timeout: 10000 });
+    await step3.click();
+  }
+
+  test("FMEA-1: onboarding wizard walks 1 → 2 → 3 → 4 with sensible copy", async ({ page }) => {
+    await walkOnboarding(page);
     // Step 4: Pick your plan
     await expect(page.getByText("Pick your plan")).toBeVisible({ timeout: 10000 });
   });
 
   test("FMEA-2: Free card copy matches Option B spec exactly", async ({ page }) => {
-    await page.goto("/onboarding");
-    // Walk to step 4
-    for (let i = 0; i < 3; i++) {
-      await page.getByRole("button", { name: /^(continue|next)/i }).first().click();
-      await page.waitForTimeout(300);
-    }
+    await walkOnboarding(page);
     await expect(page.getByText("Pick your plan")).toBeVisible({ timeout: 10000 });
     const body = page.locator("body");
     // 6 canonical free features — if any of these change, update tier-limits.ts
@@ -69,17 +76,13 @@ test.describe("First-time-user FMEA — end-to-end walkthrough", () => {
     await expect(body).toContainText(/Unlimited flashcards/i);
     await expect(body).toContainText(/Predicted AP\/SAT\/ACT score/i);
     await expect(body).toContainText(/3 Sage tutor chats/i);
-    await expect(body).toContainText(/Diagnostic every 30 days/i);
+    await expect(body).toContainText(/Diagnostic every 14 days/i);
     // Money-back + cancel-anytime disclaimers present
     await expect(body).toContainText(/Cancel anytime.*money-back/i);
   });
 
   test("FMEA-3: Free path lands on dashboard with 'Ready to get your score moving?' gate NOT fired", async ({ page }) => {
-    await page.goto("/onboarding");
-    for (let i = 0; i < 3; i++) {
-      await page.getByRole("button", { name: /^(continue|next)/i }).first().click();
-      await page.waitForTimeout(300);
-    }
+    await walkOnboarding(page);
     await page.getByRole("button", { name: /^start free/i }).click();
     await page.waitForURL(/\/dashboard/, { timeout: 10000 });
     // Nawal nudge MUST NOT fire for a fresh user (account < 30 min OR
@@ -94,18 +97,14 @@ test.describe("First-time-user FMEA — end-to-end walkthrough", () => {
   test("FMEA-4: FRQ Practice is paywalled for free user", async ({ page }) => {
     // Fresh user from beforeEach. Navigate to FRQ.
     // Complete onboarding first so we can reach /frq-practice without redirect.
-    await page.goto("/onboarding");
-    for (let i = 0; i < 3; i++) {
-      await page.getByRole("button", { name: /^(continue|next)/i }).first().click();
-      await page.waitForTimeout(300);
-    }
+    await walkOnboarding(page);
     await page.getByRole("button", { name: /^start free/i }).click();
     await page.waitForURL(/\/dashboard/, { timeout: 10000 });
     // Switch to a course that has FRQs (AP_PHYSICS_1 is in CLUSTER_A)
     await page.goto("/frq-practice?course=AP_PHYSICS_1");
     // Paywall copy — LOCK_COPY.frqLocked
     await expect(page.locator("body")).toContainText(
-      /Colleges grade written answers/i,
+      /graded on written answers/i,
       { timeout: 10000 },
     );
     // Upgrade CTA present
@@ -113,11 +112,7 @@ test.describe("First-time-user FMEA — end-to-end walkthrough", () => {
   });
 
   test("FMEA-5: Flashcards page shows current course name prominently", async ({ page }) => {
-    await page.goto("/onboarding");
-    for (let i = 0; i < 3; i++) {
-      await page.getByRole("button", { name: /^(continue|next)/i }).first().click();
-      await page.waitForTimeout(300);
-    }
+    await walkOnboarding(page);
     await page.getByRole("button", { name: /^start free/i }).click();
     await page.waitForURL(/\/dashboard/, { timeout: 10000 });
     await page.goto("/flashcards");
@@ -128,11 +123,7 @@ test.describe("First-time-user FMEA — end-to-end walkthrough", () => {
   });
 
   test("FMEA-6: Sidebar nav items all resolve to 200 for free user", async ({ page }) => {
-    await page.goto("/onboarding");
-    for (let i = 0; i < 3; i++) {
-      await page.getByRole("button", { name: /^(continue|next)/i }).first().click();
-      await page.waitForTimeout(300);
-    }
+    await walkOnboarding(page);
     await page.getByRole("button", { name: /^start free/i }).click();
     await page.waitForURL(/\/dashboard/, { timeout: 10000 });
     const paths = ["/practice", "/mock-exam", "/diagnostic", "/flashcards", "/analytics", "/study-plan", "/resources", "/billing"];
@@ -144,11 +135,7 @@ test.describe("First-time-user FMEA — end-to-end walkthrough", () => {
   });
 
   test("FMEA-7: Predicted score format is native (no '%' probability)", async ({ page }) => {
-    await page.goto("/onboarding");
-    for (let i = 0; i < 3; i++) {
-      await page.getByRole("button", { name: /^(continue|next)/i }).first().click();
-      await page.waitForTimeout(300);
-    }
+    await walkOnboarding(page);
     await page.getByRole("button", { name: /^start free/i }).click();
     await page.waitForURL(/\/dashboard/, { timeout: 10000 });
     const text = await page.locator("body").innerText();
@@ -159,11 +146,7 @@ test.describe("First-time-user FMEA — end-to-end walkthrough", () => {
   });
 
   test("FMEA-8: Premium path routes to /billing with utm_source=onboarding", async ({ page }) => {
-    await page.goto("/onboarding");
-    for (let i = 0; i < 3; i++) {
-      await page.getByRole("button", { name: /^(continue|next)/i }).first().click();
-      await page.waitForTimeout(300);
-    }
+    await walkOnboarding(page);
     await page.getByRole("button", { name: /Start Premium/i }).click();
     await page.waitForURL(/\/billing/, { timeout: 10000 });
     expect(page.url()).toContain("utm_source=onboarding");
@@ -180,7 +163,9 @@ test.describe("First-time-user FMEA — end-to-end walkthrough", () => {
       expect(d.limits.frqAccess).toBe(false);
       expect(d.limits.fullAnalytics).toBe(false);
       expect(d.limits.sageCoachDeepPlan).toBe(false);
-      expect(d.limits.diagnosticCooldownDays).toBe(30);
+      expect(d.limits.diagnosticCooldownDays).toBe(14);
+      expect(d.limits.frqFreeAttempts).toBe(1);
+      expect(d.limits.flashcardSmartScheduling).toBe(false);
     }
   });
 

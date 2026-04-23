@@ -13,6 +13,7 @@ import { FrqPracticeCard } from "@/components/practice/frq-practice-card";
 import { ApCourse, ApUnit } from "@prisma/client";
 import { Loader2, ChevronRight, PenLine, BookOpen, Lock } from "lucide-react";
 import Link from "next/link";
+import { LOCK_COPY } from "@/lib/tier-limits";
 
 // ── Cluster A: quantitative FRQs currently supported ─────────────────────────
 // Other AP courses still see the page shell + an "FRQs coming soon" note so
@@ -129,9 +130,8 @@ export default function FrqPracticePage() {
             <div className="space-y-2">
               <h2 className="text-xl font-bold">FRQ practice is a Premium feature</h2>
               <p className="text-[15px] text-foreground/90 leading-relaxed max-w-md mx-auto">
-                Colleges grade written answers — you&apos;re not practicing this.
-                Upgrade to unlock every AP FRQ from 2013 onward, with official
-                rubrics and sample answers.
+                {LOCK_COPY.frqLocked} Upgrade to unlock every AP FRQ from
+                2013 onward, with official rubrics and sample answers.
               </p>
             </div>
             <div className="pt-2 space-y-2">

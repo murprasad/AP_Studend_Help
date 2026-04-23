@@ -446,7 +446,7 @@ export default function OnboardingPage() {
                   <li className="flex gap-2"><Check className="h-3.5 w-3.5 text-emerald-500 mt-0.5 shrink-0" />Unlimited flashcards</li>
                   <li className="flex gap-2"><Check className="h-3.5 w-3.5 text-emerald-500 mt-0.5 shrink-0" />Predicted AP/SAT/ACT score</li>
                   <li className="flex gap-2"><Check className="h-3.5 w-3.5 text-emerald-500 mt-0.5 shrink-0" />3 Sage tutor chats / day</li>
-                  <li className="flex gap-2"><Check className="h-3.5 w-3.5 text-emerald-500 mt-0.5 shrink-0" />Diagnostic every 30 days</li>
+                  <li className="flex gap-2"><Check className="h-3.5 w-3.5 text-emerald-500 mt-0.5 shrink-0" />Diagnostic every 14 days</li>
                 </ul>
                 <Button
                   variant="outline"
