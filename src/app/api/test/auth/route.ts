@@ -31,6 +31,33 @@ export async function POST(req: NextRequest) {
     const body = await req.json().catch(() => ({}));
     const action = body.action as string;
 
+    // Seed a target DashboardImpression count for the test user — used by
+    // authed E2E fixtures that need to reproduce specific dashboard-view
+    // patterns (e.g. "2+ visits with 0 practice" for the Nawal-pattern
+    // AutoLaunchNudge). Optionally clears existing DB state first so tests
+    // are deterministic.
+    if (action === "seed-dashboard-impressions") {
+      const count = Math.min(20, Math.max(0, Number(body.count ?? 2)));
+      const course = String(body.course ?? "AP_WORLD_HISTORY").slice(0, 64);
+      const clearFirst = body.clearFirst === true;
+      const user = await prisma.user.findUnique({ where: { email: TEST_EMAIL }, select: { id: true } });
+      if (!user) return NextResponse.json({ error: "Test user not found — create first" }, { status: 404 });
+
+      if (clearFirst) {
+        // Reset the slate for this test fixture. Only remove test-user rows.
+        await prisma.studentResponse.deleteMany({ where: { userId: user.id } });
+        await prisma.dashboardImpression.deleteMany({ where: { userId: user.id } });
+      }
+
+      // Create N impressions — same course, recent timestamps.
+      for (let i = 0; i < count; i++) {
+        await prisma.dashboardImpression.create({
+          data: { userId: user.id, course },
+        });
+      }
+      return NextResponse.json({ seeded: count, userId: user.id, course, clearedFirst: clearFirst });
+    }
+
     if (action === "cleanup") {
       // Delete test user and all related data (no transactions — sequential deletes)
       const user = await prisma.user.findUnique({ where: { email: TEST_EMAIL }, select: { id: true } });
@@ -40,6 +67,7 @@ export async function POST(req: NextRequest) {
       const uid = user.id;
 
       // Delete in dependency order (children first)
+      await prisma.dashboardImpression.deleteMany({ where: { userId: uid } });
       await prisma.studentResponse.deleteMany({ where: { userId: uid } });
       await prisma.practiceSession.deleteMany({ where: { userId: uid } });
       await prisma.tutorKnowledgeCheck.deleteMany({ where: { userId: uid } });
