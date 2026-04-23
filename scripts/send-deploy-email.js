@@ -23,6 +23,11 @@ if (!process.env.RESEND_API_KEY) {
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
 const TO_EMAIL = "contact@studentnest.ai";
 const FROM_EMAIL = "noreply@studentnest.ai";
+// DEPLOY_STATUS is set by pages:deploy pipeline to "success" after the
+// full chain, or "failed" when any step failed. Default to "success"
+// for backward-compat (manual invocations).
+const DEPLOY_STATUS = process.env.DEPLOY_STATUS || "success";
+const IS_SUCCESS = DEPLOY_STATUS === "success";
 
 async function main() {
   if (!RESEND_API_KEY) {
@@ -54,9 +59,21 @@ async function main() {
     timeZone: "America/New_York",
   });
 
+  const statusLabel = IS_SUCCESS ? "Deployed" : "FAILED";
+  const statusEmoji = IS_SUCCESS ? "✅" : "❌";
+  const headerColor = IS_SUCCESS ? "#1865F2" : "#dc2626";
+  const statusBanner = IS_SUCCESS
+    ? ""
+    : `<div style="background: #fef2f2; border: 1px solid #dc2626; color: #991b1b; padding: 12px 16px; border-radius: 8px; margin-bottom: 16px;">
+         <strong>⚠️ Pipeline failed.</strong> One or more test gates blocked the deploy (typecheck, smoke, functional, integration, or Playwright). Code may or may not be live on prod — check <a href="https://dash.cloudflare.com" style="color: #991b1b;">CF Pages</a> to verify and rollback if needed.
+       </div>`;
+
+  const subject = `${statusEmoji} StudentNest Prep — ${betaLabel} ${statusLabel}`;
+
   const html = `
     <div style="font-family: system-ui, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-      <h1 style="color: #1865F2; font-size: 24px;">StudentNest Prep — ${betaLabel} Deployed</h1>
+      ${statusBanner}
+      <h1 style="color: ${headerColor}; font-size: 24px;">StudentNest Prep — ${betaLabel} ${statusLabel}</h1>
       <p style="color: #64748b; font-size: 14px;">${timestamp}</p>
       <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 16px 0;" />
       <h2 style="font-size: 16px; color: #1e293b;">Recent Changes</h2>
@@ -65,7 +82,7 @@ async function main() {
       </ul>
       <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 16px 0;" />
       <p style="color: #64748b; font-size: 12px;">
-        Live at <a href="https://studentnest.ai" style="color: #1865F2;">studentnest.ai</a> ·
+        Live at <a href="https://studentnest.ai" style="color: ${headerColor};">studentnest.ai</a> ·
         Version: ${version}
       </p>
     </div>
@@ -81,13 +98,13 @@ async function main() {
       body: JSON.stringify({
         from: FROM_EMAIL,
         to: TO_EMAIL,
-        subject: `StudentNest Prep — ${betaLabel} Deployed`,
+        subject,
         html,
       }),
     });
 
     if (res.ok) {
-      console.log(`✅ Deploy notification sent to ${TO_EMAIL}`);
+      console.log(`✅ Deploy notification (${DEPLOY_STATUS}) sent to ${TO_EMAIL}`);
     } else {
       const err = await res.text();
       console.log(`⚠️  Deploy email failed (${res.status}): ${err}`);
