@@ -105,7 +105,7 @@ export async function POST(req: NextRequest) {
       // Find or create test user
       let user = await prisma.user.findUnique({
         where: { email: TEST_EMAIL },
-        select: { id: true, role: true, subscriptionTier: true, track: true, onboardingCompletedAt: true },
+        select: { id: true, role: true, subscriptionTier: true, track: true, onboardingCompletedAt: true, createdAt: true },
       });
 
       if (!user) {
@@ -122,16 +122,37 @@ export async function POST(req: NextRequest) {
             // specifically exercise onboarding can null this back via a
             // separate action if needed.
             onboardingCompletedAt: new Date(),
+            // Pre-age the account so time-gated features (e.g. the
+            // AutoLaunchNudge 30-min-old rule, or the
+            // diagnostic-cooldown check) don't always fail on a freshly
+            // created test user. functional-tests.js cleanup deletes
+            // the test user at the end of each deploy, so every next
+            // deploy's auth.setup would otherwise recreate with
+            // createdAt=now. Backdate 2 hours to comfortably clear any
+            // "≥30 min old" threshold without affecting other logic.
+            createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000),
           },
-          select: { id: true, role: true, subscriptionTier: true, track: true, onboardingCompletedAt: true },
+          select: { id: true, role: true, subscriptionTier: true, track: true, onboardingCompletedAt: true, createdAt: true },
         });
-      } else if (!user.onboardingCompletedAt) {
-        // Existing test user was created before we added this field.
-        // Mark onboarded so dashboard doesn't redirect in tests.
-        await prisma.user.update({
-          where: { id: user.id },
-          data: { onboardingCompletedAt: new Date() },
-        });
+      } else {
+        // Existing test user — always ensure they're onboarded AND
+        // backdated so age-gated features don't fail during tests.
+        // functional-tests.js deletes the test user on every deploy,
+        // so on the next deploy the auth.setup creates fresh (now ~3 min
+        // old) and features gated on "account ≥30 min old" break.
+        // This branch covers the path where the user DID persist but
+        // their createdAt is recent.
+        const ageMinutes = (Date.now() - new Date(user.createdAt).getTime()) / 60_000;
+        const updates: Record<string, unknown> = {};
+        if (!user.onboardingCompletedAt) updates.onboardingCompletedAt = new Date();
+        if (ageMinutes < 60) updates.createdAt = new Date(Date.now() - 2 * 60 * 60 * 1000);
+        if (Object.keys(updates).length > 0) {
+          await prisma.user.update({ where: { id: user.id }, data: updates });
+        }
+      }
+      // After both branches, `user` is guaranteed non-null.
+      if (!user) {
+        return NextResponse.json({ error: "Test user provisioning failed" }, { status: 500 });
       }
 
       // Forge a valid JWT using the server's NEXTAUTH_SECRET
