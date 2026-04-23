@@ -173,6 +173,11 @@ export function PrimaryActionStrip({ course, impressionId }: Props) {
 
   const { inProgressSession, tierLabel, weakestUnit, nextAction } = data;
 
+  // Dashboard v2 (2026-04-22): ResumeCard above us now owns the in-progress
+  // UX. If there's an active session, suppress this strip entirely —
+  // reviewer feedback was "one resume button, not two."
+  if (inProgressSession) return null;
+
   // ── Copy + navigation decision ──────────────────────────────────────────
   let title: string;
   let buttonLabel: string;
@@ -180,23 +185,7 @@ export function PrimaryActionStrip({ course, impressionId }: Props) {
   let detail: string | null = null;
   let href: string;
 
-  if (inProgressSession) {
-    title = "Resume Your Session";
-    buttonLabel = "RESUME";
-    const mins = Math.max(
-      1,
-      Math.round((Date.now() - new Date(inProgressSession.startedAt).getTime()) / 60000),
-    );
-    const timeLabel = mins < 60 ? `${mins} min ago` : mins < 1440 ? `${Math.round(mins / 60)}h ago` : `${Math.round(mins / 1440)}d ago`;
-    subtitle = `Started ${timeLabel}`;
-    detail = inProgressSession.total > 0
-      ? `${inProgressSession.total} question${inProgressSession.total === 1 ? "" : "s"} waiting`
-      : "Pick up where you left off";
-    const t = inProgressSession.sessionType;
-    if (t === "DIAGNOSTIC") href = "/diagnostic";
-    else if (t === "MOCK_EXAM") href = "/mock-exam";
-    else href = `/practice?resume=${inProgressSession.id}`;
-  } else if (tierLabel === "high_risk" && !weakestUnit) {
+  if (tierLabel === "high_risk" && !weakestUnit) {
     // Zero-signal warmup — activation step, not conversion.
     // HOTFIX 2026-04-22: /warmup page doesn't exist; user-reported 404.
     // Redirect to the existing focused-practice auto-launch (3 Qs, any
@@ -253,11 +242,9 @@ export function PrimaryActionStrip({ course, impressionId }: Props) {
     href = nextAction.url || "/practice";
   }
 
-  const minutesLabel = inProgressSession ? "Continue" : `${nextAction.minutes} min`;
-  const questionsLabel = inProgressSession
-    ? null
-    : `${nextAction.questions} questions`;
-  const scoreHint = !inProgressSession && (tierLabel === "high_risk" || tierLabel === "below_passing")
+  const minutesLabel = `${nextAction.minutes} min`;
+  const questionsLabel = `${nextAction.questions} questions`;
+  const scoreHint = (tierLabel === "high_risk" || tierLabel === "below_passing")
     ? "+progress"
     : null;
 

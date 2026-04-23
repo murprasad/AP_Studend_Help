@@ -1,20 +1,26 @@
 "use client";
 
 /**
- * DashboardView — StudentNest clutter-free rewrite (2026-04-20).
+ * DashboardView — Dashboard v2 collapse (2026-04-22).
  *
- * Ported from PrepLion's A25 "radical simplification". Renders 5 cards max:
+ * Reviewer feedback: "too many messages → decision paralysis." Collapsed
+ * 9 cards to 5 blocks, each answering ONE question for the student.
  *
- *   1. MasteryTierUpCard        — celebration when a unit crosses a mastery tier
- *   2. ResumeCard               — "Continue where you left off" if IN_PROGRESS
- *   3. PrimaryActionStrip       — one dominant CTA (RESUME / START / CONTINUE)
- *   4. OutcomeProgressStrip     — predicted native-scale score + today's target + streak
- *   5. MicroWinCard             — "Fix 1 mistake (1 min)" retention nudge
- *   6. WeaknessFocusCard        — single weakest unit, below fold
- *   7. PathProgression          — Duolingo-style vertical path to mastery
+ *   0. MasteryTierUpCard     — celebration overlay (renders null when no tier-up)
+ *   1. Resume OR Start       — ResumeCard (when in-progress), else PrimaryActionStrip
+ *                              (one CTA, not two — PrimaryActionStrip returns null
+ *                              when inProgressSession exists)
+ *   2. OutcomeProgressStrip  — predicted native-scale score + accuracy delta
+ *   3. WeaknessFocusCard     — "Fix this unit" — the fastest path to improve
+ *   4. DailyGoalCard         — today's goal + streak
+ *   5. LockedValueCard       — contextual paywall with price + "Send to parent"
  *
- * All cards either self-render-null when they have nothing to show or lazy-
- * fetch their own data. The page ships a skeleton until session resolves.
+ * Intentionally removed from main dashboard:
+ *   - MicroWinCard       → retention nudge was cluttering; can re-add as
+ *                          secondary link inside WeaknessFocusCard later.
+ *   - PathProgression    → moved off main dashboard (future /progress route).
+ *   - InviteParentCard   → superseded by LockedValueCard.
+ *   - CLEPUpsellCard     → cross-sell didn't belong on main prep dashboard.
  */
 
 import { useEffect, useRef, useState } from "react";
@@ -25,12 +31,9 @@ import { MasteryTierUpCard } from "@/components/dashboard/mastery-tier-up-card";
 import { ResumeCard } from "@/components/dashboard/resume-card";
 import { PrimaryActionStrip } from "@/components/dashboard/primary-action-strip";
 import { OutcomeProgressStrip } from "@/components/dashboard/outcome-progress-strip";
-import { MicroWinCard } from "@/components/dashboard/micro-win-card";
 import { WeaknessFocusCard } from "@/components/dashboard/weakness-focus-card";
-import { PathProgression } from "@/components/dashboard/path-progression";
-import { InviteParentCard } from "@/components/dashboard/invite-parent-card";
 import { DailyGoalCard } from "@/components/dashboard/daily-goal-card";
-import { CLEPUpsellCard } from "@/components/dashboard/clep-upsell-card";
+import { LockedValueCard } from "@/components/dashboard/locked-value-card";
 
 function DashboardSkeleton() {
   return (
@@ -112,32 +115,23 @@ export function DashboardView() {
       {/* 0. Celebration — renders null when no unread tier-up */}
       <MasteryTierUpCard />
 
-      {/* 1. Resume hook — renders null when no in-progress session */}
+      {/* 1a. Resume — renders only when in-progress session exists */}
       <ResumeCard course={course as string} />
 
-      {/* 2. The hero — single dominant CTA */}
+      {/* 1b. Start — renders null when ResumeCard would show. One CTA, not two. */}
       <PrimaryActionStrip course={course as string} impressionId={impressionId} />
 
-      {/* 3. Outcome + today's target */}
+      {/* 2. Predicted native-scale score + delta */}
       <OutcomeProgressStrip course={course as string} />
 
-      {/* 3b. Daily goal — habit-formation loop. Renders null pre-signal. */}
-      <DailyGoalCard course={course as string} />
-
-      {/* 4. Retention nudge — renders null when no past mistakes */}
-      <MicroWinCard course={course as string} />
-
-      {/* 5. Weakness focus — below fold, ONE unit */}
+      {/* 3. Fastest path to improve — single weakest unit */}
       <WeaknessFocusCard course={course as string} />
 
-      {/* 6. Vertical path + mock milestone */}
-      <PathProgression course={course as string} />
+      {/* 4. Daily goal — habit-formation loop. Renders null pre-signal. */}
+      <DailyGoalCard course={course as string} />
 
-      {/* 7. Conversion hook — renders null until ≥3 sessions practiced */}
-      <InviteParentCard />
-
-      {/* 8. Cross-sell — renders null until ≥10 sessions, dismissable */}
-      <CLEPUpsellCard />
+      {/* 5. Contextual paywall — FREE users only. Parent-friendly. */}
+      <LockedValueCard />
     </div>
   );
 }
