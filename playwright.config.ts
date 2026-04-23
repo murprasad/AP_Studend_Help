@@ -70,7 +70,7 @@ export default defineConfig({
             },
             // Match any authed spec. Currently: authed-flows + nawal-nudge.
             // New authed specs drop in without config changes.
-            testMatch: /(authed-flows|nawal-nudge|flashcards-due-card)\.spec\.ts/,
+            testMatch: /(authed-flows|nawal-nudge|flashcards-due-card|quality-audit-cron)\.spec\.ts/,
             dependencies: ["setup"],
           },
         ]
