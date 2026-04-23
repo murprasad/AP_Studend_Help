@@ -1,0 +1,46 @@
+name: Nightly Quality Audit
+
+on:
+  schedule:
+    # 03:00 UTC daily (off-peak for US users)
+    - cron: '0 3 * * *'
+  workflow_dispatch: # manual trigger from GitHub Actions UI
+
+jobs:
+  quality-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Hit /api/cron/quality-audit
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          # Read-only audit. Emails contact@studentnest.ai if findings > 0.
+          # Pass ?quarantine=1 in the URL if we ever want auto-retire.
+          response=$(curl -s -w "\n%{http_code}" \
+            https://studentnest.ai/api/cron/quality-audit \
+            -H "Authorization: Bearer ${CRON_SECRET}" \
+            --max-time 60)
+          body=$(echo "$response" | head -n -1)
+          status=$(echo "$response" | tail -n 1)
+
+          echo "Status: $status"
+          echo "Body: $body"
+
+          if [ "$status" = "401" ]; then
+            echo "❌ 401 — CRON_SECRET mismatch"
+            exit 1
+          fi
+          if [ "$status" != "200" ]; then
+            echo "❌ Unexpected status $status"
+            exit 1
+          fi
+
+          # Surface findings count as a step summary for quick triage.
+          findings=$(echo "$body" | grep -o '"totalFindings":[0-9]*' | grep -o '[0-9]*' || echo 0)
+          scanned=$(echo "$body" | grep -o '"scanned":[0-9]*' | grep -o '[0-9]*' || echo 0)
+          echo "## Quality audit result" >> $GITHUB_STEP_SUMMARY
+          echo "- Scanned: $scanned" >> $GITHUB_STEP_SUMMARY
+          echo "- Findings: $findings" >> $GITHUB_STEP_SUMMARY
+          if [ "$findings" != "0" ]; then
+            echo "- ⚠️  Email sent to contact@studentnest.ai (non-legacy findings only)" >> $GITHUB_STEP_SUMMARY
+          fi
