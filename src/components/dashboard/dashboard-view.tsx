@@ -35,6 +35,7 @@ import { WeaknessFocusCard } from "@/components/dashboard/weakness-focus-card";
 import { DailyGoalCard } from "@/components/dashboard/daily-goal-card";
 import { LockedValueCard } from "@/components/dashboard/locked-value-card";
 import { AutoLaunchNudge } from "@/components/dashboard/auto-launch-nudge";
+import { FlashcardsDueCard } from "@/components/dashboard/flashcards-due-card";
 
 function DashboardSkeleton() {
   return (
@@ -132,6 +133,9 @@ export function DashboardView() {
 
       {/* 3. Fastest path to improve — single weakest unit */}
       <WeaknessFocusCard course={course as string} />
+
+      {/* 3b. Flashcards queue — renders null when <5 cards due */}
+      <FlashcardsDueCard course={course as string} />
 
       {/* 4. Daily goal — habit-formation loop. Renders null pre-signal. */}
       <DailyGoalCard course={course as string} />
