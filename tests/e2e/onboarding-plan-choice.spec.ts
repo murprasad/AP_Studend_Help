@@ -38,16 +38,20 @@ test.describe("Onboarding plan-choice", () => {
   // is visible only when that step is active.
   async function walkToPlanStep(page: import("@playwright/test").Page) {
     await page.goto("/onboarding");
-    // Step 1: "Continue with {course}" button — specific text
+    // Step 1: "Continue with {course}" button
     const step1 = page.getByRole("button", { name: /continue with/i });
     await step1.waitFor({ state: "visible", timeout: 15000 });
     await step1.click();
-    // Step 2: generic "Continue" button
-    await page.waitForTimeout(400);
-    await page.getByRole("button", { name: /^continue$/i }).first().click();
-    // Step 3: generic "Continue" button
-    await page.waitForTimeout(400);
-    await page.getByRole("button", { name: /^continue$/i }).first().click();
+    await page.waitForTimeout(800);
+    // Step 2: "Got it — next" (em-dash, distinct from other Continues)
+    const step2 = page.getByRole("button", { name: /got it|next/i }).first();
+    await step2.waitFor({ state: "visible", timeout: 10000 });
+    await step2.click();
+    await page.waitForTimeout(800);
+    // Step 3: generic "Continue"
+    const step3 = page.getByRole("button", { name: /^continue$/i }).first();
+    await step3.waitFor({ state: "visible", timeout: 10000 });
+    await step3.click();
   }
 
   test("step 4 renders both Free and Premium cards", async ({ page }) => {
