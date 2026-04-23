@@ -34,6 +34,7 @@ import { OutcomeProgressStrip } from "@/components/dashboard/outcome-progress-st
 import { WeaknessFocusCard } from "@/components/dashboard/weakness-focus-card";
 import { DailyGoalCard } from "@/components/dashboard/daily-goal-card";
 import { LockedValueCard } from "@/components/dashboard/locked-value-card";
+import { AutoLaunchNudge } from "@/components/dashboard/auto-launch-nudge";
 
 function DashboardSkeleton() {
   return (
@@ -112,6 +113,11 @@ export function DashboardView() {
 
   return (
     <div className="space-y-4 max-w-2xl mx-auto px-0 sm:px-2 py-2">
+      {/* Nawal-pattern nudge — renders null unless user has 2+ dashboard
+          views today AND zero questions answered today. One-shot modal
+          offering a 3-Q warmup so dashboard-staring converts to action. */}
+      <AutoLaunchNudge course={course as string} />
+
       {/* 0. Celebration — renders null when no unread tier-up */}
       <MasteryTierUpCard />
 
