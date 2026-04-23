@@ -202,7 +202,7 @@ export default function WallOfFamePage() {
             Share your result and inspire others. Your success story helps fellow students see that grounded, AI-driven practice works.
           </p>
           <p className="text-xs text-muted-foreground">
-            Complete a practice session with 80%+ pass probability to get featured here.
+            Complete a practice session with a top-tier predicted score to get featured here.
           </p>
         </CardContent>
       </Card>

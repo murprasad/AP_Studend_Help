@@ -219,7 +219,7 @@ export function PrimaryActionStrip({ course, impressionId }: Props) {
   } else if (tierLabel && (tierLabel === "high_risk" || tierLabel === "below_passing")) {
     // At-risk with signal — outcome-framed CTA. User's feedback: stateful
     // copy beats generic action verbs. Reveal what they'll learn.
-    title = "See Your Pass Probability";
+    title = "See Your Predicted Score";
     buttonLabel = "SEE MY SCORE →";
     subtitle = weakestUnit ? weakestUnit.unitName : "Your predicted AP score";
     detail = weakestUnit

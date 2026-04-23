@@ -91,7 +91,7 @@ function buildEmailHtml(opts: {
       ? `Your weakest ${courseName} unit: ${weakestUnitName}`
       : `Ready for your first ${courseName} practice session?`;
     lead = weakestUnitName
-      ? `You took the diagnostic but haven&apos;t practiced yet. Your weakest unit was <strong>${weakestUnitName}</strong>. Five targeted questions on that unit can move your pass-probability meaningfully.`
+      ? `You took the diagnostic but haven&apos;t practiced yet. Your weakest unit was <strong>${weakestUnitName}</strong>. Five targeted questions on that unit can move your predicted score meaningfully.`
       : `Your trial is active and you haven&apos;t started practicing yet. Five questions takes about 5 minutes.`;
   }
 

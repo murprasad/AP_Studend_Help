@@ -63,6 +63,23 @@ test.describe("Warmup CTA regression guard", () => {
   });
 });
 
+test.describe("No 'pass probability' language in user copy", () => {
+  // Guards the 2026-04-22 redesign away from abstract % probability toward
+  // exam-native scaled scores (AP 1-5, SAT 400-1600, ACT 1-36). Belt-and-
+  // suspenders with pre-release-check.js #10 — that catches source leaks,
+  // this catches rendered leaks after build/CDN.
+  const paths = ["/", "/methodology", "/wall-of-fame", "/pass-rates", "/am-i-ready", "/pricing", "/about"];
+  for (const p of paths) {
+    test(`${p} — no 'pass probability' visible`, async ({ page }) => {
+      const resp = await page.goto(p).catch(() => null);
+      if (!resp || resp.status() >= 400) return; // Page may not exist on this deploy
+      const text = await page.locator("body").innerText();
+      // Match 'pass probability', 'pass-probability', 'Pass Probability' (case-insens).
+      expect(text).not.toMatch(/pass[\s\-]probability/i);
+    });
+  }
+});
+
 test.describe("No PrepLion branding leaks in user copy", () => {
   // Belt-and-suspenders with the pre-release-check string scan — that
   // catches SOURCE leaks, this catches RENDERED leaks after any

@@ -8,7 +8,7 @@
  *   1. MasteryTierUpCard        — celebration when a unit crosses a mastery tier
  *   2. ResumeCard               — "Continue where you left off" if IN_PROGRESS
  *   3. PrimaryActionStrip       — one dominant CTA (RESUME / START / CONTINUE)
- *   4. OutcomeProgressStrip     — pass probability + today's target + streak
+ *   4. OutcomeProgressStrip     — predicted native-scale score + today's target + streak
  *   5. MicroWinCard             — "Fix 1 mistake (1 min)" retention nudge
  *   6. WeaknessFocusCard        — single weakest unit, below fold
  *   7. PathProgression          — Duolingo-style vertical path to mastery

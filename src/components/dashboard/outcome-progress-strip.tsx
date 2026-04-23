@@ -1,11 +1,11 @@
 "use client";
 
 /**
- * OutcomeProgressStrip — the signal card. Shows pass probability as one
- * large number, a tier-colored progress bar, and a single-line effort
- * statement. Replaces the old stats row + pass-prob widget + effort copy
- * scattered across the dashboard. State-shifting language driven by
- * `tierCopyFor()` in pass-engine.ts (single source of truth).
+ * OutcomeProgressStrip — the signal card. Shows the student's PREDICTED
+ * native-scale score (AP 1-5, SAT 400-1600, ACT 1-36) as the hero number,
+ * with a gap-to-next-target progress bar and a single-line effort statement.
+ * The internal `passPercent` signal drives the tier color only — never shown.
+ * State-shifting language driven by `tierCopyFor()` in pass-engine.ts.
  */
 
 import { useEffect, useState } from "react";
@@ -19,11 +19,20 @@ interface Props {
 }
 
 interface CoachPlanSnippet {
+  // Internal signal used for tier-label color bucket. NEVER shown to the
+  // user (renamed from the "pass probability" framing 2026-04-22 —
+  // students care about their actual score on the exam's native scale,
+  // not an abstract %).
   passPercent?: number;
   tierLabel?: TierLabel;
   questionsToTarget: number;
+  targetScore?: number;
   accuracyDelta?: { from: number; to: number; deltaPct: number } | null;
-  // Zero-signal users get the raw % hidden with a qualitative label
+  // Native-scale score fields — AP 1-5, SAT 400-1600, ACT 1-36.
+  family?: "AP" | "SAT" | "ACT";
+  roughScore?: number;
+  scaleMax?: number;
+  // Zero-signal users get the raw score hidden with a qualitative label
   // instead. Forwarded from loadReadinessSnapshot through /api/coach-plan.
   showScore?: boolean;
   hasDiagnostic?: boolean;
@@ -68,10 +77,26 @@ export function OutcomeProgressStrip({ course }: Props) {
     return () => { cancelled = true; };
   }, [course]);
 
-  // Animate the bar width on mount / when pct lands
+  // Animate the gap-to-next-target bar width on mount / when score lands.
+  // Bar is tied to gapBarPct (progress within the current score bucket),
+  // not to the internal passPercent signal.
   useEffect(() => {
-    if (!coach || typeof coach.passPercent !== "number") return;
-    const target = Math.max(0, Math.min(100, coach.passPercent));
+    if (!coach || typeof coach.roughScore !== "number") return;
+    const s = coach.roughScore;
+    const fam = coach.family ?? "AP";
+    let pct = 0;
+    if (fam === "AP") {
+      const nextInt = Math.min(5, Math.floor(s) + 1);
+      const fromInt = nextInt - 1;
+      pct = ((s - fromInt) / (nextInt - fromInt)) * 100;
+    } else if (fam === "SAT") {
+      const bucket = Math.floor(s / 100) * 100;
+      pct = ((s - bucket) / 100) * 100;
+    } else {
+      const bucket = Math.floor(s / 2) * 2;
+      pct = ((s - bucket) / 2) * 100;
+    }
+    const target = Math.max(0, Math.min(100, pct));
     const raf = requestAnimationFrame(() => setAnimatedPct(target));
     return () => cancelAnimationFrame(raf);
   }, [coach]);
@@ -88,9 +113,55 @@ export function OutcomeProgressStrip({ course }: Props) {
     );
   }
 
-  const passPct = Math.round(coach.passPercent);
+  // passPercent stays as an INTERNAL signal feeding the tier color. The
+  // user-facing number is the exam's native scaled score (AP 1-5, SAT
+  // 400-1600, ACT 1-36) — students think in their exam's grade, not in
+  // a uniform 0-100% probability.
   const copy = tierCopyFor(coach.passPercent, false /* hasStrongMock — not yet threaded; safe fallback */);
   const palette = TIER_COLOR_CLASSES[copy.color];
+
+  const family = coach.family ?? "AP";
+  const scoreLabel = family === "AP" ? "AP Score" : family === "SAT" ? "SAT" : "ACT";
+  const scaleMax = coach.scaleMax ?? (family === "AP" ? 5 : family === "SAT" ? 1600 : 36);
+  // Format the score: AP 1-decimal, SAT whole number, ACT whole.
+  const formattedScore = (() => {
+    const s = typeof coach.roughScore === "number" ? coach.roughScore : 0;
+    if (family === "AP") return s.toFixed(1).replace(/\.0$/, "");
+    return String(Math.round(s));
+  })();
+  // "3 / 5", "1240 / 1600", "26 / 36" — denominator is always the scale max.
+  const scoreDisplay = `${formattedScore} / ${scaleMax}`;
+
+  // Gap-to-next-target bar %. Rather than a flat pass-probability %, show
+  // how close the student is to their next realistic jump (next AP point,
+  // next SAT 100-bucket, next ACT 2-bucket).
+  const gapBarPct = (() => {
+    const s = typeof coach.roughScore === "number" ? coach.roughScore : 0;
+    if (family === "AP") {
+      const nextInt = Math.min(5, Math.floor(s) + 1);
+      const fromInt = nextInt - 1;
+      const pct = ((s - fromInt) / (nextInt - fromInt)) * 100;
+      return Math.max(0, Math.min(100, pct));
+    }
+    if (family === "SAT") {
+      const bucket = Math.floor(s / 100) * 100;
+      const nextBucket = bucket + 100;
+      const pct = ((s - bucket) / (nextBucket - bucket)) * 100;
+      return Math.max(0, Math.min(100, pct));
+    }
+    // ACT: 2-point buckets
+    const bucket = Math.floor(s / 2) * 2;
+    const nextBucket = bucket + 2;
+    const pct = ((s - bucket) / (nextBucket - bucket)) * 100;
+    return Math.max(0, Math.min(100, pct));
+  })();
+  // Target score we're progressing toward. Shown under the bar.
+  const nextTarget = (() => {
+    const s = typeof coach.roughScore === "number" ? coach.roughScore : 0;
+    if (family === "AP") return Math.min(5, Math.floor(s) + 1);
+    if (family === "SAT") return Math.min(1600, Math.floor(s / 100) * 100 + 100);
+    return Math.min(36, Math.floor(s / 2) * 2 + 2);
+  })();
 
   const todayAnswered = today?.answeredToday ?? 0;
   const todayGoal = today?.dailyGoal ?? 10;
@@ -105,13 +176,13 @@ export function OutcomeProgressStrip({ course }: Props) {
   return (
     <Card className="rounded-[16px] border-border/40">
       <CardContent className="p-5 space-y-3">
-        {/* ── 1. The number (or rough-estimate label) ─────────────────── */}
+        {/* ── 1. The score (exam native scale) or rough-estimate fallback ── */}
         {coach.showScore !== false ? (
           <div className="flex items-baseline gap-2 flex-wrap">
             <span className={`text-[28px] leading-none font-bold tabular-nums ${palette.number}`}>
-              {passPct}%
+              {scoreDisplay}
             </span>
-            <span className="text-[13px] text-muted-foreground">pass probability</span>
+            <span className="text-[13px] text-muted-foreground">predicted {scoreLabel}</span>
             <span
               className={`ml-auto text-[12px] font-medium px-2 py-0.5 rounded-full border ${palette.chipText} ${palette.chipBg}`}
             >
@@ -120,7 +191,7 @@ export function OutcomeProgressStrip({ course }: Props) {
           </div>
         ) : (
           // REQ-025 anti-demoralization: zero-signal users see a directional
-          // label instead of a raw "0%" number that crushes motivation.
+          // label instead of a specific score that crushes motivation.
           <div className="flex items-baseline gap-2 flex-wrap">
             <span className="text-[20px] leading-tight font-semibold text-foreground/90">
               Rough estimate
@@ -131,7 +202,7 @@ export function OutcomeProgressStrip({ course }: Props) {
           </div>
         )}
 
-        {/* ── 2. The bar (suppressed for zero-signal so the 0% isn't implied) ── */}
+        {/* ── 2. Gap-to-next-target bar (progress within the current tier) ── */}
         {coach.showScore !== false && (
           <div className="relative h-2 w-full overflow-hidden rounded-full bg-muted">
             <div
@@ -142,7 +213,7 @@ export function OutcomeProgressStrip({ course }: Props) {
         )}
 
         {/* ── 3. Effort line ─────────────────────────────────────────── */}
-        {coach.questionsToTarget > 0 && passPct < 80 && (
+        {coach.questionsToTarget > 0 && coach.passPercent < 80 && (
           <p className="text-[13px] text-muted-foreground">
             ~<span className="font-semibold text-foreground tabular-nums">{coach.questionsToTarget}</span> questions {copy.effortSuffix}
           </p>

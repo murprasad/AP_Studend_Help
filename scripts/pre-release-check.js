@@ -280,6 +280,62 @@ section("9. No PrepLion branding leaks in user-facing copy");
   }
 }
 
+// ─── 10. No "pass probability" language in user-facing copy ─────────────────
+// Added 2026-04-22 when the hero card was redesigned away from an abstract
+// probability % toward the student's exam-native scaled score (AP 1-5, SAT
+// 400-1600, ACT 1-36). `passPercent` remains as an INTERNAL tier-label
+// signal inside src/lib/pass-engine.ts, score-predictors/, and a few
+// scripts — those are allowlisted. Only flags user-facing leaks.
+section("10. No 'pass probability' in user-facing copy");
+{
+  const glob = require("glob");
+  const SEARCH_ROOTS = [
+    "src/app/(dashboard)/**/*.{tsx,ts}",
+    "src/app/(marketing)/**/*.{tsx,ts}",
+    "src/app/page.tsx",
+    "src/components/**/*.{tsx,ts}",
+  ];
+  // Internal signal files — allowed to keep the term in code/comments.
+  const ALLOWED_FILES = new Set([
+    "src/lib/pass-engine.ts",
+    "src/lib/score-predictors/ap.ts",
+    "src/lib/score-predictors/sat.ts",
+    "src/lib/score-predictors/act.ts",
+    "src/lib/confetti.ts", // internal comment only
+  ]);
+  const PATTERN = /pass[\s\-]?probability/i;
+  let leaks = 0;
+  const leakDetails = [];
+  for (const pattern of SEARCH_ROOTS) {
+    const files = glob.sync(pattern, { cwd: ROOT, nodir: true });
+    for (const rel of files) {
+      const norm = rel.replace(/\\/g, "/");
+      if (ALLOWED_FILES.has(norm)) continue;
+      const content = read(rel);
+      const lines = content.split("\n");
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+        if (!PATTERN.test(line)) continue;
+        const trimmed = line.trimStart();
+        // Allow internal code comments — only flag user-visible strings.
+        if (
+          trimmed.startsWith("//") ||
+          trimmed.startsWith("*") ||
+          trimmed.startsWith("/*")
+        ) continue;
+        if (/\{\s*\/\*/.test(line) || line.includes("*/}") ) continue;
+        leaks++;
+        leakDetails.push(`${rel}:${i + 1} — ${line.trim().slice(0, 100)}`);
+      }
+    }
+  }
+  if (leaks === 0) {
+    ok("No 'pass probability' language in user-facing copy");
+  } else {
+    fail(`Found ${leaks} 'pass probability' reference(s) in user-facing code:\n  ${leakDetails.slice(0, 5).join("\n  ")}`);
+  }
+}
+
 // ─── Summary ─────────────────────────────────────────────────────────────────
 console.log(`\n${"─".repeat(50)}`);
 if (failed === 0) {
