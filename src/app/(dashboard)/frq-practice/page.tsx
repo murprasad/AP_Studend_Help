@@ -11,7 +11,8 @@ import { AP_COURSES } from "@/lib/utils";
 import { CourseSelectorInline } from "@/components/layout/course-selector-inline";
 import { FrqPracticeCard } from "@/components/practice/frq-practice-card";
 import { ApCourse, ApUnit } from "@prisma/client";
-import { Loader2, ChevronRight, PenLine, BookOpen } from "lucide-react";
+import { Loader2, ChevronRight, PenLine, BookOpen, Lock } from "lucide-react";
+import Link from "next/link";
 
 // ── Cluster A: quantitative FRQs currently supported ─────────────────────────
 // Other AP courses still see the page shell + an "FRQs coming soon" note so
@@ -50,6 +51,23 @@ export default function FrqPracticePage() {
   const [error, setError] = useState<string | null>(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [selectedUnit, setSelectedUnit] = useState<ApUnit | "ALL">("ALL");
+  // Tier gate — fetched from /api/user/limits. Option B spec hard-locks
+  // FRQ for FREE users (frqAccess: false). Gate the whole page so free
+  // users see a paywall, not a list they can't actually use.
+  const [tierLoading, setTierLoading] = useState(true);
+  const [isFreeTier, setIsFreeTier] = useState(false);
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/user/limits", { cache: "no-store" })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => {
+        if (cancelled || !d) return;
+        setIsFreeTier(d.tier === "FREE" && d.unlimited !== true);
+      })
+      .catch(() => { /* fail open — assume premium, don't break the page */ })
+      .finally(() => { if (!cancelled) setTierLoading(false); });
+    return () => { cancelled = true; };
+  }, []);
 
   const fetchList = useCallback(async () => {
     setLoading(true);
@@ -79,6 +97,66 @@ export default function FrqPracticePage() {
 
   const unitMeta = COURSE_REGISTRY[course]?.units ?? {};
   const unitOptions = Object.entries(unitMeta) as [ApUnit, { name: string }][];
+
+  // ── Loading tier ──────────────────────────────────────────────────────────
+  if (tierLoading) {
+    return (
+      <div className="flex items-center gap-2 text-muted-foreground py-12 justify-center">
+        <Loader2 className="h-5 w-5 animate-spin" />
+        Loading…
+      </div>
+    );
+  }
+
+  // ── Paywall — FREE users don't get FRQ access under Option B ─────────────
+  if (isFreeTier) {
+    return (
+      <div className="space-y-6 max-w-2xl mx-auto">
+        <div>
+          <h1 className="text-3xl font-bold flex items-center gap-2">
+            <PenLine className="h-7 w-7 text-amber-500" />
+            FRQ Practice
+          </h1>
+          <p className="text-muted-foreground mt-1">
+            Past exam free-response questions with official rubrics.
+          </p>
+        </div>
+        <Card className="border-primary/30 bg-gradient-to-br from-primary/5 to-primary/10">
+          <CardContent className="p-8 space-y-5 text-center">
+            <div className="w-14 h-14 mx-auto rounded-full bg-primary/15 flex items-center justify-center">
+              <Lock className="h-7 w-7 text-primary" />
+            </div>
+            <div className="space-y-2">
+              <h2 className="text-xl font-bold">FRQ practice is a Premium feature</h2>
+              <p className="text-[15px] text-foreground/90 leading-relaxed max-w-md mx-auto">
+                Colleges grade written answers — you&apos;re not practicing this.
+                Upgrade to unlock every AP FRQ from 2013 onward, with official
+                rubrics and sample answers.
+              </p>
+            </div>
+            <div className="pt-2 space-y-2">
+              <p className="text-sm text-muted-foreground">
+                <span className="font-semibold text-foreground">$9.99/month</span>
+                {" · "}less than a weekend matinee
+              </p>
+              <Link href="/billing?utm_source=frq_paywall&utm_campaign=frq_lock">
+                <Button size="lg" className="rounded-full h-11 px-6">
+                  Upgrade to unlock FRQ
+                </Button>
+              </Link>
+            </div>
+            <div className="pt-3 border-t border-border/40 text-[13px] text-muted-foreground">
+              MCQ practice, flashcards, and mock exam preview stay free — you can
+              keep building your score today without upgrading.{" "}
+              <Link href="/practice" className="text-primary hover:underline">
+                Back to practice →
+              </Link>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   // ── Out-of-cluster course: explain + link back ────────────────────────────
   if (!CLUSTER_A.includes(course)) {

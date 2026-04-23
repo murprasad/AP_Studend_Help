@@ -39,6 +39,8 @@ export const FREE_LIMITS = {
   fullAnalytics: false,
   /** Whether Sage Coach produces a deep personalized plan (free users get a brief snippet). */
   sageCoachDeepPlan: false,
+  /** Cooldown between diagnostics in days. Premium is uncapped. */
+  diagnosticCooldownDays: 30,
 } as const;
 
 export type FreeLimits = typeof FREE_LIMITS;
@@ -62,6 +64,8 @@ export const LOCK_COPY = {
     "Students who ask one more question on the concepts they miss pass 2.3× more often. Keep going — unlimited on Premium.",
   sageCoachLocked:
     "Personalized week-by-week plan — not a generic template.",
+  diagnosticCooldown:
+    "Your diagnostic is good for 30 days. Premium unlocks unlimited retakes so you can measure progress weekly.",
 } as const;
 
 /**

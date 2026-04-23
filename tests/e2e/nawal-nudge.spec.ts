@@ -48,14 +48,14 @@ test.describe("AutoLaunchNudge — Nawal-pattern", () => {
     if (page.url().includes("/onboarding")) test.skip();
     // The modal's accessible title is "Start with a 3-question warmup?"
     await expect(
-      page.getByRole("dialog", { name: /3-question warmup/i }),
+      page.getByRole("dialog", { name: /warmup|score moving/i }),
     ).toBeVisible({ timeout: 10000 });
   });
 
   test("Start warmup routes to /practice with auto_warmup src", async ({ page }) => {
     await page.goto("/dashboard");
     if (page.url().includes("/onboarding")) test.skip();
-    const dialog = page.getByRole("dialog", { name: /3-question warmup/i });
+    const dialog = page.getByRole("dialog", { name: /warmup|score moving/i });
     await dialog.waitFor({ state: "visible", timeout: 10000 });
     // Let the rest of the dashboard settle so the modal's DOM node doesn't
     // re-mount mid-click (ResumeCard / OutcomeProgressStrip / DailyGoalCard
@@ -70,7 +70,7 @@ test.describe("AutoLaunchNudge — Nawal-pattern", () => {
   test("Not now dismisses + does not re-show on reload", async ({ page }) => {
     await page.goto("/dashboard");
     if (page.url().includes("/onboarding")) test.skip();
-    const dialog = page.getByRole("dialog", { name: /3-question warmup/i });
+    const dialog = page.getByRole("dialog", { name: /warmup|score moving/i });
     await dialog.waitFor({ state: "visible", timeout: 10000 });
     await page.waitForLoadState("networkidle", { timeout: 10000 }).catch(() => {});
     // Scope button lookup to the dialog to avoid matching other "Not now"
@@ -81,7 +81,7 @@ test.describe("AutoLaunchNudge — Nawal-pattern", () => {
     // Reload — sessionStorage flag keeps it hidden for the rest of the day.
     await page.reload();
     await expect(
-      page.getByRole("dialog", { name: /3-question warmup/i }),
+      page.getByRole("dialog", { name: /warmup|score moving/i }),
     ).not.toBeVisible({ timeout: 3000 });
   });
 });

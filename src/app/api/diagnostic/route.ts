@@ -6,6 +6,8 @@ import { ApCourse, ApUnit } from "@prisma/client"
 import { COURSE_REGISTRY, VALID_AP_COURSES, getCourseModule } from "@/lib/courses"
 import { COURSE_UNITS } from "@/lib/utils"
 import { generateQuestion } from "@/lib/ai"
+import { FREE_LIMITS, LOCK_COPY } from "@/lib/tier-limits"
+import { isPremiumForTrack, hasAnyPremium, type ModuleSub } from "@/lib/tiers"
 
 export const dynamic = "force-dynamic"
 
@@ -26,6 +28,37 @@ export async function POST(req: NextRequest) {
       { error: "This course is not available on your current track." },
       { status: 403 }
     )
+  }
+
+  // Option B diagnostic cooldown — free users get one diagnostic per
+  // FREE_LIMITS.diagnosticCooldownDays (30). Premium is unlimited.
+  // User report 2026-04-23: diagnostic was effectively unlimited for
+  // free users, which dilutes the "measure progress" feedback loop and
+  // removes a natural upsell trigger.
+  const moduleSubs: ModuleSub[] = (session.user as { moduleSubs?: ModuleSub[] }).moduleSubs ?? []
+  const hasPremium =
+    isAdmin ||
+    hasAnyPremium(moduleSubs) ||
+    isPremiumForTrack(session.user.subscriptionTier, userTrack)
+  if (!hasPremium) {
+    const cooldownAgo = new Date(Date.now() - FREE_LIMITS.diagnosticCooldownDays * 24 * 60 * 60 * 1000)
+    const recent = await prisma.diagnosticResult.findFirst({
+      where: { userId: session.user.id, course: course as ApCourse, createdAt: { gte: cooldownAgo } },
+      orderBy: { createdAt: "desc" },
+      select: { createdAt: true },
+    })
+    if (recent) {
+      const daysAgo = Math.floor((Date.now() - new Date(recent.createdAt).getTime()) / (1000 * 60 * 60 * 24))
+      const daysRemaining = FREE_LIMITS.diagnosticCooldownDays - daysAgo
+      return NextResponse.json({
+        error: LOCK_COPY.diagnosticCooldown,
+        limitExceeded: true,
+        limitType: "diagnostic_cooldown",
+        daysSinceLastDiagnostic: daysAgo,
+        daysRemaining,
+        upgradeUrl: "/billing?utm_source=diagnostic_cooldown&utm_campaign=diag_retake",
+      }, { status: 429 })
+    }
   }
 
   const courseUnitKeys = Object.keys(COURSE_UNITS[course as ApCourse]) as ApUnit[]

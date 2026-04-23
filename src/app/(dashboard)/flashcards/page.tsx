@@ -20,11 +20,14 @@ import { useEffect, useState, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useCourse } from "@/hooks/use-course";
+import { useExamMode } from "@/hooks/use-exam-mode";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { CourseSelectorInline } from "@/components/layout/course-selector-inline";
+import { COURSE_REGISTRY } from "@/lib/courses";
+import { ApCourse } from "@prisma/client";
 import { Loader2, ArrowRight, Check, Sparkles, BookOpen } from "lucide-react";
 import Link from "next/link";
 
@@ -52,6 +55,7 @@ export default function FlashcardsPage() {
   const { status } = useSession();
   const router = useRouter();
   const [course] = useCourse();
+  const { enterExamMode, exitExamMode } = useExamMode();
 
   const [cards, setCards] = useState<Flashcard[] | null>(null);
   const [index, setIndex] = useState(0);
@@ -60,9 +64,26 @@ export default function FlashcardsPage() {
   const [shownAt, setShownAt] = useState<number | null>(null);
   const [completed, setCompleted] = useState(0);
 
+  // Full-screen mode — hides the sidebar and gives the whole viewport to
+  // one card at a time. Real user 2026-04-23 asked for this; flashcards
+  // deserve the same focus treatment as /diagnostic and /mock-exam.
+  useEffect(() => {
+    enterExamMode();
+    return () => exitExamMode();
+  }, [enterExamMode, exitExamMode]);
+
   useEffect(() => {
     if (status === "unauthenticated") router.push("/login");
   }, [status, router]);
+
+  // Human-readable course name for the header banner so users always
+  // know which course's cards they're seeing. If they signed up for
+  // AP Physics but their useCourse() state fell back to something
+  // else (stale localStorage, etc), the banner makes that visible
+  // instead of silently showing wrong-subject cards.
+  const courseName = course && COURSE_REGISTRY[course as ApCourse]?.name
+    ? COURSE_REGISTRY[course as ApCourse].name
+    : "(selecting course…)";
 
   const loadBatch = useCallback(async () => {
     if (!course) return;
@@ -131,14 +152,18 @@ export default function FlashcardsPage() {
   if (cards.length === 0) {
     return (
       <div className="max-w-2xl mx-auto py-8 space-y-4">
+        <div className="flex items-baseline gap-2 flex-wrap">
+          <span className="text-[11px] uppercase tracking-wide text-muted-foreground">Reviewing</span>
+          <span className="text-[15px] font-semibold text-foreground">{courseName}</span>
+        </div>
         <CourseSelectorInline />
         <Card className="rounded-2xl">
           <CardContent className="p-8 text-center space-y-3">
             <BookOpen className="h-12 w-12 mx-auto text-muted-foreground" />
-            <h2 className="text-lg font-semibold">No flashcards yet for this course</h2>
+            <h2 className="text-lg font-semibold">No flashcards yet for {courseName}</h2>
             <p className="text-sm text-muted-foreground">
-              The flashcard deck is being built. Try a different course, or
-              come back tomorrow.
+              The flashcard deck is being built for this course. Try a
+              different course using the selector above, or come back later.
             </p>
             <Link href="/practice">
               <Button>Practice questions instead</Button>
@@ -154,6 +179,14 @@ export default function FlashcardsPage() {
 
   return (
     <div className="max-w-2xl mx-auto py-4 sm:py-6 space-y-4 px-2">
+      {/* Prominent course header — lets the user verify which course's
+          cards they're reviewing. If wrong, they can switch via the
+          inline selector below. Prevents the "I'm on AP Physics but
+          seeing world history cards" confusion reported 2026-04-23. */}
+      <div className="flex items-baseline gap-2 flex-wrap">
+        <span className="text-[11px] uppercase tracking-wide text-muted-foreground">Reviewing</span>
+        <span className="text-[15px] font-semibold text-foreground">{courseName}</span>
+      </div>
       <CourseSelectorInline />
 
       {/* Progress bar — batch progress + completed counter */}
