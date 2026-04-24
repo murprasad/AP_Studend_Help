@@ -89,7 +89,7 @@ export function WeaknessFocusCard({ course }: Props) {
         {isPremium ? (
           <Link
             href={`/analytics?unit=${encodeURIComponent(w.unit)}&course=${course}`}
-            className="block text-[12px] text-primary hover:underline text-center"
+            className="block text-[12px] text-primary underline underline-offset-2 decoration-primary/60 hover:decoration-primary text-center"
           >
             See exactly what to fix →
           </Link>

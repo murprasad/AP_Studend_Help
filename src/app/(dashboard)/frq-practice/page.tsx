@@ -148,7 +148,7 @@ export default function FrqPracticePage() {
             <div className="pt-3 border-t border-border/40 text-[13px] text-muted-foreground">
               MCQ practice, flashcards, and mock exam preview stay free — you can
               keep building your score today without upgrading.{" "}
-              <Link href="/practice" className="text-primary hover:underline">
+              <Link href="/practice" className="text-primary underline underline-offset-2 decoration-primary/60 hover:decoration-primary">
                 Back to practice →
               </Link>
             </div>
