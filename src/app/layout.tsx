@@ -78,6 +78,16 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <meta name="apple-mobile-web-app-title" content="StudentNest" />
         <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+        {/* Microsoft Clarity — free session recording + heatmaps. Wired 2026-04-24
+            per user strategy request. Clarity ID is public (read-only); safe to
+            inline. To disable, remove NEXT_PUBLIC_CLARITY_ID from env. */}
+        {process.env.NEXT_PUBLIC_CLARITY_ID && (
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window,document,"clarity","script","${process.env.NEXT_PUBLIC_CLARITY_ID}");`,
+            }}
+          />
+        )}
         {/* SW disabled 2026-04-20. Previous pass-through SW was returning 503
             via its .catch when the origin fetch hung on CF Workers, masking
             real backend errors as a service-worker fallback. This script
