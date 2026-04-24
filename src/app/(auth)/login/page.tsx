@@ -96,7 +96,11 @@ export default function LoginPage() {
   }
 
   return (
-    <Card className="w-full max-w-md">
+    <>
+      {/* Visually-hidden h1 for SEO + screen reader landmark (K2 fix 2026-04-24).
+          CardTitle is an h3; without this there's no page-primary heading. */}
+      <h1 className="sr-only">Log in to StudentNest</h1>
+      <Card className="w-full max-w-md">
       <CardHeader>
         <CardTitle className="text-2xl">Welcome back</CardTitle>
         <CardDescription>Log in to continue your AP exam prep</CardDescription>
@@ -186,5 +190,6 @@ export default function LoginPage() {
         </p>
       </CardFooter>
     </Card>
+    </>
   );
 }

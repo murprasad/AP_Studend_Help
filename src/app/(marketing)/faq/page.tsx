@@ -35,6 +35,10 @@ export default async function FaqPage() {
   return (
     <div className="max-w-3xl mx-auto px-4 py-16">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      {/* Visually-hidden h1 for SEO + screen-reader landmark (K1 fix 2026-04-24).
+          LandingFaq's top heading is h2 because it's used as a section on other
+          pages; the /faq page needs its own h1. */}
+      <h1 className="sr-only">Frequently Asked Questions</h1>
       <LandingFaq clepEnabled={clepOn} dsstEnabled={dsstOn} />
     </div>
   );

@@ -138,13 +138,15 @@ export default function RegisterPage() {
   }
 
   if (success) {
+    // Promote headings: h1 for the primary success message so this confirmation
+    // state also satisfies "exactly one <h1>" + proper landmark structure.
     return (
       <Card className="w-full max-w-md text-center">
         <CardContent className="pt-8 pb-6">
           <CheckCircle className="h-16 w-16 text-emerald-400 mx-auto mb-4" />
           {verified ? (
             <>
-              <h2 className="text-2xl font-bold mb-2">Email Verified!</h2>
+              <h1 className="text-2xl font-bold mb-2">Email Verified!</h1>
               <p className="text-muted-foreground mb-6">Your account is ready. Click below to log in.</p>
               <Button onClick={() => router.push("/login")} className="w-full">
                 Continue to Login
@@ -152,7 +154,7 @@ export default function RegisterPage() {
             </>
           ) : (
             <>
-              <h2 className="text-2xl font-bold mb-2">Check your email!</h2>
+              <h1 className="text-2xl font-bold mb-2">Check your email!</h1>
               <p className="text-muted-foreground mb-4">
                 We sent a verification link to <strong>{registeredEmail}</strong>. Click the link to activate your account.
               </p>
@@ -168,7 +170,10 @@ export default function RegisterPage() {
   }
 
   return (
-    <Card className="w-full max-w-md">
+    <>
+      {/* Visually-hidden h1 for SEO + screen reader landmark (K3 fix 2026-04-24). */}
+      <h1 className="sr-only">Create your StudentNest account</h1>
+      <Card className="w-full max-w-md">
       <CardHeader>
         <CardTitle className="text-2xl">Create your account</CardTitle>
         <CardDescription>
@@ -297,5 +302,6 @@ export default function RegisterPage() {
         </p>
       </CardFooter>
     </Card>
+    </>
   );
 }

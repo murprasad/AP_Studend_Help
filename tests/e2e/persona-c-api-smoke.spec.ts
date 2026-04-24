@@ -58,7 +58,7 @@ const CHECKS: ApiCheck[] = [
   { method: "GET", path: "/api/admin/backup", ok: [401, 403] },
   // --- Cron routes: must 401 without CRON_SECRET, must not 500 ---
   { method: "GET", path: "/api/cron/stripe-reconcile", ok: [401] },
-  { method: "GET", path: "/api/cron/auto-populate", ok: [401] },
+  { method: "POST", path: "/api/cron/auto-populate", ok: [401], note: "POST-only; anon must 401 without Bearer" },
   { method: "GET", path: "/api/cron/daily-quiz", ok: [401] },
   { method: "GET", path: "/api/cron/onboarding-bounce", ok: [401] },
   { method: "GET", path: "/api/cron/registration-stall", ok: [401] },

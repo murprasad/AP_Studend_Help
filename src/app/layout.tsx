@@ -10,7 +10,7 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "StudentNest Prep — AP, SAT & ACT Exam Prep",
   description:
-    "Raise your exam score with AI that explains why, not just what. Personalized practice, instant feedback, and mastery tracking for AP, SAT, and ACT. Free for every student.",
+    "Raise your AP, SAT, or ACT score with AI that explains why — not just what. Personalized practice, instant feedback, mastery tracking. Free to start.",
   metadataBase: new URL("https://studentnest.ai"),
   openGraph: {
     title: "StudentNest Prep — Score Higher on AP, SAT & ACT",

@@ -19,8 +19,12 @@ export const dynamic = "force-dynamic";
 
 export async function GET(req: NextRequest) {
   const session = await getServerSession(authOptions);
+  // D2 (2026-04-24): 401 for anonymous to match the rest of the auth-gated
+  // API surface. Previous 200 + null-session shape was informationally
+  // identical but broke the "auth-gated routes return 401" convention
+  // surfaced by persona-c-api-smoke.spec.ts.
   if (!session?.user?.id) {
-    return NextResponse.json({ session: null });
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   const { searchParams } = new URL(req.url);
