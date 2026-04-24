@@ -14,6 +14,27 @@ In a single afternoon we shipped four bugs that should have been caught by tests
 > caused us to ship the onboarding bounce loop tonight). The path
 > coverage matrix at `docs/path-coverage-matrix.md` is the contract.
 > Untested paths in production are bugs waiting to surface.
+>
+> **Each path test must verify FOUR dimensions (locked 2026-04-24):**
+>
+> 1. **Functional success** — the operation completed (DB changed, route
+>    navigated, API returned 200, etc).
+> 2. **Message correctness** — copy on screen matches intent. After
+>    sign-up: banner says "welcome", not "bye". After payment success:
+>    banner says "Welcome to Premium!" ONLY if DB tier is actually
+>    Premium (we shipped a UI lie tonight; never again). Snapshot the
+>    exact strings; assert against the snapshot.
+> 3. **Visual correctness** — color, placement, and order match design
+>    intent. Success = green; warning = amber; error = red. Banner above
+>    fold; CTA button right of headline; modal centered. Visual
+>    regression baselines (Layer 5) catch silent UI drift.
+> 4. **State consistency** — every page reflecting the same state
+>    within 1s. Sidebar badge, dashboard card, billing UI, paywall
+>    visibility — all must match `/api/billing/status` after a tier
+>    change.
+>
+> A spec that asserts only #1 (operation succeeded) is a fake spec.
+> Tests that pass while users see broken UI are how today's bugs shipped.
 
 
 1. **Webhook 500s** — Stripe API version 2025-09-30+ moved `current_period_end` to `items.data[]`. Our code crashed with `new Date(undefined * 1000)`.
