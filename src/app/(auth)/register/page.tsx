@@ -176,6 +176,10 @@ export default function RegisterPage() {
             ? "Start earning college credit with CLEP — free"
             : userModule === "dsst"
             ? "Start earning college credit with DSST — free"
+            : userModule === "sat"
+            ? "Start your SAT prep today — free"
+            : userModule === "act"
+            ? "Start your ACT prep today — free"
             : "Start your AP exam journey today — free"}
         </CardDescription>
       </CardHeader>

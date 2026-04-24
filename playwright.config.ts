@@ -66,7 +66,7 @@ export default defineConfig({
     {
       name: "chromium-public",
       use: { ...devices["Desktop Chrome"] },
-      testMatch: /public-paths\.spec\.ts/,
+      testMatch: /(public-paths|public-entry-points|persona-a-landing-ctas|persona-a-register-tracks|persona-a-login|persona-c-crawler-anonymous|persona-c-broken-links|persona-c-console-errors)\.spec\.ts/,
     },
     ...(HAS_CRON_SECRET
       ? [

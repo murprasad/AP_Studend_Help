@@ -7,8 +7,11 @@ import { ApCourse } from "@prisma/client";
 export const dynamic = "force-dynamic";
 
 export async function GET(req: NextRequest) {
+  // Public-facing on /wall-of-fame; authed on /dashboard. Anonymous callers
+  // get the public top-10 leaderboard but no userRank/userXp. This avoids
+  // the 401 console-error noise on the marketing wall-of-fame page while
+  // keeping personal data gated behind auth.
   const session = await getServerSession(authOptions);
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const course = req.nextUrl.searchParams.get("course") as ApCourse | null;
 
@@ -57,6 +60,12 @@ export async function GET(req: NextRequest) {
     .sort((a, b) => b.xp - a.xp);
 
   const top10 = sorted.slice(0, 10).map((e, i) => ({ ...e, rank: i + 1 }));
+
+  if (!session) {
+    // Anonymous caller — return just the top10; skip personal rank/xp.
+    return NextResponse.json({ leaderboard: top10, userRank: null, userXp: 0 });
+  }
+
   const userRankIndex = sorted.findIndex((e) => e.userId === session.user.id);
   const userXp = xpByUser.get(session.user.id) || 0;
 

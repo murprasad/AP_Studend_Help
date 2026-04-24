@@ -10,6 +10,16 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { TrendingUp, Info, ArrowRight } from "lucide-react";
+import { VISIBLE_AP_COURSES } from "@/lib/courses";
+
+// The /how-hard-is/[slug] route only pre-renders courses that exist in
+// VISIBLE_AP_COURSES. AP_ROWS below includes national CB reference rows
+// (e.g. AP Chinese, AP Spanish, AP English Language) that we DON'T yet
+// have per-course pages for — we still show the row for data honesty,
+// but only link when the page exists. This guards the broken-link audit.
+const VISIBLE_SLUGS = new Set(
+  VISIBLE_AP_COURSES.map((c) => c.toLowerCase().replace(/_/g, "-")),
+);
 
 export const metadata: Metadata = {
   title: "AP, SAT, ACT Pass Rates 2026 — Score Distributions & Benchmarks",
@@ -135,9 +145,13 @@ export default function PassRatesPage() {
                   <td className="px-4 py-2.5 text-right tabular-nums">{r.threePlus}</td>
                   <td className="px-4 py-2.5 text-right tabular-nums text-muted-foreground">{r.fiveRate}</td>
                   <td className="px-4 py-2.5 text-right">
-                    <Link href={`/how-hard-is/${r.slug}`} className="text-xs text-blue-500 hover:underline inline-flex items-center gap-1">
-                      How hard? <ArrowRight className="h-3 w-3" />
-                    </Link>
+                    {VISIBLE_SLUGS.has(r.slug) ? (
+                      <Link href={`/how-hard-is/${r.slug}`} className="text-xs text-blue-500 hover:underline inline-flex items-center gap-1">
+                        How hard? <ArrowRight className="h-3 w-3" />
+                      </Link>
+                    ) : (
+                      <span className="text-xs text-muted-foreground/50">—</span>
+                    )}
                   </td>
                 </tr>
               ))}
