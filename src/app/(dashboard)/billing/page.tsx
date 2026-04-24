@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useSession } from "next-auth/react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -42,6 +42,17 @@ function formatDate(isoDate: string): string {
 export default function BillingPage() {
   const { data: session, status, update } = useSession();
   const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
+  // Snapshot ?success=1 once on first render so a router.replace() that
+  // strips the param doesn't re-fire the polling effect (guarding against
+  // the infinite re-poll loop).
+  const successOnMount = useRef<boolean>(searchParams.get("success") === "1");
+  // Keep the success banner visible for this session even after we strip
+  // the URL param (UX continuity).
+  const [justUpgradedDisplay, setJustUpgradedDisplay] = useState<boolean>(
+    successOnMount.current,
+  );
   const [isLoading, setIsLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [billingStatus, setBillingStatus] = useState<BillingStatus | null>(null);
@@ -71,46 +82,75 @@ export default function BillingPage() {
 
   // After Stripe redirects back with ?success=1, poll the DB billing status
   // (not the JWT) to detect when the webhook has upgraded the account.
-  // Once the DB shows PREMIUM, call update() once to sync the JWT, then stop.
+  //
+  // FLICKER FIX: This effect must run EXACTLY ONCE per page mount. The
+  // earlier version re-fired whenever session.update() refreshed the JWT,
+  // which restarted polling, which called update() again — infinite loop
+  // visible as nonstop flickering. Two safeguards now:
+  //   1. successOnMount ref captures ?success=1 at mount time only
+  //   2. After polling completes (success OR timeout), strip ?success=1
+  //      from the URL so any future remount doesn't re-engage polling
+  //   3. Bounded to 5 polls (10s) — well under the previous 30s
   useEffect(() => {
-    if (searchParams.get("success") !== "1") return;
+    if (!successOnMount.current) return;
 
     setRefreshing(true);
     let stopped = false;
+    let pollsRemaining = 5;
+
+    const stripSuccessParam = () => {
+      try {
+        const params = new URLSearchParams(window.location.search);
+        params.delete("success");
+        const qs = params.toString();
+        router.replace(qs ? `${pathname}?${qs}` : pathname, { scroll: false });
+      } catch { /* best-effort */ }
+    };
+
+    const finish = (foundPremium: boolean) => {
+      if (stopped) return;
+      stopped = true;
+      clearInterval(intervalId);
+      clearTimeout(timeoutId);
+      setRefreshing(false);
+      stripSuccessParam();
+      if (foundPremium) {
+        // JWT sync — fire-and-forget, don't await (avoids triggering
+        // session re-renders that historically caused remount churn).
+        void update().catch(() => { /* best-effort */ });
+      }
+    };
 
     const poll = async () => {
       if (stopped) return;
+      pollsRemaining -= 1;
       try {
         const res = await fetch("/api/billing/status");
         if (res.ok) {
           const data = await res.json() as BillingStatus;
           setBillingStatus(data);
-          if (isAnyPremium(data.subscriptionTier) || (data.moduleSubs ?? []).some(s => s.status === "active")) {
-            stopped = true;
-            clearInterval(intervalId);
-            clearTimeout(timeoutId);
-            // Flip refreshing off BEFORE update() so a rejected JWT-sync
-            // doesn't strand the UI in "Activating..." forever.
-            setRefreshing(false);
-            try { await update(); } catch { /* JWT sync best-effort */ }
+          const isPremNow =
+            isAnyPremium(data.subscriptionTier) ||
+            (data.moduleSubs ?? []).some((s) => s.status === "active");
+          if (isPremNow) {
+            finish(true);
+            return;
           }
         }
-      } catch { /* ignore transient errors */ }
+      } catch { /* transient errors are non-fatal */ }
+      if (pollsRemaining <= 0) finish(false);
     };
 
-    // Poll immediately, then every 2 s
     poll();
     const intervalId = setInterval(poll, 2000);
-    // Hard stop after 30 s in case the webhook is delayed
-    const timeoutId = setTimeout(() => {
-      if (!stopped) {
-        stopped = true;
-        clearInterval(intervalId);
-        setRefreshing(false);
-      }
-    }, 30000);
+    // Belt-and-suspenders timeout (12s = 5 polls × 2s + buffer)
+    const timeoutId = setTimeout(() => finish(false), 12000);
 
-    return () => { stopped = true; clearInterval(intervalId); clearTimeout(timeoutId); };
+    return () => {
+      stopped = true;
+      clearInterval(intervalId);
+      clearTimeout(timeoutId);
+    };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -194,7 +234,17 @@ export default function BillingPage() {
     );
   }
 
-  const justUpgraded = searchParams.get("success") === "1";
+  // Auto-clear the success banner shortly after we transition to PREMIUM,
+  // so it doesn't linger on the page indefinitely after the URL is stripped.
+  useEffect(() => {
+    if (!justUpgradedDisplay) return;
+    if (!isPremium) return;
+    const t = setTimeout(() => setJustUpgradedDisplay(false), 8000);
+    return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isPremium]);
+
+  const justUpgraded = justUpgradedDisplay;
 
   return (
     <div className="max-w-2xl mx-auto">
