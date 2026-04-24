@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { useCourse } from "@/hooks/use-course";
@@ -60,6 +61,7 @@ export default function OnboardingPage() {
   const [step, setStep] = useState<Step>(1);
   const [course, setCourse] = useCourse();
   const router = useRouter();
+  const { update: updateSession } = useSession();
   const [track, setTrackState] = useState<"ap" | "clep" | "dsst">("ap");
   const [clepEnabled, setClepEnabled] = useState(false);
 
@@ -114,7 +116,7 @@ export default function OnboardingPage() {
   // completeOnboarding — finishes the flow. Optional `then` lets the
   // plan-choice step route to /billing after marking onboarded (for
   // users who picked Premium).
-  function completeOnboarding(then: "dashboard" | "billing" = "dashboard") {
+  async function completeOnboarding(then: "dashboard" | "billing" = "dashboard") {
     if (effectiveTrack === "clep") {
       fetch("/api/study-plan", {
         method: "POST",
@@ -122,13 +124,31 @@ export default function OnboardingPage() {
         body: JSON.stringify({ course, mode: "7day" }),
       }).catch(() => {});
     }
-    fetch("/api/user", {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ completeOnboarding: true }),
-    }).catch(() => {});
+    // CRITICAL: await PATCH so the DB write completes before we navigate.
+    // Then call updateSession() to refresh the JWT — middleware reads
+    // onboardingCompletedAt from the JWT to decide whether to redirect
+    // back to /onboarding. Without this, the user is bounced back here
+    // when they try to visit /dashboard, /analytics, /resources, etc.
+    try {
+      await fetch("/api/user", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ completeOnboarding: true }),
+      });
+      // Refresh JWT — middleware uses token.onboardingCompletedAt
+      await updateSession();
+    } catch {
+      // Best-effort. If this fails, the localStorage flag still gets set
+      // so the legacy client-side check won't bounce. Middleware will
+      // bounce until next sign-in if the JWT didn't refresh.
+    }
     try {
       localStorage.setItem(ONBOARDING_KEY, "true");
+      // Short-lived cookie middleware reads as a "recently onboarded" hint
+      // so a stale JWT (between PATCH and next sign-in) doesn't bounce the
+      // user back here. 1 hour is enough for the JWT to refresh on the
+      // next page load via updateSession.
+      document.cookie = `${ONBOARDING_KEY}=true; path=/; max-age=3600; SameSite=Lax`;
     } catch {
       // ignore
     }
