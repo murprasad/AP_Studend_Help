@@ -4,6 +4,18 @@
 
 In a single afternoon we shipped four bugs that should have been caught by tests:
 
+> **Hard requirement (locked 2026-04-24):** Tests must walk every possible
+> path a real user can take and verify the result matches intent. From
+> the landing page, every entry-point button must be exercised.
+> From every authed page, every link must be tested. Every plan
+> transition (Free ↔ Premium, monthly ↔ annual, cancel ↔ reactivate)
+> must be tested. Every fixture must reflect reality (a "first-time
+> user" fixture must NOT have `onboardingCompletedAt` set — that mistake
+> caused us to ship the onboarding bounce loop tonight). The path
+> coverage matrix at `docs/path-coverage-matrix.md` is the contract.
+> Untested paths in production are bugs waiting to surface.
+
+
 1. **Webhook 500s** — Stripe API version 2025-09-30+ moved `current_period_end` to `items.data[]`. Our code crashed with `new Date(undefined * 1000)`.
 2. **Webhook silent skip** — Missing `client_reference_id` from Payment Links → webhook returned 200 without updating DB.
 3. **UI lied** — `/billing` showed "Welcome to Premium!" when DB tier was FREE.
@@ -146,6 +158,69 @@ That is not a test gap — it's a test **architecture** gap.
 
 **Cost:** ~6 hours initial setup, ~15 min per new component
 **Catches:** component-level bugs without booting the full app
+
+---
+
+### Layer 8 — Path-coverage E2E (NEW — locked 2026-04-24)
+
+**Tool:** Playwright + a path-coverage matrix doc
+
+**The contract:** `docs/path-coverage-matrix.md` enumerates every navigable
+path a real user can take. Every row in the matrix must have a passing
+Playwright spec. Untested rows = open bug surface.
+
+**Categories of paths (each is a tab in the matrix):**
+
+1. **Public entry-point matrix** — every CTA on every public page must
+   route to the correct destination with the correct query params.
+   Includes /, /pricing, /about, /ap-prep, /sat-prep, /act-prep,
+   /clep-prep, /how-hard-is/[slug], /am-i-ready, /pass-rates,
+   /wall-of-fame, /resources, /sage-coach, /warmup. Each page has 2-15
+   CTAs; each is a test row.
+
+2. **Auth entry-point matrix** — every way a user can sign in or sign
+   up: email/password (login), email/password (register),
+   register?track=ap, register?track=clep, register?track=sat,
+   register?track=act, Google OAuth (login), Google OAuth (register),
+   reset-password flow, verify-email flow.
+
+3. **First-time user flow matrix** — sign up → onboarding (4 steps for
+   AP track, different copy for CLEP track) → completion → land on
+   correct page (dashboard for Free, /billing for Premium choice).
+   **Fixture must use `onboardingCompletedAt: null`.**
+
+4. **Returning user flow matrix** — sign in → land on dashboard → click
+   each sidebar item (10 items) → verify each loads correctly. Repeat
+   for FREE user (paywalls visible) and PREMIUM user (no paywalls).
+
+5. **Plan-transition matrix** — Free → Premium (monthly), Free → Premium
+   (annual), Premium → Cancel (canceling state), Canceling → Reactivate,
+   Premium (annual) → Premium (monthly), single-module → multi-module,
+   webhook silent skip recovery via reconcile cron, manual support flip.
+
+6. **Limit-hit matrix** — for each FREE_LIMITS row in tier-limits.ts,
+   exhaust the limit and verify (a) paywall appears with correct
+   LOCK_COPY string, (b) upgrade CTA routes correctly, (c) no off-by-one.
+   Currently: practice cap 20/day, tutor 3/day, mock-exam 5q,
+   diagnostic 14d cooldown, FRQ 1 lifetime, flashcards no SM-2.
+
+7. **Cross-page state-sync matrix** — flip a user's tier in DB → assert
+   every page reflects within 1s (after refresh): dashboard, billing,
+   sidebar badge, FRQ Practice, Mock Exam, Analytics, Sage Coach.
+
+8. **Race-condition matrix** — every page that polls or has a session
+   refresh must be tested for: re-render thrash, infinite loops,
+   orphan setIntervals after unmount, URL param leakage. /billing is
+   the obvious one but /practice (timer), /mock-exam (timer),
+   /sage-coach all need the same scrutiny.
+
+**Audit script:** `scripts/audit-path-coverage.mjs` reads the matrix, lists
+every spec file, and reports which matrix rows have no corresponding
+test. Wired into `pre-release-check.js` as a soft warning.
+
+**Cost:** Initial: ~16 hours to write the matrix + 30 missing specs.
+Ongoing: every new feature must add a matrix row + spec.
+**Catches:** every class of bug shipped this week.
 
 ---
 
