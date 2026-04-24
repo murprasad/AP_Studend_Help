@@ -12,6 +12,11 @@ test.describe.configure({ retries: 2 });
 
 test.describe("Billing page state consistency", () => {
   test("FREE user with ?success=1 must not claim Premium after polling timeout", async ({ page }) => {
+    // The page's polling cap is 30s; we wait 35s to land in the timed-out
+    // branch. Default Playwright per-test timeout is 30s (see config), so
+    // bump it to 60s for this spec only.
+    test.setTimeout(60_000);
+
     // Poll cap is 30s in the page; wait it out so we land in the timed-out branch.
     await page.goto("/billing?success=1");
 

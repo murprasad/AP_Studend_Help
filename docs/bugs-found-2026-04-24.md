@@ -58,3 +58,24 @@ Probably same root cause across the three.
 likely "Log in" or similar. My test regex was `^sign\s*in$` which misses alternatives.
 
 **Fix:** Relax the test to match any anchor with `href=/login` regardless of inner text.
+
+## B5 — a11y-scan authed pages timeout at 30s [TEST INFRA BUG]
+
+**Severity:** Medium. Blocks every authed a11y assertion (10 tests × retries).
+
+**Repro:** `tests/e2e/a11y-scan.spec.ts` uses `page.waitForLoadState("networkidle")`
+on authed pages. Dashboard has active polling (daily goal, due cards,
+session.update()) → `networkidle` never settles within 30s test budget.
+
+**Fix:** Switch to `waitUntil: "domcontentloaded"` + `waitForTimeout(2000)`.
+Axe analyses the rendered DOM; 2s post-DOM is enough.
+
+## B6 — billing-page-consistency: waitForTimeout > test budget [TEST INFRA BUG]
+
+**Severity:** Medium. Blocks the Premium/Free UI-honesty guard.
+
+**Repro:** `tests/e2e/billing-page-consistency.spec.ts:19` calls
+`page.waitForTimeout(35000)` inside a test with default 30s per-test timeout.
+Always times out.
+
+**Fix:** `test.setTimeout(60_000)` inside the specific test.

@@ -13,6 +13,7 @@ import { formatTime } from "@/lib/utils";
 import { ApCourse } from "@prisma/client";
 import { getCourseTrack, getMockExamConfig } from "@/lib/courses";
 import { isPremiumForTrack, type ModuleSub } from "@/lib/tiers";
+import { QuestionContent } from "@/components/question/question-content";
 import {
   Trophy,
   Clock,
@@ -512,13 +513,15 @@ export default function MockExamPage() {
           <CardContent className="p-6 space-y-4">
             {currentQ.stimulus && (
               <div className="p-4 rounded-lg bg-secondary/50 border-l-4 border-blue-500">
-                <p className="text-sm leading-relaxed italic text-muted-foreground">
-                  {currentQ.stimulus}
-                </p>
+                <div className="text-sm leading-relaxed italic text-muted-foreground">
+                  <QuestionContent content={currentQ.stimulus} />
+                </div>
               </div>
             )}
 
-            <p className="text-base font-medium leading-relaxed">{currentQ.questionText}</p>
+            <div className="text-base font-medium leading-relaxed">
+              <QuestionContent content={currentQ.questionText} />
+            </div>
 
             <div className="space-y-2">
               {parsedOptions.map((option, i) => {

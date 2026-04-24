@@ -3,7 +3,7 @@ import path from "node:path";
 
 export default defineConfig({
   test: {
-    include: ["src/**/*.test.ts", "src/**/*.test.tsx", "tests/unit/**/*.test.ts"],
+    include: ["src/**/*.test.ts", "src/**/*.test.tsx", "tests/unit/**/*.test.ts", "tests/unit/**/*.test.tsx"],
     exclude: ["node_modules", ".next", ".cf-deploy", "tests/e2e/**"],
     environment: "node",
     coverage: {

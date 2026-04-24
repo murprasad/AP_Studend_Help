@@ -48,8 +48,11 @@ test.describe("Accessibility — public pages", () => {
 test.describe("Accessibility — authed pages", () => {
   for (const path of PAGES_AUTHED) {
     test(`${path} has no serious or critical a11y violations`, async ({ page }) => {
-      await page.goto(path);
-      await page.waitForLoadState("networkidle");
+      await page.goto(path, { waitUntil: "domcontentloaded" });
+      // Authed pages have active polling (dashboard, billing) — networkidle
+      // never settles. Give the DOM 2s to hydrate then scan whatever is
+      // present. Axe only analyzes rendered DOM, so this is sufficient.
+      await page.waitForTimeout(2000);
       const results = await new AxeBuilder({ page })
         .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
         .analyze();

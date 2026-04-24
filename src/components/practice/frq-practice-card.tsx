@@ -24,6 +24,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { ExternalLink, ArrowRight, Loader2 } from "lucide-react";
+import { QuestionContent } from "@/components/question/question-content";
 
 import {
   parseRubric,
@@ -277,8 +278,8 @@ export function FrqPracticeCard({
             <h3 className="text-sm font-semibold text-muted-foreground mb-1">
               Stimulus
             </h3>
-            <div className="rounded-md border border-border/60 bg-muted/30 p-3 text-sm whitespace-pre-wrap">
-              {frq.stimulus}
+            <div className="rounded-md border border-border/60 bg-muted/30 p-3 text-sm">
+              <QuestionContent content={frq.stimulus} />
             </div>
           </section>
         )}

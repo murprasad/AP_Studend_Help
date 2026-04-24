@@ -62,7 +62,7 @@ export default function AboutPage() {
           </div>
           <div className="flex items-center gap-2 flex-wrap">
             <h1 className="text-3xl font-bold gradient-text">About StudentNest Prep</h1>
-            <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30 text-xs font-semibold">Beta 6.0</Badge>
+            <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30 text-xs font-semibold">Beta 6.1</Badge>
           </div>
         </div>
         <p className="text-muted-foreground leading-relaxed max-w-2xl mx-auto">
@@ -310,10 +310,39 @@ export default function AboutPage() {
         </div>
       </div>
 
-      {/* Section 7: What's New in Beta 6.0 */}
+      {/* Section 7: What's New in Beta 6.1 */}
       <div className="space-y-6">
         <div className="text-center space-y-1">
           <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30 text-xs font-semibold mb-2">Latest Release</Badge>
+          <h2 className="text-xl font-bold">What&apos;s New in Beta 6.1</h2>
+          <p className="text-sm text-muted-foreground">Question rendering + sign-up polish — markdown tables and LaTeX now render correctly in practice, mock exam, and diagnostic. Sign-up copy now reflects your chosen prep track.</p>
+        </div>
+        <div className="grid sm:grid-cols-2 gap-3 text-left">
+          {[
+            { icon: Sparkles, color: "text-blue-500", bg: "bg-blue-500/10", title: "Rich Question Rendering", desc: "Physics, chemistry, and statistics questions with data tables now display as proper tables, not raw pipes. Math formulas render with LaTeX. Applied to practice, mock exam, diagnostic, and FRQ." },
+            { icon: Target, color: "text-blue-500", bg: "bg-blue-500/10", title: "Track-Aware Sign-Up", desc: "Starting from the SAT, ACT, or CLEP landing pages now surfaces SAT / ACT / CLEP-specific framing on the sign-up screen instead of defaulting to 'AP exam journey.' Small fix, big first-impression difference." },
+            { icon: ShieldCheck, color: "text-blue-500", bg: "bg-blue-500/10", title: "Wall of Fame Public View", desc: "The public leaderboard preview on /wall-of-fame no longer throws 401s in the browser console — anonymous visitors see the real top-10 without logging in. Personal rank + XP stay gated behind auth." },
+            { icon: LayoutDashboard, color: "text-blue-500", bg: "bg-blue-500/10", title: "Cleaner Pass-Rate Links", desc: "The /pass-rates reference table no longer links to difficulty-guide pages we haven't built yet (AP Chinese, AP Spanish, AP English Language). Data rows stay for honesty; links appear only when the destination exists." },
+            { icon: GraduationCap, color: "text-blue-500", bg: "bg-blue-500/10", title: "Persona-Driven Test Coverage", desc: "A new 17-category path-coverage matrix walks every page a real user would hit — first-time signup, returning user, and an explorer crawler that clicks every clickable element. Caught and fixed 6 regressions in this release." },
+            { icon: Target, color: "text-blue-500", bg: "bg-blue-500/10", title: "Release Pipeline Hardening", desc: "Accessibility scan and billing-UI consistency tests were silently timing out; fixed so they now actually block regressions. Unit test count grew from 45 to 57 with new guards around sign-up copy and markdown-table rendering." },
+          ].map(({ icon: Icon, color, bg, title, desc }) => (
+            <div key={title} className="flex gap-3 p-4 rounded-xl border border-border/40 bg-card">
+              <div className={`w-8 h-8 rounded-lg ${bg} flex items-center justify-center flex-shrink-0 mt-0.5`}>
+                <Icon className={`h-4 w-4 ${color}`} />
+              </div>
+              <div>
+                <p className="text-sm font-semibold">{title}</p>
+                <p className="text-xs text-muted-foreground leading-relaxed mt-0.5">{desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Section 7-prev: What's New in Beta 6.0 */}
+      <div className="space-y-6">
+        <div className="text-center space-y-1">
+          <Badge className="bg-border/60 text-muted-foreground border-border/40 text-xs font-semibold mb-2">Beta 6.0</Badge>
           <h2 className="text-xl font-bold">What&apos;s New in Beta 6.0</h2>
           <p className="text-sm text-muted-foreground">Conversion funnel overhaul, 5 new AP courses in preparation, and question-quality guardrails responding to community feedback.</p>
         </div>

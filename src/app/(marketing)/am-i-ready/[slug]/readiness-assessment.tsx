@@ -15,6 +15,7 @@ import {
   type UnifiedReadiness,
 } from "@/lib/score-predictors";
 import { ExitIntentCapture } from "@/components/marketing/exit-intent-capture";
+import { QuestionContent } from "@/components/question/question-content";
 import {
   ArrowRight,
   ArrowLeft,
@@ -434,9 +435,9 @@ export function ReadinessAssessment({
         </div>
 
         <div className="p-5 rounded-xl border border-border/40 bg-card space-y-4">
-          <p className="text-sm font-medium leading-relaxed whitespace-pre-wrap">
-            {currentQ.questionText}
-          </p>
+          <div className="text-sm font-medium leading-relaxed">
+            <QuestionContent content={currentQ.questionText} />
+          </div>
 
           <div className="space-y-2">
             {currentQ.options.map((opt, i) => {

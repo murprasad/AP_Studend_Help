@@ -14,6 +14,7 @@ import { COURSE_REGISTRY, getCourseModule } from "@/lib/courses"
 import { ApUnit } from "@prisma/client"
 import Link from "next/link"
 import { LockedInsightOverlay } from "@/components/diagnostic/locked-insight-overlay"
+import { QuestionContent } from "@/components/question/question-content"
 import { buildFocusedPracticeUrl } from "@/lib/diagnostic-helpers"
 import {
   ClipboardList, CheckCircle, XCircle, ChevronRight,
@@ -214,10 +215,12 @@ export default function DiagnosticPage() {
           <CardContent className="p-6 space-y-4">
             {question.stimulus && (
               <div className="p-4 bg-secondary/40 rounded-lg border border-border/40 text-sm italic text-muted-foreground">
-                {question.stimulus}
+                <QuestionContent content={question.stimulus} />
               </div>
             )}
-            <p className="font-medium text-base">{question.questionText}</p>
+            <div className="font-medium text-base">
+              <QuestionContent content={question.questionText} />
+            </div>
             <div className="space-y-2">
               {options.map((opt, i) => {
                 const letter = String.fromCharCode(65 + i)

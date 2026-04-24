@@ -66,7 +66,7 @@ export default defineConfig({
     {
       name: "chromium-public",
       use: { ...devices["Desktop Chrome"] },
-      testMatch: /(public-paths|public-entry-points|persona-a-landing-ctas|persona-a-register-tracks|persona-a-login|persona-c-crawler-anonymous|persona-c-broken-links|persona-c-console-errors)\.spec\.ts/,
+      testMatch: /(public-paths|public-entry-points|persona-a-landing-ctas|persona-a-register-tracks|persona-a-login|persona-a-auth-misc|persona-c-crawler-anonymous|persona-c-broken-links|persona-c-console-errors|persona-c-api-smoke)\.spec\.ts/,
     },
     ...(HAS_CRON_SECRET
       ? [
@@ -78,7 +78,7 @@ export default defineConfig({
             },
             // Match any authed spec. Currently: authed-flows + nawal-nudge.
             // New authed specs drop in without config changes.
-            testMatch: /(authed-flows|nawal-nudge|flashcards-due-card|quality-audit-cron|onboarding-plan-choice|first-time-user-fmea|first-time-user-real|billing-page-consistency|paywall-accuracy|billing-flicker|a11y-scan)\.spec\.ts/,
+            testMatch: /(authed-flows|nawal-nudge|flashcards-due-card|quality-audit-cron|onboarding-plan-choice|first-time-user-fmea|first-time-user-real|billing-page-consistency|paywall-accuracy|billing-flicker|a11y-scan|persona-b-sidebar-walk)\.spec\.ts/,
             dependencies: ["setup"],
           },
         ]
