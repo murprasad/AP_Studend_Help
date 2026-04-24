@@ -21,8 +21,13 @@ export const dynamic = "force-dynamic";
 
 export async function GET() {
   const session = await getServerSession(authOptions);
+  // SEC-3 (2026-04-24): return 401 for anonymous to match the rest of the
+  // user-scoped API surface. Previous 200 with placeholder was not a data
+  // leak (values are invariant for anon) but broke the auth convention
+  // flagged in the security audit. Callers (diagnostic-nudge-modal) handle
+  // non-OK responses gracefully — no client change needed.
   if (!session?.user?.id) {
-    return NextResponse.json({ responseCount: 0, hasDiagnostic: false, hasTrial: false });
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
   const userId = session.user.id;
 
