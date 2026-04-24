@@ -59,20 +59,27 @@ export async function POST(req: NextRequest) {
       if (clear) {
         await prisma.studentResponse.deleteMany({ where: { userId: user.id } });
       }
-      // Need a real question ID to attach to — pick first approved AP question.
-      const q = await prisma.question.findFirst({
+      // Seed against multiple different questions to avoid breaking the
+      // practice-route's dedupe logic (which filters out already-answered-
+      // correctly questions and tries AI generation when the fresh pool is
+      // empty). Pulling N distinct questions prevents that failure path.
+      // Also mark them INCORRECT so the dedupe doesn't treat them as
+      // "mastered" — the cap check doesn't care about correctness.
+      const qs = await prisma.question.findMany({
         where: { isApproved: true },
         select: { id: true },
+        take: Math.max(count, 1),
       });
-      if (!q) return NextResponse.json({ error: "No approved question to seed against" }, { status: 500 });
+      if (qs.length === 0) return NextResponse.json({ error: "No approved questions to seed against" }, { status: 500 });
       const now = new Date();
       for (let i = 0; i < count; i++) {
         await prisma.studentResponse.create({
           data: {
             userId: user.id,
-            questionId: q.id,
+            // Cycle through available questions; if count > bank size, reuse.
+            questionId: qs[i % qs.length].id,
             studentAnswer: "A",
-            isCorrect: true,
+            isCorrect: false, // don't pollute the dedupe cache
             timeSpentSecs: 30,
             answeredAt: new Date(now.getTime() - i * 1000), // stagger
           },

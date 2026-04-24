@@ -55,8 +55,23 @@ for (const { path, mustContain, mustNot } of SIDEBAR_PATHS) {
     if (page.url().includes("/onboarding") && path !== "/onboarding") {
       test.skip(true, `${path} bounced to /onboarding — test fixture not primed`);
     }
+    // Also skip if JWT expired mid-run (E8 protection).
+    if (page.url().includes("/login") && path !== "/login") {
+      test.skip(true, `${path} bounced to /login — session expired`);
+    }
 
     expect(res?.status(), `${path} returned ${res?.status()}`).toBeLessThan(400);
+
+    // Wait for React to hydrate — without this, innerText() returns "" when
+    // the SSR'd shell is a skeleton and content fills in client-side.
+    // Using a heading as the hydration signal because every dashboard page
+    // has at least one h1 or h2 visible after hydration.
+    await page.locator("h1, h2, [role='heading']").first().waitFor({
+      state: "attached",
+      timeout: 10_000,
+    }).catch(() => { /* some pages may have no heading; fall through */ });
+    // Small settle for client effects that render content after heading appears
+    await page.waitForTimeout(500);
 
     const body = await page.locator("body").innerText();
 
