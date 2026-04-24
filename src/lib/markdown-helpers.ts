@@ -1,4 +1,41 @@
 /**
+ * Strip MCQ-answer-letter leaks from flashcard explanations.
+ *
+ * Bug B8 (2026-04-24): The flashcard `explanation` field is populated from
+ * the source MCQ question's explanation prose, which references "A is
+ * correct", "B is wrong (trap: ...)", etc. Flashcards have no A-D options,
+ * so those sentences are nonsensical. This function removes them before
+ * render.
+ *
+ * Conservative — only strips the specific sentence patterns:
+ *   - "A is correct." (at start)
+ *   - "B is wrong (...)" / "B is wrong because..." / "B is wrong;"
+ * Leaves the surrounding teaching content intact.
+ *
+ * Idempotent — safe to apply twice. Passes non-MCQ explanations through unchanged.
+ */
+export function sanitizeFlashcardExplanation(input: string | null | undefined): string {
+  if (!input) return "";
+  let out = input;
+  // Leading "A is correct." or "A is correct.<newline>" sentence.
+  out = out.replace(/^\s*[A-E]\s+is\s+correct\.?\s*/i, "");
+  // Inline "X is wrong ..." sentences — matches through sentence-ending '.'
+  // that isn't inside a parenthetical. Non-greedy; requires a following
+  // whitespace / end-of-string to avoid eating adjacent prose.
+  out = out.replace(
+    /\s*[A-E]\s+is\s+wrong\s*(?:\([^)]*\))?[^.]*\.(\s|$)/gi,
+    " ",
+  );
+  // Also handle "X is incorrect ..." for symmetry.
+  out = out.replace(
+    /\s*[A-E]\s+is\s+incorrect\s*(?:\([^)]*\))?[^.]*\.(\s|$)/gi,
+    " ",
+  );
+  // Collapse double spaces + trim.
+  return out.replace(/\s{2,}/g, " ").trim();
+}
+
+/**
  * markdown-helpers.ts — pure string helpers for AI-generated markdown.
  *
  * Extracted from `src/components/tutor/section-cards.tsx` so unit tests

@@ -20,6 +20,7 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { ApCourse } from "@prisma/client";
 import { VALID_AP_COURSES } from "@/lib/courses";
+import { sanitizeFlashcardExplanation } from "@/lib/markdown-helpers";
 
 export const dynamic = "force-dynamic";
 
@@ -106,10 +107,17 @@ export async function GET(req: NextRequest) {
       });
     }
 
+    // B8 (2026-04-24): strip MCQ-letter leaks ("A is correct. B is wrong...")
+    // from explanations — these come from source MCQ questions but make no
+    // sense on a flashcard with only front/back.
+    const clean = <T extends { explanation: string | null }>(c: T): T => ({
+      ...c,
+      explanation: sanitizeFlashcardExplanation(c.explanation),
+    });
     return NextResponse.json({
       cards: [
-        ...dueCards.map((c) => ({ ...c.card, sm2: c.sm2, isNew: false })),
-        ...newCards.map((c) => ({ ...c, sm2: { easeFactor: 2.5, interval: 1, repetitions: 0 }, isNew: true })),
+        ...dueCards.map((c) => clean({ ...c.card, sm2: c.sm2, isNew: false })),
+        ...newCards.map((c) => clean({ ...c, sm2: { easeFactor: 2.5, interval: 1, repetitions: 0 }, isNew: true })),
       ],
       counts: {
         dueReturned: dueCards.length,

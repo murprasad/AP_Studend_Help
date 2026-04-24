@@ -229,6 +229,38 @@ The 20 pages scanned: `/`, `/pricing`, `/about`, `/terms`, `/privacy`, `/faq`,
 root or setting response headers from Next.js `headers()` config resolves
 all 120 rows at once.
 
+## Category L — User-reported issues (direct reports during the session)
+
+### L1 — [✅] Markdown tables render as raw pipes on `/diagnostic` (user screenshot)
+Physics Q2 showed `| Given | Value (units) | |-------|---...` as literal text.
+Fixed: new `<QuestionContent>` component wired into 4 surfaces + 6 regression
+unit tests. Shipped in commit `4de6a9d`, **deployed to production** at
+`8d7e2004.studentnest.pages.dev` → promoted to `studentnest.ai`.
+
+### L2 — [✅] Flashcards show MCQ-style "A is correct / B is wrong" in Why field
+User report: an AP Physics 1 wave-superposition flashcard had the Why
+field say "A is correct. The principle of superposition... B is wrong
+(trap: add absolute values)... C is wrong... D is wrong (trap: ...)."
+Flashcards don't have A-D options — this is MCQ-explanation prose that
+leaked into the flashcard deck.
+
+**Root cause:** `Flashcard.explanation` is copied from the source MCQ
+question's `Question.explanation` field. The MCQ explanations are
+generated with A/B/C/D distractor analysis baked in.
+
+**Fix:** added `sanitizeFlashcardExplanation()` in `src/lib/markdown-helpers.ts`
+that strips `"^[A-E] is correct"` / `"[A-E] is wrong (...)"` /
+`"[A-E] is incorrect ..."` sentences but leaves the surrounding teaching
+prose intact. Applied in `/api/flashcards` response.
+
+**Regression guard:** 10 unit tests in
+`tests/unit/flashcard-explanation-sanitizer.test.ts` including the exact
+prose from the user's report.
+
+**Shipped in commit:** (pending — this batch).
+
+---
+
 ## Category K — Content/SEO/a11y semantics (directly observed, 13 failures)
 
 ### K1 — `/faq` has multiple or zero `<h1>` elements
