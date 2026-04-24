@@ -17,10 +17,17 @@ test.describe("Dashboard v2", () => {
 
   test("predicted score format (no '%' probability) on dashboard", async ({ page }) => {
     await page.goto("/dashboard");
+    // Guard against false positive — if session was rejected and we
+    // bounced to /login, that page also doesn't contain "pass probability"
+    // so the assertion would pass despite the spec being meaningless.
+    // Skip only for onboarding; fail loudly if bounced to /login.
     if (page.url().includes("/onboarding")) {
-      // Skip if the test user is mid-onboarding; not the surface we're testing.
       test.skip();
     }
+    expect(
+      page.url(),
+      `Expected /dashboard, got ${page.url()} — session likely expired`,
+    ).not.toContain("/login");
     const text = await page.locator("body").innerText();
     // Native-scale format examples: "3 / 5", "1240 / 1600", "26 / 36".
     // Don't require a specific exam-family match (test user may be on AP).

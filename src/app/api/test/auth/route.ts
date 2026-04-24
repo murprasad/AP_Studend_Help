@@ -228,7 +228,14 @@ export async function POST(req: NextRequest) {
           onboardingCompletedAt: user.onboardingCompletedAt?.toISOString() ?? null,
         },
         secret,
-        maxAge: 300, // 5 min — short-lived for safety
+        // Extended 2026-04-24: previous 5-min expiry caused every authed
+        // test after deploy7 to be redirected to /login because the
+        // Playwright pipeline now runs 500+ public tests (15-30 min)
+        // before the authed project. JWT expired mid-run → tests saw
+        // "Received: /login?callbackUrl=...".
+        // 2 hours covers any plausible full suite run while still being
+        // short-lived relative to a real user session.
+        maxAge: 7200, // 2 hours
       });
 
       // Cookie name depends on whether the site is HTTPS
