@@ -184,6 +184,7 @@ export async function POST(req: NextRequest) {
           subscriptionTier: user.subscriptionTier,
           track: user.track ?? "ap",
           moduleSubs: [],
+          onboardingCompletedAt: user.onboardingCompletedAt?.toISOString() ?? null,
         },
         secret,
         maxAge: 300, // 5 min — short-lived for safety

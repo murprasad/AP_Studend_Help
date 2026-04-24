@@ -4,10 +4,27 @@ import { NextResponse } from "next/server";
 export default withAuth(
   function middleware(req) {
     const token = req.nextauth.token;
-    const isAdminRoute = req.nextUrl.pathname.startsWith("/admin");
+    const path = req.nextUrl.pathname;
+    const isAdminRoute = path.startsWith("/admin");
+    const isOnboardingRoute = path === "/onboarding" || path.startsWith("/onboarding/");
 
     if (isAdminRoute && token?.role !== "ADMIN") {
       return NextResponse.redirect(new URL("/dashboard", req.url));
+    }
+
+    // Redirect first-time users to /onboarding BEFORE any dashboard page
+    // renders. The earlier client-side redirect (in dashboard/layout.tsx)
+    // caused a flash-of-dashboard for new users — visible bug, killed
+    // first-impression. Server-side redirect via middleware fires before
+    // the page even loads.
+    if (
+      token &&
+      !isOnboardingRoute &&
+      !isAdminRoute &&
+      // onboardingCompletedAt is null for new users, ISO string for completed
+      (token.onboardingCompletedAt === null || token.onboardingCompletedAt === undefined)
+    ) {
+      return NextResponse.redirect(new URL("/onboarding", req.url));
     }
 
     return NextResponse.next();
@@ -38,5 +55,8 @@ export const config = {
     "/diagnostic",
     "/frq-practice/:path*",
     "/frq-practice",
+    "/onboarding",
+    "/billing",
+    "/billing/:path*",
   ],
 };

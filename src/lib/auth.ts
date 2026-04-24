@@ -175,13 +175,14 @@ export const authOptions: NextAuthOptions = {
       if (account?.provider === "google") {
         const dbUser = await prisma.user.findUnique({
           where: { email: token.email! },
-          select: { id: true, role: true, subscriptionTier: true, track: true },
+          select: { id: true, role: true, subscriptionTier: true, track: true, onboardingCompletedAt: true },
         });
         if (dbUser) {
           token.id = dbUser.id;
           token.role = dbUser.role;
           token.subscriptionTier = dbUser.subscriptionTier;
           token.track = dbUser.track ?? "ap";
+          token.onboardingCompletedAt = dbUser.onboardingCompletedAt?.toISOString() ?? null;
           token.moduleSubs = await fetchModuleSubs(dbUser.id);
         }
         return token;
@@ -192,22 +193,25 @@ export const authOptions: NextAuthOptions = {
         token.role = (user as unknown as { role: string }).role;
         const dbUser = await prisma.user.findUnique({
           where: { id: user.id },
-          select: { subscriptionTier: true, track: true },
+          select: { subscriptionTier: true, track: true, onboardingCompletedAt: true },
         });
         token.subscriptionTier = dbUser?.subscriptionTier ?? "FREE";
         token.track = dbUser?.track ?? "ap";
+        token.onboardingCompletedAt = dbUser?.onboardingCompletedAt?.toISOString() ?? null;
         token.moduleSubs = await fetchModuleSubs(user.id);
       } else if (token.id) {
-        // Only refresh from DB on explicit update trigger (track change, subscription update)
-        // Avoids 1-2 hidden DB calls on every getServerSession() — critical for CF Workers perf
+        // Only refresh from DB on explicit update trigger (track change, subscription update,
+        // onboarding completion). Avoids 1-2 hidden DB calls on every getServerSession() —
+        // critical for CF Workers perf.
         if (trigger === "update") {
           const dbUser = await prisma.user.findUnique({
             where: { id: token.id as string },
-            select: { subscriptionTier: true, track: true },
+            select: { subscriptionTier: true, track: true, onboardingCompletedAt: true },
           });
           if (dbUser) {
             token.subscriptionTier = dbUser.subscriptionTier;
             token.track = dbUser.track ?? "ap";
+            token.onboardingCompletedAt = dbUser.onboardingCompletedAt?.toISOString() ?? null;
           }
           token.moduleSubs = await fetchModuleSubs(token.id as string);
         }
@@ -221,6 +225,7 @@ export const authOptions: NextAuthOptions = {
         session.user.role = token.role as string;
         session.user.subscriptionTier = token.subscriptionTier as string;
         session.user.track = (token.track as string) ?? "ap";
+        session.user.onboardingCompletedAt = (token.onboardingCompletedAt as string | null) ?? null;
         session.user.moduleSubs = (token.moduleSubs as Array<{ module: string; status: string }>) ?? [];
       }
       return session;
@@ -237,6 +242,7 @@ declare module "next-auth" {
       role: string;
       subscriptionTier: string;
       track: string;
+      onboardingCompletedAt: string | null;
       moduleSubs: Array<{ module: string; status: string }>;
     };
   }
@@ -248,6 +254,7 @@ declare module "next-auth/jwt" {
     role: string;
     subscriptionTier: string;
     track: string;
+    onboardingCompletedAt: string | null;
     moduleSubs: Array<{ module: string; status: string }>;
   }
 }
