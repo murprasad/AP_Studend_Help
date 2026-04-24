@@ -78,7 +78,7 @@ export default defineConfig({
             },
             // Match any authed spec. Currently: authed-flows + nawal-nudge.
             // New authed specs drop in without config changes.
-            testMatch: /(authed-flows|nawal-nudge|flashcards-due-card|quality-audit-cron|onboarding-plan-choice|first-time-user-fmea|first-time-user-real|billing-page-consistency|paywall-accuracy|billing-flicker|a11y-scan|persona-b-sidebar-walk)\.spec\.ts/,
+            testMatch: /(authed-flows|nawal-nudge|flashcards-due-card|quality-audit-cron|onboarding-plan-choice|first-time-user-fmea|first-time-user-real|billing-page-consistency|paywall-accuracy|billing-flicker|a11y-scan|persona-b-sidebar-walk|journey-1-revenue)\.spec\.ts/,
             dependencies: ["setup"],
           },
         ]

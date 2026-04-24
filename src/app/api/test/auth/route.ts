@@ -40,6 +40,47 @@ export async function POST(req: NextRequest) {
     // full wizard (course picker → how it works → you're set → pick plan).
     // Does NOT touch other user state — safe to call before an onboarding
     // walkthrough test.
+    // Seed the test user's daily practice-question usage to a target count.
+    // Used by Journey 1 (Revenue) to exercise the FREE_LIMITS.practiceQuestionsPerDay
+    // = 20 cap without actually answering 20 questions through the UI.
+    //
+    // We write N rows of StudentResponse dated today. The practice-cap check
+    // counts StudentResponse rows with createdAt within today for this user,
+    // so seeding N rows puts the user at N/20.
+    //
+    // Params: { action: "seed-usage", count: 20, clear?: true }
+    // Always uses course=AP_WORLD_HISTORY and the first approved question in
+    // that course as the link target (no test-question invention).
+    if (action === "seed-usage") {
+      const count = Math.min(100, Math.max(0, Number(body.count ?? 20)));
+      const clear = body.clear === true;
+      const user = await prisma.user.findUnique({ where: { email: TEST_EMAIL }, select: { id: true } });
+      if (!user) return NextResponse.json({ error: "Test user not found — create first" }, { status: 404 });
+      if (clear) {
+        await prisma.studentResponse.deleteMany({ where: { userId: user.id } });
+      }
+      // Need a real question ID to attach to — pick first approved AP question.
+      const q = await prisma.question.findFirst({
+        where: { isApproved: true },
+        select: { id: true },
+      });
+      if (!q) return NextResponse.json({ error: "No approved question to seed against" }, { status: 500 });
+      const now = new Date();
+      for (let i = 0; i < count; i++) {
+        await prisma.studentResponse.create({
+          data: {
+            userId: user.id,
+            questionId: q.id,
+            studentAnswer: "A",
+            isCorrect: true,
+            timeSpentSecs: 30,
+            answeredAt: new Date(now.getTime() - i * 1000), // stagger
+          },
+        });
+      }
+      return NextResponse.json({ seeded: count, userId: user.id, clearedFirst: clear });
+    }
+
     if (action === "reset-onboarding") {
       const user = await prisma.user.findUnique({ where: { email: TEST_EMAIL }, select: { id: true } });
       if (!user) return NextResponse.json({ error: "Test user not found — create first" }, { status: 404 });
