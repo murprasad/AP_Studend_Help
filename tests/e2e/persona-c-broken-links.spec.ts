@@ -41,6 +41,14 @@ for (const path of PAGES) {
       test.skip(true, `${path} returned ${res?.status()} — skipping link audit`);
       return;
     }
+    // If the page redirected off-origin (e.g. /clep-prep → preplion.ai when
+    // the CLEP flag is off), don't audit the destination — those links are
+    // the sister site's responsibility, not ours.
+    const finalUrl = new URL(res.url());
+    if (finalUrl.origin !== base.origin) {
+      test.skip(true, `${path} redirects off-origin to ${finalUrl.origin} — audit skipped`);
+      return;
+    }
 
     const raw: string[] = await page.$$eval("a[href]", (els) =>
       els.map((el) => (el as HTMLAnchorElement).getAttribute("href") ?? ""),

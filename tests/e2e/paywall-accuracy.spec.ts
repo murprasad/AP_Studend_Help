@@ -32,7 +32,20 @@ test.describe("Paywall accuracy", () => {
     if (limits.tier !== "FREE") {
       test.skip(true, "Test fixture is Premium.");
     }
-    // Per tier-limits.ts, FREE users have frqFreeAttempts and a daily practice cap.
-    expect(typeof limits.dailyPracticeCap === "number" || limits.dailyPracticeCap !== undefined).toBeTruthy();
+    // Current contract (per src/app/api/user/limits/route.ts):
+    //   { tier, unlimited, limits: FREE_LIMITS, usage: {practice, tutor, mockExam}, ... }
+    expect(limits.tier).toBe("FREE");
+    expect(limits.unlimited).toBe(false);
+    // Numeric practice cap — either the contract field or usage.practice.limit
+    expect(
+      typeof limits.limits?.practiceQuestionsPerDay,
+      "FREE response must include limits.practiceQuestionsPerDay",
+    ).toBe("number");
+    expect(limits.limits.practiceQuestionsPerDay).toBeGreaterThan(0);
+    // Usage reporting present
+    expect(limits.usage?.practice).toBeTruthy();
+    expect(typeof limits.usage.practice.limit).toBe("number");
+    expect(typeof limits.usage.practice.used).toBe("number");
+    expect(typeof limits.usage.practice.remaining).toBe("number");
   });
 });
