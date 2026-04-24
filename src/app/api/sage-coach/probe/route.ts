@@ -76,6 +76,18 @@ async function callGroq(prompt: string): Promise<{ ms: number; ok: boolean; stat
 }
 
 export async function GET(req: NextRequest) {
+  // Diagnostic probe — steps 3+ call external AI providers (token cost) and
+  // step 5 writes to DB. Gate with CRON_SECRET so anonymous callers can't
+  // burn AI credits or pollute the DB (2026-04-24 security audit).
+  // Steps 1-2 (touch + DB read) are harmless but gating the whole endpoint
+  // is simpler than per-step gating.
+  const cronSecret = process.env.CRON_SECRET;
+  const auth = req.headers.get("authorization") ?? "";
+  const token = auth.startsWith("Bearer ") ? auth.slice(7) : null;
+  if (!cronSecret || token !== cronSecret) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   const { searchParams } = new URL(req.url);
   const step = parseInt(searchParams.get("step") || "1", 10);
   const t0 = Date.now();
