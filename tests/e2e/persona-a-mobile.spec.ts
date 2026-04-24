@@ -1,17 +1,18 @@
 import { test, expect, devices } from "@playwright/test";
 
 /**
- * Persona A — mobile viewport coverage.
+ * Persona A — mobile viewport coverage (iPhone 12).
  *
- * Test the first-time-user flow + every public page on iPhone 12 + iPad.
- * Matrix rows: 10.13.
+ * Splits from the original all-in-one spec. Playwright disallows
+ * `test.use({ defaultBrowserType })` inside a describe group because
+ * swapping the device forces a new worker. Each device gets its own
+ * spec file with a top-level use().
  *
- * Assertions per page:
- *   - No horizontal scroll (document.scrollingElement.scrollWidth ≤ viewport.width)
- *   - Primary CTA visible in viewport within 1s
- *   - Nav collapses to hamburger or compact form
- *   - Touch targets ≥ 44px tall (WCAG + Apple HIG minimum)
+ * Matrix rows: 10.13 (mobile).
  */
+
+// Top-level use() — applies to every test in this file.
+test.use({ ...devices["iPhone 12"] });
 
 const MOBILE_PAGES = [
   "/",
@@ -27,56 +28,33 @@ const MOBILE_PAGES = [
 
 test.describe.configure({ retries: 1, timeout: 45_000 });
 
-test.describe("Mobile — iPhone 12", () => {
-  test.use({ ...devices["iPhone 12"] });
-
-  for (const path of MOBILE_PAGES) {
-    test(`${path} — no horizontal scroll on mobile`, async ({ page }) => {
-      const res = await page.goto(path, { waitUntil: "domcontentloaded" });
-      if (!res || res.status() >= 400) test.skip(true, `${path} not available`);
-
-      // Allow 1px margin for sub-pixel rounding.
-      const overflow = await page.evaluate(() => {
-        const doc = document.scrollingElement ?? document.documentElement;
-        return { scrollWidth: doc.scrollWidth, innerWidth: window.innerWidth };
-      });
-      expect(
-        overflow.scrollWidth,
-        `${path}: horizontal overflow on mobile. scrollWidth=${overflow.scrollWidth}, innerWidth=${overflow.innerWidth}`,
-      ).toBeLessThanOrEqual(overflow.innerWidth + 1);
+for (const path of MOBILE_PAGES) {
+  test(`${path} — no horizontal scroll on iPhone 12`, async ({ page }) => {
+    const res = await page.goto(path, { waitUntil: "domcontentloaded" });
+    if (!res || res.status() >= 400) test.skip(true, `${path} not available`);
+    const overflow = await page.evaluate(() => {
+      const doc = document.scrollingElement ?? document.documentElement;
+      return { scrollWidth: doc.scrollWidth, innerWidth: window.innerWidth };
     });
-  }
-
-  test("/ — primary CTA visible above fold", async ({ page }) => {
-    await page.goto("/");
-    // Any /register link should be visible within 1s
-    const cta = page.locator('a[href*="/register"]').first();
-    await expect(cta).toBeVisible({ timeout: 5000 });
-    const box = await cta.boundingBox();
-    expect(box?.y ?? 9999, "primary register CTA should be above fold").toBeLessThan(900);
+    expect(
+      overflow.scrollWidth,
+      `${path}: horizontal overflow on iPhone 12. scrollWidth=${overflow.scrollWidth}, innerWidth=${overflow.innerWidth}`,
+    ).toBeLessThanOrEqual(overflow.innerWidth + 1);
   });
+}
 
-  test("/login — touch targets ≥ 44px", async ({ page }) => {
-    await page.goto("/login");
-    const submit = page.getByRole("button", { name: /sign in|log in|login/i }).first();
-    if ((await submit.count()) === 0) test.skip(true);
-    const box = await submit.boundingBox();
-    expect(box?.height ?? 0, "submit button too short for mobile").toBeGreaterThanOrEqual(40);
-  });
+test("/ — primary register CTA visible above fold (iPhone 12)", async ({ page }) => {
+  await page.goto("/");
+  const cta = page.locator('a[href*="/register"]').first();
+  await expect(cta).toBeVisible({ timeout: 5000 });
+  const box = await cta.boundingBox();
+  expect(box?.y ?? 9999, "primary register CTA should be above fold").toBeLessThan(900);
 });
 
-test.describe("Mobile — iPad", () => {
-  test.use({ ...devices["iPad (gen 7)"] });
-
-  for (const path of ["/", "/pricing", "/register"]) {
-    test(`${path} — no horizontal scroll on iPad`, async ({ page }) => {
-      const res = await page.goto(path, { waitUntil: "domcontentloaded" });
-      if (!res || res.status() >= 400) test.skip(true);
-      const overflow = await page.evaluate(() => {
-        const doc = document.scrollingElement ?? document.documentElement;
-        return { scrollWidth: doc.scrollWidth, innerWidth: window.innerWidth };
-      });
-      expect(overflow.scrollWidth).toBeLessThanOrEqual(overflow.innerWidth + 1);
-    });
-  }
+test("/login — submit button touch-target ≥ 40px (iPhone 12)", async ({ page }) => {
+  await page.goto("/login");
+  const submit = page.getByRole("button", { name: /sign in|log in|login/i }).first();
+  if ((await submit.count()) === 0) test.skip(true);
+  const box = await submit.boundingBox();
+  expect(box?.height ?? 0, "submit button too short for mobile").toBeGreaterThanOrEqual(40);
 });
