@@ -3,53 +3,17 @@ import { prisma } from "@/lib/prisma";
 import Stripe from "stripe";
 import { getStripeConfig } from "@/lib/settings";
 import { sendPremiumSignupNotification } from "@/lib/email";
+import {
+  getPeriodEndDate,
+  getUserIdFromSubscription,
+  parseClientReferenceId,
+  TIER_FOR_MODULE,
+  MODULE_DISPLAY_NAME,
+  type ModuleSlug,
+} from "@/lib/stripe-webhook";
 
 // Disable body parsing so we can verify the raw webhook signature
 export const dynamic = "force-dynamic";
-
-async function getUserIdFromSubscription(
-  stripe: Stripe,
-  subscription: Stripe.Subscription
-): Promise<string | null> {
-  // Try metadata first (most reliable — set by /api/checkout for full Checkout Session path)
-  if (subscription.metadata?.userId) {
-    return subscription.metadata.userId;
-  }
-
-  // Email fallback — works for Payment Links that drop client_reference_id.
-  const customerId = typeof subscription.customer === "string"
-    ? subscription.customer
-    : subscription.customer.id;
-
-  let email: string | null = null;
-  try {
-    const customer = await stripe.customers.retrieve(customerId);
-    if ("deleted" in customer && customer.deleted) return null;
-    email = (customer as Stripe.Customer).email;
-  } catch (e) {
-    console.warn(`[webhook] customer.retrieve failed for ${customerId}:`, e);
-    return null;
-  }
-  if (!email) return null;
-
-  const user = await prisma.user.findUnique({ where: { email }, select: { id: true } });
-  return user?.id ?? null;
-}
-
-// Stripe API version 2025-09-30 moved `current_period_end` from the
-// Subscription root onto each SubscriptionItem. Read both locations so
-// this handler works regardless of which API version the dashboard
-// sends. Returns null if neither location has the field — caller
-// should write null rather than `new Date(NaN)`.
-function getPeriodEndDate(subscription: Stripe.Subscription): Date | null {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const root = (subscription as any).current_period_end as number | undefined;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const itemEnd = (subscription.items?.data?.[0] as any)?.current_period_end as number | undefined;
-  const ts = root ?? itemEnd;
-  if (typeof ts !== "number" || !Number.isFinite(ts)) return null;
-  return new Date(ts * 1000);
-}
 
 export async function POST(req: NextRequest) {
   const stripeConfig = await getStripeConfig();
@@ -85,9 +49,9 @@ export async function POST(req: NextRequest) {
     switch (event.type) {
       case "checkout.session.completed": {
         const checkoutSession = event.data.object as Stripe.Checkout.Session;
-        // client_reference_id may be "userId::module" (from payment links) or plain userId
-        const rawRef = checkoutSession.client_reference_id || "";
-        const [refUserId, refModule] = rawRef.includes("::") ? rawRef.split("::") : [rawRef, ""];
+        const { userId: refUserId, module: refModule } = parseClientReferenceId(
+          checkoutSession.client_reference_id || "",
+        );
         let userId = checkoutSession.metadata?.userId || refUserId;
         let resolvedModule = refModule;
         // EMAIL FALLBACK: Stripe Payment Links can drop client_reference_id
@@ -125,12 +89,11 @@ export async function POST(req: NextRequest) {
           // Legacy: also update subscriptionTier on User. Wrap in try/catch
           // so a missing user (deleted account, mistyped client_reference_id,
           // test events) doesn't make Stripe retry forever.
-          const tierMap: Record<string, "AP_PREMIUM" | "SAT_PREMIUM" | "ACT_PREMIUM" | "CLEP_PREMIUM" | "DSST_PREMIUM"> = { ap: "AP_PREMIUM", sat: "SAT_PREMIUM", act: "ACT_PREMIUM", clep: "CLEP_PREMIUM", dsst: "DSST_PREMIUM" };
           let user: { email: string; firstName: string | null; lastName: string | null } | null = null;
           try {
             user = await prisma.user.update({
               where: { id: userId },
-              data: { subscriptionTier: tierMap[module] ?? "AP_PREMIUM" },
+              data: { subscriptionTier: TIER_FOR_MODULE[module as ModuleSlug] ?? "AP_PREMIUM" },
               select: { email: true, firstName: true, lastName: true },
             });
           } catch (e) {
@@ -139,11 +102,11 @@ export async function POST(req: NextRequest) {
           if (user) {
             const amountTotal = checkoutSession.amount_total ?? 0;
             const planCycle = amountTotal >= 7000 ? "Annual ($79.99/yr)" : "Monthly ($9.99/mo)";
-            const moduleNames: Record<string, string> = { ap: "AP Premium", sat: "SAT Premium", act: "ACT Premium", clep: "CLEP Premium", dsst: "DSST Premium" };
+            const moduleName = MODULE_DISPLAY_NAME[module as ModuleSlug] || "Premium";
             sendPremiumSignupNotification({
               userEmail: user.email,
               userName: `${user.firstName ?? ""} ${user.lastName ?? ""}`.trim(),
-              plan: `${moduleNames[module] || "Premium"} — ${planCycle}`,
+              plan: `${moduleName} — ${planCycle}`,
             }).catch((err) => console.warn("[webhook] Premium notification email failed:", err));
           }
         }
@@ -155,7 +118,7 @@ export async function POST(req: NextRequest) {
         const subscription = event.data.object as Stripe.Subscription;
         const isActive = subscription.status === "active" || subscription.status === "trialing";
         const isCanceling = isActive && subscription.cancel_at_period_end;
-        const userId = await getUserIdFromSubscription(stripe, subscription);
+        const userId = await getUserIdFromSubscription(stripe, subscription, prisma);
         if (userId) {
           const module = subscription.metadata?.module || subscription.metadata?.track || "ap";
           const newStatus = isActive ? (isCanceling ? "canceling" : "active") : "canceled";
@@ -170,12 +133,11 @@ export async function POST(req: NextRequest) {
           } catch (e) { console.warn("[webhook] ModuleSubscription upsert failed:", e); }
           // Legacy: update User fields. Wrap so missing-user / schema mismatch
           // doesn't crash the whole webhook (Stripe would retry forever).
-          const tierMap2: Record<string, "AP_PREMIUM" | "SAT_PREMIUM" | "ACT_PREMIUM" | "CLEP_PREMIUM" | "DSST_PREMIUM"> = { ap: "AP_PREMIUM", sat: "SAT_PREMIUM", act: "ACT_PREMIUM", clep: "CLEP_PREMIUM", dsst: "DSST_PREMIUM" };
           try {
             await prisma.user.update({
               where: { id: userId },
               data: {
-                subscriptionTier: isActive ? (tierMap2[module] ?? "AP_PREMIUM") : "FREE",
+                subscriptionTier: isActive ? (TIER_FOR_MODULE[module as ModuleSlug] ?? "AP_PREMIUM") : "FREE",
                 stripeSubscriptionId: subscription.id,
                 stripeCurrentPeriodEnd: periodEnd,
                 stripeSubscriptionStatus: isCanceling ? "canceling" : subscription.status,
@@ -190,7 +152,7 @@ export async function POST(req: NextRequest) {
 
       case "customer.subscription.deleted": {
         const subscription = event.data.object as Stripe.Subscription;
-        const userId = await getUserIdFromSubscription(stripe, subscription);
+        const userId = await getUserIdFromSubscription(stripe, subscription, prisma);
         if (userId) {
           const module = subscription.metadata?.module || subscription.metadata?.track || "ap";
           // Update ModuleSubscription
