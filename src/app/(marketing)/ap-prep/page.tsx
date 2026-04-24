@@ -95,7 +95,7 @@ export default function ApPrepPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
           <div className="space-y-3">
             <div className="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center"><Target className="h-5 w-5 text-blue-500" /></div>
-            <h3 className="text-2xl font-bold">AI builds your study plan by unit</h3>
+            <h2 className="text-2xl font-bold">AI builds your study plan by unit</h2>
             <p className="text-muted-foreground leading-relaxed">10–15 diagnostic questions identify your weak spots. Sage creates a weekly plan targeting your lowest-scoring units first — and adjusts as you improve.</p>
           </div>
           <BrowserFrame title="StudentNest Prep · AP Study Plan" className="shadow-xl"><MockupStudyPlan /></BrowserFrame>
@@ -103,7 +103,7 @@ export default function ApPrepPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
           <div className="lg:order-2 space-y-3">
             <div className="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center"><Brain className="h-5 w-5 text-blue-500" /></div>
-            <h3 className="text-2xl font-bold">Practice MCQs &amp; FRQs with instant feedback</h3>
+            <h2 className="text-2xl font-bold">Practice MCQs &amp; FRQs with instant feedback</h2>
             <p className="text-muted-foreground leading-relaxed">Every question matches AP format. Get it wrong? Sage explains why — not just the answer, but the reasoning behind every option.</p>
           </div>
           <div className="lg:order-1"><BrowserFrame title="StudentNest Prep · AP Practice" className="shadow-xl"><MockupPractice /></BrowserFrame></div>
@@ -111,7 +111,7 @@ export default function ApPrepPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
           <div className="space-y-3">
             <div className="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center"><BarChart3 className="h-5 w-5 text-blue-500" /></div>
-            <h3 className="text-2xl font-bold">Track mastery and see your estimated AP score</h3>
+            <h2 className="text-2xl font-bold">Track mastery and see your estimated AP score</h2>
             <p className="text-muted-foreground leading-relaxed">Per-unit mastery scores, accuracy trends, and a readiness heatmap — all in real time. Know exactly when you&apos;re ready for exam day.</p>
           </div>
           <BrowserFrame title="StudentNest Prep · AP Analytics" className="shadow-xl"><MockupAnalytics /></BrowserFrame>

@@ -115,9 +115,9 @@ export function CLEPTimeline() {
               </div>
 
               {/* Title + description */}
-              <h4 className="mt-4 text-sm font-semibold text-white">
+              <h3 className="mt-4 text-sm font-semibold text-white">
                 {step.title}
-              </h4>
+              </h3>
               <p className="mt-1 text-xs text-zinc-400 leading-relaxed">
                 {step.description}
               </p>
@@ -152,9 +152,9 @@ export function CLEPTimeline() {
               </div>
 
               {/* Title + description */}
-              <h4 className="mt-3 text-sm font-semibold text-white">
+              <h3 className="mt-3 text-sm font-semibold text-white">
                 {step.title}
-              </h4>
+              </h3>
               <p className="mt-1 text-xs text-zinc-400 leading-relaxed">
                 {step.description}
               </p>

@@ -89,7 +89,7 @@ export default function ActPrepPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
           <div className="space-y-3">
             <div className="w-10 h-10 rounded-lg bg-violet-500/20 flex items-center justify-center"><Target className="h-5 w-5 text-violet-400" /></div>
-            <h3 className="text-2xl font-bold">AI builds a section-by-section study plan</h3>
+            <h2 className="text-2xl font-bold">AI builds a section-by-section study plan</h2>
             <p className="text-muted-foreground leading-relaxed">Quick diagnostic across all 4 sections. Sage identifies which sections need the most work and builds a plan for maximum score gain.</p>
           </div>
           <BrowserFrame title="StudentNest Prep · ACT Study Plan" className="shadow-xl"><MockupStudyPlan /></BrowserFrame>
@@ -97,7 +97,7 @@ export default function ActPrepPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
           <div className="lg:order-2 space-y-3">
             <div className="w-10 h-10 rounded-lg bg-violet-500/20 flex items-center justify-center"><Brain className="h-5 w-5 text-violet-400" /></div>
-            <h3 className="text-2xl font-bold">Real ACT format — including 5-choice Math</h3>
+            <h2 className="text-2xl font-bold">Real ACT format — including 5-choice Math</h2>
             <p className="text-muted-foreground leading-relaxed">Section-specific questions with real ACT format (A–E for Math). Instant AI explanations for every answer, every mistake.</p>
           </div>
           <div className="lg:order-1"><BrowserFrame title="StudentNest Prep · ACT Practice" className="shadow-xl"><MockupPractice /></BrowserFrame></div>
@@ -105,7 +105,7 @@ export default function ActPrepPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
           <div className="space-y-3">
             <div className="w-10 h-10 rounded-lg bg-violet-500/20 flex items-center justify-center"><BarChart3 className="h-5 w-5 text-violet-400" /></div>
-            <h3 className="text-2xl font-bold">Track your composite and per-section scores</h3>
+            <h2 className="text-2xl font-bold">Track your composite and per-section scores</h2>
             <p className="text-muted-foreground leading-relaxed">See per-section scores and overall composite improve as you practice. Build ACT pacing instincts — 60s/question Math, 36s English.</p>
           </div>
           <BrowserFrame title="StudentNest Prep · ACT Analytics" className="shadow-xl"><MockupAnalytics /></BrowserFrame>

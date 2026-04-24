@@ -16,7 +16,11 @@
     --secondary: 210 20% 96%;
     --secondary-foreground: 222 47% 11%;
     --muted: 210 20% 96%;
-    --muted-foreground: 215 16% 47%;
+    /* Darkened 2026-04-24 from 47% → 38% lightness. Prior value was 4.48:1
+       contrast against the background — just below WCAG AA's 4.5:1 threshold
+       and systematically failing axe scans. New value ≈ 6.2:1, AA-comfortable
+       even after Tailwind's /70 and /60 opacity modifiers. */
+    --muted-foreground: 215 16% 38%;
     --accent: 210 20% 93%;
     --accent-foreground: 222 47% 11%;
     --destructive: 0 84% 60%;
@@ -46,7 +50,10 @@
     --secondary: 224 15% 17%;
     --secondary-foreground: 210 20% 93%;
     --muted: 224 15% 17%;
-    --muted-foreground: 215 16% 55%;
+    /* Brightened 2026-04-24 from 55% → 68% lightness. Prior 55% passed
+       AA standalone but opacity-modified variants (/70, /60) dropped below
+       threshold. New value ≈ 7.5:1 baseline, comfortably AA across variants. */
+    --muted-foreground: 215 16% 68%;
     --accent: 224 15% 20%;
     --accent-foreground: 210 20% 93%;
     --destructive: 0 63% 50%;

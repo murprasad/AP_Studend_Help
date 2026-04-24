@@ -87,7 +87,7 @@ export default function SatPrepPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
           <div className="space-y-3">
             <div className="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center"><Target className="h-5 w-5 text-blue-400" /></div>
-            <h3 className="text-2xl font-bold">AI targets your weakest SAT areas</h3>
+            <h2 className="text-2xl font-bold">AI targets your weakest SAT areas</h2>
             <p className="text-muted-foreground leading-relaxed">Quick diagnostic across Math and Reading &amp; Writing. Choose your timeline (2–6 weeks) and Sage builds a plan targeting your lowest-scoring topics first.</p>
           </div>
           <BrowserFrame title="StudentNest Prep · SAT Study Plan" className="shadow-xl"><MockupStudyPlan /></BrowserFrame>
@@ -95,7 +95,7 @@ export default function SatPrepPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
           <div className="lg:order-2 space-y-3">
             <div className="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center"><Brain className="h-5 w-5 text-blue-400" /></div>
-            <h3 className="text-2xl font-bold">SAT-format questions with instant explanations</h3>
+            <h2 className="text-2xl font-bold">SAT-format questions with instant explanations</h2>
             <p className="text-muted-foreground leading-relaxed">AI-generated questions matching real SAT format. Get instant feedback explaining why each answer is right or wrong — ask Sage for deeper explanations anytime.</p>
           </div>
           <div className="lg:order-1"><BrowserFrame title="StudentNest Prep · SAT Practice" className="shadow-xl"><MockupPractice /></BrowserFrame></div>
@@ -103,7 +103,7 @@ export default function SatPrepPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
           <div className="space-y-3">
             <div className="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center"><BarChart3 className="h-5 w-5 text-blue-400" /></div>
-            <h3 className="text-2xl font-bold">Watch your estimated SAT score climb</h3>
+            <h2 className="text-2xl font-bold">Watch your estimated SAT score climb</h2>
             <p className="text-muted-foreground leading-relaxed">Track your progress session by session: 1050 → 1150 → 1250 → 1350. Real data, timed practice, and pacing instincts for test day.</p>
           </div>
           <BrowserFrame title="StudentNest Prep · SAT Analytics" className="shadow-xl"><MockupAnalytics /></BrowserFrame>
