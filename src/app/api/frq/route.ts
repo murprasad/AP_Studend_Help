@@ -13,6 +13,11 @@ import { rateLimit } from "@/lib/rate-limit";
  * via POST /api/frq/[id]/submit, or explicitly requests reveal via GET
  * /api/frq/[id].
  */
+// D4 (2026-04-24): force-dynamic — GET uses headers() via getServerSession,
+// which Next.js can't statically render. Without this, the build emits
+// "Dynamic server usage" warnings for every attempt.
+export const dynamic = "force-dynamic";
+
 export async function GET(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
