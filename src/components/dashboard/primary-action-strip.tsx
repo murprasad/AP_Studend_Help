@@ -76,6 +76,13 @@ export function PrimaryActionStrip({ course, impressionId }: Props) {
   const router = useRouter();
   const [data, setData] = useState<CoachPlanResponse | null>(null);
   const [loading, setLoading] = useState(true);
+  // User-visible error state. Previously the component rendered `null` on
+  // fetch failure, which made the entire predicted-score block silently
+  // disappear and left a blank space on the dashboard — real user bug
+  // reported 2026-04-24 ("This information is not visible for sometime").
+  // Tracking the error so we can render a lightweight fallback instead
+  // of nothing.
+  const [loadError, setLoadError] = useState<string | null>(null);
   // Pulse state — true on mount for 1.2s, then false. Interactions cut it short.
   const [pulse, setPulse] = useState(true);
   const renderedImpressionRef = useRef<string | null>(null);
@@ -108,13 +115,33 @@ export function PrimaryActionStrip({ course, impressionId }: Props) {
       }
     }, 1000);
 
+    setLoadError(null);
     fetch(`/api/coach-plan?course=${course}`, { cache: "no-store" })
-      .then((r) => (r.ok ? r.json() : null))
+      .then(async (r) => {
+        if (r.ok) return r.json();
+        // Capture non-OK status so the fallback UI can hint at a retry
+        // path. Never throw — we want to render *something* below.
+        return { __httpStatus: r.status };
+      })
       .then((d) => {
-        if (!cancelled && d && !d.error) setData(d);
+        if (cancelled) return;
+        if (d && !d.error && !d.__httpStatus) {
+          setData(d);
+          return;
+        }
+        // Explicit error path — surface to the fallback UI instead of
+        // rendering null. Previously this cascaded to `if (!data) return
+        // null` and the whole predicted-score block vanished silently.
+        setLoadError(
+          d?.__httpStatus === 401
+            ? "session_expired"
+            : d?.__httpStatus === 429
+            ? "rate_limited"
+            : "generic",
+        );
       })
       .catch(() => {
-        /* silent — we render nothing on failure, leaving space for the sub-cards */
+        if (!cancelled) setLoadError("network");
       })
       .finally(() => { if (!cancelled) setLoading(false); });
     return () => {
@@ -169,7 +196,39 @@ export function PrimaryActionStrip({ course, impressionId }: Props) {
     );
   }
 
-  if (!data) return null;
+  // Fallback — when /api/coach-plan fails we used to render null, which
+  // made the entire predicted-score block disappear (user bug 2026-04-24:
+  // "This information is not visible for sometime"). Render a visible,
+  // actionable placeholder instead so the user knows (a) there's meant
+  // to be content here and (b) how to recover.
+  if (!data) {
+    if (!loadError) return null; // pre-first-fetch null — handled by `loading`
+    const copy =
+      loadError === "session_expired"
+        ? "Your session expired. Sign in again to see your plan."
+        : loadError === "rate_limited"
+        ? "Easy — you've hit our per-minute limit. Try again in a moment."
+        : "We couldn't load your plan right now. Refresh the page to try again.";
+    return (
+      <Card className="rounded-[20px] shadow-sm border-amber-500/30 bg-amber-500/5">
+        <CardContent className="p-6 space-y-3">
+          <div className="flex items-center gap-2 text-sm font-medium text-amber-700 dark:text-amber-400">
+            <Clock className="h-4 w-4" />
+            <span>Predicted score unavailable</span>
+          </div>
+          <p className="text-sm text-muted-foreground">{copy}</p>
+          <Button
+            type="button"
+            size="sm"
+            variant="outline"
+            onClick={() => { if (typeof window !== "undefined") window.location.reload(); }}
+          >
+            Refresh
+          </Button>
+        </CardContent>
+      </Card>
+    );
+  }
 
   const { inProgressSession, tierLabel, weakestUnit, nextAction } = data;
 
