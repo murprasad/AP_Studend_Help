@@ -12,7 +12,13 @@ import { test, expect, devices } from "@playwright/test";
  */
 
 // Top-level use() — applies to every test in this file.
-test.use({ ...devices["iPhone 12"] });
+// Override defaultBrowserType because devices["iPhone 12"] defaults to
+// WebKit, which isn't installed on this CI host (only Chromium is
+// installed via `npx playwright install chromium`). Chromium-in-mobile-
+// viewport is sufficient for the assertions here (overflow, touch
+// target size, above-fold CTA) — we're not testing Safari-specific
+// rendering quirks.
+test.use({ ...devices["iPhone 12"], defaultBrowserType: "chromium" });
 
 const MOBILE_PAGES = [
   "/",

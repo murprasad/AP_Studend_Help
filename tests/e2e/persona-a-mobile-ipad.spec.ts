@@ -9,7 +9,9 @@ import { test, expect, devices } from "@playwright/test";
  * Matrix rows: 10.13 (mobile × iPad).
  */
 
-test.use({ ...devices["iPad (gen 7)"] });
+// Override defaultBrowserType to chromium — only chromium is installed on
+// this CI host and Safari-specific rendering quirks aren't what we assert.
+test.use({ ...devices["iPad (gen 7)"], defaultBrowserType: "chromium" });
 
 test.describe.configure({ retries: 1, timeout: 45_000 });
 
