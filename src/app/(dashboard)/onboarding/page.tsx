@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
@@ -64,6 +64,13 @@ export default function OnboardingPage() {
   const { update: updateSession } = useSession();
   const [track, setTrackState] = useState<"ap" | "clep" | "dsst">("ap");
   const [clepEnabled, setClepEnabled] = useState(false);
+  // Race-condition guard (2026-04-24): when the user clicks Start Premium,
+  // completeOnboarding awaits the PATCH that sets DB.onboardingCompletedAt=NOW.
+  // During that await, the "if already onboarded, skip to dashboard" useEffect
+  // below can re-fire, see the fresh flag, and router.replace("/dashboard")
+  // — beating the router.push("/billing?...") that comes after. That made
+  // "Start Premium" silently route to /dashboard instead of /billing.
+  const isCompletingRef = useRef(false);
 
   // Fetch clepEnabled flag and track from DB
   useEffect(() => {
@@ -92,9 +99,17 @@ export default function OnboardingPage() {
   // walk onboarding again, so we first check /api/user then fall back
   // to localStorage for users predating the DB flag.
   useEffect(() => {
+    // Guard (2026-04-24): if completeOnboarding() is currently awaiting
+    // its PATCH, skip this "if onboarded, go to /dashboard" check.
+    // Otherwise the newly-set onboardingCompletedAt flag triggers a
+    // router.replace("/dashboard") that beats completeOnboarding's
+    // router.push("/billing?...") for the Premium path.
+    if (isCompletingRef.current) return;
+
     fetch("/api/user", { cache: "no-store" })
       .then((r) => r.ok ? r.json() : null)
       .then((data) => {
+        if (isCompletingRef.current) return;
         const onboardedAt = data?.user?.onboardingCompletedAt;
         if (onboardedAt) {
           router.replace("/dashboard");
@@ -104,6 +119,7 @@ export default function OnboardingPage() {
         }
       })
       .catch(() => {
+        if (isCompletingRef.current) return;
         // API unavailable — fall back to localStorage.
         try {
           if (localStorage.getItem(ONBOARDING_KEY) === "true") {
@@ -117,6 +133,10 @@ export default function OnboardingPage() {
   // plan-choice step route to /billing after marking onboarded (for
   // users who picked Premium).
   async function completeOnboarding(then: "dashboard" | "billing" = "dashboard") {
+    // Set the race-guard immediately so the parallel "if onboarded skip"
+    // useEffect (re-runs while this function awaits) doesn't redirect
+    // us away before we call router.push.
+    isCompletingRef.current = true;
     if (effectiveTrack === "clep") {
       fetch("/api/study-plan", {
         method: "POST",
