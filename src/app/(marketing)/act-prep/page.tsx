@@ -9,7 +9,7 @@ import { MockupPractice } from "@/components/landing/mockup-practice";
 
 export const metadata: Metadata = {
   title: "ACT Prep — AI Practice for All 4 Sections | StudentNest Prep",
-  description: "Lift your ACT composite with AI-powered practice across Math, English, Science, and Reading. Section-specific tutoring and score tracking. Free to start.",
+  description: "Boost your ACT score with AI-powered practice across Math, English, Science, and Reading. Section-specific tutoring and score tracking. Free to start.",
   openGraph: {
     title: "ACT Prep | StudentNest Prep",
     description: "AI-powered ACT prep. All 4 sections. Section-specific Sage Live Tutor. Free to start.",

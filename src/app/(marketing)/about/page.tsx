@@ -62,7 +62,7 @@ export default function AboutPage() {
           </div>
           <div className="flex items-center gap-2 flex-wrap">
             <h1 className="text-3xl font-bold gradient-text">About StudentNest Prep</h1>
-            <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30 text-xs font-semibold">Beta 7.0</Badge>
+            <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30 text-xs font-semibold">Beta 7.1</Badge>
           </div>
         </div>
         <p className="text-muted-foreground leading-relaxed max-w-2xl mx-auto">
@@ -310,10 +310,39 @@ export default function AboutPage() {
         </div>
       </div>
 
-      {/* Section 7: What's New in Beta 7.0 — AP-season conversion stack */}
+      {/* Section 7: What's New in Beta 7.1 — All-access entitlement + landing audit fixes */}
       <div className="space-y-6">
         <div className="text-center space-y-1">
           <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30 text-xs font-semibold mb-2">Latest Release</Badge>
+          <h2 className="text-xl font-bold">What&apos;s New in Beta 7.1</h2>
+          <p className="text-sm text-muted-foreground">One Premium subscription now unlocks every exam. Plus a full landing-page conversion pass — sharper headlines, exam-specific demo content, honest claims, and a tighter pricing page.</p>
+        </div>
+        <div className="grid sm:grid-cols-2 gap-3 text-left">
+          {[
+            { icon: Sparkles, color: "text-blue-500", bg: "bg-blue-500/10", title: "Premium Is Now All-Access", desc: "One $9.99/mo subscription unlocks every exam — AP, SAT, ACT, CLEP — including practice on every course. Sign up via whichever exam you start with; you get the whole platform. (Existing subscribers automatically gained access to everything else, no action needed.)" },
+            { icon: Target, color: "text-blue-500", bg: "bg-blue-500/10", title: "Landing Pages Rewritten for Clarity", desc: "ACT, AP, SAT, and pricing pages all got a conversion-audit pass: sharper outcome-driven headlines, exam-specific demo content (no more AP World units showing on the SAT page), pain statements, and a tighter pricing comparison table." },
+            { icon: ShieldCheck, color: "text-blue-500", bg: "bg-blue-500/10", title: "Honest Score-Gain Language", desc: "Replaced absolute score-jump claims (e.g., &lsquo;1050→1350&rsquo;) with typical-pattern framing (&lsquo;1050 → 1150 → 1250+&rsquo;). More credible for parents, safer legally, more inclusive of students starting at any level." },
+            { icon: LayoutDashboard, color: "text-blue-500", bg: "bg-blue-500/10", title: "Pricing Page De-cluttered", desc: "Removed the &ldquo;subscribe to multiple modules independently&rdquo; framing that was creating cognitive load. Free tier no longer says both &ldquo;unlimited practice&rdquo; AND &ldquo;3 sessions/day&rdquo;. Refund + cancel reassurances consolidated to one trust line." },
+            { icon: GraduationCap, color: "text-blue-500", bg: "bg-blue-500/10", title: "FRQ Differentiator Surfaced", desc: "AP page now leads its second feature with &ldquo;Practice FRQs with AI scoring on real AP rubrics&rdquo; — the actual differentiator vs Khan/Quizlet/ChatGPT. Was previously buried behind generic MCQ copy." },
+            { icon: Target, color: "text-blue-500", bg: "bg-blue-500/10", title: "Pain Statements Added", desc: "AP and SAT pages now lead with the user-pain insight: students plateau because they re-read what they already know, not because they don&apos;t study enough. Sage drills only the points you&apos;re actually losing." },
+          ].map(({ icon: Icon, color, bg, title, desc }) => (
+            <div key={title} className="flex gap-3 p-4 rounded-xl border border-border/40 bg-card">
+              <div className={`w-8 h-8 rounded-lg ${bg} flex items-center justify-center flex-shrink-0 mt-0.5`}>
+                <Icon className={`h-4 w-4 ${color}`} />
+              </div>
+              <div>
+                <p className="text-sm font-semibold">{title}</p>
+                <p className="text-xs text-muted-foreground leading-relaxed mt-0.5">{desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Section 7-prev1: What's New in Beta 7.0 — AP-season conversion stack */}
+      <div className="space-y-6">
+        <div className="text-center space-y-1">
+          <Badge className="bg-border/60 text-muted-foreground border-border/40 text-xs font-semibold mb-2">Beta 7.0</Badge>
           <h2 className="text-xl font-bold">What&apos;s New in Beta 7.0</h2>
           <p className="text-sm text-muted-foreground">AP exam season is here — this release is built around getting you from sign-up to your first practice answer faster, and giving you a moment of celebration when you do. Plus reliability fixes for the dashboard, accessibility upgrades across the marketing site, and an honest rewrite of the ACT page.</p>
         </div>

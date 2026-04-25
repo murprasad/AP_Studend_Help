@@ -3,11 +3,11 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { SessionType, ApUnit, Difficulty, ApCourse, QuestionType, SubTier } from "@prisma/client";
-import { VALID_AP_COURSES, getUnitsForCourse, COURSE_REGISTRY, getCourseTrack, getCourseModule } from "@/lib/courses";
+import { VALID_AP_COURSES, getUnitsForCourse, COURSE_REGISTRY, getCourseTrack } from "@/lib/courses";
 import { generateQuestion } from "@/lib/ai";
 import { isPremiumRestrictionEnabled, getSetting } from "@/lib/settings";
 import { rateLimit } from "@/lib/rate-limit";
-import { isPremiumForTrack, isAnyPremium, hasModulePremium, hasAnyPremium, type ModuleSub } from "@/lib/tiers";
+import { isPremiumForTrack, isAnyPremium, hasAnyPremium, type ModuleSub } from "@/lib/tiers";
 import { FREE_LIMITS, LOCK_COPY } from "@/lib/tier-limits";
 
 // Create a new practice session
@@ -33,10 +33,15 @@ export async function POST(req: NextRequest) {
     }
 
     const userTrack = session.user.track ?? "ap";
-    const courseModule = getCourseModule(course as ApCourse);
     const moduleSubs: ModuleSub[] = (session.user as { moduleSubs?: ModuleSub[] }).moduleSubs ?? [];
     const isAdmin = (session.user as { role?: string }).role === "ADMIN";
-    const hasPremium = isAdmin || hasModulePremium(moduleSubs, courseModule) || isPremiumForTrack(session.user.subscriptionTier, userTrack);
+    // Entitlement model (Beta 7.1, 2026-04-25): Premium is ALL-ACCESS.
+    // Any active module subscription unlocks practice on every course —
+    // matches the "$9.99 = everything" promise on /pricing and the rest
+    // of the platform (AI tutor, mock exams, diagnostics already use
+    // hasAnyPremium). Per-module ModuleSubscription rows still exist for
+    // analytics/attribution; they are NOT used for gating here anymore.
+    const hasPremium = isAdmin || hasAnyPremium(moduleSubs) || isPremiumForTrack(session.user.subscriptionTier, userTrack);
     const [premiumRestricted, aiGenEnabled] = await Promise.all([
       isPremiumRestrictionEnabled(),
       getSetting("ai_generation_enabled", "true").then((v) => v === "true"),

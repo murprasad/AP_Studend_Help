@@ -7,7 +7,15 @@ export type Module = "ap" | "sat" | "act" | "clep" | "dsst";
 
 export const ALL_MODULES: Module[] = ["ap", "sat", "act", "clep", "dsst"];
 
-/** Check if user has premium for a specific module. */
+/**
+ * Check if user has premium for a specific module.
+ *
+ * ⚠️ Entitlement model (Beta 7.1+): Premium is ALL-ACCESS. Any active
+ * subscription unlocks every feature on every course. Do NOT use this
+ * function for feature gating — use `hasAnyPremium` instead. This
+ * helper is retained for analytics/attribution use only (e.g.
+ * "which module did this user sign up via?").
+ */
 export function hasModulePremium(subs: ModuleSub[], module: string): boolean {
   return subs.some(s => s.module === module && (s.status === "active" || s.status === "canceling"));
 }

@@ -135,7 +135,10 @@ export default function PricingClient({ clepEnabled, dsstEnabled }: PricingClien
       <div className="text-center mb-8">
         <h1 className="text-4xl font-bold mb-4">Simple, transparent pricing</h1>
         <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-          Start with one exam. Add more anytime. Free forever — upgrade any module for $9.99/mo.
+          One subscription unlocks every exam. AP, SAT, ACT, CLEP — all included for $9.99/mo.
+        </p>
+        <p className="text-sm text-emerald-700 dark:text-emerald-400 font-medium mt-3">
+          ✦ Sign up via any exam below — Premium is all-access.
         </p>
       </div>
 
@@ -308,7 +311,7 @@ export default function PricingClient({ clepEnabled, dsstEnabled }: PricingClien
         <h2 className="text-2xl font-bold text-center mb-8">Frequently asked questions</h2>
         <div className="space-y-6">
           {[
-            { q: "Can I subscribe to multiple modules?", a: `Yes — pick just one or stack a few. Each module (${moduleListLabel}) is its own $9.99/mo subscription, so you only pay for what you use.` },
+            { q: "Do I need to subscribe to multiple modules?", a: `No — one $9.99/mo subscription unlocks everything. Sign up via any exam (${moduleListLabel}) and you get full Premium access to all of them. The module dropdowns just decide which checkout flow you go through.` },
             { q: "Can I cancel anytime?", a: "Yes. Cancel from your billing page and you'll keep Premium access until the end of your billing period." },
             { q: "Can I pay annually?", a: "Yes — $79.99/year per module saves you 33% compared to monthly billing ($6.67/mo)." },
             { q: "What is your refund policy?", a: "We offer a 7-day money-back guarantee on new Premium subscriptions. If you're not satisfied within 7 days of your first payment, email contact@studentnest.ai and we'll issue a full refund — no questions asked. After 7 days, subscriptions are non-refundable but you can cancel anytime and keep access until the end of your billing period." },
