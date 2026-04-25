@@ -23,6 +23,7 @@ import { useSearchParams } from "next/navigation";
 import { hapticSuccess, hapticError } from "@/lib/haptics";
 import { FirstSessionCelebration } from "@/components/practice/first-session-celebration";
 import { SessionLimitHitCard } from "@/components/practice/session-limit-hit-card";
+import { useFirstAnswerReward } from "@/components/practice/first-answer-reward-modal";
 import {
   Zap,
   BookOpen,
@@ -103,6 +104,13 @@ export default function PracticePage() {
   // Admin-toggleable knowledge check after wrong MCQs. Default ON.
   const [knowledgeCheckEnabled, setKnowledgeCheckEnabled] = useState(true);
 
+  // First-answer celebration modal (AP-season conversion lever, 2026-04-25).
+  // Hook owns localStorage gating + modal state. We trip `isFirstEverAnswer`
+  // on mount via /api/user/conversion-signal and consume it on the first
+  // successful submit of this session.
+  const reward = useFirstAnswerReward();
+  const isFirstEverAnswerRef = useRef<boolean>(false);
+
   const [mode, setMode] = useState<PracticeMode>("select");
 
   // Full-screen exam mode for active practice sessions. Hides sidebar +
@@ -141,6 +149,21 @@ export default function PracticePage() {
         setPremiumRestricted(false);
       }
     });
+
+    // Probe the user's lifetime answer count once. If 0, this session may
+    // contain their very first submit — arm the reward modal. The hook also
+    // checks localStorage so users who saw the modal on a prior visit
+    // won't see it again. Best-effort; failure leaves the modal unarmed.
+    void reward.checkExistingState();
+    fetch("/api/user/conversion-signal", { cache: "no-store" })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => {
+        if (d && (d.responseCount ?? 0) === 0) {
+          isFirstEverAnswerRef.current = true;
+        }
+      })
+      .catch(() => { /* silent — modal stays unarmed */ });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Restore session if returning from Sage ("Continue Practice" button)
@@ -450,6 +473,21 @@ export default function PracticePage() {
       }
       setFeedback(data);
       setResults((prev) => [...prev, { correct: data.isCorrect, timeSecs }]);
+
+      // First-answer-ever reward (AP-season conversion lever). Fires once
+      // per user, gated by a ref + localStorage in the hook. We disarm the
+      // ref immediately so a fast double-submit can't trigger it twice.
+      if (isFirstEverAnswerRef.current) {
+        isFirstEverAnswerRef.current = false;
+        const unitName = (() => {
+          try {
+            return courseUnits[currentQuestion.unit as ApUnit] ?? undefined;
+          } catch { return undefined; }
+        })();
+        // Defer one tick so the feedback card paints first — the modal
+        // should feel like a celebration on top of the result, not a race.
+        setTimeout(() => reward.show({ unitName, isCorrect: data.isCorrect }), 350);
+      }
 
       // Haptic feedback — success pattern on correct, error pattern on wrong.
       // No-op on platforms without navigator.vibrate (desktop, iOS Safari
@@ -766,6 +804,7 @@ export default function PracticePage() {
             </Button>
           </Link>
         </div>
+        <reward.Modal />
       </div>
     );
   }
@@ -1055,6 +1094,7 @@ export default function PracticePage() {
             </CardContent>
           </Card>
         )}
+        <reward.Modal />
       </div>
     );
   }
