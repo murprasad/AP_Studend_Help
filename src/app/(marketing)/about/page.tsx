@@ -62,7 +62,7 @@ export default function AboutPage() {
           </div>
           <div className="flex items-center gap-2 flex-wrap">
             <h1 className="text-3xl font-bold gradient-text">About StudentNest Prep</h1>
-            <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30 text-xs font-semibold">Beta 7.2</Badge>
+            <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30 text-xs font-semibold">Beta 7.3</Badge>
           </div>
         </div>
         <p className="text-muted-foreground leading-relaxed max-w-2xl mx-auto">
@@ -310,10 +310,39 @@ export default function AboutPage() {
         </div>
       </div>
 
-      {/* Section 7: What's New in Beta 7.2 — Reliability hardening + conversion stack */}
+      {/* Section 7: What's New in Beta 7.3 — P0 closeout (webhook + AI streaming + content honesty) */}
       <div className="space-y-6">
         <div className="text-center space-y-1">
           <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30 text-xs font-semibold mb-2">Latest Release</Badge>
+          <h2 className="text-xl font-bold">What&apos;s New in Beta 7.3</h2>
+          <p className="text-sm text-muted-foreground">Three reliability fixes you won&apos;t notice until they would have bitten you — Stripe webhook no longer 500s on transient errors (silent revenue loss vector closed), failed card renewals now properly downgrade after Stripe&apos;s smart-retry exhausts, and Sage chat&apos;s streaming endpoint can&apos;t hang anymore. Plus two honest-copy fixes: landing page now matches /pricing on free-tier limits, and AP-prep&apos;s FRQ feature now correctly badges as Premium.</p>
+        </div>
+        <div className="grid sm:grid-cols-2 gap-3 text-left">
+          {[
+            { icon: ShieldCheck, color: "text-blue-500", bg: "bg-blue-500/10", title: "Webhook Reliability", desc: "Stripe webhook now returns 200 with structured error info on transient failures instead of 500. Reason: a 500 triggers Stripe&apos;s 3-day retry loop, but if the same transient error recurs, Stripe eventually marks the event permanently failed — meaning a paid user never gets their tier flipped. The hourly stripe-reconcile cron is the safety net." },
+            { icon: Target, color: "text-blue-500", bg: "bg-blue-500/10", title: "Failed Renewal Handling", desc: "When Stripe fires `invoice.payment_failed` after exhausting smart-retry (4th failed attempt), the matching ModuleSubscription now flips to `past_due` so gating can prompt for a card update. No more &ldquo;paid for Premium 60 days ago, card died, still has access&rdquo; situations." },
+            { icon: Brain, color: "text-blue-500", bg: "bg-blue-500/10", title: "Sage Chat Can&apos;t Freeze", desc: "AI streaming endpoint now caps the initial Groq response at 30 seconds via AbortSignal.timeout. Previously, a hung Groq endpoint would leave Sage chat&apos;s typing indicator running forever — fix avoids the worst-case UX." },
+            { icon: Sparkles, color: "text-blue-500", bg: "bg-blue-500/10", title: "Honest Free-Tier Copy", desc: "Landing-page free-tier card no longer says &ldquo;Unlimited MCQ practice&rdquo; (which directly contradicted /pricing&apos;s &ldquo;3 sessions/day&rdquo; cap). Now reads &ldquo;3 practice sessions per day&rdquo; — same number across landing + pricing + product. Cuts the &ldquo;I felt deceived&rdquo; support thread." },
+            { icon: GraduationCap, color: "text-blue-500", bg: "bg-blue-500/10", title: "FRQ Premium Badge", desc: "AP-prep page now badges the &ldquo;FRQs with AI rubric scoring&rdquo; feature as Premium and clarifies free-tier gets one full FRQ to try. Reduces refund risk from users assuming unlimited FRQ on free plan." },
+            { icon: LayoutDashboard, color: "text-blue-500", bg: "bg-blue-500/10", title: "Iteration 1 P0 Closeout", desc: "Comprehensive bug-hunt sprint Phase 1 (10 parallel agent scans) found 660 candidates; after deduping + verifying false positives, 6 real P0s identified. All 6 now shipped — Beta 7.2 caught 3 cold-start bugs, Beta 7.3 caught the remaining 3. Next iteration targets the P1 backlog (~17 items)." },
+          ].map(({ icon: Icon, color, bg, title, desc }) => (
+            <div key={title} className="flex gap-3 p-4 rounded-xl border border-border/40 bg-card">
+              <div className={`w-8 h-8 rounded-lg ${bg} flex items-center justify-center flex-shrink-0 mt-0.5`}>
+                <Icon className={`h-4 w-4 ${color}`} />
+              </div>
+              <div>
+                <p className="text-sm font-semibold">{title}</p>
+                <p className="text-xs text-muted-foreground leading-relaxed mt-0.5">{desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Section 7-prev1: What's New in Beta 7.2 — Reliability hardening + conversion stack */}
+      <div className="space-y-6">
+        <div className="text-center space-y-1">
+          <Badge className="bg-border/60 text-muted-foreground border-border/40 text-xs font-semibold mb-2">Beta 7.2</Badge>
           <h2 className="text-xl font-bold">What&apos;s New in Beta 7.2</h2>
           <p className="text-sm text-muted-foreground">Reliability hardening across the dashboard, billing, and study-plan endpoints — fewer 5xx errors during fresh-isolate cold-starts. Plus the cross-module &ldquo;you unlocked SAT/ACT too&rdquo; nudge and edge-persistent rate limiting that actually works against anonymous flood traffic.</p>
         </div>
