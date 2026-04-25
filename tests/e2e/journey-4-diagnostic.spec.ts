@@ -54,7 +54,8 @@ test.describe("Journey 4 — Diagnostic → Focused Practice", () => {
     expect(res.ok(), `start diagnostic: ${res.status()}`).toBeTruthy();
     const start = await res.json();
 
-    expect(start.session?.sessionType, "type must be DIAGNOSTIC").toBe("DIAGNOSTIC");
+    // /api/practice returns { sessionId, questions, ... } (not a nested session object).
+    expect(start.sessionId, "sessionId required").toBeTruthy();
     expect(start.questions?.length, "diagnostic needs ≥ 5 questions for signal").toBeGreaterThanOrEqual(5);
 
     // Diagnostic should span multiple units. If all questions come from one
@@ -90,7 +91,7 @@ test.describe("Journey 4 — Diagnostic → Focused Practice", () => {
 
     const completeRes = await request.post("/api/diagnostic/complete", {
       data: {
-        sessionId: start.session.id,
+        sessionId: start.sessionId,
         answers,
         course: "AP_WORLD_HISTORY",
       },

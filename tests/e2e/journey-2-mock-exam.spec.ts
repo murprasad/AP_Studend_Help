@@ -46,7 +46,7 @@ test.describe("Journey 2 — Mock Exam", () => {
     await provisionFreeUser(request);
   });
 
-  test("start → session created with IN_PROGRESS + totalQuestions > 0", async ({ request }) => {
+  test("start → sessionId returned + questions array non-empty", async ({ request }) => {
     const res = await request.post("/api/practice", {
       data: {
         course: "AP_WORLD_HISTORY",
@@ -58,26 +58,30 @@ test.describe("Journey 2 — Mock Exam", () => {
     });
     expect([200, 201].includes(res.status()), `start returned ${res.status()}`).toBe(true);
     const body = await res.json();
-    expect(body.session, "session object missing").toBeTruthy();
-    expect(body.session.id, "session.id missing").toBeTruthy();
-    expect(body.session.sessionType, "must be MOCK_EXAM").toBe("MOCK_EXAM");
-    expect(body.session.status, "new session must be IN_PROGRESS").toBe("IN_PROGRESS");
-    expect(
-      body.session.totalQuestions,
-      "mock exam needs questions; 0 means content is missing",
-    ).toBeGreaterThan(0);
-    expect(body.questions?.length, "questions array must match count").toBeGreaterThan(0);
+    // Actual API contract (src/app/api/practice/route.ts): returns
+    //   { sessionId, lowBankWarning, aiGenerationWarning, questions }
+    // Not { session: {...} } — earlier spec shape was speculative.
+    expect(body.sessionId, "sessionId missing from /api/practice response").toBeTruthy();
+    expect(typeof body.sessionId).toBe("string");
+    expect(Array.isArray(body.questions), "questions must be an array").toBe(true);
+    expect(body.questions.length, "mock exam needs questions; 0 = content gap").toBeGreaterThan(0);
+    // Every returned question carries its core fields — consumer UI uses these.
+    for (const q of body.questions) {
+      expect(q.id).toBeTruthy();
+      expect(q.questionText).toBeTruthy();
+    }
   });
 
-  test("submit answer → returns correctness + explanation + mastery update", async ({ request }) => {
+  test("submit answer → returns correctness + explanation", async ({ request }) => {
     const startRes = await request.post("/api/practice", {
       data: { course: "AP_WORLD_HISTORY", unit: "ALL", sessionType: "MOCK_EXAM", questionCount: 5, difficulty: "MEDIUM" },
     });
     const start = await startRes.json();
     const firstQ = start.questions?.[0];
     if (!firstQ) test.skip(true, "No questions returned — content pipeline issue, not a journey bug");
+    if (!start.sessionId) test.skip(true, "No sessionId in response");
 
-    const answerRes = await request.post(`/api/practice/${start.session.id}`, {
+    const answerRes = await request.post(`/api/practice/${start.sessionId}`, {
       data: {
         questionId: firstQ.id,
         studentAnswer: "A",
@@ -94,23 +98,24 @@ test.describe("Journey 2 — Mock Exam", () => {
     ).toBeTruthy();
   });
 
-  test("complete → status=COMPLETED, score numeric, completedAt set", async ({ request }) => {
+  test("complete → score numeric after PATCH", async ({ request }) => {
     const startRes = await request.post("/api/practice", {
       data: { course: "AP_WORLD_HISTORY", unit: "ALL", sessionType: "MOCK_EXAM", questionCount: 5, difficulty: "MEDIUM" },
     });
     const start = await startRes.json();
     const questions = start.questions ?? [];
     if (questions.length === 0) test.skip(true, "No questions returned — content pipeline issue");
+    if (!start.sessionId) test.skip(true, "No sessionId in response");
 
     // Answer every question (study=A; correctness is computed server-side).
     for (const q of questions) {
-      await request.post(`/api/practice/${start.session.id}`, {
+      await request.post(`/api/practice/${start.sessionId}`, {
         data: { questionId: q.id, studentAnswer: "A", timeSpentSecs: 10 },
       });
     }
 
     // PATCH to finalize.
-    const patchRes = await request.patch(`/api/practice/${start.session.id}`, {
+    const patchRes = await request.patch(`/api/practice/${start.sessionId}`, {
       data: { status: "COMPLETED" },
     });
     expect(patchRes.ok(), `PATCH completion: ${patchRes.status()}`).toBeTruthy();
@@ -127,15 +132,15 @@ test.describe("Journey 2 — Mock Exam", () => {
     });
     const start = await startRes.json();
     const questions = start.questions ?? [];
-    if (questions.length === 0) test.skip(true);
+    if (questions.length === 0 || !start.sessionId) test.skip(true);
     for (const q of questions) {
-      await request.post(`/api/practice/${start.session.id}`, {
+      await request.post(`/api/practice/${start.sessionId}`, {
         data: { questionId: q.id, studentAnswer: "A", timeSpentSecs: 10 },
       });
     }
-    await request.patch(`/api/practice/${start.session.id}`, { data: { status: "COMPLETED" } });
+    await request.patch(`/api/practice/${start.sessionId}`, { data: { status: "COMPLETED" } });
     // Second PATCH must NOT silently succeed or 500.
-    const secondPatch = await request.patch(`/api/practice/${start.session.id}`, { data: { status: "COMPLETED" } });
+    const secondPatch = await request.patch(`/api/practice/${start.sessionId}`, { data: { status: "COMPLETED" } });
     expect(
       secondPatch.status(),
       "double-complete should be 400 'already completed', never 500",
