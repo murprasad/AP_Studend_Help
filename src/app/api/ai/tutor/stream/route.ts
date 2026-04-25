@@ -81,6 +81,13 @@ End every response with exactly: FOLLOW_UPS: ["q1","q2","q3"]`;
       temperature: 0.7,
       stream: true,
     }),
+    // Beta 7.3 (2026-04-25): 30s upper bound on the initial Groq response.
+    // Without this, a hung Groq endpoint kept the SSE connection open
+    // indefinitely — Sage chat would freeze with the typing indicator
+    // running forever. The 30s ceiling is generous (Groq llama-70b first
+    // token is usually <1s) but covers slow cold paths through the
+    // provider's regional load balancers.
+    signal: AbortSignal.timeout(30_000),
   });
 
   if (!groqRes.ok) return new Response("AI unavailable", { status: 503 });

@@ -110,8 +110,11 @@ export default function ApPrepPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
           <div className="lg:order-2 space-y-3">
             <div className="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center"><Brain className="h-5 w-5 text-blue-500" /></div>
-            <h2 className="text-2xl font-bold">Practice FRQs with AI scoring on real AP rubrics</h2>
-            <p className="text-muted-foreground leading-relaxed">Most platforms only do MCQs. Sage scores your free-response answers (SAQ, LEQ, DBQ) against the actual College Board rubrics — point by point — so you know exactly what AP graders want before exam day.</p>
+            <div className="flex items-center gap-2">
+              <h2 className="text-2xl font-bold">Practice FRQs with AI scoring on real AP rubrics</h2>
+              <span className="text-[10px] font-bold uppercase tracking-wider bg-blue-600 text-white px-2 py-0.5 rounded">Premium</span>
+            </div>
+            <p className="text-muted-foreground leading-relaxed">Most platforms only do MCQs. Sage scores your free-response answers (SAQ, LEQ, DBQ) against the actual College Board rubrics — point by point — so you know exactly what AP graders want before exam day. <span className="text-foreground/70">Free tier includes one full FRQ to try; unlimited with Premium.</span></p>
           </div>
           <div className="lg:order-1"><BrowserFrame title="StudentNest Prep · AP Practice" className="shadow-xl"><MockupPractice /></BrowserFrame></div>
         </div>

@@ -811,7 +811,10 @@ export default async function LandingPage() {
               </div>
               {[
                 `All ${courseCount} courses — ${examLabel}`,
-                "Unlimited MCQ practice",
+                // Beta 7.3 (2026-04-25): "Unlimited MCQ practice" was a
+                // direct contradiction with /pricing's "3 sessions/day"
+                // free-tier limit. Aligning landing copy to the real cap.
+                "3 practice sessions per day",
                 "5 Sage Live Tutor chats per day",
                 "Basic study plan",
                 "Per-unit mastery analytics",

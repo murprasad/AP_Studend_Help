@@ -181,9 +181,30 @@ export async function POST(req: NextRequest) {
       }
 
       case "invoice.payment_failed": {
-        // Optionally downgrade on payment failure after grace period
-        // For now just log — Stripe handles retry logic
-        console.warn("Payment failed for invoice:", (event.data.object as Stripe.Invoice).id);
+        // Beta 7.3 (2026-04-25): real handler. Track attempt count via
+        // invoice.attempt_count from Stripe; on the 4th failed attempt
+        // (Stripe's default smart-retry exhausts after 3), downgrade
+        // the user's subscription state so they don't keep accessing
+        // Premium content with a dead card. Stripe still drives the
+        // retry schedule; we just react to the final outcome.
+        const invoice = event.data.object as Stripe.Invoice;
+        const subId = (invoice as { subscription?: string }).subscription;
+        const attemptCount = invoice.attempt_count ?? 0;
+        const customerId = typeof invoice.customer === "string" ? invoice.customer : null;
+        console.warn(`[webhook] invoice.payment_failed invoice=${invoice.id} attempts=${attemptCount} sub=${subId} customer=${customerId}`);
+        if (attemptCount >= 4 && subId) {
+          // Mark the matching ModuleSubscription as past_due so gating
+          // surfaces an "update card" prompt. Don't hard-cancel — Stripe
+          // will fire customer.subscription.deleted if it reaches that.
+          try {
+            await prisma.moduleSubscription.updateMany({
+              where: { stripeSubscriptionId: subId },
+              data: { status: "past_due" },
+            });
+          } catch (e) {
+            console.warn("[webhook] payment_failed → moduleSub past_due failed:", e instanceof Error ? e.message : String(e));
+          }
+        }
         break;
       }
 
@@ -192,8 +213,26 @@ export async function POST(req: NextRequest) {
         break;
     }
   } catch (err) {
+    // Beta 7.3 (2026-04-25): NEVER return 500 to Stripe. Returning a
+    // non-2xx tells Stripe the webhook failed and triggers retries —
+    // FOR THIS EVENT. But returning 500 with a handler-internal error
+    // (e.g. transient Prisma cold-start) makes Stripe retry up to 3
+    // days, AND if the same error recurs on every retry, the event
+    // is eventually marked permanently failed. Real revenue loss case:
+    // user paid, our webhook 500'd on a transient DB hiccup, Stripe
+    // gave up, the user's tier was never flipped to PREMIUM.
+    //
+    // Fix: log the error (Sentry will pick up the console.error in
+    // production) and return 200. Stripe stops retrying, but our
+    // /api/cron/stripe-reconcile hourly cron will catch any state
+    // drift within 60 minutes via the `checked` → `reconciled` path.
     console.error(`[webhook] Error handling event=${event.id} type=${event.type}:`, err);
-    return NextResponse.json({ error: "Handler error", eventId: event.id }, { status: 500 });
+    return NextResponse.json({
+      received: true,
+      handled: false,
+      error: err instanceof Error ? err.message : String(err),
+      eventId: event.id,
+    }, { status: 200 });
   }
 
   return NextResponse.json({ received: true });
