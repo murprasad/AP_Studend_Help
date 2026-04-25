@@ -31,6 +31,7 @@ import { ApCourse } from "@prisma/client";
 import { Loader2, ArrowRight, Check, Sparkles, BookOpen } from "lucide-react";
 import Link from "next/link";
 import { QuestionContent } from "@/components/question/question-content";
+import { sanitizeFlashcardExplanation } from "@/lib/markdown-helpers";
 
 interface Flashcard {
   id: string;
@@ -240,7 +241,11 @@ export default function FlashcardsPage() {
                 <div>
                   <p className="text-[11px] uppercase tracking-wide text-muted-foreground">Why</p>
                   <div className="text-[14px] text-muted-foreground leading-relaxed mt-1">
-                    <QuestionContent content={card.explanation} />
+                    {/* Beta 7.4 (2026-04-25): wire sanitizeFlashcardExplanation so
+                        flashcard explanations no longer leak MCQ scaffolding
+                        ("Why A is correct / Why B is wrong"). The helper
+                        existed but was never connected to the render path. */}
+                    <QuestionContent content={sanitizeFlashcardExplanation(card.explanation)} />
                   </div>
                 </div>
               )}

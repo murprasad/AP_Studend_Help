@@ -1,17 +1,55 @@
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
 const FROM_EMAIL = process.env.RESEND_FROM_EMAIL ?? "noreply@studentnest.ai";
+const REPLY_TO_EMAIL = process.env.RESEND_REPLY_TO ?? "contact@studentnest.ai";
 
-export async function sendEmail(to: string, subject: string, html: string): Promise<void> {
+interface SendEmailOptions {
+  /**
+   * Set to true for transactional emails (verification, password reset)
+   * that should NOT include unsubscribe headers — recipients have not
+   * opted out of those critical-flow messages.
+   * Default: false (treat as marketing/recovery; include unsubscribe).
+   */
+  transactional?: boolean;
+}
+
+export async function sendEmail(
+  to: string,
+  subject: string,
+  html: string,
+  opts: SendEmailOptions = {},
+): Promise<void> {
   if (!RESEND_API_KEY) {
     throw new Error("RESEND_API_KEY is not configured. Add it to your environment variables.");
   }
+
+  // Beta 7.4 (2026-04-25): CAN-SPAM Section 5(a)(5) requires a clear
+  // unsubscribe mechanism for commercial email. Resend honors the
+  // List-Unsubscribe header (RFC 8058 one-click + RFC 2369 mailto)
+  // automatically when present, which also improves Gmail/Outlook
+  // deliverability — both flag missing List-Unsubscribe as a soft
+  // spam signal. Transactional emails (account verification, password
+  // reset) opt out via opts.transactional=true.
+  const headers: Record<string, string> = {};
+  if (!opts.transactional) {
+    const unsubMailto = `mailto:${REPLY_TO_EMAIL}?subject=Unsubscribe`;
+    headers["List-Unsubscribe"] = `<${unsubMailto}>`;
+    headers["List-Unsubscribe-Post"] = "List-Unsubscribe=One-Click";
+  }
+
   const res = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: {
       Authorization: `Bearer ${RESEND_API_KEY}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ from: FROM_EMAIL, to, subject, html }),
+    body: JSON.stringify({
+      from: FROM_EMAIL,
+      reply_to: REPLY_TO_EMAIL,
+      to,
+      subject,
+      html,
+      ...(Object.keys(headers).length > 0 ? { headers } : {}),
+    }),
   });
   if (!res.ok) {
     const err = await res.text();
@@ -39,7 +77,8 @@ export async function sendVerificationEmail(
       <p style="color: #666;">This link expires in 24 hours.</p>
       <p style="color: #666; font-size: 12px;">If you didn't create an account, you can safely ignore this email.</p>
     </div>
-    `
+    `,
+    { transactional: true }, // verification email — no unsubscribe
   );
 }
 
@@ -215,6 +254,7 @@ export async function sendPasswordResetEmail(
       <p style="color: #666;">This link expires in 1 hour.</p>
       <p style="color: #666; font-size: 12px;">If you didn't request a password reset, you can safely ignore this email.</p>
     </div>
-    `
+    `,
+    { transactional: true }, // password reset — no unsubscribe (security flow)
   );
 }

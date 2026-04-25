@@ -243,11 +243,31 @@ export default function FrqPracticePage() {
             </Card>
           ) : list.length === 0 ? (
             <Card>
-              <CardContent className="py-16 text-center space-y-2">
+              <CardContent className="py-12 text-center space-y-4">
                 <BookOpen className="h-8 w-8 mx-auto text-muted-foreground" />
-                <p className="text-lg font-medium">No FRQs available for this unit yet.</p>
-                <p className="text-sm text-muted-foreground">
-                  Pick a different unit or choose &quot;All units&quot; above.
+                <div className="space-y-2">
+                  <p className="text-lg font-medium">No officially-sourced FRQs for this unit yet</p>
+                  <p className="text-sm text-muted-foreground max-w-md mx-auto leading-relaxed">
+                    We&apos;re still building the official FRQ library for this course.
+                    In the meantime, Sage can generate an FRQ on this exact topic with
+                    AI-scored rubric feedback — same difficulty, same scoring style.
+                  </p>
+                </div>
+                {/* Beta 7.4 (2026-04-25): escape-hatch out of the previously
+                    dead-end empty state. Premium users paid for FRQ practice;
+                    redirecting them to /practice with the AI-generated FRQ
+                    flow (which works for every course) closes the support
+                    thread "I'm Premium and AP Bio shows no FRQs". */}
+                <div className="pt-2">
+                  <Link href={`/practice?course=${encodeURIComponent(course)}&type=FRQ${selectedUnit && selectedUnit !== "ALL" ? `&unit=${encodeURIComponent(selectedUnit)}` : ""}`}>
+                    <Button size="default" className="gap-2">
+                      Generate FRQ with Sage
+                      <ChevronRight className="h-4 w-4" />
+                    </Button>
+                  </Link>
+                </div>
+                <p className="text-xs text-muted-foreground/70 pt-1">
+                  Or pick a different unit above to find seeded content.
                 </p>
               </CardContent>
             </Card>

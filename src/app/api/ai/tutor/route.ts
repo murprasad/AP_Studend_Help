@@ -105,7 +105,29 @@ export async function POST(req: NextRequest) {
 
       if (cached && cached.createdAt > cutoff) {
         answer = cached.response;
-        followUps = JSON.parse(cached.followUps) as string[];
+        // Beta 7.4 (2026-04-25): wrap JSON.parse in try/catch. Without this,
+        // a single bad cache entry (e.g. partial write that left invalid JSON)
+        // would crash every subsequent request that hit the same cacheKey.
+        // Treat parse failure as a cache miss + fire-and-forget delete the
+        // bad entry so it self-heals.
+        try {
+          followUps = JSON.parse(cached.followUps) as string[];
+        } catch (e) {
+          console.warn("[/api/ai/tutor] bad cache entry, treating as miss:", e instanceof Error ? e.message : String(e));
+          // Self-heal — remove the corrupt entry and fall through to the
+          // cache-miss path below (the `cached` reference exits scope).
+          prisma.aiResponseCache.delete({ where: { cacheKey } }).catch(() => {});
+          // Re-route to cache-miss flow
+          const result = await askTutor(message, history, undefined, course as ApCourse);
+          answer = result.answer;
+          followUps = result.followUps;
+          prisma.aiResponseCache.upsert({
+            where: { cacheKey },
+            create: { cacheKey, course, response: answer, followUps: JSON.stringify(followUps) },
+            update: { response: answer, followUps: JSON.stringify(followUps), createdAt: new Date() },
+          }).catch(() => {});
+          return NextResponse.json({ response: answer, followUps, conversationId: null, fromCache: false });
+        }
         cacheHit = true;
 
         // Fire-and-forget: record conversation for history tracking

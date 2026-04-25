@@ -92,7 +92,7 @@ export function APSeasonBanner() {
         type="button"
         onClick={dismiss}
         aria-label="Dismiss AP season banner"
-        className="absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded hover:bg-white/10 transition-colors"
+        className="absolute right-1 top-1/2 -translate-y-1/2 p-3 -m-1 rounded hover:bg-white/10 transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center"
       >
         <X className="h-4 w-4" aria-hidden="true" />
       </button>
