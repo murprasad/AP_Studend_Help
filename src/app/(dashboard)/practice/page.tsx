@@ -24,6 +24,7 @@ import { hapticSuccess, hapticError } from "@/lib/haptics";
 import { FirstSessionCelebration } from "@/components/practice/first-session-celebration";
 import { SessionLimitHitCard } from "@/components/practice/session-limit-hit-card";
 import { useFirstAnswerReward } from "@/components/practice/first-answer-reward-modal";
+import { CrossModuleNudge } from "@/components/practice/cross-module-nudge";
 import {
   Zap,
   BookOpen,
@@ -694,6 +695,12 @@ export default function PracticePage() {
             streak protection as a reason to return tomorrow. Renders null
             if we don't have a weakestUnit to reference. */}
         <NextSessionNudge course={course} />
+
+        {/* Cross-module usage-expansion nudge — Premium users only.
+            Surfaces a "you also unlocked SAT/ACT" card so paying users
+            actually USE the all-access entitlement they got in Beta 7.1.
+            Self-gates: silent for free users + already-cross-track users. */}
+        <CrossModuleNudge course={course} />
 
         <Card className="card-glow">
           <CardContent className="p-6">
