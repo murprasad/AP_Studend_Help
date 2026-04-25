@@ -38,6 +38,16 @@ test.describe("Accessibility — public pages", () => {
         for (const v of blocking) {
           console.log(`  [${v.impact}] ${v.id} — ${v.description}`);
           console.log(`    Help: ${v.helpUrl}`);
+          // Per-target detail (added 2026-04-25) — without this we just
+          // know the rule name, not which element to fix. Limit to 5
+          // per rule to keep the log readable.
+          for (const node of v.nodes.slice(0, 5)) {
+            const target = node.target.join(", ");
+            const summary = node.failureSummary?.replace(/\n/g, " | ").slice(0, 200) ?? "";
+            console.log(`    target: ${target}`);
+            if (summary) console.log(`           ${summary}`);
+          }
+          if (v.nodes.length > 5) console.log(`    (+${v.nodes.length - 5} more elements)`);
         }
       }
       expect(blocking).toHaveLength(0);
