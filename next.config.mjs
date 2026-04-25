@@ -20,7 +20,11 @@ const nextConfig = {
       { key: "X-Content-Type-Options", value: "nosniff" },
       { key: "X-Frame-Options", value: "SAMEORIGIN" },
       { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
-      { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(), interest-cohort=()" },
+      // microphone=(self) allows Sage Coach voice practice on our own
+      // origin while still blocking it for cross-origin iframes.
+      // camera=() and geolocation=() stay blanket-blocked — no current
+      // feature needs them.
+      { key: "Permissions-Policy", value: 'camera=(), microphone=(self), geolocation=(), interest-cohort=()' },
       {
         key: "Content-Security-Policy",
         value: [
