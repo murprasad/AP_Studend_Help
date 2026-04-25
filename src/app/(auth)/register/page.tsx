@@ -50,6 +50,10 @@ export default function RegisterPage() {
   const [success, setSuccess] = useState(false);
   const [isClepTrack, setIsClepTrack] = useState(false);
   const [userModule, setUserModule] = useState("ap");
+  // Persistent inline error banner (2026-04-25 UX). Same pattern as
+  // /login — toast-only errors disappear too fast and leave users
+  // staring at a blank form.
+  const [registerError, setRegisterError] = useState<string | null>(null);
 
   useEffect(() => {
     // Read module or track from URL param
@@ -107,6 +111,7 @@ export default function RegisterPage() {
 
   async function onSubmit(data: RegisterForm) {
     setIsLoading(true);
+    setRegisterError(null); // Clear prior error on retry.
     try {
       const response = await fetch("/api/auth/register", {
         method: "POST",
@@ -117,9 +122,16 @@ export default function RegisterPage() {
       const result = await response.json();
 
       if (!response.ok) {
+        // Friendly classification of common API errors.
+        const raw = result.error || "Something went wrong";
+        const friendly =
+          /already exists|already registered|in use/i.test(raw)
+            ? "An account with this email already exists. Try logging in instead."
+            : raw;
+        setRegisterError(friendly);
         toast({
           title: "Registration failed",
-          description: result.error || "Something went wrong",
+          description: friendly,
           variant: "destructive",
         });
       } else {
@@ -127,9 +139,11 @@ export default function RegisterPage() {
         setSuccess(true);
       }
     } catch {
+      const generic = "We couldn't reach the server. Check your internet and try again.";
+      setRegisterError(generic);
       toast({
         title: "Something went wrong",
-        description: "Please try again.",
+        description: generic,
         variant: "destructive",
       });
     } finally {
@@ -188,6 +202,34 @@ export default function RegisterPage() {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
+        {/* Persistent error banner — same UX pattern as /login. Stays
+            visible until next submit. Shows recovery link. */}
+        {registerError && (
+          <div
+            role="alert"
+            aria-live="polite"
+            className="rounded-lg border border-destructive/40 bg-destructive/5 p-3 text-sm space-y-2"
+          >
+            <p className="text-destructive font-medium">{registerError}</p>
+            {/already exists|already registered|in use|log in instead/i.test(registerError) && (
+              <p className="text-xs text-muted-foreground">
+                <Link
+                  href="/login"
+                  className="text-primary underline underline-offset-2 decoration-primary/60 hover:decoration-primary"
+                >
+                  Go to log in
+                </Link>{" "}
+                · or{" "}
+                <Link
+                  href="/forgot-password"
+                  className="text-primary underline underline-offset-2 decoration-primary/60 hover:decoration-primary"
+                >
+                  reset your password
+                </Link>
+              </p>
+            )}
+          </div>
+        )}
         {/* Google sign-up — only shown once GOOGLE_CLIENT_ID + SECRET are configured */}
         {googleAvailable && (
           <>
