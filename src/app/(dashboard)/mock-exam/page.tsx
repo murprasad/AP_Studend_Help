@@ -117,6 +117,101 @@ export default function MockExamPage() {
     return () => clearInterval(interval);
   }, [phase, timeLeft]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Beta 7.7 (2026-04-25): mock-exam crash-recovery via sessionStorage.
+  // The mock exam can run 3+ hours for full AP. A browser refresh, tab
+  // close, or laptop reboot mid-exam previously meant losing every answer
+  // typed so far (no server-side state, only React in-memory state).
+  // Saves on each answer/timer-tick (debounced via state change), restores
+  // on mount with explicit "Resume?" UX that respects the user's choice.
+  // Only persists during phase === "section1" (active exam). Cleared on
+  // completion to avoid stale-resume prompts on next mock attempt.
+  const STORAGE_KEY = `mock_exam_snapshot_${course}`;
+  const STORAGE_TTL_MS = 4 * 60 * 60 * 1000; // 4 hours — longer than longest mock
+
+  useEffect(() => {
+    if (phase !== "section1" || !sessionId) return;
+    try {
+      sessionStorage.setItem(STORAGE_KEY, JSON.stringify({
+        sessionId,
+        questions: questionsRef.current,
+        currentIndex,
+        answers,
+        timeLeft,
+        correctCount,
+        mode,
+        savedAt: Date.now(),
+      }));
+    } catch { /* sessionStorage full or disabled — ignore */ }
+  }, [phase, sessionId, currentIndex, answers, timeLeft, correctCount, mode, STORAGE_KEY]);
+
+  useEffect(() => {
+    if (phase !== "complete") return;
+    try { sessionStorage.removeItem(STORAGE_KEY); } catch { /* ignore */ }
+  }, [phase, STORAGE_KEY]);
+
+  // On mount: detect a saved in-progress mock and offer resume. If the
+  // user accepts, restore all state in one batch. If they decline, clear
+  // sessionStorage so the prompt doesn't reappear on next visit.
+  const [resumePrompt, setResumePrompt] = useState<{
+    sessionId: string;
+    currentIndex: number;
+    timeLeft: number;
+    questionCount: number;
+    answersGiven: number;
+  } | null>(null);
+
+  useEffect(() => {
+    try {
+      const raw = sessionStorage.getItem(STORAGE_KEY);
+      if (!raw) return;
+      const snap = JSON.parse(raw);
+      if (!snap?.sessionId || !Array.isArray(snap.questions)) {
+        sessionStorage.removeItem(STORAGE_KEY);
+        return;
+      }
+      if (Date.now() - (snap.savedAt ?? 0) > STORAGE_TTL_MS) {
+        sessionStorage.removeItem(STORAGE_KEY);
+        return;
+      }
+      // Stage the resume prompt; don't auto-resume in case the user
+      // intentionally abandoned and is starting a new attempt.
+      setResumePrompt({
+        sessionId: snap.sessionId,
+        currentIndex: snap.currentIndex ?? 0,
+        timeLeft: snap.timeLeft ?? 0,
+        questionCount: snap.questions.length,
+        answersGiven: Object.keys(snap.answers ?? {}).length,
+      });
+    } catch {
+      try { sessionStorage.removeItem(STORAGE_KEY); } catch { /* ignore */ }
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  function acceptResume() {
+    try {
+      const raw = sessionStorage.getItem(STORAGE_KEY);
+      if (!raw) { setResumePrompt(null); return; }
+      const snap = JSON.parse(raw);
+      questionsRef.current = snap.questions;
+      setSessionId(snap.sessionId);
+      setQuestions(snap.questions);
+      setCurrentIndex(snap.currentIndex ?? 0);
+      setAnswers(snap.answers ?? {});
+      setTimeLeft(snap.timeLeft ?? 0);
+      setCorrectCount(snap.correctCount ?? 0);
+      if (snap.mode === "full" || snap.mode === "quick") setMode(snap.mode);
+      setFeedback(null);
+      setPhase("section1");
+    } catch { /* ignore — user can start fresh */ }
+    setResumePrompt(null);
+  }
+
+  function declineResume() {
+    try { sessionStorage.removeItem(STORAGE_KEY); } catch { /* ignore */ }
+    setResumePrompt(null);
+  }
+
   async function startExam() {
     setIsLoading(true);
     try {
@@ -243,6 +338,37 @@ export default function MockExamPage() {
             Timed section simulation with official {trackLabel} pacing
           </p>
         </div>
+
+        {/* Beta 7.7 (2026-04-25): resume-in-progress mock prompt. If the
+            user crashed/refreshed mid-exam (browser, laptop reboot, tab
+            close), sessionStorage holds their answers + position + remaining
+            time. Show explicit choose-your-path UI so they don't lose hours
+            of work. */}
+        {resumePrompt && (
+          <Card className="border-amber-500/40 bg-amber-500/5">
+            <CardContent className="p-5 space-y-3">
+              <div className="flex items-start gap-3">
+                <Clock className="h-5 w-5 text-amber-500 flex-shrink-0 mt-0.5" />
+                <div className="space-y-1">
+                  <p className="font-semibold text-amber-700 dark:text-amber-400">You have an exam in progress</p>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    Question {resumePrompt.currentIndex + 1} of {resumePrompt.questionCount} · {resumePrompt.answersGiven} answered · {Math.floor(resumePrompt.timeLeft / 60)}m {resumePrompt.timeLeft % 60}s remaining.
+                    Continue where you left off, or start fresh (your in-progress answers will be lost).
+                  </p>
+                </div>
+              </div>
+              <div className="flex gap-2 justify-end pt-1">
+                <Button variant="outline" size="sm" onClick={declineResume}>
+                  Start fresh
+                </Button>
+                <Button size="sm" onClick={acceptResume} className="bg-amber-600 hover:bg-amber-700 text-white gap-2">
+                  Resume exam
+                  <ChevronRight className="h-4 w-4" />
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         <CourseSelectorInline />
 

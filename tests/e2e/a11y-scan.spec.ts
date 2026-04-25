@@ -73,6 +73,18 @@ test.describe("Accessibility — authed pages", () => {
         console.log(`A11y violations on ${path}:`);
         for (const v of blocking) {
           console.log(`  [${v.impact}] ${v.id} — ${v.description}`);
+          console.log(`    Help: ${v.helpUrl}`);
+          // Beta 7.7 (2026-04-25): per-target diagnostic, mirroring the
+          // public-pages section. Without this we know the RULE failed but
+          // not WHICH element on the page — so a fix is guesswork. Cap
+          // at 5 nodes/rule to keep deploy logs readable.
+          for (const node of v.nodes.slice(0, 5)) {
+            const target = node.target.join(", ");
+            const summary = node.failureSummary?.replace(/\n/g, " | ").slice(0, 250) ?? "";
+            console.log(`    target: ${target}`);
+            if (summary) console.log(`           ${summary}`);
+          }
+          if (v.nodes.length > 5) console.log(`    (+${v.nodes.length - 5} more elements)`);
         }
       }
       expect(blocking).toHaveLength(0);
