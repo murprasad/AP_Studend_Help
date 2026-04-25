@@ -129,19 +129,66 @@ export async function sendRegistrationStallEmail(opts: {
 }): Promise<void> {
   const { email, firstName } = opts;
   const baseUrl = process.env.APP_URL ?? process.env.NEXT_PUBLIC_APP_URL ?? "https://studentnest.ai";
-  const subject = `You're 30 seconds from a personalized plan`;
-  const onboardingUrl = `${baseUrl}/onboarding?src=registration-stall`;
+  // Subject + body locked from 2026-04-25 conversion-stack #4 spec.
+  // Friendly, low-pressure tone for the 24h send.
+  const subject = `Finish your setup in 30 seconds`;
+  const onboardingUrl = `${baseUrl}/onboarding?utm_source=recovery&utm_campaign=stuck_onboarding`;
   const html = `
     <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 600px; margin: 0 auto; padding: 24px;">
-      <h1 style="color: #1865F2; margin: 0 0 12px 0; font-size: 22px;">Hi ${firstName},</h1>
-      <p style="color: #334155; line-height: 1.6; margin: 0 0 20px 0; font-size: 15px;">
-        You created an account but haven&apos;t picked a course yet. Takes 30 seconds to finish setup and see your personalized plan. Come back anytime &mdash; your account is ready when you are.
+      <p style="color: #334155; line-height: 1.6; margin: 0 0 16px 0; font-size: 15px;">Hey ${firstName} —</p>
+      <p style="color: #334155; line-height: 1.6; margin: 0 0 16px 0; font-size: 15px;">
+        You started setting up your StudentNest plan but didn&rsquo;t finish.
+      </p>
+      <p style="color: #334155; line-height: 1.6; margin: 0 0 16px 0; font-size: 15px;">
+        We saved everything for you. It takes ~30 seconds to complete and you&rsquo;ll see your estimated score right away.
       </p>
       <a href="${onboardingUrl}" style="display: inline-block; background: #1865F2; color: white; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 15px; margin: 8px 0 24px 0;">
         Finish setup &rarr;
       </a>
+      <p style="color: #64748b; line-height: 1.6; margin: 0 0 24px 0; font-size: 14px;">
+        No rush &mdash; just didn&rsquo;t want you to lose your progress.
+      </p>
       <p style="color: #94a3b8; font-size: 12px; line-height: 1.5; margin-top: 24px;">
-        One-time email. Unsubscribe by replying.
+        Reply to unsubscribe and we won&rsquo;t email you again.
+      </p>
+    </div>
+  `.trim();
+  await sendEmail(email, subject, html);
+}
+
+/**
+ * Registration-stall 72h follow-up. Sent once to users who got the
+ * 24h recovery email but STILL haven't completed onboarding 48h after
+ * that first send. Slight AP-season urgency layer; same one-action
+ * focus as the first email.
+ *
+ * Dedup via TrialReengagement row with emailType="registration_stall_2".
+ */
+export async function sendRegistrationStallFollowupEmail(opts: {
+  email: string;
+  firstName: string;
+}): Promise<void> {
+  const { email, firstName } = opts;
+  const baseUrl = process.env.APP_URL ?? process.env.NEXT_PUBLIC_APP_URL ?? "https://studentnest.ai";
+  const subject = `Quick setup before AP exams start`;
+  const onboardingUrl = `${baseUrl}/onboarding?utm_source=recovery&utm_campaign=stuck_onboarding_72h`;
+  const html = `
+    <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 600px; margin: 0 auto; padding: 24px;">
+      <p style="color: #334155; line-height: 1.6; margin: 0 0 16px 0; font-size: 15px;">Hey ${firstName} —</p>
+      <p style="color: #334155; line-height: 1.6; margin: 0 0 16px 0; font-size: 15px;">
+        You started your StudentNest setup but haven&rsquo;t finished yet.
+      </p>
+      <p style="color: #334155; line-height: 1.6; margin: 0 0 16px 0; font-size: 15px;">
+        With AP exams coming up, this is the fastest way to see where you stand and what to focus on. It takes less than a minute.
+      </p>
+      <a href="${onboardingUrl}" style="display: inline-block; background: #1865F2; color: white; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 15px; margin: 8px 0 24px 0;">
+        Complete setup &rarr;
+      </a>
+      <p style="color: #64748b; line-height: 1.6; margin: 0 0 24px 0; font-size: 14px;">
+        If you&rsquo;re not preparing right now, feel free to ignore this.
+      </p>
+      <p style="color: #94a3b8; font-size: 12px; line-height: 1.5; margin-top: 24px;">
+        Reply to unsubscribe and we won&rsquo;t email you again.
       </p>
     </div>
   `.trim();

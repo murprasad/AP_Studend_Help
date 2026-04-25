@@ -1,0 +1,49 @@
+name: Daily Registration-Stall Recovery
+
+on:
+  schedule:
+    # 14:00 UTC daily — 7am Pacific / 10am Eastern. Catches users who
+    # signed up the previous day + AM cohort. Send rate is naturally
+    # capped by the 2-pass dedup logic in /api/cron/registration-stall.
+    - cron: '0 14 * * *'
+  workflow_dispatch:
+
+jobs:
+  registration-stall:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Hit /api/cron/registration-stall
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          response=$(curl -s -w "\n%{http_code}" \
+            https://studentnest.ai/api/cron/registration-stall \
+            -H "Authorization: Bearer ${CRON_SECRET}" \
+            --max-time 60)
+          body=$(echo "$response" | head -n -1)
+          status=$(echo "$response" | tail -n 1)
+
+          echo "Status: $status"
+          echo "Body: $body"
+
+          # 401 → CRON_SECRET drift. Soft-fail (no email noise) per the
+          # 2026-04-25 GH-Actions noise control pattern. Re-syncing the
+          # GitHub Actions secret to match the CF Pages env restores
+          # operation automatically on the next scheduled run.
+          if [ "$status" = "401" ]; then
+            echo "::warning::CRON_SECRET mismatch — skipping registration-stall send until secrets are re-synced."
+            exit 0
+          fi
+          if [ "$status" != "200" ]; then
+            echo "❌ Unexpected status $status"
+            exit 1
+          fi
+
+          # Surface counts as the workflow summary.
+          sent=$(echo "$body" | grep -o '"sent":[0-9]*' | grep -o '[0-9]*' || echo 0)
+          pass1=$(echo "$body" | grep -o '"pass1Candidates":[0-9]*' | grep -o '[0-9]*' || echo 0)
+          pass2=$(echo "$body" | grep -o '"pass2Subjects":[0-9]*' | grep -o '[0-9]*' || echo 0)
+          echo "## Registration-stall recovery" >> $GITHUB_STEP_SUMMARY
+          echo "- Pass 1 candidates (24h+ stalled): $pass1" >> $GITHUB_STEP_SUMMARY
+          echo "- Pass 2 candidates (72h+ stalled): $pass2" >> $GITHUB_STEP_SUMMARY
+          echo "- Emails sent: $sent" >> $GITHUB_STEP_SUMMARY
