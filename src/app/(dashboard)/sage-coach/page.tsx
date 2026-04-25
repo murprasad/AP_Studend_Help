@@ -151,9 +151,20 @@ export default function SageCoachPage() {
       setTranscript(transcriptRef.current + interim)
     }
     rec.onerror = (e: any) => {
-      const msg = e?.error === "not-allowed"
-        ? "Mic permission denied. Enable microphone access in your browser settings."
-        : `Voice error: ${e?.error || "unknown"}`
+      // Browser-specific guidance the user can actually act on. The
+      // generic "enable in your browser settings" leaves users stuck
+      // hunting through menus. Lock icon in the URL bar is universal.
+      const errorCode = e?.error || "unknown";
+      const msg =
+        errorCode === "not-allowed"
+          ? "Mic blocked. Click the 🔒 lock icon to the left of the URL → set Microphone to Allow → refresh this page."
+          : errorCode === "no-speech"
+          ? "I didn't catch any speech. Try again, a bit louder."
+          : errorCode === "audio-capture"
+          ? "No microphone detected. Check your device's audio settings."
+          : errorCode === "network"
+          ? "Voice service couldn't connect. Check your internet and try again."
+          : `Voice error: ${errorCode}`;
       setError(msg)
       setPhase("error")
     }
