@@ -310,7 +310,7 @@ export default async function LandingPage() {
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-12">
             Sage is your personal Sage Live Tutor — available 24/7, never judges, and always explains in a way that clicks.
           </p>
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
               {
                 icon: MessageSquare,
@@ -323,14 +323,24 @@ export default async function LandingPage() {
                 icon: Zap,
                 title: "Practice Agent",
                 desc: "The practice engine auto-generates exam-aligned questions, tracks every answer, and targets your weakest units to maximize improvement.",
-                color: "text-yellow-400",
+                color: "text-yellow-600 dark:text-yellow-400",
                 bg: "bg-yellow-500/10",
+              },
+              // NEW 2026-04-25: Sage Coach was missing from landing surface — only
+              // mentioned on /about. Real differentiator (voice oral practice) was
+              // invisible to 92% of new users (last-48-users.mjs funnel).
+              {
+                icon: Sparkles,
+                title: "Sage Coach (Voice)",
+                desc: "Talk through what you know in plain English. Sage Coach listens, scores your understanding, and tells you exactly what to study next — like a private tutor on call.",
+                color: "text-violet-600 dark:text-violet-400",
+                bg: "bg-violet-500/10",
               },
               {
                 icon: BarChart3,
                 title: "Progress Agent",
                 desc: "Mastery scores update after every question. See unit-by-unit heatmaps and get a personalized study plan targeting your weak areas.",
-                color: "text-emerald-400",
+                color: "text-emerald-700 dark:text-emerald-400",
                 bg: "bg-emerald-500/10",
               },
             ].map((a) => (

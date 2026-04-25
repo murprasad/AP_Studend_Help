@@ -9,7 +9,7 @@ import { MockupPractice } from "@/components/landing/mockup-practice";
 
 export const metadata: Metadata = {
   title: "ACT Prep — AI Practice for All 4 Sections | StudentNest Prep",
-  description: "Boost your ACT composite with AI-powered practice for Math, English, Science, and Reading. Section-specific tutoring and score tracking. Free to start.",
+  description: "Lift your ACT composite with AI-powered practice across Math, English, Science, and Reading. Section-specific tutoring and score tracking. Free to start.",
   openGraph: {
     title: "ACT Prep | StudentNest Prep",
     description: "AI-powered ACT prep. All 4 sections. Section-specific Sage Live Tutor. Free to start.",
@@ -58,7 +58,7 @@ export default function ActPrepPage() {
             <Sparkles className="h-4 w-4" /> 4 ACT Sections
           </div>
           <h1 className="text-4xl sm:text-5xl font-bold">
-            Boost your ACT composite by 3–5 points — with AI that targets your weakest sections.
+            Lift your ACT composite — committed prep moves the needle 3+ points on average.
           </h1>
           <p className="text-xl text-muted-foreground max-w-xl mx-auto lg:mx-0">
             Math, English, Science, Reading — Sage adapts to each section and drills you where it matters most.
