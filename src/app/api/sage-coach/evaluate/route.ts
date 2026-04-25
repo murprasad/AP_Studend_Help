@@ -328,13 +328,38 @@ Score the student on 0-100 scales. Floor accuracy at 30 even if the answer is ve
     result = neutralFallback((e as Error).message || "evaluation error");
   }
 
-  // DB WRITE TEMPORARILY REMOVED to isolate hang. If the response now
-  // arrives quickly, prisma.sageCoachSession.create is the hang source on
-  // CF Workers and we need a different persistence strategy (e.g. queue
-  // to a Durable Object, or write via a raw SQL executeRawUnsafe path).
-  log("skipping session save — hang diagnosis");
+  // Beta 7.6 (2026-04-25): re-enable session persistence using
+  // $executeRawUnsafe per the CLAUDE.md "no transactions" pattern.
+  // Earlier Prisma .create() was hanging on CF Workers — likely
+  // because the WASM-driver code path for Json columns wasn't fully
+  // CF-compatible. Raw SQL with explicit ::jsonb + ::text[] casts
+  // sidesteps the hang. Fire-and-forget so a DB hang here doesn't
+  // delay the user's evaluation response.
+  const sessionId = crypto.randomUUID();
+  void prisma.$executeRawUnsafe(
+    `INSERT INTO "sage_coach_sessions"
+       (id, "userId", "conceptId", course, transcript, "audioDurationMs",
+        scores, "missingKeyPoints", summary, "specificFeedback", "improvementTip",
+        "retryOf", "createdAt")
+     VALUES ($1, $2, $3, $4::text, $5, $6, $7::jsonb, $8::text[], $9, $10, $11, $12, NOW())`,
+    sessionId,
+    session.user.id,
+    conceptId,
+    concept.course,
+    transcript,
+    audioDurationMs,
+    JSON.stringify(result.scores),
+    result.missingKeyPoints,
+    result.summary,
+    result.specificFeedback,
+    result.improvementTip,
+    retryOf,
+  ).catch((e) => {
+    log("session save failed (non-blocking)", { message: e instanceof Error ? e.message : String(e) });
+  });
+  log("session save fired");
   log("done");
-  return NextResponse.json({ ...result, conceptId, sessionId: null, saved: false, diag: "no_db_write" });
+  return NextResponse.json({ ...result, conceptId, sessionId, saved: true });
 }
 
 export async function POST(req: NextRequest) {
