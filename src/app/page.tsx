@@ -18,6 +18,7 @@ import {
   ChevronDown,
 } from "lucide-react";
 import { InteractiveDemo } from "@/components/landing/interactive-demo";
+import { APSeasonBanner } from "@/components/marketing/ap-season-banner";
 import { HeroReadinessPicker } from "@/components/landing/hero-readiness-picker";
 import { MobileStickyCta } from "@/components/landing/mobile-sticky-cta";
 import { BrowserFrame } from "@/components/landing/browser-frame";
@@ -139,6 +140,10 @@ export default async function LandingPage() {
 
   return (
     <div className="min-h-screen bg-background">
+
+      {/* AP Season urgency banner — auto-hides after 2026-05-17. Conversion
+          lever for the May 5-16 exam window. */}
+      <APSeasonBanner />
 
       {/* Navbar */}
       <nav className="border-b border-border/40 backdrop-blur-sm sticky top-0 z-50 bg-background/80">

@@ -1,9 +1,11 @@
 import { SageChat } from "@/components/layout/sage-chat";
 import { MarketingHeader } from "@/components/layout/marketing-header";
+import { APSeasonBanner } from "@/components/marketing/ap-season-banner";
 
 export default function MarketingLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen bg-background flex flex-col">
+      <APSeasonBanner />
       <MarketingHeader />
       <div className="flex-1">{children}</div>
       <footer className="border-t border-border/40 py-8 px-4 text-center space-y-3">
