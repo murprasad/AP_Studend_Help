@@ -72,14 +72,21 @@ export default function SatPrepPage() {
         </div>
         <div className="hidden lg:block animate-float">
           <BrowserFrame title="StudentNest Prep · SAT Analytics" className="shadow-2xl shadow-blue-500/10">
-            <MockupAnalytics />
+            <MockupAnalytics variant="sat" />
           </BrowserFrame>
         </div>
         <div className="lg:hidden max-w-md mx-auto w-full">
           <BrowserFrame title="StudentNest Prep · SAT Analytics">
-            <MockupAnalytics />
+            <MockupAnalytics variant="sat" />
           </BrowserFrame>
         </div>
+      </div>
+
+      {/* Pain statement — why most SAT prep plateaus */}
+      <div className="rounded-xl border border-orange-500/20 bg-orange-500/5 p-5 text-center max-w-3xl mx-auto">
+        <p className="text-base font-medium text-foreground/90 leading-relaxed">
+          Most students don&apos;t improve because they practice everything evenly — not where they actually lose points.
+        </p>
       </div>
 
       {/* Features — alternating text + mockups */}
@@ -90,7 +97,7 @@ export default function SatPrepPage() {
             <h2 className="text-2xl font-bold">AI targets your weakest SAT areas</h2>
             <p className="text-muted-foreground leading-relaxed">Quick diagnostic across Math and Reading &amp; Writing. Choose your timeline (2–6 weeks) and Sage builds a plan targeting your lowest-scoring topics first.</p>
           </div>
-          <BrowserFrame title="StudentNest Prep · SAT Study Plan" className="shadow-xl"><MockupStudyPlan /></BrowserFrame>
+          <BrowserFrame title="StudentNest Prep · SAT Study Plan" className="shadow-xl"><MockupStudyPlan variant="sat" /></BrowserFrame>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
           <div className="lg:order-2 space-y-3">
@@ -98,15 +105,15 @@ export default function SatPrepPage() {
             <h2 className="text-2xl font-bold">SAT-format questions with instant explanations</h2>
             <p className="text-muted-foreground leading-relaxed">AI-generated questions matching real SAT format. Get instant feedback explaining why each answer is right or wrong — ask Sage for deeper explanations anytime.</p>
           </div>
-          <div className="lg:order-1"><BrowserFrame title="StudentNest Prep · SAT Practice" className="shadow-xl"><MockupPractice /></BrowserFrame></div>
+          <div className="lg:order-1"><BrowserFrame title="StudentNest Prep · SAT Practice" className="shadow-xl"><MockupPractice variant="sat" /></BrowserFrame></div>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
           <div className="space-y-3">
             <div className="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center"><BarChart3 className="h-5 w-5 text-blue-400" /></div>
-            <h2 className="text-2xl font-bold">Watch your estimated SAT score climb</h2>
-            <p className="text-muted-foreground leading-relaxed">Track your progress session by session: 1050 → 1150 → 1250 → 1350. Real data, timed practice, and pacing instincts for test day.</p>
+            <h2 className="text-2xl font-bold">See your readiness range improve</h2>
+            <p className="text-muted-foreground leading-relaxed">Track session-by-session progress as your estimated SAT range climbs (typical pattern: 1050 → 1150 → 1250+). Real data, timed practice, and the pacing instincts you need on test day.</p>
           </div>
-          <BrowserFrame title="StudentNest Prep · SAT Analytics" className="shadow-xl"><MockupAnalytics /></BrowserFrame>
+          <BrowserFrame title="StudentNest Prep · SAT Analytics" className="shadow-xl"><MockupAnalytics variant="sat" /></BrowserFrame>
         </div>
       </div>
 
@@ -115,7 +122,7 @@ export default function SatPrepPage() {
         {[
           { icon: Brain, title: "Understand Every Mistake", desc: "Sage explains why your answer was wrong and what the correct reasoning looks like." },
           { icon: Target, title: "Improve Faster", desc: "Practice adapts to your weakest areas. Every session targets where you lose the most points." },
-          { icon: BarChart3, title: "Track Your Score", desc: "Watch your estimated score climb: 1050 → 1150 → 1250 → 1350. Real data, week by week." },
+          { icon: BarChart3, title: "Track Your Range", desc: "Watch your estimated SAT range improve session by session (typical pattern: 1050 → 1150 → 1250+). Real data, week by week." },
           { icon: Clock, title: "Build Test Stamina", desc: "Timed practice builds the pacing instincts you need on test day." },
         ].map((f) => (
           <div key={f.title} className="p-5 rounded-xl border border-border/40 bg-card/50 space-y-2">
@@ -189,7 +196,7 @@ export default function SatPrepPage() {
       <div className="rounded-xl border border-border/40 bg-card/50 p-6 text-center space-y-2">
         <p className="text-sm font-semibold">For parents</p>
         <p className="text-xs text-muted-foreground leading-relaxed max-w-xl mx-auto">
-          SAT practice is aligned with College Board content. Your child gets adaptive practice targeting their actual weak areas, real-time score tracking you can review together, and structured study plans — for $9.99/mo instead of $50+/hr tutoring.
+          SAT practice is aligned with College Board content. Your child gets adaptive practice targeting their actual weak areas, real-time score tracking you can review together, and structured study plans — for less than one hour of SAT tutoring per month.
         </p>
       </div>
 

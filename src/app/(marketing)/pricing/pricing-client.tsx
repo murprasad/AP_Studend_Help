@@ -99,8 +99,9 @@ export default function PricingClient({ clepEnabled, dsstEnabled }: PricingClien
 
   const FREE_FEATURES = [
     `All ${courseCount} courses — ${examLabel}`,
-    "Unlimited MCQ practice questions",
-    "3 practice sessions per day",
+    // Single line consolidates the previous "Unlimited practice" + "3 sessions/day"
+    // pair that flagged as contradictory in the 2026-04-25 conversion review.
+    "Practice questions in 3 daily sessions",
     "5 AI explanations per day — never get stuck",
     "Progress tracking & mastery heatmap",
     "Mock exam simulator with score estimate",
@@ -134,7 +135,7 @@ export default function PricingClient({ clepEnabled, dsstEnabled }: PricingClien
       <div className="text-center mb-8">
         <h1 className="text-4xl font-bold mb-4">Simple, transparent pricing</h1>
         <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-          Free to start. Upgrade any module for $9.99/mo. Subscribe to multiple modules independently.
+          Start with one exam. Add more anytime. Free forever — upgrade any module for $9.99/mo.
         </p>
       </div>
 
@@ -255,11 +256,14 @@ export default function PricingClient({ clepEnabled, dsstEnabled }: PricingClien
         </div>
       </div>
 
-      {/* Trust + refund */}
+      {/* Trust + outcome anchor + refund (single line — refund repetition was
+          flagged in the 2026-04-25 conversion review for sub-conscious doubt) */}
       <div className="mt-8 text-center space-y-2">
-        <p className="text-sm font-medium text-emerald-700 dark:text-emerald-400">7-day money-back guarantee on all Premium plans</p>
-        <p className="text-xs text-muted-foreground">
-          Equivalent to 10+ hours of private tutoring per month. Need multiple modules? Subscribe to each independently.
+        <p className="text-base font-medium text-foreground/90 max-w-xl mx-auto">
+          Everything you need to raise your score — without paying for full tutoring.
+        </p>
+        <p className="text-sm text-emerald-700 dark:text-emerald-400 font-medium">
+          Cancel anytime · 7-day money-back guarantee
         </p>
       </div>
 
@@ -275,16 +279,16 @@ export default function PricingClient({ clepEnabled, dsstEnabled }: PricingClien
                 <th className="text-center p-3 font-medium text-blue-500">StudentNest Prep</th>
                 <th className="text-center p-3 font-medium">Prep Course</th>
                 <th className="text-center p-3 font-medium">Private Tutor</th>
-                <th className="text-center p-3 font-medium">ChatGPT</th>
+                <th className="text-center p-3 font-medium">General AI</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border/30">
               {[
                 ["Price", "$0–9.99/mo", "$200–500", "$50–150/hr", "Free–$20/mo"],
-                ["Exam-Aligned Questions", "✅", "✅", "✅", "❌"],
+                ["Exam-Aligned Questions", "✅", "✅", "✅", "Not exam-format"],
                 ["Mastery Tracking", "✅", "Partial", "❌", "❌"],
                 ["Personalized Study Plan", "✅ AI-generated", "Static", "✅", "❌"],
-                ["Instant AI Explanations", "✅ 24/7", "❌", "Scheduled", "✅ Generic"],
+                ["Instant AI Explanations", "✅ 24/7", "❌", "Scheduled", "✅ General-purpose"],
                 ["Score Prediction", "✅", "Partial", "❌", "❌"],
               ].map(([feature, ...values]) => (
                 <tr key={feature} className="hover:bg-secondary/20">
@@ -304,7 +308,7 @@ export default function PricingClient({ clepEnabled, dsstEnabled }: PricingClien
         <h2 className="text-2xl font-bold text-center mb-8">Frequently asked questions</h2>
         <div className="space-y-6">
           {[
-            { q: "Can I subscribe to multiple modules?", a: `Yes! Each module (${moduleListLabel}) is an independent $9.99/mo subscription. Subscribe to as many as you need.` },
+            { q: "Can I subscribe to multiple modules?", a: `Yes — pick just one or stack a few. Each module (${moduleListLabel}) is its own $9.99/mo subscription, so you only pay for what you use.` },
             { q: "Can I cancel anytime?", a: "Yes. Cancel from your billing page and you'll keep Premium access until the end of your billing period." },
             { q: "Can I pay annually?", a: "Yes — $79.99/year per module saves you 33% compared to monthly billing ($6.67/mo)." },
             { q: "What is your refund policy?", a: "We offer a 7-day money-back guarantee on new Premium subscriptions. If you're not satisfied within 7 days of your first payment, email contact@studentnest.ai and we'll issue a full refund — no questions asked. After 7 days, subscriptions are non-refundable but you can cancel anytime and keep access until the end of your billing period." },

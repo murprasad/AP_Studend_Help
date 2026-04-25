@@ -64,10 +64,10 @@ export default function ApPrepPage() {
             <Sparkles className="h-4 w-4" /> 10 AP Courses
           </div>
           <h1 className="text-4xl sm:text-5xl font-bold">
-            Go from a 3 to a 5 on your AP Exam — with AI that actually teaches.
+            Turn your AP prep into a 5 — with AI that teaches, quizzes, and adapts.
           </h1>
           <p className="text-xl text-muted-foreground max-w-xl mx-auto lg:mx-0">
-            Sage explains concepts, quizzes you back, and tracks mastery by unit. Every study session moves your score.
+            Sage teaches concepts, quizzes you, and tracks mastery by unit — so every session improves your score. <span className="text-foreground font-medium">30 minutes a day is enough.</span>
           </p>
           <div className="flex gap-3 justify-center lg:justify-start pt-2">
             <Link href="/register?module=ap">
@@ -80,14 +80,21 @@ export default function ApPrepPage() {
         </div>
         <div className="hidden lg:block animate-float">
           <BrowserFrame title="StudentNest Prep · AP Analytics" className="shadow-2xl shadow-blue-500/10">
-            <MockupAnalytics />
+            <MockupAnalytics variant="ap-generic" />
           </BrowserFrame>
         </div>
         <div className="lg:hidden max-w-md mx-auto w-full">
           <BrowserFrame title="StudentNest Prep · AP Analytics">
-            <MockupAnalytics />
+            <MockupAnalytics variant="ap-generic" />
           </BrowserFrame>
         </div>
+      </div>
+
+      {/* Pain statement — why most AP prep stalls */}
+      <div className="rounded-xl border border-orange-500/20 bg-orange-500/5 p-5 text-center max-w-3xl mx-auto">
+        <p className="text-base font-medium text-foreground/90 leading-relaxed">
+          Most AP prep stalls because students re-read units they already know. Sage drills you only on the content you&apos;re losing points on.
+        </p>
       </div>
 
       {/* Features — alternating text + mockups */}
@@ -98,13 +105,13 @@ export default function ApPrepPage() {
             <h2 className="text-2xl font-bold">AI builds your study plan by unit</h2>
             <p className="text-muted-foreground leading-relaxed">10–15 diagnostic questions identify your weak spots. Sage creates a weekly plan targeting your lowest-scoring units first — and adjusts as you improve.</p>
           </div>
-          <BrowserFrame title="StudentNest Prep · AP Study Plan" className="shadow-xl"><MockupStudyPlan /></BrowserFrame>
+          <BrowserFrame title="StudentNest Prep · AP Study Plan" className="shadow-xl"><MockupStudyPlan variant="ap-generic" /></BrowserFrame>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
           <div className="lg:order-2 space-y-3">
             <div className="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center"><Brain className="h-5 w-5 text-blue-500" /></div>
-            <h2 className="text-2xl font-bold">Practice MCQs &amp; FRQs with instant feedback</h2>
-            <p className="text-muted-foreground leading-relaxed">Every question matches AP format. Get it wrong? Sage explains why — not just the answer, but the reasoning behind every option.</p>
+            <h2 className="text-2xl font-bold">Practice FRQs with AI scoring on real AP rubrics</h2>
+            <p className="text-muted-foreground leading-relaxed">Most platforms only do MCQs. Sage scores your free-response answers (SAQ, LEQ, DBQ) against the actual College Board rubrics — point by point — so you know exactly what AP graders want before exam day.</p>
           </div>
           <div className="lg:order-1"><BrowserFrame title="StudentNest Prep · AP Practice" className="shadow-xl"><MockupPractice /></BrowserFrame></div>
         </div>
@@ -114,7 +121,7 @@ export default function ApPrepPage() {
             <h2 className="text-2xl font-bold">Track mastery and see your estimated AP score</h2>
             <p className="text-muted-foreground leading-relaxed">Per-unit mastery scores, accuracy trends, and a readiness heatmap — all in real time. Know exactly when you&apos;re ready for exam day.</p>
           </div>
-          <BrowserFrame title="StudentNest Prep · AP Analytics" className="shadow-xl"><MockupAnalytics /></BrowserFrame>
+          <BrowserFrame title="StudentNest Prep · AP Analytics" className="shadow-xl"><MockupAnalytics variant="ap-generic" /></BrowserFrame>
         </div>
       </div>
 
@@ -210,7 +217,7 @@ export default function ApPrepPage() {
       <div className="rounded-xl border border-border/40 bg-card/50 p-6 text-center space-y-2">
         <p className="text-sm font-semibold">For parents</p>
         <p className="text-xs text-muted-foreground leading-relaxed max-w-xl mx-auto">
-          All practice questions align with College Board AP curriculum standards. Your child gets adaptive practice, real-time mastery tracking, and a clear study plan — for less than a single tutoring session per month.
+          All practice questions align with College Board AP curriculum standards. Your child gets adaptive practice, real-time mastery tracking, and a clear study plan — for less than one hour of AP tutoring per month.
         </p>
       </div>
 

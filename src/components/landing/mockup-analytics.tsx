@@ -1,5 +1,7 @@
 import { Target, Zap, Star } from "lucide-react";
 
+type Variant = "ap" | "ap-generic" | "act" | "sat" | "clep";
+
 const stats = [
   { label: "Accuracy", value: "78%", icon: Target, color: "text-emerald-400" },
   { label: "Questions", value: "342", icon: Zap, color: "text-blue-400" },
@@ -7,15 +9,69 @@ const stats = [
   { label: "XP", value: "2,450", icon: Star, color: "text-purple-400" },
 ];
 
-const units = [
-  { name: "Unit 1: Renaissance", mastery: 92, color: "bg-emerald-500" },
-  { name: "Unit 2: Exploration", mastery: 74, color: "bg-yellow-500" },
-  { name: "Unit 3: Imperialism", mastery: 85, color: "bg-emerald-500" },
-  { name: "Unit 4: Revolutions", mastery: 41, color: "bg-red-500" },
-  { name: "Unit 5: Cold War", mastery: 63, color: "bg-yellow-500" },
-];
+const UNIT_VARIANTS: Record<Variant, { listLabel: string; rows: { name: string; mastery: number; color: string }[] }> = {
+  ap: {
+    listLabel: "Mastery by Unit",
+    rows: [
+      { name: "Unit 1: Renaissance", mastery: 92, color: "bg-emerald-500" },
+      { name: "Unit 2: Exploration", mastery: 74, color: "bg-yellow-500" },
+      { name: "Unit 3: Imperialism", mastery: 85, color: "bg-emerald-500" },
+      { name: "Unit 4: Revolutions", mastery: 41, color: "bg-red-500" },
+      { name: "Unit 5: Cold War", mastery: 63, color: "bg-yellow-500" },
+    ],
+  },
+  // Course-agnostic — used on the AP overview page that covers 10 courses
+  // (World History, Calc AB/BC, Bio, Chem, Stats, USH, etc). Generic
+  // "Unit N" labels avoid signaling that the product is history-only.
+  "ap-generic": {
+    listLabel: "Mastery by Unit",
+    rows: [
+      { name: "Unit 1", mastery: 92, color: "bg-emerald-500" },
+      { name: "Unit 2", mastery: 74, color: "bg-yellow-500" },
+      { name: "Unit 3", mastery: 85, color: "bg-emerald-500" },
+      { name: "Unit 4", mastery: 41, color: "bg-red-500" },
+      { name: "Unit 5", mastery: 63, color: "bg-yellow-500" },
+    ],
+  },
+  act: {
+    listLabel: "ACT Section Scores",
+    rows: [
+      { name: "Math", mastery: 82, color: "bg-emerald-500" },
+      { name: "English", mastery: 76, color: "bg-yellow-500" },
+      { name: "Reading", mastery: 88, color: "bg-emerald-500" },
+      { name: "Science", mastery: 54, color: "bg-red-500" },
+      { name: "Composite", mastery: 75, color: "bg-blue-500" },
+    ],
+  },
+  sat: {
+    // SAT-native domain breakdown — matches College Board's actual
+    // domain structure (Algebra, Advanced Math, Problem Solving & Data
+    // Analysis, Geometry & Trig for Math; Info & Ideas, Craft &
+    // Structure, Expression of Ideas, Standard English for R&W).
+    // Five rows fit cleanly; we surface the most-distinctive ones.
+    listLabel: "SAT Domain Mastery",
+    rows: [
+      { name: "Algebra", mastery: 87, color: "bg-emerald-500" },
+      { name: "Advanced Math", mastery: 68, color: "bg-yellow-500" },
+      { name: "Problem Solving", mastery: 74, color: "bg-yellow-500" },
+      { name: "Info & Ideas", mastery: 81, color: "bg-emerald-500" },
+      { name: "Std English", mastery: 49, color: "bg-red-500" },
+    ],
+  },
+  clep: {
+    listLabel: "CLEP Topic Mastery",
+    rows: [
+      { name: "Functions", mastery: 91, color: "bg-emerald-500" },
+      { name: "Equations", mastery: 78, color: "bg-yellow-500" },
+      { name: "Polynomials", mastery: 84, color: "bg-emerald-500" },
+      { name: "Logarithms", mastery: 47, color: "bg-red-500" },
+      { name: "Trigonometry", mastery: 62, color: "bg-yellow-500" },
+    ],
+  },
+};
 
-export function MockupAnalytics() {
+export function MockupAnalytics({ variant = "ap" }: { variant?: Variant }) {
+  const { listLabel, rows } = UNIT_VARIANTS[variant];
   return (
     <div className="p-4 space-y-4">
       {/* Stat cards row */}
@@ -36,13 +92,13 @@ export function MockupAnalytics() {
         ))}
       </div>
 
-      {/* Mastery by Unit — CSS bar chart */}
+      {/* Mastery — CSS bar chart */}
       <div>
         <p className="text-[11px] font-medium text-muted-foreground mb-2">
-          Mastery by Unit
+          {listLabel}
         </p>
         <div className="space-y-1.5">
-          {units.map((u) => (
+          {rows.map((u) => (
             <div key={u.name} className="flex items-center gap-2">
               <span className="text-[10px] text-muted-foreground w-24 truncate flex-shrink-0">
                 {u.name}
