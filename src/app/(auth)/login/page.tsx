@@ -39,6 +39,10 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [googleAvailable, setGoogleAvailable] = useState(false);
+  // Persistent inline error banner (2026-04-25 UX). Toast disappears
+  // after a few seconds — users who miss it submit again, fail again,
+  // get frustrated. Banner stays visible until next attempt.
+  const [loginError, setLoginError] = useState<string | null>(null);
 
   useEffect(() => {
     fetch("/api/auth/providers")
@@ -67,6 +71,7 @@ export default function LoginPage() {
 
   async function onSubmit(data: LoginForm) {
     setIsLoading(true);
+    setLoginError(null); // Clear prior error on retry.
     try {
       const result = await signIn("credentials", {
         email: data.email,
@@ -75,9 +80,15 @@ export default function LoginPage() {
       });
 
       if (result?.error) {
+        // Inline banner (persistent) + toast (immediate visibility).
+        const friendly =
+          result.error === "CredentialsSignin"
+            ? "Email or password didn't match. Double-check both, or reset your password."
+            : result.error;
+        setLoginError(friendly);
         toast({
           title: "Login failed",
-          description: result.error,
+          description: friendly,
           variant: "destructive",
         });
       } else {
@@ -85,9 +96,11 @@ export default function LoginPage() {
         router.refresh();
       }
     } catch {
+      const generic = "We couldn't reach the server. Check your internet and try again.";
+      setLoginError(generic);
       toast({
         title: "Something went wrong",
-        description: "Please try again.",
+        description: generic,
         variant: "destructive",
       });
     } finally {
@@ -105,6 +118,32 @@ export default function LoginPage() {
         <CardDescription>Log in to continue your AP exam prep</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
+        {/* Persistent error banner — shown when login fails. Stays visible
+            until the next submit. Includes a contextual recovery link. */}
+        {loginError && (
+          <div
+            role="alert"
+            aria-live="polite"
+            className="rounded-lg border border-destructive/40 bg-destructive/5 p-3 text-sm space-y-2"
+          >
+            <p className="text-destructive font-medium">{loginError}</p>
+            <p className="text-xs text-muted-foreground">
+              <Link
+                href="/forgot-password"
+                className="text-primary underline underline-offset-2 decoration-primary/60 hover:decoration-primary"
+              >
+                Reset your password
+              </Link>{" "}
+              · or{" "}
+              <Link
+                href="/register"
+                className="text-primary underline underline-offset-2 decoration-primary/60 hover:decoration-primary"
+              >
+                create a new account
+              </Link>
+            </p>
+          </div>
+        )}
         {/* Google sign-in — only shown once GOOGLE_CLIENT_ID + SECRET are configured */}
         {googleAvailable && (
           <>
