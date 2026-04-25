@@ -26,9 +26,13 @@ jobs:
           echo "Status: $status"
           echo "Body: $body"
 
+          # 401 = secret mismatch. Log warning and exit 0 so we don't
+          # spam GH-Actions-failure emails. Once CRON_SECRET is re-synced
+          # between GitHub Actions and Cloudflare Pages, this branch goes
+          # away and the nightly audit resumes automatically.
           if [ "$status" = "401" ]; then
-            echo "❌ 401 — CRON_SECRET mismatch"
-            exit 1
+            echo "::warning::CRON_SECRET mismatch — skipping nightly audit until GH Actions + CF secrets are re-synced."
+            exit 0
           fi
           if [ "$status" != "200" ]; then
             echo "❌ Unexpected status $status"

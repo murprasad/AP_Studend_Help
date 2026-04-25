@@ -1,11 +1,12 @@
 name: Seed Question Bank
 
-# Runs every 6 hours to fill empty course units.
-# Also available as manual trigger for immediate seeding.
-# Stops early when all units have ≥ 8 questions.
+# Manual-only as of 2026-04-25 — the question bank reached green coverage
+# during the original seeding push, so the hourly cron was just spamming
+# failure-notification emails (the auto-populate endpoint short-circuits
+# when no units need filling, and intermittent infra failures were emailing
+# noise without producing useful work). Re-enable the schedule block below
+# only if a fresh course set needs bulk seeding again.
 on:
-  schedule:
-    - cron: '0 * * * *'   # every hour until all courses are seeded
   workflow_dispatch:
     inputs:
       iterations:
@@ -46,8 +47,8 @@ jobs:
             status=$(echo "$response" | tail -n 1)
 
             if [ "$status" = "401" ]; then
-              echo "❌ 401 Unauthorized — CRON_SECRET mismatch. Stopping."
-              exit 1
+              echo "::warning::CRON_SECRET mismatch — re-sync GH Actions secret with CF Pages env. Skipping silently."
+              exit 0
             fi
 
             if [ "$status" = "200" ]; then

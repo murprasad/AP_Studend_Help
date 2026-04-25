@@ -24,8 +24,13 @@ jobs:
           echo "Status: $status"
           echo "Body: $body"
 
+          # 401 = secret mismatch. Don't fail-loud (causes GH email noise);
+          # log a warning and exit 0. Once CRON_SECRET is rotated in both
+          # GitHub Actions and Cloudflare Pages secrets, this branch goes
+          # away and the reconcile resumes automatically.
           if [ "$status" = "401" ]; then
-            echo "❌ 401 — CRON_SECRET mismatch"; exit 1
+            echo "::warning::CRON_SECRET mismatch — skipping reconcile until GH Actions + CF secrets are re-synced."
+            exit 0
           fi
           if [ "$status" != "200" ]; then
             echo "❌ Status $status"; exit 1

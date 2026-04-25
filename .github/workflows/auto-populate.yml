@@ -1,8 +1,11 @@
 name: Auto-Populate Question Bank
 
+# Manual-only as of 2026-04-25 — question bank reached green coverage during
+# the original seeding push, and the every-4-hour cron was emitting noisy
+# failure-emails when the auto-populate endpoint rate-limits or short-
+# circuits. Re-enable the schedule block below if a fresh content push
+# is needed (e.g. new course launch).
 on:
-  schedule:
-    - cron: '0 */4 * * *'   # every 4 hours
   workflow_dispatch:          # manual trigger from GitHub Actions UI
 
 jobs:

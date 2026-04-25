@@ -62,7 +62,7 @@ export default function AboutPage() {
           </div>
           <div className="flex items-center gap-2 flex-wrap">
             <h1 className="text-3xl font-bold gradient-text">About StudentNest Prep</h1>
-            <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30 text-xs font-semibold">Beta 6.2</Badge>
+            <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30 text-xs font-semibold">Beta 7.0</Badge>
           </div>
         </div>
         <p className="text-muted-foreground leading-relaxed max-w-2xl mx-auto">
@@ -310,10 +310,39 @@ export default function AboutPage() {
         </div>
       </div>
 
-      {/* Section 7: What's New in Beta 6.2 */}
+      {/* Section 7: What's New in Beta 7.0 — AP-season conversion stack */}
       <div className="space-y-6">
         <div className="text-center space-y-1">
           <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30 text-xs font-semibold mb-2">Latest Release</Badge>
+          <h2 className="text-xl font-bold">What&apos;s New in Beta 7.0</h2>
+          <p className="text-sm text-muted-foreground">AP exam season is here — this release is built around getting you from sign-up to your first practice answer faster, and giving you a moment of celebration when you do. Plus reliability fixes for the dashboard, accessibility upgrades across the marketing site, and an honest rewrite of the ACT page.</p>
+        </div>
+        <div className="grid sm:grid-cols-2 gap-3 text-left">
+          {[
+            { icon: Sparkles, color: "text-blue-500", bg: "bg-blue-500/10", title: "First-Answer Celebration", desc: "Submit your very first practice question and we&apos;ll quietly celebrate — with a one-time modal that tells you exactly how much progress your predicted score will make as you keep going. Designed to land at the highest-engagement moment in the entire product." },
+            { icon: Target, color: "text-blue-500", bg: "bg-blue-500/10", title: "AP Season Countdown", desc: "Live calendar-aware urgency banner across every marketing page — counts down the days until the AP exam window so you know exactly how much time is left. Auto-dismissable, never repeats once closed." },
+            { icon: ShieldCheck, color: "text-blue-500", bg: "bg-blue-500/10", title: "Honest ACT Page", desc: "Rewrote the ACT prep page hero to remove unsupported claims (no more &lsquo;3-5 point lift&rsquo; without data). Sage Coach voice practice now appears as a fourth pillar on the landing page — previously it was completely undiscoverable." },
+            { icon: LayoutDashboard, color: "text-blue-500", bg: "bg-blue-500/10", title: "Dashboard Reliability", desc: "Fixed cold-start 500 errors that occasionally made the dashboard predicted-score card vanish for the first 2-5 seconds after sign-in. Per-query fallback wrappers mean a single slow Prisma query no longer takes down the whole panel." },
+            { icon: GraduationCap, color: "text-blue-500", bg: "bg-blue-500/10", title: "Flashcards Get Rich Rendering", desc: "Markdown tables and LaTeX formulas now render properly on flashcard front, back, and explanation surfaces. Catches up flashcards to where practice and mock-exam already were." },
+            { icon: Target, color: "text-blue-500", bg: "bg-blue-500/10", title: "Accessibility Across Marketing", desc: "Logo &lsquo;Prep&rsquo; suffix, AP/CLEP toggle chips, and pricing refund line all now meet WCAG AA contrast (4.5:1+) in both light and dark mode. Screen-reader users and low-contrast viewers get a measurably more readable experience." },
+          ].map(({ icon: Icon, color, bg, title, desc }) => (
+            <div key={title} className="flex gap-3 p-4 rounded-xl border border-border/40 bg-card">
+              <div className={`w-8 h-8 rounded-lg ${bg} flex items-center justify-center flex-shrink-0 mt-0.5`}>
+                <Icon className={`h-4 w-4 ${color}`} />
+              </div>
+              <div>
+                <p className="text-sm font-semibold">{title}</p>
+                <p className="text-xs text-muted-foreground leading-relaxed mt-0.5">{desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Section 7-prev1: What's New in Beta 6.2 */}
+      <div className="space-y-6">
+        <div className="text-center space-y-1">
+          <Badge className="bg-border/60 text-muted-foreground border-border/40 text-xs font-semibold mb-2">Beta 6.2</Badge>
           <h2 className="text-xl font-bold">What&apos;s New in Beta 6.2</h2>
           <p className="text-sm text-muted-foreground">Reliability + accessibility pass — a flurry of small fixes you&apos;ll feel without noticing. Better error pages, clearer login feedback, smoother first paint, and security headers that score A on every external scanner.</p>
         </div>
