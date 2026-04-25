@@ -184,16 +184,7 @@ export function PrimaryActionStrip({ course, impressionId }: Props) {
   }, [pulse]);
 
   if (loading) {
-    return (
-      <Card className="rounded-[20px] shadow-sm border-border/40">
-        <CardContent className="p-6">
-          <div className="flex items-center gap-3 text-muted-foreground">
-            <Loader2 className="h-5 w-5 animate-spin" />
-            <span className="text-sm">Loading your next step…</span>
-          </div>
-        </CardContent>
-      </Card>
-    );
+    return <LoadingSkeleton />;
   }
 
   // Fallback — when /api/coach-plan fails we used to render null, which
@@ -370,6 +361,65 @@ export function PrimaryActionStrip({ course, impressionId }: Props) {
           {buttonLabel}
           <ArrowRight className="h-5 w-5" />
         </Button>
+      </CardContent>
+    </Card>
+  );
+}
+
+/**
+ * Skeleton loader (2026-04-25 UX pass). Replaces a bare spinner.
+ *   - Shows the ROUGH SHAPE of the card that's coming (predicted score,
+ *     unit name, CTA bar) so the layout doesn't shift on data arrival
+ *   - After 4s, swaps the muted "Loading…" text for a "Still working —
+ *     CF Workers can be slow on cold-start" reassurance
+ *   - After 12s, surfaces a refresh hint
+ *
+ * Reasoning: research shows skeleton screens feel ~10% faster than
+ * spinners because users can predict where content will land.
+ */
+function LoadingSkeleton() {
+  const [stage, setStage] = useState<"normal" | "slow" | "very_slow">("normal");
+  useEffect(() => {
+    const t1 = setTimeout(() => setStage("slow"), 4_000);
+    const t2 = setTimeout(() => setStage("very_slow"), 12_000);
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+    };
+  }, []);
+
+  return (
+    <Card className="rounded-[20px] shadow-sm border-border/40">
+      <CardContent className="p-6 space-y-4">
+        {/* Skeleton blocks shaped like the real card */}
+        <div className="space-y-2">
+          <div className="h-3 w-24 bg-muted rounded animate-pulse" />
+          <div className="h-7 w-40 bg-muted rounded animate-pulse" />
+        </div>
+        <div className="space-y-2">
+          <div className="h-3 w-full bg-muted/60 rounded animate-pulse" />
+          <div className="h-3 w-3/4 bg-muted/60 rounded animate-pulse" />
+        </div>
+        <div className="h-12 w-full bg-muted rounded-xl animate-pulse" />
+
+        {/* Status line — escalates with wait time */}
+        <div className="flex items-center gap-2 text-xs text-muted-foreground pt-1">
+          <Loader2 className="h-3.5 w-3.5 animate-spin" />
+          {stage === "normal" && <span>Loading your next step…</span>}
+          {stage === "slow" && <span>Still working — first load can be slow.</span>}
+          {stage === "very_slow" && (
+            <span>
+              Taking unusually long.{" "}
+              <button
+                type="button"
+                onClick={() => { if (typeof window !== "undefined") window.location.reload(); }}
+                className="underline underline-offset-2 hover:text-foreground"
+              >
+                Refresh?
+              </button>
+            </span>
+          )}
+        </div>
       </CardContent>
     </Card>
   );
