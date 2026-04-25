@@ -30,6 +30,7 @@ import { COURSE_REGISTRY } from "@/lib/courses";
 import { ApCourse } from "@prisma/client";
 import { Loader2, ArrowRight, Check, Sparkles, BookOpen } from "lucide-react";
 import Link from "next/link";
+import { QuestionContent } from "@/components/question/question-content";
 
 interface Flashcard {
   id: string;
@@ -217,10 +218,13 @@ export default function FlashcardsPage() {
             )}
           </div>
 
-          {/* Front */}
+          {/* Front — markdown rendered via QuestionContent so tables and
+              LaTeX render properly (B7 fix extended to flashcards 2026-04-25). */}
           <div className="space-y-2">
             <p className="text-[11px] uppercase tracking-wide text-muted-foreground">Front</p>
-            <p className="text-[18px] sm:text-[20px] leading-snug font-medium whitespace-pre-wrap">{card.front}</p>
+            <div className="text-[18px] sm:text-[20px] leading-snug font-medium">
+              <QuestionContent content={card.front} />
+            </div>
           </div>
 
           {/* Back — hidden until reveal */}
@@ -228,12 +232,16 @@ export default function FlashcardsPage() {
             <div className="space-y-3 pt-2 border-t border-border/40">
               <div>
                 <p className="text-[11px] uppercase tracking-wide text-emerald-600">Answer</p>
-                <p className="text-[16px] sm:text-[18px] leading-snug whitespace-pre-wrap mt-1">{card.back}</p>
+                <div className="text-[16px] sm:text-[18px] leading-snug mt-1">
+                  <QuestionContent content={card.back} />
+                </div>
               </div>
               {card.explanation && (
                 <div>
                   <p className="text-[11px] uppercase tracking-wide text-muted-foreground">Why</p>
-                  <p className="text-[14px] text-muted-foreground leading-relaxed whitespace-pre-wrap mt-1">{card.explanation}</p>
+                  <div className="text-[14px] text-muted-foreground leading-relaxed mt-1">
+                    <QuestionContent content={card.explanation} />
+                  </div>
                 </div>
               )}
             </div>
