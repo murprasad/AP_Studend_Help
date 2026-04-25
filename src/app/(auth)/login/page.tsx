@@ -96,13 +96,12 @@ export default function LoginPage() {
   }
 
   return (
-    <>
-      {/* Visually-hidden h1 for SEO + screen reader landmark (K2 fix 2026-04-24).
-          CardTitle is an h3; without this there's no page-primary heading. */}
-      <h1 className="sr-only">Log in to StudentNest</h1>
-      <Card className="w-full max-w-md">
+    <Card className="w-full max-w-md">
       <CardHeader>
-        <CardTitle className="text-2xl">Welcome back</CardTitle>
+        {/* Visible h1 — page-primary heading. CardTitle defaults to h3; using a
+            plain h1 here fixes both K2 (exactly one h1) and the K9 heading-order
+            skip that a sr-only h1 above an h3 CardTitle introduced (2026-04-24). */}
+        <h1 className="text-2xl font-semibold leading-none tracking-tight">Welcome back</h1>
         <CardDescription>Log in to continue your AP exam prep</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -190,6 +189,5 @@ export default function LoginPage() {
         </p>
       </CardFooter>
     </Card>
-    </>
   );
 }

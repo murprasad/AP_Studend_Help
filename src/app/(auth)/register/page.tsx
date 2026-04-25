@@ -170,12 +170,11 @@ export default function RegisterPage() {
   }
 
   return (
-    <>
-      {/* Visually-hidden h1 for SEO + screen reader landmark (K3 fix 2026-04-24). */}
-      <h1 className="sr-only">Create your StudentNest account</h1>
-      <Card className="w-full max-w-md">
+    <Card className="w-full max-w-md">
       <CardHeader>
-        <CardTitle className="text-2xl">Create your account</CardTitle>
+        {/* Visible h1 — replaces sr-only h1 + CardTitle (h3) pairing which
+            caused heading-order skip (h1 → h3). Same styling as CardTitle. */}
+        <h1 className="text-2xl font-semibold leading-none tracking-tight">Create your account</h1>
         <CardDescription>
           {userModule === "clep"
             ? "Start earning college credit with CLEP — free"
@@ -302,6 +301,5 @@ export default function RegisterPage() {
         </p>
       </CardFooter>
     </Card>
-    </>
   );
 }
