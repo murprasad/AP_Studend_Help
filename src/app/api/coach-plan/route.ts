@@ -36,26 +36,47 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "Invalid course" }, { status: 400 });
     }
 
+    // Wrap each parallel query in a safe-fallback so one Neon HTTP blip
+    // doesn't 500 the whole route. Deploy13 surfaced 4 simultaneous 500s
+    // on /api/coach-plan from a single /dashboard load — was breaking the
+    // primary-action-strip even though loadReadinessSnapshot has its own
+    // safeRun internally.
+    type SafeUser = { examDate: Date | null } | null;
+    type SafeSessions = Array<{ totalQuestions: number; correctAnswers: number | null }>;
+    type SafeMasteryRows = Array<{
+      unit: string;
+      masteryScore: number | null;
+      accuracy: number | null;
+      totalAttempts: number;
+    }>;
+    const safe = async <T,>(p: Promise<T>, fallback: T): Promise<T> => {
+      try { return await p; } catch { return fallback; }
+    };
     const [snapshot, user, priorSessions, masteryRows] = await Promise.all([
       loadReadinessSnapshot(userId, course, prisma),
-      prisma.user.findUnique({ where: { id: userId }, select: { examDate: true } }),
-      // Prior two-week window, for accuracy delta.
-      prisma.practiceSession.findMany({
-        where: {
-          userId,
-          course,
-          completedAt: {
-            gte: new Date(Date.now() - 2 * TWO_WEEKS_MS),
-            lt: new Date(Date.now() - TWO_WEEKS_MS),
+      safe<SafeUser>(prisma.user.findUnique({ where: { id: userId }, select: { examDate: true } }), null),
+      safe<SafeSessions>(
+        prisma.practiceSession.findMany({
+          where: {
+            userId,
+            course,
+            completedAt: {
+              gte: new Date(Date.now() - 2 * TWO_WEEKS_MS),
+              lt: new Date(Date.now() - TWO_WEEKS_MS),
+            },
+            status: "COMPLETED",
           },
-          status: "COMPLETED",
-        },
-        select: { totalQuestions: true, correctAnswers: true },
-      }),
-      prisma.masteryScore.findMany({
-        where: { userId, course },
-        select: { unit: true, masteryScore: true, accuracy: true, totalAttempts: true },
-      }),
+          select: { totalQuestions: true, correctAnswers: true },
+        }),
+        [],
+      ),
+      safe<SafeMasteryRows>(
+        prisma.masteryScore.findMany({
+          where: { userId, course },
+          select: { unit: true, masteryScore: true, accuracy: true, totalAttempts: true },
+        }),
+        [],
+      ),
     ]);
 
     const priorAnswered = priorSessions.reduce((s, r) => s + (r.totalQuestions ?? 0), 0);
