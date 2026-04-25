@@ -54,10 +54,13 @@ test.describe("Journey 1 — Revenue (practice cap enforcement)", () => {
     const limitsRes = await request.get("/api/user/limits");
     expect(limitsRes.ok()).toBeTruthy();
     const limits = await limitsRes.json();
-    const practice = limits.practiceQuestionsPerDay ?? limits;
-    // Accept either envelope shape; assert the numeric contract.
-    const used = typeof practice === "object" ? (practice.used ?? practice.limit - practice.remaining) : undefined;
-    expect(used, `expected used=20 at cap, got ${JSON.stringify(practice)}`).toBe(20);
+    // Current contract (verified 2026-04-24):
+    //   { tier, unlimited, limits: {practiceQuestionsPerDay: 20, ...},
+    //     usage: { practice: {used, limit, remaining}, tutor, mockExam }, ... }
+    const used = limits.usage?.practice?.used;
+    expect(used, `expected used=20 at cap, got ${JSON.stringify(limits.usage)}`).toBe(20);
+    expect(limits.usage.practice.remaining).toBe(0);
+    expect(limits.usage.practice.limit).toBe(20);
 
     // Attempt a 21st practice request — must be blocked.
     const practiceRes = await request.post("/api/practice", {
