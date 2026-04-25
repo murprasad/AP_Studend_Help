@@ -69,7 +69,7 @@ export function InteractiveDemo() {
             onClick={() => switchTrack("ap")}
             className={`text-xs px-4 py-2 rounded-full min-h-[44px] transition-colors ${
               activeTrack === "ap"
-                ? "bg-blue-500/20 text-blue-400 border border-blue-500/30"
+                ? "bg-blue-500/20 text-blue-700 dark:text-blue-300 border border-blue-500/30"
                 : "text-muted-foreground hover:text-foreground"
             }`}
           >
@@ -79,7 +79,7 @@ export function InteractiveDemo() {
             onClick={() => switchTrack("clep")}
             className={`text-xs px-4 py-2 rounded-full min-h-[44px] transition-colors ${
               activeTrack === "clep"
-                ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30"
+                ? "bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30"
                 : "text-muted-foreground hover:text-foreground"
             }`}
           >
