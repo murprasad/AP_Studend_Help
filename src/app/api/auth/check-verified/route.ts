@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { rateLimit } from "@/lib/rate-limit";
+import { rateLimitAsync } from "@/lib/rate-limit";
 
 export const dynamic = "force-dynamic";
 
@@ -16,7 +16,11 @@ export async function GET(req: NextRequest) {
     req.headers.get("cf-connecting-ip") ??
     req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
     "unknown";
-  const rl = rateLimit(`ip:${ip}`, "auth:check-verified", 10);
+  // SEC-2b (2026-04-25): switched from sync rateLimit() to rateLimitAsync()
+  // so anonymous IP throttling actually persists across CF Worker isolate
+  // recycles. The sync variant uses an in-process Map that resets per
+  // isolate, making IP enumeration practical for any motivated attacker.
+  const rl = await rateLimitAsync(`ip:${ip}`, "auth:check-verified", 10);
   if (!rl.allowed) {
     return NextResponse.json(
       { error: "Too many requests. Please wait a moment." },

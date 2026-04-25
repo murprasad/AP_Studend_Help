@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { rateLimit } from "@/lib/rate-limit";
+import { rateLimit, rateLimitAsync } from "@/lib/rate-limit";
 
 const SAGE_BASE_PROMPT = `You are Sage 🌿, the super-smart and fun study companion for StudentNest Prep — an AI-powered exam prep platform.
 
@@ -74,7 +74,13 @@ export async function POST(req: NextRequest) {
   const ip = ipHeader.split(",")[0]?.trim() || "unknown";
   const rlKey = session?.user?.id ?? `anon:${ip}`;
   const rlLimit = session?.user?.id ? 30 : 10; // logged-in: 30/min, anon: 10/min
-  const { allowed } = rateLimit(rlKey, "sage-chat", rlLimit);
+  // SEC-2b (2026-04-25): use edge-persistent CF binding for the anon path
+  // (the actual abuse vector — anonymous AI cost flood). Authed path stays
+  // on the sync limiter since per-user keying + downstream Stripe/AI
+  // provider limits already throttle real users.
+  const { allowed } = session?.user?.id
+    ? rateLimit(rlKey, "sage-chat", rlLimit)
+    : await rateLimitAsync(rlKey, "sage-chat", rlLimit);
   if (!allowed) {
     return NextResponse.json(
       { error: "Too many requests — try again in a minute." },

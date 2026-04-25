@@ -21,3 +21,37 @@ RESEND_FROM_EMAIL = "noreply@studentnest.ai"
 # STRIPE_PREMIUM_PRICE_ID   = "price_..."     ← CF Pages Secret (not here)  (monthly $9.99)
 # STRIPE_ANNUAL_PRICE_ID    = "price_..."     ← CF Pages Secret (not here)  (annual  $79.99)
 # ─────────────────────────────────────────────────────────────────────────────
+
+# ─── Native Cloudflare rate-limit bindings (SEC-2b, 2026-04-25) ──────────────
+# Workers Rate Limiting API (free, edge-distributed, persists across isolate
+# recycles — unlike the in-process Map-based limiter at src/lib/rate-limit.ts
+# which silently no-ops for anonymous IPs because each isolate has its own
+# Map and isolates are short-lived).
+#
+# Each binding has a fixed limit/period combo. We expose four buckets that
+# match the limits used in the codebase. Routes call the appropriate binding
+# via src/lib/rate-limit.ts → cfRateLimit(key, bucket).
+# ─────────────────────────────────────────────────────────────────────────────
+[[unsafe.bindings]]
+name = "RATELIMIT_5"
+type = "ratelimit"
+namespace_id = "1005"
+simple = { limit = 5, period = 60 }
+
+[[unsafe.bindings]]
+name = "RATELIMIT_10"
+type = "ratelimit"
+namespace_id = "1010"
+simple = { limit = 10, period = 60 }
+
+[[unsafe.bindings]]
+name = "RATELIMIT_20"
+type = "ratelimit"
+namespace_id = "1020"
+simple = { limit = 20, period = 60 }
+
+[[unsafe.bindings]]
+name = "RATELIMIT_60"
+type = "ratelimit"
+namespace_id = "1060"
+simple = { limit = 60, period = 60 }

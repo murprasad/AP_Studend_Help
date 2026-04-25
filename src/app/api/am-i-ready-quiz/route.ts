@@ -3,7 +3,7 @@ import { unstable_cache } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { VALID_AP_COURSES } from "@/lib/courses";
 import { ApCourse } from "@prisma/client";
-import { rateLimit } from "@/lib/rate-limit";
+import { rateLimitAsync } from "@/lib/rate-limit";
 
 /**
  * GET /api/am-i-ready-quiz?course=AP_WORLD_HISTORY
@@ -67,7 +67,10 @@ export async function GET(req: Request) {
     req.headers.get("cf-connecting-ip") ||
     req.headers.get("x-forwarded-for") ||
     "unknown";
-  const { allowed } = rateLimit(ip, "am-i-ready:questions", 5);
+  // SEC-2b (2026-04-25): edge-persistent CF binding so anon IP throttling
+  // survives Worker isolate recycles. The sync rateLimit() was effectively
+  // a no-op against motivated attackers.
+  const { allowed } = await rateLimitAsync(ip, "am-i-ready:questions", 5);
   if (!allowed) {
     return NextResponse.json(
       { error: "Too many requests. Please try again in a minute." },
