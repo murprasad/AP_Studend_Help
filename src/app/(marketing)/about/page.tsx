@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     description: "AI-powered exam prep built on learning science. 16+ courses, free to start.",
   },
 };
-import { Globe, Mail, Target, Heart, Sparkles, Lightbulb, LayoutDashboard, GraduationCap, ShieldCheck } from "lucide-react";
+import { Globe, Mail, Target, Heart, Sparkles, Lightbulb, LayoutDashboard, GraduationCap, ShieldCheck, Brain } from "lucide-react";
 import Link from "next/link";
 import { BrowserFrame } from "@/components/landing/browser-frame";
 import { MockupPractice } from "@/components/landing/mockup-practice";
@@ -62,7 +62,7 @@ export default function AboutPage() {
           </div>
           <div className="flex items-center gap-2 flex-wrap">
             <h1 className="text-3xl font-bold gradient-text">About StudentNest Prep</h1>
-            <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30 text-xs font-semibold">Beta 7.1</Badge>
+            <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30 text-xs font-semibold">Beta 7.2</Badge>
           </div>
         </div>
         <p className="text-muted-foreground leading-relaxed max-w-2xl mx-auto">
@@ -310,10 +310,39 @@ export default function AboutPage() {
         </div>
       </div>
 
-      {/* Section 7: What's New in Beta 7.1 — All-access entitlement + landing audit fixes */}
+      {/* Section 7: What's New in Beta 7.2 — Reliability hardening + conversion stack */}
       <div className="space-y-6">
         <div className="text-center space-y-1">
           <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30 text-xs font-semibold mb-2">Latest Release</Badge>
+          <h2 className="text-xl font-bold">What&apos;s New in Beta 7.2</h2>
+          <p className="text-sm text-muted-foreground">Reliability hardening across the dashboard, billing, and study-plan endpoints — fewer 5xx errors during fresh-isolate cold-starts. Plus the cross-module &ldquo;you unlocked SAT/ACT too&rdquo; nudge and edge-persistent rate limiting that actually works against anonymous flood traffic.</p>
+        </div>
+        <div className="grid sm:grid-cols-2 gap-3 text-left">
+          {[
+            { icon: ShieldCheck, color: "text-blue-500", bg: "bg-blue-500/10", title: "Cold-Start 500 Hardening", desc: "Three more endpoints (study-plan, mastery-tier-ups, billing-status) now wrap each Prisma call in a per-query safe-fallback wrapper. Same pattern that fixed the dashboard cold-start in Beta 7.0 — a single fresh-isolate hiccup no longer takes down the whole page." },
+            { icon: Sparkles, color: "text-blue-500", bg: "bg-blue-500/10", title: "Cross-Module Discovery Nudge", desc: "Premium users (any module) now see a post-session card suggesting they try a different exam they unlocked — 3 quick questions, 2 minutes. Drives discovery of the all-access entitlement that Beta 7.1 made real." },
+            { icon: Target, color: "text-blue-500", bg: "bg-blue-500/10", title: "Anonymous Flood Protection", desc: "Migrated 3 IP-keyed rate-limit gates (check-verified, am-i-ready, anon Sage) from in-process Map (broken on Cloudflare Workers) to native Cloudflare Rate Limiting bindings. Persists across isolate recycles — actually rate-limits anonymous traffic now." },
+            { icon: GraduationCap, color: "text-blue-500", bg: "bg-blue-500/10", title: "Stuck-Onboarding Recovery (24h + 72h)", desc: "Two-touch email sequence catches users who signed up but never finished setup. Email 1 at 24h is friendly (&lsquo;we saved your spot&rsquo;); Email 2 at 72h is AP-season urgency-aware. Hard cap of 1+1 emails per user, lifetime." },
+            { icon: LayoutDashboard, color: "text-blue-500", bg: "bg-blue-500/10", title: "Pricing Copy Cleanup", desc: "All remaining &ldquo;per module&rdquo; references replaced with all-access language across FAQ, JSON-LD schema, and Sage&rsquo;s system prompt. CLEP dropped from StudentNest user-facing copy (lives on preplion.ai)." },
+            { icon: Brain, color: "text-blue-500", bg: "bg-blue-500/10", title: "Early-Stage Predicted Score", desc: "/analytics now shows a tentative predicted-score panel for users with 1+ answer (instead of staying blank until first mock exam). The first-answer reward modal&rsquo;s &lsquo;see my predicted score&rsquo; CTA actually delivers something visible from day one." },
+          ].map(({ icon: Icon, color, bg, title, desc }) => (
+            <div key={title} className="flex gap-3 p-4 rounded-xl border border-border/40 bg-card">
+              <div className={`w-8 h-8 rounded-lg ${bg} flex items-center justify-center flex-shrink-0 mt-0.5`}>
+                <Icon className={`h-4 w-4 ${color}`} />
+              </div>
+              <div>
+                <p className="text-sm font-semibold">{title}</p>
+                <p className="text-xs text-muted-foreground leading-relaxed mt-0.5">{desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Section 7-prev1: What's New in Beta 7.1 — All-access entitlement + landing audit fixes */}
+      <div className="space-y-6">
+        <div className="text-center space-y-1">
+          <Badge className="bg-border/60 text-muted-foreground border-border/40 text-xs font-semibold mb-2">Beta 7.1</Badge>
           <h2 className="text-xl font-bold">What&apos;s New in Beta 7.1</h2>
           <p className="text-sm text-muted-foreground">One Premium subscription now unlocks every exam. Plus a full landing-page conversion pass — sharper headlines, exam-specific demo content, honest claims, and a tighter pricing page.</p>
         </div>

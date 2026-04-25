@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { rateLimit } from "@/lib/rate-limit";
 import { AP_UNITS, AP_COURSES } from "@/lib/utils";
 import { projectImprovement } from "@/lib/pass-engine";
+import type { MasteryTierUp } from "@prisma/client";
 
 export const dynamic = "force-dynamic";
 
@@ -33,11 +34,22 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Rate limit exceeded" }, { status: 429 });
   }
 
-  const rows = await prisma.masteryTierUp.findMany({
-    where: { userId: session.user.id, shownAt: null },
-    orderBy: { createdAt: "desc" },
-    take: 10,
-  });
+  // Cold-start defense (Beta 7.2, 2026-04-25): wrap the Prisma call in
+  // try/catch so a fresh-isolate WASM init hiccup degrades to "no tier-ups
+  // to show" rather than a 500. The card is enhancement, not core UX —
+  // an empty array is a safe failure mode. Surfaced by Playwright on
+  // deploy19's persona-b-sidebar-walk /dashboard test (5xx in network graph).
+  let rows: MasteryTierUp[] = [];
+  try {
+    rows = await prisma.masteryTierUp.findMany({
+      where: { userId: session.user.id, shownAt: null },
+      orderBy: { createdAt: "desc" },
+      take: 10,
+    });
+  } catch (e) {
+    console.warn("[/api/mastery-tier-ups] cold-start fallback:", e instanceof Error ? e.message : String(e));
+    return NextResponse.json({ tierUps: [] });
+  }
 
   const tierUps = rows.map((row) => {
     const tiersCrossed = Math.max(1, row.afterTier - row.beforeTier);

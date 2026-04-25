@@ -10,6 +10,23 @@ import { getSetting } from "@/lib/settings";
 
 export const dynamic = "force-dynamic";
 
+// Per-query safe-fallback wrapper (mirrors the pattern from
+// src/app/api/feature-flags/route.ts and src/app/api/coach-plan/route.ts).
+// Reason: Cloudflare Workers spawn fresh V8 isolates frequently. The
+// Prisma WASM client takes ~200ms–1s to initialize on first call per
+// isolate. If a Promise.all([...]) fails-fast on a cold-start hiccup,
+// the entire route 500s and the user sees a broken page. Wrapping each
+// query individually means at worst the user sees stale-but-valid data,
+// not a 500.
+async function safe<T>(p: Promise<T>, fallback: T): Promise<T> {
+  try {
+    return await p;
+  } catch (e) {
+    console.warn("[/api/study-plan] safe() caught:", e instanceof Error ? e.message : String(e));
+    return fallback;
+  }
+}
+
 export async function GET(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
@@ -22,13 +39,20 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "Invalid course" }, { status: 400 });
     }
 
-    // Feature flag + DB query in parallel
+    // Per-query fallback (Beta 7.2, 2026-04-25): cold-start 500 surfaced by
+    // Playwright on /study-plan during deploy19. The original Promise.all
+    // would fail-fast on a single Prisma WASM init hiccup. Each query now
+    // returns a sensible default if it throws, so the user sees the static
+    // baseline plan rather than a 500 error page.
     const [enabledFlag, activePlan] = await Promise.all([
-      getSetting("study_plan_enabled", "true"),
-      prisma.studyPlan.findFirst({
-        where: { userId: session.user.id, course, isActive: true },
-        orderBy: { generatedAt: "desc" },
-      }),
+      safe(getSetting("study_plan_enabled", "true"), "true"),
+      safe(
+        prisma.studyPlan.findFirst({
+          where: { userId: session.user.id, course, isActive: true },
+          orderBy: { generatedAt: "desc" },
+        }),
+        null,
+      ),
     ]);
 
     if (enabledFlag !== "true") {
