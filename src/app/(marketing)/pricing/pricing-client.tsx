@@ -257,7 +257,7 @@ export default function PricingClient({ clepEnabled, dsstEnabled }: PricingClien
 
       {/* Trust + refund */}
       <div className="mt-8 text-center space-y-2">
-        <p className="text-sm font-medium text-emerald-400">7-day money-back guarantee on all Premium plans</p>
+        <p className="text-sm font-medium text-emerald-700 dark:text-emerald-400">7-day money-back guarantee on all Premium plans</p>
         <p className="text-xs text-muted-foreground">
           Equivalent to 10+ hours of private tutoring per month. Need multiple modules? Subscribe to each independently.
         </p>
