@@ -12,7 +12,9 @@ import { test, expect, request as apiRequest } from "@playwright/test";
 
 const CRON_SECRET = process.env.CRON_SECRET;
 
-test.describe.configure({ retries: 2 });
+// Onboarding walkthrough takes 4 step clicks + 800ms each + JWT refresh.
+// 30s default leaves no margin under CF cold-start; bump to 60s.
+test.describe.configure({ retries: 2, timeout: 60_000 });
 
 test.describe("Real first-time user — signup → onboarding → navigate", () => {
   test.beforeEach(async ({ baseURL }) => {
@@ -53,7 +55,9 @@ test.describe("Real first-time user — signup → onboarding → navigate", () 
 
     // Now navigate to /analytics — this is the bug we shipped tonight
     await page.goto("/analytics");
-    await page.waitForLoadState("networkidle");
+    // domcontentloaded — not networkidle; analytics polls (B5 pattern).
+    await page.waitForLoadState("domcontentloaded");
+    await page.waitForTimeout(1000);
 
     // Must not be bounced back to /onboarding
     expect(page.url()).toContain("/analytics");
@@ -77,7 +81,9 @@ test.describe("Real first-time user — signup → onboarding → navigate", () 
     const destinations = ["/resources", "/billing", "/flashcards", "/practice"];
     for (const dest of destinations) {
       await page.goto(dest);
-      await page.waitForLoadState("networkidle");
+      // domcontentloaded — these pages all poll and never go networkidle.
+      await page.waitForLoadState("domcontentloaded");
+      await page.waitForTimeout(500);
       expect(page.url(), `Should land on ${dest} without bounce`).not.toContain("/onboarding");
     }
   });
