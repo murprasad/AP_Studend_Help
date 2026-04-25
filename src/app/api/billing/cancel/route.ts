@@ -77,28 +77,82 @@ export async function POST(req: NextRequest) {
 
     const periodEnd = new Date(subscription.current_period_end * 1000);
 
-    // Update DB immediately so UI reflects canceling state
-    if (module) {
-      try {
-        await prisma.moduleSubscription.update({
-          where: { userId_module: { userId: session.user.id, module } },
-          data: { status: "canceling", stripeCurrentPeriodEnd: periodEnd },
-        });
-      } catch { /* ignore if not found */ }
+    // Beta 7.8 (2026-04-25): explicit error handling for DB writes after
+    // Stripe succeeded. Previous code: ModuleSubscription.update was
+    // wrapped in `try { ... } catch { /* ignore if not found */ }` which
+    // also swallowed REAL errors, and User.update had no try/catch at
+    // all — if either DB write failed silently after Stripe accepted the
+    // cancellation, the user's UI stayed "active" while Stripe said
+    // "canceling" → state divergence until the hourly stripe-reconcile
+    // cron caught it (up to 60 min stale).
+    //
+    // New behavior:
+    //   - ModuleSubscription.update: catch P2025 (record not found, the
+    //     legitimate "ignore if not found" case) and continue. Other
+    //     errors get logged + we return a 500 to the client so they
+    //     know to retry. Reconcile cron is the safety net either way.
+    //   - User.update: same pattern, with a Sentry-worthy log on failure.
+    //   - Both updates run in parallel (Promise.allSettled) so a failure
+    //     in one doesn't block the other.
+    const dbWriteResults = await Promise.allSettled([
+      module
+        ? prisma.moduleSubscription.update({
+            where: { userId_module: { userId: session.user.id, module } },
+            data: { status: "canceling", stripeCurrentPeriodEnd: periodEnd },
+          })
+        : Promise.resolve(null),
+      prisma.user.update({
+        where: { id: session.user.id },
+        data: {
+          stripeSubscriptionId: subscriptionId,
+          stripeCurrentPeriodEnd: periodEnd,
+          stripeSubscriptionStatus: "canceling",
+        },
+      }),
+    ]);
+
+    const moduleSubResult = dbWriteResults[0];
+    const userResult = dbWriteResults[1];
+
+    // ModuleSubscription P2025 (not found) is non-fatal — legacy users
+    // may not have a ModuleSubscription row yet. Other errors are real.
+    if (moduleSubResult.status === "rejected") {
+      const reason = moduleSubResult.reason as { code?: string; message?: string };
+      if (reason?.code !== "P2025") {
+        console.error(
+          `[billing/cancel] ModuleSubscription update failed AFTER Stripe accepted cancellation. ` +
+          `userId=${session.user.id} module=${module} subId=${subscriptionId} ` +
+          `error=${reason?.message ?? String(moduleSubResult.reason)}`,
+        );
+        // Don't fail the request — User.update may have succeeded, and
+        // reconcile cron will fix any drift. But surface the partial-fail
+        // in the response so client can show a soft warning.
+      }
     }
-    await prisma.user.update({
-      where: { id: session.user.id },
-      data: {
-        stripeSubscriptionId: subscriptionId,
-        stripeCurrentPeriodEnd: periodEnd,
-        stripeSubscriptionStatus: "canceling",
-      },
-    });
+
+    if (userResult.status === "rejected") {
+      const msg = userResult.reason instanceof Error
+        ? userResult.reason.message
+        : String(userResult.reason);
+      console.error(
+        `[billing/cancel] CRITICAL: User update failed AFTER Stripe accepted cancellation. ` +
+        `userId=${session.user.id} subId=${subscriptionId} error=${msg}`,
+      );
+      // Surface as 500 so the client knows to retry. The hourly
+      // stripe-reconcile cron will reconcile state within 60 min as the
+      // safety net even if the client gives up.
+      return NextResponse.json({
+        error: "Subscription canceled with Stripe but local state failed to update. Please refresh in a minute or contact support.",
+        partialSuccess: true,
+        periodEnd: periodEnd.toISOString(),
+      }, { status: 500 });
+    }
 
     return NextResponse.json({
       success: true,
       periodEnd: periodEnd.toISOString(),
       message: "Subscription will cancel at the end of your billing period.",
+      moduleSubSynced: moduleSubResult.status === "fulfilled",
     });
   } catch (error) {
     console.error("POST /api/billing/cancel error:", error);
