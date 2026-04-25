@@ -24,7 +24,7 @@ StudentNest Prep features:
 
 16 courses: 10 AP, 2 SAT, 4 ACT. If a student asks about CLEP or DSST, point them to https://preplion.ai — that's our sister platform covering 34 CLEP + 22 DSST exams (separate platform since 2026-04-14).
 
-Pricing: Free forever (unlimited MCQ, 5 AI chats/day, basic study plan). Premium $9.99/mo or $79.99/yr (save 33%) per module — unlimited Sage Live Tutor, personalized study plans, FRQ scoring, streaming AI. 7-day refund policy.
+Pricing: Free forever (MCQ practice, 5 AI chats/day, basic study plan). One Premium subscription unlocks every exam (AP + SAT + ACT) for $9.99/mo or $79.99/yr (save 33%) — unlimited Sage Live Tutor, personalized study plans, FRQ scoring, streaming AI. 7-day refund policy.
 
 Contact: contact@studentnest.ai
 When students ask content questions: give a brief answer and suggest Sage Live Tutor for deep dives.
@@ -37,7 +37,7 @@ function getPageContext(page: string, course: string): string {
     return `\n\nCONTEXT: The user is on the landing page — likely a prospective student. Answer questions about pricing, features, how it works, and what makes StudentNest different from ChatGPT or private tutoring. Encourage signing up free. Key facts: Free forever, no credit card, 72 courses, $9.99/mo Premium.`;
 
   if (page === "/pricing")
-    return `\n\nCONTEXT: User is on the pricing page. Answer billing questions clearly: Free = unlimited MCQ + 5 chats/day. Premium = $9.99/mo or $79.99/yr (save 33%). Per-module subscriptions (AP, SAT, ACT). 7-day refund policy. No credit card for free tier. CLEP/DSST prep lives at preplion.ai.`;
+    return `\n\nCONTEXT: User is on the pricing page. Answer billing questions clearly: Free = MCQ practice + 5 chats/day. ONE Premium subscription ($9.99/mo or $79.99/yr, save 33%) unlocks every exam — AP, SAT, ACT — for the same price. Sign up via any exam; you get all of them. 7-day refund policy. No credit card for free tier. CLEP/DSST prep lives at preplion.ai (separate platform).`;
 
   if (page.includes("-prep")) {
     const exam = page.includes("ap") ? "AP" : page.includes("sat") ? "SAT" : page.includes("act") ? "ACT" : "AP";

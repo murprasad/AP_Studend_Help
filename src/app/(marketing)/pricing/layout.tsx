@@ -3,11 +3,11 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Pricing — Free & Premium Plans | StudentNest Prep",
   description:
-    "Free forever with all courses. Premium upgrades for AP, SAT, ACT and more at $9.99/mo or $79.99/yr (save 33%). 7-day money-back guarantee.",
+    "Free forever with all AP, SAT, and ACT courses. One Premium subscription unlocks every exam at $9.99/mo or $79.99/yr (save 33%). 7-day money-back guarantee.",
   openGraph: {
     title: "Pricing | StudentNest Prep",
     description:
-      "Free forever. Premium from $9.99/mo per module. 7-day money-back guarantee.",
+      "Free forever. One Premium subscription unlocks every exam — $9.99/mo. 7-day money-back guarantee.",
     url: "https://studentnest.ai/pricing",
   },
 };
@@ -18,10 +18,10 @@ const faqJsonLd = {
   mainEntity: [
     {
       "@type": "Question",
-      name: "Can I subscribe to multiple modules?",
+      name: "Do I need to subscribe to multiple modules?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Yes! Each module (AP, SAT, ACT) is an independent $9.99/mo subscription. Subscribe to as many as you need.",
+        text: "No — one $9.99/mo subscription unlocks every exam. Sign up via AP, SAT, or ACT and you get full Premium access to all of them. The exam dropdowns just decide which checkout flow you go through.",
       },
     },
     {
@@ -37,7 +37,7 @@ const faqJsonLd = {
       name: "Can I pay annually?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Yes — $79.99/year per module saves you 33% compared to monthly billing ($6.67/mo).",
+        text: "Yes — $79.99/year saves you 33% compared to monthly billing ($6.67/mo). Same all-access Premium.",
       },
     },
     {
@@ -61,7 +61,7 @@ const faqJsonLd = {
       name: "Is there a student discount?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "We keep the free tier generous so every student can prepare for their exams. Premium is $9.99/month per module — or $79.99/year.",
+        text: "We keep the free tier generous so every student can prepare for their exams. Premium is $9.99/month or $79.99/year — one all-access subscription.",
       },
     },
     {

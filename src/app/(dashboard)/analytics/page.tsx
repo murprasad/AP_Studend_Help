@@ -89,6 +89,18 @@ export default function AnalyticsPage() {
   const [goalDate, setGoalDate] = useState("");
   const [goalSaving, setGoalSaving] = useState(false);
   const [clepReadiness, setClepReadiness] = useState<{ score: number; label: string; threshold: number } | null>(null);
+  // Early-stage predicted score for users who haven't completed a mock exam yet
+  // (estimatedApScore stays null until then). Sourced from /api/readiness so the
+  // first-answer reward modal's "see my predicted score" CTA actually delivers
+  // something visible from question 1, not a blank page.
+  const [earlyReadiness, setEarlyReadiness] = useState<{
+    showScore: boolean;
+    scaledScore: number | null;
+    scaleMax: number;
+    label: string;
+    family: "AP" | "SAT" | "ACT";
+    confidence: "very_low" | "low" | "medium" | "high";
+  } | null>(null);
   const isCLEP = course.startsWith("CLEP_");
   const [featureDisabled, setFeatureDisabled] = useState(false);
   const [stale, setStale] = useState(false);
@@ -139,6 +151,24 @@ export default function AnalyticsPage() {
         setGoals(goalMap);
       })
       .finally(() => { setLoading(false); setRefreshing(false); });
+
+    // Fire-and-forget readiness fetch for the early-stage predicted-score
+    // panel. Silently swallowed on failure — the panel just won't render.
+    fetch(`/api/readiness?course=${course}`, { cache: "no-store" })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => {
+        if (d && typeof d.scaledScore !== "undefined") {
+          setEarlyReadiness({
+            showScore: !!d.showScore,
+            scaledScore: d.scaledScore ?? null,
+            scaleMax: d.scaleMax ?? 5,
+            label: d.label ?? "",
+            family: d.family ?? "AP",
+            confidence: d.confidence ?? "very_low",
+          });
+        }
+      })
+      .catch(() => { /* silent — early-estimate panel just hides */ });
   }, [course]); // eslint-disable-line react-hooks/exhaustive-deps
 
   async function saveGoal() {
@@ -450,7 +480,43 @@ export default function AnalyticsPage() {
         </Card>
       )}
 
-      {/* Estimated AP Score */}
+      {/* Early-stage predicted-score panel — renders for users who have ≥1
+          answer but no mock-exam-derived estimatedApScore yet. Catches the
+          first-answer-reward-modal cohort so the "see my predicted score"
+          CTA actually delivers something visible. The /api/readiness route
+          returns a tentative scaledScore + a confidence label; we surface
+          both honestly so users know it sharpens with practice. */}
+      {!stats?.estimatedApScore && stats && stats.totalAnswered > 0 && earlyReadiness && (
+        <Card className="card-glow border-blue-500/30 bg-blue-500/5">
+          <CardContent className="p-5 flex items-center gap-6">
+            <div className="w-16 h-16 rounded-full bg-blue-500/20 flex items-center justify-center flex-shrink-0">
+              {earlyReadiness.showScore && earlyReadiness.scaledScore !== null ? (
+                <span className="text-2xl font-bold text-blue-500">
+                  {earlyReadiness.family === "AP"
+                    ? earlyReadiness.scaledScore
+                    : earlyReadiness.scaledScore.toLocaleString()}
+                </span>
+              ) : (
+                <Sparkles className="h-7 w-7 text-blue-500" />
+              )}
+            </div>
+            <div>
+              <p className="font-semibold text-lg">
+                {earlyReadiness.showScore && earlyReadiness.scaledScore !== null
+                  ? `Predicted ${earlyReadiness.family} Score: ${earlyReadiness.scaledScore}${earlyReadiness.family === "AP" ? "/5" : `/${earlyReadiness.scaleMax}`}`
+                  : "Building your predicted score…"}
+              </p>
+              <p className="text-sm text-muted-foreground">
+                {earlyReadiness.showScore
+                  ? `Based on ${stats.totalAnswered} ${stats.totalAnswered === 1 ? "answer" : "answers"} so far. Confidence: ${earlyReadiness.confidence.replace("_", " ")}. Take a mock exam for a more accurate score.`
+                  : `You've answered ${stats.totalAnswered}. Predicted score sharpens with each question — most students see a stable estimate around 10 answers in.`}
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Estimated AP Score (mock-exam-derived — shown once user has a real mock result) */}
       {stats?.estimatedApScore && (
         <Card className="card-glow border-blue-500/30 bg-blue-500/5">
           <CardContent className="p-5 flex items-center gap-6">

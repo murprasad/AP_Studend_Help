@@ -223,6 +223,16 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: "NEXTAUTH_SECRET not configured" }, { status: 500 });
       }
 
+      // Mirror the production JWT callback — read fresh moduleSubs from
+      // the DB so test fixtures that pre-seed a ModuleSubscription get
+      // the right entitlement in the forged JWT. Previously hardcoded to
+      // [], which made it impossible to test Premium-only paths and
+      // hid the Beta 7.1 all-access entitlement from verification probes.
+      const moduleSubs = (await prisma.moduleSubscription.findMany({
+        where: { userId: user.id },
+        select: { module: true, status: true },
+      })).map((s) => ({ module: s.module, status: s.status }));
+
       const sessionToken = await encode({
         token: {
           id: user.id,
@@ -231,7 +241,7 @@ export async function POST(req: NextRequest) {
           role: user.role,
           subscriptionTier: user.subscriptionTier,
           track: user.track ?? "ap",
-          moduleSubs: [],
+          moduleSubs,
           onboardingCompletedAt: user.onboardingCompletedAt?.toISOString() ?? null,
         },
         secret,

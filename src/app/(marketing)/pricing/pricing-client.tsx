@@ -135,7 +135,7 @@ export default function PricingClient({ clepEnabled, dsstEnabled }: PricingClien
       <div className="text-center mb-8">
         <h1 className="text-4xl font-bold mb-4">Simple, transparent pricing</h1>
         <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-          One subscription unlocks every exam. AP, SAT, ACT, CLEP — all included for $9.99/mo.
+          One subscription unlocks every exam. AP, SAT, ACT — all included for $9.99/mo.
         </p>
         <p className="text-sm text-emerald-700 dark:text-emerald-400 font-medium mt-3">
           ✦ Sign up via any exam below — Premium is all-access.
@@ -313,10 +313,10 @@ export default function PricingClient({ clepEnabled, dsstEnabled }: PricingClien
           {[
             { q: "Do I need to subscribe to multiple modules?", a: `No — one $9.99/mo subscription unlocks everything. Sign up via any exam (${moduleListLabel}) and you get full Premium access to all of them. The module dropdowns just decide which checkout flow you go through.` },
             { q: "Can I cancel anytime?", a: "Yes. Cancel from your billing page and you'll keep Premium access until the end of your billing period." },
-            { q: "Can I pay annually?", a: "Yes — $79.99/year per module saves you 33% compared to monthly billing ($6.67/mo)." },
+            { q: "Can I pay annually?", a: "Yes — $79.99/year saves you 33% compared to monthly billing ($6.67/mo). Same all-access Premium." },
             { q: "What is your refund policy?", a: "We offer a 7-day money-back guarantee on new Premium subscriptions. If you're not satisfied within 7 days of your first payment, email contact@studentnest.ai and we'll issue a full refund — no questions asked. After 7 days, subscriptions are non-refundable but you can cancel anytime and keep access until the end of your billing period." },
             { q: "What happens when I hit the free AI limit?", a: "Free users can start 5 new Sage Live Tutor conversations per day. Your existing conversations are never deleted." },
-            { q: "Is there a student discount?", a: "We keep the free tier generous so every student can prepare for their exams. Premium is $9.99/month per module — or $79.99/year." },
+            { q: "Is there a student discount?", a: "We keep the free tier generous so every student can prepare for their exams. Premium is $9.99/month or $79.99/year — one all-access subscription." },
             { q: "Which payment methods are accepted?", a: "All major credit and debit cards via Stripe. Your payment info is never stored on our servers." },
           ].map(({ q, a }) => (
             <div key={q} className="border-b border-border/40 pb-6">
