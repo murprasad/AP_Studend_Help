@@ -62,7 +62,7 @@ export default function AboutPage() {
           </div>
           <div className="flex items-center gap-2 flex-wrap">
             <h1 className="text-3xl font-bold gradient-text">About StudentNest Prep</h1>
-            <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30 text-xs font-semibold">Beta 7.4</Badge>
+            <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30 text-xs font-semibold">Beta 7.5</Badge>
           </div>
         </div>
         <p className="text-muted-foreground leading-relaxed max-w-2xl mx-auto">
@@ -310,10 +310,39 @@ export default function AboutPage() {
         </div>
       </div>
 
-      {/* Section 7: What's New in Beta 7.3 — P0 closeout (webhook + AI streaming + content honesty) */}
+      {/* Section 7: What's New in Beta 7.5 — A11y progressbars + FRQ ingestion foundation + P1 batch */}
       <div className="space-y-6">
         <div className="text-center space-y-1">
           <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30 text-xs font-semibold mb-2">Latest Release</Badge>
+          <h2 className="text-xl font-bold">What&apos;s New in Beta 7.5</h2>
+          <p className="text-sm text-muted-foreground">Screen-reader fixes for every progress bar across the app, plus the foundation of the College Board FRQ ingestion pipeline (47 official PDFs downloaded across 8 AP courses). Plus a P1 batch from the bug-hunt sprint: cache self-heal, email compliance, mobile touch targets, flashcard explanation cleanup, and an escape-hatch from the &ldquo;No FRQs available&rdquo; dead-end for Premium users.</p>
+        </div>
+        <div className="grid sm:grid-cols-2 gap-3 text-left">
+          {[
+            { icon: ShieldCheck, color: "text-blue-500", bg: "bg-blue-500/10", title: "Progress Bars Now Screen-Reader Friendly", desc: "Every <Progress> across analytics, practice, diagnostic, flashcards, am-i-ready, and the daily-goal card now carries a contextual aria-label. Caught by axe in the post-deploy a11y scan (rule: aria-progressbar-name, severity: serious)." },
+            { icon: GraduationCap, color: "text-blue-500", bg: "bg-blue-500/10", title: "FRQ Library Foundation", desc: "Built the College Board FRQ ingestion pipeline: 47 official past-exam PDFs across 8 AP courses (Bio, Chem, Calc AB/BC, Stats, Physics 1, US History, World History) downloaded with rate-limiting and idempotent caching. Extraction stage uses Gemini 1.5 Pro PDF-native input. Currently waiting on a refreshed API key; once unblocked, ~200 official FRQs land in the library." },
+            { icon: Sparkles, color: "text-blue-500", bg: "bg-blue-500/10", title: "FRQ Empty-State Escape Hatch", desc: "Premium users picking an AP course with no seeded FRQs no longer dead-end with &ldquo;No FRQs available.&rdquo; Now offers a &ldquo;Generate FRQ with Sage&rdquo; CTA into the AI-FRQ flow already wired in /practice — same rubric scoring, same difficulty calibration." },
+            { icon: Brain, color: "text-blue-500", bg: "bg-blue-500/10", title: "Flashcard Explanation Sanitizer", desc: "Flashcards no longer leak the source MCQ&apos;s &ldquo;Why A is correct / Why B is wrong&rdquo; scaffolding. The helper existed; just wasn&apos;t connected to the render path. Now it is." },
+            { icon: LayoutDashboard, color: "text-blue-500", bg: "bg-blue-500/10", title: "Cache Self-Heal", desc: "AI-tutor response cache no longer crashes on a single corrupt entry. JSON.parse failures self-heal — bad entry deleted, request falls through to fresh AI call. Previous behavior: every request hitting the same cacheKey would 500." },
+            { icon: Target, color: "text-blue-500", bg: "bg-blue-500/10", title: "Email Compliance + Deliverability", desc: "Every commercial email now includes List-Unsubscribe (RFC 8058 one-click) + reply-to. CAN-SPAM 5(a)(5) compliant + improved Gmail/Outlook inbox placement. Verification + password-reset opt out via { transactional: true }." },
+          ].map(({ icon: Icon, color, bg, title, desc }) => (
+            <div key={title} className="flex gap-3 p-4 rounded-xl border border-border/40 bg-card">
+              <div className={`w-8 h-8 rounded-lg ${bg} flex items-center justify-center flex-shrink-0 mt-0.5`}>
+                <Icon className={`h-4 w-4 ${color}`} />
+              </div>
+              <div>
+                <p className="text-sm font-semibold">{title}</p>
+                <p className="text-xs text-muted-foreground leading-relaxed mt-0.5">{desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Section 7-prev1: What's New in Beta 7.3 — P0 closeout (webhook + AI streaming + content honesty) */}
+      <div className="space-y-6">
+        <div className="text-center space-y-1">
+          <Badge className="bg-border/60 text-muted-foreground border-border/40 text-xs font-semibold mb-2">Beta 7.3</Badge>
           <h2 className="text-xl font-bold">What&apos;s New in Beta 7.3</h2>
           <p className="text-sm text-muted-foreground">Three reliability fixes you won&apos;t notice until they would have bitten you — Stripe webhook no longer 500s on transient errors (silent revenue loss vector closed), failed card renewals now properly downgrade after Stripe&apos;s smart-retry exhausts, and Sage chat&apos;s streaming endpoint can&apos;t hang anymore. Plus two honest-copy fixes: landing page now matches /pricing on free-tier limits, and AP-prep&apos;s FRQ feature now correctly badges as Premium.</p>
         </div>

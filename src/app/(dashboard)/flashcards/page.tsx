@@ -194,7 +194,7 @@ export default function FlashcardsPage() {
       {/* Progress bar — batch progress + completed counter */}
       <div className="flex items-center gap-3">
         <div className="flex-1">
-          <Progress value={progress} className="h-1.5" />
+          <Progress value={progress} className="h-1.5" aria-label={`Flashcard batch progress: card ${index + 1} of ${cards.length}`} />
         </div>
         <span className="text-[12px] text-muted-foreground tabular-nums">
           {index + 1} / {cards.length}

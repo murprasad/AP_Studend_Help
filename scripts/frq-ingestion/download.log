@@ -1,0 +1,129 @@
+
+📥 FRQ ingestion stage 1 — downloading PDFs to C:\Users\akkil\project\AP_Help\data\cb-frqs
+
+
+AP_BIOLOGY (4 exam years):
+  · 2023 frq  [cached]
+  · 2023 sg  [cached]
+  · 2022 frq  [cached]
+  · 2022 sg  [cached]
+  · 2021 frq  [cached]
+  · 2021 sg  [cached]
+  · 2019 frq  [cached]
+  · 2019 sg  [cached]
+
+AP_CHEMISTRY (4 exam years):
+  ✓ 2023 frq (927KB) 
+  ✓ 2023 sg (464KB) 
+  ✗ 2022 frq  [http_404]
+  ✓ 2022 sg (485KB) 
+  ✓ 2021 frq (846KB) 
+  ✓ 2021 sg (403KB) 
+  ✓ 2019 frq (730KB) 
+  ✓ 2019 sg (3142KB) 
+
+AP_CALCULUS_AB (4 exam years):
+  ✓ 2023 frq (274KB) 
+  ✓ 2023 sg (519KB) 
+  ✓ 2022 frq (351KB) 
+  ✓ 2022 sg (534KB) 
+  ✓ 2021 frq (1601KB) 
+  ✓ 2021 sg (492KB) 
+  ✓ 2019 frq (587KB) 
+  ✓ 2019 sg (283KB) 
+
+AP_CALCULUS_BC (4 exam years):
+  ✓ 2023 frq (275KB) 
+  ✓ 2023 sg (550KB) 
+  ✓ 2022 frq (321KB) 
+  ✓ 2022 sg (548KB) 
+  ✓ 2021 frq (1782KB) 
+  ✓ 2021 sg (1323KB) 
+  ✓ 2019 frq (697KB) 
+  ✓ 2019 sg (276KB) 
+
+AP_STATISTICS (4 exam years):
+  ✓ 2023 frq (2402KB) 
+  ✓ 2023 sg (640KB) 
+  ✓ 2022 frq (2327KB) 
+  ✓ 2022 sg (600KB) 
+  ✓ 2021 frq (4404KB) 
+  ✓ 2021 sg (835KB) 
+  ✓ 2019 frq (2356KB) 
+  ✗ 2019 sg  [http_404]
+
+AP_PHYSICS_1 (4 exam years):
+  ✓ 2023 frq (625KB) 
+  ✓ 2023 sg (681KB) 
+  ✓ 2022 frq (472KB) 
+  ✓ 2022 sg (4235KB) 
+  ✗ 2021 frq  [http_404]
+  ✓ 2021 sg (680KB) 
+  ✓ 2019 frq (396KB) 
+  ✓ 2019 sg (488KB) 
+
+AP_US_HISTORY (4 exam years):
+  ✗ 2023 frq  [http_404]
+  ✗ 2023 sg  [http_404]
+  ✓ 2022 frq (592KB) 
+  ✓ 2022 sg (666KB) 
+  ✓ 2021 frq (1444KB) 
+  ✓ 2021 sg (550KB) 
+  ✓ 2019 frq (2723KB) 
+  ✓ 2019 sg (1471KB) 
+
+AP_WORLD_HISTORY (4 exam years):
+  ✗ 2023 frq  [http_404]
+  ✗ 2023 sg  [http_404]
+  ✓ 2022 frq (726KB) 
+  ✓ 2022 sg (618KB) 
+  ✗ 2021 frq  [http_404]
+  ✗ 2021 sg  [http_404]
+  ✓ 2019 frq (910KB) 
+  ✓ 2019 sg (718KB) 
+
+AP_PSYCHOLOGY (3 exam years):
+  ✗ 2023 frq  [http_404]
+  ✗ 2023 sg  [http_404]
+  ✗ 2022 frq  [http_404]
+  ✗ 2022 sg  [http_404]
+  ✗ 2019 frq  [http_404]
+  ✗ 2019 sg  [http_404]
+  (skip) AP_COMPUTER_SCIENCE_PRINCIPLES — no exams configured (AP CSP uses Performance Tasks instead of traditional FRQs — different format, may need separate handling.)
+
+── Summary ──
+  Downloaded: 47 (47.8 MB)
+  Cached:     8
+  Failed:     15
+
+  Failures:
+    AP_CHEMISTRY 2022 frq: http_404
+      https://apcentral.collegeboard.org/media/pdf/ap22-frq-chemistry.pdf
+    AP_STATISTICS 2019 sg: http_404
+      https://apcentral.collegeboard.org/media/pdf/ap19-sg-statistics.pdf
+    AP_PHYSICS_1 2021 frq: http_404
+      https://apcentral.collegeboard.org/media/pdf/ap21-frq-physics-1.pdf
+    AP_US_HISTORY 2023 frq: http_404
+      https://apcentral.collegeboard.org/media/pdf/ap23-frq-us-history.pdf
+    AP_US_HISTORY 2023 sg: http_404
+      https://apcentral.collegeboard.org/media/pdf/ap23-sg-us-history.pdf
+    AP_WORLD_HISTORY 2023 frq: http_404
+      https://apcentral.collegeboard.org/media/pdf/ap23-frq-world-history-modern.pdf
+    AP_WORLD_HISTORY 2023 sg: http_404
+      https://apcentral.collegeboard.org/media/pdf/ap23-sg-world-history-modern.pdf
+    AP_WORLD_HISTORY 2021 frq: http_404
+      https://apcentral.collegeboard.org/media/pdf/ap21-frq-world-history-modern.pdf
+    AP_WORLD_HISTORY 2021 sg: http_404
+      https://apcentral.collegeboard.org/media/pdf/ap21-sg-world-history-modern.pdf
+    AP_PSYCHOLOGY 2023 frq: http_404
+      https://apcentral.collegeboard.org/media/pdf/ap23-frq-psychology.pdf
+    AP_PSYCHOLOGY 2023 sg: http_404
+      https://apcentral.collegeboard.org/media/pdf/ap23-sg-psychology.pdf
+    AP_PSYCHOLOGY 2022 frq: http_404
+      https://apcentral.collegeboard.org/media/pdf/ap22-frq-psychology.pdf
+    AP_PSYCHOLOGY 2022 sg: http_404
+      https://apcentral.collegeboard.org/media/pdf/ap22-sg-psychology.pdf
+    AP_PSYCHOLOGY 2019 frq: http_404
+      https://apcentral.collegeboard.org/media/pdf/ap19-frq-psychology.pdf
+    AP_PSYCHOLOGY 2019 sg: http_404
+      https://apcentral.collegeboard.org/media/pdf/ap19-sg-psychology.pdf

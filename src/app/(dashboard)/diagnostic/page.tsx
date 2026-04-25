@@ -208,7 +208,7 @@ export default function DiagnosticPage() {
               {courseUnits[question.unit as ApUnit] || question.unit}
             </Badge>
           </div>
-          <Progress value={progress} className="h-2" />
+          <Progress value={progress} className="h-2" aria-label={`Diagnostic progress: ${Math.round(progress)}% complete`} />
         </div>
 
         <Card>
@@ -414,6 +414,7 @@ export default function DiagnosticPage() {
                   <Progress
                     value={score}
                     className="h-1.5"
+                    aria-label={`Unit score: ${score}%`}
                   />
                 </div>
               ))}

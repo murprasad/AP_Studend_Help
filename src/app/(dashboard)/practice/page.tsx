@@ -846,6 +846,7 @@ export default function PracticePage() {
           value={(currentIndex / Math.max(questionsRef.current.length, 1)) * 100}
           className="h-2"
           indicatorClassName="bg-blue-500"
+          aria-label={`Practice session progress: question ${currentIndex + 1} of ${questionsRef.current.length}`}
         />
 
         {/* Question card */}
@@ -981,6 +982,7 @@ export default function PracticePage() {
                         value={(feedback.frqScore.pointsEarned / feedback.frqScore.totalPoints) * 100}
                         className="h-2"
                         indicatorClassName={feedback.isCorrect ? "bg-emerald-500" : "bg-yellow-500"}
+                        aria-label={`FRQ score: ${feedback.frqScore.pointsEarned} out of ${feedback.frqScore.totalPoints} points`}
                       />
                     </div>
                     <span className="text-sm text-muted-foreground">

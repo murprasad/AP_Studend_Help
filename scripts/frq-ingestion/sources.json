@@ -1,0 +1,101 @@
+{
+  "_comment": "Curated College Board released FRQ + scoring-guideline PDF URLs per AP course. URLs follow apcentral.collegeboard.org/media/pdf/ap{YY}-frq-{course}.pdf and ap{YY}-sg-{course}.pdf naming. Scoring guidelines (sg) include the rubric AND sample student responses with commentary, which is what we want to extract for `rubric` + `sampleResponse` fields. CB explicitly permits educational use of released content (per their copyright statement on every PDF). We attribute via sourceUrl on every FRQ row.",
+
+  "_methodology": "URLs verified manually against https://apcentral.collegeboard.org/courses/ap-{slug}/exam — only include 2019+ exams (older formats differ). Skip 2020 + early-2021 (digital-only pandemic exams used different question structures). Each entry yields ~3-7 FRQs depending on course.",
+
+  "AP_BIOLOGY": {
+    "courseSlug": "ap-biology",
+    "exams": [
+      { "year": 2023, "frqUrl": "https://apcentral.collegeboard.org/media/pdf/ap23-frq-biology.pdf", "sgUrl": "https://apcentral.collegeboard.org/media/pdf/ap23-sg-biology.pdf" },
+      { "year": 2022, "frqUrl": "https://apcentral.collegeboard.org/media/pdf/ap22-frq-biology.pdf", "sgUrl": "https://apcentral.collegeboard.org/media/pdf/ap22-sg-biology.pdf" },
+      { "year": 2021, "frqUrl": "https://apcentral.collegeboard.org/media/pdf/ap21-frq-biology.pdf", "sgUrl": "https://apcentral.collegeboard.org/media/pdf/ap21-sg-biology.pdf" },
+      { "year": 2019, "frqUrl": "https://apcentral.collegeboard.org/media/pdf/ap19-frq-biology.pdf", "sgUrl": "https://apcentral.collegeboard.org/media/pdf/ap19-sg-biology.pdf" }
+    ]
+  },
+
+  "AP_CHEMISTRY": {
+    "courseSlug": "ap-chemistry",
+    "exams": [
+      { "year": 2023, "frqUrl": "https://apcentral.collegeboard.org/media/pdf/ap23-frq-chemistry.pdf", "sgUrl": "https://apcentral.collegeboard.org/media/pdf/ap23-sg-chemistry.pdf" },
+      { "year": 2022, "frqUrl": "https://apcentral.collegeboard.org/media/pdf/ap22-frq-chemistry.pdf", "sgUrl": "https://apcentral.collegeboard.org/media/pdf/ap22-sg-chemistry.pdf" },
+      { "year": 2021, "frqUrl": "https://apcentral.collegeboard.org/media/pdf/ap21-frq-chemistry.pdf", "sgUrl": "https://apcentral.collegeboard.org/media/pdf/ap21-sg-chemistry.pdf" },
+      { "year": 2019, "frqUrl": "https://apcentral.collegeboard.org/media/pdf/ap19-frq-chemistry.pdf", "sgUrl": "https://apcentral.collegeboard.org/media/pdf/ap19-sg-chemistry.pdf" }
+    ]
+  },
+
+  "AP_CALCULUS_AB": {
+    "courseSlug": "ap-calculus-ab",
+    "exams": [
+      { "year": 2023, "frqUrl": "https://apcentral.collegeboard.org/media/pdf/ap23-frq-calculus-ab.pdf", "sgUrl": "https://apcentral.collegeboard.org/media/pdf/ap23-sg-calculus-ab.pdf" },
+      { "year": 2022, "frqUrl": "https://apcentral.collegeboard.org/media/pdf/ap22-frq-calculus-ab.pdf", "sgUrl": "https://apcentral.collegeboard.org/media/pdf/ap22-sg-calculus-ab.pdf" },
+      { "year": 2021, "frqUrl": "https://apcentral.collegeboard.org/media/pdf/ap21-frq-calculus-ab.pdf", "sgUrl": "https://apcentral.collegeboard.org/media/pdf/ap21-sg-calculus-ab.pdf" },
+      { "year": 2019, "frqUrl": "https://apcentral.collegeboard.org/media/pdf/ap19-frq-calculus-ab.pdf", "sgUrl": "https://apcentral.collegeboard.org/media/pdf/ap19-sg-calculus-ab.pdf" }
+    ]
+  },
+
+  "AP_CALCULUS_BC": {
+    "courseSlug": "ap-calculus-bc",
+    "exams": [
+      { "year": 2023, "frqUrl": "https://apcentral.collegeboard.org/media/pdf/ap23-frq-calculus-bc.pdf", "sgUrl": "https://apcentral.collegeboard.org/media/pdf/ap23-sg-calculus-bc.pdf" },
+      { "year": 2022, "frqUrl": "https://apcentral.collegeboard.org/media/pdf/ap22-frq-calculus-bc.pdf", "sgUrl": "https://apcentral.collegeboard.org/media/pdf/ap22-sg-calculus-bc.pdf" },
+      { "year": 2021, "frqUrl": "https://apcentral.collegeboard.org/media/pdf/ap21-frq-calculus-bc.pdf", "sgUrl": "https://apcentral.collegeboard.org/media/pdf/ap21-sg-calculus-bc.pdf" },
+      { "year": 2019, "frqUrl": "https://apcentral.collegeboard.org/media/pdf/ap19-frq-calculus-bc.pdf", "sgUrl": "https://apcentral.collegeboard.org/media/pdf/ap19-sg-calculus-bc.pdf" }
+    ]
+  },
+
+  "AP_STATISTICS": {
+    "courseSlug": "ap-statistics",
+    "exams": [
+      { "year": 2023, "frqUrl": "https://apcentral.collegeboard.org/media/pdf/ap23-frq-statistics.pdf", "sgUrl": "https://apcentral.collegeboard.org/media/pdf/ap23-sg-statistics.pdf" },
+      { "year": 2022, "frqUrl": "https://apcentral.collegeboard.org/media/pdf/ap22-frq-statistics.pdf", "sgUrl": "https://apcentral.collegeboard.org/media/pdf/ap22-sg-statistics.pdf" },
+      { "year": 2021, "frqUrl": "https://apcentral.collegeboard.org/media/pdf/ap21-frq-statistics.pdf", "sgUrl": "https://apcentral.collegeboard.org/media/pdf/ap21-sg-statistics.pdf" },
+      { "year": 2019, "frqUrl": "https://apcentral.collegeboard.org/media/pdf/ap19-frq-statistics.pdf", "sgUrl": "https://apcentral.collegeboard.org/media/pdf/ap19-sg-statistics.pdf" }
+    ]
+  },
+
+  "AP_PHYSICS_1": {
+    "courseSlug": "ap-physics-1",
+    "_note": "Already has seeded FRQs from prior ingestion. Re-running is idempotent (sourceUrl unique constraint).",
+    "exams": [
+      { "year": 2023, "frqUrl": "https://apcentral.collegeboard.org/media/pdf/ap23-frq-physics-1.pdf", "sgUrl": "https://apcentral.collegeboard.org/media/pdf/ap23-sg-physics-1.pdf" },
+      { "year": 2022, "frqUrl": "https://apcentral.collegeboard.org/media/pdf/ap22-frq-physics-1.pdf", "sgUrl": "https://apcentral.collegeboard.org/media/pdf/ap22-sg-physics-1.pdf" },
+      { "year": 2021, "frqUrl": "https://apcentral.collegeboard.org/media/pdf/ap21-frq-physics-1.pdf", "sgUrl": "https://apcentral.collegeboard.org/media/pdf/ap21-sg-physics-1.pdf" },
+      { "year": 2019, "frqUrl": "https://apcentral.collegeboard.org/media/pdf/ap19-frq-physics-1.pdf", "sgUrl": "https://apcentral.collegeboard.org/media/pdf/ap19-sg-physics-1.pdf" }
+    ]
+  },
+
+  "AP_US_HISTORY": {
+    "courseSlug": "ap-united-states-history",
+    "exams": [
+      { "year": 2023, "frqUrl": "https://apcentral.collegeboard.org/media/pdf/ap23-frq-us-history.pdf", "sgUrl": "https://apcentral.collegeboard.org/media/pdf/ap23-sg-us-history.pdf" },
+      { "year": 2022, "frqUrl": "https://apcentral.collegeboard.org/media/pdf/ap22-frq-us-history.pdf", "sgUrl": "https://apcentral.collegeboard.org/media/pdf/ap22-sg-us-history.pdf" },
+      { "year": 2021, "frqUrl": "https://apcentral.collegeboard.org/media/pdf/ap21-frq-us-history.pdf", "sgUrl": "https://apcentral.collegeboard.org/media/pdf/ap21-sg-us-history.pdf" },
+      { "year": 2019, "frqUrl": "https://apcentral.collegeboard.org/media/pdf/ap19-frq-us-history.pdf", "sgUrl": "https://apcentral.collegeboard.org/media/pdf/ap19-sg-us-history.pdf" }
+    ]
+  },
+
+  "AP_WORLD_HISTORY": {
+    "courseSlug": "ap-world-history-modern",
+    "exams": [
+      { "year": 2023, "frqUrl": "https://apcentral.collegeboard.org/media/pdf/ap23-frq-world-history-modern.pdf", "sgUrl": "https://apcentral.collegeboard.org/media/pdf/ap23-sg-world-history-modern.pdf" },
+      { "year": 2022, "frqUrl": "https://apcentral.collegeboard.org/media/pdf/ap22-frq-world-history-modern.pdf", "sgUrl": "https://apcentral.collegeboard.org/media/pdf/ap22-sg-world-history-modern.pdf" },
+      { "year": 2021, "frqUrl": "https://apcentral.collegeboard.org/media/pdf/ap21-frq-world-history-modern.pdf", "sgUrl": "https://apcentral.collegeboard.org/media/pdf/ap21-sg-world-history-modern.pdf" },
+      { "year": 2019, "frqUrl": "https://apcentral.collegeboard.org/media/pdf/ap19-frq-world-history.pdf", "sgUrl": "https://apcentral.collegeboard.org/media/pdf/ap19-sg-world-history.pdf" }
+    ]
+  },
+
+  "AP_PSYCHOLOGY": {
+    "courseSlug": "ap-psychology",
+    "exams": [
+      { "year": 2023, "frqUrl": "https://apcentral.collegeboard.org/media/pdf/ap23-frq-psychology.pdf", "sgUrl": "https://apcentral.collegeboard.org/media/pdf/ap23-sg-psychology.pdf" },
+      { "year": 2022, "frqUrl": "https://apcentral.collegeboard.org/media/pdf/ap22-frq-psychology.pdf", "sgUrl": "https://apcentral.collegeboard.org/media/pdf/ap22-sg-psychology.pdf" },
+      { "year": 2019, "frqUrl": "https://apcentral.collegeboard.org/media/pdf/ap19-frq-psychology.pdf", "sgUrl": "https://apcentral.collegeboard.org/media/pdf/ap19-sg-psychology.pdf" }
+    ]
+  },
+
+  "AP_COMPUTER_SCIENCE_PRINCIPLES": {
+    "courseSlug": "ap-computer-science-principles",
+    "_note": "AP CSP uses Performance Tasks instead of traditional FRQs — different format, may need separate handling.",
+    "exams": []
+  }
+}

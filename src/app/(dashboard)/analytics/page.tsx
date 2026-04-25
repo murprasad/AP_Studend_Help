@@ -666,16 +666,22 @@ export default function AnalyticsPage() {
                     </div>
                   </div>
                   <div className="relative">
+                    {/* Beta 7.5 (2026-04-25): added aria-label so screen readers
+                        announce "<unitName> mastery: 67 percent" instead of an
+                        unlabelled progressbar. Caught by axe in deploy22 Playwright
+                        a11y-scan (rule: aria-progressbar-name, severity: serious). */}
                     <Progress
                       value={unit.masteryScore}
                       className="h-2"
                       indicatorClassName={getMasteryBg(unit.masteryScore)}
+                      aria-label={`${unit.unitName ?? unit.unit} mastery: ${Math.round(unit.masteryScore)}%`}
                     />
                     {goal && (
                       <div
                         className="absolute top-0 h-2 w-0.5 bg-blue-500 rounded"
                         style={{ left: `${Math.min(goal.targetScore, 100)}%` }}
                         title={`Goal: ${Math.round(goal.targetScore)}%`}
+                        aria-label={`Goal target: ${Math.round(goal.targetScore)}%`}
                       />
                     )}
                   </div>

@@ -427,7 +427,7 @@ export function ReadinessAssessment({
           >
             <ArrowLeft className="h-4 w-4" /> Back
           </button>
-          <Progress value={progress} className="h-1.5 mb-6" />
+          <Progress value={progress} className="h-1.5 mb-6" aria-label={`Quiz progress: question ${quizIndex + 1} of ${questions.length}`} />
           <p className="text-xs text-muted-foreground mb-1">
             Question {quizIndex + 1} of {questions.length}
           </p>
@@ -523,7 +523,7 @@ export function ReadinessAssessment({
     return (
       <div className="max-w-2xl mx-auto px-4 py-12 space-y-8">
         <div>
-          <Progress value={100} className="h-1.5 mb-6" />
+          <Progress value={100} className="h-1.5 mb-6" aria-label="Assessment complete" />
           <p className="text-xs text-muted-foreground mb-1">Your Results</p>
           <h2 className="text-2xl font-bold">Your {courseName} Readiness</h2>
         </div>

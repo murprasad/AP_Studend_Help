@@ -133,7 +133,12 @@ export function DailyGoalCard({ course }: Props) {
               </p>
             </div>
           </div>
-          <Progress value={100} className="h-2" indicatorClassName="bg-emerald-500" />
+          <Progress
+            value={100}
+            className="h-2"
+            indicatorClassName="bg-emerald-500"
+            aria-label="Today's goal: 100% complete"
+          />
         </CardContent>
       </Card>
     );
@@ -165,6 +170,7 @@ export function DailyGoalCard({ course }: Props) {
             value={data.progressPercent}
             className="h-2"
             indicatorClassName="bg-blue-500"
+            aria-label={`Today's goal progress: ${data.answeredToday} of ${data.targetQs} questions answered`}
           />
           <p className="text-[10px] text-muted-foreground/70 mt-1.5">
             Answer {Math.max(0, data.targetQs - data.answeredToday)} more to hit today's goal.
