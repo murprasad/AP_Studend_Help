@@ -854,7 +854,11 @@ export default function PracticePage() {
           <CardContent className="p-6 space-y-4">
             {(currentQuestion.stimulus || currentQuestion.stimulusImageUrl) && (
               <div className="p-4 rounded-lg bg-secondary/50 border-l-4 border-blue-500 space-y-3">
-                <p className="text-xs font-semibold uppercase tracking-wide text-blue-500">Source / Context</p>
+                {/* Beta 7.8 (2026-04-25): text-blue-500 on light bg fails WCAG AA
+                    contrast at small sizes (3.45:1, needs 4.5:1). Use the
+                    text-blue-700 dark:text-blue-400 dual-mode pattern that
+                    earlier a11y batches established for the codebase. */}
+                <p className="text-xs font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-400">Source / Context</p>
                 {currentQuestion.stimulusImageUrl && (
                   <div className="flex justify-center">
                     <img
@@ -1287,7 +1291,7 @@ export default function PracticePage() {
           <div className="space-y-2">
             <label className="text-sm font-medium">Unit</label>
             <Select value={selectedUnit} onValueChange={setSelectedUnit}>
-              <SelectTrigger>
+              <SelectTrigger aria-label="Select unit">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -1304,7 +1308,7 @@ export default function PracticePage() {
           <div className="space-y-2">
             <label className="text-sm font-medium">Difficulty</label>
             <Select value={selectedDifficulty} onValueChange={setSelectedDifficulty}>
-              <SelectTrigger>
+              <SelectTrigger aria-label="Select difficulty">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -1319,7 +1323,7 @@ export default function PracticePage() {
           <div className="space-y-2">
             <label className="text-sm font-medium">Number of Questions</label>
             <Select value={questionCount.toString()} onValueChange={(v) => setQuestionCount(parseInt(v))}>
-              <SelectTrigger>
+              <SelectTrigger aria-label="Select number of questions">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>

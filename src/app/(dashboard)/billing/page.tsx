@@ -416,7 +416,7 @@ export default function BillingPage() {
                   </>
                 ) : (
                   <>
-                    <p className="text-sm font-medium text-blue-400">
+                    <p className="text-sm font-medium text-blue-700 dark:text-blue-400">
                       Renews {formatDate(periodEnd)}
                     </p>
                     <p className="text-xs text-muted-foreground mt-0.5">
