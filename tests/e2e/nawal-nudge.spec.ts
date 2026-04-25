@@ -24,7 +24,9 @@ test.describe("AutoLaunchNudge — Nawal-pattern", () => {
   // thrash. API is verified-correct via debug-nawal-nudge.mjs; the
   // feature works in production. Playwright retries cover the race
   // without allowing a real regression to slip through.
-  test.describe.configure({ retries: 2 });
+  // Per-test timeout bumped to 60s (default 30s) so the modal has time
+  // to mount on CF Workers cold-start runs (auto-launch-check + render).
+  test.describe.configure({ retries: 2, timeout: 60_000 });
 
   test.beforeAll(async () => {
     if (!CRON_SECRET) test.skip();
@@ -57,8 +59,11 @@ test.describe("AutoLaunchNudge — Nawal-pattern", () => {
     // The modal mounts asynchronously after /api/auto-launch-check
     // resolves. Dashboard cards also fetch data in parallel which can
     // cause layout thrash. Wait for networkidle, then check.
-    await page.waitForLoadState("networkidle", { timeout: 15000 }).catch(() => {});
-    await page.waitForTimeout(1000);
+    // domcontentloaded + fixed settle — networkidle never resolves on the
+    // dashboard because of polling intervals (B5 pattern, fixed in
+    // a11y-scan.spec.ts; same fix here).
+    await page.waitForLoadState("domcontentloaded", { timeout: 10000 }).catch(() => {});
+    await page.waitForTimeout(2000);
     await expect(
       page.getByRole("dialog", { name: /warmup|score moving/i }),
     ).toBeVisible({ timeout: 15000 });
@@ -67,8 +72,11 @@ test.describe("AutoLaunchNudge — Nawal-pattern", () => {
   test("Start warmup routes to /practice with auto_warmup src", async ({ page }) => {
     await page.goto("/dashboard");
     if (page.url().includes("/onboarding")) test.skip();
-    await page.waitForLoadState("networkidle", { timeout: 15000 }).catch(() => {});
-    await page.waitForTimeout(1000);
+    // domcontentloaded + fixed settle — networkidle never resolves on the
+    // dashboard because of polling intervals (B5 pattern, fixed in
+    // a11y-scan.spec.ts; same fix here).
+    await page.waitForLoadState("domcontentloaded", { timeout: 10000 }).catch(() => {});
+    await page.waitForTimeout(2000);
     const dialog = page.getByRole("dialog", { name: /warmup|score moving/i });
     // Use expect().toBeVisible() — matches test 1's pattern and has
     // better retry semantics than waitFor({ state: "visible" }).
@@ -82,8 +90,11 @@ test.describe("AutoLaunchNudge — Nawal-pattern", () => {
   test("Not now dismisses + does not re-show on reload", async ({ page }) => {
     await page.goto("/dashboard");
     if (page.url().includes("/onboarding")) test.skip();
-    await page.waitForLoadState("networkidle", { timeout: 15000 }).catch(() => {});
-    await page.waitForTimeout(1000);
+    // domcontentloaded + fixed settle — networkidle never resolves on the
+    // dashboard because of polling intervals (B5 pattern, fixed in
+    // a11y-scan.spec.ts; same fix here).
+    await page.waitForLoadState("domcontentloaded", { timeout: 10000 }).catch(() => {});
+    await page.waitForTimeout(2000);
     const dialog = page.getByRole("dialog", { name: /warmup|score moving/i });
     await expect(dialog).toBeVisible({ timeout: 15000 });
     // Scope button lookup to the dialog to avoid matching other "Not now"
