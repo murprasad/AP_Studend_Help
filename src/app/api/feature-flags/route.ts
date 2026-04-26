@@ -21,16 +21,33 @@ async function safeFlag(p: () => Promise<boolean>, fallback: boolean): Promise<b
 }
 
 export async function GET() {
-  const [premiumRestrictionEnabled, analyticsEnabled, studyPlanEnabled, knowledgeCheckEnabled] = await Promise.all([
-    safeFlag(isPremiumRestrictionEnabled, true),  // default ON — safer for revenue
-    safeFlag(isAnalyticsEnabled, true),
-    safeFlag(isStudyPlanEnabled, true),
-    safeFlag(isKnowledgeCheckEnabled, false),     // OFF unless explicitly enabled
-  ]);
-  return NextResponse.json({
-    premiumRestrictionEnabled,
-    analyticsEnabled,
-    studyPlanEnabled,
-    knowledgeCheckEnabled,
-  });
+  // Belt-and-suspenders: outer try/catch in case import-time errors or
+  // runtime aborts crash the route. Beta 8.0 deploy26 still showed 500s
+  // here despite per-flag safeFlag wrapping, suggesting either an
+  // unhandled rejection in Promise.all or a synchronous import failure
+  // when the isolate cold-starts. Returning safe defaults is always
+  // better than 500 — the dashboard renders, all flags assumed enabled.
+  try {
+    const [premiumRestrictionEnabled, analyticsEnabled, studyPlanEnabled, knowledgeCheckEnabled] = await Promise.all([
+      safeFlag(isPremiumRestrictionEnabled, true),  // default ON — safer for revenue
+      safeFlag(isAnalyticsEnabled, true),
+      safeFlag(isStudyPlanEnabled, true),
+      safeFlag(isKnowledgeCheckEnabled, false),     // OFF unless explicitly enabled
+    ]);
+    return NextResponse.json({
+      premiumRestrictionEnabled,
+      analyticsEnabled,
+      studyPlanEnabled,
+      knowledgeCheckEnabled,
+    });
+  } catch (e) {
+    console.error("[/api/feature-flags] outer fallback:", e instanceof Error ? e.message : String(e));
+    return NextResponse.json({
+      premiumRestrictionEnabled: true,
+      analyticsEnabled: true,
+      studyPlanEnabled: true,
+      knowledgeCheckEnabled: false,
+      _degraded: true,
+    });
+  }
 }

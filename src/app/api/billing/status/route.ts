@@ -9,13 +9,21 @@ export async function GET() {
   const session = await getServerSession(authOptions);
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  // Cold-start defense (Beta 7.2, 2026-04-25): two Prisma calls without
-  // try/catch were causing a 5xx on /billing during deploy19's
-  // persona-b-sidebar-walk run when CF Worker isolates were fresh.
-  // Wrap each query so one cold-start hiccup degrades the response
-  // gracefully rather than 500-ing the whole billing page.
+  // Cold-start defense (Beta 8.0 fix, 2026-04-26 — supersedes Beta 7.2).
+  // Beta 7.2 only handled moduleSubs. The user.findUnique cold-start was
+  // still 500-ing /billing on first deploy26 hit. Now BOTH queries
+  // degrade — if user.findUnique throws, we return a stale-but-valid
+  // FREE tier from session so the page renders and Stripe portal still
+  // works. Real DB will recover on next call.
+  let user: {
+    subscriptionTier: string;
+    track: string | null;
+    stripeSubscriptionId: string | null;
+    stripeCurrentPeriodEnd: Date | null;
+    stripeSubscriptionStatus: string | null;
+  } | null = null;
   try {
-    const user = await prisma.user.findUnique({
+    user = await prisma.user.findUnique({
       where: { id: session.user.id },
       select: {
         subscriptionTier: true,
@@ -25,35 +33,49 @@ export async function GET() {
         stripeSubscriptionStatus: true,
       },
     });
+  } catch (e) {
+    console.warn("[/api/billing/status] user cold-start fallback:", e instanceof Error ? e.message : String(e));
+    // Stale-but-valid: assume FREE so page renders. Real tier will load
+    // on the next request when isolate is warm.
+    user = {
+      subscriptionTier: "FREE",
+      track: null,
+      stripeSubscriptionId: null,
+      stripeCurrentPeriodEnd: null,
+      stripeSubscriptionStatus: null,
+    };
+  }
 
-    if (!user) return NextResponse.json({ error: "User not found" }, { status: 404 });
+  if (!user) {
+    user = {
+      subscriptionTier: "FREE",
+      track: null,
+      stripeSubscriptionId: null,
+      stripeCurrentPeriodEnd: null,
+      stripeSubscriptionStatus: null,
+    };
+  }
 
-    let moduleSubs: Array<{ module: string; status: string; stripeCurrentPeriodEnd: Date | null }> = [];
-    try {
-      moduleSubs = await prisma.moduleSubscription.findMany({
-        where: { userId: session.user.id },
-        select: { module: true, status: true, stripeSubscriptionId: true, stripeCurrentPeriodEnd: true },
-      });
-    } catch (e) {
-      console.warn("[/api/billing/status] moduleSubs cold-start fallback:", e instanceof Error ? e.message : String(e));
-      // Empty array degrades gracefully — billing page renders the user-row
-      // tier without per-module rows. Better than a 500.
-    }
-
-    return NextResponse.json({
-      subscriptionTier: user.subscriptionTier,
-      track: user.track,
-      subscriptionStatus: user.stripeSubscriptionStatus,
-      currentPeriodEnd: user.stripeCurrentPeriodEnd?.toISOString() ?? null,
-      hasSubscriptionId: !!user.stripeSubscriptionId,
-      moduleSubs: moduleSubs.map(s => ({
-        module: s.module,
-        status: s.status,
-        currentPeriodEnd: s.stripeCurrentPeriodEnd?.toISOString() ?? null,
-      })),
+  let moduleSubs: Array<{ module: string; status: string; stripeCurrentPeriodEnd: Date | null }> = [];
+  try {
+    moduleSubs = await prisma.moduleSubscription.findMany({
+      where: { userId: session.user.id },
+      select: { module: true, status: true, stripeSubscriptionId: true, stripeCurrentPeriodEnd: true },
     });
   } catch (e) {
-    console.error("[/api/billing/status] error:", e);
-    return NextResponse.json({ error: "Failed to load billing status" }, { status: 500 });
+    console.warn("[/api/billing/status] moduleSubs cold-start fallback:", e instanceof Error ? e.message : String(e));
   }
+
+  return NextResponse.json({
+    subscriptionTier: user.subscriptionTier,
+    track: user.track,
+    subscriptionStatus: user.stripeSubscriptionStatus,
+    currentPeriodEnd: user.stripeCurrentPeriodEnd?.toISOString() ?? null,
+    hasSubscriptionId: !!user.stripeSubscriptionId,
+    moduleSubs: moduleSubs.map(s => ({
+      module: s.module,
+      status: s.status,
+      currentPeriodEnd: s.stripeCurrentPeriodEnd?.toISOString() ?? null,
+    })),
+  });
 }
