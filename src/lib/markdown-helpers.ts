@@ -1,38 +1,85 @@
 /**
  * Strip MCQ-answer-letter leaks from flashcard explanations.
  *
- * Bug B8 (2026-04-24): The flashcard `explanation` field is populated from
- * the source MCQ question's explanation prose, which references "A is
- * correct", "B is wrong (trap: ...)", etc. Flashcards have no A-D options,
- * so those sentences are nonsensical. This function removes them before
- * render.
+ * Bug B8 (2026-04-24, expanded 2026-04-26): The flashcard `explanation`
+ * field is populated from the source MCQ question's explanation prose,
+ * which references "A is correct", "Why A is correct", "Option B (trap:
+ * ...)", etc. Flashcards have no A-D options, so those sentences are
+ * nonsensical. This function removes them before render.
  *
- * Conservative — only strips the specific sentence patterns:
- *   - "A is correct." (at start)
- *   - "B is wrong (...)" / "B is wrong because..." / "B is wrong;"
- * Leaves the surrounding teaching content intact.
+ * Beta 7.5 sanitizer caught only "X is correct/wrong/incorrect" — the
+ * user re-reported "Why A is correct" still leaking through. This pass
+ * adds: "Why X is/was correct/wrong", markdown headers, "Option X",
+ * "Choice X", "(X)", "The correct answer is X", and bare "Answer: X".
  *
- * Idempotent — safe to apply twice. Passes non-MCQ explanations through unchanged.
+ * Idempotent — safe to apply twice. Passes non-MCQ explanations unchanged.
  */
 export function sanitizeFlashcardExplanation(input: string | null | undefined): string {
   if (!input) return "";
   let out = input;
-  // Leading "A is correct." or "A is correct.<newline>" sentence.
-  out = out.replace(/^\s*[A-E]\s+is\s+correct\.?\s*/i, "");
-  // Inline "X is wrong ..." sentences — matches through sentence-ending '.'
-  // that isn't inside a parenthetical. Non-greedy; requires a following
-  // whitespace / end-of-string to avoid eating adjacent prose.
+
+  // Strip markdown headers (## / ### / **) that contain MCQ scaffolding —
+  // common pattern: "**Why A is correct:**" or "### Why B is wrong".
+  // REQUIRES an explicit markdown marker (# or **). Pure-prose patterns
+  // like "Why A is correct. ..." are handled by the inline regexes below
+  // — trying to catch them here as headers over-matches into surrounding
+  // text containing colons (e.g. "(trap: ...)").
   out = out.replace(
-    /\s*[A-E]\s+is\s+wrong\s*(?:\([^)]*\))?[^.]*\.(\s|$)/gi,
+    /^[ \t]*(?:#{1,6}\s+|\*{2,3})\s*(?:Why\s+)?(?:Option\s+|Choice\s+|Answer\s+)?[\(\[]?[A-E][\)\]]?\s+(?:is|was)\s+(?:correct|wrong|incorrect|right)[^\n]*\n?/gim,
+    "",
+  );
+  // Bold-wrapped colon headers: "**Why A is correct:**" — must have ** on
+  // both sides so we know it's truly a heading, not prose.
+  out = out.replace(
+    /\*{2,3}\s*(?:Why\s+)?(?:Option\s+|Choice\s+|Answer\s+)?[\(\[]?[A-E][\)\]]?\s+(?:is|was)\s+(?:correct|wrong|incorrect|right)[^*\n]*\*{2,3}[ \t]*\n?/gim,
+    "",
+  );
+
+  // "The correct answer is A." / "Correct answer: A." (note: \s* not \s+
+  // to handle "answer:" with no space). Also "Answer: A. ..." prefix.
+  out = out.replace(
+    /^[ \t]*(?:The\s+)?correct\s+answer\s*(?:is|:)\s*[A-E]\.?\s*/gim,
+    "",
+  );
+  out = out.replace(
+    /^[ \t]*Answer:\s*[A-E][\.,;]\s*/gim,
+    "",
+  );
+
+  // "Why X is correct/wrong" inline + "Why X is correct: ..." block.
+  out = out.replace(
+    /\bWhy\s+[\(\[]?[A-E][\)\]]?\s+(?:is|was)\s+(?:correct|wrong|incorrect|right)[^.]*\.(\s|$)/gi,
     " ",
   );
-  // Also handle "X is incorrect ..." for symmetry.
+  // Block form ending in colon — strip the heading sentence + trailing colon.
   out = out.replace(
-    /\s*[A-E]\s+is\s+incorrect\s*(?:\([^)]*\))?[^.]*\.(\s|$)/gi,
+    /^[ \t]*Why\s+[\(\[]?[A-E][\)\]]?\s+(?:is|was)\s+(?:correct|wrong|incorrect|right)[^:\n]*:[ \t]*\n?/gim,
+    "",
+  );
+
+  // Leading "A is correct." or "(A) is correct." (already shipped, kept).
+  out = out.replace(/^\s*[\(\[]?[A-E][\)\]]?\s+(?:is|was)\s+correct\.?\s*/i, "");
+
+  // Inline "X is wrong/incorrect ..." sentences.
+  out = out.replace(
+    /\s*[\(\[]?[A-E][\)\]]?\s+(?:is|was)\s+(?:wrong|incorrect)\s*(?:\([^)]*\))?[^.]*\.(\s|$)/gi,
     " ",
   );
-  // Collapse double spaces + trim.
-  return out.replace(/\s{2,}/g, " ").trim();
+
+  // "Option A states ..." / "Choice B says ..." / "(C) describes ..."
+  out = out.replace(
+    /\b(?:Option|Choice)\s+[\(\[]?[A-E][\)\]]?\s+[^.]*\.(\s|$)/gi,
+    " ",
+  );
+
+  // Trap call-outs: "(trap:", "(distractor:" — leftover after strips.
+  out = out.replace(/\((?:trap|distractor)[^)]*\)/gi, "");
+
+  // Collapse extra blank lines + double spaces + trim.
+  return out
+    .replace(/\n{3,}/g, "\n\n")
+    .replace(/[ \t]{2,}/g, " ")
+    .trim();
 }
 
 /**

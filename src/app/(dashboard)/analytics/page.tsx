@@ -37,6 +37,7 @@ import { useSession } from "next-auth/react";
 import { useToast } from "@/hooks/use-toast";
 import Link from "next/link";
 import { ApCourse, ApUnit } from "@prisma/client";
+import { ArrowLeft } from "lucide-react";
 
 interface MasteryData {
   unit: string;
@@ -268,7 +269,19 @@ export default function AnalyticsPage() {
   }));
 
   return (
-    <div className="space-y-6">
+    // Beta 8.1.1: Analytics breaks out of dashboard layout's max-w-7xl
+    // container so charts have full screen width. Negative margins reclaim
+    // the gutter; w-screen + lg:w-auto keeps it wide on desktop without
+    // breaking mobile. Back-to-dashboard link added per user request so the
+    // page has a clear escape (other screens have it via sidebar).
+    <div className="-mx-4 sm:-mx-6 -my-4 sm:-my-6 px-4 sm:px-6 py-4 sm:py-6 min-h-screen bg-background space-y-6">
+      <Link
+        href="/dashboard"
+        className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
+      >
+        <ArrowLeft className="h-4 w-4" />
+        Back to Dashboard
+      </Link>
       {(stale || refreshing) && (
         <div className="flex items-center gap-2 px-4 py-2 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-300 text-sm">
           <Loader2 className="h-4 w-4 animate-spin" />

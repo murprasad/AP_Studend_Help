@@ -62,7 +62,7 @@ export default function AboutPage() {
           </div>
           <div className="flex items-center gap-2 flex-wrap">
             <h1 className="text-3xl font-bold gradient-text">About StudentNest Prep</h1>
-            <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30 text-xs font-semibold">Beta 8.1</Badge>
+            <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30 text-xs font-semibold">Beta 8.1.1</Badge>
           </div>
         </div>
         <p className="text-muted-foreground leading-relaxed max-w-2xl mx-auto">

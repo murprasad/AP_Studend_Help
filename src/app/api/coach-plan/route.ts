@@ -161,6 +161,12 @@ export async function GET(req: NextRequest) {
         // and soften copy when hasDiagnostic=false.
         showScore: snapshot.showScore,
         hasDiagnostic: snapshot.hasDiagnostic,
+        // Phase A (Beta 8.1.1): top-3 weakness-to-action items from
+        // loadReadinessSnapshot. Consumed by WeaknessFocusCard so the
+        // dashboard renders 3 ranked weak units with one-tap practice
+        // links instead of a single fragile "weakest unit" that disappears
+        // on cold-start.
+        actions: snapshot.actions ?? [],
       },
       { headers: { "Cache-Control": "no-store, max-age=0" } },
     );
@@ -186,6 +192,7 @@ export async function GET(req: NextRequest) {
         passPercent: 60,
         tierLabel: "Building Foundation",
         inProgressSession: null,
+        actions: [],
         _degraded: true,
       },
       { headers: { "Cache-Control": "no-store, max-age=0" } },
