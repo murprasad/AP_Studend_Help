@@ -6,6 +6,19 @@ import { isClepEnabled, isDsstEnabled } from "@/lib/settings";
 
 export const dynamic = "force-dynamic";
 
+// Per-query cold-start defense (Beta 8.0 fix, 2026-04-26). /api/user is
+// called on every dashboard load and cascades into broken /dashboard,
+// /analytics, /study-plan if it 500s. Wrapping each query individually
+// means at worst the user sees stale-but-valid data, not a 500.
+async function safe<T>(p: Promise<T>, fallback: T): Promise<T> {
+  try {
+    return await p;
+  } catch (e) {
+    console.warn("[/api/user] safe() caught:", e instanceof Error ? e.message : String(e));
+    return fallback;
+  }
+}
+
 export async function PATCH(req: NextRequest) {
   const session = await getServerSession(authOptions);
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -50,40 +63,60 @@ export async function GET(req: NextRequest) {
 
   try {
     const [user, clepEnabled, dsstEnabled, moduleSubs] = await Promise.all([
-      prisma.user.findUnique({
-        where: { id: session.user.id },
-        select: {
-          id: true,
-          firstName: true,
-          lastName: true,
-          email: true,
-          gradeLevel: true,
-          school: true,
-          role: true,
-          subscriptionTier: true,
-          streakDays: true,
-          longestStreak: true,
-          streakFreezes: true,
-          examDate: true,
-          totalXp: true,
-          level: true,
-          lastActiveDate: true,
-          track: true,
-          onboardingCompletedAt: true,
-          createdAt: true,
-          freeTrialExpiresAt: true,
-          freeTrialCourse: true,
-        },
-      }),
-      isClepEnabled(),
-      isDsstEnabled(),
-      prisma.moduleSubscription.findMany({
-        where: { userId: session.user.id },
-        select: { module: true, status: true, stripeCurrentPeriodEnd: true },
-      }),
+      safe(
+        prisma.user.findUnique({
+          where: { id: session.user.id },
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            email: true,
+            gradeLevel: true,
+            school: true,
+            role: true,
+            subscriptionTier: true,
+            streakDays: true,
+            longestStreak: true,
+            streakFreezes: true,
+            examDate: true,
+            totalXp: true,
+            level: true,
+            lastActiveDate: true,
+            track: true,
+            onboardingCompletedAt: true,
+            createdAt: true,
+            freeTrialExpiresAt: true,
+            freeTrialCourse: true,
+          },
+        }),
+        null,
+      ),
+      safe(isClepEnabled(), false),
+      safe(isDsstEnabled(), false),
+      safe(
+        prisma.moduleSubscription.findMany({
+          where: { userId: session.user.id },
+          select: { module: true, status: true, stripeCurrentPeriodEnd: true },
+        }),
+        [] as Array<{ module: string; status: string; stripeCurrentPeriodEnd: Date | null }>,
+      ),
     ]);
 
-    if (!user) return NextResponse.json({ error: "User not found" }, { status: 404 });
+    if (!user) {
+      // Stale-but-valid fallback: returns minimal session-derived user so the
+      // dashboard renders instead of crashing. Real DB will recover next call.
+      return NextResponse.json({
+        user: {
+          id: session.user.id,
+          email: session.user.email ?? "",
+          subscriptionTier: "FREE",
+          track: "ap",
+        },
+        flags: { clepEnabled, dsstEnabled },
+        moduleSubs,
+        _degraded: true,
+      });
+    }
 
     return NextResponse.json({ user, flags: { clepEnabled, dsstEnabled }, moduleSubs });
   } catch (error) {

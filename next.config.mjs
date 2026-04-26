@@ -32,11 +32,14 @@ const nextConfig = {
           // 'unsafe-inline' + 'unsafe-eval' required for Next.js 14 + KaTeX +
           // inline theme-boot script in layout.tsx. Tightening to nonce-based
           // tracked in FMEA as future hardening.
-          "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.clarity.ms https://www.clarity.ms https://www.googletagmanager.com https://*.ingest.sentry.io https://browser.sentry-cdn.com https://js.stripe.com",
+          // static.cloudflareinsights.com: CF Pages auto-injects Web Analytics
+          // beacon. Without this allowlist, every public page logs a CSP
+          // violation in console (caught by persona-c-console-errors.spec).
+          "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.clarity.ms https://www.clarity.ms https://www.googletagmanager.com https://*.ingest.sentry.io https://browser.sentry-cdn.com https://js.stripe.com https://static.cloudflareinsights.com",
           "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
           "img-src 'self' data: https: blob:",
           "font-src 'self' data: https://fonts.gstatic.com",
-          "connect-src 'self' https://*.ingest.sentry.io https://*.sentry.io https://*.clarity.ms https://www.clarity.ms https://api.stripe.com https://checkout.stripe.com https://api.groq.com https://generativelanguage.googleapis.com https://text.pollinations.ai https://en.wikipedia.org https://www.reddit.com https://api.stackexchange.com wss: ws:",
+          "connect-src 'self' https://*.ingest.sentry.io https://*.sentry.io https://*.clarity.ms https://www.clarity.ms https://api.stripe.com https://checkout.stripe.com https://api.groq.com https://generativelanguage.googleapis.com https://text.pollinations.ai https://en.wikipedia.org https://www.reddit.com https://api.stackexchange.com https://cloudflareinsights.com https://static.cloudflareinsights.com wss: ws:",
           "frame-src 'self' https://js.stripe.com https://checkout.stripe.com https://hooks.stripe.com https://accounts.google.com",
           "frame-ancestors 'self'",
           "base-uri 'self'",
