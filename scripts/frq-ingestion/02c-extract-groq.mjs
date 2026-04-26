@@ -164,6 +164,7 @@ async function findPairsFor(course) {
   const files = await readdir(dir).catch(() => []);
   const pairs = [];
 
+  // Pattern A: apYY-frq-{slug}-set-N.pdf (multi-set courses like World History)
   for (const f of files) {
     const m = f.match(/^ap(\d{2})-frq-[\w-]+-set-(\d+)\.pdf$/);
     if (!m) continue;
@@ -177,6 +178,29 @@ async function findPairsFor(course) {
         frqPath: join(dir, f),
         sgPath: join(dir, sgFile),
         outPath: join(dir, `extracted-ap${yy}-set-${setN}.json`),
+      });
+    }
+  }
+
+  // Pattern B: apYY-frq-{slug}.pdf (single-set courses like Physics 2,
+  // Precalculus, CS-A, Art History — no per-set split). Match if no
+  // -set-N suffix AND a corresponding ap{yy}-sg-{slug}.pdf exists.
+  for (const f of files) {
+    const m = f.match(/^ap(\d{2})-frq-[\w-]+\.pdf$/);
+    if (!m) continue;
+    if (f.includes("-set-")) continue; // already handled by Pattern A
+    const yy = m[1];
+    const year = 2000 + Number(yy);
+    const slug = f.replace(/^ap\d{2}-frq-/, "").replace(/\.pdf$/, "");
+    const sgFile = `ap${yy}-sg-${slug}.pdf`;
+    if (files.includes(sgFile)) {
+      const setN = "main";
+      const outName = `extracted-ap${yy}-${slug}.json`;
+      pairs.push({
+        year, setN,
+        frqPath: join(dir, f),
+        sgPath: join(dir, sgFile),
+        outPath: join(dir, outName),
       });
     }
   }

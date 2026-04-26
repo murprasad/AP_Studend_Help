@@ -15,17 +15,15 @@ import { Loader2, ChevronRight, PenLine, BookOpen, Lock } from "lucide-react";
 import Link from "next/link";
 import { LOCK_COPY } from "@/lib/tier-limits";
 
-// ── Cluster A: quantitative FRQs currently supported ─────────────────────────
-// Other AP courses still see the page shell + an "FRQs coming soon" note so
-// the link in the sidebar never dead-ends.
-const CLUSTER_A: ApCourse[] = [
-  "AP_PHYSICS_1",
-  "AP_CALCULUS_AB",
-  "AP_CALCULUS_BC",
-  "AP_BIOLOGY",
-  "AP_CHEMISTRY",
-  "AP_STATISTICS",
-];
+// Beta 8.2 (2026-04-26): removed CLUSTER_A hardcoded gate. Now ALL AP
+// courses are served — the page checks the FRQ list at runtime via
+// /api/frq/list and shows "no FRQs yet" only if the DB returns empty.
+// This was hiding the 523 official FRQs we ingested today across 14
+// courses (incl. World History which user's son specifically asked for).
+// Originally added when only Bio/Calc/Chem/Physics/Stats had FRQs and
+// other courses' empty-state was confusing. Now that we have official
+// CB FRQs across most AP courses, the list itself is the source of truth.
+const CLUSTER_A: ApCourse[] = [];
 
 interface FrqListItem {
   id: string;
@@ -45,7 +43,9 @@ export default function FrqPracticePage() {
   const [persistedCourse] = useCourse();
   // URL override — useful for deep-links into a specific course's FRQs
   const urlCourse = searchParams.get("course") as ApCourse | null;
-  const course = (urlCourse && CLUSTER_A.includes(urlCourse) ? urlCourse : persistedCourse) as ApCourse;
+  // Beta 8.2: removed CLUSTER_A gate — accept any AP course from URL,
+  // fall through to persisted course otherwise.
+  const course = (urlCourse ?? persistedCourse) as ApCourse;
 
   const [list, setList] = useState<FrqListItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -158,33 +158,7 @@ export default function FrqPracticePage() {
     );
   }
 
-  // ── Out-of-cluster course: explain + link back ────────────────────────────
-  if (!CLUSTER_A.includes(course)) {
-    return (
-      <div className="space-y-6">
-        <div>
-          <h1 className="text-3xl font-bold">FRQ Practice</h1>
-          <p className="text-muted-foreground mt-1">
-            Past exam free-response questions with official rubrics and sample answers.
-          </p>
-        </div>
-        <CourseSelectorInline />
-        <Card>
-          <CardContent className="py-16 text-center space-y-2">
-            <p className="text-lg font-medium">
-              FRQs for {AP_COURSES[course] || course} coming soon.
-            </p>
-            <p className="text-sm text-muted-foreground">
-              We&apos;re rolling out free-response practice starting with quantitative
-              courses (Physics 1, Calc AB/BC, Biology, Chemistry, Statistics).
-            </p>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
-
-  // ── In-cluster: drill view or list view ───────────────────────────────────
+  // ── List view (legacy CLUSTER_A gate removed Beta 8.2) ───────────────────
   const selected = list.find((f) => f.id === selectedId) ?? null;
 
   return (
