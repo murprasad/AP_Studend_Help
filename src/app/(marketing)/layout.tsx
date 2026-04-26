@@ -23,7 +23,7 @@ export default function MarketingLayout({ children }: { children: React.ReactNod
         <p className="text-[11px] text-muted-foreground/60 max-w-2xl mx-auto leading-relaxed">
           AP® and SAT® are trademarks of the College Board. ACT® is a registered trademark of ACT, Inc.
           StudentNest is not affiliated with or endorsed by the College Board or ACT, Inc.
-          Studying for CLEP or DSST? Visit our sister site <a href="https://preplion.ai" className="underline hover:text-foreground">preplion.ai</a>.
+          Studying for CLEP or DSST? Visit our sister site <a href="https://preplion.ai/?utm_source=studentnest&utm_medium=footer&utm_campaign=cross_product" className="underline hover:text-foreground" rel="noopener">preplion.ai</a>.
           © {new Date().getFullYear()} StudentNest Prep — independent educational platform.
         </p>
       </footer>

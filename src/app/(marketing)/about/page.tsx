@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     description: "AI-powered exam prep built on learning science. 16+ courses, free to start.",
   },
 };
-import { Globe, Mail, Target, Heart, Sparkles, Lightbulb, LayoutDashboard, GraduationCap, ShieldCheck, Brain, TrendingUp, Zap } from "lucide-react";
+import { Globe, Mail, Target, Heart, Sparkles, Lightbulb, LayoutDashboard, GraduationCap, ShieldCheck, Brain, TrendingUp, Zap, Mic, Flame, Calendar } from "lucide-react";
 import Link from "next/link";
 import { BrowserFrame } from "@/components/landing/browser-frame";
 import { MockupPractice } from "@/components/landing/mockup-practice";
@@ -62,7 +62,7 @@ export default function AboutPage() {
           </div>
           <div className="flex items-center gap-2 flex-wrap">
             <h1 className="text-3xl font-bold gradient-text">About StudentNest Prep</h1>
-            <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30 text-xs font-semibold">Beta 8.2</Badge>
+            <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30 text-xs font-semibold">Beta 8.3</Badge>
           </div>
         </div>
         <p className="text-muted-foreground leading-relaxed max-w-2xl mx-auto">
@@ -310,10 +310,39 @@ export default function AboutPage() {
         </div>
       </div>
 
-      {/* Section 7: What's New in Beta 8.2 — Real-student feedback fixes (P0 quality bundle) */}
+      {/* Section 7: What's New in Beta 8.3 — Phases B + C + D (Sage promo, Cram Mode, Daily Study OS) */}
       <div className="space-y-6">
         <div className="text-center space-y-1">
           <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30 text-xs font-semibold mb-2">Latest Release</Badge>
+          <h2 className="text-xl font-bold">What&apos;s New in Beta 8.3</h2>
+          <p className="text-sm text-muted-foreground">Three Phase rollouts in one release — Sage Coach FRQ grader promoted to a prominent dashboard tile (Phase B), an exam-countdown Cram Mode card with daily prioritized plan when you&apos;re &lt;30 days out (Phase C), and a daily-adaptive Study OS that adjusts today&apos;s volume based on yesterday&apos;s accuracy + your streak (Phase D). Plus a flashcard design fix that retires the leak-prone &ldquo;Why&rdquo; section in favor of an &ldquo;Ask Sage&rdquo; chat link.</p>
+        </div>
+        <div className="grid sm:grid-cols-2 gap-3 text-left">
+          {[
+            { icon: Mic, color: "text-blue-500", bg: "bg-blue-500/10", title: "Sage Coach Promoted to Dashboard", desc: "The FRQ AI grader was buried in the sidebar. New green-tinted dashboard tile (or amber lock card for free users) puts it where students naturally look after seeing their weakest unit. With 220 official CB FRQs in the library, this is the &ldquo;OK, how do I get help writing this answer?&rdquo; moment." },
+            { icon: Flame, color: "text-blue-500", bg: "bg-blue-500/10", title: "Cram Mode (Exam Countdown)", desc: "Renders only when your AP exam is &lt;30 days out. Shows: days remaining, today&apos;s top 1-2 weak units to drill, write 1 official FRQ, take a timed mock when ≤14 days. Tier framing escalates &mdash; final 3 days, final week, two weeks out, cram window." },
+            { icon: Calendar, color: "text-blue-500", bg: "bg-blue-500/10", title: "Daily Study OS (adaptive)", desc: "Replaces the static study-plan template. Adapts today&apos;s volume to yesterday: accuracy &lt;50% → focus mode (fewer Qs, deeper attention); accuracy ≥80% + streak ≥3 → stretch mode (more Qs + bonus unit). Hides during Cram Mode (Mode 3 takes precedence)." },
+            { icon: Brain, color: "text-blue-500", bg: "bg-blue-500/10", title: "Flashcard Design Fix (no more band-aid)", desc: "Three sanitizer iterations couldn&apos;t fully strip the &ldquo;Why A is correct&rdquo; / &ldquo;The correct answer, C, is supported by&rdquo; leaks. Real fix: removed the entire &ldquo;Why&rdquo; section. Real flashcards are just front → back. New &ldquo;Ask Sage why this is the answer&rdquo; link routes to AI tutor with the Q+A pre-loaded." },
+            { icon: Heart, color: "text-blue-500", bg: "bg-blue-500/10", title: "Cross-Product Callout w/ UTM Tracking", desc: "Marketing footer link to preplion.ai (sister site for CLEP/DSST) now includes utm_source=studentnest&utm_medium=footer&utm_campaign=cross_product. Captures cross-product interest signal before full Phase G unification." },
+            { icon: ShieldCheck, color: "text-blue-500", bg: "bg-blue-500/10", title: "FRQ Seed Idempotency Fixed", desc: "Beta 8.2 incident: 04-seed.mjs ON CONFLICT (id) clause never fired (id is always unique), accumulated 628 duplicate rows. Fix: explicit pre-check on (course, year, questionNumber) tuple. Future seeds genuinely idempotent. One-time dedupe ran today — 220 unique CB-official FRQs across 14 AP courses." },
+          ].map(({ icon: Icon, color, bg, title, desc }) => (
+            <div key={title} className="flex gap-3 p-4 rounded-xl border border-border/40 bg-card">
+              <div className={`w-8 h-8 rounded-lg ${bg} flex items-center justify-center flex-shrink-0 mt-0.5`}>
+                <Icon className={`h-4 w-4 ${color}`} />
+              </div>
+              <div>
+                <p className="text-sm font-semibold">{title}</p>
+                <p className="text-xs text-muted-foreground leading-relaxed mt-0.5">{desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Section 7-prev1: Beta 8.2 release notes (demoted) */}
+      <div className="space-y-6">
+        <div className="text-center space-y-1">
+          <Badge className="bg-border/60 text-muted-foreground border-border/40 text-xs font-semibold mb-2">Beta 8.2</Badge>
           <h2 className="text-xl font-bold">What&apos;s New in Beta 8.2</h2>
           <p className="text-sm text-muted-foreground">Five P0 quality fixes from real-student feedback during AP season — answer-letter distribution rebalanced (no more guessing &ldquo;A&rdquo;), explanations cut to 40-80 words with optional &ldquo;Show full,&rdquo; the practice-flow Quick Check disabled by default, the official AP World History FRQ library ballooned from 0 to 104 questions (plus 519 more across 13 other AP courses), and the session-feedback popup now actually fires (was dismissable at session #1; now triggers at sessions 1, 5, 10, 25, 50, 100, 200 and blocks dismiss until rated).</p>
         </div>

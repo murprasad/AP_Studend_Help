@@ -33,6 +33,8 @@ import { PrimaryActionStrip } from "@/components/dashboard/primary-action-strip"
 import { OutcomeProgressStrip } from "@/components/dashboard/outcome-progress-strip";
 import { WeaknessFocusCard } from "@/components/dashboard/weakness-focus-card";
 import { SageCoachPromoCard } from "@/components/dashboard/sage-coach-promo-card";
+import { CramModeCard } from "@/components/dashboard/cram-mode-card";
+import { DailyStudyOSCard } from "@/components/dashboard/daily-study-os-card";
 import { DailyGoalCard } from "@/components/dashboard/daily-goal-card";
 import { LockedValueCard } from "@/components/dashboard/locked-value-card";
 import { AutoLaunchNudge } from "@/components/dashboard/auto-launch-nudge";
@@ -128,6 +130,18 @@ export function DashboardView() {
 
       {/* 1b. Start — renders null when ResumeCard would show. One CTA, not two. */}
       <PrimaryActionStrip course={course as string} impressionId={impressionId} />
+
+      {/* 1c. Phase C (Beta 8.3) — Cram Mode countdown + today's plan.
+          Renders ONLY when User.examDate is set AND <30 days out. Placed
+          high in the stack because urgency demands attention. Mode 3
+          per docs/requirements-mode-switching.md. */}
+      <CramModeCard course={course as string} />
+
+      {/* 1d. Phase D (Beta 8.3) — Daily Study OS. Adaptive plan based on
+          yesterday's performance. Hides when CramModeCard renders (Cram
+          takes precedence). Standard mode for non-cram-window users —
+          Mode 1 + Mode 2 in the time-aware framework. */}
+      <DailyStudyOSCard course={course as string} />
 
       {/* 2. Predicted native-scale score + delta */}
       <OutcomeProgressStrip course={course as string} />
