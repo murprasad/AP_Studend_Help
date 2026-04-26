@@ -23,37 +23,15 @@ RESEND_FROM_EMAIL = "noreply@studentnest.ai"
 # ─────────────────────────────────────────────────────────────────────────────
 
 # ─── Native Cloudflare rate-limit bindings (SEC-2b, 2026-04-25) ──────────────
-# Workers Rate Limiting API (free, edge-distributed, persists across isolate
-# recycles — unlike the in-process Map-based limiter at src/lib/rate-limit.ts
-# which silently no-ops for anonymous IPs because each isolate has its own
-# Map and isolates are short-lived).
-#
-# 2026-04-25 update: CF Pages dashboard now reports "Bindings for this project
-# are being managed through wrangler.toml." Modern wrangler supports a
-# dedicated [[unsafe.bindings]] type=ratelimit declaration for Pages
-# functions. The earlier deploy failure was wrangler 4.72 vs the binding
-# type — newer wrangler accepts it. Re-adding the four buckets here.
+# Workers Rate Limiting API (free, edge-distributed). NOTE: wrangler 4.72.0
+# rejects [[unsafe.bindings]] for Pages projects ("Configuration file for
+# Pages projects does not support 'unsafe'"). Configure ratelimit bindings
+# via the Cloudflare Pages dashboard instead (Settings → Functions →
+# Bindings → Add binding → Rate limiting). The four namespaces:
+#   RATELIMIT_5  → namespace 1005, limit 5/60s
+#   RATELIMIT_10 → namespace 1010, limit 10/60s
+#   RATELIMIT_20 → namespace 1020, limit 20/60s
+#   RATELIMIT_60 → namespace 1060, limit 60/60s
+# Until the dashboard bindings are added, src/lib/rate-limit.ts falls back
+# to its in-process Map limiter (best-effort).
 # ─────────────────────────────────────────────────────────────────────────────
-[[unsafe.bindings]]
-name = "RATELIMIT_5"
-type = "ratelimit"
-namespace_id = "1005"
-simple = { limit = 5, period = 60 }
-
-[[unsafe.bindings]]
-name = "RATELIMIT_10"
-type = "ratelimit"
-namespace_id = "1010"
-simple = { limit = 10, period = 60 }
-
-[[unsafe.bindings]]
-name = "RATELIMIT_20"
-type = "ratelimit"
-namespace_id = "1020"
-simple = { limit = 20, period = 60 }
-
-[[unsafe.bindings]]
-name = "RATELIMIT_60"
-type = "ratelimit"
-namespace_id = "1060"
-simple = { limit = 60, period = 60 }
