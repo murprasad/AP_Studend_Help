@@ -145,12 +145,17 @@ async function extractYear(course, year) {
   const [frqBuf, sgBuf] = await Promise.all([readFile(frqPath), readFile(sgPath)]);
 
   const model = genAI.getGenerativeModel({
-    model: "gemini-1.5-pro",
+    // 2026-04-25: gemini-1.5-pro removed from v1beta. Using 2.5-flash —
+    // handles PDFs natively, supports structured output, free tier friendly.
+    model: "gemini-2.5-flash",
     generationConfig: {
       responseMimeType: "application/json",
       responseSchema: SCHEMA,
       temperature: 0.1, // deterministic extraction
-      maxOutputTokens: 8192,
+      // Multi-question FRQ extraction with rubric + sample response per Q
+      // can easily exceed 8K tokens. 32K is generous; gemini-2.5-flash
+      // supports up to 65K output. Truncation = parse_fail downstream.
+      maxOutputTokens: 32768,
     },
     systemInstruction: SYSTEM_PROMPT,
   });
