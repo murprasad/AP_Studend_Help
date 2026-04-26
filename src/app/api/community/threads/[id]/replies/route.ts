@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import { moderateContentFast } from "@/lib/community-moderation"
+import { rateLimit } from "@/lib/rate-limit"
 
 export const dynamic = "force-dynamic"
 
@@ -31,6 +32,17 @@ export async function POST(
   try {
     const session = await getServerSession(authOptions)
     if (!session?.user?.id) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+
+    // Beta 7.9 (2026-04-25): rate limit reply creation. Prior gap: same
+    // user could spam 100 replies on a single thread. 10/min lets a real
+    // discussion happen but kills griefing.
+    const { allowed } = rateLimit(session.user.id, "community:create-reply", 10)
+    if (!allowed) {
+      return NextResponse.json(
+        { error: "You're replying too quickly. Wait a minute and try again." },
+        { status: 429 }
+      )
+    }
 
     const { body } = await req.json()
     if (!body?.trim()) return NextResponse.json({ error: "Body required" }, { status: 400 })

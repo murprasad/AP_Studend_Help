@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import { ApCourse } from "@prisma/client"
+import { rateLimit } from "@/lib/rate-limit"
 import { VALID_AP_COURSES } from "@/lib/courses"
 import { moderateContentFast } from "@/lib/community-moderation"
 
@@ -36,6 +37,18 @@ export async function POST(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions)
     if (!session?.user?.id) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+
+    // Beta 7.9 (2026-04-25): rate limit thread creation. Prior gap flagged
+    // by A2 wave-2 scan: a single user could POST 50 threads in 60s, no
+    // throttle. 5/min is generous for legitimate use (typical user posts
+    // <1/day) but kills spam-flood vector.
+    const { allowed } = rateLimit(session.user.id, "community:create-thread", 5)
+    if (!allowed) {
+      return NextResponse.json(
+        { error: "You're posting threads too quickly. Wait a minute and try again." },
+        { status: 429 }
+      )
+    }
 
     const { course, title, body } = await req.json()
     if (!title?.trim() || !body?.trim()) {
