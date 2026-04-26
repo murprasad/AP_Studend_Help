@@ -16,6 +16,12 @@ import { test, expect } from "@playwright/test";
  *   - No <section> / <article> / <main> that's empty
  */
 
+// /clep-prep + /dsst-prep are intentionally cross-domain redirected to
+// preplion.ai when the CLEP/DSST feature flags are off (current prod
+// state). Auditing them would actually audit preplion.ai's HTML, which
+// (a) we don't own, (b) gives false-positive failures here. They're
+// re-added to PAGES once flags are enabled or once preplion.ai's content
+// passes the same audit.
 const PAGES = [
   "/",
   "/pricing",
@@ -27,8 +33,6 @@ const PAGES = [
   "/ap-prep",
   "/sat-prep",
   "/act-prep",
-  "/clep-prep",
-  "/dsst-prep",
   "/am-i-ready",
   "/pass-rates",
   "/wall-of-fame",
