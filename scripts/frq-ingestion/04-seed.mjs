@@ -48,9 +48,21 @@ async function main() {
     }
 
     try {
-      // Use raw SQL for idempotent upsert via ON CONFLICT (Neon HTTP
-      // doesn't support transactions, but ON CONFLICT inside one INSERT
-      // is fine — it's a single statement, not a transaction).
+      // Beta 8.2 fix (2026-04-26): the previous "ON CONFLICT (id) DO NOTHING"
+      // never fired because id is always crypto.randomUUID() (always unique).
+      // Result: 628 duplicate rows accumulated in prod across multiple
+      // ingestion runs. Now: explicit pre-check on (course, year, questionNumber).
+      // Skip if a row with that natural key already exists.
+      const existing = await prisma.$queryRawUnsafe(
+        `SELECT id FROM "free_response_questions"
+         WHERE course = $1::"ApCourse" AND year = $2 AND "questionNumber" = $3
+         LIMIT 1`,
+        f.course, f.year, f.questionNumber,
+      );
+      if (Array.isArray(existing) && existing.length > 0) {
+        // Already exists — count as already-ingested, not error.
+        continue;
+      }
       const id = crypto.randomUUID();
       const result = await prisma.$executeRawUnsafe(
         `INSERT INTO "free_response_questions"
