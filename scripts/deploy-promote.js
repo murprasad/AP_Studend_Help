@@ -48,10 +48,16 @@ function run(cmd, args, opts = {}) {
   );
 
   // Quick smoke against prod — catches CF Pages global propagation
-  // hiccups + cold-start specifics. Heavy E2E suite already passed
-  // against staging, no need to re-run.
+  // hiccups + cold-start specifics.
   console.log(`\n🔍 Post-promote smoke against studentnest.ai…\n`);
   await run("node", ["scripts/smoke-tests.js"]);
+
+  // Authed Playwright suite against prod. Staging gate skipped these
+  // because CF Pages Preview env doesn't have a matching NEXTAUTH_URL.
+  // Production has the real env, so authed tests run cleanly here.
+  // Public tests already passed in the staging gate.
+  console.log(`\n🎭 Authed Playwright (chromium-authed) against prod…\n`);
+  await run("npx", ["playwright", "test", "--project=chromium-authed", "--reporter=list"]);
 
   console.log(`\n────────────────────────────────────────────────────────────`);
   console.log(`✅ PROMOTED TO PRODUCTION.`);

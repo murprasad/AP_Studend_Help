@@ -87,8 +87,15 @@ const STAGING_BRANCH = process.env.STAGING_BRANCH || "staging";
   console.log(`\n🔗 Integration tests against staging…\n`);
   await run("node", ["scripts/integration-tests.js"], { env });
 
-  console.log(`\n🎭 Playwright E2E against staging (full suite)…\n`);
-  await run("npx", ["playwright", "test", "--reporter=list"], { env });
+  // Playwright on staging — public-only project (chromium-public).
+  // The chromium-authed project is skipped here because CF Pages Preview
+  // env vars don't match prod (NEXTAUTH_URL points at localhost in
+  // Preview), so NextAuth won't honor the forged JWT against staging
+  // hash URLs. Authed regressions are caught during pages:promote (which
+  // re-runs against prod) and by the post-promote smoke tests.
+  // Future: configure CF Preview env to match prod for full staging coverage.
+  console.log(`\n🎭 Playwright E2E (public project) against staging…\n`);
+  await run("npx", ["playwright", "test", "--project=chromium-public", "--reporter=list"], { env });
 
   // 6. Green light. Print promote command but do NOT auto-promote.
   console.log(`\n────────────────────────────────────────────────────────────`);
