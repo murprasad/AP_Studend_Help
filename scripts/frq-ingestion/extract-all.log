@@ -1,0 +1,56 @@
+
+🤖 FRQ ingestion stage 2 — Gemini 1.5 Pro extraction
+
+
+AP_BIOLOGY:
+  · 2023 cached
+  · 2022 cached
+  · 2021 cached
+  ✓ 2019 8 Qs
+
+AP_CALCULUS_AB:
+  ✓ 2023 6 Qs
+  ✗ 2022 [error] [GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/mod
+  ✗ 2021 [parse_fail] {
+  "year": 2021,
+  "questions": [
+    {
+      "questionNumber": 1,
+      "type"
+  ✓ 2019 6 Qs
+
+AP_CALCULUS_BC:
+  ✗ 2023 [error] [GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/mod
+  ✓ 2022 6 Qs
+  ✓ 2021 6 Qs
+  ✗ 2019 [error] [GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/mod
+
+AP_CHEMISTRY:
+  ✓ 2023 7 Qs
+  ✗ 2021 [error] [GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/mod
+  ✓ 2019 7 Qs
+
+AP_PHYSICS_1:
+  ✗ 2023 [error] [GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/mod
+  ✗ 2022 [error] [GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/mod
+  ✗ 2019 [error] [GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/mod
+
+AP_STATISTICS:
+  ✗ 2023 [error] [GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/mod
+  ✗ 2022 [error] [GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/mod
+  ✗ 2021 [error] [GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/mod
+  ✗ 2019 [missing_pdfs]
+
+AP_US_HISTORY:
+  ✗ 2022 [error] [GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/mod
+  ✗ 2021 [error] [GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/mod
+  ✗ 2019 [error] [GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/mod
+
+AP_WORLD_HISTORY:
+  ✗ 2022 [error] [GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/mod
+  ✗ 2019 [error] [GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/mod
+
+── Summary ──
+  Extracted: 7 year-files (46 questions)
+  Cached:    3
+  Failed:    17

@@ -1,0 +1,29 @@
+
+🔍 FRQ ingestion stage 0b — direct CB year probe (2002 → 2026)
+
+AP_BIOLOGY                               probing... have 4, new 2
+  new years: 2025, 2024
+AP_CHEMISTRY                             probing... have 4, new 2
+  new years: 2025, 2024
+AP_CALCULUS_AB                           probing... have 4, new 3
+  new years: 2025, 2024, 2018
+AP_CALCULUS_BC                           probing... have 4, new 3
+  new years: 2025, 2024, 2018
+AP_STATISTICS                            probing... have 4, new 3
+  new years: 2025, 2024, 2018
+AP_PHYSICS_1                             probing... have 4, new 2
+  new years: 2025, 2024
+AP_US_HISTORY                            probing... have 4, new 0
+AP_WORLD_HISTORY                         probing... have 4, new 1
+  new years: 2018
+AP_PSYCHOLOGY                            probing... have 3, new 1
+  new years: 2018
+AP_COMPUTER_SCIENCE_PRINCIPLES           probing... have 0, new 0
+
+── Summary ──
+  Courses scanned:     10
+  Total new year-pairs found: 17
+
+📝 Extended source list written: C:\Users\akkil\project\AP_Help\scripts\frq-ingestion\sources-extended.json
+Review + merge into sources.json (manually or via merge script) before re-running 01-download.mjs.
+

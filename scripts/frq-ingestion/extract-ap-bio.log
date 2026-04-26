@@ -1,0 +1,14 @@
+
+🤖 FRQ ingestion stage 2 — Gemini 1.5 Pro extraction
+
+
+AP_BIOLOGY:
+  ✓ 2023 6 Qs
+  ✓ 2022 6 Qs
+  ✓ 2021 6 Qs
+  ✓ 2019 8 Qs
+
+── Summary ──
+  Extracted: 4 year-files (26 questions)
+  Cached:    0
+  Failed:    0

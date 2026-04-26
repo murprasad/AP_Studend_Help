@@ -100,6 +100,51 @@ If we just bulk-add 1000 random FRQs, students get overwhelmed + difficulty
 becomes inconsistent + score gains weaken. The variant pipeline + skill
 tagging is what makes this targetable.
 
+## ⚖️ Legal + strategic guidance (locked 2026-04-25)
+
+**The trap:** "Released materials = safe to redistribute" is partially true but incomplete.
+
+**Generally safe:**
+- Linking to official PDFs (CB-hosted)
+- Using questions for instructional use
+- Quoting portions with attribution
+- Storing metadata + extracted structure + transformed versions
+
+**Risky / avoid:**
+- Re-hosting full PDFs at scale
+- Packaging the entire archive as our own dataset
+- Removing branding / attribution
+- Monetizing direct copies without transformation
+
+**apfrqs.com role:** discovery INDEX only — not a data source.
+- ✅ Use it to find older years (2002–2018) that CB no longer indexes
+- ✅ Use it to locate "removed" or hard-to-find exams
+- ✅ Use it to identify gaps in our current coverage
+- ❌ Do NOT scrape and re-host its PDFs
+- ❌ Do NOT package its archive as our dataset
+- → After discovery, pull from official CB URLs when available; if a PDF only exists on apfrqs.com, store extracted structured data + attribute back to original CB year/exam, never the raw PDF
+
+## Why this matters more than just adding 100 FRQs
+
+A library of 100 FRQs is just storage. The actual learning value comes from STRUCTURE.
+
+**Step 2 (extract, not store):** Per FRQ, capture:
+- Parts (a, b, c, d…)
+- Atomic skill tags (per CED: "Hardy-Weinberg calculation", "Experimental design critique", not "FRQ #3 2011")
+- Unit (mapped to current curriculum, not original-year unit)
+- Rubric points (atomic + aligned to current scoring guidelines)
+
+**Step 3 (transform):**
+- Slight rewrite — same concept, fresh context
+- Generate variants (easier scaffold + harder twist)
+- Add data-interpretation layers to pre-2020 questions (which lack stimulus-based design)
+- Modernize question framing where curriculum has shifted
+
+**Step 4 (attribute):**
+- Every FRQ has `source: "college_board_released"` + `sourceUrl: <original-CB-URL>` + `originalYear`
+- UI shows "Source: College Board, AP Biology 2008 Exam"
+- Link back to the original where it still exists
+
 ## Pipeline state today (2026-04-25)
 
 ```
