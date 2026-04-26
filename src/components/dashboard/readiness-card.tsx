@@ -3,11 +3,21 @@
 import { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Target, Sparkles, TrendingUp } from "lucide-react";
+import { Target, Sparkles, TrendingUp, ArrowRight, Zap } from "lucide-react";
 import Link from "next/link";
 
 interface Props {
   course: string;
+}
+
+interface ScoreAction {
+  unit: string;
+  unitLabel: string;
+  currentMastery: number;
+  totalAttempts: number;
+  estQuestionsToTier: number;
+  href: string;
+  reason: string;
 }
 
 interface Readiness {
@@ -24,6 +34,8 @@ interface Readiness {
   totalSessions: number;
   totalAnswered: number;
   hasDiagnostic: boolean;
+  /** Phase A (Beta 8.1): top-3 actions to boost score. AP only. */
+  actions?: ScoreAction[];
 }
 
 export function ReadinessCard({ course }: Props) {
@@ -116,6 +128,35 @@ export function ReadinessCard({ course }: Props) {
               <span className="text-sm font-medium">Calibrate in 10 min → sharper score</span>
             </div>
           </Link>
+        )}
+
+        {data.actions && data.actions.length > 0 && (
+          <div className="pt-2 border-t border-border/30 space-y-1.5">
+            <div className="flex items-center gap-1.5 text-xs text-muted-foreground uppercase tracking-wide font-medium">
+              <Zap className="h-3 w-3" />
+              <span>Boost your score — do these next</span>
+            </div>
+            {data.actions.map((a) => (
+              <Link
+                key={a.unit}
+                href={a.href}
+                className="flex items-center justify-between p-2.5 rounded-lg bg-secondary/40 hover:bg-accent transition-colors group"
+              >
+                <div className="min-w-0 flex-1 pr-2">
+                  <p className="text-sm font-medium truncate">{a.unitLabel}</p>
+                  <div className="flex items-center gap-2 mt-0.5">
+                    <Badge variant="outline" className="text-[10px] py-0 px-1.5">{a.reason}</Badge>
+                    <span className="text-[11px] text-muted-foreground">
+                      {a.totalAttempts > 0
+                        ? `${a.currentMastery}% mastery · ~${a.estQuestionsToTier} Qs to next tier`
+                        : `Untouched · start here · ~${a.estQuestionsToTier} Qs`}
+                    </span>
+                  </div>
+                </div>
+                <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:translate-x-0.5 transition-transform flex-shrink-0" />
+              </Link>
+            ))}
+          </div>
         )}
 
         <p className="text-[10px] text-muted-foreground/70 leading-relaxed pt-1">

@@ -22,6 +22,7 @@ import {
   type UnifiedReadiness,
 } from "@/lib/score-predictors";
 import type { ActSectionKey } from "@/lib/score-predictors/act";
+import { getScoreActions } from "@/lib/score-predictors/weaknesses";
 
 const TWO_WEEKS_MS = 14 * 86_400_000;
 
@@ -136,6 +137,15 @@ export async function loadReadinessSnapshot(
   const family = examFamilyOf(course as string);
 
   if (family === "AP") {
+    // Phase A (Beta 8.1): compute top-3 actionable weakness items so the
+    // dashboard can render "Boost your score: do these 3 things." Pure
+    // function over data we already loaded — no extra DB hit.
+    const actions = getScoreActions(
+      course,
+      masteryScores.map((m) => ({ unit: m.unit, masteryScore: m.masteryScore, totalAttempts: m.totalAttempts || 0 })),
+      3,
+    );
+
     return {
       ...readinessForAp(
         course,
@@ -148,6 +158,7 @@ export async function loadReadinessSnapshot(
         },
         hasDiagnostic,
       ),
+      actions,
       totalSessions,
       totalAnswered,
       recentAccuracy,

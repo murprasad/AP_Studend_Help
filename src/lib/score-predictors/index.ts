@@ -50,6 +50,21 @@ export interface UnifiedReadiness {
 
   /** Standard user-facing disclaimer. Same shape across exams. */
   disclaimer: string;
+
+  /**
+   * Phase A (Beta 8.1): top-3 actionable items the user can do RIGHT
+   * NOW to boost their score. Ranked by boost potential. Each links to
+   * focused practice for one weak unit. Empty array if no signal yet.
+   */
+  actions?: Array<{
+    unit: string;
+    unitLabel: string;
+    currentMastery: number;
+    totalAttempts: number;
+    estQuestionsToTier: number;
+    href: string;
+    reason: string;
+  }>;
 }
 
 export const EXAM_FAMILY_DISCLAIMER: Record<ExamFamily, string> = {

@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     description: "AI-powered exam prep built on learning science. 16+ courses, free to start.",
   },
 };
-import { Globe, Mail, Target, Heart, Sparkles, Lightbulb, LayoutDashboard, GraduationCap, ShieldCheck, Brain } from "lucide-react";
+import { Globe, Mail, Target, Heart, Sparkles, Lightbulb, LayoutDashboard, GraduationCap, ShieldCheck, Brain, TrendingUp, Zap } from "lucide-react";
 import Link from "next/link";
 import { BrowserFrame } from "@/components/landing/browser-frame";
 import { MockupPractice } from "@/components/landing/mockup-practice";
@@ -62,7 +62,7 @@ export default function AboutPage() {
           </div>
           <div className="flex items-center gap-2 flex-wrap">
             <h1 className="text-3xl font-bold gradient-text">About StudentNest Prep</h1>
-            <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30 text-xs font-semibold">Beta 8.0</Badge>
+            <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30 text-xs font-semibold">Beta 8.1</Badge>
           </div>
         </div>
         <p className="text-muted-foreground leading-relaxed max-w-2xl mx-auto">
@@ -310,10 +310,37 @@ export default function AboutPage() {
         </div>
       </div>
 
-      {/* Section 7: What's New in Beta 7.5 — A11y progressbars + FRQ ingestion foundation + P1 batch */}
+      {/* Section 7: What's New in Beta 8.1 — Phase A: AP Score Predictor with action recommendations */}
       <div className="space-y-6">
         <div className="text-center space-y-1">
           <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30 text-xs font-semibold mb-2">Latest Release</Badge>
+          <h2 className="text-xl font-bold">What&apos;s New in Beta 8.1</h2>
+          <p className="text-sm text-muted-foreground">Your projected AP score now tells you what to do next. Three ranked weak-unit recommendations appear right under your 1–5 prediction — each with a one-tap path to focused practice and a rough estimate of how many questions to bump into the next score tier. No more guessing what to study.</p>
+        </div>
+        <div className="grid sm:grid-cols-2 gap-3 text-left">
+          {[
+            { icon: Target, color: "text-blue-500", bg: "bg-blue-500/10", title: "Score-to-Action Recommendations", desc: "Below your projected 1–5 score, the dashboard now shows your top 3 weakest units, each labeled with current mastery and a rough Qs-to-next-tier estimate. One tap lands you in focused practice for that exact unit." },
+            { icon: Zap, color: "text-blue-500", bg: "bg-blue-500/10", title: "Untouched Units Surface Too", desc: "Units you haven&apos;t practiced yet appear as &ldquo;Untouched · start here&rdquo; cards alongside weak-mastery units. We rank by boost potential — not just lowest mastery — so you build a complete prep, not a lopsided one." },
+            { icon: TrendingUp, color: "text-blue-500", bg: "bg-blue-500/10", title: "Calibrated Question Estimates", desc: "&ldquo;~12 Qs to next tier&rdquo; isn&apos;t a guess — it&apos;s based on a conservative ~10 questions per 8 percentage points of mastery gain, calibrated against historical data. Floor at 5, cap at 50." },
+            { icon: Sparkles, color: "text-blue-500", bg: "bg-blue-500/10", title: "Same Score, Smarter Pathway", desc: "The 1–5 scaled prediction itself didn&apos;t change. What changed is the &ldquo;OK, what now?&rdquo; gap between &ldquo;you&apos;re a 3.7&rdquo; and actually doing the thing. Three concrete actions appear automatically — no extra clicks, no extra page." },
+          ].map(({ icon: Icon, color, bg, title, desc }) => (
+            <div key={title} className="flex gap-3 p-4 rounded-xl border border-border/40 bg-card">
+              <div className={`w-8 h-8 rounded-lg ${bg} flex items-center justify-center flex-shrink-0 mt-0.5`}>
+                <Icon className={`h-4 w-4 ${color}`} />
+              </div>
+              <div>
+                <p className="text-sm font-semibold">{title}</p>
+                <p className="text-xs text-muted-foreground leading-relaxed mt-0.5">{desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Section 7-prev: What's New in Beta 7.5 — A11y progressbars + FRQ ingestion foundation + P1 batch */}
+      <div className="space-y-6">
+        <div className="text-center space-y-1">
+          <Badge className="bg-border/60 text-muted-foreground border-border/40 text-xs font-semibold mb-2">Beta 7.5</Badge>
           <h2 className="text-xl font-bold">What&apos;s New in Beta 7.5</h2>
           <p className="text-sm text-muted-foreground">Screen-reader fixes for every progress bar across the app, plus the foundation of the College Board FRQ ingestion pipeline (47 official PDFs downloaded across 8 AP courses). Plus a P1 batch from the bug-hunt sprint: cache self-heal, email compliance, mobile touch targets, flashcard explanation cleanup, and an escape-hatch from the &ldquo;No FRQs available&rdquo; dead-end for Premium users.</p>
         </div>
