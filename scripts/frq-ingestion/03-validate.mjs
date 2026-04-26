@@ -31,9 +31,21 @@ async function listExtractedFiles() {
     const dir = join(PDF_ROOT, c.name);
     const files = await readdir(dir);
     for (const f of files) {
-      if (f.endsWith("-extracted.json")) {
-        const m = f.match(/^(\d{4})-extracted\.json$/);
-        if (m) out.push({ course: c.name, year: Number(m[1]), path: join(dir, f) });
+      // Legacy: YYYY-extracted.json
+      const legacy = f.match(/^(\d{4})-extracted\.json$/);
+      if (legacy) {
+        out.push({ course: c.name, year: Number(legacy[1]), set: "0", path: join(dir, f) });
+        continue;
+      }
+      // New (Beta 8.2): extracted-apYY-set-N.json — multiple sets per year.
+      const newPat = f.match(/^extracted-ap(\d{2})-set-(\d+)\.json$/);
+      if (newPat) {
+        out.push({
+          course: c.name,
+          year: 2000 + Number(newPat[1]),
+          set: newPat[2],
+          path: join(dir, f),
+        });
       }
     }
   }

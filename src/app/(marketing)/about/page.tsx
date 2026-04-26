@@ -62,7 +62,7 @@ export default function AboutPage() {
           </div>
           <div className="flex items-center gap-2 flex-wrap">
             <h1 className="text-3xl font-bold gradient-text">About StudentNest Prep</h1>
-            <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30 text-xs font-semibold">Beta 8.1</Badge>
+            <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30 text-xs font-semibold">Beta 8.2</Badge>
           </div>
         </div>
         <p className="text-muted-foreground leading-relaxed max-w-2xl mx-auto">
@@ -310,10 +310,39 @@ export default function AboutPage() {
         </div>
       </div>
 
-      {/* Section 7: What's New in Beta 8.1 — Phase A: AP Score Predictor with action recommendations */}
+      {/* Section 7: What's New in Beta 8.2 — Real-student feedback fixes (P0 quality bundle) */}
       <div className="space-y-6">
         <div className="text-center space-y-1">
           <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30 text-xs font-semibold mb-2">Latest Release</Badge>
+          <h2 className="text-xl font-bold">What&apos;s New in Beta 8.2</h2>
+          <p className="text-sm text-muted-foreground">Five P0 quality fixes from real-student feedback during AP season — answer-letter distribution rebalanced (no more guessing &ldquo;A&rdquo;), explanations cut to 40-80 words with optional &ldquo;Show full,&rdquo; the practice-flow Quick Check disabled by default, the official AP World History FRQ library ballooned from 0 to 104 questions (plus 519 more across 13 other AP courses), and the session-feedback popup now actually fires (was dismissable at session #1; now triggers at sessions 1, 5, 10, 25, 50, 100, 200 and blocks dismiss until rated).</p>
+        </div>
+        <div className="grid sm:grid-cols-2 gap-3 text-left">
+          {[
+            { icon: Target, color: "text-blue-500", bg: "bg-blue-500/10", title: "Answer Letter Re-Shuffle (All 34 Courses)", desc: "Audit found 86% of AP World History MCQ correct answers were &ldquo;A.&rdquo; Real CB exams use ~25% per option. Fisher-Yates shuffled every existing MCQ (and added a generation-prompt rule to prevent drift) so no course is now &gt;30% any single letter." },
+            { icon: Brain, color: "text-blue-500", bg: "bg-blue-500/10", title: "523 Official AP FRQs (was 90)", desc: "Built a CB index-page scraper that hits each AP course's past-exam-questions URL and pulls the actual current PDF set. Extracted via Groq into structured JSON with rubrics + scoring guides. AP World History alone went from 0 to 104 official FRQs covering 2019-2025." },
+            { icon: Sparkles, color: "text-blue-500", bg: "bg-blue-500/10", title: "Concise Explanations + Show-Full Toggle", desc: "Old explanations averaged 800-1600 chars across courses (vs CB's typical 200-400). Tightened generation prompt to 40-80 words and added smart truncation — first ~280 chars show by default, &ldquo;Show full explanation&rdquo; toggle for the rare long ones." },
+            { icon: ShieldCheck, color: "text-blue-500", bg: "bg-blue-500/10", title: "Quick Check Disabled by Default", desc: "The post-wrong-answer 3-MCQ comprehension quiz was firing during AP-season cram and slowing students down. Now off by default; admin flag still available to re-enable." },
+            { icon: Heart, color: "text-blue-500", bg: "bg-blue-500/10", title: "Feedback Popup Actually Fires", desc: "Old popup showed once per (course + source + context) and was dismissable via Escape — only 5-8 unique users gave feedback in 5 weeks despite 40 signups/week. New: triggers at session 1, 5, 10, 25, 50, 100, 200 milestones, blocks dismiss until rated. Expect 5-10x more feedback volume." },
+            { icon: LayoutDashboard, color: "text-blue-500", bg: "bg-blue-500/10", title: "Index-Page Scraper (CB-Compatible)", desc: "CB silently changed their PDF URL pattern in 2023 (added -set-N suffixes). Old hard-coded URLs returned 404. New scraper hits the past-exam-questions index page for each course, parses out current PDF URLs, downloads everything publicly available. 999 PDFs / 1.2 GB pulled across 24 AP courses." },
+          ].map(({ icon: Icon, color, bg, title, desc }) => (
+            <div key={title} className="flex gap-3 p-4 rounded-xl border border-border/40 bg-card">
+              <div className={`w-8 h-8 rounded-lg ${bg} flex items-center justify-center flex-shrink-0 mt-0.5`}>
+                <Icon className={`h-4 w-4 ${color}`} />
+              </div>
+              <div>
+                <p className="text-sm font-semibold">{title}</p>
+                <p className="text-xs text-muted-foreground leading-relaxed mt-0.5">{desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Section 7-prev1: What's New in Beta 8.1 — Phase A: AP Score Predictor with action recommendations */}
+      <div className="space-y-6">
+        <div className="text-center space-y-1">
+          <Badge className="bg-border/60 text-muted-foreground border-border/40 text-xs font-semibold mb-2">Beta 8.1</Badge>
           <h2 className="text-xl font-bold">What&apos;s New in Beta 8.1</h2>
           <p className="text-sm text-muted-foreground">Your projected AP score now tells you what to do next. Three ranked weak-unit recommendations appear right under your 1–5 prediction — each with a one-tap path to focused practice and a rough estimate of how many questions to bump into the next score tier. No more guessing what to study.</p>
         </div>

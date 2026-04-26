@@ -7,7 +7,7 @@ import { ThumbsUp, ThumbsDown, Send } from "lucide-react";
 
 interface SessionFeedbackPopupProps {
   sessionId: string | null;
-  /** Show popup only after the first diagnostic or first practice */
+  /** Show popup at session boundaries 1, 5, 10, 25, 50, 100, ... per (source, course, context). */
   triggerCondition: "always" | "first-only";
   /** Source context for the feedback */
   source: "practice" | "diagnostic";
@@ -25,6 +25,14 @@ interface SessionFeedbackPopupProps {
 }
 
 const FEEDBACK_KEY = "preplion_feedback_given";
+const SESSION_COUNT_KEY = "studentnest_feedback_session_counts";
+
+// Beta 8.2 (2026-04-26): trigger feedback at these session-count milestones
+// per (source, course, context) combo. Per-user data showed only 5-8 unique
+// users gave feedback over 5 weeks because old "first-only" + dismissable
+// dialog let almost everyone skip. Geometric backoff respects power users
+// (no popup every session) while ensuring 4-5 prompts in their first 50.
+const TRIGGER_SESSIONS = [1, 5, 10, 25, 50, 100, 200];
 
 export function SessionFeedbackPopup({ sessionId, triggerCondition, source, course, context = "completion", onComplete }: SessionFeedbackPopupProps) {
   const [open, setOpen] = useState(false);
@@ -44,12 +52,32 @@ export function SessionFeedbackPopup({ sessionId, triggerCondition, source, cour
   useEffect(() => {
     if (!sessionId) return;
 
-    // Check if user has already given feedback for this source+course+context combo
     const feedbackKey = course ? `${source}_${course}_${context}` : `${source}_${context}`;
+
+    // Track session counts per (source, course, context) so we can fire the
+    // popup at milestone sessions instead of just session #1.
+    let sessionN = 1;
     try {
-      const given = JSON.parse(localStorage.getItem(FEEDBACK_KEY) || "{}");
-      if (triggerCondition === "first-only" && given[feedbackKey]) return;
+      const counts = JSON.parse(localStorage.getItem(SESSION_COUNT_KEY) || "{}");
+      counts[feedbackKey] = (counts[feedbackKey] || 0) + 1;
+      sessionN = counts[feedbackKey];
+      localStorage.setItem(SESSION_COUNT_KEY, JSON.stringify(counts));
     } catch {}
+
+    // Legacy "first-only" mode: still show on session 1 only (keeps backward
+    // compat for callers that haven't migrated). New "always" mode fires at
+    // milestone sessions.
+    let shouldShow = false;
+    if (triggerCondition === "first-only") {
+      try {
+        const given = JSON.parse(localStorage.getItem(FEEDBACK_KEY) || "{}");
+        shouldShow = !given[feedbackKey];
+      } catch { shouldShow = true; }
+    } else {
+      // "always" — fire at TRIGGER_SESSIONS milestones (1, 5, 10, 25, 50, ...).
+      shouldShow = TRIGGER_SESSIONS.includes(sessionN);
+    }
+    if (!shouldShow) return;
 
     // Show popup after a short delay so the summary renders first
     const timer = setTimeout(() => setOpen(true), 1500);
@@ -113,8 +141,16 @@ export function SessionFeedbackPopup({ sessionId, triggerCondition, source, cour
   const goodLabel = context === "abandon" ? "Just taking a break" : "Good";
   const badLabel = context === "abandon" ? "Ran into a problem" : "Needs work";
 
+  // Beta 8.2 (2026-04-26): block dismiss until rated. The custom Dialog
+  // (src/components/ui/dialog.tsx) closes on backdrop click via setOpen(false)
+  // → onOpenChange(false). By gating onOpenChange on allowDismiss we
+  // intercept the close. The X button inside DialogContent ALSO calls
+  // setOpen(false) — same gate catches it. Once submitted=true the
+  // "Thank you" auto-closes via closeTimer (calls setOpen(false) directly,
+  // which the gate now permits).
+  const allowDismiss = submitted;
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={(next) => { if (allowDismiss || next) setOpen(next); }}>
       <DialogContent className="sm:max-w-sm p-0 gap-0 rounded-2xl overflow-hidden">
         <div className="p-6 text-center space-y-5">
           {submitted ? (

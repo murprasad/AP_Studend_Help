@@ -705,11 +705,16 @@ export default function PracticePage() {
             celebration on subsequent ≥80% sessions. Gated by
             sessionStorage so a hot reload / tab reopen doesn't retrigger. */}
         <FirstSessionCelebration accuracy={sessionSummary.accuracy} />
-        {/* A22.6 port — Session feedback popup. Shows once per source+course
-            after the first completed session, asks rating + text on thumbs-down. */}
+        {/* Beta 8.2 (2026-04-26): switched to triggerCondition="always" so
+            popup fires at session 1, 5, 10, 25, 50, 100, 200 (geometric
+            backoff defined in TRIGGER_SESSIONS) instead of just session #1.
+            Combined with block-dismiss-until-rated change, this should lift
+            feedback volume from ~5-8 unique users / 5 weeks to substantially
+            more. Production data showed first-only mode captured almost
+            nothing because students dismissed via Escape/click-outside. */}
         <SessionFeedbackPopup
           sessionId={sessionId}
-          triggerCondition="first-only"
+          triggerCondition="always"
           source="practice"
           course={course}
           context="completion"
