@@ -30,6 +30,23 @@ function fetchWithTimeout(url, ms, opts = {}) {
   return fetch(url, { ...opts, signal: ctrl.signal }).finally(() => clearTimeout(timer));
 }
 
+// Retry on transient network failures. CF Pages global propagation
+// can cause brief "fetch failed" right after a deploy. 3 attempts
+// with 1s/2s backoff catches >99% of these without hiding real bugs.
+async function fetchWithRetry(url, ms, opts = {}) {
+  const delays = [0, 1000, 2000];
+  let lastErr;
+  for (const delay of delays) {
+    if (delay > 0) await new Promise((r) => setTimeout(r, delay));
+    try {
+      return await fetchWithTimeout(url, ms, opts);
+    } catch (e) {
+      lastErr = e;
+    }
+  }
+  throw lastErr;
+}
+
 let passed = 0;
 let warned = 0;
 let failed = 0;
@@ -41,7 +58,7 @@ function fail(label, detail = "") { console.error(`  ❌ ${label}${detail ? " �
 function section(title)           { console.log(`\n── ${title} ──`); }
 
 async function get(path, opts = {}) {
-  return fetchWithTimeout(`${BASE_URL}${path}`, TIMEOUT_MS, { redirect: "follow", ...opts });
+  return fetchWithRetry(`${BASE_URL}${path}`, TIMEOUT_MS, { redirect: "follow", ...opts });
 }
 
 async function run() {
