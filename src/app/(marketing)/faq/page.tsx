@@ -11,8 +11,16 @@ export const metadata: Metadata = {
   },
 };
 
+// Cold-start defense (Beta 8.0 hotfix #3): see pricing/page.tsx — same fix.
+async function safeFlag(p: () => Promise<boolean>, fallback: boolean): Promise<boolean> {
+  try { return await p(); } catch { return fallback; }
+}
+
 export default async function FaqPage() {
-  const [clepOn, dsstOn] = await Promise.all([isClepEnabled(), isDsstEnabled()]);
+  const [clepOn, dsstOn] = await Promise.all([
+    safeFlag(isClepEnabled, false),
+    safeFlag(isDsstEnabled, false),
+  ]);
   const examLabel = getExamLabel(clepOn, dsstOn);
   const courseCount = getCourseCount(clepOn, dsstOn);
 
