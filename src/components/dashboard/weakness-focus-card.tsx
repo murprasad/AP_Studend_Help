@@ -78,18 +78,13 @@ export function WeaknessFocusCard({ course }: Props) {
     return () => { cancelled = true; };
   }, [course]);
 
-  // Loading state — render skeleton placeholder so the card slot is
-  // reserved and the layout doesn't pop in/out.
-  if (!data) {
-    return (
-      <Card className="rounded-[16px] border-border/40">
-        <CardContent className="p-5 space-y-2">
-          <div className="h-5 w-32 rounded bg-muted animate-pulse" />
-          <div className="h-4 w-full rounded bg-muted/60 animate-pulse" />
-        </CardContent>
-      </Card>
-    );
-  }
+  // Loading state — return null until data arrives so the dashboard
+  // doesn't show two stacked skeleton cards (OutcomeProgressStrip
+  // already has its own). User-reported 2026-04-26: dual-skeleton load
+  // looks "broken" on slow cold-starts. The screen-flip fix below still
+  // covers the soft-fail case (renders "Building your path" instead of
+  // disappearing) — that was the real bug.
+  if (!data) return null;
 
   const isPremium = limits?.tier === "PREMIUM" || limits?.unlimited === true;
   const w = data.weakestUnit;
@@ -145,8 +140,11 @@ export function WeaknessFocusCard({ course }: Props) {
                 <p className="text-[13px] text-muted-foreground">Weakest area</p>
                 <p className="text-[16px] font-semibold leading-tight truncate">{w.unitName}</p>
                 <p className="text-[13px] text-muted-foreground mt-1">
-                  You&apos;re missing <span className="font-semibold text-amber-600 dark:text-amber-400 tabular-nums">~{w.missRatePct}%</span> here.
-                  Fixing this = fastest path to passing.
+                  You&apos;re missing about{" "}
+                  <span className="font-semibold text-amber-600 dark:text-amber-400 tabular-nums">
+                    {Math.max(0, Math.min(100, w.missRatePct))}%
+                  </span>{" "}
+                  here. Fixing this = fastest path to passing.
                 </p>
               </div>
             </div>
