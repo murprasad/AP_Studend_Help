@@ -273,7 +273,9 @@ npx prisma studio            # Open Prisma Studio GUI
 # Build & deploy
 npm run build                # Standard Next.js production build
 npm run pages:build          # Cloudflare Pages build (OpenNext + patches)
-npm run pages:deploy         # Build + deploy to studentnest Cloudflare Pages project
+npm run pages:deploy:staging # Deploy to preview URL + run full E2E against it (NEW DEFAULT)
+npm run pages:promote        # Promote staging-tested build to studentnest.ai
+npm run pages:deploy         # ⚠️ LEGACY — uploads straight to prod before tests. Use staging+promote instead
 npm run pages:preview        # Build + run local CF Pages preview
 
 # Install
@@ -297,24 +299,43 @@ npm install --legacy-peer-deps  # Use this flag — some deps have peer conflict
 
 ---
 
-## Deployment (Cloudflare Pages)
+## Deployment (Cloudflare Pages) — Staging-then-Promote (REQUIRED FLOW as of Beta 8.1)
+
+**The textbook flow:** code change → staging deploy → tests on staging URL → promote to production.
+Production never receives a commit that hasn't passed the full E2E suite first.
 
 ```bash
-npm run pages:deploy
+# Step 1 — Deploy to a CF Pages preview URL + run full test suite against it.
+# Production is NOT touched. If tests fail, fix and re-run; prod stays on last good build.
+npm run pages:deploy:staging
+
+# Step 2 — After the staging gate prints "STAGING GATE PASSED", promote to prod.
+# Re-builds from current HEAD, uploads to main branch (studentnest.ai),
+# runs quick smoke against prod to catch CF propagation hiccups.
+npm run pages:promote
 ```
 
-This runs:
-1. `npx prisma generate` — regenerate WASM client
-2. `node scripts/patch-prisma-wasm.js` — patches WASM loader for dual Node/CF compat
-3. `opennextjs-cloudflare build` — OpenNext CF build
-4. `node scripts/prepare-cf-deploy.js` — assembles `.cf-deploy/` directory
-5. `wrangler pages deploy .cf-deploy --project-name=studentnest` — uploads to CF
+What `pages:deploy:staging` runs:
+1. `pre-release-check.js` + `vitest run` — same as legacy
+2. `pages:build` — OpenNext + Prisma WASM patches
+3. `wrangler pages deploy --branch=staging` — uploads to a preview URL like `https://<hash>.studentnest.pages.dev` (not prod alias)
+4. Captures the preview URL from wrangler output
+5. Runs smoke + functional + integration + Playwright with `E2E_BASE_URL=<preview URL>`
+6. Prints the promote command if all green
+
+What `pages:promote` runs:
+1. `pre-release-check.js` + `vitest run` again (catches "edited a file after staging build")
+2. Re-builds (don't reuse staging artifact)
+3. `wrangler pages deploy --branch=main` — uploads to production alias
+4. Quick smoke against `studentnest.ai` (only — heavy E2E already passed in staging)
+5. Sends success email
+
+**Legacy `npm run pages:deploy` still exists** for emergencies but uploads straight to prod before tests run. Avoid unless you know what you're doing. `pages:deploy:direct` adds a confirmation banner to discourage accidental use.
 
 Cloudflare Pages project: `studentnest`
 Custom domain: `https://studentnest.ai`
 Wrangler config: `wrangler.toml`
 
-**After code changes**: always run `npm run pages:deploy` to push to production.
 **After schema changes**: update CF secret `DATABASE_URL` if the Neon DB was recreated,
 then run `npx prisma migrate deploy` against the production DB.
 

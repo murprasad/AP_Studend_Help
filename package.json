@@ -28,7 +28,10 @@
     "ap:audit:fix": "node scripts/ap-audit-questions.js --fix",
     "ap:review": "node scripts/ap-ai-review-questions.js",
     "ap:review:fix": "node scripts/ap-ai-review-questions.js --fix",
+    "pages:deploy:staging": "node scripts/deploy-staging.js",
+    "pages:promote": "node scripts/deploy-promote.js",
     "pages:deploy": "(node scripts/pre-release-check.js && vitest run && npm run pages:build && wrangler pages deploy .cf-deploy --project-name=studentnest --commit-dirty=true && node scripts/smoke-tests.js && node scripts/functional-tests.js && node scripts/integration-tests.js && playwright test --reporter=list && node scripts/update-test-plan.js && node scripts/archive-release.js) && (node scripts/send-deploy-email.js --status=success) || (node scripts/send-deploy-email.js --status=failed && exit 1)",
+    "pages:deploy:direct": "echo '⚠️  pages:deploy uploads straight to PRODUCTION before tests run. Use npm run pages:deploy:staging then npm run pages:promote instead. Press Ctrl-C now if unsure.' && sleep 3 && npm run pages:deploy",
     "pages:preview": "npm run pages:build && wrangler pages dev .cf-deploy"
   },
   "dependencies": {
