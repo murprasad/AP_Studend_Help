@@ -62,16 +62,26 @@ const STAGING_BRANCH = process.env.STAGING_BRANCH || "staging";
     { captureStdout: true },
   );
 
-  // 4. Extract the preview URL from wrangler output.
-  // wrangler prints: "✨ Deployment complete! Take a peek over at https://<hash>.studentnest.pages.dev"
-  // We use the per-commit hash URL (immutable + always points at THIS deploy).
-  const urlMatch = wranglerOut.match(/https:\/\/[a-f0-9]+\.studentnest\.pages\.dev/);
-  if (!urlMatch) {
-    console.error("❌ Could not parse preview URL from wrangler output. Aborting.");
+  // 4. Use the stable branch alias URL (https://staging.studentnest.pages.dev)
+  // rather than the per-commit hash URL. Reason: NEXTAUTH_URL in CF Pages
+  // Preview env is set to the stable alias, so NextAuth callbacks
+  // (login, oauth) resolve correctly. The per-commit URL would cause
+  // NextAuth to redirect to the alias mid-flow, breaking auth.setup.
+  // The per-commit URL still works for direct page hits (no auth involved)
+  // but the alias is the test target.
+  const stagingUrl = `https://${STAGING_BRANCH}.studentnest.pages.dev`;
+
+  // Verify wrangler upload at least succeeded.
+  if (!wranglerOut.includes("Deployment complete")) {
+    console.error("❌ Wrangler upload didn't report 'Deployment complete'. Aborting.");
     process.exit(1);
   }
-  const stagingUrl = urlMatch[0];
-  console.log(`\n✓ Staged at: ${stagingUrl}\n`);
+  console.log(`\n✓ Staged at: ${stagingUrl} (branch alias, NEXTAUTH-stable)\n`);
+
+  // CF Pages global propagation takes ~5-15s for new deploys to be live
+  // at the branch alias. Brief wait so smoke tests don't hit stale cache.
+  console.log(`  ⏳ Waiting 15s for CF Pages global propagation…`);
+  await new Promise((r) => setTimeout(r, 15_000));
 
   // 5. Run smoke + functional + Playwright against the staging URL.
   // Each subprocess gets E2E_BASE_URL pointing at the preview, so prod
@@ -87,19 +97,12 @@ const STAGING_BRANCH = process.env.STAGING_BRANCH || "staging";
   console.log(`\n🔗 Integration tests against staging…\n`);
   await run("node", ["scripts/integration-tests.js"], { env });
 
-  // Playwright on staging is currently SKIPPED entirely because CF Pages
-  // Preview env vars don't match production:
-  //   - NEXTAUTH_URL=localhost (breaks auth.setup → cascades 100+ tests)
-  //   - DATABASE_URL / settings flags differ → /pricing 500 → cascades
-  //     console-error specs on /sat-prep /act-prep /am-i-ready that
-  //     prefetch /pricing
-  // Until CF Preview env is configured to match prod, the staging gate
-  // verifies: pre-release-check + build + wrangler upload + smoke +
-  // functional + integration. Full Playwright runs during pages:promote
-  // against prod (where env is correct).
-  // Tracked as task #101.
-  console.log(`\n⏭️  Playwright E2E SKIPPED on staging (CF Preview env config gap, see task #101).`);
-  console.log(`    Full suite will run against PROD during pages:promote.\n`);
+  // Full Playwright suite against staging (re-enabled 2026-04-26 after
+  // CF Pages Preview env configured to match prod — NEXTAUTH_URL,
+  // NEXTAUTH_SECRET, DATABASE_URL, CRON_SECRET, etc. all set in Preview).
+  // This is the gate's main value: regressions caught BEFORE prod.
+  console.log(`\n🎭 Playwright E2E (full suite) against staging…\n`);
+  await run("npx", ["playwright", "test", "--reporter=list"], { env });
 
   // 6. Green light. Print promote command but do NOT auto-promote.
   console.log(`\n────────────────────────────────────────────────────────────`);

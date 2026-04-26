@@ -48,17 +48,12 @@ function run(cmd, args, opts = {}) {
   );
 
   // Quick smoke against prod — catches CF Pages global propagation
-  // hiccups + cold-start specifics.
+  // hiccups + cold-start specifics. Full Playwright already passed in
+  // the staging gate (CF Preview env now configured to match prod), so
+  // we don't re-run the heavy suite here — that would just verify CF
+  // Pages routing, which smoke covers.
   console.log(`\n🔍 Post-promote smoke against studentnest.ai…\n`);
   await run("node", ["scripts/smoke-tests.js"]);
-
-  // Full Playwright against prod. Staging gate skips Playwright because
-  // CF Preview env vars don't match prod (auth + settings issues).
-  // Production has the real env so all tests run cleanly here.
-  // Note: this is the "full pipeline" the user originally wanted —
-  // staging gate just adds a build/smoke verification layer in front.
-  console.log(`\n🎭 Full Playwright suite against prod…\n`);
-  await run("npx", ["playwright", "test", "--reporter=list"]);
 
   console.log(`\n────────────────────────────────────────────────────────────`);
   console.log(`✅ PROMOTED TO PRODUCTION.`);
