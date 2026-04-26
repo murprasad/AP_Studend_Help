@@ -89,6 +89,14 @@ describe("sanitizeFlashcardExplanation — Beta 8.1.1 strengthened patterns", ()
     expect(sanitizeFlashcardExplanation(input)).toBe(input);
   });
 
+  it("strips 'The correct answer, C, is supported by...' (USER-REPORTED 2026-04-26 flashcard leak)", () => {
+    const input = "The correct answer, C, is supported by historical evidence that the Islamic Golden Age saw a significant translation movement of Greek and Persian texts into Arabic, which helped preserve and build upon ancient knowledge. This is evident in the stimulus, where Ibn Sina's medical texts were translated into Latin. The correct answer demonstrates an understanding of the Islamic Golden Age's impact on the spread of knowledge through contextualization.";
+    const out = sanitizeFlashcardExplanation(input);
+    expect(out).not.toMatch(/correct answer/i);
+    expect(out).toContain("This is evident in the stimulus");
+    expect(out).toContain("Ibn Sina");
+  });
+
   it("collapses extra whitespace and blank lines after stripping", () => {
     const input = "Why A is correct.\n\n\n\nMitochondria produce ATP.\n\n\nWhy B is wrong here.\n\nThe Krebs cycle is key.";
     const out = sanitizeFlashcardExplanation(input);

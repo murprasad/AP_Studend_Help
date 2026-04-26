@@ -46,6 +46,24 @@ export function sanitizeFlashcardExplanation(input: string | null | undefined): 
     "",
   );
 
+  // Beta 8.2 hotfix (user-reported 2026-04-26 flashcard leak):
+  // "The correct answer, C, is supported by historical evidence..."
+  // Sentence-level strip — any sentence containing "correct answer"
+  // followed by/with a letter reference (with comma/paren/bare) is
+  // MCQ meta-commentary, not teaching content. Strip the whole
+  // sentence (everything up to and including the next period).
+  out = out.replace(
+    /[^.!?\n]*\bcorrect\s+answer[,\s]+[\(\[]?[A-E][\)\],]?[^.!?\n]*[.!?]\s*/gi,
+    "",
+  );
+
+  // Also strip sentences like "The correct answer demonstrates an
+  // understanding of..." — meta-evaluation of the option, not content.
+  out = out.replace(
+    /[^.!?\n]*\bthe\s+correct\s+answer\s+(?:demonstrates|shows|reflects|indicates|illustrates)[^.!?\n]*[.!?]\s*/gi,
+    "",
+  );
+
   // "Why X is correct/wrong" inline + "Why X is correct: ..." block.
   out = out.replace(
     /\bWhy\s+[\(\[]?[A-E][\)\]]?\s+(?:is|was)\s+(?:correct|wrong|incorrect|right)[^.]*\.(\s|$)/gi,
