@@ -52,12 +52,13 @@ function run(cmd, args, opts = {}) {
   console.log(`\n🔍 Post-promote smoke against studentnest.ai…\n`);
   await run("node", ["scripts/smoke-tests.js"]);
 
-  // Authed Playwright suite against prod. Staging gate skipped these
-  // because CF Pages Preview env doesn't have a matching NEXTAUTH_URL.
-  // Production has the real env, so authed tests run cleanly here.
-  // Public tests already passed in the staging gate.
-  console.log(`\n🎭 Authed Playwright (chromium-authed) against prod…\n`);
-  await run("npx", ["playwright", "test", "--project=chromium-authed", "--reporter=list"]);
+  // Full Playwright against prod. Staging gate skips Playwright because
+  // CF Preview env vars don't match prod (auth + settings issues).
+  // Production has the real env so all tests run cleanly here.
+  // Note: this is the "full pipeline" the user originally wanted —
+  // staging gate just adds a build/smoke verification layer in front.
+  console.log(`\n🎭 Full Playwright suite against prod…\n`);
+  await run("npx", ["playwright", "test", "--reporter=list"]);
 
   console.log(`\n────────────────────────────────────────────────────────────`);
   console.log(`✅ PROMOTED TO PRODUCTION.`);
