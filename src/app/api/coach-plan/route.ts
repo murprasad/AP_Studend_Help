@@ -166,6 +166,29 @@ export async function GET(req: NextRequest) {
     );
   } catch (err) {
     console.error("[/api/coach-plan] error:", err);
-    return NextResponse.json({ error: "Internal error" }, { status: 500 });
+    // Cold-start defense (Beta 8.0 hotfix #4, 2026-04-26): the coach card
+    // is dashboard-prominent and a 500 here breaks the dashboard
+    // network-graph test. Return a soft "needs more practice" plan
+    // instead of 500 — lets the dashboard render with a gentle CTA.
+    return NextResponse.json(
+      {
+        score: null,
+        confidence: "low",
+        target: 4,
+        questionsToTarget: 20,
+        weakestUnit: null,
+        nextAction: { label: "Start a practice session", href: "/practice" },
+        accuracyDelta: null,
+        showScore: false,
+        hasDiagnostic: false,
+        family: "AP",
+        scaleMax: 5,
+        passPercent: 60,
+        tierLabel: "Building Foundation",
+        inProgressSession: null,
+        _degraded: true,
+      },
+      { headers: { "Cache-Control": "no-store, max-age=0" } },
+    );
   }
 }
