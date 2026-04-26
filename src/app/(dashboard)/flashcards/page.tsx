@@ -31,7 +31,9 @@ import { ApCourse } from "@prisma/client";
 import { Loader2, ArrowRight, Check, Sparkles, BookOpen } from "lucide-react";
 import Link from "next/link";
 import { QuestionContent } from "@/components/question/question-content";
-import { sanitizeFlashcardExplanation } from "@/lib/markdown-helpers";
+// sanitizeFlashcardExplanation removed — flashcard "Why" section was
+// retired in Beta 8.2 design fix (no more leak-prone MCQ explanations).
+// Helper still exported from markdown-helpers in case other callers exist.
 
 interface Flashcard {
   id: string;
@@ -228,7 +230,17 @@ export default function FlashcardsPage() {
             </div>
           </div>
 
-          {/* Back — hidden until reveal */}
+          {/* Back — hidden until reveal.
+              Beta 8.2 design fix (2026-04-26): "Why" section removed entirely.
+              Reason: explanation field is derived from the source MCQ, which
+              naturally references letter options ("A is correct", "Why C is
+              right", "The correct answer, B, is supported by..."). Three
+              previous sanitizer attempts (Beta 7.4, 7.5, 8.2) caught some
+              patterns but kept missing new variants the AI generated. Real
+              flashcards (Quizlet/Anki/etc.) are just front → back; the Q→A
+              pairing IS the learning loop. Anyone wanting deeper context can
+              use Sage chat — the "Ask Sage" CTA below routes there with the
+              flashcard pre-loaded. */}
           {showBack && (
             <div className="space-y-3 pt-2 border-t border-border/40">
               <div>
@@ -237,18 +249,15 @@ export default function FlashcardsPage() {
                   <QuestionContent content={card.back} />
                 </div>
               </div>
-              {card.explanation && (
-                <div>
-                  <p className="text-[11px] uppercase tracking-wide text-muted-foreground">Why</p>
-                  <div className="text-[14px] text-muted-foreground leading-relaxed mt-1">
-                    {/* Beta 7.4 (2026-04-25): wire sanitizeFlashcardExplanation so
-                        flashcard explanations no longer leak MCQ scaffolding
-                        ("Why A is correct / Why B is wrong"). The helper
-                        existed but was never connected to the render path. */}
-                    <QuestionContent content={sanitizeFlashcardExplanation(card.explanation)} />
-                  </div>
-                </div>
-              )}
+              {/* Defer-to-Sage CTA replaces the old "Why" section. Routes
+                  to AI tutor with the front + back pre-loaded as context. */}
+              <Link
+                href={`/ai-tutor?prompt=${encodeURIComponent(`Help me understand this flashcard.\n\nQ: ${card.front}\n\nA: ${card.back}\n\nWhy is this the answer? Explain in 2-3 sentences.`)}`}
+                className="inline-flex items-center gap-1.5 text-[12px] text-primary underline underline-offset-2 decoration-primary/50 hover:decoration-primary"
+              >
+                <Sparkles className="h-3 w-3" />
+                Ask Sage why this is the answer
+              </Link>
             </div>
           )}
         </CardContent>

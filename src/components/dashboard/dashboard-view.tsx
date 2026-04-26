@@ -32,6 +32,7 @@ import { ResumeCard } from "@/components/dashboard/resume-card";
 import { PrimaryActionStrip } from "@/components/dashboard/primary-action-strip";
 import { OutcomeProgressStrip } from "@/components/dashboard/outcome-progress-strip";
 import { WeaknessFocusCard } from "@/components/dashboard/weakness-focus-card";
+import { SageCoachPromoCard } from "@/components/dashboard/sage-coach-promo-card";
 import { DailyGoalCard } from "@/components/dashboard/daily-goal-card";
 import { LockedValueCard } from "@/components/dashboard/locked-value-card";
 import { AutoLaunchNudge } from "@/components/dashboard/auto-launch-nudge";
@@ -133,6 +134,13 @@ export function DashboardView() {
 
       {/* 3. Fastest path to improve — single weakest unit */}
       <WeaknessFocusCard course={course as string} />
+
+      {/* 3a. Phase B (Beta 8.3) — Sage Coach FRQ-grader promotion. Renders
+          null if course has 0 FRQs OR free user (where it shows the
+          paywalled variant inline). Placed right after the weakest-unit
+          card because the user's natural next thought is "OK, how do I
+          get help writing this answer?" — Sage Coach IS that help. */}
+      <SageCoachPromoCard course={course as string} />
 
       {/* 3b. Flashcards queue — renders null when <5 cards due */}
       <FlashcardsDueCard course={course as string} />
