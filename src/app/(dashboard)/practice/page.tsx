@@ -94,6 +94,51 @@ const FRQ_WAIT_MESSAGES = [
   "Almost done! Loading your question now...",
 ];
 
+/**
+ * ExplanationDisplay — smart truncation for AI-generated explanations.
+ *
+ * Beta 8.2 (2026-04-26): user-reported (son) that explanations are
+ * overlong — audit showed avg 800-1600 chars vs CB's 200-400. Real fix
+ * is regenerating with tighter prompts; near-term fix is render-side
+ * truncation: show first ~280 chars (≈ 2 sentences), then "Show full
+ * explanation" toggle for the rest. Practice flow stays fast; full
+ * detail one tap away when needed.
+ */
+function ExplanationDisplay({ text, small = false }: { text: string; small?: boolean }) {
+  const [expanded, setExpanded] = useState(false);
+  const cleaned = (text || "").trim();
+  const PREVIEW_CHARS = 280;
+  const isLong = cleaned.length > PREVIEW_CHARS + 50; // +50 buffer so we don't truncate trivial overruns
+
+  if (!isLong) {
+    return (
+      <p className={`${small ? "text-xs" : "text-sm"} text-muted-foreground leading-relaxed`}>
+        {cleaned}
+      </p>
+    );
+  }
+
+  // Truncate at the nearest sentence boundary near PREVIEW_CHARS so we
+  // don't cut mid-sentence.
+  const slice = cleaned.slice(0, PREVIEW_CHARS);
+  const lastSentenceEnd = Math.max(slice.lastIndexOf(". "), slice.lastIndexOf("! "), slice.lastIndexOf("? "));
+  const previewEnd = lastSentenceEnd > 100 ? lastSentenceEnd + 1 : PREVIEW_CHARS;
+  const preview = cleaned.slice(0, previewEnd).trim();
+
+  return (
+    <div className={`${small ? "text-xs" : "text-sm"} text-muted-foreground leading-relaxed space-y-1`}>
+      <p>{expanded ? cleaned : preview + (expanded ? "" : "…")}</p>
+      <button
+        type="button"
+        onClick={() => setExpanded((v) => !v)}
+        className="text-primary underline underline-offset-2 hover:no-underline text-xs font-medium"
+      >
+        {expanded ? "Show less" : "Show full explanation"}
+      </button>
+    </div>
+  );
+}
+
 export default function PracticePage() {
   const { toast } = useToast();
   const [course] = useCourse();
@@ -102,8 +147,11 @@ export default function PracticePage() {
   const [userTrack, setUserTrack] = useState<string>("ap");
   const [premiumRestricted, setPremiumRestricted] = useState(false);
   const [sessionLimitReached, setSessionLimitReached] = useState(false);
-  // Admin-toggleable knowledge check after wrong MCQs. Default ON.
-  const [knowledgeCheckEnabled, setKnowledgeCheckEnabled] = useState(true);
+  // Admin-toggleable knowledge check after wrong MCQs. Default OFF
+  // (user-requested 2026-04-26 — was interrupting practice flow during
+  // AP season). Can be re-enabled via the knowledgeCheckEnabled feature
+  // flag in admin settings.
+  const [knowledgeCheckEnabled, setKnowledgeCheckEnabled] = useState(false);
 
   // First-answer celebration modal (AP-season conversion lever, 2026-04-25).
   // Hook owns localStorage gating + modal state. We trip `isFirstEverAnswer`
@@ -145,7 +193,7 @@ export default function PracticePage() {
       }
       if (flagsRes.status === "fulfilled") {
         setPremiumRestricted(flagsRes.value.premiumRestrictionEnabled ?? false);
-        setKnowledgeCheckEnabled(flagsRes.value.knowledgeCheckEnabled ?? true);
+        setKnowledgeCheckEnabled(flagsRes.value.knowledgeCheckEnabled ?? false);
       } else {
         setPremiumRestricted(false);
       }
@@ -1018,9 +1066,8 @@ export default function PracticePage() {
                     <p className="font-semibold">
                       {feedback.isCorrect ? "Correct!" : `Incorrect — Answer: ${feedback.correctAnswer}`}
                     </p>
-                    <p className="text-sm text-muted-foreground leading-relaxed">
-                      {feedback.explanation}
-                    </p>
+                    <ExplanationDisplay text={feedback.explanation} />
+
                     {currentQuestion.course?.startsWith("CLEP_") && (
                       <div className="flex items-center gap-3 pt-1 text-xs text-muted-foreground/60">
                         <span className="inline-flex items-center gap-1"><ShieldCheck className="h-3 w-3 text-emerald-500" /> 8-criterion validated</span>
@@ -1090,10 +1137,10 @@ export default function PracticePage() {
                         })}
                       </div>
                       {checkAnswer !== null && (
-                        <p className="text-xs text-muted-foreground leading-relaxed">
-                          {checkAnswer === checkQuestion.correctIndex ? "✓ " : "✗ "}
-                          {checkQuestion.explanation}
-                        </p>
+                        <div className="text-xs text-muted-foreground leading-relaxed">
+                          <span className="font-semibold mr-1">{checkAnswer === checkQuestion.correctIndex ? "✓" : "✗"}</span>
+                          <ExplanationDisplay text={checkQuestion.explanation} small />
+                        </div>
                       )}
                     </div>
                   )}

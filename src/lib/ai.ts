@@ -222,7 +222,18 @@ NUMERIC UNIQUENESS REQUIREMENT (MANDATORY — violation = rejection):
 - Before returning, mentally evaluate every option to a single number. If any two values match, REGENERATE — do not ship.
 - This applies to AP Calc, AP Stats, AP Physics, AP Chem, SAT Math, ACT Math, AP Precalc, and any unit (in any course) where a numeric answer is the natural form.`;
 
-  const wordCountSection = `\nWORD COUNT TARGETS:\n- questionText: 15–40 words\n- stimulus: 40–120 words (or null if not applicable)\n- each option: 8–25 words\n- explanation: 80–150 words (name the correct answer + explain each distractor's trap)`;
+  // Beta 8.2 (2026-04-26): tightened explanation target after audit showed
+  // avg 800-1600 chars per explanation across all courses (vs CB's typical
+  // 200-400). User-reported (son): explanations too lengthy, slows practice
+  // flow. Cut to 40-80 words (≈ 250-450 chars). Render layer also adds
+  // "Show full explanation" toggle so the rare long ones still work.
+  // ANSWER POSITION RULE: model bias produces ~85% A across older bank.
+  // Distribute correctAnswer uniformly. We Fisher-Yates shuffled existing
+  // bank 2026-04-26; this rule prevents new content drifting back.
+  const wordCountSection = `\nWORD COUNT TARGETS:\n- questionText: 15–40 words\n- stimulus: 40–120 words (or null if not applicable)\n- each option: 8–25 words\n- explanation: 40–80 words (≈ 250-450 chars). Be concise — name the correct answer in 1 sentence, then explain WHY in 1-2 sentences. Skip distractor breakdowns; let students ask Sage if they want details.`;
+
+  // Force balanced answer distribution.
+  const answerDistributionSection = `\nANSWER POSITION (MANDATORY):\n- Choose correctAnswer uniformly random from {A, B, C, D, E if 5-choice}.\n- DO NOT default to A. The system audits answer distribution; >40% of any single letter triggers rejection.\n- Construct the question first, then RANDOMIZE which letter holds the correct option.`;
 
   // SAT-specific format rules injected after the standard sections
   const satFormatSection = (course === "SAT_MATH" || course === "SAT_READING_WRITING")
@@ -299,7 +310,7 @@ ${config.examAlignmentNotes ? `EXAM CONTENT WEIGHTS:\n${config.examAlignmentNote
 
 ${unitHeader}
 
-${config.examAlignmentNotes}${difficultySection}${skillsSection}${stimulusSection}${distractorSection}${ambiguityGuardSection}${numericUniquenessSection}${wordCountSection}${satFormatSection}${actFormatSection}${clepSection}
+${config.examAlignmentNotes}${difficultySection}${skillsSection}${stimulusSection}${distractorSection}${ambiguityGuardSection}${numericUniquenessSection}${wordCountSection}${answerDistributionSection}${satFormatSection}${actFormatSection}${clepSection}
 
 GENERATION TASK:
 ${generationInstruction}
