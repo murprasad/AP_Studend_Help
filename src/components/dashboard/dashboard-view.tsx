@@ -156,24 +156,42 @@ export function DashboardView() {
       {/* 2. Predicted native-scale score + delta */}
       <OutcomeProgressStrip course={course as string} />
 
-      {/* 3. Fastest path to improve — single weakest unit */}
-      <WeaknessFocusCard course={course as string} />
+      {/* Secondary cards collapsed behind "Show more" toggle.
+          User-directed (2026-04-27): "reduce dashboard to ONE primary
+          action." Default view shows Q1 + PrimaryActionStrip + Predicted
+          Score only. Secondary cards (weakness, daily goal, flashcards,
+          sage promo, paywall) are one click away — preserves the value
+          for engaged users without overwhelming new sign-ups. */}
+      <DashboardSecondaryCards course={course as string} />
+    </div>
+  );
+}
 
-      {/* 3a. Phase B (Beta 8.3) — Sage Coach FRQ-grader promotion. Renders
-          null if course has 0 FRQs OR free user (where it shows the
-          paywalled variant inline). Placed right after the weakest-unit
-          card because the user's natural next thought is "OK, how do I
-          get help writing this answer?" — Sage Coach IS that help. */}
-      <SageCoachPromoCard course={course as string} />
-
-      {/* 3b. Flashcards queue — renders null when <5 cards due */}
-      <FlashcardsDueCard course={course as string} />
-
-      {/* 4. Daily goal — habit-formation loop. Renders null pre-signal. */}
-      <DailyGoalCard course={course as string} />
-
-      {/* 5. Contextual paywall — FREE users only. Parent-friendly. */}
+function DashboardSecondaryCards({ course }: { course: string }) {
+  const [expanded, setExpanded] = useState(false);
+  if (!expanded) {
+    return (
+      <button
+        onClick={() => setExpanded(true)}
+        className="w-full text-sm text-muted-foreground hover:text-foreground py-2 flex items-center justify-center gap-1"
+      >
+        Show more tools (weakness, goals, flashcards) →
+      </button>
+    );
+  }
+  return (
+    <div className="space-y-4">
+      <WeaknessFocusCard course={course} />
+      <SageCoachPromoCard course={course} />
+      <FlashcardsDueCard course={course} />
+      <DailyGoalCard course={course} />
       <LockedValueCard />
+      <button
+        onClick={() => setExpanded(false)}
+        className="w-full text-sm text-muted-foreground hover:text-foreground py-2 flex items-center justify-center gap-1"
+      >
+        ↑ Hide tools
+      </button>
     </div>
   );
 }

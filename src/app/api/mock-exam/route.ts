@@ -31,6 +31,8 @@ export async function POST(req: NextRequest) {
 
     const body = await req.json().catch(() => ({}));
     const course = (body.course as ApCourse) || "AP_WORLD_HISTORY";
+    // mode: "scaled" (default, ~40% length) or "full" (full CB count)
+    const mode = (body.mode as string) || "scaled";
 
     const struct = getCBExamStructure(course);
     if (!struct) {
@@ -38,18 +40,20 @@ export async function POST(req: NextRequest) {
     }
 
     // For each section, pull random approved questions of the right type +
-    // optional subtopic match. CB exam typically has 1-3 of each FRQ type;
-    // we serve 1-2 to keep the session manageable, scaling MCQ count down
-    // proportionally so total session is ~30-45 minutes (not the full
-    // 3-hour real exam — students rarely complete a full mock anyway).
-    const SCALE = 0.4; // ~40% of real exam length
+    // optional subtopic match. Two modes:
+    //   "scaled" — ~40% of real exam length, ~30-45 min sessions
+    //   "full"   — full CB count for serious-prep simulation (3+ hours)
+    const SCALE = mode === "full" ? 1.0 : 0.4;
     const sections: Array<{ cbName: string; questions: Array<unknown> }> = [];
     const skippedSections: Array<{ cbName: string; reason: string }> = [];
 
     for (const sec of struct.sections) {
       const targetCount = Math.max(1, Math.floor(sec.count * SCALE));
-      // For MCQ, scale further so we don't overwhelm the session
-      const adjustedCount = sec.questionType === "MCQ"
+      // For MCQ, scale further so we don't overwhelm the session.
+      // Caps removed in "full" mode for true exam simulation.
+      const adjustedCount = mode === "full"
+        ? targetCount
+        : sec.questionType === "MCQ"
         ? Math.min(targetCount, 15)
         : Math.min(targetCount, 2);
 

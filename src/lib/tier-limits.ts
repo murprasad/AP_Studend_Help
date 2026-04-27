@@ -31,8 +31,11 @@ export type SubTier = "FREE" | "PREMIUM";
  * one-number-per-feature is a UX rule, not a code rule.
  */
 export const FREE_LIMITS = {
-  /** Max MCQ + FRQ questions answered per calendar day. */
-  practiceQuestionsPerDay: 20,
+  /** Max MCQ + FRQ questions answered per calendar day.
+   *  Bumped 20 → 30 (2026-04-27) — user feedback: serious AP students do
+   *  30-50 q/day; 20 cap signaled "this tool can't support real prep load."
+   *  Better to give enough rope to develop habit, then upsell on FRQ + Sage. */
+  practiceQuestionsPerDay: 30,
   /** Max new AI tutor (Sage) conversations per calendar day. */
   tutorChatsPerDay: 3,
   /** How many mock-exam questions the student sees before the paywall. */

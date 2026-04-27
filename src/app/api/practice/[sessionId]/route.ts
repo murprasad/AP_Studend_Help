@@ -74,7 +74,7 @@ export async function POST(
         ? "AP Short Answer Question"
         : "AP Free Response Question";
       try {
-        const scoringPrompt = `You are an AP exam grader scoring a ${qtypeLabel}. Score this student response using the official rubric criteria.
+        const scoringPrompt = `You are an experienced AP teacher grading a ${qtypeLabel}. Provide TEACHER-STYLE coaching feedback, not just a score.
 
 Question: ${question.questionText}
 Model Answer / Rubric: ${question.correctAnswer}
@@ -82,7 +82,15 @@ ${question.explanation ? `Scoring Guidance: ${question.explanation}` : ""}
 Student Response: ${answer}
 
 Return ONLY valid JSON (no markdown, no extra text):
-{"pointsEarned": 2, "totalPoints": 4, "feedback": "specific rubric-based feedback referencing exactly what was correct and what key points were missing", "modelAnswer": "complete model response earning full credit, following AP exam conventions for this question type"}`;
+{
+  "pointsEarned": 2,
+  "totalPoints": 4,
+  "feedback": "Coaching narrative in 2-3 short paragraphs. (1) ONE specific strength in the student's response — quote a phrase. (2) ONE specific weakness with a concrete fix — e.g. 'Your thesis lacks complexity in part C — try arguing X while acknowledging Y.' (3) ONE actionable tip for next time — e.g. 'For DBQ part D, always cite at least 3 documents AND analyze sourcing on 2 of them.' Sound like a teacher who genuinely wants them to improve.",
+  "strengths": ["specific strength 1 (quote student's words)", "specific strength 2"],
+  "weaknesses": ["specific weakness with concrete fix 1", "specific weakness 2"],
+  "nextStepTip": "1-sentence actionable coaching tip",
+  "modelAnswer": "complete model response earning full credit, following AP exam conventions for this question type"
+}`;
 
         const raw = await Promise.race([
           callAIWithCascade(scoringPrompt),
@@ -94,10 +102,17 @@ Return ONLY valid JSON (no markdown, no extra text):
         if (jsonMatch) {
           const parsed = JSON.parse(jsonMatch[0]);
           if (typeof parsed.pointsEarned === "number" && typeof parsed.totalPoints === "number") {
+            // Combine teacher-coaching fields into single feedback string for
+            // existing frqScore consumers that read .feedback. The structured
+            // strengths/weaknesses/tip stay in the JSON for richer UI later.
+            const richFeedback = parsed.feedback
+              + (parsed.strengths?.length ? "\n\n**Strengths:** " + parsed.strengths.join("; ") : "")
+              + (parsed.weaknesses?.length ? "\n\n**Areas to improve:** " + parsed.weaknesses.join("; ") : "")
+              + (parsed.nextStepTip ? "\n\n**Next time:** " + parsed.nextStepTip : "");
             frqScore = {
               pointsEarned: parsed.pointsEarned,
               totalPoints: parsed.totalPoints,
-              feedback: parsed.feedback ?? "",
+              feedback: richFeedback,
               modelAnswer: parsed.modelAnswer ?? "",
             };
             isCorrect = frqScore.pointsEarned >= frqScore.totalPoints / 2;

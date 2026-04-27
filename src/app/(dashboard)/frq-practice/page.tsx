@@ -112,49 +112,89 @@ export default function FrqPracticePage() {
     );
   }
 
-  // ── Paywall — FREE users don't get FRQ access under Option B ─────────────
+  // ── FREE preview — show 1 sample FRQ stem before locking submission ──
+  // Updated 2026-04-27: previously full paywall, no preview. User feedback:
+  // "Why would I pay if I haven't seen the hardest part yet? Khan lets me
+  // explore freely." Now show free users a real DBQ/SAQ stem they can read
+  // in full (with rubric exposed), but lock the submit-for-grading flow.
+  // Builds credibility before asking for upgrade.
   if (isFreeTier) {
+    // Show 1 sample stem from the loaded list (filter by type pref: DBQ→LEQ→SAQ→FRQ)
+    const sample = (list.length > 0)
+      ? (list.find((f) => f.type === "DBQ")
+        ?? list.find((f) => f.type === "LEQ")
+        ?? list.find((f) => f.type === "SAQ")
+        ?? list[0])
+      : null;
     return (
-      <div className="space-y-6 max-w-2xl mx-auto">
+      <div className="space-y-6 max-w-3xl mx-auto">
         <div>
           <h1 className="text-3xl font-bold flex items-center gap-2">
             <PenLine className="h-7 w-7 text-amber-500" />
-            FRQ Practice
+            FRQ Practice — Free Preview
           </h1>
           <p className="text-muted-foreground mt-1">
-            Past exam free-response questions with official rubrics.
+            Read one real {sample?.type ?? "FRQ"} stem with the official rubric. Submit + AI scoring is Premium.
           </p>
         </div>
-        <Card className="border-primary/30 bg-gradient-to-br from-primary/5 to-primary/10">
-          <CardContent className="p-8 space-y-5 text-center">
-            <div className="w-14 h-14 mx-auto rounded-full bg-primary/15 flex items-center justify-center">
-              <Lock className="h-7 w-7 text-primary" />
-            </div>
-            <div className="space-y-2">
-              <h2 className="text-xl font-bold">FRQ practice is a Premium feature</h2>
-              <p className="text-[15px] text-foreground/90 leading-relaxed max-w-md mx-auto">
-                {LOCK_COPY.frqLocked} Upgrade to unlock every AP FRQ from
-                2013 onward, with official rubrics and sample answers.
-              </p>
-            </div>
-            <div className="pt-2 space-y-2">
-              <p className="text-sm text-muted-foreground">
-                <span className="font-semibold text-foreground">$9.99/month</span>
-                {" · "}less than a weekend matinee
-              </p>
-              <Link href="/billing?utm_source=frq_paywall&utm_campaign=frq_lock">
-                <Button size="lg" className="rounded-full h-11 px-6">
-                  Upgrade to unlock FRQ
-                </Button>
-              </Link>
-            </div>
-            <div className="pt-3 border-t border-border/40 text-[13px] text-muted-foreground">
-              MCQ practice, flashcards, and mock exam preview stay free — you can
-              keep building your score today without upgrading.{" "}
-              <Link href="/practice" className="text-primary underline underline-offset-2 decoration-primary/60 hover:decoration-primary">
-                Back to practice →
-              </Link>
-            </div>
+
+        <CourseSelectorInline />
+
+        {sample ? (
+          <Card className="border-amber-500/30 bg-amber-500/5">
+            <CardContent className="p-5 space-y-4">
+              <div className="flex items-center gap-2 flex-wrap">
+                <Badge variant="outline" className="border-amber-500/40 text-amber-600 dark:text-amber-400">
+                  {sample.type} · {sample.totalPoints} pts
+                </Badge>
+                <Badge variant="outline" className="text-[10px]">
+                  {sample.year} Q{sample.questionNumber}
+                </Badge>
+              </div>
+              {sample.stimulus && (
+                <div className="prose prose-sm max-w-none">
+                  <p className="text-xs uppercase tracking-wide text-muted-foreground mb-1">Source / Context</p>
+                  <p className="text-sm leading-relaxed whitespace-pre-wrap">{sample.stimulus.slice(0, 800)}{sample.stimulus.length > 800 ? "…" : ""}</p>
+                </div>
+              )}
+              <div className="prose prose-sm max-w-none">
+                <p className="text-xs uppercase tracking-wide text-muted-foreground mb-1">Question</p>
+                <p className="text-sm font-medium leading-relaxed whitespace-pre-wrap">{sample.promptText}</p>
+              </div>
+              <div className="pt-3 border-t border-amber-500/20 flex items-center gap-2">
+                <Lock className="h-4 w-4 text-amber-600 flex-shrink-0" />
+                <p className="text-xs text-muted-foreground flex-1">
+                  Write your answer + AI rubric scoring is Premium. Upgrade to grade against the official rubric.
+                </p>
+                <Link href="/billing?utm_source=frq_preview&utm_campaign=frq_unlock">
+                  <Button size="sm" className="rounded-full">Upgrade — $9.99/mo</Button>
+                </Link>
+              </div>
+            </CardContent>
+          </Card>
+        ) : (
+          <Card>
+            <CardContent className="p-8 text-center text-sm text-muted-foreground">
+              Loading sample FRQ for {AP_COURSES[course] || course}…
+            </CardContent>
+          </Card>
+        )}
+
+        <Card className="border-border/40">
+          <CardContent className="p-5 space-y-2">
+            <p className="text-sm font-semibold">All you get with Premium</p>
+            <ul className="text-sm text-muted-foreground space-y-1 leading-relaxed">
+              <li>• Every AP FRQ from 2013 onward, all 14 courses</li>
+              <li>• Type your answer → AI grades against the official CB rubric</li>
+              <li>• Detailed feedback on thesis, evidence, analysis</li>
+              <li>• Unlimited MCQ practice (no daily cap)</li>
+              <li>• AI tutor (Sage) unlimited chats</li>
+            </ul>
+            <Link href="/billing?utm_source=frq_preview&utm_campaign=premium_upsell">
+              <Button className="w-full mt-3 rounded-full h-10">
+                Upgrade — $9.99/month
+              </Button>
+            </Link>
           </CardContent>
         </Card>
       </div>

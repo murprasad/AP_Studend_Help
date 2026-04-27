@@ -231,7 +231,7 @@ export default function MockExamPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(
           usesCBFidelity
-            ? { course }
+            ? { course, mode: "full" }  // full CB count for serious-prep simulation
             : {
                 sessionType: "MOCK_EXAM",
                 questionCount: selectedInfo.questionCount,
