@@ -42,6 +42,33 @@ export function fetchCached<T = unknown>(url: string): Promise<T> {
   return promise as Promise<T>;
 }
 
+export interface CachedFetchResult<T> {
+  data: T | null;
+  status: number; // 0 = network error
+}
+
+/**
+ * Like fetchCached but exposes HTTP status — needed by callers that
+ * differentiate 401/429/network failures (e.g. PrimaryActionStrip).
+ * Shares the same in-flight promise + 30s TTL window-scoped cache.
+ */
+export function fetchCachedWithStatus<T = unknown>(url: string): Promise<CachedFetchResult<T>> {
+  const key = `__status__${url}`;
+  const now = Date.now();
+  const existing = cache.get(key);
+  if (existing && existing.expires > now) {
+    return existing.promise as Promise<CachedFetchResult<T>>;
+  }
+  const promise: Promise<CachedFetchResult<T>> = fetch(url, { cache: "no-store" })
+    .then(async (r) => {
+      const data = r.ok ? ((await r.json()) as T) : null;
+      return { data, status: r.status };
+    })
+    .catch(() => ({ data: null, status: 0 }));
+  cache.set(key, { promise, expires: now + CACHE_TTL_MS });
+  return promise;
+}
+
 /** Clear cache — useful when course changes or after a write operation. */
 export function clearDashboardCache(): void {
   cache.clear();

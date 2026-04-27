@@ -17,6 +17,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { fetchCached } from "@/lib/dashboard-cache";
 import {
   Target,
   ArrowRight,
@@ -103,8 +104,7 @@ export function CoachCard({ course, impressionId }: Props) {
     if (impressionId) {
       logDashboardEvent({ impressionId, course, event: "coach_requested" });
     }
-    fetch(`/api/coach-plan?course=${course}`, { cache: "no-store" })
-      .then((r) => (r.ok ? r.json() : null))
+    fetchCached<CoachPlanResponse & { error?: unknown }>(`/api/coach-plan?course=${course}`)
       .then((d) => {
         if (!cancelled && d && !d.error) setData(d);
       })

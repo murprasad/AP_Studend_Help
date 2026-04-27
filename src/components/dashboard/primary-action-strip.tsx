@@ -25,6 +25,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowRight, Clock, Loader2, TrendingUp } from "lucide-react";
+import { fetchCachedWithStatus } from "@/lib/dashboard-cache";
 
 interface Props {
   course: string;
@@ -116,16 +117,10 @@ export function PrimaryActionStrip({ course, impressionId }: Props) {
     }, 1000);
 
     setLoadError(null);
-    fetch(`/api/coach-plan?course=${course}`, { cache: "no-store" })
-      .then(async (r) => {
-        if (r.ok) return r.json();
-        // Capture non-OK status so the fallback UI can hint at a retry
-        // path. Never throw — we want to render *something* below.
-        return { __httpStatus: r.status };
-      })
-      .then((d) => {
+    fetchCachedWithStatus<CoachPlanResponse & { error?: unknown }>(`/api/coach-plan?course=${course}`)
+      .then(({ data: d, status }) => {
         if (cancelled) return;
-        if (d && !d.error && !d.__httpStatus) {
+        if (d && !d.error && status === 200) {
           setData(d);
           return;
         }
@@ -133,9 +128,11 @@ export function PrimaryActionStrip({ course, impressionId }: Props) {
         // rendering null. Previously this cascaded to `if (!data) return
         // null` and the whole predicted-score block vanished silently.
         setLoadError(
-          d?.__httpStatus === 401
+          status === 0
+            ? "network"
+            : status === 401
             ? "session_expired"
-            : d?.__httpStatus === 429
+            : status === 429
             ? "rate_limited"
             : "generic",
         );

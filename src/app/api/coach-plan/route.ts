@@ -52,7 +52,8 @@ export async function GET(req: NextRequest) {
     const safe = async <T,>(p: Promise<T>, fallback: T): Promise<T> => {
       try { return await p; } catch { return fallback; }
     };
-    const [snapshot, user, priorSessions, masteryRows] = await Promise.all([
+    type SafeIpRow = { id: string; sessionType: string; totalQuestions: number | null; startedAt: Date } | null;
+    const [snapshot, user, priorSessions, masteryRows, ipRow] = await Promise.all([
       loadReadinessSnapshot(userId, course, prisma),
       safe<SafeUser>(prisma.user.findUnique({ where: { id: userId }, select: { examDate: true } }), null),
       safe<SafeSessions>(
@@ -76,6 +77,17 @@ export async function GET(req: NextRequest) {
           select: { unit: true, masteryScore: true, accuracy: true, totalAttempts: true },
         }),
         [],
+      ),
+      // Pulled into the parallel block (was sequential after — added 2 DB
+      // roundtrips on the critical path). User reported Predicted Score
+      // loading slowly 2026-04-27.
+      safe<SafeIpRow>(
+        prisma.practiceSession.findFirst({
+          where: { userId, course: course as ApCourse, status: "IN_PROGRESS" },
+          orderBy: { startedAt: "desc" },
+          select: { id: true, sessionType: true, totalQuestions: true, startedAt: true },
+        }) as Promise<SafeIpRow>,
+        null,
       ),
     ]);
 
@@ -125,20 +137,19 @@ export async function GET(req: NextRequest) {
       passPercent < 80 ? "near_passing" :
       "on_track";
 
-    // In-progress session lookup so the hero can show "Resume" instead of
-    // "Start" when the student abandoned a session earlier.
-    const ipRow = await prisma.practiceSession.findFirst({
-      where: { userId: session.user.id, course: course as ApCourse, status: "IN_PROGRESS" },
-      orderBy: { startedAt: "desc" },
-      select: { id: true, sessionType: true, totalQuestions: true, startedAt: true },
-    });
+    // In-progress session lookup — ipRow already fetched in the parallel
+    // block above. The answered-count is a separate query but only fires
+    // when ipRow exists, so most requests skip it entirely.
     let inProgressSession = null as null | {
       id: string; startedAt: string; answered: number; total: number; sessionType: string;
     };
     if (ipRow) {
-      const answered = await prisma.studentResponse.count({
-        where: { sessionId: ipRow.id, userId: session.user.id },
-      });
+      const answered = await safe(
+        prisma.studentResponse.count({
+          where: { sessionId: ipRow.id, userId },
+        }),
+        0,
+      );
       inProgressSession = {
         id: ipRow.id,
         sessionType: String(ipRow.sessionType),
