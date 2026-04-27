@@ -14,6 +14,7 @@ import { getCourseConfig } from "@/lib/courses";
 import { isPremiumForTrack } from "@/lib/tiers";
 import { Textarea } from "@/components/ui/textarea";
 import { CourseSelectorInline } from "@/components/layout/course-selector-inline";
+import { CourseExamOverview } from "@/components/practice/course-exam-overview";
 import { SessionFeedbackPopup } from "@/components/feedback/session-feedback-popup";
 import { SessionDeltaCard } from "@/components/practice/session-delta-card";
 import { NextSessionNudge } from "@/components/practice/next-session-nudge";
@@ -1184,6 +1185,11 @@ export default function PracticePage() {
       </div>
 
       <CourseSelectorInline />
+
+      {/* CB exam structure overview — added 2026-04-27 to fix conversion
+          gap where free students didn't realize SAQ/DBQ/LEQ practice
+          existed (FRQ Practice was paywalled, no preview shown). */}
+      <CourseExamOverview course={course} isFreeTier={!isPremiumForTrack(subscriptionTier ?? "FREE", userTrack)} />
 
       {/* Mode selection */}
       <div className="grid grid-cols-2 gap-4">
