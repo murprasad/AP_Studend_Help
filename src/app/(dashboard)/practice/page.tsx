@@ -516,6 +516,17 @@ export default function PracticePage() {
 
       const data = await response.json();
       if (!response.ok) {
+        // 503 transient (FRQ AI grading temporarily unavailable) — let the
+        // student retry without losing their answer. Don't clear
+        // selectedAnswer; the user can hit Submit again with the same text.
+        if (response.status === 503 && data.transient) {
+          toast({
+            title: "Grading paused",
+            description: data.error || "Try again in a moment — AP servers are catching up.",
+            variant: "destructive",
+          });
+          return;  // selectedAnswer + openEndedAnswer stay populated for retry
+        }
         toast({ title: "Error", description: data.error || "Failed to submit answer", variant: "destructive" });
         setSelectedAnswer(null);
         return;

@@ -354,10 +354,25 @@ export async function POST(req: NextRequest) {
     const values = selectedQuestions.flatMap((q, i) => [
       crypto.randomUUID(), practiceSession.id, q.id, i,
     ]);
-    await prisma.$executeRawUnsafe(
-      `INSERT INTO session_questions (id, "sessionId", "questionId", "order") VALUES ${placeholders}`,
-      ...values
-    );
+    try {
+      await prisma.$executeRawUnsafe(
+        `INSERT INTO session_questions (id, "sessionId", "questionId", "order") VALUES ${placeholders}`,
+        ...values
+      );
+    } catch (err) {
+      // Bulk insert failed — without this catch, the route returns 200 with
+      // a sessionId that has no question rows attached, causing the practice
+      // UI to render an empty session screen. Roll back the empty session
+      // and surface a real error so the user can retry.
+      console.error("session_questions bulk insert failed:", err);
+      await prisma.practiceSession
+        .delete({ where: { id: practiceSession.id } })
+        .catch(() => { /* best-effort rollback */ });
+      return NextResponse.json(
+        { error: "Couldn't load practice questions. Please try again." },
+        { status: 500 },
+      );
+    }
 
     return NextResponse.json({
       sessionId: practiceSession.id,

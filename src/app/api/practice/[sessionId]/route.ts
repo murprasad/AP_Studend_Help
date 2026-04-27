@@ -102,15 +102,39 @@ Return ONLY valid JSON (no markdown, no extra text):
             };
             isCorrect = frqScore.pointsEarned >= frqScore.totalPoints / 2;
           } else {
-            isCorrect = false;
+            // AI returned malformed JSON — surface as transient error so the
+            // client can let the student retry. Don't record an incorrect
+            // StudentResponse for what is an infrastructure failure.
+            return NextResponse.json(
+              {
+                error: "Grading temporarily unavailable. Please try again.",
+                transient: true,
+              },
+              { status: 503 },
+            );
           }
         } else {
-          isCorrect = false;
+          // No JSON found in AI response — treat as transient failure.
+          return NextResponse.json(
+            {
+              error: "Grading temporarily unavailable. Please try again.",
+              transient: true,
+            },
+            { status: 503 },
+          );
         }
       } catch {
-        // AI scoring failed — mark as needs review
-        isCorrect = false;
-        frqScore = { pointsEarned: 0, totalPoints: 3, feedback: "AI scoring unavailable — your answer was recorded.", modelAnswer: question.correctAnswer };
+        // AI scoring timed out or threw. Treat as transient — DO NOT mark
+        // the student's answer as wrong (peak-AP-season Groq slow-patches
+        // were causing correct FRQ responses to be recorded as incorrect,
+        // tanking accuracy stats and triggering false mastery downgrades).
+        return NextResponse.json(
+          {
+            error: "Grading temporarily unavailable. Please try again in a moment.",
+            transient: true,
+          },
+          { status: 503 },
+        );
       }
     } else {
       isCorrect = answer.toUpperCase() === question.correctAnswer.toUpperCase();

@@ -126,7 +126,11 @@ export default function MockExamPage() {
   // Only persists during phase === "section1" (active exam). Cleared on
   // completion to avoid stale-resume prompts on next mock attempt.
   const STORAGE_KEY = `mock_exam_snapshot_${course}`;
-  const STORAGE_TTL_MS = 4 * 60 * 60 * 1000; // 4 hours — longer than longest mock
+  // 12-hour TTL covers the most paranoid edge case: a student starts an
+  // evening 3.5h full AP mock, closes their laptop near midnight, opens it
+  // the following morning before school wanting to finish. Original 4h TTL
+  // silently dropped the snapshot in this scenario — student lost work.
+  const STORAGE_TTL_MS = 12 * 60 * 60 * 1000;
 
   useEffect(() => {
     if (phase !== "section1" || !sessionId) return;
