@@ -52,6 +52,9 @@ export default function FrqPracticePage() {
   const [error, setError] = useState<string | null>(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [selectedUnit, setSelectedUnit] = useState<ApUnit | "ALL">("ALL");
+  // Beta 8.7.x — subtype tabs (SAQ/DBQ/LEQ/etc.) added 2026-04-27 so
+  // students can practice by CB-defined exam type instead of one flat list.
+  const [selectedType, setSelectedType] = useState<string>("ALL");
   // Tier gate — fetched from /api/user/limits. Option B spec hard-locks
   // FRQ for FREE users (frqAccess: false). Gate the whole page so free
   // users see a paywall, not a list they can't actually use.
@@ -178,6 +181,39 @@ export default function FrqPracticePage() {
 
       {!selected && (
         <>
+          {/* Subtype tabs — group FRQs by CB-defined question type so
+              students see "Practice DBQs" / "Practice LEQs" as distinct
+              options instead of one flat mixed list. */}
+          {(() => {
+            const typeCounts: Record<string, number> = { ALL: list.length };
+            for (const f of list) typeCounts[f.type] = (typeCounts[f.type] || 0) + 1;
+            const types = Array.from(new Set(list.map((f) => f.type))).sort();
+            if (types.length <= 1) return null;
+            return (
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-sm font-medium text-muted-foreground">Type:</span>
+                <Button
+                  size="sm"
+                  variant={selectedType === "ALL" ? "default" : "outline"}
+                  onClick={() => setSelectedType("ALL")}
+                >
+                  All ({typeCounts.ALL})
+                </Button>
+                {types.map((t) => (
+                  <Button
+                    key={t}
+                    size="sm"
+                    variant={selectedType === t ? "default" : "outline"}
+                    onClick={() => setSelectedType(t)}
+                    className="text-xs"
+                  >
+                    {t} ({typeCounts[t]})
+                  </Button>
+                ))}
+              </div>
+            );
+          })()}
+
           {/* Unit filter */}
           <div className="flex flex-wrap items-center gap-2">
             <span className="text-sm font-medium text-muted-foreground">Unit:</span>
@@ -247,7 +283,7 @@ export default function FrqPracticePage() {
             </Card>
           ) : (
             <div className="grid gap-3 sm:grid-cols-2">
-              {list.map((f) => (
+              {list.filter((f) => selectedType === "ALL" || f.type === selectedType).map((f) => (
                 <button
                   key={f.id}
                   onClick={() => setSelectedId(f.id)}

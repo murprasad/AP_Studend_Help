@@ -27,6 +27,7 @@ import {
   GraduationCap,
 } from "lucide-react";
 import { CourseSelectorInline } from "@/components/layout/course-selector-inline";
+import { CourseExamOverview } from "@/components/practice/course-exam-overview";
 import Link from "next/link";
 import { FREE_LIMITS, LOCK_COPY, projectedDaysToTarget } from "@/lib/tier-limits";
 
@@ -342,6 +343,11 @@ export default function MockExamPage() {
             Timed section simulation with official {trackLabel} pacing
           </p>
         </div>
+
+        {/* CB exam structure card — added 2026-04-27 so students know
+            the real exam shape (MCQ + SAQ + DBQ + LEQ) even when our
+            mock currently is MCQ-only. Transparency over surprise. */}
+        <CourseExamOverview course={course} isFreeTier={false} />
 
         {/* Beta 7.7 (2026-04-25): resume-in-progress mock prompt. If the
             user crashed/refreshed mid-exam (browser, laptop reboot, tab
