@@ -14,6 +14,8 @@
     { "file": "persona-c-console-errors", "title": "/am-i-ready — no console errors or unhandled rejections" },
     { "file": "persona-c-console-errors", "title": "/act-prep — no console errors or unhandled rejections" },
     { "file": "persona-c-console-errors", "title": "/clep-prep — no console errors or unhandled rejections" },
+    { "file": "persona-c-console-errors", "title": "/ap-prep — no console errors or unhandled rejections" },
+    { "file": "nawal-nudge", "title": "modal renders when user has 2+ impressions" },
     { "file": "first-time-user-fmea", "title": "FMEA-8: Premium path routes to /billing with utm_source=onboarding" },
     { "file": "onboarding-plan-choice", "title": "Start Premium routes to /billing with utm_source=onboarding" },
     { "file": "journey-2-mock-exam", "title": "submit answer → returns correctness + explanation" },
