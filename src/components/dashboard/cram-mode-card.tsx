@@ -31,6 +31,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Flame, Calendar, ArrowRight, Target, PenLine, Mic } from "lucide-react";
+import { fetchCached } from "@/lib/dashboard-cache";
 
 interface Props {
   course: string;
@@ -73,12 +74,18 @@ export function CramModeCard({ course }: Props) {
   useEffect(() => {
     let cancelled = false;
     Promise.all([
-      fetch("/api/user", { cache: "no-store" }).then((r) => (r.ok ? r.json() : null)),
-      fetch(`/api/coach-plan?course=${course}`, { cache: "no-store" }).then((r) => (r.ok ? r.json() : null)),
-      fetch(`/api/frq?course=${course}&limit=1`, { cache: "no-store" }).then((r) => (r.ok ? r.json() : null)),
-    ])
-      .then(([userR, coach, frqR]) => {
+      fetchCached("/api/user"),
+      fetchCached(`/api/coach-plan?course=${course}`),
+      fetchCached(`/api/frq?course=${course}&limit=1`),
+    ] as const)
+      .then((results) => {
         if (cancelled) return;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const userR = results[0] as any;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const coach = results[1] as any;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const frqR = results[2] as any;
         const u = userR?.user as UserSnippet | undefined;
         setExamDate(u?.examDate ?? null);
         setActions((coach as CoachSnippet | null)?.actions ?? []);

@@ -13,6 +13,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Flame } from "lucide-react";
 import { tierCopyFor, type TierLabel } from "@/lib/pass-engine";
+import { fetchCached } from "@/lib/dashboard-cache";
 
 interface Props {
   course: string;
@@ -58,12 +59,10 @@ export function OutcomeProgressStrip({ course }: Props) {
 
   useEffect(() => {
     let cancelled = false;
-    fetch(`/api/coach-plan?course=${course}`, { cache: "no-store" })
-      .then((r) => (r.ok ? r.json() : null))
+    fetchCached<{ error?: unknown } & CoachPlanSnippet>(`/api/coach-plan?course=${course}`)
       .then((d) => { if (!cancelled && d && !d.error) setCoach(d); })
       .catch(() => { /* silent */ });
-    fetch(`/api/daily-goal?course=${course}`, { cache: "no-store" })
-      .then((r) => (r.ok ? r.json() : null))
+    fetchCached<TodaySnippet & { answeredToday?: number; targetQs?: number; streakDays?: number }>(`/api/daily-goal?course=${course}`)
       .then((d) => {
         if (!cancelled && d) {
           setToday({

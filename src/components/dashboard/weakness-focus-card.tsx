@@ -28,6 +28,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, AlertTriangle, Lock, Zap, Sparkles } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { LOCK_COPY } from "@/lib/tier-limits";
+import { fetchCached } from "@/lib/dashboard-cache";
 
 interface Props {
   course: string;
@@ -67,13 +68,11 @@ export function WeaknessFocusCard({ course }: Props) {
 
   useEffect(() => {
     let cancelled = false;
-    fetch(`/api/coach-plan?course=${course}`, { cache: "no-store" })
-      .then((r) => (r.ok ? r.json() : null))
+    fetchCached<CoachPlanSnippet & { error?: unknown }>(`/api/coach-plan?course=${course}`)
       .then((d) => { if (!cancelled && d && !d.error) setData(d); })
       .catch(() => { /* silent */ });
-    fetch(`/api/user/limits`, { cache: "no-store" })
-      .then((r) => (r.ok ? r.json() : null))
-      .then((d: LimitsSnippet | null) => { if (!cancelled && d) setLimits(d); })
+    fetchCached<LimitsSnippet>(`/api/user/limits`)
+      .then((d) => { if (!cancelled && d) setLimits(d); })
       .catch(() => { /* silent — UI falls back to free-tier framing */ });
     return () => { cancelled = true; };
   }, [course]);

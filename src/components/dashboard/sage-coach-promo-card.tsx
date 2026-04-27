@@ -26,6 +26,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Mic, Lock, ArrowRight, Sparkles } from "lucide-react";
+import { fetchCached } from "@/lib/dashboard-cache";
 
 interface Props {
   course: string;
@@ -43,18 +44,21 @@ export function SageCoachPromoCard({ course }: Props) {
   useEffect(() => {
     let cancelled = false;
     // Cheap probe — just need to know if at least 1 FRQ exists for course.
-    fetch(`/api/frq/list?course=${course}&limit=1`, { cache: "no-store" })
-      .then((r) => (r.ok ? r.json() : null))
+    // Beta 8.3 hotfix (2026-04-26): URL was /api/frq/list (404); actual
+    // route is /api/frq. Card was silently never rendering because the
+    // 404 produced null → setHasFrqs never fired → !hasFrqs guard hid card.
+    // Also switched to fetchCached so this card shares the /api/frq fetch
+    // with CramModeCard + DailyStudyOSCard.
+    fetchCached<{ frqs?: unknown[]; list?: unknown[] } | null>(`/api/frq?course=${course}&limit=1`)
       .then((d) => {
         if (cancelled || !d) return;
-        const list = d?.frqs ?? d?.list ?? d ?? [];
+        const list = d.frqs ?? d.list ?? [];
         setHasFrqs(Array.isArray(list) && list.length > 0);
       })
       .catch(() => { if (!cancelled) setHasFrqs(false); });
 
-    fetch("/api/user/limits", { cache: "no-store" })
-      .then((r) => (r.ok ? r.json() : null))
-      .then((d: LimitsSnippet | null) => {
+    fetchCached<LimitsSnippet | null>("/api/user/limits")
+      .then((d) => {
         if (cancelled || !d) return;
         setIsPremium(d.tier === "PREMIUM" || d.unlimited === true);
       })
