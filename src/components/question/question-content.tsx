@@ -27,6 +27,7 @@ import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 import "katex/dist/katex.min.css";
 import { normalizeMarkdownTables } from "@/lib/markdown-helpers";
+import { MermaidBlock, VegaLiteBlock } from "./visual-block";
 
 const tableComponents = {
   table: ({ children }: { children?: React.ReactNode }) => (
@@ -42,6 +43,17 @@ const tableComponents = {
   td: ({ children }: { children?: React.ReactNode }) => (
     <td className="border border-border/40 px-3 py-2 text-sm">{children}</td>
   ),
+  // Catch fenced ```mermaid and ```vega-lite blocks emitted by the
+  // generator. Both render client-only via dynamic-import (libs are heavy
+  // and SSR-incompatible on CF Workers).
+  code: ({ className, children }: { className?: string; children?: React.ReactNode }) => {
+    const lang = (className ?? "").replace(/^language-/, "");
+    const source = String(children ?? "").replace(/\n$/, "");
+    if (lang === "mermaid") return <MermaidBlock source={source} />;
+    if (lang === "vega-lite" || lang === "vegalite") return <VegaLiteBlock source={source} />;
+    // Default rendering for other code blocks
+    return <code className={className}>{children}</code>;
+  },
 };
 
 export function QuestionContent({

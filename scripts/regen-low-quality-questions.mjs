@@ -126,9 +126,47 @@ async function fixOne(q) {
   `;
   if (!full) return { fixed: fixes };
 
+  // Visual-fidelity hint per course — used by missing_stimulus_quant fixes
+  // so AP_BIOLOGY gets a Mermaid pathway, AP_STATISTICS gets a vega-lite
+  // chart or summary stats, AP_PHYSICS gets a KaTeX equation, etc.
+  const visualHint = (() => {
+    const c = full.course;
+    if (c === "AP_STATISTICS") {
+      return `For Stats, prefer a vega-lite chart in a fenced \`\`\`vega-lite block, OR a markdown table (\`| x | freq |\`), OR a summary stats line ("n=__, mean=__, sd=__, p-value=__"). Use KaTeX for symbols ($\\bar{x}$, $\\hat{p}$, $\\chi^2$).`;
+    }
+    if (c === "AP_BIOLOGY") {
+      return `For Bio, prefer a Mermaid pathway/cycle in a fenced \`\`\`mermaid block (graph LR; A-->B), OR a data table, OR a quantitative reaction with ΔG.`;
+    }
+    if (c === "AP_PSYCHOLOGY") {
+      return `For Psych, prefer a Mermaid conditioning/cascade diagram in a fenced \`\`\`mermaid block, OR a named-subject scenario.`;
+    }
+    if (c === "AP_CHEMISTRY") {
+      return `For Chem, prefer a balanced reaction with unicode arrow ("2 H₂(g) + O₂(g) → 2 H₂O(l)"), KaTeX equilibrium expression ($K_{eq} = \\frac{[C]^2}{[A][B]}$), or quantitative setup ("25.0 mL of 0.100 M HCl").`;
+    }
+    if (c === "AP_PHYSICS_1" || c === "AP_PHYSICS_2" || c === "AP_PHYSICS_C_MECHANICS" || c === "AP_PHYSICS_C_ELECTRICITY") {
+      return `For Physics, prefer KaTeX equation ($F = ma$), ASCII free-body in fenced \`\`\`text block, or numeric scenario ("2.0-kg block on 30° incline").`;
+    }
+    if (c === "AP_CALCULUS_AB" || c === "AP_CALCULUS_BC" || c === "AP_PRECALCULUS" || c === "SAT_MATH" || c === "ACT_MATH") {
+      return `For math, prefer display KaTeX function definition ($$f(x) = x^2 - 4x + 3$$) or KaTeX integral/derivative/limit notation.`;
+    }
+    if (c === "ACT_SCIENCE") {
+      return `For ACT Science, REQUIRED: experimental description (3-5 sentences) + a pipe-delimited data table with units in headers.`;
+    }
+    if (c === "AP_HUMAN_GEOGRAPHY" || c === "AP_ENVIRONMENTAL_SCIENCE") {
+      return `For ${c.replace('AP_','')}, prefer a markdown data table OR named-region scenario with quantities.`;
+    }
+    if (c === "AP_US_HISTORY" || c === "AP_WORLD_HISTORY" || c === "AP_EUROPEAN_HISTORY" || c === "AP_US_GOVERNMENT") {
+      return `For History/Gov, prefer an italicized 1-3 sentence primary-source excerpt with attribution dash ("*'We hold these truths...'* —Declaration of Independence, 1776").`;
+    }
+    if (c === "AP_COMPUTER_SCIENCE_PRINCIPLES" || c === "AP_COMPUTER_SCIENCE_A") {
+      return `For CSP, use a fenced \`\`\`python or \`\`\`pseudocode block with the relevant code snippet.`;
+    }
+    return `Provide concrete data, equation, observation, or context relevant to the question.`;
+  })();
+
   let editPrompt;
   if (target === "missing_stimulus_quant") {
-    editPrompt = `Generate a 60-150 char stimulus for this MCQ. The stimulus should provide concrete data, equation, observation, or context relevant to the question. Return JSON: { "stimulus": "..." }\n\nCourse: ${full.course}\nQuestion: ${full.questionText}\nOptions: ${JSON.stringify(full.options)}\nCorrect: ${full.correctAnswer}`;
+    editPrompt = `Generate a stimulus for this MCQ that matches the visual style of the real ${full.course} exam.\n\n${visualHint}\n\nLength target: 60-300 chars. The stimulus must be USABLE — the question must be answerable using its content.\n\nReturn JSON: { "stimulus": "..." }\n\nCourse: ${full.course}\nQuestion: ${full.questionText}\nOptions: ${JSON.stringify(full.options)}\nCorrect: ${full.correctAnswer}`;
   } else if (target === "stem_too_long" || target === "stem_long" || target === "hedging_unanchored") {
     editPrompt = `Rewrite this question stem to be 80-180 chars, no superlative hedging ("best/most/primary"). Preserve the same meaning + correct answer. Return JSON: { "questionText": "..." }\n\nCourse: ${full.course}\nCurrent stem: ${full.questionText}\nOptions: ${JSON.stringify(full.options)}\nCorrect: ${full.correctAnswer}`;
   } else if (target === "options_too_long") {

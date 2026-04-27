@@ -239,12 +239,15 @@ NUMERIC UNIQUENESS REQUIREMENT (MANDATORY — violation = rejection):
   // (AP Chem trial showed 60% stem-length drift, 40% missing stimulus on
   // chem/physics/stats topics, 40% HARD-tagged but recall-style stems).
   // These caps are explicit numeric limits the AI must honor.
-  const isQuantitativeCourse = course === "AP_CHEMISTRY" || course === "AP_PHYSICS_1" ||
-    course === "AP_PHYSICS_2" || course === "AP_PHYSICS_C_MECHANICS" ||
-    course === "AP_PHYSICS_C_ELECTRICITY" || course === "AP_BIOLOGY" ||
-    course === "AP_STATISTICS" || course === "AP_CALCULUS_AB" ||
-    course === "AP_CALCULUS_BC" || course === "AP_PRECALCULUS" ||
-    course === "SAT_MATH" || course === "ACT_MATH" || course === "ACT_SCIENCE";
+  // Cast to string so future ApCourse enum additions (AP_PHYSICS_2,
+  // AP_PHYSICS_C_*) don't trip the strict-equality check on the current union.
+  const courseStr: string = course as unknown as string;
+  const isQuantitativeCourse = courseStr === "AP_CHEMISTRY" || courseStr === "AP_PHYSICS_1" ||
+    courseStr === "AP_PHYSICS_2" || courseStr === "AP_PHYSICS_C_MECHANICS" ||
+    courseStr === "AP_PHYSICS_C_ELECTRICITY" || courseStr === "AP_BIOLOGY" ||
+    courseStr === "AP_STATISTICS" || courseStr === "AP_CALCULUS_AB" ||
+    courseStr === "AP_CALCULUS_BC" || courseStr === "AP_PRECALCULUS" ||
+    courseStr === "SAT_MATH" || courseStr === "ACT_MATH" || courseStr === "ACT_SCIENCE";
   const stimulusRequiredSection = isQuantitativeCourse
     ? `\nSTIMULUS REQUIREMENT (HARD GATE for ${course}):\n- Quantitative courses MUST include a stimulus on EVERY MCQ unless the question is pure-recall vocabulary.\n- Acceptable stimuli: data tables, equations, reaction equations (e.g. 2H₂ + O₂ → 2H₂O), graphs (described in words), experimental observations (e.g. "A 25.0 mL sample of 0.100 M HCl..."), molecular structures (described).\n- Stimulus must be 40-200 chars. If you cannot produce a meaningful stimulus, the question is too thin — reject it.`
     : `\nSTIMULUS REQUIREMENT for ${course}:\n- Include a stimulus when the topic naturally has one (primary source, data, passage, scenario). 0-200 chars. null if not applicable.`;
@@ -259,83 +262,108 @@ NUMERIC UNIQUENESS REQUIREMENT (MANDATORY — violation = rejection):
   // structure of the real exam. We can't ship raster images yet, but we CAN
   // demand markdown tables, KaTeX, ASCII diagrams, and code blocks that all
   // render today via remark-gfm + remark-math + react-markdown.
+  // Cast to string so we can match against future course enum additions
+  // (AP_PHYSICS_2, AP_PHYSICS_C_*, etc.) without TypeScript rejecting the
+  // comparison against the current ApCourse union type.
+  const c: string = course as unknown as string;
   const visualFormatSection = (() => {
-    if (course === "AP_STATISTICS") {
+    if (c === "AP_STATISTICS") {
       return `\nVISUAL FORMAT (CB-style — REQUIRED for AP Stats):
 - ~70% of CB Stats MCQs include a table, plot, or numeric summary. Match this.
-- Stimulus MUST include ONE of: pipe-delimited markdown table (≥3 rows × 2 cols), described histogram/dotplot/boxplot/scatterplot with named axes + scale, or a "n=__, mean=__, sd=__, p-value=__" summary line.
-- Tables must be readable: \`| x | freq |\\n|---|---|\\n| 1 | 4 |\\n| 2 | 7 |\\n| 3 | 2 |\` style.
+- For PLOT-based stimuli (boxplot, histogram, scatter, bar), prefer a vega-lite spec in a fenced \`vega-lite\` block. Example:
+  \`\`\`vega-lite
+  {"mark":"bar","data":{"values":[{"x":"A","y":12},{"x":"B","y":18},{"x":"C","y":7}]},"encoding":{"x":{"field":"x","type":"nominal"},"y":{"field":"y","type":"quantitative"}},"width":280,"height":160}
+  \`\`\`
+- For TABULAR stimuli, use pipe-delimited markdown table (≥3 rows × 2 cols): \`| x | freq |\\n|---|---|\\n| 1 | 4 |\\n| 2 | 7 |\\n| 3 | 2 |\`.
+- For SUMMARY stats stimuli, use a one-liner: "n=__, mean=__, sd=__, p-value=__".
 - Use KaTeX for formulas in stem/explanation: \`$\\bar{x}$\`, \`$\\hat{p}$\`, \`$\\chi^2$\`.`;
     }
-    if (course === "AP_CALCULUS_AB" || course === "AP_CALCULUS_BC" || course === "AP_PRECALCULUS") {
+    if (c === "AP_CALCULUS_AB" || c === "AP_CALCULUS_BC" || c === "AP_PRECALCULUS") {
       return `\nVISUAL FORMAT (CB-style — REQUIRED):
 - Stimulus MUST express any function definition in display KaTeX: \`$$f(x) = x^2 - 4x + 3$$\`.
 - Use KaTeX for integrals \`$\\int_0^1 f(x)\\,dx$\`, derivatives \`$f'(x)$\`, limits \`$\\lim_{x \\to 0}$\`, sums \`$\\sum_{n=1}^\\infty$\`.
 - For graph-dependent questions, describe the graph: "The graph of f passes through (0, 3), has a local max at x=1, and is concave down on [0, 2]."
 - Options in display math when they are formulas: \`$f'(2) = 4$\`.`;
     }
-    if (course === "SAT_MATH" || course === "ACT_MATH") {
+    if (c === "SAT_MATH" || c === "ACT_MATH") {
       return `\nVISUAL FORMAT (CB-style — REQUIRED):
 - Stimulus MUST use display KaTeX for any equation: \`$$3x + 2y = 12$$\`.
 - For geometry: describe figures concretely with coords/lengths: "Triangle ABC has A=(0,0), B=(4,0), C=(0,3)."
 - Options in inline KaTeX when numeric/algebraic: \`$x = 5$\`, \`$\\frac{3}{4}$\`.`;
     }
-    if (course === "AP_PHYSICS_1" || course === "AP_PHYSICS_2" ||
-        course === "AP_PHYSICS_C_MECHANICS" || course === "AP_PHYSICS_C_ELECTRICITY") {
+    if (c === "AP_PHYSICS_1" || c === "AP_PHYSICS_2" ||
+        c === "AP_PHYSICS_C_MECHANICS" || c === "AP_PHYSICS_C_ELECTRICITY") {
       return `\nVISUAL FORMAT (CB-style — REQUIRED):
 - Stimulus MUST include ONE of: KaTeX equation \`$F = ma$\`, ASCII free-body diagram in \`\\\`\\\`\\\`\\ntext\\n  ↑ N\\nblock\\n  ↓ mg\\n\\\`\\\`\\\`\\\`, or numeric scenario "A 2.0-kg block on a frictionless 30° incline...".
 - Use KaTeX for vectors/units: \`$\\vec{F}_{net}$\`, \`$v_0 = 5\\,\\text{m/s}$\`.
 - For graphs, describe axes + key points: "v-t graph: linear from (0,0) to (4s, 8 m/s), then constant."`;
     }
-    if (course === "AP_CHEMISTRY") {
+    if (c === "AP_CHEMISTRY") {
       return `\nVISUAL FORMAT (CB-style — REQUIRED):
 - Stimulus MUST include ONE of: balanced reaction equation with unicode arrows ("2 H₂(g) + O₂(g) → 2 H₂O(l)"), KaTeX equilibrium expression \`$K_{eq} = \\frac{[C]^2}{[A][B]}$\`, or quantitative setup ("A 25.0 mL sample of 0.100 M HCl is titrated with 0.150 M NaOH.").
 - Use KaTeX for thermo/kinetics formulas: \`$\\Delta G = \\Delta H - T\\Delta S$\`, \`$\\ln(k) = -E_a/RT + \\ln(A)$\`.
 - For pH/concentration questions, give 2+ numeric values.`;
     }
-    if (course === "AP_BIOLOGY") {
+    if (c === "AP_BIOLOGY") {
       return `\nVISUAL FORMAT (CB-style — REQUIRED):
 - ~50% of CB Bio MCQs include a data table, graph, or pathway. Match this.
-- Stimulus MUST include ONE of: pipe-delimited data table (e.g. enzyme rate vs substrate concentration), described pathway ("ATP → ADP + Pi, ΔG = -7.3 kcal/mol"), Punnett-square outcome ("AaBb × AaBb cross"), or experimental setup with named conditions.`;
+- For PATHWAY/CYCLE stimuli (Krebs cycle, calvin cycle, signal cascade, gene expression), prefer a Mermaid diagram in a fenced \`mermaid\` block. Example:
+  \`\`\`mermaid
+  graph LR
+    A[Glucose] --> B[Pyruvate]
+    B --> C[Acetyl-CoA]
+    C --> D[Krebs Cycle]
+    D --> E[Electron Transport Chain]
+  \`\`\`
+- For DATA stimuli, pipe-delimited table (enzyme rate vs substrate concentration, gel band sizes, etc.).
+- For QUANTITATIVE pathway stimuli, named reaction with ΔG: "ATP → ADP + Pi, ΔG = -7.3 kcal/mol".
+- For genetics, named cross outcome ("AaBb × AaBb cross — 9:3:3:1 phenotypic ratio").`;
     }
-    if (course === "ACT_SCIENCE") {
+    if (c === "ACT_SCIENCE") {
       return `\nVISUAL FORMAT (CB-style — REQUIRED — non-negotiable):
 - ACT Science is ALL data interpretation. Stimulus MUST be experimental description (3-5 sentences) PLUS at least ONE pipe-delimited data table OR clearly-described graph.
 - Table MUST have ≥3 rows × ≥2 columns with units in headers: \`| Trial | Mass (g) | Time (s) |\`.
 - Question must reference the table/graph specifically.`;
     }
-    if (course === "AP_COMPUTER_SCIENCE_PRINCIPLES" || course === "AP_COMPUTER_SCIENCE_A") {
+    if (c === "AP_COMPUTER_SCIENCE_PRINCIPLES" || c === "AP_COMPUTER_SCIENCE_A") {
       return `\nVISUAL FORMAT (CB-style — REQUIRED):
 - Stimulus for code questions MUST use a fenced code block: \`\\\`\\\`\\\`python\\nfor i in range(5):\\n    print(i)\\n\\\`\\\`\\\`\\\`.
 - Use AP CSP pseudocode style when targeting CSP (REPEAT n TIMES, IF condition, etc.).
 - Trace tables in stimulus: \`| step | i | total |\` for execution-tracing questions.`;
     }
-    if (course === "AP_US_HISTORY" || course === "AP_WORLD_HISTORY" ||
-        course === "AP_EUROPEAN_HISTORY") {
+    if (c === "AP_US_HISTORY" || c === "AP_WORLD_HISTORY" ||
+        c === "AP_EUROPEAN_HISTORY") {
       return `\nVISUAL FORMAT (CB-style — REQUIRED):
 - ~60% of CB History MCQs are document-stimulus based. Match this.
 - Stimulus MUST be ONE of: italicized 1-3 sentence primary-source excerpt with attribution ("*'We hold these truths to be self-evident...'* —Declaration of Independence, 1776"), described political cartoon (1-2 sentences naming the symbols), or described map/chart (named regions, dates, demographic numbers).`;
     }
-    if (course === "AP_US_GOVERNMENT") {
+    if (c === "AP_US_GOVERNMENT") {
       return `\nVISUAL FORMAT (CB-style — REQUIRED):
 - Stimulus should reference a specific Constitutional clause/Article, SCOTUS case (with year), founding document quote, or political cartoon description.
 - For data questions, include a small table: \`| Year | % | \` style.`;
     }
-    if (course === "AP_PSYCHOLOGY") {
+    if (c === "AP_PSYCHOLOGY") {
       return `\nVISUAL FORMAT (CB-style — REQUIRED):
 - 80% of CB Psych MCQs are scenario-based. Stimulus MUST start with a named subject scenario: "Maya, a 35-year-old graphic designer, ..." (2-4 sentences).
-- For research questions: include study design + IV/DV ("Researchers randomly assigned 60 participants to one of three conditions...").`;
+- For research questions: include study design + IV/DV ("Researchers randomly assigned 60 participants to one of three conditions...").
+- For CONDITIONING / CASCADE stimuli (classical/operant conditioning, neural transmission), prefer a Mermaid flow diagram in a fenced \`mermaid\` block:
+  \`\`\`mermaid
+  graph LR
+    NS[Neutral Stimulus: bell] --> CS[Conditioned Stimulus]
+    UCS[UCS: food] --> UCR[UCR: salivation]
+    CS --> CR[CR: salivation]
+  \`\`\``;
     }
-    if (course === "AP_HUMAN_GEOGRAPHY") {
+    if (c === "AP_HUMAN_GEOGRAPHY") {
       return `\nVISUAL FORMAT (CB-style — REQUIRED):
 - ~50% of CB HuGeo MCQs use a map, chart, or demographic table. Match this.
 - Stimulus MUST include ONE of: described map (named regions/borders/features), pipe-delimited demographic table (\`| Country | TFR | GDP/cap |\`), or population pyramid description with named age cohorts.`;
     }
-    if (course === "AP_ENVIRONMENTAL_SCIENCE") {
+    if (c === "AP_ENVIRONMENTAL_SCIENCE") {
       return `\nVISUAL FORMAT (CB-style — REQUIRED):
 - Stimulus MUST include quantitative scenario: data table (\`| Pollutant | Conc (ppm) | Threshold |\`), described graph with units, or ecosystem scenario with named species + populations.`;
     }
-    if (course === "ACT_ENGLISH" || course === "ACT_READING" || course === "SAT_READING_WRITING") {
+    if (c === "ACT_ENGLISH" || c === "ACT_READING" || c === "SAT_READING_WRITING") {
       return `\nVISUAL FORMAT (CB-style — REQUIRED):
 - Stimulus MUST be a passage excerpt in italics, 2-6 sentences, with title/source attribution at end.
 - Use sentence numbering when the question targets a specific line: "[1] Sentence one. [2] Sentence two."
