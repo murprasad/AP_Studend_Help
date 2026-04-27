@@ -26,10 +26,11 @@
 // with `correctAnswer: null`. The question stem + options are still very
 // valuable as RAG grounding for style/topic matching during AI generation.
 
-import { PrismaClient } from "@prisma/client";
 import { upsertSample, summarizeCourse } from "./_shared.mjs";
+import { makePrisma } from "../_prisma-http.mjs";
 
-const prisma = new PrismaClient();
+// HTTP adapter — matches prod + avoids TCP/5432 Neon pooler blocks.
+const prisma = makePrisma();
 
 const BOOKS = [
   {
@@ -66,6 +67,25 @@ const BOOKS = [
     title: "World History Volume 2, from 1400",
     pagePattern: "{n}-review-questions",
     maxChapters: 15,
+  },
+  // ── 2026 catalog expansion (Task #13) ────────────────────────────
+  // OpenStax's American Government 3e is CB-AP-aligned and has review
+  // MCQs at /{N}-review-questions. 17 chapters.
+  {
+    course: "AP_US_GOVERNMENT",
+    slug: "american-government-3e",
+    title: "American Government 3e",
+    pagePattern: "{n}-review-questions",
+    maxChapters: 17,
+  },
+  // OpenStax's Precalculus 2e has MCQs at /{N}-review-exercises
+  // (different page name than "-review-questions"). 13 chapters.
+  {
+    course: "AP_PRECALCULUS",
+    slug: "precalculus-2e",
+    title: "Precalculus 2e",
+    pagePattern: "{n}-review-exercises",
+    maxChapters: 13,
   },
   // NOTE: introductory-statistics-2e and statistics were probed during
   // discovery and DO NOT contain end-of-chapter MCQs. Both books' "Practice"

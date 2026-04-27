@@ -1,0 +1,1058 @@
+{
+  "runAt": "2026-04-27T19:18:37.893Z",
+  "aggregate": {
+    "total": 500,
+    "standard": 387,
+    "salvageable": 113,
+    "regen": 0
+  },
+  "perCourse": [
+    {
+      "course": "AP_HUMAN_GEOGRAPHY",
+      "total": 500,
+      "standard": 387,
+      "salvageable": 113,
+      "regen": 0,
+      "issues": {
+        "explanation_too_short": 418,
+        "stem_long": 82,
+        "hedging_unanchored": 82,
+        "options_too_long": 62,
+        "options_long": 72,
+        "hard_but_recall_style": 28,
+        "explanation_too_long": 1,
+        "stem_too_short": 3,
+        "stem_too_long": 7,
+        "options_too_terse": 1
+      },
+      "worstIds": [
+        {
+          "id": "cmoa0ja8u009juukstqq7y6c6",
+          "score": 5,
+          "bucket": "salvageable",
+          "issues": [
+            "stem_too_short",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmo9k4lkg0014uubwoj8nteh2",
+          "score": 5,
+          "bucket": "salvageable",
+          "issues": [
+            "options_too_long",
+            "hard_but_recall_style",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmo9zmfq50017uuksdj3sc5mz",
+          "score": 5,
+          "bucket": "salvageable",
+          "issues": [
+            "stem_long",
+            "options_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmoa0kygc00abuuksxwp50u9w",
+          "score": 5,
+          "bucket": "salvageable",
+          "issues": [
+            "stem_long",
+            "options_too_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmo9zlrse000wuukssxhofurg",
+          "score": 5,
+          "bucket": "salvageable",
+          "issues": [
+            "stem_too_short",
+            "options_too_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmo9zqu6m0030uuksqd3nvs6a",
+          "score": 5,
+          "bucket": "salvageable",
+          "issues": [
+            "options_long",
+            "hard_but_recall_style",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmoa02r4d008muuks4tge5azw",
+          "score": 5,
+          "bucket": "salvageable",
+          "issues": [
+            "stem_too_short",
+            "options_too_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmo9zjmmz0004uuks09fx7yyz",
+          "score": 5,
+          "bucket": "salvageable",
+          "issues": [
+            "options_long",
+            "hard_but_recall_style",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmoa0mrof00b5uuksjad0nyxc",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "stem_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmo9znbys001muukstq32eisg",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "options_too_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmo9zltqb000xuuks4dbgnl7a",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "options_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmo9zm0qe0011uuksasrrjjoa",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "options_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmo9zp6670029uuksbwts258a",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "hard_but_recall_style",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmo9zmye0001guuks3jnaccow",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "hard_but_recall_style",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmo9zxvbw006duukscq4qfie4",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "stem_long",
+            "options_too_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmoa0ifrz0092uuks4tonwej1",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "options_too_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmoa0iveu009buuksmrz9gmlc",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "hard_but_recall_style",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmo9jzpav000quurgdvqj4o3o",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "options_too_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmoa02dy2008iuuks1jgf8ers",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "options_too_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmo9k0aoo0014uurg2d8160zg",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "options_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmo9k0ctk0015uurggavm2cr5",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "options_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmoa0k54c009xuuks32qzdwbz",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "options_too_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmoa0kb0b00a0uuksvljzntaj",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "stem_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmoa0kjg100a5uuks1sq9661e",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "hard_but_recall_style",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmoa0knr300a6uuksurzxpaav",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "options_too_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmo9zjgnp0002uuksoyui4sef",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "stem_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmoa0loqx00anuuks7pxzkgrz",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "options_too_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmo9zl61r000nuuksqowr5r3q",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "options_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmoa03d7i008tuukst0bs6rso",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "hard_but_recall_style",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmoa0j5ug009huuksqpp0g0lu",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "options_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmoa0jm0w009ouukspjxbhpbk",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "options_too_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmoa0mfzd00azuuks4rhm1ffr",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "hard_but_recall_style",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmo9zmhmt0018uuksdi3zaj8v",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "options_too_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmo9zsvia0042uuksdkxao8t3",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "options_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmo9zuk6g004vuukserap1mlp",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "options_too_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmo9zv6al0055uuks2gw8uc54",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "options_too_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmo9zunjz004xuuksuaosrsfw",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "options_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmo9zx5hz0062uukss9yms3w5",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "options_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmoa0iljv0095uukswa9zxl7p",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "options_too_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmo9zysn8006ruukssl7kl94m",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "options_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmo9zzzs7007buuksq1hcwvnn",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "options_too_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmoa0k1ja009vuuks1lq8z4qr",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "options_too_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmoa0l7l300afuukss9nn98kw",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "options_too_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmo9zlp88000vuuks70b59ubc",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "options_too_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmoa03hrb008vuuksisl96adt",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "options_too_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmo9zpo8q002huuksymn2crjc",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "options_too_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmo9zzrt40077uuksmnwlj44s",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "options_too_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmo9zmsm0001duuksvh5a10g5",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "options_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmoa0ly8g00asuuksp5vp2o4m",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "options_too_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmo9zk4pe000duukslaa364ko",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "options_too_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmo9zn7h9001kuuksz2iz02mf",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "options_too_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmo9zmbtn0016uuksfzwpgxnv",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "hard_but_recall_style",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmo9zmqpg001cuuks3szbccmz",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "stem_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmoa03tlt008zuukstk7o14bc",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "options_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmoa0mba500axuuksicfjht8v",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "hard_but_recall_style",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmo9zrohs003guukspgmnkexv",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "options_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmo9ztct9004cuuks6t0gr8fu",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "hard_but_recall_style",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmo9zni11001quuksgcsyrtdk",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "options_too_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmo9zuiph004uuuksjnpkqaus",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "options_too_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmo9zoeef0025uuksdefecbny",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "options_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmo9zppw3002iuuksrdfjahro",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "options_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmo9zpkmz002fuuksyt46g7ho",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "hard_but_recall_style",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmo9zqcnl002uuuks1dijlpdf",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "options_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmo9zqogj002xuukswt0209b0",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "hard_but_recall_style",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmo9zr3ih0035uuks6x2n0drv",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "options_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmo9zra1j0038uuksi2fbv8qg",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "hard_but_recall_style",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmo9zrl50003euuks328gm8hf",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "options_too_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmo9zrq54003huuksru7y3xw1",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "options_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmo9zsizi003vuuks8appixyl",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "hard_but_recall_style",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmo9zss1l0040uuks2wo1jg6c",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "options_too_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmo9zsxhy0043uuksw4pgg9g0",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "options_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmo9zt19r0045uuks1juvnl52",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "options_too_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmo9ztmcf004guuksy4wus7ng",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "options_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmo9ztqia004iuuksvmpz3y5p",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "hard_but_recall_style",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmo9zvt4t005huuksw2nn0bgo",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "stem_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmo9zvy81005juuksjf0cn7t3",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "options_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmo9zw8hi005nuuksbo0h5agr",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "options_too_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmo9zwr23005vuukssnv2mq7u",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "options_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmo9zwsoe005wuuks8ai60ib3",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "options_too_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmo9zxax20065uuksmadtxkwq",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "options_too_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmo9zxghw0067uuksi6r9bi58",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "hard_but_recall_style",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmo9zxjbs0068uuks751xzw5f",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "options_too_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmo9zxtre006cuuksiydf8szp",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "options_too_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmo9zxl910069uuksum87fdwn",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "options_too_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmo9zyctx006luukswejhvf03",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "options_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmo9zyj1q006ouuks9gniw4zh",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "options_too_terse",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmo9zzbxp006yuukszrh1l8mo",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "options_too_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmoa005yl007euuksot7vy0ho",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "options_too_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmo9zzxx2007auuksjnpp3omg",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "stem_long",
+            "options_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmoa010y9007xuuks16uy7ejw",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "options_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmoa016k9007zuukso4d45jjr",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "options_too_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmoa036lg008ruuks1x55q93d",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "stem_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmo9k0hc70018uurg9dg0b88p",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "options_too_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmo9k3dn9000fuubwai9xb0x5",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "options_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmo9k4cue000zuubwxzfsxi27",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "options_too_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmo9k4h9q0012uubwdssc9s18",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "options_too_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmo9zjvig0009uuksh2yebu5r",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "options_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmo9zkaqk000fuuksppw4lc30",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "options_too_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmo9zzq460076uuksux5bme2o",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "options_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmoa01p1e0088uuksesqlhxj2",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "hard_but_recall_style",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmo9zmmd2001auuksvjllo38i",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "options_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmoa0jeny009kuuksxcllegv0",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "stem_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmo9jz3mt000duurgs5n6b2i2",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "options_too_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmo9jzshw000suurglcjg0dtg",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "options_too_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmo9jzuhr000tuurgltd5klmj",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "options_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmo9k34hb0009uubwr02409l3",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "options_too_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmo9k3fad000guubwosnn508v",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "options_too_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmo9k46cv000vuubwiils4mhn",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "options_too_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmo9k4pz60017uubwgdio01ef",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "options_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmo9zjrxy0007uuksyjqa3pe9",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "options_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmo9zk8kc000euukseom1jwcm",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "options_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmo9zkkxr000guuks14bqfwzv",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "hard_but_recall_style",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmo9zl1qo000luuks0vbvfpz6",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "options_too_long",
+            "explanation_too_short"
+          ]
+        }
+      ]
+    }
+  ]
+}

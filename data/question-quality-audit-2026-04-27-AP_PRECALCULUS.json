@@ -1,0 +1,767 @@
+{
+  "runAt": "2026-04-27T22:02:04.228Z",
+  "aggregate": {
+    "total": 467,
+    "standard": 390,
+    "salvageable": 66,
+    "regen": 11
+  },
+  "perCourse": [
+    {
+      "course": "AP_PRECALCULUS",
+      "total": 467,
+      "standard": 390,
+      "salvageable": 66,
+      "regen": 11,
+      "issues": {
+        "stimulus_too_short": 214,
+        "explanation_too_long": 11,
+        "options_too_long": 7,
+        "explanation_long": 34,
+        "stem_long": 164,
+        "missing_stimulus_quant": 181,
+        "stem_too_long": 88,
+        "options_long": 17,
+        "options_too_terse": 45,
+        "hedging_unanchored": 39,
+        "explanation_too_short": 12
+      },
+      "worstIds": [
+        {
+          "id": "cmo9k5xuk0013uuawyp4oxnu6",
+          "score": 3,
+          "bucket": "regen",
+          "issues": [
+            "missing_stimulus_quant",
+            "stem_long",
+            "options_too_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmob0up3n000puu5wxr8i1qrx",
+          "score": 3,
+          "bucket": "regen",
+          "issues": [
+            "missing_stimulus_quant",
+            "stem_long",
+            "options_too_terse",
+            "explanation_too_long"
+          ]
+        },
+        {
+          "id": "cmob086l20019uu8w9y67dckn",
+          "score": 4,
+          "bucket": "regen",
+          "issues": [
+            "missing_stimulus_quant",
+            "stem_too_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmob0q8rq0014uuw4ue8cxkql",
+          "score": 4,
+          "bucket": "regen",
+          "issues": [
+            "missing_stimulus_quant",
+            "options_too_terse",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmob19bam000muucgguw417h7",
+          "score": 4,
+          "bucket": "regen",
+          "issues": [
+            "missing_stimulus_quant",
+            "stem_too_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmob17mxc001auuq0gj55td77",
+          "score": 4,
+          "bucket": "regen",
+          "issues": [
+            "missing_stimulus_quant",
+            "stem_long",
+            "options_too_terse"
+          ]
+        },
+        {
+          "id": "cmob0unco000ouu5wq5tanmsl",
+          "score": 4,
+          "bucket": "regen",
+          "issues": [
+            "missing_stimulus_quant",
+            "stem_too_long",
+            "hedging_unanchored",
+            "explanation_long"
+          ]
+        },
+        {
+          "id": "cmob0otye0006uuw4mhj98w2g",
+          "score": 4,
+          "bucket": "regen",
+          "issues": [
+            "missing_stimulus_quant",
+            "stem_too_long",
+            "explanation_long"
+          ]
+        },
+        {
+          "id": "cmob0tv5v0007uu5wxp462f40",
+          "score": 4,
+          "bucket": "regen",
+          "issues": [
+            "missing_stimulus_quant",
+            "stem_long",
+            "options_long",
+            "explanation_long"
+          ]
+        },
+        {
+          "id": "cmob0pnu7000quuw4pu4qv66v",
+          "score": 4,
+          "bucket": "regen",
+          "issues": [
+            "missing_stimulus_quant",
+            "stem_long",
+            "hedging_unanchored",
+            "explanation_too_long"
+          ]
+        },
+        {
+          "id": "cmo9k786l001ouuawnv38iu5v",
+          "score": 4,
+          "bucket": "regen",
+          "issues": [
+            "missing_stimulus_quant",
+            "stem_too_long",
+            "options_too_long"
+          ]
+        },
+        {
+          "id": "cmo9k187u001auupgdu629be9",
+          "score": 5,
+          "bucket": "salvageable",
+          "issues": [
+            "missing_stimulus_quant",
+            "stem_too_long"
+          ]
+        },
+        {
+          "id": "cmob15a7q0001uuq0pcq832wh",
+          "score": 5,
+          "bucket": "salvageable",
+          "issues": [
+            "missing_stimulus_quant",
+            "stem_too_long"
+          ]
+        },
+        {
+          "id": "cmob0pvxc000vuuw4zn1wg9ek",
+          "score": 5,
+          "bucket": "salvageable",
+          "issues": [
+            "missing_stimulus_quant",
+            "stem_long",
+            "options_too_terse"
+          ]
+        },
+        {
+          "id": "cmob16a6l000iuuq01zdgnpy2",
+          "score": 5,
+          "bucket": "salvageable",
+          "issues": [
+            "missing_stimulus_quant",
+            "stem_too_long"
+          ]
+        },
+        {
+          "id": "cmo9k08yu000quupgnqh0crek",
+          "score": 5,
+          "bucket": "salvageable",
+          "issues": [
+            "missing_stimulus_quant",
+            "stem_long",
+            "options_long"
+          ]
+        },
+        {
+          "id": "cmob06nxf000buu8wc4ib01t5",
+          "score": 5,
+          "bucket": "salvageable",
+          "issues": [
+            "missing_stimulus_quant",
+            "stem_too_long"
+          ]
+        },
+        {
+          "id": "cmob07s66000zuu8whizg814o",
+          "score": 5,
+          "bucket": "salvageable",
+          "issues": [
+            "missing_stimulus_quant",
+            "stem_too_long"
+          ]
+        },
+        {
+          "id": "cmob0reos0008uu48x1507lwa",
+          "score": 5,
+          "bucket": "salvageable",
+          "issues": [
+            "missing_stimulus_quant",
+            "stem_long",
+            "hedging_unanchored",
+            "explanation_long"
+          ]
+        },
+        {
+          "id": "cmob0smt60010uu48t2bxjk1g",
+          "score": 5,
+          "bucket": "salvageable",
+          "issues": [
+            "missing_stimulus_quant",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmob0tmd00002uu5wy1yzxmzp",
+          "score": 5,
+          "bucket": "salvageable",
+          "issues": [
+            "missing_stimulus_quant",
+            "stem_too_long"
+          ]
+        },
+        {
+          "id": "cmob13xkg000suujcs8twark7",
+          "score": 5,
+          "bucket": "salvageable",
+          "issues": [
+            "missing_stimulus_quant",
+            "stem_too_long"
+          ]
+        },
+        {
+          "id": "cmob075no000luu8w6d1mpml7",
+          "score": 5,
+          "bucket": "salvageable",
+          "issues": [
+            "missing_stimulus_quant",
+            "stem_too_long"
+          ]
+        },
+        {
+          "id": "cmob0uhtp000kuu5wweoyeex8",
+          "score": 5,
+          "bucket": "salvageable",
+          "issues": [
+            "missing_stimulus_quant",
+            "stem_too_long"
+          ]
+        },
+        {
+          "id": "cmob1a0yh0013uucgz91evu5q",
+          "score": 5,
+          "bucket": "salvageable",
+          "issues": [
+            "missing_stimulus_quant",
+            "stem_too_long"
+          ]
+        },
+        {
+          "id": "cmob0r3yl0001uu48jm1k1kkf",
+          "score": 5,
+          "bucket": "salvageable",
+          "issues": [
+            "missing_stimulus_quant",
+            "stem_too_long"
+          ]
+        },
+        {
+          "id": "cmob0rvaz000kuu48tcs369t1",
+          "score": 5,
+          "bucket": "salvageable",
+          "issues": [
+            "missing_stimulus_quant",
+            "stem_too_long"
+          ]
+        },
+        {
+          "id": "cmob0vjul0018uu5w5ye92cy3",
+          "score": 5,
+          "bucket": "salvageable",
+          "issues": [
+            "missing_stimulus_quant",
+            "stem_too_long",
+            "hedging_unanchored"
+          ]
+        },
+        {
+          "id": "cmob0vpio001buu5wxl4bvoyu",
+          "score": 5,
+          "bucket": "salvageable",
+          "issues": [
+            "missing_stimulus_quant",
+            "stem_too_long"
+          ]
+        },
+        {
+          "id": "cmob1a2jd0014uucgszkyvgz2",
+          "score": 5,
+          "bucket": "salvageable",
+          "issues": [
+            "missing_stimulus_quant",
+            "stem_too_long"
+          ]
+        },
+        {
+          "id": "cmob17b2k0013uuq0tywffix3",
+          "score": 5,
+          "bucket": "salvageable",
+          "issues": [
+            "missing_stimulus_quant",
+            "stem_too_long"
+          ]
+        },
+        {
+          "id": "cmob0ranj0006uu48afq4go1u",
+          "score": 5,
+          "bucket": "salvageable",
+          "issues": [
+            "missing_stimulus_quant",
+            "explanation_too_long"
+          ]
+        },
+        {
+          "id": "cmob0sy4c0017uu48n3vhh4gj",
+          "score": 5,
+          "bucket": "salvageable",
+          "issues": [
+            "missing_stimulus_quant",
+            "stem_too_long"
+          ]
+        },
+        {
+          "id": "cmob07jft000tuu8ws8pcnsyw",
+          "score": 5,
+          "bucket": "salvageable",
+          "issues": [
+            "missing_stimulus_quant",
+            "stem_too_long"
+          ]
+        },
+        {
+          "id": "cmob0qcs30017uuw4buo10hrs",
+          "score": 5,
+          "bucket": "salvageable",
+          "issues": [
+            "missing_stimulus_quant",
+            "stem_long",
+            "options_too_terse"
+          ]
+        },
+        {
+          "id": "cmob19tfd000yuucgrbv0qkc6",
+          "score": 5,
+          "bucket": "salvageable",
+          "issues": [
+            "missing_stimulus_quant",
+            "stem_too_long"
+          ]
+        },
+        {
+          "id": "cmob0q23h000zuuw43nwzo4ya",
+          "score": 5,
+          "bucket": "salvageable",
+          "issues": [
+            "missing_stimulus_quant",
+            "stem_too_long",
+            "hedging_unanchored"
+          ]
+        },
+        {
+          "id": "cmo9k0tzf0013uupgz0xskdgn",
+          "score": 5,
+          "bucket": "salvageable",
+          "issues": [
+            "missing_stimulus_quant",
+            "stem_long",
+            "options_too_terse"
+          ]
+        },
+        {
+          "id": "cmo9k5z7u0014uuawwvqpaje9",
+          "score": 5,
+          "bucket": "salvageable",
+          "issues": [
+            "missing_stimulus_quant",
+            "stem_long",
+            "explanation_too_short"
+          ]
+        },
+        {
+          "id": "cmob06hs80007uu8w2i0spxup",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "missing_stimulus_quant",
+            "options_too_terse"
+          ]
+        },
+        {
+          "id": "cmob165yl000fuuq0w0cq2vt9",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "missing_stimulus_quant",
+            "stem_long"
+          ]
+        },
+        {
+          "id": "cmob0oons0003uuw445zuutzs",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "missing_stimulus_quant",
+            "stem_too_long"
+          ]
+        },
+        {
+          "id": "cmob08aqq001cuu8w6efwhss0",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "missing_stimulus_quant",
+            "stem_too_long",
+            "hedging_unanchored"
+          ]
+        },
+        {
+          "id": "cmob06mbk000auu8w49270vlo",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "missing_stimulus_quant",
+            "options_too_terse"
+          ]
+        },
+        {
+          "id": "cmob0sbwl000suu48xr70ii3z",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "missing_stimulus_quant",
+            "stem_too_long",
+            "hedging_unanchored"
+          ]
+        },
+        {
+          "id": "cmob07404000kuu8wyjk141s2",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "missing_stimulus_quant",
+            "stem_too_long"
+          ]
+        },
+        {
+          "id": "cmob087y4001auu8w4t88gvpx",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "missing_stimulus_quant",
+            "stem_long"
+          ]
+        },
+        {
+          "id": "cmob0p1ne000buuw469b89ort",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "missing_stimulus_quant",
+            "stem_long",
+            "hedging_unanchored"
+          ]
+        },
+        {
+          "id": "cmo9jzy86000kuupgobwxeuuo",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "missing_stimulus_quant",
+            "stem_long"
+          ]
+        },
+        {
+          "id": "cmob0q9y90015uuw4kmrcrl12",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "stimulus_too_short",
+            "options_too_terse"
+          ]
+        },
+        {
+          "id": "cmob0r9700005uu48roj3izpr",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "missing_stimulus_quant",
+            "options_too_terse"
+          ]
+        },
+        {
+          "id": "cmob0rr9y000huu48sxkuo7f9",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "missing_stimulus_quant",
+            "stem_long",
+            "hedging_unanchored"
+          ]
+        },
+        {
+          "id": "cmob0s4qg000puu48b7462yo8",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "missing_stimulus_quant",
+            "stem_long"
+          ]
+        },
+        {
+          "id": "cmob0sd3w000tuu483sqjkqpv",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "missing_stimulus_quant",
+            "stem_long"
+          ]
+        },
+        {
+          "id": "cmob18xfl000fuucguxsc1clx",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "missing_stimulus_quant",
+            "stem_long",
+            "hedging_unanchored"
+          ]
+        },
+        {
+          "id": "cmob138bp000euujcdcvvn5ym",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "missing_stimulus_quant",
+            "options_too_terse"
+          ]
+        },
+        {
+          "id": "cmob15z47000cuuq0yd9mgco2",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "stimulus_too_short",
+            "stem_too_long"
+          ]
+        },
+        {
+          "id": "cmob1618w000duuq0mh98t27v",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "stimulus_too_short",
+            "options_too_terse"
+          ]
+        },
+        {
+          "id": "cmob19x8a0011uucg698rgxlx",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "missing_stimulus_quant",
+            "stem_long"
+          ]
+        },
+        {
+          "id": "cmob1a6wd0017uucg0wudsd96",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "missing_stimulus_quant",
+            "stem_too_long"
+          ]
+        },
+        {
+          "id": "cmob1am25001buucgilvinuns",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "missing_stimulus_quant",
+            "stem_long",
+            "hedging_unanchored"
+          ]
+        },
+        {
+          "id": "cmob07tpz0010uu8wyjrghck8",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "missing_stimulus_quant",
+            "stem_long"
+          ]
+        },
+        {
+          "id": "cmob06p80000cuu8w0dlgnnye",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "missing_stimulus_quant",
+            "stem_long",
+            "hedging_unanchored"
+          ]
+        },
+        {
+          "id": "cmob14xu0001duujc5rlpq4ua",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "missing_stimulus_quant",
+            "stem_long",
+            "hedging_unanchored"
+          ]
+        },
+        {
+          "id": "cmob1835p0001uucg6wxsoiu9",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "missing_stimulus_quant",
+            "stem_long",
+            "hedging_unanchored"
+          ]
+        },
+        {
+          "id": "cmob188sw0005uucgmwq9np2b",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "missing_stimulus_quant",
+            "stem_long",
+            "hedging_unanchored"
+          ]
+        },
+        {
+          "id": "cmob19l7f000suucgg8ivxsp4",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "missing_stimulus_quant",
+            "stem_long",
+            "hedging_unanchored"
+          ]
+        },
+        {
+          "id": "cmob1a3v40015uucga1nxgoc8",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "missing_stimulus_quant",
+            "stem_too_long"
+          ]
+        },
+        {
+          "id": "cmob1a5az0016uucgo6dd28wf",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "missing_stimulus_quant",
+            "stem_long",
+            "hedging_unanchored"
+          ]
+        },
+        {
+          "id": "cmo9jyvia0002uupg347xk2sf",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "missing_stimulus_quant",
+            "stem_too_long"
+          ]
+        },
+        {
+          "id": "cmo9k0ab8000ruupgcporm8fi",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "missing_stimulus_quant",
+            "options_too_terse"
+          ]
+        },
+        {
+          "id": "cmo9k0f6z000uuupgskhlypxk",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "missing_stimulus_quant",
+            "stem_long",
+            "explanation_long"
+          ]
+        },
+        {
+          "id": "cmo9k16ce0019uupg7k4va2wl",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "missing_stimulus_quant",
+            "stem_long",
+            "hedging_unanchored"
+          ]
+        },
+        {
+          "id": "cmo9k2za10001uuawj9t10urz",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "missing_stimulus_quant",
+            "stem_long",
+            "hedging_unanchored"
+          ]
+        },
+        {
+          "id": "cmo9k4sc70010uuawvwvkyslo",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "missing_stimulus_quant",
+            "stem_long"
+          ]
+        },
+        {
+          "id": "cmo9k665k0019uuawuhzmyqeg",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "missing_stimulus_quant",
+            "stem_too_long",
+            "hedging_unanchored"
+          ]
+        },
+        {
+          "id": "cmo9k6h5s001buuawdxxht7lx",
+          "score": 6,
+          "bucket": "salvageable",
+          "issues": [
+            "missing_stimulus_quant",
+            "stem_long"
+          ]
+        }
+      ]
+    }
+  ]
+}
