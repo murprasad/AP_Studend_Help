@@ -47,7 +47,12 @@ export default defineConfig({
   // tighter guarantees can override via `test.describe.configure({
   // retries: 0 })`.
   retries: 3,
-  reporter: process.env.CI ? [["list"], ["html", { open: "never" }]] : "list",
+  // Always include JSON reporter writing to test-results.json so the
+  // staging gate's triage script (scripts/check-playwright-failures.mjs)
+  // can distinguish chronic cold-start flakes from real regressions.
+  reporter: process.env.CI
+    ? [["list"], ["json", { outputFile: "test-results.json" }], ["html", { open: "never" }]]
+    : [["list"], ["json", { outputFile: "test-results.json" }]],
   use: {
     baseURL: process.env.E2E_BASE_URL ?? "https://studentnest.ai",
     trace: "retain-on-failure",
