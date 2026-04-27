@@ -55,10 +55,11 @@ function walkSuite(suite) {
       const status = test.status;
       const lastResult = test.results?.[test.results.length - 1];
       if (lastResult?.status === "failed" || lastResult?.status === "timedOut" || (status === "expected" && lastResult?.status !== "passed" && lastResult?.status !== "skipped")) {
-        // Build full test id: file:line:col › describe › test
         const file = (spec.file ?? "").replace(/\\/g, "/").split("/").pop();
-        const id = `${file}:${spec.line ?? "?"}:${spec.column ?? "?"} › ${suite.title ?? ""} › ${spec.title}`;
-        failures.push({ id, status: lastResult?.status ?? "failed", title: spec.title, file });
+        // Strip ".spec.ts" suffix for matching, since allowlist uses base name.
+        const fileBase = (file ?? "").replace(/\.spec\.ts$/, "");
+        const id = `${file}:${spec.line ?? "?"}:${spec.column ?? "?"} › ${spec.title}`;
+        failures.push({ id, status: lastResult?.status ?? "failed", title: spec.title, file, fileBase });
       }
     }
   }
@@ -73,7 +74,15 @@ if (failures.length === 0) {
 const expected = [];
 const newFailures = [];
 for (const f of failures) {
-  const matched = knownFlaky.find((known) => f.id.includes(known));
+  // Match policy: allowlist entry = { file, title }. Failure matches if
+  // its file basename equals the entry's file AND the failure title
+  // contains the entry's title substring. This survives Playwright's
+  // describe-chain quirks (some specs have describe(), others have the
+  // file name silently inserted as a describe — file+title is stable).
+  const matched = knownFlaky.find((known) => {
+    if (typeof known === "string") return f.id.includes(known); // legacy string entries
+    return f.fileBase === known.file && f.title.includes(known.title);
+  });
   if (matched) expected.push(f);
   else newFailures.push(f);
 }
