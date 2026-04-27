@@ -6,8 +6,10 @@ import { FREE_LIMITS, LOCK_COPY } from "@/lib/tier-limits";
 // failure is the surface that forces the conversation.
 
 describe("tier-limits — FREE_LIMITS contract", () => {
-  it("FREE practice cap is 20/day", () => {
-    expect(FREE_LIMITS.practiceQuestionsPerDay).toBe(20);
+  // Bumped 20 → 30 (2026-04-27) per user direction: serious AP students do
+  // 30-50 q/day; 20 cap signaled "this tool can't support real prep load."
+  it("FREE practice cap is 30/day", () => {
+    expect(FREE_LIMITS.practiceQuestionsPerDay).toBe(30);
   });
 
   it("FREE tutor chats cap is 3/day (sharpened from 5)", () => {
