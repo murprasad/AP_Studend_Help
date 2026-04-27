@@ -335,12 +335,21 @@ NUMERIC UNIQUENESS REQUIREMENT (MANDATORY — violation = rejection):
         c === "AP_EUROPEAN_HISTORY") {
       return `\nVISUAL FORMAT (CB-style — REQUIRED):
 - ~60% of CB History MCQs are document-stimulus based. Match this.
-- Stimulus MUST be ONE of: italicized 1-3 sentence primary-source excerpt with attribution ("*'We hold these truths to be self-evident...'* —Declaration of Independence, 1776"), described political cartoon (1-2 sentences naming the symbols), or described map/chart (named regions, dates, demographic numbers).`;
+- Stimulus MUST be ONE of:
+  1. Primary-source excerpt — italicized 1-3 sentence quote followed by CB-STRICT attribution on the next line. Format the attribution exactly:
+     \`Source: <Author full name>, <descriptor of who they are>, <type of source>, <year>\`
+     Examples drawn from real CB 2025: \`Source: Jack Weatherford, United States anthropologist, academic book, 1988\` / \`Source: Mary Wollstonecraft, English philosopher and women's rights advocate, political pamphlet, 1792\` / \`Source: Mahatma Gandhi, Indian nationalist leader, public speech, 1942\`.
+     The four comma-separated fields are MANDATORY: name, descriptor, source-type, year. No "circa" — give a specific year.
+  2. Described political cartoon (1-2 sentences naming the symbols + CB-strict source line).
+  3. Described map/chart (named regions, dates, demographic numbers + CB-strict source line).
+- Use REAL historical figures and verifiable sources where possible. Do NOT fabricate sources like "The Indian Times, 1985" — students will be misled.`;
     }
     if (c === "AP_US_GOVERNMENT") {
       return `\nVISUAL FORMAT (CB-style — REQUIRED):
 - Stimulus should reference a specific Constitutional clause/Article, SCOTUS case (with year), founding document quote, or political cartoon description.
-- For data questions, include a small table: \`| Year | % | \` style.`;
+- For QUOTED stimuli, use CB-strict attribution format: \`Source: <Author>, <descriptor>, <type>, <year>\`. Examples: \`Source: James Madison, U.S. Founding Father, Federalist No. 10, 1787\`, \`Source: Sandra Day O'Connor, U.S. Supreme Court Justice, majority opinion in Grutter v. Bollinger, 2003\`.
+- For data questions, include a small table: \`| Year | % | \` style.
+- Do NOT fabricate quotes or cases.`;
     }
     if (c === "AP_PSYCHOLOGY") {
       return `\nVISUAL FORMAT (CB-style — REQUIRED):
