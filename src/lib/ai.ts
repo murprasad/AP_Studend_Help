@@ -235,6 +235,32 @@ NUMERIC UNIQUENESS REQUIREMENT (MANDATORY — violation = rejection):
   // Force balanced answer distribution.
   const answerDistributionSection = `\nANSWER POSITION (MANDATORY):\n- Choose correctAnswer uniformly random from {A, B, C, D, E if 5-choice}.\n- DO NOT default to A. The system audits answer distribution; >40% of any single letter triggers rejection.\n- Construct the question first, then RANDOMIZE which letter holds the correct option.`;
 
+  // Beta 8.6 (2026-04-26): hard structural caps from gap-audit findings
+  // (AP Chem trial showed 60% stem-length drift, 40% missing stimulus on
+  // chem/physics/stats topics, 40% HARD-tagged but recall-style stems).
+  // These caps are explicit numeric limits the AI must honor.
+  const isQuantitativeCourse = course === "AP_CHEMISTRY" || course === "AP_PHYSICS_1" ||
+    course === "AP_PHYSICS_2" || course === "AP_PHYSICS_C_MECHANICS" ||
+    course === "AP_PHYSICS_C_ELECTRICITY" || course === "AP_BIOLOGY" ||
+    course === "AP_STATISTICS" || course === "AP_CALCULUS_AB" ||
+    course === "AP_CALCULUS_BC" || course === "AP_PRECALCULUS" ||
+    course === "SAT_MATH" || course === "ACT_MATH" || course === "ACT_SCIENCE";
+  const stimulusRequiredSection = isQuantitativeCourse
+    ? `\nSTIMULUS REQUIREMENT (HARD GATE for ${course}):\n- Quantitative courses MUST include a stimulus on EVERY MCQ unless the question is pure-recall vocabulary.\n- Acceptable stimuli: data tables, equations, reaction equations (e.g. 2H₂ + O₂ → 2H₂O), graphs (described in words), experimental observations (e.g. "A 25.0 mL sample of 0.100 M HCl..."), molecular structures (described).\n- Stimulus must be 40-200 chars. If you cannot produce a meaningful stimulus, the question is too thin — reject it.`
+    : `\nSTIMULUS REQUIREMENT for ${course}:\n- Include a stimulus when the topic naturally has one (primary source, data, passage, scenario). 0-200 chars. null if not applicable.`;
+
+  const structuralCapsSection = `\nSTRUCTURAL CAPS (HARD GATE — violation = rejection):
+- Stem (questionText): 50-180 chars. Concise, specific. NOT a paragraph.
+- Each option: 8-60 chars. Formula + brief context. NOT a paragraph or explanation.
+- Explanation: 100-450 chars (40-80 words). Name correct answer in 1 sentence + WHY in 1-2 sentences.
+- DO NOT include letter references in explanation ("A is correct", "B is wrong"). Reference the CONTENT directly: "The titration reaches equivalence when..." not "B is correct because..."`;
+
+  const difficultyContractSection = `\nDIFFICULTY CONTRACT (HARD GATE):
+- EASY = single recall (vocabulary, formula identification, single-step lookup). Stem typically "What is X?" / "Which is the definition of Y?".
+- MEDIUM = single-step apply (one calculation, one inference, one classification). Stem typically "Calculate X given Y" / "Which would result from Z".
+- HARD = MULTI-STEP inference OR contrast OR multi-concept synthesis. NOT just harder vocabulary. Examples: "Compare two scenarios and identify which differs in mechanism" / "Calculate X given Y and Z, then explain which factor most influenced the result".
+- TAGGING DRIFT IS A FAIL: do NOT tag a "Which of the following best describes X?" stem as HARD. That's MEDIUM at most.`;
+
   // SAT-specific format rules injected after the standard sections
   const satFormatSection = (course === "SAT_MATH" || course === "SAT_READING_WRITING")
     ? `\nSAT FORMAT RULES:
@@ -310,7 +336,7 @@ ${config.examAlignmentNotes ? `EXAM CONTENT WEIGHTS:\n${config.examAlignmentNote
 
 ${unitHeader}
 
-${config.examAlignmentNotes}${difficultySection}${skillsSection}${stimulusSection}${distractorSection}${ambiguityGuardSection}${numericUniquenessSection}${wordCountSection}${answerDistributionSection}${satFormatSection}${actFormatSection}${clepSection}
+${config.examAlignmentNotes}${difficultySection}${skillsSection}${stimulusSection}${stimulusRequiredSection}${distractorSection}${ambiguityGuardSection}${numericUniquenessSection}${wordCountSection}${structuralCapsSection}${difficultyContractSection}${answerDistributionSection}${satFormatSection}${actFormatSection}${clepSection}
 
 GENERATION TASK:
 ${generationInstruction}
