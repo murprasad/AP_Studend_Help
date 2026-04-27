@@ -1,0 +1,471 @@
+{
+  "generated": "2026-04-27T23:00:23.628Z",
+  "rows": [
+    {
+      "course": "AP_BIOLOGY",
+      "baseline": {
+        "mcq": 484,
+        "emptyExpl": 19,
+        "noStim": 78,
+        "oneSent": 6,
+        "noImg": 484
+      },
+      "current": {
+        "mcq": 484,
+        "emptyExpl": 10,
+        "noStim": 82,
+        "oneSent": 5,
+        "noImg": 468,
+        "avgExpl": 396,
+        "avgStim": 272,
+        "frq": "FRQ:137"
+      },
+      "lift": {
+        "emptyExplDelta": 9,
+        "noStimDelta": -4,
+        "oneSentDelta": 1,
+        "noImgDelta": 16
+      }
+    },
+    {
+      "course": "AP_CHEMISTRY",
+      "baseline": {
+        "mcq": 500,
+        "emptyExpl": 8,
+        "noStim": 29,
+        "oneSent": 2,
+        "noImg": 500
+      },
+      "current": {
+        "mcq": 500,
+        "emptyExpl": 0,
+        "noStim": 30,
+        "oneSent": 2,
+        "noImg": 492,
+        "avgExpl": 489,
+        "avgStim": 158,
+        "frq": "FRQ:43"
+      },
+      "lift": {
+        "emptyExplDelta": 8,
+        "noStimDelta": -1,
+        "oneSentDelta": 0,
+        "noImgDelta": 8
+      }
+    },
+    {
+      "course": "AP_PHYSICS_1",
+      "baseline": {
+        "mcq": 502,
+        "emptyExpl": 0,
+        "noStim": 28,
+        "oneSent": 0,
+        "noImg": 502
+      },
+      "current": {
+        "mcq": 502,
+        "emptyExpl": 0,
+        "noStim": 26,
+        "oneSent": 0,
+        "noImg": 487,
+        "avgExpl": 420,
+        "avgStim": 271,
+        "frq": "FRQ:75"
+      },
+      "lift": {
+        "emptyExplDelta": 0,
+        "noStimDelta": 2,
+        "oneSentDelta": 0,
+        "noImgDelta": 15
+      }
+    },
+    {
+      "course": "AP_CALCULUS_AB",
+      "baseline": {
+        "mcq": 499,
+        "emptyExpl": 7,
+        "noStim": 57,
+        "oneSent": 48,
+        "noImg": 499
+      },
+      "current": {
+        "mcq": 499,
+        "emptyExpl": 2,
+        "noStim": 71,
+        "oneSent": 47,
+        "noImg": 499,
+        "avgExpl": 362,
+        "avgStim": 196,
+        "frq": "FRQ:43"
+      },
+      "lift": {
+        "emptyExplDelta": 5,
+        "noStimDelta": -14,
+        "oneSentDelta": 1,
+        "noImgDelta": 0
+      }
+    },
+    {
+      "course": "AP_CALCULUS_BC",
+      "baseline": {
+        "mcq": 495,
+        "emptyExpl": 2,
+        "noStim": 94,
+        "oneSent": 29,
+        "noImg": 495
+      },
+      "current": {
+        "mcq": 495,
+        "emptyExpl": 0,
+        "noStim": 102,
+        "oneSent": 29,
+        "noImg": 495,
+        "avgExpl": 293,
+        "avgStim": 196,
+        "frq": "FRQ:35"
+      },
+      "lift": {
+        "emptyExplDelta": 2,
+        "noStimDelta": -8,
+        "oneSentDelta": 0,
+        "noImgDelta": 0
+      }
+    },
+    {
+      "course": "AP_PRECALCULUS",
+      "baseline": {
+        "mcq": 467,
+        "emptyExpl": 6,
+        "noStim": 107,
+        "oneSent": 0,
+        "noImg": 467
+      },
+      "current": {
+        "mcq": 467,
+        "emptyExpl": 0,
+        "noStim": 143,
+        "oneSent": 0,
+        "noImg": 467,
+        "avgExpl": 288,
+        "avgStim": 55,
+        "frq": "FRQ:74"
+      },
+      "lift": {
+        "emptyExplDelta": 6,
+        "noStimDelta": -36,
+        "oneSentDelta": 0,
+        "noImgDelta": 0
+      }
+    },
+    {
+      "course": "AP_STATISTICS",
+      "baseline": {
+        "mcq": 490,
+        "emptyExpl": 4,
+        "noStim": 4,
+        "oneSent": 1,
+        "noImg": 490
+      },
+      "current": {
+        "mcq": 490,
+        "emptyExpl": 1,
+        "noStim": 7,
+        "oneSent": 1,
+        "noImg": 490,
+        "avgExpl": 398,
+        "avgStim": 198,
+        "frq": "FRQ:105"
+      },
+      "lift": {
+        "emptyExplDelta": 3,
+        "noStimDelta": -3,
+        "oneSentDelta": 0,
+        "noImgDelta": 0
+      }
+    },
+    {
+      "course": "AP_PSYCHOLOGY",
+      "baseline": {
+        "mcq": 499,
+        "emptyExpl": 3,
+        "noStim": 220,
+        "oneSent": 0,
+        "noImg": 499
+      },
+      "current": {
+        "mcq": 499,
+        "emptyExpl": 0,
+        "noStim": 223,
+        "oneSent": 0,
+        "noImg": 490,
+        "avgExpl": 459,
+        "avgStim": 328,
+        "frq": "FRQ:58"
+      },
+      "lift": {
+        "emptyExplDelta": 3,
+        "noStimDelta": -3,
+        "oneSentDelta": 0,
+        "noImgDelta": 9
+      }
+    },
+    {
+      "course": "AP_HUMAN_GEOGRAPHY",
+      "baseline": {
+        "mcq": 500,
+        "emptyExpl": 354,
+        "noStim": 500,
+        "oneSent": 0,
+        "noImg": 500
+      },
+      "current": {
+        "mcq": 500,
+        "emptyExpl": 65,
+        "noStim": 479,
+        "oneSent": 0,
+        "noImg": 479,
+        "avgExpl": 236,
+        "avgStim": 61,
+        "frq": "FRQ:73,SAQ:15"
+      },
+      "lift": {
+        "emptyExplDelta": 289,
+        "noStimDelta": 21,
+        "oneSentDelta": 0,
+        "noImgDelta": 21
+      }
+    },
+    {
+      "course": "AP_ENVIRONMENTAL_SCIENCE",
+      "baseline": {
+        "mcq": 485,
+        "emptyExpl": 231,
+        "noStim": 483,
+        "oneSent": 1,
+        "noImg": 485
+      },
+      "current": {
+        "mcq": 485,
+        "emptyExpl": 108,
+        "noStim": 442,
+        "oneSent": 1,
+        "noImg": 444,
+        "avgExpl": 184,
+        "avgStim": 69,
+        "frq": "FRQ:90"
+      },
+      "lift": {
+        "emptyExplDelta": 123,
+        "noStimDelta": 41,
+        "oneSentDelta": 0,
+        "noImgDelta": 41
+      }
+    },
+    {
+      "course": "AP_US_GOVERNMENT",
+      "baseline": {
+        "mcq": 479,
+        "emptyExpl": 195,
+        "noStim": 479,
+        "oneSent": 5,
+        "noImg": 479
+      },
+      "current": {
+        "mcq": 479,
+        "emptyExpl": 38,
+        "noStim": 469,
+        "oneSent": 4,
+        "noImg": 469,
+        "avgExpl": 221,
+        "avgStim": 65,
+        "frq": "FRQ:75,LEQ:25,SAQ:15"
+      },
+      "lift": {
+        "emptyExplDelta": 157,
+        "noStimDelta": 10,
+        "oneSentDelta": 1,
+        "noImgDelta": 10
+      }
+    },
+    {
+      "course": "AP_US_HISTORY",
+      "baseline": {
+        "mcq": 499,
+        "emptyExpl": 154,
+        "noStim": 267,
+        "oneSent": 18,
+        "noImg": 499
+      },
+      "current": {
+        "mcq": 499,
+        "emptyExpl": 102,
+        "noStim": 279,
+        "oneSent": 14,
+        "noImg": 492,
+        "avgExpl": 210,
+        "avgStim": 478,
+        "frq": "DBQ:21,SAQ:6,LEQ:5"
+      },
+      "lift": {
+        "emptyExplDelta": 52,
+        "noStimDelta": -12,
+        "oneSentDelta": 4,
+        "noImgDelta": 7
+      }
+    },
+    {
+      "course": "AP_WORLD_HISTORY",
+      "baseline": {
+        "mcq": 500,
+        "emptyExpl": 0,
+        "noStim": 0,
+        "oneSent": 0,
+        "noImg": 500
+      },
+      "current": {
+        "mcq": 534,
+        "emptyExpl": 0,
+        "noStim": 53,
+        "oneSent": 6,
+        "noImg": 532,
+        "avgExpl": 322,
+        "avgStim": 435,
+        "frq": "SAQ:5,DBQ:5,LEQ:5"
+      },
+      "lift": {
+        "emptyExplDelta": 0,
+        "noStimDelta": -53,
+        "oneSentDelta": -6,
+        "noImgDelta": -32
+      }
+    },
+    {
+      "course": "AP_COMPUTER_SCIENCE_PRINCIPLES",
+      "baseline": {
+        "mcq": 500,
+        "emptyExpl": 40,
+        "noStim": 48,
+        "oneSent": 15,
+        "noImg": 500
+      },
+      "current": {
+        "mcq": 500,
+        "emptyExpl": 26,
+        "noStim": 48,
+        "oneSent": 14,
+        "noImg": 500,
+        "avgExpl": 341,
+        "avgStim": 317,
+        "frq": "FRQ:18,CODING:6"
+      },
+      "lift": {
+        "emptyExplDelta": 14,
+        "noStimDelta": 0,
+        "oneSentDelta": 1,
+        "noImgDelta": 0
+      }
+    }
+  ],
+  "gates": [
+    {
+      "course": "BIOLOGY",
+      "status": "⚠️ 10 empty explanations; 97% missing visuals",
+      "issues": [
+        "10 empty explanations",
+        "97% missing visuals"
+      ]
+    },
+    {
+      "course": "CHEMISTRY",
+      "status": "⚠️ 98% missing visuals",
+      "issues": [
+        "98% missing visuals"
+      ]
+    },
+    {
+      "course": "PHYSICS_1",
+      "status": "⚠️ 97% missing visuals",
+      "issues": [
+        "97% missing visuals"
+      ]
+    },
+    {
+      "course": "CALCULUS_AB",
+      "status": "⚠️ 47 one-sentence explanations",
+      "issues": [
+        "47 one-sentence explanations"
+      ]
+    },
+    {
+      "course": "CALCULUS_BC",
+      "status": "⚠️ 29 one-sentence explanations",
+      "issues": [
+        "29 one-sentence explanations"
+      ]
+    },
+    {
+      "course": "PRECALCULUS",
+      "status": "✅ PASS",
+      "issues": []
+    },
+    {
+      "course": "STATISTICS",
+      "status": "✅ PASS",
+      "issues": []
+    },
+    {
+      "course": "PSYCHOLOGY",
+      "status": "⚠️ 98% missing visuals",
+      "issues": [
+        "98% missing visuals"
+      ]
+    },
+    {
+      "course": "HUMAN_GEOGRAPHY",
+      "status": "⚠️ 65 empty explanations; 96% no-stimulus; 96% missing visuals",
+      "issues": [
+        "65 empty explanations",
+        "96% no-stimulus",
+        "96% missing visuals"
+      ]
+    },
+    {
+      "course": "ENVIRONMENTAL_SCIENCE",
+      "status": "⚠️ 108 empty explanations; 91% no-stimulus",
+      "issues": [
+        "108 empty explanations",
+        "91% no-stimulus"
+      ]
+    },
+    {
+      "course": "US_GOVERNMENT",
+      "status": "⚠️ 38 empty explanations; 98% no-stimulus",
+      "issues": [
+        "38 empty explanations",
+        "98% no-stimulus"
+      ]
+    },
+    {
+      "course": "US_HISTORY",
+      "status": "⚠️ 102 empty explanations; 56% no-stimulus; 14 one-sentence explanations",
+      "issues": [
+        "102 empty explanations",
+        "56% no-stimulus",
+        "14 one-sentence explanations"
+      ]
+    },
+    {
+      "course": "WORLD_HISTORY",
+      "status": "✅ PASS",
+      "issues": []
+    },
+    {
+      "course": "COMPUTER_SCIENCE_PRINCIPLES",
+      "status": "⚠️ 26 empty explanations; 14 one-sentence explanations",
+      "issues": [
+        "26 empty explanations",
+        "14 one-sentence explanations"
+      ]
+    }
+  ]
+}
