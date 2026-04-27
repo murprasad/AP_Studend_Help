@@ -28,6 +28,27 @@ const QUANT = new Set([
   "SAT_MATH", "ACT_MATH", "ACT_SCIENCE",
 ]);
 
+const VISUAL_REQUIRED = new Set([
+  "AP_STATISTICS", "AP_CALCULUS_AB", "AP_CALCULUS_BC", "AP_PRECALCULUS",
+  "AP_PHYSICS_1", "AP_PHYSICS_2", "AP_PHYSICS_C_MECHANICS", "AP_PHYSICS_C_ELECTRICITY",
+  "AP_CHEMISTRY", "AP_BIOLOGY",
+  "AP_HUMAN_GEOGRAPHY", "AP_US_HISTORY", "AP_WORLD_HISTORY", "AP_EUROPEAN_HISTORY",
+  "AP_ENVIRONMENTAL_SCIENCE",
+  "AP_COMPUTER_SCIENCE_PRINCIPLES", "AP_COMPUTER_SCIENCE_A",
+  "SAT_MATH", "ACT_MATH", "ACT_SCIENCE",
+]);
+
+function hasVisualContent(s) {
+  if (!s) return false;
+  if (/\|\s*[^|\n]+\s*\|/m.test(s) && /\n\s*\|/.test(s)) return true;
+  if (/\$[^$\n]+\$/.test(s) || /\$\$[\s\S]+\$\$/.test(s)) return true;
+  if (/```[\s\S]+```/.test(s)) return true;
+  if (/[→⇌⇄↔]/.test(s)) return true;
+  if (/[—–-]\s*[A-Z][a-zA-Z .]+,\s*\d{3,4}/.test(s)) return true;
+  if (/\d+(\.\d+)?\s*(mol|mL|kg|g|cm|m\/s|°C|kJ|N|Pa|atm|ppm|Hz|V|A|Ω|J|W)/i.test(s)) return true;
+  return false;
+}
+
 function parseOpts(o) {
   if (!o) return [];
   if (Array.isArray(o)) return o;
@@ -147,10 +168,12 @@ function score(q) {
     c.worstIds.push({ id: q.id, score: s.score, bucket: s.bucket, issues: s.issues });
   }
 
-  // Sort + trim worstIds per course
+  // Sort + retain ALL non-standard IDs per course (for Stage 4 regen).
+  // Old behaviour was top-50 per course which capped Stage 4 at ~700 fixes;
+  // we need the full bad bucket to drive the audit toward 90%+ standard.
   for (const c of Object.values(perCourse)) {
     c.worstIds.sort((a, b) => a.score - b.score);
-    c.worstIds = c.worstIds.slice(0, 50);
+    c.worstIds = c.worstIds.filter((q) => q.bucket !== "standard");
   }
 
   // Print per-course summary

@@ -24,6 +24,34 @@ const QUANTITATIVE_COURSES = new Set([
   "SAT_MATH", "ACT_MATH", "ACT_SCIENCE",
 ]);
 
+// Courses where ≥50% of real CB MCQs depend on a visual artifact (table, graph,
+// equation, code block, document excerpt). For these, a text-only stimulus is
+// a fidelity miss even if the text quality is otherwise fine.
+const VISUAL_REQUIRED_COURSES = new Set([
+  "AP_STATISTICS", "AP_CALCULUS_AB", "AP_CALCULUS_BC", "AP_PRECALCULUS",
+  "AP_PHYSICS_1", "AP_PHYSICS_2", "AP_PHYSICS_C_MECHANICS", "AP_PHYSICS_C_ELECTRICITY",
+  "AP_CHEMISTRY", "AP_BIOLOGY",
+  "AP_HUMAN_GEOGRAPHY", "AP_US_HISTORY", "AP_WORLD_HISTORY", "AP_EUROPEAN_HISTORY",
+  "AP_ENVIRONMENTAL_SCIENCE",
+  "AP_COMPUTER_SCIENCE_PRINCIPLES", "AP_COMPUTER_SCIENCE_A",
+  "SAT_MATH", "ACT_MATH", "ACT_SCIENCE",
+]);
+
+// Heuristic visual-content detector — accepts any of: pipe-delimited markdown
+// table, KaTeX delimiters, fenced code block, unicode arrow (chemistry), or a
+// quoted-source excerpt with attribution dash.
+function hasVisualContent(stim: string): boolean {
+  if (!stim) return false;
+  const s = stim;
+  if (/\|\s*[^|\n]+\s*\|/m.test(s) && /\n\s*\|/.test(s)) return true;  // markdown table
+  if (/\$[^$\n]+\$/.test(s) || /\$\$[\s\S]+\$\$/.test(s)) return true; // KaTeX
+  if (/```[\s\S]+```/.test(s)) return true;                            // fenced code
+  if (/[→⇌⇄↔]/.test(s)) return true;                                   // chem arrows
+  if (/[—–-]\s*[A-Z][a-zA-Z .]+,\s*\d{3,4}/.test(s)) return true;       // "—Author, 1776"
+  if (/\d+(\.\d+)?\s*(mol|mL|kg|g|cm|m\/s|°C|kJ|N|Pa|atm|ppm|Hz|V|A|Ω|J|W)/i.test(s)) return true; // SI units
+  return false;
+}
+
 export interface QuestionForScoring {
   id?: string;
   course: string;
@@ -63,7 +91,10 @@ export function scoreQuestionStyle(q: QuestionForScoring): StyleScoreResult {
   const isQuant = QUANTITATIVE_COURSES.has(q.course);
 
   // 1. Stimulus quality (0-2)
-  const stimLen = (q.stimulus ?? "").length;
+  const stim = q.stimulus ?? "";
+  const stimLen = stim.length;
+  const visualRequired = VISUAL_REQUIRED_COURSES.has(q.course);
+  const stimVisual = hasVisualContent(stim);
   if (isQuant) {
     if (stimLen < 30) {
       breakdown.stimulus = 0;
@@ -84,6 +115,14 @@ export function scoreQuestionStyle(q: QuestionForScoring): StyleScoreResult {
     else if (stimLen >= 30 && stimLen <= 400) breakdown.stimulus = 2;
     else if (stimLen > 400) { breakdown.stimulus = 1; issues.push("stimulus_too_long"); }
     else { breakdown.stimulus = 1; issues.push("stimulus_too_short"); }
+  }
+  // Visual fidelity penalty: courses where ≥50% of CB MCQs include a visual
+  // artifact (table, plot, equation, code, document excerpt) get -1 if their
+  // stimulus is text-only. This makes Stage 4 regen optimize for visual
+  // resemblance to the real exam, not just text quality.
+  if (visualRequired && stimLen >= 30 && !stimVisual) {
+    issues.push("stimulus_no_visual");
+    if (breakdown.stimulus === 2) breakdown.stimulus = 1;
   }
 
   // 2. Stem (0-2)
