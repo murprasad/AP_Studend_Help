@@ -26,7 +26,7 @@ const args = process.argv.slice(2);
 const dry = args.includes("--dry");
 const perArg = args.find((a, i) => args[i - 1] === "--per");
 const PER = perArg ? parseInt(perArg, 10) : 5;
-const courseFilter = args.find((a) => a.startsWith("AP_"));
+const courseFilter = args.find((a) => a.startsWith("AP_") || a.startsWith("SAT_") || a.startsWith("ACT_"));
 
 const PACE_MS = 2500;
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));

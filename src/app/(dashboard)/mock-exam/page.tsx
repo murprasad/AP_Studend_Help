@@ -220,16 +220,26 @@ export default function MockExamPage() {
   async function startExam() {
     setIsLoading(true);
     try {
-      const response = await fetch("/api/practice", {
+      // CB-fidelity mock when mode === "full" — pulls a mix of MCQ + SAQ +
+      // DBQ + LEQ in CB proportions (added 2026-04-27 to close the credibility
+      // gap where the structure card said "MCQ + SAQ + DBQ + LEQ" but the
+      // actual mock served only MCQs). "quick" mode keeps the legacy
+      // MCQ-only path for users who want a fast 30-min check.
+      const usesCBFidelity = mode === "full";
+      const response = await fetch(usesCBFidelity ? "/api/mock-exam" : "/api/practice", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          sessionType: "MOCK_EXAM",
-          questionCount: selectedInfo.questionCount,
-          unit: "ALL",
-          difficulty: "ALL",
-          course,
-        }),
+        body: JSON.stringify(
+          usesCBFidelity
+            ? { course }
+            : {
+                sessionType: "MOCK_EXAM",
+                questionCount: selectedInfo.questionCount,
+                unit: "ALL",
+                difficulty: "ALL",
+                course,
+              },
+        ),
       });
       const data = await response.json();
       if (!response.ok) {
