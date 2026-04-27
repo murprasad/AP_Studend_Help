@@ -9,71 +9,55 @@ import "katex/dist/katex.min.css";
 import { AlertTriangle, Zap, Target, BarChart2, BookOpen } from "lucide-react";
 import type { TutorSections } from "./section-parser";
 
-// ── Mermaid support via CDN ────────────────────────────────────────────────
+// ── Mermaid support via npm-installed package ─────────────────────────────
+// Switched 2026-04-27 from CDN (cdn.jsdelivr.net) to dynamic import of the
+// installed mermaid@11 package. The CDN was being blocked by our production
+// Content-Security-Policy (next.config.mjs script-src didn't list jsdelivr),
+// causing every Mermaid block to silently fall back to the raw-code <pre>
+// display — students saw "graph LR; A-->B" as text instead of a flowchart.
 
-declare global {
-  interface Window {
-    mermaid?: {
-      initialize: (config: object) => void;
-      parse: (code: string) => Promise<unknown>;
-      render: (id: string, code: string) => Promise<{ svg: string }>;
-    };
-  }
-}
-
-let mermaidLoaded = false;
-let mermaidLoadPromise: Promise<void> | null = null;
-
-function loadMermaid(): Promise<void> {
-  if (mermaidLoaded) return Promise.resolve();
-  if (mermaidLoadPromise) return mermaidLoadPromise;
-
-  mermaidLoadPromise = new Promise((resolve) => {
-    const script = document.createElement("script");
-    script.src = "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js";
-    script.onload = () => {
-      window.mermaid?.initialize({ theme: "dark", startOnLoad: false, suppressErrors: true });
-      mermaidLoaded = true;
-      resolve();
-    };
-    script.onerror = () => resolve();
-    document.head.appendChild(script);
-  });
-
-  return mermaidLoadPromise;
-}
+let mermaidInit = false;
 
 function MermaidBlock({ code }: { code: string }) {
   const ref = useRef<HTMLDivElement>(null);
   const idRef = useRef(`mermaid-${Math.random().toString(36).slice(2)}`);
-  // Start in "pending" state — render nothing until we know if it's valid
   const [state, setState] = useState<"pending" | "ok" | "fallback">("pending");
 
   useEffect(() => {
     let cancelled = false;
-
-    loadMermaid().then(async () => {
-      if (cancelled || !window.mermaid) { setState("fallback"); return; }
-
+    (async () => {
       try {
-        // Parse first — throws before mermaid can touch the DOM
-        await window.mermaid.parse(code);
-      } catch {
-        if (!cancelled) setState("fallback");
-        return;
-      }
-
-      try {
-        const { svg } = await window.mermaid.render(idRef.current, code);
-        if (!cancelled && ref.current) {
-          ref.current.innerHTML = svg;
-          setState("ok");
+        const mod = await import("mermaid");
+        const mermaid = mod.default;
+        if (cancelled) return;
+        if (!mermaidInit) {
+          mermaid.initialize({
+            theme: "dark",
+            startOnLoad: false,
+            securityLevel: "strict",
+            fontFamily: "inherit",
+          });
+          mermaidInit = true;
+        }
+        try {
+          await mermaid.parse(code);
+        } catch {
+          if (!cancelled) setState("fallback");
+          return;
+        }
+        try {
+          const { svg } = await mermaid.render(idRef.current, code);
+          if (!cancelled && ref.current) {
+            ref.current.innerHTML = svg;
+            setState("ok");
+          }
+        } catch {
+          if (!cancelled) setState("fallback");
         }
       } catch {
         if (!cancelled) setState("fallback");
       }
-    }).catch(() => { if (!cancelled) setState("fallback"); });
-
+    })();
     return () => { cancelled = true; };
   }, [code]);
 
@@ -84,8 +68,6 @@ function MermaidBlock({ code }: { code: string }) {
       </pre>
     );
   }
-
-  // "pending" → invisible placeholder; "ok" → the rendered SVG div
   return <div ref={ref} className={`overflow-x-auto ${state === "pending" ? "hidden" : ""}`} />;
 }
 
