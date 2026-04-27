@@ -183,8 +183,12 @@ OR { "block": "", "type": "", "skip": true }`;
             continue;
           }
         }
-        // Prepend the visual block to the stimulus.
-        const newStim = `${safeBlock}\n\n${r.stimulus}`;
+        // Prepend the visual block to the stimulus. Ensure the closing
+        // fence ends with a newline so any prepended stimulus content
+        // doesn't fuse onto the same line (which breaks the markdown
+        // closing-fence detection — bug found 2026-04-27).
+        const safeBlockTrimmed = safeBlock.trimEnd();
+        const newStim = `${safeBlockTrimmed}\n\n${r.stimulus.trimStart()}`;
         await sql`UPDATE questions SET stimulus = ${newStim} WHERE id = ${r.id}`;
         totalAdded++;
         if (totalAdded <= 3 || totalAdded % 20 === 0) {
