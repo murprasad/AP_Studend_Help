@@ -225,9 +225,13 @@ function score(q) {
   console.log(`  Salvageable (5-6/10): ${totals.salvageable} (${((totals.salvageable / totals.total) * 100).toFixed(1)}%)`);
   console.log(`  Need regen (<5/10): ${totals.regen} (${((totals.regen / totals.total) * 100).toFixed(1)}%)`);
 
-  // Write JSON dump
+  // Write JSON dump. Single-course audits go to a course-suffixed file so
+  // they NEVER overwrite the multi-course pipeline-input file (footgun caught
+  // 2026-04-27 — single-course audit emptied courses 3-14 of the regen queue).
   const today = new Date().toISOString().slice(0, 10);
-  const outPath = `data/question-quality-audit-${today}.json`;
+  const outPath = onlyCourse
+    ? `data/question-quality-audit-${today}-${onlyCourse}.json`
+    : `data/question-quality-audit-${today}.json`;
   await writeFile(outPath, JSON.stringify({
     runAt: new Date().toISOString(),
     aggregate: totals,
