@@ -55,7 +55,7 @@ const COURSES = {
     ],
   },
   AP_PSYCHOLOGY: {
-    units: ["PSYC_1_BIOLOGICAL_BASES","PSYC_2_COGNITION","PSYC_3_DEVELOPMENT_LEARNING","PSYC_4_SOCIAL_PERSONALITY","PSYC_5_MENTAL_PHYSICAL_HEALTH"],
+    units: ["PSYCH_1_SCIENTIFIC_FOUNDATIONS","PSYCH_2_BIOLOGICAL_BASES","PSYCH_3_SENSATION_PERCEPTION","PSYCH_4_LEARNING","PSYCH_5_COGNITION","PSYCH_6_DEVELOPMENTAL","PSYCH_7_MOTIVATION_EMOTION","PSYCH_8_CLINICAL","PSYCH_9_SOCIAL"],
     subtypes: [
       { cbName: "AAQ (Article Analysis)", qtype: "FRQ", description: "Based on 1 summarized peer-reviewed source. 7 points across 6 parts: (A) Identify research method. (B) Identify variable. (C) Interpret a statistic. (D) Apply ethical guideline. (E) Assess study generalizability. (F) Argument + application.", example: "Study on social media use and adolescent self-esteem — identify the IV, interpret r=0.42, evaluate the ethics of the consent process, etc." },
       { cbName: "EBQ (Evidence-Based)", qtype: "FRQ", description: "Based on 3 summarized peer-reviewed sources on a single topic. 7 points across 3 parts: (A) State a claim. (B) Cite 2 pieces of evidence from sources. (C) Reasoning connecting evidence + AP Psych concept.", example: "Three studies on bilingualism and cognition — state a claim about whether bilingualism enhances executive function, cite specific evidence from 2 of the 3 studies, connect via the cognitive load theory." },
@@ -70,7 +70,7 @@ const COURSES = {
     ],
   },
   AP_BIOLOGY: {
-    units: ["BIOL_1_CHEMISTRY_OF_LIFE","BIOL_2_CELL_STRUCTURE","BIOL_3_CELLULAR_ENERGETICS","BIOL_4_CELL_COMMUNICATION","BIOL_5_HEREDITY","BIOL_6_GENE_EXPRESSION","BIOL_7_NATURAL_SELECTION","BIOL_8_ECOLOGY"],
+    units: ["BIO_1_CHEMISTRY_OF_LIFE","BIO_2_CELL_STRUCTURE_FUNCTION","BIO_3_CELLULAR_ENERGETICS","BIO_4_CELL_COMMUNICATION","BIO_5_HEREDITY","BIO_6_GENE_EXPRESSION","BIO_7_NATURAL_SELECTION","BIO_8_ECOLOGY"],
     subtypes: [
       { cbName: "Long FRQ (Interpret Experiment)", qtype: "FRQ", description: "9-point question. Interpret experimental results. Includes data table or graph. Justify claims with evidence + reasoning.", example: "Enzyme rate at varying pH — interpret data table, identify optimum pH, propose biological explanation, predict effect of mutation." },
       { cbName: "Long FRQ (Graphing)", qtype: "FRQ", description: "9-point question. Interpret experimental results AND construct a graph from given data. Specify axes, labels, units.", example: "Population growth data over 20 generations — construct logistic-growth curve, identify carrying capacity, predict effect of disease outbreak." },
@@ -81,7 +81,7 @@ const COURSES = {
     ],
   },
   AP_CHEMISTRY: {
-    units: ["CHEM_1_ATOMIC_STRUCTURE","CHEM_2_MOLECULAR_IONIC","CHEM_3_INTERMOLECULAR","CHEM_4_CHEMICAL_REACTIONS","CHEM_5_KINETICS","CHEM_6_THERMODYNAMICS","CHEM_7_EQUILIBRIUM","CHEM_8_ACIDS_BASES","CHEM_9_APPLICATIONS"],
+    units: ["CHEM_1_ATOMIC_STRUCTURE","CHEM_2_MOLECULAR_BONDING","CHEM_3_INTERMOLECULAR_FORCES","CHEM_4_CHEMICAL_REACTIONS","CHEM_5_KINETICS","CHEM_6_THERMODYNAMICS","CHEM_7_EQUILIBRIUM","CHEM_8_ACIDS_BASES","CHEM_9_ELECTROCHEMISTRY"],
     subtypes: [
       { cbName: "Long FRQ (10pt)", qtype: "FRQ", description: "10-point comprehensive question. Multi-part. Often includes calculation, mechanism explanation, equilibrium analysis. Use KaTeX for equations.", example: "Buffer system at pH 4.74: calculate pKa, write Ka expression, determine equilibrium concentrations after adding strong base, explain LeChatelier shift." },
       { cbName: "Short FRQ (4pt)", qtype: "FRQ", description: "4-point question. Single concept depth: stoichiometry calc, Lewis structure, reaction prediction, etc.", example: "Predict reaction products and balance equation for Fe + dilute HCl. Justify with electrochemistry standard reduction potentials." },
@@ -108,14 +108,14 @@ const COURSES = {
     ],
   },
   AP_CALCULUS_AB: {
-    units: ["CALC_AB_1_LIMITS","CALC_AB_2_DIFFERENTIATION","CALC_AB_3_DIFF_APPLICATIONS","CALC_AB_4_INTEGRATION","CALC_AB_5_INTEG_APPLICATIONS","CALC_AB_6_DIFF_EQUATIONS"],
+    units: ["CALC_AB_1_LIMITS","CALC_AB_2_DIFFERENTIATION_BASICS","CALC_AB_3_DIFFERENTIATION_COMPOSITE","CALC_AB_4_CONTEXTUAL_APPLICATIONS","CALC_AB_5_ANALYTICAL_APPLICATIONS","CALC_AB_6_INTEGRATION","CALC_AB_7_DIFFERENTIAL_EQUATIONS","CALC_AB_8_APPLICATIONS_INTEGRATION"],
     subtypes: [
       { cbName: "FRQ Calculator (Part A)", qtype: "FRQ", description: "Multi-part FRQ requiring graphing calculator. Often involves numerical integration, derivative at point, root-finding. Show calculator output.", example: "f(x) = sin(x²) on [0,3] — find ∫f dx via numerical methods, find x where f'(x)=0, classify critical point." },
       { cbName: "FRQ No-Calculator (Part B)", qtype: "FRQ", description: "Multi-part FRQ requiring exact analytical work. No calculator. Common: Fundamental Theorem of Calc, IVP, related rates, optimization.", example: "Given y' = 2xy, y(0)=1 — find general solution, evaluate y(1), determine whether y is increasing on (0,2)." },
     ],
   },
   AP_CALCULUS_BC: {
-    units: ["CALC_BC_1_LIMITS","CALC_BC_2_DIFFERENTIATION","CALC_BC_3_DIFF_APPLICATIONS","CALC_BC_4_INTEGRATION","CALC_BC_5_INTEG_APPLICATIONS","CALC_BC_6_DIFF_EQUATIONS","CALC_BC_7_PARAMETRIC_POLAR","CALC_BC_8_INFINITE_SERIES"],
+    units: ["CALC_BC_1_LIMITS","CALC_BC_2_DIFFERENTIATION_BASICS","CALC_BC_3_DIFFERENTIATION_COMPOSITE","CALC_BC_4_CONTEXTUAL_APPLICATIONS","CALC_BC_5_ANALYTICAL_APPLICATIONS","CALC_BC_6_INTEGRATION","CALC_BC_7_DIFFERENTIAL_EQUATIONS","CALC_BC_8_APPLICATIONS_INTEGRATION","CALC_BC_9_PARAMETRIC_POLAR_VECTORS","CALC_BC_10_INFINITE_SEQUENCES_SERIES"],
     subtypes: [
       { cbName: "FRQ Calculator (Part A)", qtype: "FRQ", description: "Multi-part FRQ requiring graphing calculator. May involve series convergence checks, parametric/polar integrals.", example: "Parametric curve x=t²,y=t³-3t — find arc length on [0,2] via numerical integration." },
       { cbName: "FRQ No-Calculator (Part B)", qtype: "FRQ", description: "Multi-part FRQ. No calculator. Often Taylor series, convergence tests, polar/parametric area.", example: "Find Maclaurin series for f(x)=ln(1+x²), determine radius of convergence, evaluate f(1/2) using first 3 terms." },
@@ -128,6 +128,18 @@ const COURSES = {
       { cbName: "Modeling Non-Periodic", qtype: "FRQ", description: "Q2 of CB exam. Build a model from data using polynomial, rational, exponential, or logarithmic function. Calculator-allowed.", example: "Bacterial population doubles every 3 hrs — build exponential model, predict at 24 hrs, compare with linear model." },
       { cbName: "Modeling Periodic", qtype: "FRQ", description: "Q3 of CB exam. Model periodic phenomena with sinusoidal function. Identify amplitude, period, phase shift, vertical translation. No calculator (Part B).", example: "Tide depth oscillates between 2m and 8m on 12-hr cycle — write h(t), find depth at t=4 hrs, time to reach 7m." },
       { cbName: "Symbolic Manipulations", qtype: "FRQ", description: "Q4 of CB exam. Algebraic manipulation: simplify expressions, solve equations, prove identities. No calculator.", example: "Solve sin(2x) = √3·cos(x) for x ∈ [0, 2π) — exact form. Prove tan²(x)+1 = sec²(x)." },
+    ],
+  },
+  SAT_MATH: {
+    units: ["SAT_MATH_1_ALGEBRA","SAT_MATH_2_ADVANCED_MATH","SAT_MATH_3_PROBLEM_SOLVING","SAT_MATH_4_GEOMETRY_TRIG"],
+    subtypes: [
+      { cbName: "Grid-in (Numeric)", qtype: "FRQ", description: "Student-produced response — student types a numeric answer (no choices). Common types: integer, decimal, fraction. Question stem demands a single numeric value as the answer.", example: "If 2x + 5 = 17, what is the value of x? — Answer is 6 (no choices given; student types in)." },
+    ],
+  },
+  ACT_ENGLISH: {
+    units: ["ACT_ENG_1_PRODUCTION_WRITING","ACT_ENG_2_KNOWLEDGE_LANGUAGE","ACT_ENG_3_CONVENTIONS"],
+    subtypes: [
+      { cbName: "Writing Essay (Optional)", qtype: "LEQ", description: "Optional 40-min essay. Take and defend a position on a contemporary issue. 3 perspectives provided; student must engage with ALL THREE while developing their own position. Rubric: Ideas/Analysis (1-6), Development/Support (1-6), Organization (1-6), Language Use (1-6). Domain scores combine to 2-12.", example: "Topic: Free public higher education. 3 perspectives: (1) Education is a public good and should be free; (2) Free education devalues degrees; (3) Mixed model with means-tested aid. Student writes a 4-5 paragraph essay analyzing all 3 + own view." },
     ],
   },
   AP_COMPUTER_SCIENCE_PRINCIPLES: {

@@ -17,7 +17,7 @@ import { LockedInsightOverlay } from "@/components/diagnostic/locked-insight-ove
 import { QuestionContent } from "@/components/question/question-content"
 import { buildFocusedPracticeUrl } from "@/lib/diagnostic-helpers"
 import {
-  ClipboardList, CheckCircle, XCircle, ChevronRight,
+  ClipboardList, CheckCircle, XCircle, ChevronRight, ArrowRight,
   Loader2, TrendingUp, TrendingDown, Target, Crown, Sparkles, BookOpen, Zap,
 } from "lucide-react"
 
@@ -133,10 +133,10 @@ export default function DiagnosticPage() {
         <div>
           <h1 className="text-3xl font-bold flex items-center gap-3">
             <ClipboardList className={`h-8 w-8 text-${accentColor}-400`} />
-            Diagnostic Assessment
+            Quick Score Estimate
           </h1>
           <p className="text-muted-foreground mt-2">
-            Find out exactly where you stand across all units.
+            15-min MCQ check — we'll cover FRQs/essays in your next-step plan.
           </p>
         </div>
 
@@ -292,8 +292,35 @@ export default function DiagnosticPage() {
               {predictedScore}
             </p>
             <p className="text-sm text-muted-foreground mt-2">
-              {scoreLabel} · based on your {scores.length} unit{scores.length === 1 ? "" : "s"} tested
+              {scoreLabel} · MCQ-only estimate from {scores.length} unit{scores.length === 1 ? "" : "s"}
             </p>
+          </CardContent>
+        </Card>
+
+        {/* FRQ bridge — added 2026-04-27 per user direction:
+            "After diagnostic: 'You're strong in MCQs. Next: FRQs (40% of
+            your AP score). Try 1 FRQ.'" The MCQ diagnostic is intentionally
+            the entry. The bridge converts the score reveal into a deeper
+            practice commitment for users now warmed up. */}
+        <Card className="border-amber-500/30 bg-gradient-to-br from-amber-500/10 to-orange-500/5">
+          <CardContent className="p-5 space-y-3">
+            <div className="flex items-start gap-3">
+              <div className="w-10 h-10 rounded-lg bg-amber-500/20 flex items-center justify-center flex-shrink-0">
+                <Sparkles className="h-5 w-5 text-amber-600" />
+              </div>
+              <div className="flex-1">
+                <p className="text-sm font-semibold">FRQs are 40-60% of your real AP score</p>
+                <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
+                  Your diagnostic measured MCQs (~40-50% of the exam). The other half is short-answer + essay-style FRQs. Try one now while your prep is warm.
+                </p>
+              </div>
+            </div>
+            <Link href={`/frq-practice?course=${course}`}>
+              <Button variant="outline" className="w-full rounded-full h-10 gap-2 border-amber-500/40 hover:bg-amber-500/10">
+                Try 1 FRQ now (~2 min)
+                <ArrowRight className="h-4 w-4" />
+              </Button>
+            </Link>
           </CardContent>
         </Card>
 

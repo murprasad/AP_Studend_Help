@@ -39,6 +39,7 @@ import { DailyGoalCard } from "@/components/dashboard/daily-goal-card";
 import { LockedValueCard } from "@/components/dashboard/locked-value-card";
 import { AutoLaunchNudge } from "@/components/dashboard/auto-launch-nudge";
 import { FlashcardsDueCard } from "@/components/dashboard/flashcards-due-card";
+import { SingleQuestionEntry } from "@/components/dashboard/single-question-entry";
 
 function DashboardSkeleton() {
   return (
@@ -130,6 +131,15 @@ export function DashboardView() {
 
       {/* 1b. Start — renders null when ResumeCard would show. One CTA, not two. */}
       <PrimaryActionStrip course={course as string} impressionId={impressionId} />
+
+      {/* 1b-Q1. Single-question entry — Q1 commitment fix (2026-04-27).
+          Data showed 80% of new sign-ups bounce before answering a single
+          question. The full /practice flow has too much commitment friction
+          (course pick, mode pick, "10 questions" framing). This drops ONE
+          easy MCQ on the dashboard with no session framing — answer in
+          ~30s, see instant feedback, then a soft CTA to "keep going" routes
+          to the full Practice flow once the user is committed. */}
+      <SingleQuestionEntry course={course as string} />
 
       {/* 1c. Phase C (Beta 8.3) — Cram Mode countdown + today's plan.
           Renders ONLY when User.examDate is set AND <30 days out. Placed
