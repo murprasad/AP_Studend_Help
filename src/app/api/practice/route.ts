@@ -105,8 +105,15 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    // Fetch questions this user has already answered (correctly, and recently seen in last 48h)
-    const fortyEightHoursAgo = new Date(Date.now() - 48 * 60 * 60 * 1000);
+    // Beta 8.5 (2026-04-26): bumped recentlySeen window from 48h to 7 days
+    // after user-reported "kept regenerating same questions" complaint on
+    // AP Chem. With 548 MCQs in the AP Chem bank and a typical 5-10 Q
+    // session, a heavy user could exhaust the fresh pool in ~50 sessions
+    // and hit recently-seen fallback within 2 days. 7-day window means
+    // users who practice daily get genuine variety for at least a week
+    // before the same question recurs.
+    const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+    const fortyEightHoursAgo = sevenDaysAgo; // Variable name preserved for downstream readability; semantics widened.
     const allQuestionIds = allQuestions.map((q) => q.id);
     const [correctResponses, recentResponses] = await Promise.all([
       prisma.studentResponse.findMany({
