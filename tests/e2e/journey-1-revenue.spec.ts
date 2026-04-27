@@ -27,6 +27,15 @@ const CRON_SECRET = process.env.CRON_SECRET ?? "";
 
 test.describe("Journey 1 — Revenue (practice cap enforcement)", () => {
   test.skip(!CRON_SECRET, "CRON_SECRET required to provision test user");
+  // Beta 8.4 (2026-04-26): the daily practice cap was removed in Beta 2.1
+  // when premium_feature_restriction defaulted to "false" (all users get
+  // full platform access). The two cap-enforcement tests below
+  // ("20th allowed, 21st blocked", "19→20 off-by-one") have been failing
+  // every staging run for weeks because the feature they test no longer
+  // exists. Skipping them as test-debt rather than fixing — if the cap
+  // returns we'll un-skip. Tests for utm/refresh/mock survive (still
+  // valuable behavior).
+  test.describe.configure({ mode: "default" });
 
   test.beforeEach(async ({ request }) => {
     // Reset FREE user state. The shared functional-test user is created
@@ -42,7 +51,7 @@ test.describe("Journey 1 — Revenue (practice cap enforcement)", () => {
     });
   });
 
-  test("20th question allowed, 21st blocked with LOCK_COPY.practiceCap", async ({ request, page }) => {
+  test.skip("20th question allowed, 21st blocked with LOCK_COPY.practiceCap", async ({ request, page }) => {
     // Seed exactly 20 responses to put user AT the cap.
     const seedRes = await request.post("/api/test/auth", {
       headers: { Authorization: `Bearer ${CRON_SECRET}` },
@@ -98,7 +107,7 @@ test.describe("Journey 1 — Revenue (practice cap enforcement)", () => {
     expect(user.subscriptionTier, "tier must stay FREE until upgrade completes").toBe("FREE");
   });
 
-  test("19 answered → 20th still allowed (off-by-one guard)", async ({ request }) => {
+  test.skip("19 answered → 20th still allowed (off-by-one guard)", async ({ request }) => {
     await request.post("/api/test/auth", {
       headers: { Authorization: `Bearer ${CRON_SECRET}` },
       data: { action: "seed-usage", count: 19, clear: true },

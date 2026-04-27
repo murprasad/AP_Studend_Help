@@ -129,3 +129,28 @@
 .btn-lift:active {
   transform: translateY(0);
 }
+
+/* ─────────────────────────────────────────────────────────────────────────
+ * WCAG 2.1 AA contrast fix (Beta 8.4, 2026-04-26).
+ *
+ * Audit found 41+ contrast failures per page on /, /pricing, /about,
+ * /register, /dashboard, /practice, /billing — all coming from
+ * .text-blue-500 (#3b82f6 → 3.45:1) and .text-blue-400 (#60a5fa → 2.23:1)
+ * on light backgrounds. WCAG 2.1 AA requires 4.5:1 for normal text.
+ *
+ * 71 files use these classes. Rather than dual-mode every callsite, we
+ * override the COLOR ONLY in light mode (no .dark class on <html>):
+ *   - text-blue-500 → blue-700 (#1d4ed8, contrast 7.0:1 vs #f7f8f9)
+ *   - text-blue-400 → blue-700 (same)
+ *   - text-emerald-500 → emerald-700 (similar 3.76:1 issue spotted)
+ *
+ * Dark mode (.dark class) is unaffected — those tones look right on
+ * dark bg. Pattern matches what existing dual-mode call sites use
+ * (text-blue-700 dark:text-blue-400).
+ *
+ * If a callsite WANTS the lighter blue in light mode (rare), add an
+ * explicit override class. None currently exist.
+ * ───────────────────────────────────────────────────────────────────── */
+html:not(.dark) .text-blue-500 { color: rgb(29 78 216); /* blue-700 */ }
+html:not(.dark) .text-blue-400 { color: rgb(29 78 216); /* blue-700 */ }
+html:not(.dark) .text-emerald-500 { color: rgb(4 120 87); /* emerald-700 — fixes /billing 3.76:1 contrast */ }
