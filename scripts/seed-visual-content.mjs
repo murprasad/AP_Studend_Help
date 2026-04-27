@@ -163,8 +163,28 @@ OR { "block": "", "type": "", "skip": true }`;
           totalSkipped++;
           continue;
         }
+        // Validate + auto-fix common Mermaid syntax typos:
+        //   -->|label|> → -->|label|   (Mermaid expects no trailing > on
+        //                               edge-label arrows)
+        //   --|label|>  → -->|label|   (broken arrow head)
+        // Repair before persisting.
+        let safeBlock = result.block
+          .replace(/-->\|([^|\n]+)\|>/g, "-->|$1|")
+          .replace(/==>\|([^|\n]+)\|>/g, "==>|$1|")
+          .replace(/---\|([^|\n]+)\|>/g, "-->|$1|");
+        // Reject blocks with structural Mermaid errors that can't be fixed
+        // by simple substitution (e.g. unmatched quotes inside [labels]).
+        if (/```mermaid/i.test(safeBlock)) {
+          const lines = safeBlock.split("\n");
+          // Each non-fence line in a Mermaid block should declare a node
+          // or edge — reject if any line still has the buggy `|>` after fix.
+          if (lines.some((l) => /\|>/.test(l))) {
+            totalSkipped++;
+            continue;
+          }
+        }
         // Prepend the visual block to the stimulus.
-        const newStim = `${result.block}\n\n${r.stimulus}`;
+        const newStim = `${safeBlock}\n\n${r.stimulus}`;
         await sql`UPDATE questions SET stimulus = ${newStim} WHERE id = ${r.id}`;
         totalAdded++;
         if (totalAdded <= 3 || totalAdded % 20 === 0) {
