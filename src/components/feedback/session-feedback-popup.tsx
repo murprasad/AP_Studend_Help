@@ -79,8 +79,12 @@ export function SessionFeedbackPopup({ sessionId, triggerCondition, source, cour
     }
     if (!shouldShow) return;
 
-    // Show popup after a short delay so the summary renders first
-    const timer = setTimeout(() => setOpen(true), 1500);
+    // Beta 8.12 (2026-04-29) — delay reduced 1500ms → 300ms after Pablo
+    // Sarkar case (completed AP Physics 1 session, 6/8 correct, 504s
+    // duration — closed tab before 1500ms popup fired, 0 feedback captured).
+    // 300ms is just enough for the summary's first paint; less and the popup
+    // appears mid-render which feels janky.
+    const timer = setTimeout(() => setOpen(true), 300);
     return () => clearTimeout(timer);
   }, [sessionId, triggerCondition, source, course, context]);
 
