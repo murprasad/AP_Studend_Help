@@ -384,7 +384,40 @@ export default function PracticePage() {
     void startSessionWithOverrides({ unit: unitParam ?? "ALL", count });
   }, [course, subscriptionTier, searchParams]);
 
-  async function startSessionWithOverrides(opts: { unit: string; count: number }) {
+  // Beta 8.10 v2 — skip-config auto-launch for first-time users.
+  // Funnel data: 58 start → 43 reach Q1 → 25 reach Q5. The Q1→Q5 cliff is
+  // a "value perception" problem; the onboard→Q1 break (15 lost) is a
+  // friction problem. Strip the config screen on the first session: anyone
+  // arriving at /practice with 0 lifetime answers gets dropped straight
+  // into a 10-question EASY MCQ session. EASY bias is intentional — Q1
+  // must feel doable ("I can do this"), not evaluative.
+  const firstTimeAutoLaunchedRef = useRef(false);
+  useEffect(() => {
+    if (!course || subscriptionTier === null) return;
+    // Don't double-fire if URL already specified ?mode=focused
+    if (searchParams?.get("mode")) return;
+    if (firstTimeAutoLaunchedRef.current) return;
+    if (mode !== "select") return;
+
+    let cancelled = false;
+    fetch("/api/user/conversion-signal", { cache: "no-store" })
+      .then(r => r.ok ? r.json() : null)
+      .then((data: { responseCount?: number } | null) => {
+        if (cancelled || !data) return;
+        if ((data.responseCount ?? 0) > 0) return; // existing user — show config as before
+        firstTimeAutoLaunchedRef.current = true;
+        setSelectedUnit("ALL");
+        setSelectedDifficulty("EASY");
+        setQuestionCount(10);
+        setSessionType("QUICK_PRACTICE");
+        setQuestionType("MCQ");
+        void startSessionWithOverrides({ unit: "ALL", count: 10, difficulty: "EASY" });
+      })
+      .catch(() => {});
+    return () => { cancelled = true; };
+  }, [course, subscriptionTier, searchParams, mode]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  async function startSessionWithOverrides(opts: { unit: string; count: number; difficulty?: string }) {
     // Mirror of startSession with explicit params so we don't depend on
     // React state that may not have flushed yet from the URL-param effect.
     setIsStarting(true);
@@ -396,7 +429,7 @@ export default function PracticePage() {
         body: JSON.stringify({
           sessionType: "QUICK_PRACTICE",
           unit: opts.unit,
-          difficulty: "ALL",
+          difficulty: opts.difficulty ?? "ALL",
           questionCount: opts.count,
           course,
         }),
@@ -954,6 +987,22 @@ export default function PracticePage() {
             )}
           </div>
           <div className="flex items-center gap-2 text-muted-foreground text-sm">
+            {/* Beta 8.10 v2 — momentum micro-feedback. Streak is the lightest
+                possible competence signal. Shows nothing until 2+ correct in a
+                row (avoids "1 streak" feeling silly). Cleared by any wrong
+                answer per `results` reducer below. */}
+            {(() => {
+              let streak = 0;
+              for (let i = results.length - 1; i >= 0; i--) {
+                if (results[i].correct) streak++;
+                else break;
+              }
+              return streak >= 2 ? (
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-semibold">
+                  ✓ {streak} in a row
+                </span>
+              ) : null;
+            })()}
             <Clock className="h-4 w-4" />
             <span>Question {currentIndex + 1} of {questionsRef.current.length}</span>
           </div>
@@ -1133,7 +1182,23 @@ export default function PracticePage() {
                   )}
                   <div className="space-y-2">
                     <p className="font-semibold">
-                      {feedback.isCorrect ? "Correct!" : `Incorrect — Answer: ${feedback.correctAnswer}`}
+                      {feedback.isCorrect ? (() => {
+                        // Beta 8.10 v2 — competence reinforcement on every
+                        // correct answer. Tone shifts up by streak count.
+                        // No score numbers, no analytics framing.
+                        // results[] doesn't include current Q yet, so count
+                        // this correct answer + the trailing streak in results.
+                        let streak = 1;
+                        for (let i = results.length - 1; i >= 0; i--) {
+                          if (results[i].correct) streak++;
+                          else break;
+                        }
+                        if (streak >= 4) return `Correct! On fire — ${streak} in a row`;
+                        if (streak === 3) return "Correct! 3 in a row — on a roll";
+                        if (streak === 2) return "Correct! Nice — 2 in a row";
+                        if (results.length === 0) return "Correct! Strong start";
+                        return "Correct!";
+                      })() : `Incorrect — Answer: ${feedback.correctAnswer}`}
                     </p>
                     <ExplanationDisplay text={feedback.explanation} />
 
