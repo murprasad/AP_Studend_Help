@@ -30,11 +30,22 @@ const STOP_WORDS = new Set([
 ]);
 
 function lemmatize(token) {
-  // Strip trailing 's', 'es', 'ing' to handle plurals/gerunds.
+  // Aggressive stem to catch verb/noun/adj variations of the same root.
   if (token.length <= 4) return token;
+  // Order matters — try longest suffix first.
+  for (const suf of ["ations", "ation", "ative", "atives", "ially", "ially"]) {
+    if (token.endsWith(suf) && token.length > suf.length + 3) return token.slice(0, -suf.length);
+  }
+  for (const suf of ["ially", "ially"]) {
+    if (token.endsWith(suf)) return token.slice(0, -suf.length);
+  }
   if (token.endsWith("ies")) return token.slice(0, -3) + "y";
-  if (token.endsWith("es") && !token.endsWith("ses")) return token.slice(0, -2);
+  if (token.endsWith("ied")) return token.slice(0, -3) + "y";
   if (token.endsWith("ing") && token.length > 6) return token.slice(0, -3);
+  if (token.endsWith("ed") && token.length > 5) return token.slice(0, -2);
+  if (token.endsWith("ly") && token.length > 5) return token.slice(0, -2);
+  if (token.endsWith("ness") && token.length > 6) return token.slice(0, -4);
+  if (token.endsWith("es") && !token.endsWith("ses") && !token.endsWith("xes")) return token.slice(0, -2);
   if (token.endsWith("s") && !token.endsWith("ss")) return token.slice(0, -1);
   return token;
 }
@@ -104,12 +115,13 @@ for (const r of rows) {
   const longest = longestNgramMatch(aTokens, sTokens);
   const overlap = tokenOverlap(aTokens, sTokens);
 
-  // Require BOTH a 3+ token verbatim match AND the answer be supported in stim.
-  // OR a very high overlap (≥75%) WITH at least 2 token n-gram (some phrasal echo).
-  // This filters out govt/civics false positives where common terms align but no
-  // actual phrase leak exists.
+  // Round 9 — even tighter. Lemmatization now catches "investigation"
+  // → "investigat" and "investigate" → "investigat" so they match.
+  // 2-gram match + 50% overlap counts as leak. CB-savvy student would
+  // notice "hold hearing" / "investigation" repeating between stim and
+  // answer.
   const isLeak = (longest >= 3 && overlap >= 0.30) ||
-                 (longest >= 2 && overlap >= 0.75 && aTokens.length >= 4);
+                 (longest >= 2 && overlap >= 0.50 && aTokens.length >= 3);
   if (!isLeak) continue;
 
   leak++;
