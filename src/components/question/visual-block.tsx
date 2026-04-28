@@ -56,7 +56,7 @@ export function MermaidBlock({ source }: { source: string }) {
 
   if (error) {
     return (
-      <pre className="my-2 overflow-x-auto rounded border border-amber-500/40 bg-amber-500/5 p-3 text-xs text-amber-700 dark:text-amber-400">
+      <pre className="my-2 overflow-x-auto rounded border border-amber-500/40 bg-amber-500/5 p-3 text-xs text-amber-700 dark:text-amber-700 dark:text-amber-400">
         Diagram failed to render. Source:{"\n\n"}{source}
       </pre>
     );
@@ -102,7 +102,7 @@ export function VegaLiteBlock({ source }: { source: string }) {
 
   if (error) {
     return (
-      <pre className="my-2 overflow-x-auto rounded border border-amber-500/40 bg-amber-500/5 p-3 text-xs text-amber-700 dark:text-amber-400">
+      <pre className="my-2 overflow-x-auto rounded border border-amber-500/40 bg-amber-500/5 p-3 text-xs text-amber-700 dark:text-amber-700 dark:text-amber-400">
         Chart failed to render. Spec:{"\n\n"}{source}
       </pre>
     );

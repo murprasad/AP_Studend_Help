@@ -38,9 +38,9 @@ export function LeaderboardWidget({ course }: Props) {
   }, [course]);
 
   const rankColor = (rank: number) => {
-    if (rank === 1) return "text-yellow-400";
+    if (rank === 1) return "text-yellow-700 dark:text-yellow-400";
     if (rank === 2) return "text-slate-300";
-    if (rank === 3) return "text-amber-600";
+    if (rank === 3) return "text-amber-700 dark:text-amber-400";
     return "text-muted-foreground";
   };
 
@@ -55,7 +55,7 @@ export function LeaderboardWidget({ course }: Props) {
     <Card className="card-glow">
       <CardHeader>
         <CardTitle className="text-base flex items-center gap-2">
-          <Medal className="h-4 w-4 text-yellow-400" />
+          <Medal className="h-4 w-4 text-yellow-700 dark:text-yellow-400" />
           Weekly Leaderboard
         </CardTitle>
       </CardHeader>
@@ -65,7 +65,7 @@ export function LeaderboardWidget({ course }: Props) {
             <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
           </div>
         ) : fetchError ? (
-          <p className="text-sm text-red-400 text-center py-4">Couldn&apos;t load leaderboard.</p>
+          <p className="text-sm text-red-700 dark:text-red-400 text-center py-4">Couldn&apos;t load leaderboard.</p>
         ) : leaderboard.length === 0 ? (
           <p className="text-sm text-muted-foreground text-center py-4">
             No activity this week yet. Be the first!
@@ -89,7 +89,7 @@ export function LeaderboardWidget({ course }: Props) {
             {userRank && userRank > leaderboard.length && (
               <div className="flex items-center gap-2 p-2 rounded-lg border border-blue-500/20 bg-blue-500/5 mt-2">
                 <span className="text-sm font-bold w-7 flex-shrink-0 text-blue-500">#{userRank}</span>
-                <span className="text-sm flex-1 text-blue-400">You</span>
+                <span className="text-sm flex-1 text-blue-700 dark:text-blue-400">You</span>
                 <Badge variant="outline" className="text-xs text-blue-500 border-blue-500/30">
                   {userXp} XP
                 </Badge>

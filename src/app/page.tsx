@@ -112,7 +112,7 @@ const testimonials = [
     quote: "I passed CLEP College Algebra on my first try. Sage drilled me on every weak unit and I walked in knowing exactly where I stood. Saved me $1,200 and a full semester.",
     name: "Jordan M.",
     initials: "JM",
-    avatarColor: "bg-emerald-500/20 text-emerald-400",
+    avatarColor: "bg-emerald-500/20 text-emerald-700 dark:text-emerald-400",
     location: "Sophomore, Florida",
     context: "CLEP College Algebra",
     metric: "Passed first attempt (scored 62, need 50)",
@@ -161,7 +161,7 @@ export default async function LandingPage() {
             <Sparkles className="h-6 w-6 text-blue-500" />
             <div>
               <span className="text-lg font-bold">
-                <span className="gradient-text">Student</span><span className="text-foreground/80 font-medium">Nest</span><span className="text-blue-600 dark:text-blue-400 font-normal text-[0.6em] ml-1">Prep</span>
+                <span className="gradient-text">Student</span><span className="text-foreground/80 font-medium">Nest</span><span className="text-blue-600 dark:text-blue-700 dark:text-blue-400 font-normal text-[0.6em] ml-1">Prep</span>
               </span>
               <p className="text-xs text-muted-foreground leading-none hidden sm:block">Study Smarter. Score Higher.</p>
             </div>
@@ -217,7 +217,7 @@ export default async function LandingPage() {
                 Free forever Â· {courseCount} courses Â· No credit card
               </Badge>
               <h1 className="text-4xl sm:text-5xl lg:text-5xl font-bold tracking-tight mb-4">
-                <span className="gradient-text">Student</span><span className="text-foreground/80 font-medium">Nest</span><span className="text-blue-600 dark:text-blue-400 font-normal text-[0.6em] ml-1">Prep</span>
+                <span className="gradient-text">Student</span><span className="text-foreground/80 font-medium">Nest</span><span className="text-blue-600 dark:text-blue-700 dark:text-blue-400 font-normal text-[0.6em] ml-1">Prep</span>
               </h1>
               <p className="text-xl sm:text-2xl font-semibold text-foreground/90 mb-2">
                 Improve your {examLabel} scores — with AI that adapts to your weak areas.
@@ -244,14 +244,14 @@ export default async function LandingPage() {
                 {clepOn && (
                   <>
                     <span className="hidden sm:inline text-muted-foreground">|</span>
-                    <Link href="/register?track=clep" className="text-emerald-600 dark:text-emerald-400 hover:underline font-medium text-sm">Pass CLEP in 7 days â†’</Link>
+                    <Link href="/register?track=clep" className="text-emerald-600 dark:text-emerald-700 dark:text-emerald-400 hover:underline font-medium text-sm">Pass CLEP in 7 days â†’</Link>
                   </>
                 )}
               </div>
               <div className="mt-4 flex items-center gap-4 justify-center lg:justify-start text-sm text-muted-foreground">
-                <span className="flex items-center gap-1"><Shield className="h-3.5 w-3.5 text-emerald-400" /> No credit card required</span>
+                <span className="flex items-center gap-1"><Shield className="h-3.5 w-3.5 text-emerald-700 dark:text-emerald-400" /> No credit card required</span>
                 <span className="hidden sm:inline text-border">|</span>
-                <span className="hidden sm:flex items-center gap-1"><CheckCircle className="h-3.5 w-3.5 text-emerald-400" /> 7-day refund policy</span>
+                <span className="hidden sm:flex items-center gap-1"><CheckCircle className="h-3.5 w-3.5 text-emerald-700 dark:text-emerald-400" /> 7-day refund policy</span>
               </div>
               <div className="mt-3">
                 <SocialProofBadge variant="compact" metric="students" />
@@ -340,7 +340,7 @@ export default async function LandingPage() {
                 icon: Zap,
                 title: "Practice Agent",
                 desc: "The practice engine auto-generates exam-aligned questions, tracks every answer, and targets your weakest units to maximize improvement.",
-                color: "text-yellow-600 dark:text-yellow-400",
+                color: "text-yellow-600 dark:text-yellow-700 dark:text-yellow-400",
                 bg: "bg-yellow-500/10",
               },
               // NEW 2026-04-25: Sage Coach was missing from landing surface — only
@@ -350,14 +350,14 @@ export default async function LandingPage() {
                 icon: Sparkles,
                 title: "Sage Coach (Voice)",
                 desc: "Talk through what you know in plain English. Sage Coach listens, scores your understanding, and tells you exactly what to study next — like a private tutor on call.",
-                color: "text-violet-600 dark:text-violet-400",
+                color: "text-violet-600 dark:text-violet-700 dark:text-violet-400",
                 bg: "bg-violet-500/10",
               },
               {
                 icon: BarChart3,
                 title: "Progress Agent",
                 desc: "Mastery scores update after every question. See unit-by-unit heatmaps and get a personalized study plan targeting your weak areas.",
-                color: "text-emerald-700 dark:text-emerald-400",
+                color: "text-emerald-700 dark:text-emerald-700 dark:text-emerald-400",
                 bg: "bg-emerald-500/10",
               },
             ].map((a) => (
@@ -424,7 +424,7 @@ export default async function LandingPage() {
               {/* Follow-up chips */}
               <div className="pl-11 flex flex-wrap gap-2">
                 {["What was the Estates system?", "How did Enlightenment ideas spread?"].map((q) => (
-                  <span key={q} className="text-xs px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 cursor-default">
+                  <span key={q} className="text-xs px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-700 dark:text-blue-400 cursor-default">
                     {q}
                   </span>
                 ))}
@@ -460,10 +460,10 @@ export default async function LandingPage() {
                 {/* Sage response */}
                 <div className="flex gap-3 items-start">
                   <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <Sparkles className="h-4 w-4 text-emerald-400" />
+                    <Sparkles className="h-4 w-4 text-emerald-700 dark:text-emerald-400" />
                   </div>
                   <div className="bg-secondary/60 border border-border/40 rounded-2xl rounded-tl-sm px-4 py-2.5 max-w-[85%] space-y-1.5">
-                    <p className="font-semibold text-xs text-emerald-400 mb-1">Sage</p>
+                    <p className="font-semibold text-xs text-emerald-700 dark:text-emerald-400 mb-1">Sage</p>
                     <p className="text-foreground/80 leading-relaxed">
                       To factor <strong>xÂ² + 5x + 6</strong>, find two numbers that <strong>multiply to 6</strong> and <strong>add to 5</strong>. Those numbers are 2 and 3.
                     </p>
@@ -530,7 +530,7 @@ export default async function LandingPage() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
               <div className="lg:order-2 space-y-4">
                 <div className="w-10 h-10 rounded-lg bg-emerald-500/20 flex items-center justify-center">
-                  <Brain className="h-5 w-5 text-emerald-400" />
+                  <Brain className="h-5 w-5 text-emerald-700 dark:text-emerald-400" />
                 </div>
                 <h3 className="text-2xl font-bold">Practice questions that target what you don&apos;t know</h3>
                 <p className="text-muted-foreground leading-relaxed">
@@ -615,7 +615,7 @@ export default async function LandingPage() {
                   <tr key={i} className="hover:bg-secondary/30">
                     <td className="p-3 text-foreground/90">{feature as string}</td>
                     <td className="p-3 text-center">
-                      {sn === true ? <CheckCircle className="h-4 w-4 text-emerald-400 mx-auto" /> : <span className="text-xs text-emerald-400 font-medium">{sn as string}</span>}
+                      {sn === true ? <CheckCircle className="h-4 w-4 text-emerald-700 dark:text-emerald-400 mx-auto" /> : <span className="text-xs text-emerald-700 dark:text-emerald-400 font-medium">{sn as string}</span>}
                     </td>
                     <td className="p-3 text-center">
                       {ai === true ? <CheckCircle className="h-4 w-4 text-muted-foreground/50 mx-auto" /> : ai === false ? <span className="text-muted-foreground/40">—</span> : <span className="text-xs text-muted-foreground">{ai as string}</span>}
@@ -652,11 +652,11 @@ export default async function LandingPage() {
                   key={course.name}
                   className="flex items-center gap-3 p-3.5 rounded-lg bg-card/50 border border-border/40"
                 >
-                  <CheckCircle className="h-5 w-5 text-emerald-400 flex-shrink-0" />
+                  <CheckCircle className="h-5 w-5 text-emerald-700 dark:text-emerald-400 flex-shrink-0" />
                   <div>
                     <span className="text-sm font-medium">{course.name}</span>
                     <span className="ml-2 text-xs text-muted-foreground">({course.units} units)</span>
-                    <p className="text-[11px] text-muted-foreground/60 mt-0.5">{course.topics}</p>
+                    <p className="text-[11px] text-muted-foreground mt-0.5">{course.topics}</p>
                   </div>
                 </div>
               ))}
@@ -669,7 +669,7 @@ export default async function LandingPage() {
       {clepOn && <section className="py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm font-medium mb-4">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-700 dark:text-emerald-400 text-sm font-medium mb-4">
               <GraduationCap className="h-4 w-4" /> College Credit
             </div>
             <h2 className="text-4xl font-bold mb-3">Earn College Credit Faster — Save Thousands</h2>
@@ -684,15 +684,15 @@ export default async function LandingPage() {
           {/* CLEP Exam Details */}
           <div className="grid sm:grid-cols-3 gap-4 mb-10 max-w-3xl mx-auto text-center">
             <div className="p-4 rounded-xl border border-emerald-500/15 bg-card/50">
-              <p className="text-sm font-semibold text-emerald-400">Passing Score</p>
+              <p className="text-sm font-semibold text-emerald-700 dark:text-emerald-400">Passing Score</p>
               <p className="text-xs text-muted-foreground mt-1">Scaled score of 50 (roughly 50–60% correct answers)</p>
             </div>
             <div className="p-4 rounded-xl border border-emerald-500/15 bg-card/50">
-              <p className="text-sm font-semibold text-emerald-400">Average Prep Time</p>
+              <p className="text-sm font-semibold text-emerald-700 dark:text-emerald-400">Average Prep Time</p>
               <p className="text-xs text-muted-foreground mt-1">20–40 hours per exam, depending on prior familiarity</p>
             </div>
             <div className="p-4 rounded-xl border border-emerald-500/15 bg-card/50">
-              <p className="text-sm font-semibold text-emerald-400">Exam Format</p>
+              <p className="text-sm font-semibold text-emerald-700 dark:text-emerald-400">Exam Format</p>
               <p className="text-xs text-muted-foreground mt-1">90–120 minutes, all multiple choice for most exams</p>
             </div>
           </div>
@@ -704,14 +704,14 @@ export default async function LandingPage() {
                 className="flex items-center justify-between p-4 rounded-xl border border-emerald-500/20 bg-emerald-500/5"
               >
                 <div className="flex items-center gap-3">
-                  <CheckCircle className="h-5 w-5 text-emerald-400 flex-shrink-0" />
+                  <CheckCircle className="h-5 w-5 text-emerald-700 dark:text-emerald-400 flex-shrink-0" />
                   <div>
                     <p className="text-sm font-medium">{c.name}</p>
                     <p className="text-xs text-muted-foreground">{c.units} units</p>
-                    <p className="text-[11px] text-muted-foreground/60">{c.topics}</p>
+                    <p className="text-[11px] text-muted-foreground">{c.topics}</p>
                   </div>
                 </div>
-                <span className="text-xs font-semibold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-1 rounded-full whitespace-nowrap">
+                <span className="text-xs font-semibold text-emerald-700 dark:text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-1 rounded-full whitespace-nowrap">
                   Save {c.savings}
                 </span>
               </div>
@@ -739,7 +739,7 @@ export default async function LandingPage() {
               </Button>
             </Link>
             <Link href="/about">
-              <Button size="lg" variant="outline" className="gap-2 border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/10">
+              <Button size="lg" variant="outline" className="gap-2 border-emerald-500/30 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-500/10">
                 Learn More About CLEP
               </Button>
             </Link>
@@ -756,7 +756,7 @@ export default async function LandingPage() {
       {dsstOn && <section className="py-20 bg-gradient-to-b from-transparent via-orange-500/[0.03] to-transparent">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-400 text-sm font-medium mb-4">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-700 dark:text-orange-400 text-sm font-medium mb-4">
               <GraduationCap className="h-4 w-4" /> DSST Exams
             </div>
             <h2 className="text-4xl font-bold mb-3">Skip Intro Courses with DSST</h2>
@@ -777,7 +777,7 @@ export default async function LandingPage() {
               { name: "Lifespan Developmental Psychology", tip: "Overlaps with AP/CLEP Psych" },
             ].map((c) => (
               <div key={c.name} className="flex items-center gap-3 p-4 rounded-xl border border-orange-500/20 bg-orange-500/5">
-                <CheckCircle className="h-5 w-5 text-orange-400 flex-shrink-0" />
+                <CheckCircle className="h-5 w-5 text-orange-700 dark:text-orange-400 flex-shrink-0" />
                 <div>
                   <p className="text-sm font-medium">{c.name}</p>
                   <p className="text-xs text-muted-foreground">{c.tip}</p>
@@ -793,7 +793,7 @@ export default async function LandingPage() {
               </Button>
             </Link>
             <Link href="/dsst-prep">
-              <Button size="lg" variant="outline" className="gap-2 border-orange-500/30 text-orange-400 hover:bg-orange-500/10">
+              <Button size="lg" variant="outline" className="gap-2 border-orange-500/30 text-orange-700 dark:text-orange-400 hover:bg-orange-500/10">
                 View All 22 DSST Exams
               </Button>
             </Link>
@@ -832,7 +832,7 @@ export default async function LandingPage() {
                 "Per-unit mastery analytics",
               ].map((item) => (
                 <div key={item} className="flex items-center gap-2 text-sm text-foreground/80">
-                  <CheckCircle className="h-4 w-4 text-emerald-400 flex-shrink-0" />
+                  <CheckCircle className="h-4 w-4 text-emerald-700 dark:text-emerald-400 flex-shrink-0" />
                   {item}
                 </div>
               ))}
@@ -845,15 +845,15 @@ export default async function LandingPage() {
             {/* AP Premium column */}
             <div className="rounded-xl border border-blue-500/40 bg-blue-500/5 p-6 space-y-3 relative">
               <div className="absolute -top-3 right-4">
-                <span className="text-xs px-3 py-1 rounded-full bg-blue-500/20 border border-blue-500/30 text-blue-400 font-medium">AP / SAT / ACT</span>
+                <span className="text-xs px-3 py-1 rounded-full bg-blue-500/20 border border-blue-500/30 text-blue-700 dark:text-blue-400 font-medium">AP / SAT / ACT</span>
               </div>
               <div className="flex items-center gap-2 mb-1">
                 <span className="text-base font-bold">AP Premium</span>
-                <span className="text-xl font-bold text-blue-400">$9.99</span>
+                <span className="text-xl font-bold text-blue-700 dark:text-blue-400">$9.99</span>
                 <span className="text-xs text-muted-foreground">/ month</span>
               </div>
               <p className="text-xs text-green-700 dark:text-green-400 font-medium mb-1">or $79.99/yr — save 33%</p>
-              <p className="text-xs text-muted-foreground/60 mb-3">Less than a single hour of tutoring</p>
+              <p className="text-xs text-muted-foreground mb-3">Less than a single hour of tutoring</p>
               {[
                 "Everything in Free, plus:",
                 "Unlimited Sage Live Tutor chats",
@@ -883,7 +883,7 @@ export default async function LandingPage() {
                 <span className="text-xs text-muted-foreground">/ month</span>
               </div>
               <p className="text-xs text-green-700 dark:text-green-400 font-medium mb-1">or $79.99/yr — save 33%</p>
-              <p className="text-xs text-muted-foreground/60 mb-3">Less than a single hour of tutoring</p>
+              <p className="text-xs text-muted-foreground mb-3">Less than a single hour of tutoring</p>
               {[
                 "Everything in Free, plus:",
                 "All 34 CLEP courses (earn college credit)",
@@ -893,7 +893,7 @@ export default async function LandingPage() {
                 "Save $1,200+ per exam passed",
               ].map((item) => (
                 <div key={item} className="flex items-center gap-2 text-sm text-foreground/80">
-                  <CheckCircle className="h-4 w-4 text-emerald-400 flex-shrink-0" />
+                  <CheckCircle className="h-4 w-4 text-emerald-700 dark:text-emerald-400 flex-shrink-0" />
                   {item}
                 </div>
               ))}
@@ -924,13 +924,13 @@ export default async function LandingPage() {
                   <div className="flex items-center justify-between">
                     <div className="flex gap-0.5">
                       {[...Array(t.stars)].map((_, i) => (
-                        <Star key={i} className="h-4 w-4 text-yellow-400 fill-yellow-400" />
+                        <Star key={i} className="h-4 w-4 text-yellow-700 dark:text-yellow-400 fill-yellow-400" />
                       ))}
                       {[...Array(5 - t.stars)].map((_, i) => (
                         <Star key={`e${i}`} className="h-4 w-4 text-muted-foreground/30" />
                       ))}
                     </div>
-                    <span className="flex items-center gap-1 text-[10px] text-emerald-400">
+                    <span className="flex items-center gap-1 text-[10px] text-emerald-700 dark:text-emerald-400">
                       <CheckCircle className="h-3 w-3" /> Verified
                     </span>
                   </div>
@@ -1007,7 +1007,7 @@ export default async function LandingPage() {
             </Link>
             {clepOn && (
               <Link href="/register?track=clep">
-                <Button size="lg" variant="outline" className="text-base px-10 h-12 border-emerald-500/40 text-emerald-400 hover:bg-emerald-500/10">
+                <Button size="lg" variant="outline" className="text-base px-10 h-12 border-emerald-500/40 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-500/10">
                   Start CLEP Prep Free
                 </Button>
               </Link>
@@ -1028,12 +1028,12 @@ export default async function LandingPage() {
             <div className="col-span-2 md:col-span-1 space-y-3">
               <div className="flex items-center gap-2">
                 <Sparkles className="h-5 w-5 text-blue-500" />
-                <span className="font-semibold"><span className="gradient-text">Student</span><span className="text-foreground/80 font-medium">Nest</span><span className="text-blue-600 dark:text-blue-400 font-normal text-[0.6em] ml-1">Prep</span></span>
+                <span className="font-semibold"><span className="gradient-text">Student</span><span className="text-foreground/80 font-medium">Nest</span><span className="text-blue-600 dark:text-blue-700 dark:text-blue-400 font-normal text-[0.6em] ml-1">Prep</span></span>
               </div>
               <p className="text-xs text-muted-foreground leading-relaxed">
                 AI-powered exam prep for {examLabel}. Free to start.
               </p>
-              <div className="flex items-center gap-1 text-xs text-emerald-400">
+              <div className="flex items-center gap-1 text-xs text-emerald-700 dark:text-emerald-400">
                 <Shield className="h-3.5 w-3.5" /> No credit card required
               </div>
             </div>
@@ -1074,7 +1074,7 @@ export default async function LandingPage() {
             <p className="text-xs text-muted-foreground">
               &copy; {new Date().getFullYear()} StudentNest Prep. Study Smarter. Score Higher..
             </p>
-            <p className="text-[11px] text-muted-foreground/60 text-center sm:text-right max-w-lg">
+            <p className="text-[11px] text-muted-foreground text-center sm:text-right max-w-lg">
               AP&reg; and SAT&reg; are trademarks of the College Board. ACT&reg; is a trademark of ACT, Inc.
               Neither organization is affiliated with or endorses StudentNest.
             </p>

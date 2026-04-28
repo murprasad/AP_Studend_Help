@@ -278,31 +278,31 @@ export default function BillingPage() {
             }`}
           >
             {isPremium ? (
-              <PartyPopper className="h-5 w-5 text-emerald-400" />
+              <PartyPopper className="h-5 w-5 text-emerald-700 dark:text-emerald-400" />
             ) : refreshing ? (
-              <Loader2 className="h-5 w-5 animate-spin text-emerald-400" />
+              <Loader2 className="h-5 w-5 animate-spin text-emerald-700 dark:text-emerald-400" />
             ) : (
-              <Calendar className="h-5 w-5 text-amber-400" />
+              <Calendar className="h-5 w-5 text-amber-700 dark:text-amber-400" />
             )}
           </div>
           <div className="flex-1">
             {isPremium ? (
               <>
-                <p className="font-semibold text-emerald-400">Welcome to Premium!</p>
+                <p className="font-semibold text-emerald-700 dark:text-emerald-400">Welcome to Premium!</p>
                 <p className="text-sm text-muted-foreground mt-0.5">
                   Your Premium subscription is active. Enjoy unlimited Sage Live Tutor and all premium features!
                 </p>
               </>
             ) : refreshing ? (
               <>
-                <p className="font-semibold text-emerald-400">Activating your Premium account…</p>
+                <p className="font-semibold text-emerald-700 dark:text-emerald-400">Activating your Premium account…</p>
                 <p className="text-sm text-muted-foreground mt-0.5">
                   Payment confirmed. Waiting for Stripe to activate your account — usually under 10 seconds.
                 </p>
               </>
             ) : (
               <>
-                <p className="font-semibold text-amber-400">Payment received — activation pending</p>
+                <p className="font-semibold text-amber-700 dark:text-amber-400">Payment received — activation pending</p>
                 <p className="text-sm text-muted-foreground mt-0.5">
                   We&rsquo;ve received your payment but your account hasn&rsquo;t activated yet. Please refresh this page in a few minutes. If it still shows Free, email{" "}
                   <a href="mailto:contact@studentnest.ai" className="text-amber-300 underline">
@@ -319,7 +319,7 @@ export default function BillingPage() {
       {/* Cancellation success message */}
       {cancelMessage && (
         <div className="mb-6 rounded-xl border border-amber-500/30 bg-amber-500/10 p-4 flex items-start gap-3">
-          <Calendar className="h-5 w-5 text-amber-400 flex-shrink-0 mt-0.5" />
+          <Calendar className="h-5 w-5 text-amber-700 dark:text-amber-400 flex-shrink-0 mt-0.5" />
           <div className="flex-1">
             <p className="text-sm text-amber-300">{cancelMessage}</p>
           </div>
@@ -332,13 +332,13 @@ export default function BillingPage() {
           <CardTitle className="text-lg flex items-center gap-2">
             Current plan
             {isPremium && (
-              <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30 text-xs">
+              <Badge className="bg-blue-500/20 text-blue-700 dark:text-blue-400 border-blue-500/30 text-xs">
                 <Crown className="h-3 w-3 mr-1" />
                 {premiumLabel}
               </Badge>
             )}
             {isCanceling && (
-              <Badge variant="outline" className="text-amber-400 border-amber-500/30 text-xs">
+              <Badge variant="outline" className="text-amber-700 dark:text-amber-400 border-amber-500/30 text-xs">
                 Canceling
               </Badge>
             )}
@@ -402,7 +402,7 @@ export default function BillingPage() {
                   : "border-blue-500/20 bg-blue-500/5"
             }`}>
               <Calendar className={`h-4 w-4 flex-shrink-0 ${
-                isCanceling ? "text-amber-400" : "text-blue-500"
+                isCanceling ? "text-amber-700 dark:text-amber-400" : "text-blue-500"
               }`} />
               <div className="flex-1">
                 {isCanceling ? (
@@ -416,7 +416,7 @@ export default function BillingPage() {
                   </>
                 ) : (
                   <>
-                    <p className="text-sm font-medium text-blue-700 dark:text-blue-400">
+                    <p className="text-sm font-medium text-blue-700 dark:text-blue-700 dark:text-blue-400">
                       Renews {formatDate(periodEnd)}
                     </p>
                     <p className="text-xs text-muted-foreground mt-0.5">
@@ -431,7 +431,7 @@ export default function BillingPage() {
                   size="sm"
                   onClick={reactivateSubscription}
                   disabled={reactivating}
-                  className="text-xs gap-1.5 border-blue-500/30 text-blue-400 hover:bg-blue-500/10"
+                  className="text-xs gap-1.5 border-blue-500/30 text-blue-700 dark:text-blue-400 hover:bg-blue-500/10"
                 >
                   {reactivating ? <Loader2 className="h-3 w-3 animate-spin" /> : <RefreshCw className="h-3 w-3" />}
                   Reactivate
@@ -472,7 +472,7 @@ export default function BillingPage() {
                 "Early access to new courses",
               ]).map((f) => (
                 <li key={f} className="flex items-center gap-2 text-sm">
-                  <CheckCircle className={`h-4 w-4 flex-shrink-0 ${(session?.user as { track?: string })?.track === "clep" ? "text-emerald-400" : "text-blue-500"}`} />
+                  <CheckCircle className={`h-4 w-4 flex-shrink-0 ${(session?.user as { track?: string })?.track === "clep" ? "text-emerald-700 dark:text-emerald-400" : "text-blue-500"}`} />
                   {f}
                 </li>
               ))}
@@ -484,14 +484,14 @@ export default function BillingPage() {
                 {!cancelConfirm ? (
                   <button
                     onClick={() => setCancelConfirm(true)}
-                    className="text-sm text-muted-foreground hover:text-red-400 transition-colors"
+                    className="text-sm text-muted-foreground hover:text-red-700 dark:text-red-400 transition-colors"
                   >
                     Cancel subscription
                   </button>
                 ) : (
                   <div className="rounded-lg border border-red-500/30 bg-red-500/5 p-4 space-y-3">
                     <div className="flex items-start gap-2">
-                      <AlertTriangle className="h-4 w-4 text-red-400 flex-shrink-0 mt-0.5" />
+                      <AlertTriangle className="h-4 w-4 text-red-700 dark:text-red-400 flex-shrink-0 mt-0.5" />
                       <div>
                         <p className="text-sm font-medium text-red-300">Cancel your subscription?</p>
                         <p className="text-xs text-muted-foreground mt-1">
@@ -556,7 +556,7 @@ export default function BillingPage() {
                     <div className="flex items-center justify-between">
                       <p className="font-semibold text-sm">{m.label}</p>
                       {activeSub ? (
-                        <Badge className={`text-xs ${activeSub.status === "canceling" ? "bg-amber-500/20 text-amber-400 border-amber-500/30" : "bg-emerald-500/20 text-emerald-400 border-emerald-500/30"}`}>
+                        <Badge className={`text-xs ${activeSub.status === "canceling" ? "bg-amber-500/20 text-amber-700 dark:text-amber-400 border-amber-500/30" : "bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 border-emerald-500/30"}`}>
                           {activeSub.status === "canceling" ? "Canceling" : "Active"}
                         </Badge>
                       ) : (
@@ -575,7 +575,7 @@ export default function BillingPage() {
                           <Button
                             variant="ghost"
                             size="sm"
-                            className="w-full text-xs text-muted-foreground hover:text-red-400"
+                            className="w-full text-xs text-muted-foreground hover:text-red-700 dark:text-red-400"
                             onClick={async () => {
                               if (!confirm(`Cancel ${m.label}? You'll keep access until the end of your billing period.`)) return;
                               const res = await fetch(`/api/billing/cancel?module=${m.module}`, { method: "POST" });
@@ -590,7 +590,7 @@ export default function BillingPage() {
                           <Button
                             variant="ghost"
                             size="sm"
-                            className="w-full text-xs text-blue-500 hover:text-blue-400"
+                            className="w-full text-xs text-blue-500 hover:text-blue-700 dark:text-blue-400"
                             onClick={async () => {
                               const res = await fetch(`/api/billing/cancel?module=${m.module}`, { method: "DELETE" });
                               const data = await res.json();

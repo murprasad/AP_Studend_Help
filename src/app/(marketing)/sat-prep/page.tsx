@@ -52,7 +52,7 @@ export default function SatPrepPage() {
       {/* Hero — two-column */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
         <div className="text-center lg:text-left space-y-4">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-sm font-medium">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-700 dark:text-blue-400 text-sm font-medium">
             <Sparkles className="h-4 w-4" /> SAT Prep
           </div>
           <h1 className="text-4xl sm:text-5xl font-bold">
@@ -93,7 +93,7 @@ export default function SatPrepPage() {
       <div className="space-y-20">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
           <div className="space-y-3">
-            <div className="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center"><Target className="h-5 w-5 text-blue-400" /></div>
+            <div className="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center"><Target className="h-5 w-5 text-blue-700 dark:text-blue-400" /></div>
             <h2 className="text-2xl font-bold">AI targets your weakest SAT areas</h2>
             <p className="text-muted-foreground leading-relaxed">Quick diagnostic across Math and Reading &amp; Writing. Choose your timeline (2–6 weeks) and Sage builds a plan targeting your lowest-scoring topics first.</p>
           </div>
@@ -101,7 +101,7 @@ export default function SatPrepPage() {
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
           <div className="lg:order-2 space-y-3">
-            <div className="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center"><Brain className="h-5 w-5 text-blue-400" /></div>
+            <div className="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center"><Brain className="h-5 w-5 text-blue-700 dark:text-blue-400" /></div>
             <h2 className="text-2xl font-bold">SAT-format questions with instant explanations</h2>
             <p className="text-muted-foreground leading-relaxed">AI-generated questions matching real SAT format. Get instant feedback explaining why each answer is right or wrong — ask Sage for deeper explanations anytime.</p>
           </div>
@@ -109,7 +109,7 @@ export default function SatPrepPage() {
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
           <div className="space-y-3">
-            <div className="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center"><BarChart3 className="h-5 w-5 text-blue-400" /></div>
+            <div className="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center"><BarChart3 className="h-5 w-5 text-blue-700 dark:text-blue-400" /></div>
             <h2 className="text-2xl font-bold">See your readiness range improve</h2>
             <p className="text-muted-foreground leading-relaxed">Track session-by-session progress as your estimated SAT range climbs (typical pattern: 1050 â†’ 1150 â†’ 1250+). Real data, timed practice, and the pacing instincts you need on test day.</p>
           </div>
@@ -127,7 +127,7 @@ export default function SatPrepPage() {
         ].map((f) => (
           <div key={f.title} className="p-5 rounded-xl border border-border/40 bg-card/50 space-y-2">
             <div className="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center">
-              <f.icon className="h-5 w-5 text-blue-400" />
+              <f.icon className="h-5 w-5 text-blue-700 dark:text-blue-400" />
             </div>
             <p className="font-semibold text-sm">{f.title}</p>
             <p className="text-xs text-muted-foreground">{f.desc}</p>
@@ -146,7 +146,7 @@ export default function SatPrepPage() {
             { week: "Week 6", task: "Full-length mock exams + final review" },
           ].map((w) => (
             <div key={w.week} className="p-4 rounded-xl border border-blue-500/15 bg-card/50 text-center">
-              <p className="text-xs font-semibold text-blue-400 mb-1">{w.week}</p>
+              <p className="text-xs font-semibold text-blue-700 dark:text-blue-400 mb-1">{w.week}</p>
               <p className="text-xs text-muted-foreground">{w.task}</p>
             </div>
           ))}
@@ -160,7 +160,7 @@ export default function SatPrepPage() {
           {courses.map((c) => (
             <div key={c.name} className="p-5 rounded-xl border border-blue-500/20 bg-blue-500/5 space-y-2">
               <div className="flex items-center gap-2">
-                <CheckCircle className="h-5 w-5 text-blue-400" />
+                <CheckCircle className="h-5 w-5 text-blue-700 dark:text-blue-400" />
                 <p className="font-semibold">{c.name}</p>
                 <span className="ml-auto text-xs text-muted-foreground">{c.units} units</span>
               </div>
@@ -176,15 +176,15 @@ export default function SatPrepPage() {
           <p className="font-bold">Free</p>
           <p className="text-2xl font-bold text-muted-foreground">$0</p>
           {["Unlimited MCQ practice", "5 Sage Live Tutor chats/day", "Basic study plan", "Score tracking"].map((f) => (
-            <div key={f} className="flex items-center gap-2 text-sm"><CheckCircle className="h-4 w-4 text-emerald-400" />{f}</div>
+            <div key={f} className="flex items-center gap-2 text-sm"><CheckCircle className="h-4 w-4 text-emerald-700 dark:text-emerald-400" />{f}</div>
           ))}
         </div>
         <div className="rounded-xl border-2 border-blue-500 bg-blue-500/5 p-6 space-y-3">
-          <p className="font-bold text-blue-400">SAT Premium</p>
+          <p className="font-bold text-blue-700 dark:text-blue-400">SAT Premium</p>
           <p className="text-2xl font-bold">$9.99<span className="text-sm font-normal text-muted-foreground">/mo</span></p>
           <p className="text-xs text-green-700 dark:text-green-400 font-medium">or $79.99/yr — save 33%</p>
           {["Everything in Free", "Unlimited Sage Live Tutor chats", "Personalized SAT study plan", "Advanced weak-area analytics", "Streaming AI"].map((f) => (
-            <div key={f} className="flex items-center gap-2 text-sm"><CheckCircle className="h-4 w-4 text-blue-400" />{f}</div>
+            <div key={f} className="flex items-center gap-2 text-sm"><CheckCircle className="h-4 w-4 text-blue-700 dark:text-blue-400" />{f}</div>
           ))}
           <form action="/api/checkout?plan=monthly&module=sat" method="POST" className="pt-2">
             <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700">Start SAT Premium</Button>
@@ -207,7 +207,7 @@ export default function SatPrepPage() {
         </Link>
       </div>
 
-      <p className="text-xs text-center text-muted-foreground/60">
+      <p className="text-xs text-center text-muted-foreground">
         SATÂ® is a trademark of the College Board, which is not affiliated with StudentNest.
       </p>
     </div>

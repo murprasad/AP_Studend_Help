@@ -107,7 +107,7 @@ export function DiagnosticNudgeModal({ course }: Props) {
         <DialogHeader>
           <div className="flex items-center justify-center mb-2">
             <div className="rounded-full bg-amber-100 dark:bg-amber-950 p-3">
-              <Sparkles className="h-6 w-6 text-amber-600" />
+              <Sparkles className="h-6 w-6 text-amber-700 dark:text-amber-400" />
             </div>
           </div>
           <DialogTitle className="text-center text-xl">

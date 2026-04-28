@@ -40,10 +40,10 @@ export default function ContactPage() {
 
         <div className="p-6 rounded-xl border border-border/40 bg-card/50 space-y-3">
           <div className="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center">
-            <MessageSquare className="h-5 w-5 text-emerald-400" />
+            <MessageSquare className="h-5 w-5 text-emerald-700 dark:text-emerald-400" />
           </div>
           <p className="font-semibold">Chat with Sage</p>
-          <p className="text-sm text-emerald-400">Click the purple button below</p>
+          <p className="text-sm text-emerald-700 dark:text-emerald-400">Click the purple button below</p>
           <p className="text-xs text-muted-foreground">Sage can answer product questions instantly, 24/7.</p>
         </div>
       </div>

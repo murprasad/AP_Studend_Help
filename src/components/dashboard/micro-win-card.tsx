@@ -47,7 +47,7 @@ export function MicroWinCard({ course }: Props) {
       <CardContent className="p-4">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-lg bg-amber-500/15 flex items-center justify-center flex-shrink-0">
-            <Zap className="h-4 w-4 text-amber-600 dark:text-amber-400" />
+            <Zap className="h-4 w-4 text-amber-700 dark:text-amber-400 dark:text-amber-700 dark:text-amber-400" />
           </div>
           <div className="min-w-0 flex-1">
             <p className="text-[14px] font-semibold leading-tight">{label}</p>

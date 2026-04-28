@@ -76,7 +76,7 @@ export function AdminCoverageTab({ questionsByUnit }: Props) {
         {/* Critical banner */}
         {criticalUnits.length > 0 && (
           <div className="flex items-center justify-between gap-3 p-3 rounded-lg bg-red-500/10 border border-red-500/30 text-sm">
-            <div className="flex items-center gap-2 text-red-400">
+            <div className="flex items-center gap-2 text-red-700 dark:text-red-400">
               <AlertTriangle className="h-4 w-4 flex-shrink-0" />
               <span>
                 <strong>{criticalUnits.length}</strong> unit{criticalUnits.length !== 1 ? "s are" : " is"} Critical (&lt;10 questions).
@@ -102,7 +102,7 @@ export function AdminCoverageTab({ questionsByUnit }: Props) {
           return (
             <div key={course}>
               <div className="flex items-center justify-between mb-2">
-                <p className="text-sm font-semibold text-blue-400">{AP_COURSES[course as ApCourse]}</p>
+                <p className="text-sm font-semibold text-blue-700 dark:text-blue-400">{AP_COURSES[course as ApCourse]}</p>
                 <Badge variant="outline" className="text-xs">{courseTotal} total</Badge>
               </div>
               <div className="space-y-1">
@@ -129,8 +129,8 @@ export function AdminCoverageTab({ questionsByUnit }: Props) {
                         )}
                         <Badge
                           variant={count < 10 ? "destructive" : "secondary"}
-                          className={count >= 20 ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/30" :
-                                     count >= 10 ? "bg-yellow-500/20 text-yellow-400 border-yellow-500/30" : ""}
+                          className={count >= 20 ? "bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 border-emerald-500/30" :
+                                     count >= 10 ? "bg-yellow-500/20 text-yellow-700 dark:text-yellow-400 border-yellow-500/30" : ""}
                         >
                           {count}
                           {added > 0 && <span className="ml-1 text-emerald-300">(+{added})</span>}

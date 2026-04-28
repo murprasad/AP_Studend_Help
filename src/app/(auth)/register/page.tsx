@@ -158,7 +158,7 @@ export default function RegisterPage() {
     return (
       <Card className="w-full max-w-md text-center">
         <CardContent className="pt-8 pb-6">
-          <CheckCircle className="h-16 w-16 text-emerald-400 mx-auto mb-4" />
+          <CheckCircle className="h-16 w-16 text-emerald-700 dark:text-emerald-400 mx-auto mb-4" />
           {verified ? (
             <>
               <h1 className="text-2xl font-bold mb-2">Email Verified!</h1>

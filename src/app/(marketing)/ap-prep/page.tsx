@@ -171,10 +171,10 @@ export default function ApPrepPage() {
           {courses.map((c) => {
             const inner = (
               <>
-                <CheckCircle className="h-5 w-5 text-emerald-400 flex-shrink-0" />
+                <CheckCircle className="h-5 w-5 text-emerald-700 dark:text-emerald-400 flex-shrink-0" />
                 <span className="text-sm font-medium">{c.name}</span>
                 <span className="ml-auto text-xs text-muted-foreground">({c.units} units)</span>
-                {c.slug && <ArrowRight className="h-4 w-4 text-blue-400 flex-shrink-0" />}
+                {c.slug && <ArrowRight className="h-4 w-4 text-blue-700 dark:text-blue-400 flex-shrink-0" />}
               </>
             );
             return c.slug ? (
@@ -200,7 +200,7 @@ export default function ApPrepPage() {
           <p className="font-bold">Free</p>
           <p className="text-2xl font-bold text-muted-foreground">$0</p>
           {["Unlimited MCQ practice", "5 Sage Live Tutor chats/day", "Basic study plan", "Mastery analytics"].map((f) => (
-            <div key={f} className="flex items-center gap-2 text-sm"><CheckCircle className="h-4 w-4 text-emerald-400" />{f}</div>
+            <div key={f} className="flex items-center gap-2 text-sm"><CheckCircle className="h-4 w-4 text-emerald-700 dark:text-emerald-400" />{f}</div>
           ))}
         </div>
         <div className="rounded-xl border-2 border-blue-500 bg-blue-500/5 p-6 space-y-3">
@@ -232,7 +232,7 @@ export default function ApPrepPage() {
         </Link>
       </div>
 
-      <p className="text-xs text-center text-muted-foreground/60">
+      <p className="text-xs text-center text-muted-foreground">
         APÂ® is a trademark of the College Board, which is not affiliated with StudentNest.
       </p>
     </div>

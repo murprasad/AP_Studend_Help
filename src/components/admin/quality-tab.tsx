@@ -41,18 +41,18 @@ interface QualityMetrics {
 
 function gradeColor(grade: string): string {
   const letter = grade.charAt(0).toUpperCase();
-  if (letter === "A") return "bg-emerald-500/20 text-emerald-400 border-emerald-500/40";
-  if (letter === "B") return "bg-blue-500/20 text-blue-400 border-blue-500/40";
-  if (letter === "C") return "bg-yellow-500/20 text-yellow-400 border-yellow-500/40";
-  return "bg-red-500/20 text-red-400 border-red-500/40";
+  if (letter === "A") return "bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 border-emerald-500/40";
+  if (letter === "B") return "bg-blue-500/20 text-blue-700 dark:text-blue-400 border-blue-500/40";
+  if (letter === "C") return "bg-yellow-500/20 text-yellow-700 dark:text-yellow-400 border-yellow-500/40";
+  return "bg-red-500/20 text-red-700 dark:text-red-400 border-red-500/40";
 }
 
 function gradeBgLarge(grade: string): string {
   const letter = grade.charAt(0).toUpperCase();
-  if (letter === "A") return "bg-emerald-500/15 border-emerald-500/30 text-emerald-400";
-  if (letter === "B") return "bg-blue-500/15 border-blue-500/30 text-blue-400";
-  if (letter === "C") return "bg-yellow-500/15 border-yellow-500/30 text-yellow-400";
-  return "bg-red-500/15 border-red-500/30 text-red-400";
+  if (letter === "A") return "bg-emerald-500/15 border-emerald-500/30 text-emerald-700 dark:text-emerald-400";
+  if (letter === "B") return "bg-blue-500/15 border-blue-500/30 text-blue-700 dark:text-blue-400";
+  if (letter === "C") return "bg-yellow-500/15 border-yellow-500/30 text-yellow-700 dark:text-yellow-400";
+  return "bg-red-500/15 border-red-500/30 text-red-700 dark:text-red-400";
 }
 
 function statusDot(actual: number, target: number): string {
@@ -264,15 +264,15 @@ export function AdminQualityTab() {
         <CardContent>
           <div className="grid grid-cols-3 gap-4">
             <div className="rounded-lg border border-red-500/30 bg-red-500/10 p-4 text-center">
-              <p className="text-2xl font-bold text-red-400">{data.pValueDistribution.tooEasy}</p>
+              <p className="text-2xl font-bold text-red-700 dark:text-red-400">{data.pValueDistribution.tooEasy}</p>
               <p className="text-xs text-muted-foreground mt-1">Too Easy</p>
             </div>
             <div className="rounded-lg border border-emerald-500/30 bg-emerald-500/10 p-4 text-center">
-              <p className="text-2xl font-bold text-emerald-400">{data.pValueDistribution.good}</p>
+              <p className="text-2xl font-bold text-emerald-700 dark:text-emerald-400">{data.pValueDistribution.good}</p>
               <p className="text-xs text-muted-foreground mt-1">Good</p>
             </div>
             <div className="rounded-lg border border-orange-500/30 bg-orange-500/10 p-4 text-center">
-              <p className="text-2xl font-bold text-orange-400">{data.pValueDistribution.tooHard}</p>
+              <p className="text-2xl font-bold text-orange-700 dark:text-orange-400">{data.pValueDistribution.tooHard}</p>
               <p className="text-xs text-muted-foreground mt-1">Too Hard</p>
             </div>
           </div>

@@ -72,7 +72,7 @@ export function CLEPTestimonials() {
                   </span>
 
                   <div className="relative pt-8">
-                    <p className="text-[10px] uppercase tracking-widest text-emerald-400 font-semibold mb-3">
+                    <p className="text-[10px] uppercase tracking-widest text-emerald-700 dark:text-emerald-400 font-semibold mb-3">
                       {t.context}
                     </p>
 
@@ -93,7 +93,7 @@ export function CLEPTestimonials() {
                     </div>
 
                     <div className="flex flex-wrap gap-2">
-                      <span className="text-xs bg-emerald-500/10 text-emerald-400 px-2.5 py-1 rounded-full">
+                      <span className="text-xs bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 px-2.5 py-1 rounded-full">
                         {t.metric}
                       </span>
                       <span className="text-xs bg-white/5 text-white/60 px-2.5 py-1 rounded-full">
@@ -104,7 +104,7 @@ export function CLEPTestimonials() {
                 </div>
               ) : (
                 <div className="rounded-2xl bg-white/5 border-l-4 border-emerald-500 p-8">
-                  <p className="text-[10px] uppercase tracking-widest text-emerald-400 font-semibold mb-3">
+                  <p className="text-[10px] uppercase tracking-widest text-emerald-700 dark:text-emerald-400 font-semibold mb-3">
                     {t.context}
                   </p>
 
@@ -125,7 +125,7 @@ export function CLEPTestimonials() {
                   </div>
 
                   <div className="flex flex-wrap gap-2">
-                    <span className="text-xs bg-emerald-500/10 text-emerald-400 px-2.5 py-1 rounded-full">
+                    <span className="text-xs bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 px-2.5 py-1 rounded-full">
                       {t.metric}
                     </span>
                     <span className="text-xs bg-white/5 text-white/60 px-2.5 py-1 rounded-full">

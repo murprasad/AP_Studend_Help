@@ -231,7 +231,7 @@ export default function DiagnosticPage() {
                     onClick={() => handleAnswerSelect(letter)}
                     className={`w-full text-left px-4 py-3 rounded-lg border text-sm transition-colors min-h-[48px] leading-relaxed ${
                       isSelected
-                        ? "border-blue-500 bg-blue-500/10 text-blue-400"
+                        ? "border-blue-500 bg-blue-500/10 text-blue-700 dark:text-blue-400"
                         : "border-border/40 hover:bg-accent"
                     }`}
                   >
@@ -306,7 +306,7 @@ export default function DiagnosticPage() {
           <CardContent className="p-5 space-y-3">
             <div className="flex items-start gap-3">
               <div className="w-10 h-10 rounded-lg bg-amber-500/20 flex items-center justify-center flex-shrink-0">
-                <Sparkles className="h-5 w-5 text-amber-600" />
+                <Sparkles className="h-5 w-5 text-amber-700 dark:text-amber-400" />
               </div>
               <div className="flex-1">
                 <p className="text-sm font-semibold">FRQs are 40-60% of your real AP score</p>
@@ -336,7 +336,7 @@ export default function DiagnosticPage() {
               <CardContent className="p-5">
                 <div className="flex items-start gap-3">
                   <div className="w-10 h-10 rounded-lg bg-amber-500/20 flex items-center justify-center flex-shrink-0">
-                    <Zap className="h-5 w-5 text-amber-600" />
+                    <Zap className="h-5 w-5 text-amber-700 dark:text-amber-400" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-semibold">Fix your weakest unit in 2 min</p>
@@ -388,7 +388,7 @@ export default function DiagnosticPage() {
           <div className="grid sm:grid-cols-2 gap-4 mt-4">
             <Card className="border-red-500/20 bg-red-500/5">
               <CardHeader className="pb-2">
-                <CardTitle className="text-sm flex items-center gap-2 text-red-400">
+                <CardTitle className="text-sm flex items-center gap-2 text-red-700 dark:text-red-400">
                   <TrendingDown className="h-4 w-4" />
                   Focus Areas
                 </CardTitle>
@@ -396,7 +396,7 @@ export default function DiagnosticPage() {
               <CardContent className="space-y-1">
                 {result.weakUnits.map(u => (
                   <div key={u} className="flex items-center gap-2 text-sm">
-                    <XCircle className="h-3.5 w-3.5 text-red-400 flex-shrink-0" />
+                    <XCircle className="h-3.5 w-3.5 text-red-700 dark:text-red-400 flex-shrink-0" />
                     <span className="truncate">{courseUnits[u as ApUnit] || u}</span>
                     <span className="ml-auto text-xs text-muted-foreground">{result.unitScores[u]}%</span>
                   </div>
@@ -406,7 +406,7 @@ export default function DiagnosticPage() {
 
             <Card className="border-emerald-500/20 bg-emerald-500/5">
               <CardHeader className="pb-2">
-                <CardTitle className="text-sm flex items-center gap-2 text-emerald-400">
+                <CardTitle className="text-sm flex items-center gap-2 text-emerald-700 dark:text-emerald-400">
                   <TrendingUp className="h-4 w-4" />
                   Strengths
                 </CardTitle>
@@ -414,7 +414,7 @@ export default function DiagnosticPage() {
               <CardContent className="space-y-1">
                 {result.strongUnits.map(u => (
                   <div key={u} className="flex items-center gap-2 text-sm">
-                    <CheckCircle className="h-3.5 w-3.5 text-emerald-400 flex-shrink-0" />
+                    <CheckCircle className="h-3.5 w-3.5 text-emerald-700 dark:text-emerald-400 flex-shrink-0" />
                     <span className="truncate">{courseUnits[u as ApUnit] || u}</span>
                     <span className="ml-auto text-xs text-muted-foreground">{result.unitScores[u]}%</span>
                   </div>
@@ -434,7 +434,7 @@ export default function DiagnosticPage() {
                     <span className="text-muted-foreground truncate pr-2">
                       {courseUnits[unit as ApUnit] || unit}
                     </span>
-                    <span className={score >= 70 ? "text-emerald-400" : score >= 50 ? "text-yellow-400" : "text-red-400"}>
+                    <span className={score >= 70 ? "text-emerald-700 dark:text-emerald-400" : score >= 50 ? "text-yellow-700 dark:text-yellow-400" : "text-red-700 dark:text-red-400"}>
                       {score}%
                     </span>
                   </div>
@@ -477,7 +477,7 @@ export default function DiagnosticPage() {
             <CardContent className="p-5">
               <div className="flex items-start gap-4">
                 <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${isClep ? "bg-emerald-500/20" : "bg-blue-500/20"}`}>
-                  <Sparkles className={`h-5 w-5 ${isClep ? "text-emerald-400" : "text-blue-500"}`} />
+                  <Sparkles className={`h-5 w-5 ${isClep ? "text-emerald-700 dark:text-emerald-400" : "text-blue-500"}`} />
                 </div>
                 <div className="flex-1">
                   <p className="font-semibold text-sm">
@@ -485,7 +485,7 @@ export default function DiagnosticPage() {
                   </p>
                   <p className="text-xs text-muted-foreground mt-1">
                     {isClep ? "CLEP Premium" : "AP Premium"} gives you an AI-generated weekly plan focused on{" "}
-                    <span className={isClep ? "text-emerald-300 font-medium" : "text-blue-400 font-medium"}>
+                    <span className={isClep ? "text-emerald-300 font-medium" : "text-blue-700 dark:text-blue-400 font-medium"}>
                       {courseUnits[result.weakUnits[0] as ApUnit] || result.weakUnits[0]}
                     </span>{" "}
                     and {result.weakUnits.length > 1 ? `${result.weakUnits.length - 1} other weak unit${result.weakUnits.length > 2 ? "s" : ""}` : "your identified gap areas"}.

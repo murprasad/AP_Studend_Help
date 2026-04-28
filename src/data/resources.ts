@@ -33,7 +33,7 @@ export const GLOBAL_RESOURCES: Resource[] = [
     url: "https://apcentral.collegeboard.org",
     type: "curriculum",
     icon: "GraduationCap",
-    color: "text-blue-400",
+    color: "text-blue-700 dark:text-blue-400",
     free: true,
   },
   {
@@ -43,7 +43,7 @@ export const GLOBAL_RESOURCES: Resource[] = [
     url: "https://www.oerproject.com",
     type: "reading",
     icon: "BookOpen",
-    color: "text-emerald-400",
+    color: "text-emerald-700 dark:text-emerald-400",
     free: true,
   },
   {
@@ -53,7 +53,7 @@ export const GLOBAL_RESOURCES: Resource[] = [
     url: "https://www.practicequiz.com/ap",
     type: "practice",
     icon: "ClipboardCheck",
-    color: "text-purple-400",
+    color: "text-purple-700 dark:text-purple-400",
     free: true,
   },
   {
@@ -63,7 +63,7 @@ export const GLOBAL_RESOURCES: Resource[] = [
     url: "https://library.fiveable.me",
     type: "reading",
     icon: "Zap",
-    color: "text-yellow-400",
+    color: "text-yellow-700 dark:text-yellow-400",
     free: true,
   },
   {
@@ -83,7 +83,7 @@ export const GLOBAL_RESOURCES: Resource[] = [
     url: "https://www.zinnedproject.org",
     type: "primary_source",
     icon: "FileText",
-    color: "text-orange-400",
+    color: "text-orange-700 dark:text-orange-400",
     free: true,
   },
   {
@@ -93,7 +93,7 @@ export const GLOBAL_RESOURCES: Resource[] = [
     url: "https://www.youtube.com/@heimlershistory",
     type: "video_channel",
     icon: "Youtube",
-    color: "text-red-400",
+    color: "text-red-700 dark:text-red-400",
     free: true,
   },
   {
@@ -143,7 +143,7 @@ export const GLOBAL_RESOURCES: Resource[] = [
     url: "https://openstax.org/subjects",
     type: "reading",
     icon: "BookOpen",
-    color: "text-amber-400",
+    color: "text-amber-700 dark:text-amber-400",
     free: true,
   },
   {
@@ -163,7 +163,7 @@ export const GLOBAL_RESOURCES: Resource[] = [
     url: "https://ocw.mit.edu",
     type: "reading",
     icon: "GraduationCap",
-    color: "text-blue-400",
+    color: "text-blue-700 dark:text-blue-400",
     free: true,
   },
   {
@@ -193,7 +193,7 @@ export const GLOBAL_RESOURCES: Resource[] = [
     url: "https://satsuite.collegeboard.org/sat/preparation",
     type: "practice",
     icon: "GraduationCap",
-    color: "text-blue-400",
+    color: "text-blue-700 dark:text-blue-400",
     free: true,
   },
   {
@@ -203,7 +203,7 @@ export const GLOBAL_RESOURCES: Resource[] = [
     url: "https://www.act.org/content/act/en/products-and-services/the-act/test-preparation/free-act-test-prep.html",
     type: "practice",
     icon: "ClipboardCheck",
-    color: "text-orange-400",
+    color: "text-orange-700 dark:text-orange-400",
     free: true,
   },
 ];

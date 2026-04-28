@@ -51,11 +51,11 @@ const TYPE_LABELS: Record<string, string> = {
 };
 
 const TYPE_COLORS: Record<string, string> = {
-  video_channel: "bg-red-500/20 text-red-400 border-red-500/30",
-  practice: "bg-purple-500/20 text-purple-400 border-purple-500/30",
-  reading: "bg-emerald-500/20 text-emerald-400 border-emerald-500/30",
-  primary_source: "bg-orange-500/20 text-orange-400 border-orange-500/30",
-  curriculum: "bg-blue-500/20 text-blue-400 border-blue-500/30",
+  video_channel: "bg-red-500/20 text-red-700 dark:text-red-400 border-red-500/30",
+  practice: "bg-purple-500/20 text-purple-700 dark:text-purple-400 border-purple-500/30",
+  reading: "bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 border-emerald-500/30",
+  primary_source: "bg-orange-500/20 text-orange-700 dark:text-orange-400 border-orange-500/30",
+  curriculum: "bg-blue-500/20 text-blue-700 dark:text-blue-400 border-blue-500/30",
 };
 
 function getCourseUnits(course: ApCourse) {
@@ -119,7 +119,7 @@ export default function ResourcesPage() {
           {COURSE_REGISTRY[course]?.tutorResources && (
             <div>
               <h2 className="text-lg font-bold mb-3 flex items-center gap-2">
-                <BookOpen className="h-5 w-5 text-emerald-400" />
+                <BookOpen className="h-5 w-5 text-emerald-700 dark:text-emerald-400" />
                 Recommended for {AP_COURSES[course] || COURSE_REGISTRY[course]?.name}
               </h2>
               <div className="space-y-2">
@@ -131,14 +131,14 @@ export default function ResourcesPage() {
                   const url = urlMatch?.[1];
                   return (
                     <div key={i} className="flex items-start gap-3 p-3 rounded-lg border border-emerald-500/20 bg-emerald-500/5">
-                      <ExternalLink className="h-4 w-4 text-emerald-400 flex-shrink-0 mt-0.5" />
+                      <ExternalLink className="h-4 w-4 text-emerald-700 dark:text-emerald-400 flex-shrink-0 mt-0.5" />
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium">{name.replace(/:$/, "")}</p>
                         {url && (
-                          <a href={url} target="_blank" rel="noopener noreferrer" className="text-xs text-emerald-400 hover:text-emerald-300 underline truncate block">{url}</a>
+                          <a href={url} target="_blank" rel="noopener noreferrer" className="text-xs text-emerald-700 dark:text-emerald-400 hover:text-emerald-300 underline truncate block">{url}</a>
                         )}
                       </div>
-                      <Badge variant="outline" className="text-xs text-emerald-400 border-emerald-500/30 flex-shrink-0">Free</Badge>
+                      <Badge variant="outline" className="text-xs text-emerald-700 dark:text-emerald-400 border-emerald-500/30 flex-shrink-0">Free</Badge>
                     </div>
                   );
                 })}
@@ -166,7 +166,7 @@ export default function ResourcesPage() {
                           {TYPE_LABELS[resource.type]}
                         </Badge>
                       </div>
-                      <Badge variant="outline" className="text-xs text-emerald-400 border-emerald-500/30 flex-shrink-0">
+                      <Badge variant="outline" className="text-xs text-emerald-700 dark:text-emerald-400 border-emerald-500/30 flex-shrink-0">
                         Free
                       </Badge>
                     </div>
@@ -234,7 +234,7 @@ export default function ResourcesPage() {
                         {ur.heimlerVideoId && (
                           <div>
                             <p className="text-xs font-medium text-muted-foreground mb-2 flex items-center gap-1">
-                              <Youtube className="h-3.5 w-3.5 text-red-400" />
+                              <Youtube className="h-3.5 w-3.5 text-red-700 dark:text-red-400" />
                               HEIMLER&apos;S HISTORY REVIEW
                             </p>
                             <div className="rounded-lg overflow-hidden aspect-video bg-black">
@@ -253,7 +253,7 @@ export default function ResourcesPage() {
                         {ur.phetUrl && (
                           <div>
                             <p className="text-xs font-medium text-muted-foreground mb-2 flex items-center gap-1">
-                              <Zap className="h-3.5 w-3.5 text-orange-400" />
+                              <Zap className="h-3.5 w-3.5 text-orange-700 dark:text-orange-400" />
                               PHET INTERACTIVE SIMULATION
                             </p>
                             <a
@@ -263,7 +263,7 @@ export default function ResourcesPage() {
                               className="flex items-center gap-3 p-3 rounded-lg border border-orange-500/30 bg-orange-500/5 hover:bg-orange-500/10 transition-colors"
                             >
                               <div className="w-8 h-8 rounded-lg bg-orange-500/20 flex items-center justify-center flex-shrink-0">
-                                <Zap className="h-4 w-4 text-orange-400" />
+                                <Zap className="h-4 w-4 text-orange-700 dark:text-orange-400" />
                               </div>
                               <div className="flex-1">
                                 <p className="text-sm font-medium">Launch PhET Simulation</p>
@@ -282,17 +282,17 @@ export default function ResourcesPage() {
                           <div className="grid grid-cols-2 gap-2">
                             {(
                               [
-                                ur.oerUrl ? { label: "OER Project", url: ur.oerUrl, icon: BookOpen, color: "text-emerald-400" } : null,
-                                ur.fiveableUrl ? { label: "Fiveable", url: ur.fiveableUrl, icon: Zap, color: "text-yellow-400" } : null,
-                                ur.zinnUrl ? { label: "Zinn Project", url: ur.zinnUrl, icon: FileText, color: "text-orange-400" } : null,
+                                ur.oerUrl ? { label: "OER Project", url: ur.oerUrl, icon: BookOpen, color: "text-emerald-700 dark:text-emerald-400" } : null,
+                                ur.fiveableUrl ? { label: "Fiveable", url: ur.fiveableUrl, icon: Zap, color: "text-yellow-700 dark:text-yellow-400" } : null,
+                                ur.zinnUrl ? { label: "Zinn Project", url: ur.zinnUrl, icon: FileText, color: "text-orange-700 dark:text-orange-400" } : null,
                                 ur.worldHistoryUrl ? { label: "World History", url: ur.worldHistoryUrl, icon: Globe, color: "text-cyan-400" } : null,
-                                ur.mitocwUrl ? { label: "MIT OCW", url: ur.mitocwUrl, icon: GraduationCap, color: "text-blue-400" } : null,
+                                ur.mitocwUrl ? { label: "MIT OCW", url: ur.mitocwUrl, icon: GraduationCap, color: "text-blue-700 dark:text-blue-400" } : null,
                                 ur.khanUrl ? { label: "Khan Academy", url: ur.khanUrl, icon: Play, color: "text-green-400" } : null,
                                 ur.ck12Url ? { label: "CK-12", url: ur.ck12Url, icon: BookOpen, color: "text-cyan-400" } : null,
                                 ur.openStaxUrl ? { label: "OpenStax", url: ur.openStaxUrl, icon: FileText, color: "text-blue-500" } : null,
                                 // Generic fallback links when no unit-level links are present
                                 !ur.khanUrl ? { label: "Khan Academy", url: "https://www.khanacademy.org", icon: Play, color: "text-green-400" } : null,
-                                !ur.oerUrl && !ur.ck12Url ? { label: "PracticeQuiz", url: "https://www.practicequiz.com/ap", icon: ClipboardCheck, color: "text-purple-400" } : null,
+                                !ur.oerUrl && !ur.ck12Url ? { label: "PracticeQuiz", url: "https://www.practicequiz.com/ap", icon: ClipboardCheck, color: "text-purple-700 dark:text-purple-400" } : null,
                               ] as { label: string; url: string; icon: React.ElementType; color: string }[]
                             ).filter((x): x is NonNullable<typeof x> => x !== null).map((link) => (
                               <a
@@ -329,7 +329,7 @@ export default function ResourcesPage() {
           {/* Free resources first */}
           {COURSE_TEXTBOOKS.filter((b) => b.course === course && b.free).length > 0 && (
             <div className="space-y-3">
-              <h2 className="text-lg font-bold flex items-center gap-2 text-emerald-400">
+              <h2 className="text-lg font-bold flex items-center gap-2 text-emerald-700 dark:text-emerald-400">
                 <BookOpen className="h-5 w-5" />
                 Free Resources
               </h2>
@@ -339,13 +339,13 @@ export default function ResourcesPage() {
                     <CardContent className="p-5">
                       <div className="flex items-start gap-3 mb-2">
                         <div className="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center flex-shrink-0">
-                          <BookOpen className="h-5 w-5 text-emerald-400" />
+                          <BookOpen className="h-5 w-5 text-emerald-700 dark:text-emerald-400" />
                         </div>
                         <div className="flex-1 min-w-0">
                           <p className="font-semibold text-sm leading-tight">{book.name}</p>
                           <p className="text-xs text-muted-foreground mt-0.5">{book.authors}</p>
                         </div>
-                        <Badge className="text-xs text-emerald-400 border-emerald-500/30 bg-emerald-500/10 flex-shrink-0">
+                        <Badge className="text-xs text-emerald-700 dark:text-emerald-400 border-emerald-500/30 bg-emerald-500/10 flex-shrink-0">
                           Free
                         </Badge>
                       </div>
@@ -401,7 +401,7 @@ export default function ResourcesPage() {
           {COURSE_TEXTBOOKS.filter((b) => b.course === course && b.type === "study_guide").length > 0 && (
             <div className="space-y-3">
               <h2 className="text-lg font-bold flex items-center gap-2">
-                <ClipboardCheck className="h-5 w-5 text-purple-400" />
+                <ClipboardCheck className="h-5 w-5 text-purple-700 dark:text-purple-400" />
                 Exam Prep & Study Guides
               </h2>
               <div className="grid md:grid-cols-2 gap-4">
@@ -410,13 +410,13 @@ export default function ResourcesPage() {
                     <CardContent className="p-5">
                       <div className="flex items-start gap-3 mb-2">
                         <div className="w-10 h-10 rounded-lg bg-purple-500/10 flex items-center justify-center flex-shrink-0">
-                          <ClipboardCheck className="h-5 w-5 text-purple-400" />
+                          <ClipboardCheck className="h-5 w-5 text-purple-700 dark:text-purple-400" />
                         </div>
                         <div className="flex-1 min-w-0">
                           <p className="font-semibold text-sm leading-tight">{book.name}</p>
                           <p className="text-xs text-muted-foreground mt-0.5">{book.authors} · {book.publisher}</p>
                         </div>
-                        <Badge className="text-xs text-purple-400 border-purple-500/30 bg-purple-500/10 flex-shrink-0">
+                        <Badge className="text-xs text-purple-700 dark:text-purple-400 border-purple-500/30 bg-purple-500/10 flex-shrink-0">
                           Prep
                         </Badge>
                       </div>
@@ -439,7 +439,7 @@ export default function ResourcesPage() {
                 <a href="https://www.youtube.com/@FlippingPhysics" target="_blank" rel="noopener noreferrer">
                   <Card className="card-glow border-red-500/20 hover:border-red-500/40 transition-colors cursor-pointer">
                     <CardContent className="p-4 flex items-center gap-4">
-                      <Youtube className="h-10 w-10 text-red-400" />
+                      <Youtube className="h-10 w-10 text-red-700 dark:text-red-400" />
                       <div>
                         <p className="font-bold">Flipping Physics</p>
                         <p className="text-xs text-muted-foreground">Conceptual and worked-example videos — top AP Physics 1 channel</p>
@@ -471,7 +471,7 @@ export default function ResourcesPage() {
                         {ur.mitocwUrl && (
                           <a href={ur.mitocwUrl} target="_blank" rel="noopener noreferrer"
                             className="flex items-center gap-2 p-2.5 rounded-lg border border-border/40 hover:bg-accent text-xs transition-colors">
-                            <GraduationCap className="h-3.5 w-3.5 text-blue-400" />
+                            <GraduationCap className="h-3.5 w-3.5 text-blue-700 dark:text-blue-400" />
                             MIT OCW Lecture
                             <ExternalLink className="h-3 w-3 text-muted-foreground ml-auto" />
                           </a>
@@ -496,7 +496,7 @@ export default function ResourcesPage() {
                 <a href="https://www.youtube.com/@heimlershistory" target="_blank" rel="noopener noreferrer">
                   <Card className="card-glow border-red-500/20 hover:border-red-500/40 transition-colors cursor-pointer">
                     <CardContent className="p-4 flex items-center gap-4">
-                      <Youtube className="h-10 w-10 text-red-400" />
+                      <Youtube className="h-10 w-10 text-red-700 dark:text-red-400" />
                       <div>
                         <p className="font-bold">Heimler&apos;s History</p>
                         <p className="text-xs text-muted-foreground">Best AP YouTube channel — unit reviews, exam skills, and essay practice</p>
@@ -541,7 +541,7 @@ export default function ResourcesPage() {
                         className="flex-1"
                       >
                         <Button size="sm" variant="outline" className="w-full gap-1 text-xs">
-                          <Youtube className="h-3 w-3 text-red-400" /> Heimler
+                          <Youtube className="h-3 w-3 text-red-700 dark:text-red-400" /> Heimler
                         </Button>
                       </a>
                       <a
@@ -574,7 +574,7 @@ export default function ResourcesPage() {
             <Card className="card-glow border-orange-500/20">
               <CardHeader>
                 <CardTitle className="text-base flex items-center gap-2">
-                  <Zap className="h-5 w-5 text-orange-400" />
+                  <Zap className="h-5 w-5 text-orange-700 dark:text-orange-400" />
                   Physics Essentials
                 </CardTitle>
               </CardHeader>
@@ -588,7 +588,7 @@ export default function ResourcesPage() {
                   ].map((link) => (
                     <a key={link.label} href={link.url} target="_blank" rel="noopener noreferrer"
                       className="flex items-center gap-2 p-3 rounded-lg border border-border/40 hover:bg-accent text-sm transition-colors">
-                      <FileText className="h-4 w-4 text-orange-400 flex-shrink-0" />
+                      <FileText className="h-4 w-4 text-orange-700 dark:text-orange-400 flex-shrink-0" />
                       {link.label}
                       <ExternalLink className="h-3.5 w-3.5 text-muted-foreground ml-auto" />
                     </a>
@@ -621,7 +621,7 @@ export default function ResourcesPage() {
                   <div className="flex gap-2">
                     <a href={`https://www.youtube.com/watch?v=${skill.heimlerVideoId}`} target="_blank" rel="noopener noreferrer" className="flex-1">
                       <Button size="sm" variant="outline" className="w-full gap-1 text-xs">
-                        <Youtube className="h-3 w-3 text-red-400" /> Watch on YouTube
+                        <Youtube className="h-3 w-3 text-red-700 dark:text-red-400" /> Watch on YouTube
                       </Button>
                     </a>
                     <a href={skill.url} target="_blank" rel="noopener noreferrer" className="flex-1">
@@ -639,7 +639,7 @@ export default function ResourcesPage() {
           <Card className="card-glow border-blue-500/20">
             <CardHeader>
               <CardTitle className="text-base flex items-center gap-2">
-                <GraduationCap className="h-5 w-5 text-blue-400" />
+                <GraduationCap className="h-5 w-5 text-blue-700 dark:text-blue-400" />
                 Official College Board Resources
               </CardTitle>
             </CardHeader>
@@ -650,7 +650,7 @@ export default function ResourcesPage() {
                 ]).map((link: { label: string; url: string }) => (
                   <a key={link.label} href={link.url} target="_blank" rel="noopener noreferrer"
                     className="flex items-center gap-2 p-3 rounded-lg border border-border/40 hover:bg-accent text-sm transition-colors">
-                    <FileText className="h-4 w-4 text-blue-400 flex-shrink-0" />
+                    <FileText className="h-4 w-4 text-blue-700 dark:text-blue-400 flex-shrink-0" />
                     {link.label}
                     <ExternalLink className="h-3.5 w-3.5 text-muted-foreground ml-auto" />
                   </a>

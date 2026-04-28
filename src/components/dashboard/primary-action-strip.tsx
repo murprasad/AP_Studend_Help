@@ -200,7 +200,7 @@ export function PrimaryActionStrip({ course, impressionId }: Props) {
     return (
       <Card className="rounded-[20px] shadow-sm border-amber-500/30 bg-amber-500/5">
         <CardContent className="p-6 space-y-3">
-          <div className="flex items-center gap-2 text-sm font-medium text-amber-700 dark:text-amber-400">
+          <div className="flex items-center gap-2 text-sm font-medium text-amber-700 dark:text-amber-700 dark:text-amber-400">
             <Clock className="h-4 w-4" />
             <span>Predicted score unavailable</span>
           </div>

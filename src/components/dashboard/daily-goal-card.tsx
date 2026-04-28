@@ -154,9 +154,9 @@ export function DailyGoalCard({ course }: Props) {
             </div>
             <div className="min-w-0">
               <p className="text-xs text-muted-foreground uppercase tracking-wide font-medium">Today's goal</p>
-              <p className="text-xl font-bold text-blue-700 dark:text-blue-400">{deltaLabel} today</p>
+              <p className="text-xl font-bold text-blue-700 dark:text-blue-700 dark:text-blue-400">{deltaLabel} today</p>
               <p className="text-xs text-muted-foreground mt-0.5">
-                Projected: <span className="font-medium text-foreground">{beforeLabel}</span> → <span className="font-medium text-blue-700 dark:text-blue-400">{projectedLabel}</span>
+                Projected: <span className="font-medium text-foreground">{beforeLabel}</span> → <span className="font-medium text-blue-700 dark:text-blue-700 dark:text-blue-400">{projectedLabel}</span>
               </p>
             </div>
           </div>

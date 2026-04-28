@@ -67,7 +67,7 @@ export function ResumeCard({ course }: { course: string }) {
     <Card className="rounded-[16px] border-amber-500/30 bg-gradient-to-r from-amber-500/5 to-amber-500/10 shadow-sm">
       <CardContent className="p-4 sm:p-5 flex items-center gap-3">
         <div className="h-10 w-10 rounded-full bg-amber-500/20 flex items-center justify-center shrink-0">
-          <PlayCircle className="h-5 w-5 text-amber-600" />
+          <PlayCircle className="h-5 w-5 text-amber-700 dark:text-amber-400" />
         </div>
         <div className="flex-1 min-w-0">
           <p className="text-[15px] font-semibold leading-tight">

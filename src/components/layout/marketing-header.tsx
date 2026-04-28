@@ -27,7 +27,7 @@ export function MarketingHeader() {
           <span className="text-lg font-bold">
             <span className="gradient-text">Student</span>
             <span className="text-foreground/80 font-medium">Nest</span>
-            <span className="text-blue-600 dark:text-blue-400 font-normal text-[0.6em] ml-1">Prep</span>
+            <span className="text-blue-600 dark:text-blue-700 dark:text-blue-400 font-normal text-[0.6em] ml-1">Prep</span>
           </span>
           <p className="text-xs text-muted-foreground leading-none hidden sm:block">
             Study Smarter. Score Higher.

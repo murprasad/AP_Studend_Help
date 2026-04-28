@@ -219,7 +219,7 @@ export function CoachCard({ course, impressionId }: Props) {
             <div className="text-sm leading-relaxed min-w-0">
               <p className="font-semibold truncate">{data.weakestUnit.unitName}</p>
               <p className="text-xs text-muted-foreground mt-0.5">
-                You're missing <span className="font-semibold text-amber-600 dark:text-amber-400">{data.weakestUnit.missRatePct}%</span> here —
+                You're missing <span className="font-semibold text-amber-700 dark:text-amber-400 dark:text-amber-700 dark:text-amber-400">{data.weakestUnit.missRatePct}%</span> here —
                 likely <span className="font-semibold text-foreground">~{data.weakestUnit.likelyMissesOn50Q} question{data.weakestUnit.likelyMissesOn50Q === 1 ? "" : "s"}</span> lost on exam day.
               </p>
             </div>

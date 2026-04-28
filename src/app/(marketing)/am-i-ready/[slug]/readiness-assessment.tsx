@@ -309,7 +309,7 @@ export function ReadinessAssessment({
     return (
       <div className="max-w-3xl mx-auto px-4 py-12 sm:py-16 space-y-10">
         <div className="text-center space-y-4">
-          <Badge className="bg-blue-500/20 text-blue-600 dark:text-blue-400 border-blue-500/30 text-xs font-semibold">
+          <Badge className="bg-blue-500/20 text-blue-600 dark:text-blue-700 dark:text-blue-400 border-blue-500/30 text-xs font-semibold">
             {family} Readiness Check
           </Badge>
           <h1 className="text-3xl sm:text-4xl font-bold">
@@ -325,21 +325,21 @@ export function ReadinessAssessment({
         {/* What you get */}
         <div className="grid sm:grid-cols-3 gap-4">
           <div className="p-5 rounded-xl border border-emerald-500/20 bg-emerald-500/5 text-center">
-            <Target className="h-6 w-6 text-emerald-600 dark:text-emerald-400 mx-auto mb-2" />
+            <Target className="h-6 w-6 text-emerald-600 dark:text-emerald-700 dark:text-emerald-400 mx-auto mb-2" />
             <p className="font-semibold text-sm">Estimated Score</p>
             <p className="text-xs text-muted-foreground mt-1">
               Where you likely fall on the {scaleLabel} scale
             </p>
           </div>
           <div className="p-5 rounded-xl border border-blue-500/20 bg-blue-500/5 text-center">
-            <Sparkles className="h-6 w-6 text-blue-600 dark:text-blue-400 mx-auto mb-2" />
+            <Sparkles className="h-6 w-6 text-blue-600 dark:text-blue-700 dark:text-blue-400 mx-auto mb-2" />
             <p className="font-semibold text-sm">Confidence Signal</p>
             <p className="text-xs text-muted-foreground mt-1">
               How much to trust a 5-question preview
             </p>
           </div>
           <div className="p-5 rounded-xl border border-amber-500/20 bg-amber-500/5 text-center">
-            <Trophy className="h-6 w-6 text-amber-600 dark:text-amber-400 mx-auto mb-2" />
+            <Trophy className="h-6 w-6 text-amber-700 dark:text-amber-400 dark:text-amber-700 dark:text-amber-400 mx-auto mb-2" />
             <p className="font-semibold text-sm">Next Steps</p>
             <p className="text-xs text-muted-foreground mt-1">
               A plain-English read on what to do next
@@ -618,7 +618,7 @@ export function ReadinessAssessment({
         {result.confidence === "low" && (
           <div className="p-4 rounded-xl border border-amber-500/30 bg-amber-500/5">
             <div className="flex items-start gap-3">
-              <AlertCircle className="h-5 w-5 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
+              <AlertCircle className="h-5 w-5 text-amber-700 dark:text-amber-400 dark:text-amber-700 dark:text-amber-400 flex-shrink-0 mt-0.5" />
               <p className="text-sm text-muted-foreground leading-relaxed">
                 5 questions is a weak signal — don&apos;t over-index on this
                 number. Take the full diagnostic for a score you can trust.

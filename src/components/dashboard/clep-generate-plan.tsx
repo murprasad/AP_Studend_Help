@@ -27,7 +27,7 @@ export function CLEPGeneratePlan({ course }: CLEPGeneratePlanProps) {
   return (
     <div className="flex items-center gap-4 p-5 rounded-xl border border-emerald-500/20 bg-emerald-500/[0.03]">
       <div className="w-12 h-12 rounded-xl bg-emerald-500/20 flex items-center justify-center flex-shrink-0">
-        <GraduationCap className="h-6 w-6 text-emerald-400" />
+        <GraduationCap className="h-6 w-6 text-emerald-700 dark:text-emerald-400" />
       </div>
       <div className="flex-1">
         <p className="font-semibold text-sm">Ready to pass {AP_COURSES[course as ApCourse] || course.replace(/_/g, " ")} in 7 days?</p>

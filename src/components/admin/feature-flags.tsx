@@ -60,8 +60,8 @@ export function AdminFeatureFlags() {
           <div
             className={`flex items-center gap-2 text-sm p-3 rounded-lg ${
               message.type === "success"
-                ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
-                : "bg-red-500/10 text-red-400 border border-red-500/20"
+                ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20"
+                : "bg-red-500/10 text-red-700 dark:text-red-400 border border-red-500/20"
             }`}
           >
             {message.type === "success" ? (
@@ -93,7 +93,7 @@ export function AdminFeatureFlags() {
                   <div className="flex items-center gap-2 mb-1">
                     <p className="text-sm font-medium">{flag.label}</p>
                     {flag.dangerous && (
-                      <Badge variant="outline" className="text-xs text-yellow-400 border-yellow-500/30">
+                      <Badge variant="outline" className="text-xs text-yellow-700 dark:text-yellow-400 border-yellow-500/30">
                         caution
                       </Badge>
                     )}
@@ -101,7 +101,7 @@ export function AdminFeatureFlags() {
                       variant="outline"
                       className={`text-xs ${
                         isEnabled
-                          ? "text-emerald-400 border-emerald-500/30 bg-emerald-500/10"
+                          ? "text-emerald-700 dark:text-emerald-400 border-emerald-500/30 bg-emerald-500/10"
                           : "text-muted-foreground"
                       }`}
                     >
@@ -111,7 +111,7 @@ export function AdminFeatureFlags() {
                   <p className="text-xs text-muted-foreground leading-relaxed">
                     {flag.description}
                   </p>
-                  <p className="text-xs text-muted-foreground/60 mt-1 font-mono">{flag.key}</p>
+                  <p className="text-xs text-muted-foreground mt-1 font-mono">{flag.key}</p>
                 </div>
 
                 <button

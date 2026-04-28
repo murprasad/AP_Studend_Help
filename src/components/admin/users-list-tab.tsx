@@ -77,7 +77,7 @@ export function AdminUsersListTab() {
 
   const tierColors: Record<string, string> = {
     FREE: "bg-zinc-500/20 text-zinc-400",
-    PREMIUM: "bg-amber-500/20 text-amber-400",
+    PREMIUM: "bg-amber-500/20 text-amber-700 dark:text-amber-400",
     AP_PREMIUM: "bg-indigo-500/20 text-indigo-300",
     SAT_PREMIUM: "bg-blue-500/20 text-blue-300",
     ACT_PREMIUM: "bg-violet-500/20 text-violet-300",
@@ -151,7 +151,7 @@ export function AdminUsersListTab() {
         </CardContent>
       </Card>
 
-      {error && <div className="text-center py-4 text-red-400">Error: {error}</div>}
+      {error && <div className="text-center py-4 text-red-700 dark:text-red-400">Error: {error}</div>}
 
       {/* Summary stats */}
       {stats && (
@@ -189,7 +189,7 @@ export function AdminUsersListTab() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold text-amber-400">{stats.premium}</div>
+              <div className="text-3xl font-bold text-amber-700 dark:text-amber-400">{stats.premium}</div>
               <p className="text-xs text-muted-foreground">
                 {stats.monthlyPlans} monthly + {stats.annualPlans} annual
               </p>
@@ -202,7 +202,7 @@ export function AdminUsersListTab() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold text-emerald-400">${stats.estimatedMRR}</div>
+              <div className="text-3xl font-bold text-emerald-700 dark:text-emerald-400">${stats.estimatedMRR}</div>
               <p className="text-xs text-muted-foreground">
                 ${stats.estimatedARR} est. annual
               </p>

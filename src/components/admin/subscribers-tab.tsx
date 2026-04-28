@@ -52,7 +52,7 @@ export function AdminSubscribersTab() {
   }, []);
 
   if (loading) return <div className="text-center py-8 text-muted-foreground">Loading subscribers...</div>;
-  if (error) return <div className="text-center py-8 text-red-400">Error: {error}</div>;
+  if (error) return <div className="text-center py-8 text-red-700 dark:text-red-400">Error: {error}</div>;
 
   const moduleColors: Record<string, string> = {
     ap: "bg-indigo-500/20 text-indigo-300 border-indigo-500/30",
@@ -62,9 +62,9 @@ export function AdminSubscribersTab() {
   };
 
   const statusColors: Record<string, string> = {
-    active: "bg-emerald-500/20 text-emerald-400",
-    canceling: "bg-yellow-500/20 text-yellow-400",
-    canceled: "bg-red-500/20 text-red-400",
+    active: "bg-emerald-500/20 text-emerald-700 dark:text-emerald-400",
+    canceling: "bg-yellow-500/20 text-yellow-700 dark:text-yellow-400",
+    canceled: "bg-red-500/20 text-red-700 dark:text-red-400",
   };
 
   return (
@@ -90,7 +90,7 @@ export function AdminSubscribersTab() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold text-emerald-400">${stats.estimatedMRR}</div>
+              <div className="text-3xl font-bold text-emerald-700 dark:text-emerald-400">${stats.estimatedMRR}</div>
               <p className="text-xs text-muted-foreground">{stats.monthlyPlans} monthly + {stats.annualPlans} annual</p>
             </CardContent>
           </Card>

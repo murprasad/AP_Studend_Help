@@ -38,7 +38,7 @@ export function MockupSidebar() {
             key={item.label}
             className={`flex items-center gap-2 px-2 py-1.5 rounded-md text-[11px] ${
               item.active
-                ? "bg-blue-500/10 text-blue-400 font-medium"
+                ? "bg-blue-500/10 text-blue-700 dark:text-blue-400 font-medium"
                 : "text-muted-foreground"
             }`}
           >

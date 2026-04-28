@@ -46,10 +46,10 @@ interface TodaySnippet {
 }
 
 const TIER_COLOR_CLASSES: Record<"red" | "amber" | "blue" | "emerald", { bar: string; chipText: string; chipBg: string; number: string }> = {
-  red:     { bar: "bg-red-500",     chipText: "text-red-600 dark:text-red-400",     chipBg: "bg-red-500/10 border-red-500/30",     number: "text-red-600 dark:text-red-400" },
-  amber:   { bar: "bg-amber-500",   chipText: "text-amber-600 dark:text-amber-400", chipBg: "bg-amber-500/10 border-amber-500/30", number: "text-foreground" },
-  blue:    { bar: "bg-blue-500",    chipText: "text-blue-600 dark:text-blue-400",   chipBg: "bg-blue-500/10 border-blue-500/30",   number: "text-foreground" },
-  emerald: { bar: "bg-emerald-500", chipText: "text-emerald-600 dark:text-emerald-400", chipBg: "bg-emerald-500/10 border-emerald-500/30", number: "text-emerald-600 dark:text-emerald-400" },
+  red:     { bar: "bg-red-500",     chipText: "text-red-600 dark:text-red-700 dark:text-red-400",     chipBg: "bg-red-500/10 border-red-500/30",     number: "text-red-600 dark:text-red-700 dark:text-red-400" },
+  amber:   { bar: "bg-amber-500",   chipText: "text-amber-700 dark:text-amber-400 dark:text-amber-700 dark:text-amber-400", chipBg: "bg-amber-500/10 border-amber-500/30", number: "text-foreground" },
+  blue:    { bar: "bg-blue-500",    chipText: "text-blue-600 dark:text-blue-700 dark:text-blue-400",   chipBg: "bg-blue-500/10 border-blue-500/30",   number: "text-foreground" },
+  emerald: { bar: "bg-emerald-500", chipText: "text-emerald-600 dark:text-emerald-700 dark:text-emerald-400", chipBg: "bg-emerald-500/10 border-emerald-500/30", number: "text-emerald-600 dark:text-emerald-700 dark:text-emerald-400" },
 };
 
 export function OutcomeProgressStrip({ course }: Props) {

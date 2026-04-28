@@ -51,11 +51,11 @@ const CLEP_COURSE_META: Record<string, { badge: string; color: string }> = {
   CLEP_INTRO_PSYCHOLOGY: { badge: "Highest pass rate", color: "bg-green-500/20 text-green-400 border-green-500/30" },
   CLEP_INTRODUCTORY_SOCIOLOGY: { badge: "Easiest", color: "bg-green-500/20 text-green-400 border-green-500/30" },
   CLEP_PRINCIPLES_OF_MARKETING: { badge: "Most popular", color: "bg-green-500/20 text-green-400 border-green-500/30" },
-  CLEP_ANALYZING_INTERPRETING_LIT: { badge: "No reading list needed", color: "bg-blue-500/20 text-blue-400 border-blue-500/30" },
-  CLEP_COLLEGE_MATH: { badge: "Easier than Algebra", color: "bg-blue-500/20 text-blue-400 border-blue-500/30" },
-  CLEP_AMERICAN_GOVERNMENT: { badge: "Great if you took civics", color: "bg-blue-500/20 text-blue-400 border-blue-500/30" },
-  CLEP_PRINCIPLES_OF_MANAGEMENT: { badge: "Common sense + theorists", color: "bg-blue-500/20 text-blue-400 border-blue-500/30" },
-  CLEP_COLLEGE_ALGEBRA: { badge: "Math-heavy", color: "bg-amber-500/20 text-amber-400 border-amber-500/30" },
+  CLEP_ANALYZING_INTERPRETING_LIT: { badge: "No reading list needed", color: "bg-blue-500/20 text-blue-700 dark:text-blue-400 border-blue-500/30" },
+  CLEP_COLLEGE_MATH: { badge: "Easier than Algebra", color: "bg-blue-500/20 text-blue-700 dark:text-blue-400 border-blue-500/30" },
+  CLEP_AMERICAN_GOVERNMENT: { badge: "Great if you took civics", color: "bg-blue-500/20 text-blue-700 dark:text-blue-400 border-blue-500/30" },
+  CLEP_PRINCIPLES_OF_MANAGEMENT: { badge: "Common sense + theorists", color: "bg-blue-500/20 text-blue-700 dark:text-blue-400 border-blue-500/30" },
+  CLEP_COLLEGE_ALGEBRA: { badge: "Math-heavy", color: "bg-amber-500/20 text-amber-700 dark:text-amber-400 border-amber-500/30" },
 };
 
 export default function OnboardingPage() {
@@ -237,9 +237,9 @@ export default function OnboardingPage() {
             <SocialProofBadge variant="banner" metric="students" />
             {effectiveTrack === "clep" && (
               <div className="flex items-start gap-2 p-3 rounded-lg bg-emerald-500/5 border border-emerald-500/20 mb-3">
-                <Sparkles className="h-4 w-4 text-emerald-400 flex-shrink-0 mt-0.5" />
+                <Sparkles className="h-4 w-4 text-emerald-700 dark:text-emerald-400 flex-shrink-0 mt-0.5" />
                 <p className="text-xs text-muted-foreground">
-                  <span className="text-emerald-400 font-medium">Not sure where to start?</span> Most students pick Psychology or Sociology first — highest pass rates.
+                  <span className="text-emerald-700 dark:text-emerald-400 font-medium">Not sure where to start?</span> Most students pick Psychology or Sociology first — highest pass rates.
                 </p>
               </div>
             )}
@@ -264,7 +264,7 @@ export default function OnboardingPage() {
                           isSelected
                             ? isClep
                               ? "border-emerald-500 bg-emerald-500/10 text-emerald-300 font-medium"
-                              : "border-blue-500 bg-blue-500/10 text-blue-400 font-medium"
+                              : "border-blue-500 bg-blue-500/10 text-blue-700 dark:text-blue-400 font-medium"
                             : "border-border/40 hover:bg-accent hover:border-border"
                         }`}
                       >
@@ -314,7 +314,7 @@ export default function OnboardingPage() {
                 desc: "Take a quick diagnostic to find which units need the most attention.",
                 action: "Go to Diagnostic",
                 href: "/diagnostic",
-                color: "bg-blue-500/20 text-blue-400",
+                color: "bg-blue-500/20 text-blue-700 dark:text-blue-400",
               },
               {
                 step: "2",
@@ -322,7 +322,7 @@ export default function OnboardingPage() {
                 desc: "Answer adaptive MCQ and FRQ questions — AI explains every answer.",
                 action: "Start Practice",
                 href: "/practice",
-                color: "bg-emerald-500/20 text-emerald-400",
+                color: "bg-emerald-500/20 text-emerald-700 dark:text-emerald-400",
               },
               {
                 step: "3",
@@ -330,7 +330,7 @@ export default function OnboardingPage() {
                 desc: "Watch your unit-by-unit mastery scores climb toward a 4 or 5.",
                 action: "View Analytics",
                 href: "/analytics",
-                color: "bg-purple-500/20 text-purple-400",
+                color: "bg-purple-500/20 text-purple-700 dark:text-purple-400",
               },
             ].map((item) => (
               <div key={item.step} className="flex items-start gap-4 p-4 rounded-lg bg-secondary/30">
@@ -361,7 +361,7 @@ export default function OnboardingPage() {
         <Card className="card-glow border-emerald-500/20">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <GraduationCap className="h-5 w-5 text-emerald-400" />
+              <GraduationCap className="h-5 w-5 text-emerald-700 dark:text-emerald-400" />
               Your 7-Day Pass Plan
             </CardTitle>
             <CardDescription>
@@ -379,7 +379,7 @@ export default function OnboardingPage() {
                     {plan.days.map((day) => (
                       <div key={day.day} className="flex items-center gap-3 p-2 rounded-lg bg-secondary/30">
                         <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center flex-shrink-0">
-                          <span className="text-xs font-bold text-emerald-400">{day.day}</span>
+                          <span className="text-xs font-bold text-emerald-700 dark:text-emerald-400">{day.day}</span>
                         </div>
                         <p className="text-sm flex-1">{day.theme}</p>
                         <span className="text-xs text-muted-foreground">{day.estimatedMinutes} min</span>
@@ -426,7 +426,7 @@ export default function OnboardingPage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center">
-                <Check className="h-5 w-5 text-emerald-400" />
+                <Check className="h-5 w-5 text-emerald-700 dark:text-emerald-400" />
               </div>
               You&apos;re all set!
             </CardTitle>
@@ -466,7 +466,7 @@ export default function OnboardingPage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-full bg-blue-500/20 flex items-center justify-center">
-                <GraduationCap className="h-5 w-5 text-blue-400" />
+                <GraduationCap className="h-5 w-5 text-blue-700 dark:text-blue-400" />
               </div>
               Pick your plan
             </CardTitle>
@@ -506,17 +506,17 @@ export default function OnboardingPage() {
                   Recommended
                 </div>
                 <div className="space-y-1 mb-3">
-                  <p className="text-[11px] uppercase tracking-wide text-blue-400 font-semibold">Premium</p>
+                  <p className="text-[11px] uppercase tracking-wide text-blue-700 dark:text-blue-400 font-semibold">Premium</p>
                   <p className="text-2xl font-bold">$9.99<span className="text-sm font-normal text-muted-foreground"> / month</span></p>
                 </div>
                 <ul className="space-y-1.5 text-[13px] text-foreground/90 flex-1 mb-4">
-                  <li className="flex gap-2"><Sparkles className="h-3.5 w-3.5 text-amber-400 mt-0.5 shrink-0" /><span className="font-semibold">All-access — AP + SAT + ACT included.</span> One subscription, every prep tool.</li>
-                  <li className="flex gap-2"><Sparkles className="h-3.5 w-3.5 text-blue-400 mt-0.5 shrink-0" />Unlimited practice + FRQ with AI scoring</li>
-                  <li className="flex gap-2"><Sparkles className="h-3.5 w-3.5 text-blue-400 mt-0.5 shrink-0" />Full mock exams + unlimited retakes</li>
-                  <li className="flex gap-2"><Sparkles className="h-3.5 w-3.5 text-blue-400 mt-0.5 shrink-0" />Unlimited Sage tutor chats</li>
-                  <li className="flex gap-2"><Sparkles className="h-3.5 w-3.5 text-blue-400 mt-0.5 shrink-0" />Full analytics: exactly what to fix</li>
-                  <li className="flex gap-2"><Sparkles className="h-3.5 w-3.5 text-blue-400 mt-0.5 shrink-0" />Personalized Sage Coach week-by-week plan</li>
-                  <li className="flex gap-2"><Sparkles className="h-3.5 w-3.5 text-blue-400 mt-0.5 shrink-0" />Unlimited diagnostic retakes</li>
+                  <li className="flex gap-2"><Sparkles className="h-3.5 w-3.5 text-amber-700 dark:text-amber-400 mt-0.5 shrink-0" /><span className="font-semibold">All-access — AP + SAT + ACT included.</span> One subscription, every prep tool.</li>
+                  <li className="flex gap-2"><Sparkles className="h-3.5 w-3.5 text-blue-700 dark:text-blue-400 mt-0.5 shrink-0" />Unlimited practice + FRQ with AI scoring</li>
+                  <li className="flex gap-2"><Sparkles className="h-3.5 w-3.5 text-blue-700 dark:text-blue-400 mt-0.5 shrink-0" />Full mock exams + unlimited retakes</li>
+                  <li className="flex gap-2"><Sparkles className="h-3.5 w-3.5 text-blue-700 dark:text-blue-400 mt-0.5 shrink-0" />Unlimited Sage tutor chats</li>
+                  <li className="flex gap-2"><Sparkles className="h-3.5 w-3.5 text-blue-700 dark:text-blue-400 mt-0.5 shrink-0" />Full analytics: exactly what to fix</li>
+                  <li className="flex gap-2"><Sparkles className="h-3.5 w-3.5 text-blue-700 dark:text-blue-400 mt-0.5 shrink-0" />Personalized Sage Coach week-by-week plan</li>
+                  <li className="flex gap-2"><Sparkles className="h-3.5 w-3.5 text-blue-700 dark:text-blue-400 mt-0.5 shrink-0" />Unlimited diagnostic retakes</li>
                 </ul>
                 <Button
                   size="lg"

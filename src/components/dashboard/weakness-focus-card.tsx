@@ -102,7 +102,7 @@ export function WeaknessFocusCard({ course }: Props) {
         <CardContent className="p-5 space-y-3">
           <div className="flex items-start gap-3">
             <div className="w-9 h-9 rounded-lg bg-blue-500/15 flex items-center justify-center flex-shrink-0">
-              <Sparkles className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+              <Sparkles className="h-4 w-4 text-blue-600 dark:text-blue-700 dark:text-blue-400" />
             </div>
             <div className="min-w-0 flex-1">
               <p className="text-[13px] text-muted-foreground">Building your path</p>
@@ -133,14 +133,14 @@ export function WeaknessFocusCard({ course }: Props) {
           <>
             <div className="flex items-start gap-3">
               <div className="w-9 h-9 rounded-lg bg-amber-500/15 flex items-center justify-center flex-shrink-0">
-                <AlertTriangle className="h-4 w-4 text-amber-600 dark:text-amber-400" />
+                <AlertTriangle className="h-4 w-4 text-amber-700 dark:text-amber-400 dark:text-amber-700 dark:text-amber-400" />
               </div>
               <div className="min-w-0 flex-1">
                 <p className="text-[13px] text-muted-foreground">Weakest area</p>
                 <p className="text-[16px] font-semibold leading-tight truncate">{w.unitName}</p>
                 <p className="text-[13px] text-muted-foreground mt-1">
                   You&apos;re missing about{" "}
-                  <span className="font-semibold text-amber-600 dark:text-amber-400 tabular-nums">
+                  <span className="font-semibold text-amber-700 dark:text-amber-400 dark:text-amber-700 dark:text-amber-400 tabular-nums">
                     {Math.max(0, Math.min(100, w.missRatePct))}%
                   </span>{" "}
                   here. Fixing this = fastest path to passing.

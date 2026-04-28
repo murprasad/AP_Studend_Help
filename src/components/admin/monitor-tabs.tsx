@@ -75,9 +75,9 @@ export function AdminMonitorTabs({ stats, recentUsers }: Props) {
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             {[
               { label: "Total Users", value: stats.totalUsers, icon: Users, color: "text-blue-500", bg: "bg-blue-500/20" },
-              { label: "Questions", value: stats.totalQuestions, icon: BookOpen, color: "text-emerald-400", bg: "bg-emerald-500/20" },
-              { label: "Pending Review", value: stats.pendingQuestions, icon: Clock, color: "text-yellow-400", bg: "bg-yellow-500/20" },
-              { label: "Sessions Completed", value: stats.totalSessions, icon: BarChart3, color: "text-purple-400", bg: "bg-purple-500/20" },
+              { label: "Questions", value: stats.totalQuestions, icon: BookOpen, color: "text-emerald-700 dark:text-emerald-400", bg: "bg-emerald-500/20" },
+              { label: "Pending Review", value: stats.pendingQuestions, icon: Clock, color: "text-yellow-700 dark:text-yellow-400", bg: "bg-yellow-500/20" },
+              { label: "Sessions Completed", value: stats.totalSessions, icon: BarChart3, color: "text-purple-700 dark:text-purple-400", bg: "bg-purple-500/20" },
             ].map((stat) => (
               <Card key={stat.label} className="card-glow">
                 <CardContent className="p-5">

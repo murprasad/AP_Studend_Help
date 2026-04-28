@@ -166,7 +166,7 @@ export function SessionFeedbackPopup({ sessionId, triggerCondition, source, cour
                 <Button
                   variant="outline"
                   size="lg"
-                  className="gap-2.5 px-8 py-6 text-base hover:border-emerald-500 hover:bg-emerald-500/10 hover:text-emerald-600 dark:hover:text-emerald-400 transition-all"
+                  className="gap-2.5 px-8 py-6 text-base hover:border-emerald-500 hover:bg-emerald-500/10 hover:text-emerald-600 dark:hover:text-emerald-700 dark:text-emerald-400 transition-all"
                   onClick={() => handleRating(1)}
                 >
                   <ThumbsUp className="h-6 w-6" /> {goodLabel}
@@ -174,7 +174,7 @@ export function SessionFeedbackPopup({ sessionId, triggerCondition, source, cour
                 <Button
                   variant="outline"
                   size="lg"
-                  className="gap-2.5 px-8 py-6 text-base hover:border-red-500 hover:bg-red-500/10 hover:text-red-600 dark:hover:text-red-400 transition-all"
+                  className="gap-2.5 px-8 py-6 text-base hover:border-red-500 hover:bg-red-500/10 hover:text-red-600 dark:hover:text-red-700 dark:text-red-400 transition-all"
                   onClick={() => handleRating(-1)}
                 >
                   <ThumbsDown className="h-6 w-6" /> {badLabel}

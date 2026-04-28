@@ -119,15 +119,15 @@ export default function WallOfFamePage() {
       {/* Stats bar */}
       <div className="grid grid-cols-3 gap-2 sm:gap-4">
         <div className="text-center p-3 sm:p-4 rounded-xl bg-emerald-500/5 border border-emerald-500/20">
-          <p className="text-xl sm:text-3xl font-bold text-emerald-600 dark:text-emerald-400">{passing.length}</p>
+          <p className="text-xl sm:text-3xl font-bold text-emerald-600 dark:text-emerald-700 dark:text-emerald-400">{passing.length}</p>
           <p className="text-[11px] sm:text-xs text-muted-foreground">Passing Scores</p>
         </div>
         <div className="text-center p-3 sm:p-4 rounded-xl bg-blue-500/5 border border-blue-500/20">
-          <p className="text-xl sm:text-3xl font-bold text-blue-600 dark:text-blue-400">{apExams * 3}</p>
+          <p className="text-xl sm:text-3xl font-bold text-blue-600 dark:text-blue-700 dark:text-blue-400">{apExams * 3}</p>
           <p className="text-[11px] sm:text-xs text-muted-foreground">AP Credits Earned</p>
         </div>
         <div className="text-center p-3 sm:p-4 rounded-xl bg-amber-500/5 border border-amber-500/20">
-          <p className="text-xl sm:text-3xl font-bold text-amber-600 dark:text-amber-400">${totalSavings.toLocaleString()}</p>
+          <p className="text-xl sm:text-3xl font-bold text-amber-700 dark:text-amber-400 dark:text-amber-700 dark:text-amber-400">${totalSavings.toLocaleString()}</p>
           <p className="text-[11px] sm:text-xs text-muted-foreground">AP Credit Savings</p>
         </div>
       </div>
@@ -171,7 +171,7 @@ export default function WallOfFamePage() {
                     )}
                   </div>
                   <div className="flex items-center gap-3 mt-1 flex-wrap">
-                    <Badge variant="outline" className="text-[10px] bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30">
+                    <Badge variant="outline" className="text-[10px] bg-emerald-500/10 text-emerald-600 dark:text-emerald-700 dark:text-emerald-400 border-emerald-500/30">
                       Score: {formatScore(result)}
                     </Badge>
                     {result.savings > 0 && (

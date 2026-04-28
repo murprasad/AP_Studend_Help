@@ -69,10 +69,10 @@ export function ProgressUpsellCard({ course, isPremium }: Props) {
   // without being generic.
   const tierVisual = {
     "zero-signal": { icon: Sparkles, color: "text-blue-500", bg: "bg-blue-500/10", border: "border-blue-500/30" },
-    struggling: { icon: Target, color: "text-amber-600 dark:text-amber-400", bg: "bg-amber-500/10", border: "border-amber-500/30" },
+    struggling: { icon: Target, color: "text-amber-700 dark:text-amber-400 dark:text-amber-700 dark:text-amber-400", bg: "bg-amber-500/10", border: "border-amber-500/30" },
     building: { icon: ArrowRight, color: "text-blue-500", bg: "bg-blue-500/10", border: "border-blue-500/30" },
-    close: { icon: Trophy, color: "text-emerald-600 dark:text-emerald-400", bg: "bg-emerald-500/10", border: "border-emerald-500/30" },
-    ready: { icon: ShieldCheck, color: "text-emerald-600 dark:text-emerald-400", bg: "bg-emerald-500/10", border: "border-emerald-500/30" },
+    close: { icon: Trophy, color: "text-emerald-600 dark:text-emerald-700 dark:text-emerald-400", bg: "bg-emerald-500/10", border: "border-emerald-500/30" },
+    ready: { icon: ShieldCheck, color: "text-emerald-600 dark:text-emerald-700 dark:text-emerald-400", bg: "bg-emerald-500/10", border: "border-emerald-500/30" },
   }[cta.tierLabel];
   const Icon = tierVisual.icon;
 

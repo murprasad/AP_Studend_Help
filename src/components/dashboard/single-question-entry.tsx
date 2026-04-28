@@ -213,7 +213,7 @@ export function SingleQuestionEntry({ course }: Props) {
 
         {submitted && (
           <div className="space-y-3 pt-2 border-t border-border/40">
-            <div className={`text-sm font-medium ${isCorrect ? "text-emerald-700 dark:text-emerald-400" : "text-amber-700 dark:text-amber-400"}`}>
+            <div className={`text-sm font-medium ${isCorrect ? "text-emerald-700 dark:text-emerald-700 dark:text-emerald-400" : "text-amber-700 dark:text-amber-700 dark:text-amber-400"}`}>
               {isCorrect
                 ? "Got it! That puts you on track for this unit."
                 : `Almost — the correct answer is ${q.correctAnswer}.`}

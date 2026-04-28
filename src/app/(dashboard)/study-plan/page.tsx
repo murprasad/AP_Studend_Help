@@ -57,9 +57,9 @@ interface CLEP7DayPlan {
 }
 
 const PRIORITY_COLORS = {
-  high: "text-red-400 border-red-500/30 bg-red-500/10",
-  medium: "text-yellow-400 border-yellow-500/30 bg-yellow-500/10",
-  low: "text-blue-400 border-blue-500/30 bg-blue-500/10",
+  high: "text-red-700 dark:text-red-400 border-red-500/30 bg-red-500/10",
+  medium: "text-yellow-700 dark:text-yellow-400 border-yellow-500/30 bg-yellow-500/10",
+  low: "text-blue-700 dark:text-blue-400 border-blue-500/30 bg-blue-500/10",
 };
 
 export default function StudyPlanPage() {
@@ -181,7 +181,7 @@ export default function StudyPlanPage() {
       <div className="flex items-center justify-center h-96">
         <div className="text-center max-w-md">
           <div className="mx-auto w-16 h-16 rounded-full bg-yellow-500/10 flex items-center justify-center mb-4">
-            <BookOpen className="h-8 w-8 text-yellow-400" />
+            <BookOpen className="h-8 w-8 text-yellow-700 dark:text-yellow-400" />
           </div>
           <h2 className="text-xl font-semibold mb-2">Under Maintenance</h2>
           <p className="text-muted-foreground">Study Plan is temporarily being improved. Check back soon for an even better experience.</p>
@@ -237,7 +237,7 @@ export default function StudyPlanPage() {
           <button
             onClick={() => { setPlanMode("7day"); if (!sevenDayPlan) generate7DayPlan(); }}
             className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${
-              planMode === "7day" ? "bg-emerald-500/15 text-emerald-400" : "text-muted-foreground hover:text-foreground"
+              planMode === "7day" ? "bg-emerald-500/15 text-emerald-700 dark:text-emerald-400" : "text-muted-foreground hover:text-foreground"
             }`}
           >
             7-Day Pass Plan
@@ -250,7 +250,7 @@ export default function StudyPlanPage() {
           {!sevenDayPlan ? (
             <Card className="card-glow">
               <CardContent className="p-10 text-center">
-                <GraduationCap className="h-12 w-12 text-emerald-400 mx-auto mb-4" />
+                <GraduationCap className="h-12 w-12 text-emerald-700 dark:text-emerald-400 mx-auto mb-4" />
                 <h2 className="text-xl font-bold mb-2">Build Your 7-Day Pass Plan</h2>
                 <p className="text-muted-foreground mb-6">
                   Sage creates a day-by-day plan to get you exam-ready in one week.
@@ -265,7 +265,7 @@ export default function StudyPlanPage() {
               {/* Readiness bar */}
               <div className="p-4 rounded-xl border border-emerald-500/20 bg-emerald-500/5">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm font-medium text-emerald-400">CLEP Readiness</span>
+                  <span className="text-sm font-medium text-emerald-700 dark:text-emerald-400">CLEP Readiness</span>
                   <span className="text-xs text-muted-foreground">Target: {sevenDayPlan.readinessThreshold}%</span>
                 </div>
                 <div className="h-2 rounded-full bg-secondary overflow-hidden">
@@ -281,8 +281,8 @@ export default function StudyPlanPage() {
                     <div className="flex">
                       {/* Day indicator */}
                       <div className="w-16 flex-shrink-0 bg-emerald-500/10 flex flex-col items-center justify-center border-r border-border/40 py-4">
-                        <span className="text-xs text-emerald-400 font-medium">DAY</span>
-                        <span className="text-2xl font-bold text-emerald-400">{day.day}</span>
+                        <span className="text-xs text-emerald-700 dark:text-emerald-400 font-medium">DAY</span>
+                        <span className="text-2xl font-bold text-emerald-700 dark:text-emerald-400">{day.day}</span>
                       </div>
                       <div className="flex-1 p-4">
                         <div className="flex items-start justify-between gap-2 mb-2">
@@ -309,7 +309,7 @@ export default function StudyPlanPage() {
                           })}
                         </div>
                         <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                          <Target className="h-3 w-3 text-emerald-400" />
+                          <Target className="h-3 w-3 text-emerald-700 dark:text-emerald-400" />
                           <span>{day.milestone}</span>
                         </div>
                       </div>
@@ -321,11 +321,11 @@ export default function StudyPlanPage() {
               {/* Day 8 CTA */}
               <Card className="card-glow border-emerald-500/30 bg-emerald-500/5">
                 <CardContent className="p-5 text-center space-y-3">
-                  <GraduationCap className="h-8 w-8 text-emerald-400 mx-auto" />
+                  <GraduationCap className="h-8 w-8 text-emerald-700 dark:text-emerald-400 mx-auto" />
                   <p className="font-bold">Day 8: Schedule Your Exam</p>
                   <p className="text-sm text-muted-foreground">Hit 70% mastery? You&apos;re ready. Book your $93 exam at any test center.</p>
                   <a href="https://clep.collegeboard.org/clep-search" target="_blank" rel="noopener noreferrer">
-                    <Button variant="outline" className="gap-2 border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/10">
+                    <Button variant="outline" className="gap-2 border-emerald-500/30 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-500/10">
                       Find a Test Center <ChevronRight className="h-4 w-4" />
                     </Button>
                   </a>
@@ -335,7 +335,7 @@ export default function StudyPlanPage() {
               {/* Exam tip */}
               {sevenDayPlan.examTip && (
                 <div className="flex items-start gap-3 p-4 rounded-xl bg-amber-500/5 border border-amber-500/20">
-                  <Lightbulb className="h-5 w-5 text-amber-400 flex-shrink-0 mt-0.5" />
+                  <Lightbulb className="h-5 w-5 text-amber-700 dark:text-amber-400 flex-shrink-0 mt-0.5" />
                   <div>
                     <p className="text-sm font-medium text-amber-300">Exam Day Tip</p>
                     <p className="text-sm text-muted-foreground">{sevenDayPlan.examTip}</p>
@@ -380,7 +380,7 @@ export default function StudyPlanPage() {
                 <Target className="h-5 w-5 text-blue-500" />
               </div>
               <div>
-                <p className="font-semibold text-sm text-blue-400 mb-1">This Week&apos;s Goal</p>
+                <p className="font-semibold text-sm text-blue-700 dark:text-blue-400 mb-1">This Week&apos;s Goal</p>
                 <p className="text-base">{plan.weeklyGoal}</p>
                 <div className="flex items-center gap-2 mt-2">
                   <Clock className="h-4 w-4 text-muted-foreground" />
@@ -450,7 +450,7 @@ export default function StudyPlanPage() {
             <Card className="card-glow">
               <CardHeader>
                 <CardTitle className="text-lg flex items-center gap-2">
-                  <Clock className="h-5 w-5 text-blue-400" />
+                  <Clock className="h-5 w-5 text-blue-700 dark:text-blue-400" />
                   Weekly Schedule
                 </CardTitle>
               </CardHeader>
@@ -472,7 +472,7 @@ export default function StudyPlanPage() {
             <Card className="card-glow">
               <CardHeader>
                 <CardTitle className="text-lg flex items-center gap-2">
-                  <Trophy className="h-5 w-5 text-yellow-400" />
+                  <Trophy className="h-5 w-5 text-yellow-700 dark:text-yellow-400" />
                   Your Strengths
                 </CardTitle>
               </CardHeader>
@@ -494,7 +494,7 @@ export default function StudyPlanPage() {
             <Card className="card-glow">
               <CardHeader>
                 <CardTitle className="text-lg flex items-center gap-2">
-                  <Lightbulb className="h-5 w-5 text-yellow-400" />
+                  <Lightbulb className="h-5 w-5 text-yellow-700 dark:text-yellow-400" />
                   Study Tips
                 </CardTitle>
               </CardHeader>

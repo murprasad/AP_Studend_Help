@@ -100,7 +100,7 @@ export function MockupPractice({ variant = "ap" }: { variant?: Variant }) {
             </span>
             <span className={`flex-1 ${opt.state === "correct" ? "text-foreground/90" : "text-muted-foreground"}`}>{opt.text}</span>
             {opt.state === "correct" && (
-              <CheckCircle className="h-3.5 w-3.5 text-emerald-400 flex-shrink-0" />
+              <CheckCircle className="h-3.5 w-3.5 text-emerald-700 dark:text-emerald-400 flex-shrink-0" />
             )}
           </div>
         ))}

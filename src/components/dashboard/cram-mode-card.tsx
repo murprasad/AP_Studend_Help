@@ -110,8 +110,8 @@ export function CramModeCard({ course }: Props) {
     { label: "Cram window", urgency: "low", color: "amber" };
 
   const palette = tier.color === "red"
-    ? { bg: "bg-red-500/5", border: "border-red-500/40", chip: "text-red-700 dark:text-red-400 border-red-500/40 bg-red-500/10", icon: "text-red-600 dark:text-red-400", iconBg: "bg-red-500/15", btn: "bg-red-600 hover:bg-red-700" }
-    : { bg: "bg-amber-500/5", border: "border-amber-500/40", chip: "text-amber-700 dark:text-amber-400 border-amber-500/40 bg-amber-500/10", icon: "text-amber-600 dark:text-amber-400", iconBg: "bg-amber-500/15", btn: "bg-amber-600 hover:bg-amber-700" };
+    ? { bg: "bg-red-500/5", border: "border-red-500/40", chip: "text-red-700 dark:text-red-700 dark:text-red-400 border-red-500/40 bg-red-500/10", icon: "text-red-600 dark:text-red-700 dark:text-red-400", iconBg: "bg-red-500/15", btn: "bg-red-600 hover:bg-red-700" }
+    : { bg: "bg-amber-500/5", border: "border-amber-500/40", chip: "text-amber-700 dark:text-amber-700 dark:text-amber-400 border-amber-500/40 bg-amber-500/10", icon: "text-amber-700 dark:text-amber-400 dark:text-amber-700 dark:text-amber-400", iconBg: "bg-amber-500/15", btn: "bg-amber-600 hover:bg-amber-700" };
 
   // Today's focus = weakest unit (or null if no signal yet).
   const focus = actions[0] ?? null;

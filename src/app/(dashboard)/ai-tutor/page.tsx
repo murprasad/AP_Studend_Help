@@ -461,7 +461,7 @@ export default function AiTutorPage() {
         <div className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5 ${
           tutorTrack === "clep" ? "bg-emerald-500/20" : "bg-blue-500/20"
         }`}>
-          <Crown className={`h-5 w-5 ${tutorTrack === "clep" ? "text-emerald-400" : "text-blue-500"}`} />
+          <Crown className={`h-5 w-5 ${tutorTrack === "clep" ? "text-emerald-700 dark:text-emerald-400" : "text-blue-500"}`} />
         </div>
         <div>
           <p className="font-semibold text-sm">You&apos;ve reached today&apos;s 5 free conversations</p>
@@ -487,13 +487,13 @@ export default function AiTutorPage() {
       {/* â”€â”€ Continue Practice banner â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       {practiceReturn && (
         <div className="flex items-center justify-between bg-blue-500/10 border border-blue-500/30 rounded-lg px-4 py-2.5 mb-4 -mx-0">
-          <p className="text-sm text-blue-400 flex items-center gap-2">
+          <p className="text-sm text-blue-700 dark:text-blue-400 flex items-center gap-2">
             <Sparkles className="h-4 w-4" />
             Your practice session is waiting — come back any time.
           </p>
           <Link
             href="/practice"
-            className="text-xs font-semibold text-blue-400 hover:text-blue-300 border border-blue-500/40 hover:border-blue-500/60 rounded-full px-3 py-1 transition-colors"
+            className="text-xs font-semibold text-blue-700 dark:text-blue-400 hover:text-blue-300 border border-blue-500/40 hover:border-blue-500/60 rounded-full px-3 py-1 transition-colors"
             onClick={() => sessionStorage.removeItem("sage_practice_return")}
           >
             â† Continue Practice
@@ -639,7 +639,7 @@ export default function AiTutorPage() {
                     key={q}
                     onClick={() => sendMessage(q)}
                     className="w-full text-left text-xs lg:text-sm px-3 py-2 rounded-lg border border-blue-500/30
-                      bg-blue-500/5 hover:bg-blue-500/15 text-blue-400
+                      bg-blue-500/5 hover:bg-blue-500/15 text-blue-700 dark:text-blue-400
                       hover:text-blue-300 transition-colors leading-relaxed"
                   >
                     {q}
@@ -685,7 +685,7 @@ export default function AiTutorPage() {
               </div>
               <div>
                 <p className="font-semibold text-muted-foreground">Ask a question to see your answer here</p>
-                <p className="text-xs text-muted-foreground/60 mt-1">
+                <p className="text-xs text-muted-foreground mt-1">
                   Answers are structured into 5 sections for easy review
                 </p>
               </div>
@@ -789,7 +789,7 @@ export default function AiTutorPage() {
                         prose-p:text-foreground prose-p:leading-relaxed
                         prose-li:text-foreground prose-li:leading-relaxed
                         prose-strong:text-foreground prose-strong:font-semibold
-                        prose-code:text-blue-400 prose-code:bg-blue-500/10
+                        prose-code:text-blue-700 dark:text-blue-400 prose-code:bg-blue-500/10
                         prose-code:px-1 prose-code:py-0.5 prose-code:rounded
                         prose-pre:bg-secondary prose-pre:border prose-pre:border-border/40
                         prose-a:text-blue-500 prose-a:no-underline hover:prose-a:underline
@@ -849,7 +849,7 @@ export default function AiTutorPage() {
                   key={q}
                   onClick={() => sendMessage(q)}
                   className="w-full text-left text-xs px-3 py-2 rounded-lg border border-blue-500/30
-                    bg-blue-500/5 hover:bg-blue-500/15 text-blue-400
+                    bg-blue-500/5 hover:bg-blue-500/15 text-blue-700 dark:text-blue-400
                     hover:text-blue-300 transition-colors leading-relaxed"
                 >
                   {q}

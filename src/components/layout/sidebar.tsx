@@ -222,7 +222,7 @@ export function Sidebar({ userRole, userTrack, isOpen = false, onClose = () => {
             <Link href="/" className="flex items-center gap-2" onClick={handleNavClick}>
               <Sparkles className="h-6 w-6 text-blue-500" />
               <span className="text-lg font-bold">
-                <span className="gradient-text">Student</span><span className="text-foreground/80 font-medium">Nest</span><span className="text-blue-600 dark:text-blue-400 font-normal text-[0.6em] ml-1">Prep</span>
+                <span className="gradient-text">Student</span><span className="text-foreground/80 font-medium">Nest</span><span className="text-blue-600 dark:text-blue-700 dark:text-blue-400 font-normal text-[0.6em] ml-1">Prep</span>
               </span>
             </Link>
             <div className="flex items-center gap-1.5">
@@ -235,7 +235,7 @@ export function Sidebar({ userRole, userTrack, isOpen = false, onClose = () => {
                 </span>
               )}
               {streakDays > 1 && (
-                <span className="text-sm font-semibold text-orange-400 flex items-center gap-0.5" title={`${streakDays}-day streak`}>
+                <span className="text-sm font-semibold text-orange-700 dark:text-orange-400 flex items-center gap-0.5" title={`${streakDays}-day streak`}>
                   🔥{streakDays}
                 </span>
               )}
@@ -248,8 +248,8 @@ export function Sidebar({ userRole, userTrack, isOpen = false, onClose = () => {
             return (
               <div className={`mt-3 flex items-center gap-1.5 text-xs font-medium px-2 py-1.5 rounded-lg ${
                 daysLeft <= 14
-                  ? "bg-red-500/15 text-red-400 border border-red-500/20"
-                  : "bg-blue-500/10 text-blue-400 border border-blue-500/15"
+                  ? "bg-red-500/15 text-red-700 dark:text-red-400 border border-red-500/20"
+                  : "bg-blue-500/10 text-blue-700 dark:text-blue-400 border border-blue-500/15"
               }`}>
                 <Calendar className="h-3.5 w-3.5 flex-shrink-0" />
                 <span>{daysLeft} day{daysLeft !== 1 ? "s" : ""} until exam</span>
@@ -286,10 +286,10 @@ export function Sidebar({ userRole, userTrack, isOpen = false, onClose = () => {
                         ? "bg-primary/15 text-primary"
                         : "text-muted-foreground hover:text-foreground hover:bg-accent",
                       g.label === "CLEP Prep" && activeGroup === g.label
-                        ? "bg-emerald-500/15 text-emerald-400"
+                        ? "bg-emerald-500/15 text-emerald-700 dark:text-emerald-400"
                         : "",
                       g.label === "DSST Prep" && activeGroup === g.label
-                        ? "bg-orange-500/15 text-orange-400"
+                        ? "bg-orange-500/15 text-orange-700 dark:text-orange-400"
                         : ""
                     )}
                   >

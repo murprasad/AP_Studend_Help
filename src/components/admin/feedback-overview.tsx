@@ -31,8 +31,8 @@ export function AdminFeedbackOverview() {
         <CardTitle className="text-lg flex items-center gap-3">
           Session Feedback
           <div className="flex items-center gap-3 ml-auto text-sm font-normal">
-            <span className="flex items-center gap-1 text-emerald-400"><ThumbsUp className="h-4 w-4" />{data.thumbsUp}</span>
-            <span className="flex items-center gap-1 text-red-400"><ThumbsDown className="h-4 w-4" />{data.thumbsDown}</span>
+            <span className="flex items-center gap-1 text-emerald-700 dark:text-emerald-400"><ThumbsUp className="h-4 w-4" />{data.thumbsUp}</span>
+            <span className="flex items-center gap-1 text-red-700 dark:text-red-400"><ThumbsDown className="h-4 w-4" />{data.thumbsDown}</span>
             {total > 0 && <Badge variant="outline">{pct}% positive</Badge>}
           </div>
         </CardTitle>
@@ -45,9 +45,9 @@ export function AdminFeedbackOverview() {
             {data.feedbacks.map((fb) => (
               <div key={fb.id} className="flex items-center gap-3 p-2 rounded-lg hover:bg-secondary/50">
                 {fb.rating === 1 ? (
-                  <ThumbsUp className="h-4 w-4 text-emerald-400 flex-shrink-0" />
+                  <ThumbsUp className="h-4 w-4 text-emerald-700 dark:text-emerald-400 flex-shrink-0" />
                 ) : (
-                  <ThumbsDown className="h-4 w-4 text-red-400 flex-shrink-0" />
+                  <ThumbsDown className="h-4 w-4 text-red-700 dark:text-red-400 flex-shrink-0" />
                 )}
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium truncate">{fb.user.firstName} {fb.user.lastName}</p>

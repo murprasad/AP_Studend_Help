@@ -70,7 +70,7 @@ export function SocialProofBadge({ variant = "inline", metric = "students", clas
     return (
       <div className={`flex items-center gap-2.5 px-3.5 py-2.5 rounded-lg bg-blue-500/5 border border-blue-500/20 ${className}`}>
         <Users className="h-4 w-4 text-blue-500 flex-shrink-0" />
-        <p className="text-sm text-blue-600 dark:text-blue-400 font-medium">{message}</p>
+        <p className="text-sm text-blue-600 dark:text-blue-700 dark:text-blue-400 font-medium">{message}</p>
       </div>
     );
   }

@@ -242,7 +242,7 @@ export default function AnalyticsPage() {
       <div className="flex items-center justify-center h-96">
         <div className="text-center max-w-md">
           <div className="mx-auto w-16 h-16 rounded-full bg-yellow-500/10 flex items-center justify-center mb-4">
-            <BarChart3 className="h-8 w-8 text-yellow-400" />
+            <BarChart3 className="h-8 w-8 text-yellow-700 dark:text-yellow-400" />
           </div>
           <h2 className="text-xl font-semibold mb-2">Under Maintenance</h2>
           <p className="text-muted-foreground">Analytics is temporarily being improved. Check back soon for an even better experience.</p>
@@ -255,7 +255,7 @@ export default function AnalyticsPage() {
     return (
       <div className="flex items-center justify-center h-96">
         <div className="text-center">
-          <p className="text-red-400 font-medium mb-2">Failed to load analytics</p>
+          <p className="text-red-700 dark:text-red-400 font-medium mb-2">Failed to load analytics</p>
           <p className="text-muted-foreground text-sm">{error}</p>
         </div>
       </div>
@@ -377,11 +377,11 @@ export default function AnalyticsPage() {
                 </div>
               </div>
               <div className="flex-1">
-                <p className="font-semibold text-emerald-400 text-sm mb-1">CLEP Readiness</p>
+                <p className="font-semibold text-emerald-700 dark:text-emerald-400 text-sm mb-1">CLEP Readiness</p>
                 <p className="text-lg font-bold">{clepReadiness.label}</p>
                 <p className="text-xs text-muted-foreground mt-1">Target: {clepReadiness.threshold}% mastery across all units</p>
                 {clepReadiness.score >= 70 && (
-                  <a href="https://clep.collegeboard.org/clep-search" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-xs text-emerald-400 hover:text-emerald-300 mt-2 font-medium">
+                  <a href="https://clep.collegeboard.org/clep-search" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-xs text-emerald-700 dark:text-emerald-400 hover:text-emerald-300 mt-2 font-medium">
                     Find a test center â†’
                   </a>
                 )}
@@ -397,7 +397,7 @@ export default function AnalyticsPage() {
           <CardContent className="p-5">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-lg bg-emerald-500/20 flex items-center justify-center">
-                <Target className="h-5 w-5 text-emerald-400" />
+                <Target className="h-5 w-5 text-emerald-700 dark:text-emerald-400" />
               </div>
               <div>
                 <p className="text-2xl font-bold">{stats?.overallAccuracy || 0}%</p>
@@ -411,7 +411,7 @@ export default function AnalyticsPage() {
           <CardContent className="p-5">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center">
-                <BarChart3 className="h-5 w-5 text-blue-400" />
+                <BarChart3 className="h-5 w-5 text-blue-700 dark:text-blue-400" />
               </div>
               <div>
                 <p className="text-2xl font-bold">{stats?.totalAnswered || 0}</p>
@@ -425,7 +425,7 @@ export default function AnalyticsPage() {
           <CardContent className="p-5">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-lg bg-orange-500/20 flex items-center justify-center">
-                <Flame className="h-5 w-5 text-orange-400" />
+                <Flame className="h-5 w-5 text-orange-700 dark:text-orange-400" />
               </div>
               <div>
                 <p className="text-2xl font-bold">{stats?.streakDays || 0}</p>
@@ -439,7 +439,7 @@ export default function AnalyticsPage() {
           <CardContent className="p-5">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-lg bg-purple-500/20 flex items-center justify-center">
-                <Star className="h-5 w-5 text-purple-400" />
+                <Star className="h-5 w-5 text-purple-700 dark:text-purple-400" />
               </div>
               <div>
                 <p className="text-2xl font-bold">{stats?.totalXp || 0}</p>
@@ -453,7 +453,7 @@ export default function AnalyticsPage() {
       {/* Narrative insight */}
       {stats && stats.totalAnswered > 0 && (
         <div className="rounded-lg border border-border/40 bg-card/50 px-4 py-3 flex items-center gap-3">
-          <TrendingUp className="h-4 w-4 text-emerald-400 flex-shrink-0" />
+          <TrendingUp className="h-4 w-4 text-emerald-700 dark:text-emerald-400 flex-shrink-0" />
           <p className="text-sm text-muted-foreground">
             {stats.overallAccuracy >= 80
               ? `You're doing great — ${stats.overallAccuracy}% accuracy across ${stats.totalAnswered} questions. Keep pushing toward 90%+!`
@@ -586,7 +586,7 @@ export default function AnalyticsPage() {
         <Card className="card-glow">
           <CardHeader>
             <CardTitle className="text-lg flex items-center gap-2">
-              <TrendingUp className="h-5 w-5 text-emerald-400" />
+              <TrendingUp className="h-5 w-5 text-emerald-700 dark:text-emerald-400" />
               Accuracy Over Time
             </CardTitle>
           </CardHeader>
@@ -657,7 +657,7 @@ export default function AnalyticsPage() {
                           <span className="text-xs text-blue-500">â†’ {Math.round(goal.targetScore)}%</span>
                           <button
                             onClick={() => deleteGoal(unit.unit)}
-                            className="text-muted-foreground hover:text-red-400 transition-colors"
+                            className="text-muted-foreground hover:text-red-700 dark:text-red-400 transition-colors"
                             title="Remove goal"
                           >
                             <X className="h-3 w-3" />
@@ -705,7 +705,7 @@ export default function AnalyticsPage() {
                     </p>
                   )}
                   {goal && ptsToGo === 0 && (
-                    <p className="text-[10px] text-emerald-400">Goal reached! ðŸŽ‰</p>
+                    <p className="text-[10px] text-emerald-700 dark:text-emerald-400">Goal reached! ðŸŽ‰</p>
                   )}
                   <p className="text-xs text-muted-foreground">({unit.totalAttempts} questions)</p>
                 </div>
@@ -719,7 +719,7 @@ export default function AnalyticsPage() {
       {stats && (
         <Card className="card-glow">
           <CardContent className="p-5 flex items-center gap-4">
-            <Clock className="h-8 w-8 text-blue-400" />
+            <Clock className="h-8 w-8 text-blue-700 dark:text-blue-400" />
             <div>
               <p className="text-sm text-muted-foreground">Average time per question</p>
               <p className="text-2xl font-bold">{formatTime(stats.avgTimeSecs)}</p>
@@ -740,7 +740,7 @@ export default function AnalyticsPage() {
         <Card className={isClep ? "border-emerald-500/30 bg-gradient-to-br from-emerald-500/10 to-teal-500/5" : "border-blue-500/30 bg-gradient-to-br from-blue-500/10 to-purple-500/5"}>
           <CardContent className="p-5 flex items-start gap-4">
             <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${isClep ? "bg-emerald-500/20" : "bg-blue-500/20"}`}>
-              <Sparkles className={`h-5 w-5 ${isClep ? "text-emerald-400" : "text-blue-500"}`} />
+              <Sparkles className={`h-5 w-5 ${isClep ? "text-emerald-700 dark:text-emerald-400" : "text-blue-500"}`} />
             </div>
             <div className="flex-1">
               <p className="font-semibold text-sm">Unlock advanced analytics with {isClep ? "CLEP Premium" : "AP Premium"}</p>

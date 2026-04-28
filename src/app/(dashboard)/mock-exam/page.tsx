@@ -370,7 +370,7 @@ export default function MockExamPage() {
               <div className="flex items-start gap-3">
                 <Clock className="h-5 w-5 text-amber-500 flex-shrink-0 mt-0.5" />
                 <div className="space-y-1">
-                  <p className="font-semibold text-amber-700 dark:text-amber-400">You have an exam in progress</p>
+                  <p className="font-semibold text-amber-700 dark:text-amber-700 dark:text-amber-400">You have an exam in progress</p>
                   <p className="text-sm text-muted-foreground leading-relaxed">
                     Question {resumePrompt.currentIndex + 1} of {resumePrompt.questionCount} · {resumePrompt.answersGiven} answered · {Math.floor(resumePrompt.timeLeft / 60)}m {resumePrompt.timeLeft % 60}s remaining.
                     Continue where you left off, or start fresh (your in-progress answers will be lost).
@@ -411,7 +411,7 @@ export default function MockExamPage() {
                   }`}
                 >
                   <div className="flex items-center gap-2 mb-1">
-                    <Zap className="h-4 w-4 text-blue-400" />
+                    <Zap className="h-4 w-4 text-blue-700 dark:text-blue-400" />
                     <span className="font-semibold">Quick Mock</span>
                   </div>
                   <p className="text-xs text-muted-foreground">
@@ -432,7 +432,7 @@ export default function MockExamPage() {
                   } ${!hasPremium ? "opacity-60 cursor-not-allowed" : ""}`}
                 >
                   <div className="flex items-center gap-2 mb-1">
-                    <GraduationCap className="h-4 w-4 text-emerald-400" />
+                    <GraduationCap className="h-4 w-4 text-emerald-700 dark:text-emerald-400" />
                     <span className="font-semibold">Full Section</span>
                     {!hasPremium && (
                       <Badge variant="secondary" className="text-[10px] px-1.5 py-0">
@@ -451,7 +451,7 @@ export default function MockExamPage() {
               {!hasPremium && (
                 <p className="text-xs text-muted-foreground">
                   Upgrade for the Full Section experience —{" "}
-                  <Link href="/billing" className="text-blue-400 hover:underline">
+                  <Link href="/billing" className="text-blue-700 dark:text-blue-400 hover:underline">
                     Go Premium
                   </Link>
                 </p>
@@ -466,19 +466,19 @@ export default function MockExamPage() {
               </div>
               <div className="p-4 rounded-lg bg-secondary/50 text-center">
                 <p className="text-sm text-muted-foreground mb-1">Time Allowed</p>
-                <p className="text-2xl font-bold text-emerald-400">{minutesDisplay} min</p>
+                <p className="text-2xl font-bold text-emerald-700 dark:text-emerald-400">{minutesDisplay} min</p>
                 <p className="text-xs text-muted-foreground">{selectedInfo.secsPerQuestion}s per question</p>
               </div>
               <div className="p-4 rounded-lg bg-secondary/50 text-center">
                 <p className="text-sm text-muted-foreground mb-1">Result</p>
-                <p className="text-2xl font-bold text-yellow-400">{isClep ? "Pass/Fail" : "1–5"}</p>
+                <p className="text-2xl font-bold text-yellow-700 dark:text-yellow-400">{isClep ? "Pass/Fail" : "1–5"}</p>
                 <p className="text-xs text-muted-foreground">{isClep ? "CLEP Score" : "AP Score"}</p>
               </div>
             </div>
 
             <div className="p-4 rounded-lg border border-yellow-500/30 bg-yellow-500/10">
               <div className="flex items-start gap-3">
-                <AlertTriangle className="h-5 w-5 text-yellow-400 flex-shrink-0 mt-0.5" />
+                <AlertTriangle className="h-5 w-5 text-yellow-700 dark:text-yellow-400 flex-shrink-0 mt-0.5" />
                 <p className="text-sm text-muted-foreground">
                   The timer runs from the moment you start. No notes allowed — simulate real exam conditions.
                 </p>
@@ -501,8 +501,8 @@ export default function MockExamPage() {
   // ── Results ───────────────────────────────────────────────────────────────
   if (phase === "complete" && result) {
     const scoreColors: Record<number, string> = {
-      5: "text-emerald-400", 4: "text-blue-400", 3: "text-yellow-400",
-      2: "text-orange-400",  1: "text-red-400",
+      5: "text-emerald-700 dark:text-emerald-400", 4: "text-blue-700 dark:text-blue-400", 3: "text-yellow-700 dark:text-yellow-400",
+      2: "text-orange-700 dark:text-orange-400",  1: "text-red-700 dark:text-red-400",
     };
     const scoreMessages: Record<number, string> = {
       5: "Excellent! You're exam ready!",
@@ -515,7 +515,7 @@ export default function MockExamPage() {
     return (
       <div className="max-w-2xl mx-auto space-y-6">
         <div className="text-center">
-          <Trophy className="h-16 w-16 text-yellow-400 mx-auto mb-4" />
+          <Trophy className="h-16 w-16 text-yellow-700 dark:text-yellow-400 mx-auto mb-4" />
           <h1 className="text-3xl font-bold">Exam Complete!</h1>
         </div>
 
@@ -534,10 +534,10 @@ export default function MockExamPage() {
 
         <div className="grid grid-cols-2 gap-4">
           {[
-            { label: "Accuracy",    value: `${result.accuracy}%`,                  color: "text-emerald-400" },
-            { label: "Correct",     value: `${result.correctAnswers}/${result.totalQuestions}`, color: "text-blue-400" },
-            { label: "Time Spent",  value: formatTime(result.timeSpentSecs),        color: "text-purple-400" },
-            { label: "XP Earned",   value: `+${result.xpEarned}`,                  color: "text-yellow-400" },
+            { label: "Accuracy",    value: `${result.accuracy}%`,                  color: "text-emerald-700 dark:text-emerald-400" },
+            { label: "Correct",     value: `${result.correctAnswers}/${result.totalQuestions}`, color: "text-blue-700 dark:text-blue-400" },
+            { label: "Time Spent",  value: formatTime(result.timeSpentSecs),        color: "text-purple-700 dark:text-purple-400" },
+            { label: "XP Earned",   value: `+${result.xpEarned}`,                  color: "text-yellow-700 dark:text-yellow-400" },
           ].map((stat) => (
             <Card key={stat.label} className="card-glow">
               <CardContent className="p-4 text-center">
@@ -639,7 +639,7 @@ export default function MockExamPage() {
         {/* Exam header */}
         <div className="flex items-center justify-between">
           <Badge variant="secondary">Section 1 · MCQ</Badge>
-          <div className={`flex items-center gap-2 font-mono text-lg font-bold ${timeWarning ? "text-red-400 animate-pulse" : "text-foreground"}`}>
+          <div className={`flex items-center gap-2 font-mono text-lg font-bold ${timeWarning ? "text-red-700 dark:text-red-400 animate-pulse" : "text-foreground"}`}>
             <Clock className="h-5 w-5" />
             {formatTime(timeLeft)}
           </div>
@@ -674,8 +674,8 @@ export default function MockExamPage() {
                 const letter = option.charAt(0);
                 let cls = "border border-border/40 hover:bg-accent cursor-pointer";
                 if (feedback) {
-                  if (letter === feedback.correctAnswer) cls = "border-emerald-500 bg-emerald-500/10 text-emerald-400";
-                  else if (answers[currentQ.id] === letter && !feedback.isCorrect) cls = "border-red-500 bg-red-500/10 text-red-400";
+                  if (letter === feedback.correctAnswer) cls = "border-emerald-500 bg-emerald-500/10 text-emerald-700 dark:text-emerald-400";
+                  else if (answers[currentQ.id] === letter && !feedback.isCorrect) cls = "border-red-500 bg-red-500/10 text-red-700 dark:text-red-400";
                   else cls = "border border-border/20 opacity-50";
                 } else if (answers[currentQ.id] === letter) {
                   cls = "border-blue-500 bg-blue-500/10";
@@ -707,8 +707,8 @@ export default function MockExamPage() {
             <CardContent className="p-5">
               <div className="flex items-start gap-3">
                 {feedback.isCorrect
-                  ? <CheckCircle className="h-6 w-6 text-emerald-400 flex-shrink-0 mt-0.5" />
-                  : <XCircle className="h-6 w-6 text-red-400 flex-shrink-0 mt-0.5" />
+                  ? <CheckCircle className="h-6 w-6 text-emerald-700 dark:text-emerald-400 flex-shrink-0 mt-0.5" />
+                  : <XCircle className="h-6 w-6 text-red-700 dark:text-red-400 flex-shrink-0 mt-0.5" />
                 }
                 <div>
                   <p className="font-semibold mb-1">

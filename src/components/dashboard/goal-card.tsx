@@ -21,7 +21,7 @@ const ACCENT = {
   emerald: {
     card: "border-emerald-500/20 bg-emerald-500/5",
     iconBg: "w-9 h-9 rounded-lg bg-emerald-500/20 flex items-center justify-center",
-    iconText: "h-5 w-5 text-emerald-400",
+    iconText: "h-5 w-5 text-emerald-700 dark:text-emerald-400",
     progressBar: "bg-emerald-500",
   },
 } as const;
@@ -79,7 +79,7 @@ export function GoalCard({ course, track, todayQuestions = 0 }: { course: string
           </div>
           <div className="flex items-center gap-2">
             {dailyDone ? (
-              <CheckCircle className="h-4 w-4 text-emerald-400 flex-shrink-0" />
+              <CheckCircle className="h-4 w-4 text-emerald-700 dark:text-emerald-400 flex-shrink-0" />
             ) : null}
             <div className="flex-1">
               <div className="flex items-center justify-between mb-1">
@@ -94,14 +94,14 @@ export function GoalCard({ course, track, todayQuestions = 0 }: { course: string
                       setDailyTarget(v);
                       try { localStorage.setItem(targetKey, String(v)); } catch { /* ignore */ }
                     }}
-                    className="text-[10px] bg-transparent text-muted-foreground/60 border-none outline-none cursor-pointer p-0"
+                    className="text-[10px] bg-transparent text-muted-foreground border-none outline-none cursor-pointer p-0"
                   >
                     {DAILY_TARGET_OPTIONS.map((n) => (
                       <option key={n} value={n}>{n}/day</option>
                     ))}
                   </select>
                 </div>
-                {dailyDone && <span className="text-xs text-emerald-400 font-medium">Done!</span>}
+                {dailyDone && <span className="text-xs text-emerald-700 dark:text-emerald-400 font-medium">Done!</span>}
               </div>
               <div className="h-1.5 rounded-full bg-secondary/60 overflow-hidden">
                 <div
@@ -141,7 +141,7 @@ export function GoalCard({ course, track, todayQuestions = 0 }: { course: string
       <Target className="h-5 w-5 text-muted-foreground/50" />
       <div>
         <p className="text-sm font-medium text-muted-foreground">Set a target score</p>
-        <p className="text-xs text-muted-foreground/60">Stay motivated with a clear goal</p>
+        <p className="text-xs text-muted-foreground">Stay motivated with a clear goal</p>
       </div>
     </button>
   );

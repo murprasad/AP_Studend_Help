@@ -85,7 +85,7 @@ export default function AmIReadyIndexPage() {
     <div className="max-w-4xl mx-auto px-4 py-12 sm:py-16 space-y-10">
       {/* Hero */}
       <div className="text-center space-y-4">
-        <Badge className="bg-blue-500/20 text-blue-600 dark:text-blue-400 border-blue-500/30 text-xs font-semibold">
+        <Badge className="bg-blue-500/20 text-blue-600 dark:text-blue-700 dark:text-blue-400 border-blue-500/30 text-xs font-semibold">
           Free Readiness Check
         </Badge>
         <h1 className="text-3xl sm:text-4xl font-bold">Am I Ready?</h1>
@@ -107,7 +107,7 @@ export default function AmIReadyIndexPage() {
             key={item}
             className="flex items-center gap-1.5 text-muted-foreground"
           >
-            <CheckCircle className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+            <CheckCircle className="h-4 w-4 text-emerald-600 dark:text-emerald-700 dark:text-emerald-400" />
             <span>{item}</span>
           </div>
         ))}
@@ -116,8 +116,8 @@ export default function AmIReadyIndexPage() {
       {/* AP Courses */}
       <FamilySection
         label="AP"
-        badgeClass="bg-blue-500/20 text-blue-600 dark:text-blue-400 border-blue-500/30"
-        iconClass="text-blue-600 dark:text-blue-400"
+        badgeClass="bg-blue-500/20 text-blue-600 dark:text-blue-700 dark:text-blue-400 border-blue-500/30"
+        iconClass="text-blue-600 dark:text-blue-700 dark:text-blue-400"
         hoverBorderClass="hover:border-blue-500/40"
         hoverBgClass="hover:bg-blue-500/5"
         hoverIconClass="group-hover:text-blue-500"
@@ -127,8 +127,8 @@ export default function AmIReadyIndexPage() {
       {/* SAT Courses */}
       <FamilySection
         label="SAT"
-        badgeClass="bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border-emerald-500/30"
-        iconClass="text-emerald-600 dark:text-emerald-400"
+        badgeClass="bg-emerald-500/20 text-emerald-600 dark:text-emerald-700 dark:text-emerald-400 border-emerald-500/30"
+        iconClass="text-emerald-600 dark:text-emerald-700 dark:text-emerald-400"
         hoverBorderClass="hover:border-emerald-500/40"
         hoverBgClass="hover:bg-emerald-500/5"
         hoverIconClass="group-hover:text-emerald-500"
@@ -138,8 +138,8 @@ export default function AmIReadyIndexPage() {
       {/* ACT Courses */}
       <FamilySection
         label="ACT"
-        badgeClass="bg-amber-500/20 text-amber-600 dark:text-amber-400 border-amber-500/30"
-        iconClass="text-amber-600 dark:text-amber-400"
+        badgeClass="bg-amber-500/20 text-amber-700 dark:text-amber-400 dark:text-amber-700 dark:text-amber-400 border-amber-500/30"
+        iconClass="text-amber-700 dark:text-amber-400 dark:text-amber-700 dark:text-amber-400"
         hoverBorderClass="hover:border-amber-500/40"
         hoverBgClass="hover:bg-amber-500/5"
         hoverIconClass="group-hover:text-amber-500"

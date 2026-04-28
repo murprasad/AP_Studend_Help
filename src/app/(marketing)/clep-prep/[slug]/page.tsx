@@ -101,7 +101,7 @@ export default async function CLEPSubjectPage({ params }: { params: { slug: stri
       {/* Hero */}
       <FadeIn>
         <div className="space-y-4">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-medium">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-700 dark:text-emerald-400 text-xs font-medium">
             <GraduationCap className="h-3.5 w-3.5" /> CLEP Exam
           </div>
           <h1 className="text-3xl sm:text-4xl font-bold">{config.name} Prep</h1>
@@ -131,7 +131,7 @@ export default async function CLEPSubjectPage({ params }: { params: { slug: stri
       <FadeIn>
         <div className="space-y-3">
           <h2 className="text-xl font-bold flex items-center gap-2">
-            <BookOpen className="h-5 w-5 text-emerald-400" /> What You'll Study
+            <BookOpen className="h-5 w-5 text-emerald-700 dark:text-emerald-400" /> What You'll Study
           </h2>
           <div className="space-y-2">
             {units.map(([key, unit]) => (
@@ -140,7 +140,7 @@ export default async function CLEPSubjectPage({ params }: { params: { slug: stri
                 {unit.keyThemes && (
                   <div className="flex flex-wrap gap-1.5 mt-2">
                     {unit.keyThemes.map((theme) => (
-                      <span key={theme} className="text-xs px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                      <span key={theme} className="text-xs px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20">
                         {theme}
                       </span>
                     ))}
@@ -183,7 +183,7 @@ export default async function CLEPSubjectPage({ params }: { params: { slug: stri
       </FadeIn>
 
       {/* Trademark */}
-      <p className="text-xs text-center text-muted-foreground/60 pt-4">
+      <p className="text-xs text-center text-muted-foreground pt-4">
         CLEP® is a registered trademark of College Board, which is not affiliated with StudentNest. All practice questions are original AI-generated content.
       </p>
     </div>

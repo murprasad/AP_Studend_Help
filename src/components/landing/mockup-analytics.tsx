@@ -3,10 +3,10 @@ import { Target, Zap, Star } from "lucide-react";
 type Variant = "ap" | "ap-generic" | "act" | "sat" | "clep";
 
 const stats = [
-  { label: "Accuracy", value: "78%", icon: Target, color: "text-emerald-400" },
-  { label: "Questions", value: "342", icon: Zap, color: "text-blue-400" },
-  { label: "Streak", value: "12d", icon: () => <span className="text-sm">&#128293;</span>, color: "text-orange-400" },
-  { label: "XP", value: "2,450", icon: Star, color: "text-purple-400" },
+  { label: "Accuracy", value: "78%", icon: Target, color: "text-emerald-700 dark:text-emerald-400" },
+  { label: "Questions", value: "342", icon: Zap, color: "text-blue-700 dark:text-blue-400" },
+  { label: "Streak", value: "12d", icon: () => <span className="text-sm">&#128293;</span>, color: "text-orange-700 dark:text-orange-400" },
+  { label: "XP", value: "2,450", icon: Star, color: "text-purple-700 dark:text-purple-400" },
 ];
 
 const UNIT_VARIANTS: Record<Variant, { listLabel: string; rows: { name: string; mastery: number; color: string }[] }> = {
@@ -132,8 +132,8 @@ export function MockupAnalytics({ variant = "ap" }: { variant?: Variant }) {
           ))}
         </div>
         <div className="flex justify-between mt-1">
-          <span className="text-[9px] text-muted-foreground/60">2 wks ago</span>
-          <span className="text-[9px] text-muted-foreground/60">Today</span>
+          <span className="text-[9px] text-muted-foreground">2 wks ago</span>
+          <span className="text-[9px] text-muted-foreground">Today</span>
         </div>
       </div>
     </div>

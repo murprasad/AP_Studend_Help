@@ -78,12 +78,12 @@ export function SageCoachPromoCard({ course }: Props) {
         <CardContent className="p-5 space-y-3">
           <div className="flex items-start gap-3">
             <div className="w-10 h-10 rounded-lg bg-emerald-500/15 flex items-center justify-center flex-shrink-0">
-              <Mic className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
+              <Mic className="h-5 w-5 text-emerald-600 dark:text-emerald-700 dark:text-emerald-400" />
             </div>
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-2">
                 <p className="text-[16px] font-semibold leading-tight">Sage Coach — FRQ Grader</p>
-                <Badge variant="outline" className="text-[10px] border-emerald-500/40 text-emerald-700 dark:text-emerald-400 bg-emerald-500/5">
+                <Badge variant="outline" className="text-[10px] border-emerald-500/40 text-emerald-700 dark:text-emerald-700 dark:text-emerald-400 bg-emerald-500/5">
                   Premium
                 </Badge>
               </div>
@@ -109,12 +109,12 @@ export function SageCoachPromoCard({ course }: Props) {
       <CardContent className="p-5 space-y-3">
         <div className="flex items-start gap-3">
           <div className="w-10 h-10 rounded-lg bg-amber-500/15 flex items-center justify-center flex-shrink-0">
-            <Sparkles className="h-5 w-5 text-amber-600 dark:text-amber-400" />
+            <Sparkles className="h-5 w-5 text-amber-700 dark:text-amber-400 dark:text-amber-700 dark:text-amber-400" />
           </div>
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2">
               <p className="text-[16px] font-semibold leading-tight">Get instant FRQ feedback</p>
-              <Badge variant="outline" className="text-[10px] border-amber-500/40 text-amber-700 dark:text-amber-400 bg-amber-500/5 inline-flex items-center gap-1">
+              <Badge variant="outline" className="text-[10px] border-amber-500/40 text-amber-700 dark:text-amber-700 dark:text-amber-400 bg-amber-500/5 inline-flex items-center gap-1">
                 <Lock className="h-2.5 w-2.5" /> Premium
               </Badge>
             </div>

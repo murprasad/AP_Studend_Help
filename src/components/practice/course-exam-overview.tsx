@@ -70,7 +70,7 @@ export function CourseExamOverview({ course, isFreeTier }: Props) {
                   <div className="flex items-center gap-2 flex-wrap">
                     <span className="font-medium text-sm">{sec.cbName}</span>
                     {locked && (
-                      <Badge variant="outline" className="text-[10px] px-1.5 py-0 border-amber-500/40 text-amber-600 dark:text-amber-400">
+                      <Badge variant="outline" className="text-[10px] px-1.5 py-0 border-amber-500/40 text-amber-700 dark:text-amber-400 dark:text-amber-700 dark:text-amber-400">
                         <Lock className="h-2.5 w-2.5 mr-0.5" /> Premium
                       </Badge>
                     )}
@@ -79,7 +79,7 @@ export function CourseExamOverview({ course, isFreeTier }: Props) {
                     {sec.count} {sec.count === 1 ? "question" : "questions"} · {sec.percentOfScore}% of score · {sec.minutes} min
                   </div>
                 </div>
-                <ArrowRight className="h-4 w-4 text-muted-foreground/60 flex-shrink-0" />
+                <ArrowRight className="h-4 w-4 text-muted-foreground flex-shrink-0" />
               </Link>
             );
           })}

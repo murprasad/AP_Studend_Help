@@ -69,10 +69,10 @@ export function CLEPDayCard({ planData, generatedAt, course }: CLEPDayCardProps)
         <CardContent className="p-5">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 rounded-full bg-emerald-500/20 flex items-center justify-center flex-shrink-0">
-              <GraduationCap className="h-6 w-6 text-emerald-400" />
+              <GraduationCap className="h-6 w-6 text-emerald-700 dark:text-emerald-400" />
             </div>
             <div className="flex-1">
-              <p className="font-bold text-emerald-400">7-Day Plan Complete!</p>
+              <p className="font-bold text-emerald-700 dark:text-emerald-400">7-Day Plan Complete!</p>
               <p className="text-sm text-muted-foreground">You&apos;ve finished your prep plan. Ready to schedule your exam?</p>
             </div>
             <a href="https://clep.collegeboard.org/clep-search" target="_blank" rel="noopener noreferrer">
@@ -92,8 +92,8 @@ export function CLEPDayCard({ planData, generatedAt, course }: CLEPDayCardProps)
         <div className="flex">
           {/* Day indicator */}
           <div className="w-20 flex-shrink-0 bg-emerald-500/10 flex flex-col items-center justify-center border-r border-emerald-500/10 py-4">
-            <span className="text-[10px] uppercase tracking-wider text-emerald-400 font-semibold">Day</span>
-            <span className="text-3xl font-bold text-emerald-400">{currentDay}</span>
+            <span className="text-[10px] uppercase tracking-wider text-emerald-700 dark:text-emerald-400 font-semibold">Day</span>
+            <span className="text-3xl font-bold text-emerald-700 dark:text-emerald-400">{currentDay}</span>
             <span className="text-[10px] text-muted-foreground">of 7</span>
           </div>
 
@@ -107,12 +107,12 @@ export function CLEPDayCard({ planData, generatedAt, course }: CLEPDayCardProps)
                     <Clock className="h-3 w-3" /> {todayData.estimatedMinutes} min
                   </span>
                   <span className="text-xs text-muted-foreground flex items-center gap-1">
-                    <Target className="h-3 w-3 text-emerald-400" /> {todayData.milestone}
+                    <Target className="h-3 w-3 text-emerald-700 dark:text-emerald-400" /> {todayData.milestone}
                   </span>
                 </div>
               </div>
               <Link href="/study-plan">
-                <Button variant="ghost" size="sm" className="text-xs text-emerald-400 hover:text-emerald-300 h-auto py-1 px-2">
+                <Button variant="ghost" size="sm" className="text-xs text-emerald-700 dark:text-emerald-400 hover:text-emerald-300 h-auto py-1 px-2">
                   Full plan <ChevronRight className="h-3 w-3 ml-0.5" />
                 </Button>
               </Link>

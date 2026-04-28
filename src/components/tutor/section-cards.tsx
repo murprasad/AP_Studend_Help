@@ -117,7 +117,7 @@ export function MarkdownContent({ content, useMermaid = false }: { content: stri
       prose-strong:text-foreground prose-strong:font-semibold
       prose-headings:text-foreground prose-headings:font-semibold
       prose-h2:text-lg prose-h3:text-base
-      prose-code:text-blue-400 prose-code:bg-blue-500/10
+      prose-code:text-blue-700 dark:text-blue-400 prose-code:bg-blue-500/10
       prose-code:px-1 prose-code:py-0.5 prose-code:rounded
       prose-ul:my-1 prose-ol:my-1"
     >
@@ -234,7 +234,7 @@ export function SectionCards({ sections, isStreaming, wikiImageUrl }: SectionCar
       {/* 📊 Visual Breakdown */}
       <SectionCard
         title="Visual Breakdown"
-        icon={<BarChart2 className="h-4 w-4 text-blue-400" />}
+        icon={<BarChart2 className="h-4 w-4 text-blue-700 dark:text-blue-400" />}
         borderColor="border-blue-500/30"
         bgColor="bg-blue-500/5"
         isCompleted={completed.has("visual")}
@@ -250,7 +250,7 @@ export function SectionCards({ sections, isStreaming, wikiImageUrl }: SectionCar
       {/* 📝 How AP Asks This */}
       <SectionCard
         title="How AP Asks This"
-        icon={<BookOpen className="h-4 w-4 text-purple-400" />}
+        icon={<BookOpen className="h-4 w-4 text-purple-700 dark:text-purple-400" />}
         borderColor="border-purple-500/30"
         bgColor="bg-purple-500/5"
         isCompleted={completed.has("apExample")}
@@ -258,7 +258,7 @@ export function SectionCards({ sections, isStreaming, wikiImageUrl }: SectionCar
       >
         {seenAp ? (
           <div className="border-l-2 border-purple-500/40 pl-3">
-            <div className="text-xs font-medium text-purple-400 uppercase tracking-wide mb-2">
+            <div className="text-xs font-medium text-purple-700 dark:text-purple-400 uppercase tracking-wide mb-2">
               AP Exam Style
             </div>
             <MarkdownContent content={s!.apExampleMd} />
@@ -271,7 +271,7 @@ export function SectionCards({ sections, isStreaming, wikiImageUrl }: SectionCar
       {/* ⚠️ Common Traps */}
       <SectionCard
         title="Common Traps"
-        icon={<AlertTriangle className="h-4 w-4 text-amber-400" />}
+        icon={<AlertTriangle className="h-4 w-4 text-amber-700 dark:text-amber-400" />}
         borderColor="border-amber-500/30"
         bgColor="bg-amber-500/5"
         isCompleted={completed.has("traps")}
@@ -287,7 +287,7 @@ export function SectionCards({ sections, isStreaming, wikiImageUrl }: SectionCar
       {/* 💡 Memory Hook */}
       <SectionCard
         title="Memory Hook"
-        icon={<Zap className="h-4 w-4 text-emerald-400" />}
+        icon={<Zap className="h-4 w-4 text-emerald-700 dark:text-emerald-400" />}
         borderColor="border-emerald-500/30"
         bgColor="bg-emerald-500/5"
         isCompleted={completed.has("hook")}

@@ -117,7 +117,7 @@ export function AdminAutoPopulateSettings() {
     <Card className="card-glow">
       <CardHeader>
         <CardTitle className="text-lg flex items-center gap-2">
-          <Zap className="h-5 w-5 text-yellow-400" />
+          <Zap className="h-5 w-5 text-yellow-700 dark:text-yellow-400" />
           Auto-Populate Settings
         </CardTitle>
         <CardDescription>
@@ -145,7 +145,7 @@ export function AdminAutoPopulateSettings() {
               <div className="flex items-center gap-3">
                 <Badge
                   variant="outline"
-                  className={`text-xs ${enabled ? "text-emerald-400 border-emerald-500/30 bg-emerald-500/10" : "text-muted-foreground"}`}
+                  className={`text-xs ${enabled ? "text-emerald-700 dark:text-emerald-400 border-emerald-500/30 bg-emerald-500/10" : "text-muted-foreground"}`}
                 >
                   {enabled ? "ON" : "OFF"}
                 </Badge>
@@ -222,8 +222,8 @@ export function AdminAutoPopulateSettings() {
               <div
                 className={`flex items-center gap-2 text-sm p-3 rounded-lg ${
                   runStatus.type === "success"
-                    ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
-                    : "bg-red-500/10 text-red-400 border border-red-500/20"
+                    ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20"
+                    : "bg-red-500/10 text-red-700 dark:text-red-400 border border-red-500/20"
                 }`}
               >
                 {runStatus.text}

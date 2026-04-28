@@ -113,7 +113,7 @@ export function ExitIntentCapture({ courseName, scaledScore, family, scaleMax, c
         {submitted ? (
           <div className="p-8 text-center space-y-3">
             <div className="w-14 h-14 rounded-full bg-emerald-500/15 flex items-center justify-center mx-auto">
-              <Mail className="h-6 w-6 text-emerald-600 dark:text-emerald-400" />
+              <Mail className="h-6 w-6 text-emerald-600 dark:text-emerald-700 dark:text-emerald-400" />
             </div>
             <h2 className="text-xl font-bold">Check your inbox</h2>
             <p className="text-sm text-muted-foreground">
@@ -153,7 +153,7 @@ export function ExitIntentCapture({ courseName, scaledScore, family, scaleMax, c
               {submitting ? "Saving…" : "Email me my result + plan"}
             </Button>
 
-            <p className="text-[10px] text-muted-foreground/60 text-center leading-relaxed">
+            <p className="text-[10px] text-muted-foreground text-center leading-relaxed">
               We only use your email to send the result + plan. No spam. Unsubscribe anytime.
             </p>
           </form>

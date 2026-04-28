@@ -81,10 +81,10 @@ export function getMasteryLabel(score: number): string {
 }
 
 export function getMasteryColor(score: number): string {
-  if (score >= 85) return "text-emerald-400";
-  if (score >= 70) return "text-blue-400";
-  if (score >= 50) return "text-yellow-400";
-  if (score >= 25) return "text-orange-400";
+  if (score >= 85) return "text-emerald-700 dark:text-emerald-400";
+  if (score >= 70) return "text-blue-700 dark:text-blue-400";
+  if (score >= 50) return "text-yellow-700 dark:text-yellow-400";
+  if (score >= 25) return "text-orange-700 dark:text-orange-400";
   return "text-slate-500";
 }
 

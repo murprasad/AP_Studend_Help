@@ -74,8 +74,8 @@ export function ReadinessCard({ course }: Props) {
 
   const confBadge = {
     low: { label: "Low confidence", cls: "text-muted-foreground border-border/40" },
-    medium: { label: "Medium confidence", cls: "text-amber-600 dark:text-amber-400 border-amber-500/40 bg-amber-500/5" },
-    high: { label: "High confidence", cls: "text-emerald-600 dark:text-emerald-400 border-emerald-500/40 bg-emerald-500/5" },
+    medium: { label: "Medium confidence", cls: "text-amber-700 dark:text-amber-400 dark:text-amber-700 dark:text-amber-400 border-amber-500/40 bg-amber-500/5" },
+    high: { label: "High confidence", cls: "text-emerald-600 dark:text-emerald-700 dark:text-emerald-400 border-emerald-500/40 bg-emerald-500/5" },
   }[data.confidence];
 
   return (

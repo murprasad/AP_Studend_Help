@@ -85,14 +85,14 @@ export function ExamCountdownSetter({ course, inline = false }: Props) {
         {daysLeft !== null && daysLeft > 0 ? (
           <span className={`inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full border ${
             daysLeft <= 14
-              ? "bg-red-500/15 text-red-400 border-red-500/20"
-              : "bg-blue-500/10 text-blue-400 border-blue-500/15"
+              ? "bg-red-500/15 text-red-700 dark:text-red-400 border-red-500/20"
+              : "bg-blue-500/10 text-blue-700 dark:text-blue-400 border-blue-500/15"
           }`}>
             <Calendar className="h-3 w-3" />
             {daysLeft} day{daysLeft !== 1 ? "s" : ""} until exam
           </span>
         ) : daysLeft !== null && daysLeft <= 0 ? (
-          <span className="inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full border bg-emerald-500/10 text-emerald-400 border-emerald-500/20">
+          <span className="inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full border bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/20">
             Exam passed 🎉
           </span>
         ) : !loading ? (
@@ -120,7 +120,7 @@ export function ExamCountdownSetter({ course, inline = false }: Props) {
           </div>
         )}
         {saveError && editing && (
-          <p className="text-xs text-red-400 w-full">Failed to save. Please try again.</p>
+          <p className="text-xs text-red-700 dark:text-red-400 w-full">Failed to save. Please try again.</p>
         )}
       </div>
     );
@@ -141,7 +141,7 @@ export function ExamCountdownSetter({ course, inline = false }: Props) {
               ? "bg-red-500/10 border border-red-500/20"
               : "bg-blue-500/10 border border-blue-500/20"
           }`}>
-            <p className={`text-4xl font-bold ${daysLeft <= 14 ? "text-red-400" : "text-blue-500"}`}>
+            <p className={`text-4xl font-bold ${daysLeft <= 14 ? "text-red-700 dark:text-red-400" : "text-blue-500"}`}>
               {daysLeft}
             </p>
             <p className="text-xs text-muted-foreground mt-1">
@@ -150,7 +150,7 @@ export function ExamCountdownSetter({ course, inline = false }: Props) {
           </div>
         ) : daysLeft !== null && daysLeft <= 0 ? (
           <div className="text-center p-4 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
-            <p className="text-sm font-medium text-emerald-400">Exam day has passed 🎉</p>
+            <p className="text-sm font-medium text-emerald-700 dark:text-emerald-400">Exam day has passed 🎉</p>
           </div>
         ) : (
           <p className="text-sm text-muted-foreground">Set your exam date to track the countdown.</p>
@@ -168,7 +168,7 @@ export function ExamCountdownSetter({ course, inline = false }: Props) {
               {saved ? "Saved ✓" : "Save Exam Date"}
             </Button>
             {saveError && (
-              <p className="text-xs text-red-400 text-center">Failed to save. Please try again.</p>
+              <p className="text-xs text-red-700 dark:text-red-400 text-center">Failed to save. Please try again.</p>
             )}
           </div>
         )}

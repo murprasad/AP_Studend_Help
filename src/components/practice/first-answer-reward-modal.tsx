@@ -135,7 +135,7 @@ export function useFirstAnswerReward(): {
             {/* Soft progress promise */}
             <div className="rounded-xl bg-blue-500/5 border border-blue-500/20 p-4 space-y-2">
               <div className="flex items-start gap-3">
-                <TrendingUp className="h-5 w-5 text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0" aria-hidden="true" />
+                <TrendingUp className="h-5 w-5 text-blue-600 dark:text-blue-700 dark:text-blue-400 mt-0.5 flex-shrink-0" aria-hidden="true" />
                 <div className="text-sm">
                   <p className="font-medium">See where you stand</p>
                   <p className="text-muted-foreground text-xs leading-relaxed mt-0.5">

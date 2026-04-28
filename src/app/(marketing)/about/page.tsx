@@ -21,7 +21,7 @@ const COURSES = [
   { name: "AP World History: Modern",       category: "AP Courses",   color: "bg-blue-500/10 text-blue-300 border-blue-500/20 dark:text-blue-300 dark:border-blue-500/20 light:text-blue-700 light:border-blue-400/40", desc: "Civilizations, empires, revolutions, globalization" },
   { name: "AP Computer Science Principles", category: "AP Courses",   color: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-300 border-emerald-500/20", desc: "Algorithms, data, internet, impact of computing" },
   { name: "AP Physics 1: Algebra-Based",    category: "AP Courses",   color: "bg-yellow-500/10 text-yellow-600 dark:text-yellow-300 border-yellow-500/20", desc: "Kinematics, forces, energy, waves, circuits" },
-  { name: "AP Calculus AB",                 category: "AP Courses",   color: "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20", desc: "Limits, derivatives, integrals, differential equations" },
+  { name: "AP Calculus AB",                 category: "AP Courses",   color: "bg-blue-500/10 text-blue-600 dark:text-blue-700 dark:text-blue-400 border-blue-500/20", desc: "Limits, derivatives, integrals, differential equations" },
   { name: "AP Calculus BC",                 category: "AP Courses",   color: "bg-purple-500/10 text-purple-600 dark:text-purple-300 border-purple-500/20", desc: "All AB topics plus series, parametric, polar" },
   { name: "AP Statistics",                  category: "AP Courses",   color: "bg-cyan-500/10 text-cyan-600 dark:text-cyan-300 border-cyan-500/20", desc: "Data analysis, probability, inference, regression" },
   { name: "AP Chemistry",                   category: "AP Courses",   color: "bg-orange-500/10 text-orange-600 dark:text-orange-300 border-orange-500/20", desc: "Atomic structure, bonding, reactions, thermodynamics" },
@@ -33,15 +33,15 @@ const COURSES = [
   { name: "SAT Reading & Writing",          category: "SAT Prep",     color: "bg-sky-500/10 text-sky-600 dark:text-sky-300 border-sky-500/20", desc: "Passages, evidence-based reasoning, grammar" },
   // ACT
   { name: "ACT Math",                       category: "ACT Prep",     color: "bg-orange-500/10 text-orange-600 dark:text-orange-300 border-orange-500/20", desc: "Pre-algebra through trigonometry, 5-choice format" },
-  { name: "ACT English",                    category: "ACT Prep",     color: "bg-amber-500/10 text-amber-600 dark:text-amber-300 border-amber-500/20", desc: "Grammar, sentence structure, rhetorical skills" },
+  { name: "ACT English",                    category: "ACT Prep",     color: "bg-amber-500/10 text-amber-700 dark:text-amber-400 dark:text-amber-300 border-amber-500/20", desc: "Grammar, sentence structure, rhetorical skills" },
   { name: "ACT Science",                    category: "ACT Prep",     color: "bg-green-500/10 text-green-600 dark:text-green-300 border-green-500/20", desc: "Data interpretation, research summaries" },
   { name: "ACT Reading",                    category: "ACT Prep",     color: "bg-teal-500/10 text-teal-600 dark:text-teal-300 border-teal-500/20", desc: "Literary, social science, humanities passages" },
 ];
 
 const CATEGORY_COLORS: Record<string, string> = {
   "AP Courses":           "text-blue-500 dark:text-blue-500",
-  "SAT Prep":             "text-blue-500 dark:text-blue-400",
-  "ACT Prep":             "text-amber-500 dark:text-amber-400",
+  "SAT Prep":             "text-blue-500 dark:text-blue-700 dark:text-blue-400",
+  "ACT Prep":             "text-amber-500 dark:text-amber-700 dark:text-amber-400",
 };
 
 
@@ -62,7 +62,7 @@ export default function AboutPage() {
           </div>
           <div className="flex items-center gap-2 flex-wrap">
             <h1 className="text-3xl font-bold gradient-text">About StudentNest Prep</h1>
-            <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30 text-xs font-semibold">Beta 8.5</Badge>
+            <Badge className="bg-blue-500/20 text-blue-700 dark:text-blue-400 border-blue-500/30 text-xs font-semibold">Beta 8.5</Badge>
           </div>
         </div>
         <p className="text-muted-foreground leading-relaxed max-w-2xl mx-auto">
@@ -163,7 +163,7 @@ export default function AboutPage() {
           </p>
         </div>
 
-        <p className="text-[11px] text-muted-foreground/60 leading-relaxed pt-1">
+        <p className="text-[11px] text-muted-foreground leading-relaxed pt-1">
           StudentNest is not affiliated with or endorsed by the College Board.
         </p>
       </div>
@@ -182,7 +182,7 @@ export default function AboutPage() {
             },
             {
               icon: Target,
-              color: "text-emerald-400",
+              color: "text-emerald-700 dark:text-emerald-400",
               bg: "bg-emerald-500/10",
               title: "Mastery Tracking Across All Units",
               desc: "Your dashboard shows per-unit mastery percentages, accuracy trends over time, and a visual heatmap — so you always know exactly where to focus your next study session.",
@@ -242,7 +242,7 @@ export default function AboutPage() {
             },
             {
               icon: Heart,
-              color: "text-emerald-400",
+              color: "text-emerald-700 dark:text-emerald-400",
               bg: "bg-emerald-500/10",
               title: "Accessible First",
               desc: "Core features are free. Always. Premium is for students who want more — not a paywall for the basics.",
@@ -313,7 +313,7 @@ export default function AboutPage() {
       {/* Section 7: What's New in Beta 8.3 — Phases B + C + D (Sage promo, Cram Mode, Daily Study OS) */}
       <div className="space-y-6">
         <div className="text-center space-y-1">
-          <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30 text-xs font-semibold mb-2">Latest Release</Badge>
+          <Badge className="bg-blue-500/20 text-blue-700 dark:text-blue-400 border-blue-500/30 text-xs font-semibold mb-2">Latest Release</Badge>
           <h2 className="text-xl font-bold">What&apos;s New in Beta 8.3</h2>
           <p className="text-sm text-muted-foreground">Three Phase rollouts in one release — Sage Coach FRQ grader promoted to a prominent dashboard tile (Phase B), an exam-countdown Cram Mode card with daily prioritized plan when you&apos;re &lt;30 days out (Phase C), and a daily-adaptive Study OS that adjusts today&apos;s volume based on yesterday&apos;s accuracy + your streak (Phase D). Plus a flashcard design fix that retires the leak-prone &ldquo;Why&rdquo; section in favor of an &ldquo;Ask Sage&rdquo; chat link.</p>
         </div>
@@ -676,14 +676,14 @@ export default function AboutPage() {
         </p>
         <a
           href="mailto:contact@studentnest.ai"
-          className="inline-flex items-center gap-2 text-blue-500 hover:text-blue-400 font-medium transition-colors"
+          className="inline-flex items-center gap-2 text-blue-500 hover:text-blue-700 dark:text-blue-400 font-medium transition-colors"
         >
           <Mail className="h-4 w-4" />
           contact@studentnest.ai
         </a>
         <p className="text-sm text-muted-foreground pt-2">
           For pricing details, see the{" "}
-          <Link href="/pricing" className="text-blue-500 hover:text-blue-400 underline">
+          <Link href="/pricing" className="text-blue-500 hover:text-blue-700 dark:text-blue-400 underline">
             Pricing page
           </Link>
           .

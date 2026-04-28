@@ -204,8 +204,8 @@ export function AdminPaymentSetup() {
           <div
             className={`flex items-center gap-2 text-sm p-3 rounded-lg ${
               message.type === "success"
-                ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
-                : "bg-red-500/10 text-red-400 border border-red-500/20"
+                ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20"
+                : "bg-red-500/10 text-red-700 dark:text-red-400 border border-red-500/20"
             }`}
           >
             {message.type === "success" ? (
@@ -233,14 +233,14 @@ export function AdminPaymentSetup() {
                     variant="outline"
                     className={`text-xs ${
                       config?.paymentsEnabled
-                        ? "text-emerald-400 border-emerald-500/30 bg-emerald-500/10"
+                        ? "text-emerald-700 dark:text-emerald-400 border-emerald-500/30 bg-emerald-500/10"
                         : "text-muted-foreground"
                     }`}
                   >
                     {config?.paymentsEnabled ? "ENABLED" : "DISABLED"}
                   </Badge>
                   {!allConfigured && (
-                    <Badge variant="outline" className="text-xs text-yellow-400 border-yellow-500/30">
+                    <Badge variant="outline" className="text-xs text-yellow-700 dark:text-yellow-400 border-yellow-500/30">
                       incomplete setup
                     </Badge>
                   )}
@@ -277,7 +277,7 @@ export function AdminPaymentSetup() {
                   href="https://dashboard.stripe.com/apikeys"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-1 text-xs text-blue-500 hover:text-blue-400"
+                  className="flex items-center gap-1 text-xs text-blue-500 hover:text-blue-700 dark:text-blue-400"
                 >
                   Open Stripe Dashboard <ExternalLink className="h-3 w-3" />
                 </a>
@@ -293,21 +293,21 @@ export function AdminPaymentSetup() {
                   <div key={field.key} className="space-y-1.5">
                     <div className="flex items-center gap-2">
                       {isSet ? (
-                        <CheckCircle className="h-3.5 w-3.5 text-emerald-400 flex-shrink-0" />
+                        <CheckCircle className="h-3.5 w-3.5 text-emerald-700 dark:text-emerald-400 flex-shrink-0" />
                       ) : (
-                        <XCircle className="h-3.5 w-3.5 text-red-400 flex-shrink-0" />
+                        <XCircle className="h-3.5 w-3.5 text-red-700 dark:text-red-400 flex-shrink-0" />
                       )}
                       <label className="text-xs font-medium">
                         {field.label}
                       </label>
                       <code className="text-xs text-muted-foreground/70 font-mono">{field.envKey}</code>
                       {fromEnv && (
-                        <Badge variant="outline" className="text-xs text-blue-400 border-blue-500/30">
+                        <Badge variant="outline" className="text-xs text-blue-700 dark:text-blue-400 border-blue-500/30">
                           from env
                         </Badge>
                       )}
                       {isSet && !fromEnv && (
-                        <Badge variant="outline" className="text-xs text-emerald-400 border-emerald-500/30">
+                        <Badge variant="outline" className="text-xs text-emerald-700 dark:text-emerald-400 border-emerald-500/30">
                           configured
                         </Badge>
                       )}
@@ -315,7 +315,7 @@ export function AdminPaymentSetup() {
 
                     {fromEnv ? (
                       <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-blue-500/5 border border-blue-500/20">
-                        <span className="text-xs text-blue-400 font-mono">{maskedVal || "set via environment variable"}</span>
+                        <span className="text-xs text-blue-700 dark:text-blue-400 font-mono">{maskedVal || "set via environment variable"}</span>
                         <span className="text-xs text-muted-foreground ml-auto">Override not needed</span>
                       </div>
                     ) : (
@@ -342,7 +342,7 @@ export function AdminPaymentSetup() {
                       </div>
                     )}
                     {!isSet && (
-                      <p className="text-xs text-muted-foreground/60 pl-5">{field.hint}</p>
+                      <p className="text-xs text-muted-foreground pl-5">{field.hint}</p>
                     )}
                   </div>
                 );
@@ -357,7 +357,7 @@ export function AdminPaymentSetup() {
                   href="https://dashboard.stripe.com/payment-links"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-1 text-xs text-blue-500 hover:text-blue-400"
+                  className="flex items-center gap-1 text-xs text-blue-500 hover:text-blue-700 dark:text-blue-400"
                 >
                   Open Payment Links <ExternalLink className="h-3 w-3" />
                 </a>
@@ -371,19 +371,19 @@ export function AdminPaymentSetup() {
               <div className="space-y-1.5">
                 <div className="flex items-center gap-2">
                   {form.paymentLinkMonthly || config?.fromEnv.paymentLinkMonthly ? (
-                    <CheckCircle className="h-3.5 w-3.5 text-emerald-400 flex-shrink-0" />
+                    <CheckCircle className="h-3.5 w-3.5 text-emerald-700 dark:text-emerald-400 flex-shrink-0" />
                   ) : (
                     <XCircle className="h-3.5 w-3.5 text-muted-foreground/50 flex-shrink-0" />
                   )}
                   <label className="text-xs font-medium">Monthly Payment Link</label>
                   <code className="text-xs text-muted-foreground/70 font-mono">STRIPE_PAYMENT_LINK_MONTHLY</code>
                   {config?.fromEnv.paymentLinkMonthly && (
-                    <Badge variant="outline" className="text-xs text-blue-400 border-blue-500/30">from env</Badge>
+                    <Badge variant="outline" className="text-xs text-blue-700 dark:text-blue-400 border-blue-500/30">from env</Badge>
                   )}
                 </div>
                 {config?.fromEnv.paymentLinkMonthly ? (
                   <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-blue-500/5 border border-blue-500/20">
-                    <span className="text-xs text-blue-400">set via environment variable</span>
+                    <span className="text-xs text-blue-700 dark:text-blue-400">set via environment variable</span>
                     <span className="text-xs text-muted-foreground ml-auto">Override not needed</span>
                   </div>
                 ) : (
@@ -395,26 +395,26 @@ export function AdminPaymentSetup() {
                     className="w-full px-3 py-2 text-xs font-mono rounded-lg border border-border/40 bg-secondary/30 placeholder:text-muted-foreground/50 focus:outline-none focus:ring-1 focus:ring-blue-500"
                   />
                 )}
-                <p className="text-xs text-muted-foreground/60 pl-5">Stripe Dashboard → Payment Links → create for monthly Premium price</p>
+                <p className="text-xs text-muted-foreground pl-5">Stripe Dashboard → Payment Links → create for monthly Premium price</p>
               </div>
 
               {/* Annual Payment Link */}
               <div className="space-y-1.5">
                 <div className="flex items-center gap-2">
                   {form.paymentLinkAnnual || config?.fromEnv.paymentLinkAnnual ? (
-                    <CheckCircle className="h-3.5 w-3.5 text-emerald-400 flex-shrink-0" />
+                    <CheckCircle className="h-3.5 w-3.5 text-emerald-700 dark:text-emerald-400 flex-shrink-0" />
                   ) : (
                     <XCircle className="h-3.5 w-3.5 text-muted-foreground/50 flex-shrink-0" />
                   )}
                   <label className="text-xs font-medium">Annual Payment Link</label>
                   <code className="text-xs text-muted-foreground/70 font-mono">STRIPE_PAYMENT_LINK_ANNUAL</code>
                   {config?.fromEnv.paymentLinkAnnual && (
-                    <Badge variant="outline" className="text-xs text-blue-400 border-blue-500/30">from env</Badge>
+                    <Badge variant="outline" className="text-xs text-blue-700 dark:text-blue-400 border-blue-500/30">from env</Badge>
                   )}
                 </div>
                 {config?.fromEnv.paymentLinkAnnual ? (
                   <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-blue-500/5 border border-blue-500/20">
-                    <span className="text-xs text-blue-400">set via environment variable</span>
+                    <span className="text-xs text-blue-700 dark:text-blue-400">set via environment variable</span>
                     <span className="text-xs text-muted-foreground ml-auto">Override not needed</span>
                   </div>
                 ) : (
@@ -426,7 +426,7 @@ export function AdminPaymentSetup() {
                     className="w-full px-3 py-2 text-xs font-mono rounded-lg border border-border/40 bg-secondary/30 placeholder:text-muted-foreground/50 focus:outline-none focus:ring-1 focus:ring-blue-500"
                   />
                 )}
-                <p className="text-xs text-muted-foreground/60 pl-5">Stripe Dashboard → Payment Links → create for annual Premium price</p>
+                <p className="text-xs text-muted-foreground pl-5">Stripe Dashboard → Payment Links → create for annual Premium price</p>
               </div>
             </div>
 
@@ -482,8 +482,8 @@ export function AdminPaymentSetup() {
 
             {allConfigured && (
               <div className="p-3 rounded-lg border border-emerald-500/20 bg-emerald-500/5 flex items-center gap-2">
-                <CheckCircle className="h-4 w-4 text-emerald-400 flex-shrink-0" />
-                <p className="text-xs text-emerald-400">
+                <CheckCircle className="h-4 w-4 text-emerald-700 dark:text-emerald-400 flex-shrink-0" />
+                <p className="text-xs text-emerald-700 dark:text-emerald-400">
                   All Stripe keys are configured. You can enable payments above.
                 </p>
               </div>

@@ -160,7 +160,7 @@ export function AdminBulkGenerate() {
         <CardHeader>
           <CardTitle className="text-lg flex items-center gap-2 justify-between">
             <span className="flex items-center gap-2">
-              <Database className="h-5 w-5 text-yellow-400" />
+              <Database className="h-5 w-5 text-yellow-700 dark:text-yellow-400" />
               Question Bank Coverage
             </span>
             <Button variant="ghost" size="sm" onClick={fetchCoverage} disabled={loadingCoverage}>
@@ -207,9 +207,9 @@ export function AdminBulkGenerate() {
                           {u.name.replace(/Unit \d+: /, "").slice(0, 18)}
                         </span>
                         <span className={`font-bold flex-shrink-0 ${
-                          u.status === "good" ? "text-emerald-400" :
-                          u.status === "unbalanced" ? "text-orange-400" :
-                          u.status === "low" ? "text-yellow-400" : "text-red-400"
+                          u.status === "good" ? "text-emerald-700 dark:text-emerald-400" :
+                          u.status === "unbalanced" ? "text-orange-700 dark:text-orange-400" :
+                          u.status === "low" ? "text-yellow-700 dark:text-yellow-400" : "text-red-700 dark:text-red-400"
                         }`}>{u.count}</span>
                       </div>
                       {u.difficulty && (
@@ -235,7 +235,7 @@ export function AdminBulkGenerate() {
       <Card className="card-glow border-emerald-500/30">
         <CardHeader>
           <CardTitle className="text-lg flex items-center gap-2">
-            <Database className="h-5 w-5 text-emerald-400" />
+            <Database className="h-5 w-5 text-emerald-700 dark:text-emerald-400" />
             Auto-Populate Question Bank
           </CardTitle>
           <p className="text-sm text-muted-foreground">
@@ -246,7 +246,7 @@ export function AdminBulkGenerate() {
         <CardContent className="space-y-4">
           {(totalCritical > 0 || totalLow > 0) && (
             <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/30 flex items-start gap-2">
-              <AlertTriangle className="h-4 w-4 text-red-400 flex-shrink-0 mt-0.5" />
+              <AlertTriangle className="h-4 w-4 text-red-700 dark:text-red-400 flex-shrink-0 mt-0.5" />
               <p className="text-sm text-red-300">
                 {AP_COURSES[populateCourse]}: {totalCritical} units critical (&lt;10 questions), {totalLow} units low.
                 Students will see repeated questions immediately.
@@ -314,16 +314,16 @@ export function AdminBulkGenerate() {
             <div className="p-4 rounded-lg bg-secondary/50 space-y-3">
               <div className="flex gap-6">
                 <div className="text-center">
-                  <p className="text-2xl font-bold text-emerald-400">+{populateSummary.filled}</p>
+                  <p className="text-2xl font-bold text-emerald-700 dark:text-emerald-400">+{populateSummary.filled}</p>
                   <p className="text-xs text-muted-foreground">Questions added</p>
                 </div>
                 <div className="text-center">
-                  <p className="text-2xl font-bold text-blue-400">{populateSummary.skipped}</p>
+                  <p className="text-2xl font-bold text-blue-700 dark:text-blue-400">{populateSummary.skipped}</p>
                   <p className="text-xs text-muted-foreground">Units already OK</p>
                 </div>
                 {populateSummary.failed > 0 && (
                   <div className="text-center">
-                    <p className="text-2xl font-bold text-red-400">{populateSummary.failed}</p>
+                    <p className="text-2xl font-bold text-red-700 dark:text-red-400">{populateSummary.failed}</p>
                     <p className="text-xs text-muted-foreground">Failed</p>
                   </div>
                 )}
@@ -331,9 +331,9 @@ export function AdminBulkGenerate() {
               <div className="space-y-1 max-h-40 overflow-y-auto">
                 {populateDetails.map((d) => (
                   <div key={d.unit} className="flex items-center gap-2 text-xs">
-                    {d.status === "ok" && <CheckCircle className="h-3 w-3 text-emerald-400 flex-shrink-0" />}
-                    {d.status === "skipped" && <span className="text-blue-400 flex-shrink-0">–</span>}
-                    {d.status === "failed" && <AlertTriangle className="h-3 w-3 text-red-400 flex-shrink-0" />}
+                    {d.status === "ok" && <CheckCircle className="h-3 w-3 text-emerald-700 dark:text-emerald-400 flex-shrink-0" />}
+                    {d.status === "skipped" && <span className="text-blue-700 dark:text-blue-400 flex-shrink-0">–</span>}
+                    {d.status === "failed" && <AlertTriangle className="h-3 w-3 text-red-700 dark:text-red-400 flex-shrink-0" />}
                     <span className="flex-1 text-muted-foreground truncate">{d.name}</span>
                     <span className="text-right">
                       {d.status === "skipped"
@@ -430,14 +430,14 @@ export function AdminBulkGenerate() {
 
           {results.length > 0 && (
             <div className="space-y-2">
-              <p className="text-sm font-medium text-emerald-400 flex items-center gap-2">
+              <p className="text-sm font-medium text-emerald-700 dark:text-emerald-400 flex items-center gap-2">
                 <CheckCircle className="h-4 w-4" />
                 {results.length} questions added to question bank
               </p>
               <div className="space-y-1.5 max-h-48 overflow-y-auto">
                 {results.map((r) => (
                   <div key={r.id} className="flex items-center gap-3 p-2 rounded-lg bg-secondary/50 text-xs">
-                    <CheckCircle className="h-3.5 w-3.5 text-emerald-400 flex-shrink-0" />
+                    <CheckCircle className="h-3.5 w-3.5 text-emerald-700 dark:text-emerald-400 flex-shrink-0" />
                     <span className="flex-1">{r.topic}</span>
                     <Badge variant="outline" className="text-xs">{r.difficulty}</Badge>
                   </div>

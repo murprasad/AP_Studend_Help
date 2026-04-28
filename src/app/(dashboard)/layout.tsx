@@ -148,7 +148,7 @@ export default function DashboardLayout({
             <Link href="/" className="flex items-center gap-2">
               <Sparkles className="h-6 w-6 text-blue-500" />
               <span className="text-lg font-bold">
-                <span className="gradient-text">Student</span><span className="text-foreground/80 font-medium">Nest</span><span className="text-blue-600 dark:text-blue-400 font-normal text-[0.6em] ml-1">Prep</span>
+                <span className="gradient-text">Student</span><span className="text-foreground/80 font-medium">Nest</span><span className="text-blue-600 dark:text-blue-700 dark:text-blue-400 font-normal text-[0.6em] ml-1">Prep</span>
               </span>
             </Link>
           </header>

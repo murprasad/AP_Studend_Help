@@ -165,7 +165,7 @@ export function AdminTestUsersTab() {
                       <Badge variant="outline" className="text-[10px]">{u.label}</Badge>
                       {u.track && <Badge variant="outline" className="text-[10px] uppercase">{u.track}</Badge>}
                       {clean && (
-                        <Badge className="bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border-emerald-500/30 text-[10px]">
+                        <Badge className="bg-emerald-500/20 text-emerald-600 dark:text-emerald-700 dark:text-emerald-400 border-emerald-500/30 text-[10px]">
                           <CheckCircle2 className="h-3 w-3 mr-1" /> Fresh
                         </Badge>
                       )}
@@ -186,7 +186,7 @@ export function AdminTestUsersTab() {
                   </div>
                   <div className="flex gap-1.5 ml-3 shrink-0 flex-wrap">
                     <Button variant="outline" size="sm" onClick={() => setTier(u.email, "free")} disabled={resetting !== null} className="text-xs px-2 py-1 h-7">Free</Button>
-                    <Button variant="outline" size="sm" onClick={() => setTier(u.email, "premium")} disabled={resetting !== null} className="text-xs px-2 py-1 h-7 border-amber-500/30 text-amber-600 dark:text-amber-400 hover:bg-amber-500/10">Premium</Button>
+                    <Button variant="outline" size="sm" onClick={() => setTier(u.email, "premium")} disabled={resetting !== null} className="text-xs px-2 py-1 h-7 border-amber-500/30 text-amber-700 dark:text-amber-400 dark:text-amber-700 dark:text-amber-400 hover:bg-amber-500/10">Premium</Button>
                     <Button variant="outline" size="sm" onClick={() => resetUsers(u.email)} disabled={resetting !== null} className="text-xs px-2 py-1 h-7">
                       {resetting === u.email ? <Loader2 className="h-3 w-3 animate-spin" /> : <RotateCcw className="h-3 w-3" />}
                     </Button>

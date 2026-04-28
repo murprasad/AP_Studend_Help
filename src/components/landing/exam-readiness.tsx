@@ -68,7 +68,7 @@ export function ExamReadinessMockup() {
             <span className="text-[10px] text-muted-foreground">ready</span>
           </div>
         </div>
-        <p className="text-sm text-emerald-400 font-medium">
+        <p className="text-sm text-emerald-700 dark:text-emerald-400 font-medium">
           You&apos;re ready to schedule your exam
         </p>
       </div>
@@ -83,7 +83,7 @@ export function ExamReadinessMockup() {
               </span>
               <span
                 className={`text-[11px] font-semibold tabular-nums ${
-                  u.ready ? "text-emerald-400" : "text-amber-400"
+                  u.ready ? "text-emerald-700 dark:text-emerald-400" : "text-amber-700 dark:text-amber-400"
                 }`}
               >
                 {u.pct}%

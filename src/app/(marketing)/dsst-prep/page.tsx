@@ -146,12 +146,12 @@ export default async function DsstPrepPage() {
       <section className="max-w-5xl mx-auto px-4 pt-16 pb-12">
         <div className="text-center space-y-5">
           <FadeIn>
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-400 text-sm font-medium">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-700 dark:text-orange-400 text-sm font-medium">
               <GraduationCap className="h-4 w-4" /> 22 DSST Exams · 6 Domains
             </div>
             <h1 className="text-4xl sm:text-5xl lg:text-[3.4rem] font-bold leading-[1.1] tracking-tight mt-4">
               Pass Your DSST Exam.<br />
-              <span className="text-orange-400">Save $1,000+ Per Course.</span>
+              <span className="text-orange-700 dark:text-orange-400">Save $1,000+ Per Course.</span>
             </h1>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto mt-4">
               One $85 exam replaces a full college course. AI builds your custom study plan — focus only on what&apos;s tested. Accepted at 1,900+ colleges.
@@ -163,12 +163,12 @@ export default async function DsstPrepPage() {
                 </Button>
               </Link>
               <a href="#exams">
-                <Button size="lg" variant="ghost" className="text-orange-400 hover:text-orange-300 w-full sm:w-auto">
+                <Button size="lg" variant="ghost" className="text-orange-700 dark:text-orange-400 hover:text-orange-300 w-full sm:w-auto">
                   View All 22 Exams
                 </Button>
               </a>
             </div>
-            <p className="text-xs text-muted-foreground/60">Free to start. No credit card required.</p>
+            <p className="text-xs text-muted-foreground">Free to start. No credit card required.</p>
           </FadeIn>
         </div>
       </section>
@@ -190,7 +190,7 @@ export default async function DsstPrepPage() {
               <FadeIn key={item.label}>
                 <div className="text-center p-5 rounded-xl border border-border/40 bg-card/50">
                   <div className="w-10 h-10 rounded-lg bg-orange-500/20 flex items-center justify-center mx-auto mb-3">
-                    <item.icon className="h-5 w-5 text-orange-400" />
+                    <item.icon className="h-5 w-5 text-orange-700 dark:text-orange-400" />
                   </div>
                   <p className="font-bold text-sm">{item.label}</p>
                   <p className="text-xs text-muted-foreground mt-1">{item.desc}</p>
@@ -215,8 +215,8 @@ export default async function DsstPrepPage() {
               <div className="relative p-5 rounded-xl border border-border/40 bg-card/50 hover:border-orange-500/30 transition-colors h-full">
                 <div className="space-y-2">
                   <div className="flex items-center gap-2">
-                    <span className="text-xs font-bold text-orange-400 bg-orange-500/10 px-2 py-0.5 rounded">#{i + 1}</span>
-                    <span className={`text-xs font-medium px-2 py-0.5 rounded ${exam.passRate === "High" ? "bg-green-500/10 text-green-400" : "bg-amber-500/10 text-amber-400"}`}>
+                    <span className="text-xs font-bold text-orange-700 dark:text-orange-400 bg-orange-500/10 px-2 py-0.5 rounded">#{i + 1}</span>
+                    <span className={`text-xs font-medium px-2 py-0.5 rounded ${exam.passRate === "High" ? "bg-green-500/10 text-green-400" : "bg-amber-500/10 text-amber-700 dark:text-amber-400"}`}>
                       {exam.passRate} pass rate
                     </span>
                   </div>
@@ -224,7 +224,7 @@ export default async function DsstPrepPage() {
                   <p className="text-xs text-muted-foreground italic">&ldquo;{exam.tip}&rdquo;</p>
                   <div className="flex items-center justify-between pt-1">
                     <p className="text-xs text-muted-foreground"><Clock className="h-3 w-3 inline mr-1" />{exam.hours} hrs</p>
-                    <p className="text-sm font-bold text-orange-400">Save {exam.savings}</p>
+                    <p className="text-sm font-bold text-orange-700 dark:text-orange-400">Save {exam.savings}</p>
                   </div>
                 </div>
               </div>
@@ -293,7 +293,7 @@ export default async function DsstPrepPage() {
               <div className="p-6 rounded-2xl border border-border/40 bg-card/50">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="text-lg font-bold">{domain.emoji} {domain.name}</h3>
-                  <span className="text-xs text-orange-400 font-semibold bg-orange-500/10 px-2 py-1 rounded">
+                  <span className="text-xs text-orange-700 dark:text-orange-400 font-semibold bg-orange-500/10 px-2 py-1 rounded">
                     Save up to {domain.totalSavings}
                   </span>
                 </div>
@@ -301,7 +301,7 @@ export default async function DsstPrepPage() {
                   {domain.courses.map((c) => (
                     <div key={c.name} className="flex items-center justify-between py-1.5 border-b border-border/20 last:border-0">
                       <span className="text-sm">{c.name}</span>
-                      <span className="text-xs font-medium text-orange-400">{c.savings}</span>
+                      <span className="text-xs font-medium text-orange-700 dark:text-orange-400">{c.savings}</span>
                     </div>
                   ))}
                 </div>
@@ -326,7 +326,7 @@ export default async function DsstPrepPage() {
             ].map((s) => (
               <FadeIn key={s.step}>
                 <div className="text-center">
-                  <div className="w-10 h-10 rounded-full bg-orange-500/20 text-orange-400 font-bold flex items-center justify-center mx-auto mb-3">
+                  <div className="w-10 h-10 rounded-full bg-orange-500/20 text-orange-700 dark:text-orange-400 font-bold flex items-center justify-center mx-auto mb-3">
                     {s.step}
                   </div>
                   <p className="font-bold text-sm">{s.title}</p>
@@ -355,7 +355,7 @@ export default async function DsstPrepPage() {
             <FadeIn key={f.title}>
               <div className="p-5 rounded-xl border border-border/40 bg-card/50 space-y-2">
                 <div className="flex items-center gap-2">
-                  <CheckCircle className="h-4 w-4 text-orange-400 flex-shrink-0" />
+                  <CheckCircle className="h-4 w-4 text-orange-700 dark:text-orange-400 flex-shrink-0" />
                   <p className="font-semibold text-sm">{f.title}</p>
                 </div>
                 <p className="text-xs text-muted-foreground">{f.desc}</p>
@@ -405,7 +405,7 @@ export default async function DsstPrepPage() {
               </Button>
             </Link>
           </div>
-          <p className="text-xs text-muted-foreground/60 mt-3">Free forever. Premium at $9.99/month.</p>
+          <p className="text-xs text-muted-foreground mt-3">Free forever. Premium at $9.99/month.</p>
         </FadeIn>
       </section>
 

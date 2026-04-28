@@ -355,7 +355,7 @@ export default function SageCoachPage() {
     return (
       <div className="fixed inset-0 bg-neutral-950 text-neutral-50 z-50 flex flex-col items-center justify-center px-6">
         <div className="max-w-md text-center space-y-5">
-          <Sparkles className="h-10 w-10 text-amber-400 mx-auto" />
+          <Sparkles className="h-10 w-10 text-amber-700 dark:text-amber-400 mx-auto" />
           <h1 className="text-2xl font-bold">You've done today's Sage Coach</h1>
           <p className="text-neutral-300 text-[15px]">
             Free accounts get 1 oral-response session per day. Come back tomorrow — or unlock unlimited for <strong>$9.99/mo</strong>.
@@ -385,7 +385,7 @@ export default function SageCoachPage() {
     return (
       <div className="fixed inset-0 bg-neutral-950 text-neutral-50 z-50 flex flex-col items-center justify-center px-6">
         <div className="max-w-md text-center space-y-5">
-          <AlertCircle className="h-10 w-10 text-amber-400 mx-auto" />
+          <AlertCircle className="h-10 w-10 text-amber-700 dark:text-amber-400 mx-auto" />
           <h1 className="text-2xl font-bold">Sage Coach not yet supported for {courseName}</h1>
           <p className="text-neutral-300 text-[15px]">
             We haven't seeded concept prompts for {courseName} yet. Switch courses in the sidebar, or check back soon — we're rolling Sage Coach out to more courses this week.
@@ -414,7 +414,7 @@ export default function SageCoachPage() {
     return (
       <div className="fixed inset-0 bg-neutral-950 text-neutral-50 z-50 flex flex-col items-center justify-center px-6">
         <div className="max-w-md text-center space-y-5">
-          <AlertCircle className="h-10 w-10 text-amber-400 mx-auto" />
+          <AlertCircle className="h-10 w-10 text-amber-700 dark:text-amber-400 mx-auto" />
           <h1 className="text-2xl font-bold">Sage Coach is temporarily unavailable</h1>
           <p className="text-neutral-300 text-[15px]">
             We can't reach our evaluation models right now. Try again in a few minutes, or continue with regular practice.
@@ -443,9 +443,9 @@ export default function SageCoachPage() {
     return (
       <div className="fixed inset-0 bg-neutral-950 text-neutral-50 z-50 flex flex-col items-center justify-center px-6">
         <div className="max-w-xl text-center space-y-6">
-          <Sparkles className="h-10 w-10 mx-auto text-amber-400" />
+          <Sparkles className="h-10 w-10 mx-auto text-amber-700 dark:text-amber-400" />
           <h1 className="text-3xl sm:text-4xl font-bold">Sage Coach</h1>
-          <p className="text-xs uppercase tracking-widest text-amber-400">
+          <p className="text-xs uppercase tracking-widest text-amber-700 dark:text-amber-400">
             {AP_COURSE_SHORT[course as keyof typeof AP_COURSE_SHORT] || course}
           </p>
           <p className="text-neutral-300 text-lg">
@@ -489,7 +489,7 @@ export default function SageCoachPage() {
     return (
       <div className="fixed inset-0 bg-neutral-950 text-neutral-50 z-50 flex flex-col items-center justify-center px-6">
         <div className="max-w-md text-center space-y-4">
-          <AlertCircle className="h-10 w-10 text-amber-400 mx-auto" />
+          <AlertCircle className="h-10 w-10 text-amber-700 dark:text-amber-400 mx-auto" />
           <p className="text-neutral-200">{error || "Something went wrong."}</p>
           <Button onClick={loadConcept} variant="outline" className="border-neutral-700 bg-neutral-900 text-neutral-100 hover:bg-neutral-800 hover:text-neutral-50">Try again</Button>
         </div>
@@ -502,7 +502,7 @@ export default function SageCoachPage() {
       <div className="fixed inset-0 bg-neutral-950 text-neutral-50 z-50 flex flex-col px-6 py-10 sm:py-16">
         <div className="flex-1 flex flex-col justify-center max-w-2xl w-full mx-auto space-y-8">
           <div className="space-y-2 text-center">
-            <p className="text-xs uppercase tracking-widest text-amber-400">{concept.course.replace(/_/g, " ")} · {concept.unit.replace(/_/g, " ")}</p>
+            <p className="text-xs uppercase tracking-widest text-amber-700 dark:text-amber-400">{concept.course.replace(/_/g, " ")} · {concept.unit.replace(/_/g, " ")}</p>
             <p className="text-[11px] text-neutral-500 uppercase tracking-widest">{concept.difficulty}</p>
           </div>
           <h1 className="text-2xl sm:text-3xl font-semibold leading-snug text-center text-neutral-50">
@@ -531,8 +531,8 @@ export default function SageCoachPage() {
         <div className="flex-1 flex flex-col justify-between max-w-2xl w-full mx-auto">
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <p className="text-xs uppercase tracking-widest text-amber-400">{concept.unit.replace(/_/g, " ")}</p>
-              <p className={`font-mono text-lg ${secondsLeft <= 10 ? "text-red-400" : "text-neutral-300"}`}>
+              <p className="text-xs uppercase tracking-widest text-amber-700 dark:text-amber-400">{concept.unit.replace(/_/g, " ")}</p>
+              <p className={`font-mono text-lg ${secondsLeft <= 10 ? "text-red-700 dark:text-red-400" : "text-neutral-300"}`}>
                 {String(Math.floor(secondsLeft / 60)).padStart(2, "0")}:{String(secondsLeft % 60).padStart(2, "0")}
               </p>
             </div>
@@ -570,13 +570,13 @@ export default function SageCoachPage() {
   if (phase === "processing") {
     return (
       <div className="fixed inset-0 bg-neutral-950 text-neutral-50 z-50 flex flex-col items-center justify-center gap-4">
-        <Loader2 className="h-8 w-8 animate-spin text-amber-400" />
+        <Loader2 className="h-8 w-8 animate-spin text-amber-700 dark:text-amber-400" />
         <p className="text-neutral-300">Analyzing your answer…</p>
         <p className="text-xs text-neutral-600">
           usually 2-5 seconds — elapsed <span className="font-mono">{processingElapsed}s</span>
         </p>
         {processingElapsed >= 15 && (
-          <p className="text-xs text-amber-400 mt-2">Taking longer than usual…</p>
+          <p className="text-xs text-amber-700 dark:text-amber-400 mt-2">Taking longer than usual…</p>
         )}
       </div>
     )
@@ -589,10 +589,10 @@ export default function SageCoachPage() {
       <div className="fixed inset-0 bg-neutral-950 text-neutral-50 z-50 overflow-y-auto">
         <div className="max-w-2xl mx-auto px-6 py-10 space-y-6">
           <div className="text-center space-y-2">
-            <p className="text-xs uppercase tracking-widest text-amber-400">{concept.concept}</p>
+            <p className="text-xs uppercase tracking-widest text-amber-700 dark:text-amber-400">{concept.concept}</p>
             <h1 className="text-3xl font-bold">{s.accuracy}% accuracy</h1>
             {delta != null && (
-              <p className={`text-sm ${delta >= 0 ? "text-emerald-400" : "text-red-400"}`}>
+              <p className={`text-sm ${delta >= 0 ? "text-emerald-700 dark:text-emerald-400" : "text-red-700 dark:text-red-400"}`}>
                 {delta >= 0 ? `+${delta}` : delta} vs previous try
               </p>
             )}
@@ -609,7 +609,7 @@ export default function SageCoachPage() {
           </div>
 
           <div className="bg-neutral-900 rounded-xl p-5 space-y-2">
-            <p className="text-sm font-semibold text-amber-400">Feedback</p>
+            <p className="text-sm font-semibold text-amber-700 dark:text-amber-400">Feedback</p>
             <p className="text-[15px] text-neutral-100 leading-relaxed">{evaluation.specificFeedback}</p>
           </div>
 
@@ -619,7 +619,7 @@ export default function SageCoachPage() {
               <ul className="space-y-1.5">
                 {evaluation.missingKeyPoints.map((k, i) => (
                   <li key={i} className="text-[14px] text-neutral-200 flex gap-2">
-                    <span className="text-red-400 shrink-0">•</span>
+                    <span className="text-red-700 dark:text-red-400 shrink-0">•</span>
                     <span>{k}</span>
                   </li>
                 ))}

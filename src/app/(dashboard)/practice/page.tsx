@@ -817,7 +817,7 @@ export default function PracticePage() {
           context="completion"
         />
         <div className="text-center">
-          <Trophy className={`h-16 w-16 mx-auto mb-4 ${sessionSummary.accuracy >= 80 ? "text-yellow-400" : "text-muted-foreground/60"}`} />
+          <Trophy className={`h-16 w-16 mx-auto mb-4 ${sessionSummary.accuracy >= 80 ? "text-yellow-700 dark:text-yellow-400" : "text-muted-foreground"}`} />
           <h1 className="text-3xl font-bold mb-2">
             {sessionSummary.accuracy >= 90 ? "Outstanding!" : sessionSummary.accuracy >= 80 ? "Great Job!" : sessionSummary.accuracy >= 60 ? "Session Complete!" : "Keep Going!"}
           </h1>
@@ -856,7 +856,7 @@ export default function PracticePage() {
           <CardContent className="p-6">
             <div className="grid grid-cols-2 gap-6 mb-6">
               <div className="text-center">
-                <p className="text-5xl font-bold text-emerald-400">{sessionSummary.accuracy}%</p>
+                <p className="text-5xl font-bold text-emerald-700 dark:text-emerald-400">{sessionSummary.accuracy}%</p>
                 <p className="text-sm text-muted-foreground mt-1">Accuracy</p>
               </div>
               <div className="text-center">
@@ -884,13 +884,13 @@ export default function PracticePage() {
             {sessionSummary.previousAccuracy != null ? (
               sessionSummary.accuracy > sessionSummary.previousAccuracy ? (
                 <div className="text-center p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/20 mb-4">
-                  <p className="text-sm font-medium text-emerald-400">
+                  <p className="text-sm font-medium text-emerald-700 dark:text-emerald-400">
                     Your accuracy improved {sessionSummary.accuracy - sessionSummary.previousAccuracy}% from your last session
                   </p>
                 </div>
               ) : sessionSummary.accuracy === sessionSummary.previousAccuracy ? (
                 <div className="text-center p-3 rounded-lg bg-blue-500/10 border border-blue-500/20 mb-4">
-                  <p className="text-sm text-blue-400">Consistent performance — keep building on it</p>
+                  <p className="text-sm text-blue-700 dark:text-blue-400">Consistent performance — keep building on it</p>
                 </div>
               ) : (
                 <div className="text-center p-3 rounded-lg bg-secondary/50 border border-border/40 mb-4">
@@ -899,7 +899,7 @@ export default function PracticePage() {
               )
             ) : (
               <div className="text-center p-3 rounded-lg bg-blue-500/10 border border-blue-500/20 mb-4">
-                <p className="text-sm text-blue-400">Great first session! Keep practicing to track your improvement</p>
+                <p className="text-sm text-blue-700 dark:text-blue-400">Great first session! Keep practicing to track your improvement</p>
               </div>
             )}
 
@@ -912,7 +912,7 @@ export default function PracticePage() {
                     <Button
                       variant="outline"
                       size="sm"
-                      className="gap-2 hover:border-emerald-500 hover:text-emerald-400"
+                      className="gap-2 hover:border-emerald-500 hover:text-emerald-700 dark:text-emerald-400"
                       onClick={() => submitFeedback(1)}
                     >
                       <ThumbsUp className="h-4 w-4" /> Good
@@ -920,7 +920,7 @@ export default function PracticePage() {
                     <Button
                       variant="outline"
                       size="sm"
-                      className="gap-2 hover:border-red-500 hover:text-red-400"
+                      className="gap-2 hover:border-red-500 hover:text-red-700 dark:text-red-400"
                       onClick={() => submitFeedback(-1)}
                     >
                       <ThumbsDown className="h-4 w-4" /> Needs work
@@ -938,9 +938,9 @@ export default function PracticePage() {
               {results.map((r, i) => (
                 <div key={i} className="flex items-center gap-3 p-2 rounded-lg bg-secondary/50">
                   {r.correct ? (
-                    <CheckCircle className="h-5 w-5 text-emerald-400 flex-shrink-0" />
+                    <CheckCircle className="h-5 w-5 text-emerald-700 dark:text-emerald-400 flex-shrink-0" />
                   ) : (
-                    <XCircle className="h-5 w-5 text-red-400 flex-shrink-0" />
+                    <XCircle className="h-5 w-5 text-red-700 dark:text-red-400 flex-shrink-0" />
                   )}
                   <span className="text-sm">Question {i + 1}</span>
                   <span className="text-xs text-muted-foreground ml-auto">{formatTime(r.timeSecs)}</span>
@@ -980,7 +980,7 @@ export default function PracticePage() {
             <Badge variant="outline">{currentQuestion.difficulty}</Badge>
             <Badge variant="secondary">{currentQuestion.topic}</Badge>
             {currentQuestion.course?.startsWith("CLEP_") && (
-              <Badge variant="outline" className="gap-1 text-emerald-600 border-emerald-200 bg-emerald-50 dark:text-emerald-400 dark:border-emerald-800 dark:bg-emerald-950">
+              <Badge variant="outline" className="gap-1 text-emerald-600 border-emerald-200 bg-emerald-50 dark:text-emerald-700 dark:text-emerald-400 dark:border-emerald-800 dark:bg-emerald-950">
                 <ShieldCheck className="h-3 w-3" />
                 CB-Aligned
               </Badge>
@@ -998,7 +998,7 @@ export default function PracticePage() {
                 else break;
               }
               return streak >= 2 ? (
-                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-semibold">
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-700 dark:text-emerald-400 text-xs font-semibold">
                   ✓ {streak} in a row
                 </span>
               ) : null;
@@ -1022,9 +1022,9 @@ export default function PracticePage() {
               <div className="p-4 rounded-lg bg-secondary/50 border-l-4 border-blue-500 space-y-3">
                 {/* Beta 7.8 (2026-04-25): text-blue-500 on light bg fails WCAG AA
                     contrast at small sizes (3.45:1, needs 4.5:1). Use the
-                    text-blue-700 dark:text-blue-400 dual-mode pattern that
+                    text-blue-700 dark:text-blue-700 dark:text-blue-400 dual-mode pattern that
                     earlier a11y batches established for the codebase. */}
-                <p className="text-xs font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-400">Source / Context</p>
+                <p className="text-xs font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-700 dark:text-blue-400">Source / Context</p>
                 {currentQuestion.stimulusImageUrl && (
                   <div className="flex justify-center">
                     <img
@@ -1105,9 +1105,9 @@ export default function PracticePage() {
 
                 if (feedback && selectedAnswer) {
                   if (letter === feedback.correctAnswer) {
-                    optionClass = "border-emerald-500 bg-emerald-500/10 text-emerald-400";
+                    optionClass = "border-emerald-500 bg-emerald-500/10 text-emerald-700 dark:text-emerald-400";
                   } else if (letter === selectedAnswer && !feedback.isCorrect) {
-                    optionClass = "border-red-500 bg-red-500/10 text-red-400";
+                    optionClass = "border-red-500 bg-red-500/10 text-red-700 dark:text-red-400";
                   } else {
                     optionClass = "border border-border/20 opacity-50";
                   }
@@ -1144,7 +1144,7 @@ export default function PracticePage() {
                 // FRQ Score Card
                 <div className="space-y-3">
                   <div className="flex items-center gap-3">
-                    <div className={`text-2xl font-bold ${feedback.isCorrect ? "text-emerald-400" : "text-yellow-400"}`}>
+                    <div className={`text-2xl font-bold ${feedback.isCorrect ? "text-emerald-700 dark:text-emerald-400" : "text-yellow-700 dark:text-yellow-400"}`}>
                       {feedback.frqScore.pointsEarned}/{feedback.frqScore.totalPoints}
                     </div>
                     <div className="flex-1">
@@ -1168,7 +1168,7 @@ export default function PracticePage() {
                     <p className="text-sm leading-relaxed">{feedback.frqScore.feedback}</p>
                   </div>
                   <div className="border-t border-border/40 pt-3">
-                    <p className="text-xs font-semibold text-emerald-400 uppercase tracking-wide mb-1">Model Answer</p>
+                    <p className="text-xs font-semibold text-emerald-700 dark:text-emerald-400 uppercase tracking-wide mb-1">Model Answer</p>
                     <p className="text-sm text-muted-foreground leading-relaxed">{feedback.frqScore.modelAnswer}</p>
                   </div>
                 </div>
@@ -1176,9 +1176,9 @@ export default function PracticePage() {
                 // MCQ feedback
                 <div className="flex items-start gap-3">
                   {feedback.isCorrect ? (
-                    <CheckCircle className="h-6 w-6 text-emerald-400 flex-shrink-0 mt-0.5" />
+                    <CheckCircle className="h-6 w-6 text-emerald-700 dark:text-emerald-400 flex-shrink-0 mt-0.5" />
                   ) : (
-                    <XCircle className="h-6 w-6 text-red-400 flex-shrink-0 mt-0.5" />
+                    <XCircle className="h-6 w-6 text-red-700 dark:text-red-400 flex-shrink-0 mt-0.5" />
                   )}
                   <div className="space-y-2">
                     <p className="font-semibold">
@@ -1203,7 +1203,7 @@ export default function PracticePage() {
                     <ExplanationDisplay text={feedback.explanation} />
 
                     {currentQuestion.course?.startsWith("CLEP_") && (
-                      <div className="flex items-center gap-3 pt-1 text-xs text-muted-foreground/60">
+                      <div className="flex items-center gap-3 pt-1 text-xs text-muted-foreground">
                         <span className="inline-flex items-center gap-1"><ShieldCheck className="h-3 w-3 text-emerald-500" /> 8-criterion validated</span>
                         <span className="inline-flex items-center gap-1">Cross-model verified</span>
                         <span className="inline-flex items-center gap-1">CB topic-aligned</span>
@@ -1218,7 +1218,7 @@ export default function PracticePage() {
                       className={`inline-flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded-full transition-colors ${
                         feedback.isCorrect
                           ? "bg-teal-500/10 text-teal-400 hover:bg-teal-500/20"
-                          : "bg-blue-500/15 text-blue-400 hover:bg-blue-500/25"
+                          : "bg-blue-500/15 text-blue-700 dark:text-blue-400 hover:bg-blue-500/25"
                       }`}
                     >
                       <Sparkles className="h-3.5 w-3.5" />
@@ -1233,7 +1233,7 @@ export default function PracticePage() {
                   render with an empty body when admin disables the flag. */}
               {knowledgeCheckEnabled && !feedback.isCorrect && !feedback.frqScore && (
                 <div className="border-t border-border/40 pt-4 space-y-3">
-                  <p className="text-xs font-semibold text-amber-400 uppercase tracking-wide flex items-center gap-1.5">
+                  <p className="text-xs font-semibold text-amber-700 dark:text-amber-400 uppercase tracking-wide flex items-center gap-1.5">
                     <Sparkles className="h-3.5 w-3.5" />
                     Quick Check — Before You Move On
                   </p>
@@ -1251,9 +1251,9 @@ export default function PracticePage() {
                           let cls = "border border-border/40 hover:bg-accent cursor-pointer";
                           if (checkAnswer !== null) {
                             if (i === checkQuestion.correctIndex) {
-                              cls = "border-emerald-500 bg-emerald-500/10 text-emerald-400";
+                              cls = "border-emerald-500 bg-emerald-500/10 text-emerald-700 dark:text-emerald-400";
                             } else if (i === checkAnswer) {
-                              cls = "border-red-500 bg-red-500/10 text-red-400";
+                              cls = "border-red-500 bg-red-500/10 text-red-700 dark:text-red-400";
                             } else {
                               cls = "border border-border/20 opacity-50";
                             }
@@ -1333,7 +1333,7 @@ export default function PracticePage() {
               : "border-border/40 hover:bg-accent"
           }`}
         >
-          <Zap className="h-6 w-6 text-yellow-400 mb-2" />
+          <Zap className="h-6 w-6 text-yellow-700 dark:text-yellow-400 mb-2" />
           <p className="font-medium">Quick Practice</p>
           <p className="text-xs text-muted-foreground">10 MCQs · Free</p>
         </button>
@@ -1345,7 +1345,7 @@ export default function PracticePage() {
               : "border-border/40 hover:bg-accent"
           }`}
         >
-          <BookOpen className="h-6 w-6 text-blue-400 mb-2" />
+          <BookOpen className="h-6 w-6 text-blue-700 dark:text-blue-400 mb-2" />
           <p className="font-medium">Focused Study</p>
           <p className="text-xs text-muted-foreground">20 MCQs · Free</p>
         </button>
@@ -1358,7 +1358,7 @@ export default function PracticePage() {
           if (!premiumRestricted || isPremiumForTrack(subscriptionTier ?? "FREE", userTrack)) return null;
           return (
             <div className="col-span-2 flex items-center gap-2 px-3 py-2 rounded-lg bg-yellow-500/5 border border-yellow-500/20 text-xs text-yellow-300/80">
-              <Crown className="h-3.5 w-3.5 flex-shrink-0 text-yellow-400" />
+              <Crown className="h-3.5 w-3.5 flex-shrink-0 text-yellow-700 dark:text-yellow-400" />
               <span>You&apos;re on the Free plan — 3 sessions/day. {userTrack === "clep"
                 ? <>Want unlimited practice + all 34 CLEP courses? <Link href="/pricing" className="underline hover:text-blue-300">Upgrade to CLEP Premium</Link></>
                 : <>Want unlimited practice + FRQ scoring? <Link href="/pricing" className="underline hover:text-blue-300">Upgrade to AP Premium</Link></>
@@ -1394,7 +1394,7 @@ export default function PracticePage() {
               <div className="flex items-start justify-between">
                 <div>
                   <div className="flex items-center gap-2 mb-2">
-                    <PenLine className="h-5 w-5 text-purple-400" />
+                    <PenLine className="h-5 w-5 text-purple-700 dark:text-purple-400" />
                     {isLocked && <Lock className="h-4 w-4 text-muted-foreground" />}
                   </div>
                   <p className="font-medium">FRQ Practice</p>
@@ -1441,7 +1441,7 @@ export default function PracticePage() {
       {!isPremiumForTrack(subscriptionTier ?? "FREE", userTrack) && Object.keys(getCourseConfig(course as ApCourse)?.questionTypeFormats ?? {}).some((t) => t !== "MCQ") && !sessionLimitReached && premiumRestricted && (
         <Card className="card-glow border-purple-500/20 bg-purple-500/5">
           <CardContent className="p-4 flex items-center gap-3">
-            <Crown className="h-5 w-5 text-purple-400 flex-shrink-0" />
+            <Crown className="h-5 w-5 text-purple-700 dark:text-purple-400 flex-shrink-0" />
             <div className="flex-1">
               <p className="text-sm font-medium">Unlock FRQ Practice</p>
               <p className="text-xs text-muted-foreground">SAQ, LEQ & DBQ with AI rubric scoring — Premium only</p>
@@ -1465,7 +1465,7 @@ export default function PracticePage() {
               </div>
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-1.5">
-                  <p className="text-sm font-bold text-blue-400">Sage 🌿</p>
+                  <p className="text-sm font-bold text-blue-700 dark:text-blue-400">Sage 🌿</p>
                   <span className="flex gap-1 items-center">
                     <span className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
                     <span className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />

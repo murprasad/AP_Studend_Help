@@ -120,10 +120,10 @@ export default function PricingClient({ clepEnabled, dsstEnabled }: PricingClien
 
   const colorMap: Record<string, { border: string; bg: string; text: string; btn: string; check: string; badge: string }> = {
     indigo: { border: "border-blue-500", bg: "bg-blue-500/5", text: "text-blue-500", btn: "bg-blue-600 hover:bg-blue-700", check: "text-blue-500", badge: "bg-blue-600" },
-    blue: { border: "border-blue-500", bg: "bg-blue-500/5", text: "text-blue-400", btn: "bg-blue-600 hover:bg-blue-700", check: "text-blue-400", badge: "bg-blue-600" },
-    violet: { border: "border-violet-500", bg: "bg-violet-500/5", text: "text-violet-400", btn: "bg-violet-600 hover:bg-violet-700", check: "text-violet-400", badge: "bg-violet-600" },
-    emerald: { border: "border-emerald-500", bg: "bg-emerald-500/5", text: "text-emerald-400", btn: "bg-emerald-700 hover:bg-emerald-800", check: "text-emerald-400", badge: "bg-emerald-600" },
-    orange: { border: "border-orange-500", bg: "bg-orange-500/5", text: "text-orange-400", btn: "bg-orange-600 hover:bg-orange-700", check: "text-orange-400", badge: "bg-orange-600" },
+    blue: { border: "border-blue-500", bg: "bg-blue-500/5", text: "text-blue-700 dark:text-blue-400", btn: "bg-blue-600 hover:bg-blue-700", check: "text-blue-700 dark:text-blue-400", badge: "bg-blue-600" },
+    violet: { border: "border-violet-500", bg: "bg-violet-500/5", text: "text-violet-700 dark:text-violet-400", btn: "bg-violet-600 hover:bg-violet-700", check: "text-violet-700 dark:text-violet-400", badge: "bg-violet-600" },
+    emerald: { border: "border-emerald-500", bg: "bg-emerald-500/5", text: "text-emerald-700 dark:text-emerald-400", btn: "bg-emerald-700 hover:bg-emerald-800", check: "text-emerald-700 dark:text-emerald-400", badge: "bg-emerald-600" },
+    orange: { border: "border-orange-500", bg: "bg-orange-500/5", text: "text-orange-700 dark:text-orange-400", btn: "bg-orange-600 hover:bg-orange-700", check: "text-orange-700 dark:text-orange-400", badge: "bg-orange-600" },
   };
   const c = colorMap[config.color];
 
@@ -137,7 +137,7 @@ export default function PricingClient({ clepEnabled, dsstEnabled }: PricingClien
         <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
           One subscription unlocks every exam. AP, SAT, ACT — all included for $9.99/mo.
         </p>
-        <p className="text-sm text-emerald-700 dark:text-emerald-400 font-medium mt-3">
+        <p className="text-sm text-emerald-700 dark:text-emerald-700 dark:text-emerald-400 font-medium mt-3">
           âœ¦ Sign up via any exam below — Premium is all-access.
         </p>
       </div>
@@ -241,7 +241,7 @@ export default function PricingClient({ clepEnabled, dsstEnabled }: PricingClien
                 <p className="text-sm text-muted-foreground">Cancel anytime</p>
               </>
             )}
-            <p className="text-xs text-muted-foreground/60 mt-1">Less than a single hour of tutoring</p>
+            <p className="text-xs text-muted-foreground mt-1">Less than a single hour of tutoring</p>
           </div>
           <ul className="space-y-3 flex-1 mb-8">
             {config.features.map((f, i) => (
@@ -265,7 +265,7 @@ export default function PricingClient({ clepEnabled, dsstEnabled }: PricingClien
         <p className="text-base font-medium text-foreground/90 max-w-xl mx-auto">
           Everything you need to raise your score — without paying for full tutoring.
         </p>
-        <p className="text-sm text-emerald-700 dark:text-emerald-400 font-medium">
+        <p className="text-sm text-emerald-700 dark:text-emerald-700 dark:text-emerald-400 font-medium">
           Cancel anytime Â· 7-day money-back guarantee
         </p>
       </div>

@@ -220,7 +220,7 @@ export default function ApSubjectPage({ params }: { params: { slug: string } }) 
       {/* Hero */}
       <FadeIn>
         <div className="space-y-4">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-medium">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-700 dark:text-blue-400 text-xs font-medium">
             <GraduationCap className="h-3.5 w-3.5" /> Advanced Placement Exam
           </div>
           <h1 className="text-3xl sm:text-4xl font-bold">{config.name}</h1>
@@ -240,7 +240,7 @@ export default function ApSubjectPage({ params }: { params: { slug: string } }) 
             { label: "Credit", value: "Most colleges", icon: <GraduationCap className="h-4 w-4" /> },
           ].map((f) => (
             <div key={f.label} className="p-3 rounded-xl border border-border/40 bg-card/50 text-center">
-              <div className="flex justify-center text-blue-400">{f.icon}</div>
+              <div className="flex justify-center text-blue-700 dark:text-blue-400">{f.icon}</div>
               <p className="text-sm font-bold mt-1">{f.value}</p>
               <p className="text-xs text-muted-foreground">{f.label}</p>
             </div>
@@ -252,7 +252,7 @@ export default function ApSubjectPage({ params }: { params: { slug: string } }) 
       <FadeIn>
         <div className="space-y-3">
           <h2 className="text-xl font-bold flex items-center gap-2">
-            <Sparkles className="h-5 w-5 text-blue-400" /> About the Exam
+            <Sparkles className="h-5 w-5 text-blue-700 dark:text-blue-400" /> About the Exam
           </h2>
           <div className="p-5 rounded-xl border border-border/40 bg-card/50 space-y-3 text-sm leading-relaxed text-muted-foreground">
             <p>{meta.about}</p>
@@ -266,14 +266,14 @@ export default function ApSubjectPage({ params }: { params: { slug: string } }) 
       <FadeIn>
         <div className="space-y-3">
           <h2 className="text-xl font-bold flex items-center gap-2">
-            <FileText className="h-5 w-5 text-blue-400" /> Exam Format
+            <FileText className="h-5 w-5 text-blue-700 dark:text-blue-400" /> Exam Format
           </h2>
           <div className="space-y-2">
             {meta.sections.map((s) => (
               <div key={s.name} className="p-4 rounded-xl border border-border/40 bg-card/50 space-y-1">
                 <div className="flex items-baseline justify-between gap-3 flex-wrap">
                   <p className="font-semibold text-sm">{s.name}</p>
-                  <span className="text-xs px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20 whitespace-nowrap">
+                  <span className="text-xs px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-700 dark:text-blue-400 border border-blue-500/20 whitespace-nowrap">
                     {s.weight}
                   </span>
                 </div>
@@ -289,7 +289,7 @@ export default function ApSubjectPage({ params }: { params: { slug: string } }) 
       <FadeIn>
         <div className="space-y-3">
           <h2 className="text-xl font-bold flex items-center gap-2">
-            <BookOpen className="h-5 w-5 text-blue-400" /> Units &amp; Exam Weights
+            <BookOpen className="h-5 w-5 text-blue-700 dark:text-blue-400" /> Units &amp; Exam Weights
           </h2>
           <p className="text-xs text-muted-foreground">{meta.unitWeightLabel}</p>
           <div className="space-y-2">
@@ -301,7 +301,7 @@ export default function ApSubjectPage({ params }: { params: { slug: string } }) 
                   <div className="flex items-baseline justify-between gap-3 flex-wrap">
                     <p className="font-medium text-sm">{unit.name}</p>
                     {weightPct && (
-                      <span className="text-xs font-semibold text-blue-400 whitespace-nowrap">{weightPct} of exam</span>
+                      <span className="text-xs font-semibold text-blue-700 dark:text-blue-400 whitespace-nowrap">{weightPct} of exam</span>
                     )}
                   </div>
                   {unit.timePeriod && (
@@ -310,7 +310,7 @@ export default function ApSubjectPage({ params }: { params: { slug: string } }) 
                   {unit.keyThemes && unit.keyThemes.length > 0 && (
                     <div className="flex flex-wrap gap-1.5 mt-2">
                       {unit.keyThemes.map((theme) => (
-                        <span key={theme} className="text-xs px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20">
+                        <span key={theme} className="text-xs px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-700 dark:text-blue-400 border border-blue-500/20">
                           {theme}
                         </span>
                       ))}
@@ -327,12 +327,12 @@ export default function ApSubjectPage({ params }: { params: { slug: string } }) 
       <FadeIn>
         <div className="space-y-3">
           <h2 className="text-xl font-bold flex items-center gap-2">
-            <Sparkles className="h-5 w-5 text-blue-400" /> Skills &amp; Practices Tested
+            <Sparkles className="h-5 w-5 text-blue-700 dark:text-blue-400" /> Skills &amp; Practices Tested
           </h2>
           <div className="grid sm:grid-cols-2 gap-2">
             {meta.skills.map((s) => (
               <div key={s.label} className="p-3 rounded-xl border border-border/40 bg-card/50">
-                <p className="font-medium text-sm text-blue-400">{s.label}</p>
+                <p className="font-medium text-sm text-blue-700 dark:text-blue-400">{s.label}</p>
                 <p className="text-xs text-muted-foreground leading-relaxed mt-1">{s.description}</p>
               </div>
             ))}
@@ -355,7 +355,7 @@ export default function ApSubjectPage({ params }: { params: { slug: string } }) 
                   className="p-3 rounded-xl border border-border/40 bg-card/50 text-sm hover:border-blue-500/40 transition-colors flex items-center justify-between gap-2"
                 >
                   <span className="text-muted-foreground">{link.label}</span>
-                  <ArrowRight className="h-4 w-4 text-blue-400 flex-shrink-0" />
+                  <ArrowRight className="h-4 w-4 text-blue-700 dark:text-blue-400 flex-shrink-0" />
                 </a>
               ))}
             </div>
@@ -387,7 +387,7 @@ export default function ApSubjectPage({ params }: { params: { slug: string } }) 
       <FadeIn>
         <div className="rounded-xl border border-border/40 bg-card/50 p-5 space-y-2">
           <p className="text-sm font-semibold flex items-center gap-2">
-            <CheckCircle className="h-4 w-4 text-emerald-400" /> 100% original questions, calibrated to College Board format
+            <CheckCircle className="h-4 w-4 text-emerald-700 dark:text-emerald-400" /> 100% original questions, calibrated to College Board format
           </p>
           <p className="text-xs text-muted-foreground leading-relaxed">
             Every practice question is AI-generated and validated against the College Board {config.name} exam style — stem patterns, stimulus depth, distractor types, and difficulty. Cross-model validation catches errors before questions reach students. We never reproduce copyrighted exam content.
@@ -396,7 +396,7 @@ export default function ApSubjectPage({ params }: { params: { slug: string } }) 
       </FadeIn>
 
       {/* Trademark */}
-      <p className="text-xs text-center text-muted-foreground/60 pt-4">
+      <p className="text-xs text-center text-muted-foreground pt-4">
         AP&reg; is a registered trademark of the College Board, which is not affiliated with StudentNest. All practice questions are original AI-generated content.
       </p>
     </div>

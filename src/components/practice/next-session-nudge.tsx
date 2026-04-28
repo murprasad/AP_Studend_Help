@@ -62,7 +62,7 @@ export function NextSessionNudge({ course }: Props) {
       <CardContent className="p-5 space-y-4">
         <div className="flex items-start gap-3">
           <div className="h-10 w-10 rounded-full bg-amber-500/15 flex items-center justify-center shrink-0">
-            <Target className="h-5 w-5 text-amber-600" />
+            <Target className="h-5 w-5 text-amber-700 dark:text-amber-400" />
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-[15px] font-semibold leading-tight">

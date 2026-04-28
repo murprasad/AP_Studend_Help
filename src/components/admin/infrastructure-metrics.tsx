@@ -79,7 +79,7 @@ export function AdminInfrastructureMetrics() {
   if (error || !metrics) {
     return (
       <Card className="card-glow">
-        <CardContent className="p-8 text-center text-red-400 text-sm">{error ?? "Unknown error"}</CardContent>
+        <CardContent className="p-8 text-center text-red-700 dark:text-red-400 text-sm">{error ?? "Unknown error"}</CardContent>
       </Card>
     );
   }
@@ -100,7 +100,7 @@ export function AdminInfrastructureMetrics() {
       value: metrics.questionsGeneratedToday,
       sub: "AI-generated",
       icon: Zap,
-      color: "text-yellow-400",
+      color: "text-yellow-700 dark:text-yellow-400",
       bg: "bg-yellow-500/20",
     },
     {
@@ -108,7 +108,7 @@ export function AdminInfrastructureMetrics() {
       value: metrics.activeUsersToday,
       sub: "started a session",
       icon: Activity,
-      color: "text-emerald-400",
+      color: "text-emerald-700 dark:text-emerald-400",
       bg: "bg-emerald-500/20",
     },
     {
@@ -124,7 +124,7 @@ export function AdminInfrastructureMetrics() {
       value: metrics.totalQuestions.toLocaleString(),
       sub: "approved in DB",
       icon: Database,
-      color: "text-purple-400",
+      color: "text-purple-700 dark:text-purple-400",
       bg: "bg-purple-500/20",
     },
     {
@@ -140,7 +140,7 @@ export function AdminInfrastructureMetrics() {
       value: metrics.newUsersToday,
       sub: "registered today",
       icon: Users,
-      color: "text-orange-400",
+      color: "text-orange-700 dark:text-orange-400",
       bg: "bg-orange-500/20",
     },
     {
@@ -161,8 +161,8 @@ export function AdminInfrastructureMetrics() {
           key={i}
           className={`flex items-start gap-3 p-4 rounded-lg border text-sm ${
             alert.level === "red"
-              ? "bg-red-500/10 border-red-500/30 text-red-400"
-              : "bg-yellow-500/10 border-yellow-500/30 text-yellow-400"
+              ? "bg-red-500/10 border-red-500/30 text-red-700 dark:text-red-400"
+              : "bg-yellow-500/10 border-yellow-500/30 text-yellow-700 dark:text-yellow-400"
           }`}
         >
           <AlertTriangle className="h-4 w-4 mt-0.5 shrink-0" />
@@ -182,7 +182,7 @@ export function AdminInfrastructureMetrics() {
                 <div className="min-w-0">
                   <p className="text-2xl font-bold">{stat.value}</p>
                   <p className="text-xs text-muted-foreground leading-tight">{stat.label}</p>
-                  <p className="text-xs text-muted-foreground/60 leading-tight">{stat.sub}</p>
+                  <p className="text-xs text-muted-foreground leading-tight">{stat.sub}</p>
                 </div>
               </div>
             </CardContent>

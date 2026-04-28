@@ -81,7 +81,7 @@ export function CLEPFaq() {
                 >
                   <span
                     className={`text-base font-medium transition-colors duration-200 ${
-                      isOpen ? "text-emerald-400" : "text-foreground"
+                      isOpen ? "text-emerald-700 dark:text-emerald-400" : "text-foreground"
                     }`}
                   >
                     {item.question}

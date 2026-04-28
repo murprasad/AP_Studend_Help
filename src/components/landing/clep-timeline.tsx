@@ -108,7 +108,7 @@ export function CLEPTimeline() {
               <div
                 className={`relative w-16 h-16 rounded-full bg-emerald-500/15 border-2 border-emerald-500/40 flex items-center justify-center ${step.rotate}`}
               >
-                <step.icon className="w-7 h-7 text-emerald-400" />
+                <step.icon className="w-7 h-7 text-emerald-700 dark:text-emerald-400" />
                 <span className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-emerald-600 text-white text-xs font-bold flex items-center justify-center shadow-md">
                   {i + 1}
                 </span>
@@ -145,7 +145,7 @@ export function CLEPTimeline() {
               <div
                 className={`relative w-14 h-14 rounded-full bg-emerald-500/15 border-2 border-emerald-500/40 flex items-center justify-center ${step.rotate}`}
               >
-                <step.icon className="w-6 h-6 text-emerald-400" />
+                <step.icon className="w-6 h-6 text-emerald-700 dark:text-emerald-400" />
                 <span className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-emerald-600 text-white text-xs font-bold flex items-center justify-center shadow-md">
                   {i + 1}
                 </span>

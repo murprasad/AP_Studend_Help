@@ -126,7 +126,7 @@ export function KnowledgeCheck({
           variant="outline"
           size="sm"
           onClick={startCheck}
-          className="gap-2 text-xs border-blue-500/40 text-blue-500 hover:bg-blue-500/10 hover:text-blue-400"
+          className="gap-2 text-xs border-blue-500/40 text-blue-500 hover:bg-blue-500/10 hover:text-blue-700 dark:text-blue-400"
         >
           <BookOpen className="h-3.5 w-3.5" />
           Check your understanding
@@ -152,10 +152,10 @@ export function KnowledgeCheck({
       0: "Let's revisit this concept — try asking Sage a follow-up.",
     };
     const colors: Record<number, string> = {
-      3: "text-emerald-400",
-      2: "text-blue-400",
-      1: "text-amber-400",
-      0: "text-red-400",
+      3: "text-emerald-700 dark:text-emerald-400",
+      2: "text-blue-700 dark:text-blue-400",
+      1: "text-amber-700 dark:text-amber-400",
+      0: "text-red-700 dark:text-red-400",
     };
     return (
       <div className="mt-3 rounded-lg border border-border/40 bg-card p-4 space-y-2">
@@ -217,10 +217,10 @@ export function KnowledgeCheck({
             <button key={idx} className={optClass} onClick={() => handleSelect(idx)}>
               <span className="flex items-center gap-2">
                 {showFeedback && isCorrect && (
-                  <CheckCircle className="h-3.5 w-3.5 text-emerald-400 flex-shrink-0" />
+                  <CheckCircle className="h-3.5 w-3.5 text-emerald-700 dark:text-emerald-400 flex-shrink-0" />
                 )}
                 {showFeedback && isSelected && !isCorrect && (
-                  <XCircle className="h-3.5 w-3.5 text-red-400 flex-shrink-0" />
+                  <XCircle className="h-3.5 w-3.5 text-red-700 dark:text-red-400 flex-shrink-0" />
                 )}
                 {opt}
               </span>

@@ -144,7 +144,7 @@ export default function FrqPracticePage() {
           <Card className="border-amber-500/30 bg-amber-500/5">
             <CardContent className="p-5 space-y-4">
               <div className="flex items-center gap-2 flex-wrap">
-                <Badge variant="outline" className="border-amber-500/40 text-amber-600 dark:text-amber-400">
+                <Badge variant="outline" className="border-amber-500/40 text-amber-700 dark:text-amber-400 dark:text-amber-700 dark:text-amber-400">
                   {sample.type} · {sample.totalPoints} pts
                 </Badge>
                 <Badge variant="outline" className="text-[10px]">
@@ -162,7 +162,7 @@ export default function FrqPracticePage() {
                 <p className="text-sm font-medium leading-relaxed whitespace-pre-wrap">{sample.promptText}</p>
               </div>
               <div className="pt-3 border-t border-amber-500/20 flex items-center gap-2">
-                <Lock className="h-4 w-4 text-amber-600 flex-shrink-0" />
+                <Lock className="h-4 w-4 text-amber-700 dark:text-amber-400 flex-shrink-0" />
                 <p className="text-xs text-muted-foreground flex-1">
                   Write your answer + AI rubric scoring is Premium. Upgrade to grade against the official rubric.
                 </p>

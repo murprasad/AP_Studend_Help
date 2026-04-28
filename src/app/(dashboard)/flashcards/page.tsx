@@ -287,7 +287,7 @@ export default function FlashcardsPage() {
             variant="outline"
             disabled={submitting}
             onClick={() => submitRating(1)}
-            className="h-12 border-amber-500/40 text-amber-600 hover:bg-amber-500/10"
+            className="h-12 border-amber-500/40 text-amber-700 dark:text-amber-400 hover:bg-amber-500/10"
           >
             Hard
           </Button>

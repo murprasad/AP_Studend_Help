@@ -100,12 +100,12 @@ export function MasteryTierUpCard() {
       <CardContent className="p-5">
         <div className="flex items-start gap-4">
           <div className="w-12 h-12 rounded-xl bg-emerald-500/20 flex items-center justify-center flex-shrink-0 relative">
-            <Trophy className="h-6 w-6 text-emerald-400" />
-            <Sparkles className="h-3.5 w-3.5 text-yellow-400 absolute -top-1 -right-1 animate-pulse" />
+            <Trophy className="h-6 w-6 text-emerald-700 dark:text-emerald-400" />
+            <Sparkles className="h-3.5 w-3.5 text-yellow-700 dark:text-yellow-400 absolute -top-1 -right-1 animate-pulse" />
           </div>
           <div className="flex-1 space-y-2">
             <div className="flex items-center gap-2">
-              <span className="text-xs font-semibold uppercase tracking-wide text-emerald-400">
+              <span className="text-xs font-semibold uppercase tracking-wide text-emerald-700 dark:text-emerald-400">
                 You fixed it
               </span>
               <span className="text-[10px] text-muted-foreground">
@@ -114,14 +114,14 @@ export function MasteryTierUpCard() {
             </div>
             <p className="text-sm font-semibold leading-snug">{headline}</p>
             <div className="flex items-baseline gap-2 pt-1">
-              <span className="text-3xl font-bold text-emerald-400 tabular-nums">
+              <span className="text-3xl font-bold text-emerald-700 dark:text-emerald-400 tabular-nums">
                 {displayedScore ?? tierUp.beforeScore}%
               </span>
               <span className="text-xs text-muted-foreground">mastery for this unit</span>
             </div>
             {tierUp.projectedScoreDelta > 0 && (
               <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                <TrendingUp className="h-3.5 w-3.5 text-emerald-400" />
+                <TrendingUp className="h-3.5 w-3.5 text-emerald-700 dark:text-emerald-400" />
                 <span>
                   +{tierUp.projectedScoreDelta.toFixed(1)} AP score projected from this unit
                   {tierUp.projectedPassPercentDelta > 0 &&

@@ -187,12 +187,12 @@ export function DailyStudyOSCard({ course }: Props) {
       <CardContent className="p-5 space-y-3">
         <div className="flex items-start gap-3">
           <div className="w-10 h-10 rounded-lg bg-blue-500/15 flex items-center justify-center flex-shrink-0">
-            <Calendar className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+            <Calendar className="h-5 w-5 text-blue-600 dark:text-blue-700 dark:text-blue-400" />
           </div>
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2 flex-wrap">
               <p className="text-[16px] font-semibold leading-tight">Today&apos;s Study Plan</p>
-              <Badge variant="outline" className="text-[10px] border-blue-500/40 text-blue-700 dark:text-blue-400 bg-blue-500/5">
+              <Badge variant="outline" className="text-[10px] border-blue-500/40 text-blue-700 dark:text-blue-700 dark:text-blue-400 bg-blue-500/5">
                 {modeNote}
               </Badge>
             </div>
@@ -212,11 +212,11 @@ export function DailyStudyOSCard({ course }: Props) {
             >
               <div className="flex items-start gap-2 min-w-0 flex-1 pr-2">
                 {item.done
-                  ? <CheckCircle2 className="h-4 w-4 text-emerald-600 dark:text-emerald-400 mt-0.5 flex-shrink-0" />
+                  ? <CheckCircle2 className="h-4 w-4 text-emerald-600 dark:text-emerald-700 dark:text-emerald-400 mt-0.5 flex-shrink-0" />
                   : <Circle className="h-4 w-4 text-muted-foreground mt-0.5 flex-shrink-0" />
                 }
                 <div className="min-w-0">
-                  <p className={`text-[13px] font-medium truncate ${item.done ? "text-emerald-700 dark:text-emerald-400 line-through decoration-emerald-500/40" : ""}`}>
+                  <p className={`text-[13px] font-medium truncate ${item.done ? "text-emerald-700 dark:text-emerald-700 dark:text-emerald-400 line-through decoration-emerald-500/40" : ""}`}>
                     {item.label}
                   </p>
                   <p className="text-[11px] text-muted-foreground mt-0.5">{item.detail}</p>

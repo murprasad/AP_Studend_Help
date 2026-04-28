@@ -124,7 +124,7 @@ export function AdminMegaPopulate() {
     <Card className="card-glow border-purple-500/30">
       <CardHeader>
         <CardTitle className="text-lg flex items-center gap-2">
-          <Rocket className="h-5 w-5 text-purple-400" />
+          <Rocket className="h-5 w-5 text-purple-700 dark:text-purple-400" />
           Mega-Populate Question Bank
         </CardTitle>
         <p className="text-sm text-muted-foreground">
@@ -199,7 +199,7 @@ export function AdminMegaPopulate() {
                   "Complete"
                 )}
               </span>
-              <span className="text-purple-400 font-medium">
+              <span className="text-purple-700 dark:text-purple-400 font-medium">
                 {doneCount}/{unitKeys.length} units · +{totalAdded} questions
               </span>
             </div>
@@ -215,10 +215,10 @@ export function AdminMegaPopulate() {
                   "bg-secondary/30"
                 }`}>
                   <div className="flex-shrink-0 mt-0.5">
-                    {u.status === "running" && <Loader2 className="h-3.5 w-3.5 animate-spin text-purple-400" />}
-                    {u.status === "done" && <CheckCircle className="h-3.5 w-3.5 text-emerald-400" />}
-                    {u.status === "failed" && <AlertTriangle className="h-3.5 w-3.5 text-red-400" />}
-                    {u.status === "skipped" && <span className="text-blue-400 font-bold">–</span>}
+                    {u.status === "running" && <Loader2 className="h-3.5 w-3.5 animate-spin text-purple-700 dark:text-purple-400" />}
+                    {u.status === "done" && <CheckCircle className="h-3.5 w-3.5 text-emerald-700 dark:text-emerald-400" />}
+                    {u.status === "failed" && <AlertTriangle className="h-3.5 w-3.5 text-red-700 dark:text-red-400" />}
+                    {u.status === "skipped" && <span className="text-blue-700 dark:text-blue-400 font-bold">–</span>}
                     {u.status === "pending" && <span className="h-3.5 w-3.5 block rounded-full border border-muted-foreground/30" />}
                   </div>
                   <div className="flex-1 min-w-0">
@@ -233,9 +233,9 @@ export function AdminMegaPopulate() {
                   </div>
                   <div className="flex-shrink-0 text-right">
                     {u.status === "running" && <span className="text-purple-300">Generating...</span>}
-                    {u.status === "done" && <span className="text-emerald-400">+{u.generated}</span>}
-                    {u.status === "skipped" && <span className="text-blue-400">already full</span>}
-                    {u.status === "failed" && <span className="text-red-400">failed</span>}
+                    {u.status === "done" && <span className="text-emerald-700 dark:text-emerald-400">+{u.generated}</span>}
+                    {u.status === "skipped" && <span className="text-blue-700 dark:text-blue-400">already full</span>}
+                    {u.status === "failed" && <span className="text-red-700 dark:text-red-400">failed</span>}
                     {u.status === "pending" && <span className="text-muted-foreground/50">pending</span>}
                   </div>
                 </div>

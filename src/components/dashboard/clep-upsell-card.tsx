@@ -70,7 +70,7 @@ export function CLEPUpsellCard() {
       <button
         onClick={handleDismiss}
         aria-label="Dismiss"
-        className="absolute top-3 right-3 text-muted-foreground/60 hover:text-muted-foreground transition"
+        className="absolute top-3 right-3 text-muted-foreground hover:text-muted-foreground transition"
       >
         <X className="h-4 w-4" />
       </button>

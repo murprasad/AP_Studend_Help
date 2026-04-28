@@ -49,7 +49,7 @@ export function SessionLimitHitCard({ course }: { course: string }) {
     <Card className="card-glow border-yellow-500/30 bg-yellow-500/5">
       <CardContent className="p-5 space-y-4">
         <div className="flex items-start gap-3">
-          <Crown className="h-5 w-5 text-yellow-400 flex-shrink-0 mt-0.5" />
+          <Crown className="h-5 w-5 text-yellow-700 dark:text-yellow-400 flex-shrink-0 mt-0.5" />
           <div className="space-y-2 flex-1">
             <p className="font-semibold text-yellow-300">
               You&apos;ve hit today&apos;s practice cap.

@@ -52,7 +52,7 @@ function VerifyEmailContent() {
         )}
         {status === "success" && (
           <>
-            <CheckCircle className="h-16 w-16 text-emerald-400 mx-auto mb-4" />
+            <CheckCircle className="h-16 w-16 text-emerald-700 dark:text-emerald-400 mx-auto mb-4" />
             <h2 className="text-2xl font-bold mb-2">Email Verified!</h2>
             <p className="text-muted-foreground mb-6">{message}</p>
             <Button onClick={() => router.push("/login")} className="w-full">

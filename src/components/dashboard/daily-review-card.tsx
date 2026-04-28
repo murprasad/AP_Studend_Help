@@ -85,7 +85,7 @@ export function DailyReviewCard({ course }: Props) {
       <Card className="card-glow">
         <CardHeader>
           <CardTitle className="text-base flex items-center gap-2">
-            <RotateCcw className="h-4 w-4 text-emerald-400" />
+            <RotateCcw className="h-4 w-4 text-emerald-700 dark:text-emerald-400" />
             Daily Review
           </CardTitle>
         </CardHeader>
@@ -101,7 +101,7 @@ export function DailyReviewCard({ course }: Props) {
       <Card className="card-glow">
         <CardHeader>
           <CardTitle className="text-base flex items-center gap-2">
-            <RotateCcw className="h-4 w-4 text-emerald-400" />
+            <RotateCcw className="h-4 w-4 text-emerald-700 dark:text-emerald-400" />
             Daily Review
           </CardTitle>
         </CardHeader>
@@ -119,14 +119,14 @@ export function DailyReviewCard({ course }: Props) {
       <Card className="card-glow">
         <CardHeader>
           <CardTitle className="text-base flex items-center gap-2">
-            <RotateCcw className="h-4 w-4 text-emerald-400" />
+            <RotateCcw className="h-4 w-4 text-emerald-700 dark:text-emerald-400" />
             Daily Review
           </CardTitle>
         </CardHeader>
         <CardContent>
           <p className="text-sm text-muted-foreground text-center py-2">
             No questions to review today.{" "}
-            <span className="text-emerald-400">Keep practicing!</span>
+            <span className="text-emerald-700 dark:text-emerald-400">Keep practicing!</span>
           </p>
         </CardContent>
       </Card>
@@ -138,7 +138,7 @@ export function DailyReviewCard({ course }: Props) {
       <Card className="card-glow border-emerald-500/20">
         <CardHeader>
           <CardTitle className="text-base flex items-center gap-2">
-            <RotateCcw className="h-4 w-4 text-emerald-400" />
+            <RotateCcw className="h-4 w-4 text-emerald-700 dark:text-emerald-400" />
             Daily Review
           </CardTitle>
         </CardHeader>
@@ -146,7 +146,7 @@ export function DailyReviewCard({ course }: Props) {
           <p className="text-sm text-muted-foreground">
             {count} question{count !== 1 ? "s" : ""} from 3–7 days ago need a refresher.
           </p>
-          <div className="flex items-center gap-2 text-xs text-emerald-400">
+          <div className="flex items-center gap-2 text-xs text-emerald-700 dark:text-emerald-400">
             <span>â±</span>
             <span>~{count * 30}s Â· Spaced Repetition</span>
           </div>
@@ -164,16 +164,16 @@ export function DailyReviewCard({ course }: Props) {
       <Card className="card-glow border-emerald-500/20">
         <CardHeader>
           <CardTitle className="text-base flex items-center gap-2">
-            <RotateCcw className="h-4 w-4 text-emerald-400" />
+            <RotateCcw className="h-4 w-4 text-emerald-700 dark:text-emerald-400" />
             Daily Review Complete!
           </CardTitle>
         </CardHeader>
         <CardContent className="text-center space-y-2">
-          <p className="text-3xl font-bold text-emerald-400">{score}/{questions.length}</p>
+          <p className="text-3xl font-bold text-emerald-700 dark:text-emerald-400">{score}/{questions.length}</p>
           <p className="text-sm text-muted-foreground">
             {score === questions.length ? "Perfect! ðŸŽ‰" : "Keep it up — practice makes progress!"}
           </p>
-          <Badge variant="outline" className="text-emerald-400 border-emerald-500/30 text-xs">
+          <Badge variant="outline" className="text-emerald-700 dark:text-emerald-400 border-emerald-500/30 text-xs">
             +{score * 5} XP Daily Boost
           </Badge>
         </CardContent>
@@ -190,7 +190,7 @@ export function DailyReviewCard({ course }: Props) {
       <CardHeader>
         <CardTitle className="text-base flex items-center justify-between">
           <span className="flex items-center gap-2">
-            <RotateCcw className="h-4 w-4 text-emerald-400" />
+            <RotateCcw className="h-4 w-4 text-emerald-700 dark:text-emerald-400" />
             Review {currentIdx + 1}/{questions.length}
           </span>
           <Badge variant="outline" className="text-xs">{q.difficulty}</Badge>
@@ -205,9 +205,9 @@ export function DailyReviewCard({ course }: Props) {
               let cls = "border border-border/40 hover:bg-accent cursor-pointer";
               if (isAnswered) {
                 if (letter === q.correctAnswer) {
-                  cls = "border-emerald-500 bg-emerald-500/10 text-emerald-400";
+                  cls = "border-emerald-500 bg-emerald-500/10 text-emerald-700 dark:text-emerald-400";
                 } else if (letter === selectedAnswer) {
-                  cls = "border-red-500 bg-red-500/10 text-red-400";
+                  cls = "border-red-500 bg-red-500/10 text-red-700 dark:text-red-400";
                 } else {
                   cls = "border border-border/20 opacity-40";
                 }

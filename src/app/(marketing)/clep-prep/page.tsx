@@ -163,12 +163,12 @@ export default async function ClepPrepPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
           <FadeIn>
             <div className="text-center lg:text-left space-y-5">
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm font-medium">
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-700 dark:text-emerald-400 text-sm font-medium">
                 <GraduationCap className="h-4 w-4" /> 34 CLEP Exams Â· All 5 Domains
               </div>
               <h1 className="text-4xl sm:text-5xl lg:text-[3.4rem] font-bold leading-[1.1] tracking-tight">
                 Pass Your CLEP Exam in 7 Days.<br />
-                <span className="text-emerald-400">Save $1,200.</span>
+                <span className="text-emerald-700 dark:text-emerald-400">Save $1,200.</span>
               </h1>
               <p className="text-lg text-muted-foreground max-w-lg mx-auto lg:mx-0">
                 One $93 exam replaces a full college course. Sage builds your custom 7-day plan — study only what&apos;s on the test.
@@ -180,12 +180,12 @@ export default async function ClepPrepPage() {
                   </Button>
                 </Link>
                 <a href="#easiest">
-                  <Button size="lg" variant="ghost" className="text-emerald-400 hover:text-emerald-300 w-full sm:w-auto">
+                  <Button size="lg" variant="ghost" className="text-emerald-700 dark:text-emerald-400 hover:text-emerald-300 w-full sm:w-auto">
                     Which exam is easiest? <ChevronDown className="h-4 w-4 ml-1" />
                   </Button>
                 </a>
               </div>
-              <p className="text-xs text-muted-foreground/60">Free to start. No credit card required.</p>
+              <p className="text-xs text-muted-foreground">Free to start. No credit card required.</p>
             </div>
           </FadeIn>
           <FadeIn className="hidden lg:block">
@@ -224,8 +224,8 @@ export default async function ClepPrepPage() {
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
-                      <span className="text-xs font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded">#{i + 1}</span>
-                      <span className={`text-xs font-medium px-2 py-0.5 rounded ${exam.difficulty === "High" ? "bg-green-500/10 text-green-400" : "bg-amber-500/10 text-amber-400"}`}>
+                      <span className="text-xs font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded">#{i + 1}</span>
+                      <span className={`text-xs font-medium px-2 py-0.5 rounded ${exam.difficulty === "High" ? "bg-green-500/10 text-green-400" : "bg-amber-500/10 text-amber-700 dark:text-amber-400"}`}>
                         {exam.difficulty} pass rate
                       </span>
                     </div>
@@ -234,7 +234,7 @@ export default async function ClepPrepPage() {
                   </div>
                   <div className="text-right flex-shrink-0">
                     <p className="text-xs text-muted-foreground"><Clock className="h-3 w-3 inline mr-1" />{exam.hours} hrs</p>
-                    <p className="text-sm font-bold text-emerald-400 mt-1">Save {exam.savings}</p>
+                    <p className="text-sm font-bold text-emerald-700 dark:text-emerald-400 mt-1">Save {exam.savings}</p>
                   </div>
                 </div>
               </div>
@@ -301,7 +301,7 @@ export default async function ClepPrepPage() {
           <FadeIn>
             <div className="space-y-4 text-center lg:text-left">
               <div className="w-10 h-10 rounded-lg bg-emerald-500/20 flex items-center justify-center mx-auto lg:mx-0">
-                <CalendarCheck className="h-5 w-5 text-emerald-400" />
+                <CalendarCheck className="h-5 w-5 text-emerald-700 dark:text-emerald-400" />
               </div>
               <h2 className="text-2xl sm:text-3xl font-bold">Know exactly when you&apos;re ready</h2>
               <p className="text-muted-foreground leading-relaxed">
@@ -328,7 +328,7 @@ export default async function ClepPrepPage() {
               <div className="space-y-3">
                 <h3 className="text-2xl font-bold">CLEP-aligned practice, not random quizzes</h3>
                 <p className="text-muted-foreground leading-relaxed">AI generates questions matching official CLEP format. Sage explains every answer using free resources — OpenStax, Khan Academy, LibreTexts.</p>
-                <p className="text-sm text-emerald-400 font-medium">Practice only what&apos;s actually on the exam.</p>
+                <p className="text-sm text-emerald-700 dark:text-emerald-400 font-medium">Practice only what&apos;s actually on the exam.</p>
               </div>
             </FadeIn>
             <FadeIn>
@@ -340,7 +340,7 @@ export default async function ClepPrepPage() {
               <div className="space-y-3">
                 <h3 className="text-2xl font-bold">Your 7-day plan adapts as you learn</h3>
                 <p className="text-muted-foreground leading-relaxed">Sage builds a custom day-by-day plan based on your diagnostic. Struggling with Unit 3? It shifts more practice there. Already strong on Unit 1? Skip ahead.</p>
-                <p className="text-sm text-emerald-400 font-medium">Most students are exam-ready by Day 5.</p>
+                <p className="text-sm text-emerald-700 dark:text-emerald-400 font-medium">Most students are exam-ready by Day 5.</p>
               </div>
             </FadeIn>
             <FadeIn className="lg:order-1">
@@ -354,7 +354,7 @@ export default async function ClepPrepPage() {
       <section className="max-w-5xl mx-auto px-4 py-16">
         <FadeIn>
           <div className="text-center mb-10">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-sm font-medium mb-4">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-700 dark:text-emerald-400 text-sm font-medium mb-4">
               <Shield className="h-4 w-4" />
               Question Quality Guarantee
             </div>
@@ -425,12 +425,12 @@ export default async function ClepPrepPage() {
       <section className="bg-emerald-500/[0.04] border-y border-emerald-500/10 py-12">
         <div className="max-w-3xl mx-auto px-4 text-center space-y-4">
           <FadeIn>
-            <CalendarCheck className="h-8 w-8 text-emerald-400 mx-auto" />
+            <CalendarCheck className="h-8 w-8 text-emerald-700 dark:text-emerald-400 mx-auto" />
             <h2 className="text-2xl font-bold">No Waiting. Schedule Anytime.</h2>
             <p className="text-muted-foreground leading-relaxed max-w-xl mx-auto">
               Unlike SAT or AP, CLEP exams are offered <span className="text-foreground font-medium">year-round</span> at test centers nationwide. Most centers have openings within 1-2 weeks. Some offer remote proctoring from home.
             </p>
-            <p className="text-sm text-emerald-400 font-medium">Your next exam could be this week.</p>
+            <p className="text-sm text-emerald-700 dark:text-emerald-400 font-medium">Your next exam could be this week.</p>
           </FadeIn>
         </div>
       </section>
@@ -459,10 +459,10 @@ export default async function ClepPrepPage() {
                   {domain.courses.map((c) => (
                     <div key={c.name} className="flex items-center justify-between p-3 rounded-lg bg-secondary/20">
                       <div className="flex items-center gap-2">
-                        <CheckCircle className="h-4 w-4 text-emerald-400 flex-shrink-0" />
+                        <CheckCircle className="h-4 w-4 text-emerald-700 dark:text-emerald-400 flex-shrink-0" />
                         <span className="text-sm">{c.name}</span>
                       </div>
-                      <span className="text-xs font-medium text-emerald-400">{c.savings}</span>
+                      <span className="text-xs font-medium text-emerald-700 dark:text-emerald-400">{c.savings}</span>
                     </div>
                   ))}
                 </div>
@@ -478,7 +478,7 @@ export default async function ClepPrepPage() {
           <FadeIn>
             <div className="rounded-2xl border border-emerald-500/20 bg-emerald-500/[0.04] p-8 space-y-4">
               <div className="flex items-center gap-3">
-                <BookOpen className="h-6 w-6 text-emerald-400" />
+                <BookOpen className="h-6 w-6 text-emerald-700 dark:text-emerald-400" />
                 <h2 className="text-xl font-bold">New to CLEP? Here&apos;s What You Need to Know</h2>
               </div>
               <div className="grid sm:grid-cols-2 gap-4 text-sm text-muted-foreground">
@@ -515,7 +515,7 @@ export default async function ClepPrepPage() {
                 <p className="font-bold">Free</p>
                 <p className="text-3xl font-bold text-muted-foreground">$0 <span className="text-sm font-normal">forever</span></p>
                 {["Unlimited MCQ practice", "5 Sage Live Tutor chats/day", "Basic study plan", "Mastery analytics", "All 34 CLEP courses"].map((f) => (
-                  <div key={f} className="flex items-center gap-2 text-sm"><CheckCircle className="h-4 w-4 text-emerald-400 flex-shrink-0" />{f}</div>
+                  <div key={f} className="flex items-center gap-2 text-sm"><CheckCircle className="h-4 w-4 text-emerald-700 dark:text-emerald-400 flex-shrink-0" />{f}</div>
                 ))}
                 <Link href="/register?module=clep" className="block pt-2">
                   <Button variant="outline" className="w-full">Start Free</Button>
@@ -525,11 +525,11 @@ export default async function ClepPrepPage() {
             <FadeIn>
               <div className="rounded-xl border-2 border-emerald-500 bg-emerald-500/5 p-6 space-y-3 h-full relative">
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full bg-emerald-600 text-white text-xs font-semibold">Most Popular</div>
-                <p className="font-bold text-emerald-400">CLEP Premium</p>
+                <p className="font-bold text-emerald-700 dark:text-emerald-400">CLEP Premium</p>
                 <p className="text-3xl font-bold">$9.99<span className="text-sm font-normal text-muted-foreground">/mo</span></p>
                 <p className="text-xs text-green-700 dark:text-green-400 font-medium">or $79.99/yr — save 33%</p>
                 {["Everything in Free", "7-Day Pass Plan (AI-personalized)", "Unlimited Sage Live Tutor chats", "Exam Readiness Score", "Save $1,200+ per exam"].map((f) => (
-                  <div key={f} className="flex items-center gap-2 text-sm"><CheckCircle className="h-4 w-4 text-emerald-400 flex-shrink-0" />{f}</div>
+                  <div key={f} className="flex items-center gap-2 text-sm"><CheckCircle className="h-4 w-4 text-emerald-700 dark:text-emerald-400 flex-shrink-0" />{f}</div>
                 ))}
                 <form action="/api/checkout?plan=monthly&module=clep" method="POST" className="pt-2">
                   <Button type="submit" className="w-full bg-emerald-700 hover:bg-emerald-800">Start CLEP Premium</Button>
@@ -557,7 +557,7 @@ export default async function ClepPrepPage() {
         <div className="max-w-3xl mx-auto px-4 text-center space-y-5">
           <FadeIn>
             <h2 className="text-3xl sm:text-4xl font-bold">
-              Your next exam could be<br /><span className="text-emerald-400">7 days from now.</span>
+              Your next exam could be<br /><span className="text-emerald-700 dark:text-emerald-400">7 days from now.</span>
             </h2>
             <p className="text-muted-foreground">Pick an exam. Follow the plan. Walk in and pass.</p>
             <Link href="/register?module=clep">
@@ -565,14 +565,14 @@ export default async function ClepPrepPage() {
                 Build My 7-Day Plan <ArrowRight className="h-5 w-5" />
               </Button>
             </Link>
-            <p className="text-xs text-muted-foreground/60">Free to start Â· No credit card Â· Cancel anytime</p>
+            <p className="text-xs text-muted-foreground">Free to start Â· No credit card Â· Cancel anytime</p>
           </FadeIn>
         </div>
       </section>
 
       {/* â•â•â• TRADEMARK â•â•â• */}
       <div className="max-w-3xl mx-auto px-4 pb-8">
-        <p className="text-xs text-center text-muted-foreground/60">
+        <p className="text-xs text-center text-muted-foreground">
           CLEPÂ® is a registered trademark of College Board, which is not affiliated with StudentNest. All practice questions are original AI-generated content.
         </p>
       </div>
