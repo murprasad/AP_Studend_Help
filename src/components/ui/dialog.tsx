@@ -41,7 +41,19 @@ function DialogTrigger({ asChild, children }: { asChild?: boolean; children: Rea
   )
 }
 
-function DialogContent({ className, children }: { className?: string; children: React.ReactNode }) {
+function DialogContent({
+  className,
+  children,
+  hideClose = false,
+  blockOutsideClick = false,
+}: {
+  className?: string;
+  children: React.ReactNode;
+  /** Hide the X close button (use when the dialog must be answered, not dismissed) */
+  hideClose?: boolean;
+  /** Block the backdrop click from dismissing the dialog (mandatory-action dialogs) */
+  blockOutsideClick?: boolean;
+}) {
   const { open, setOpen } = React.useContext(DialogContext)
 
   if (!open) return null
@@ -50,7 +62,7 @@ function DialogContent({ className, children }: { className?: string; children: 
     <>
       <div
         className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm"
-        onClick={() => setOpen(false)}
+        onClick={blockOutsideClick ? undefined : () => setOpen(false)}
       />
       <div
         className={cn(
@@ -60,12 +72,15 @@ function DialogContent({ className, children }: { className?: string; children: 
           className
         )}
       >
-        <button
-          onClick={() => setOpen(false)}
-          className="absolute right-4 top-4 text-muted-foreground hover:text-foreground transition-colors"
-        >
-          <X className="h-4 w-4" />
-        </button>
+        {!hideClose && (
+          <button
+            onClick={() => setOpen(false)}
+            aria-label="Close"
+            className="absolute right-4 top-4 text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        )}
         {children}
       </div>
     </>

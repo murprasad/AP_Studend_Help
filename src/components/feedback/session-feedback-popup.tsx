@@ -139,17 +139,20 @@ export function SessionFeedbackPopup({ sessionId, triggerCondition, source, cour
   const goodLabel = context === "abandon" ? "Just taking a break" : "Good";
   const badLabel = context === "abandon" ? "Ran into a problem" : "Needs work";
 
-  // Beta 8.2 (2026-04-26): block dismiss until rated. The custom Dialog
-  // (src/components/ui/dialog.tsx) closes on backdrop click via setOpen(false)
-  // → onOpenChange(false). By gating onOpenChange on allowDismiss we
-  // intercept the close. The X button inside DialogContent ALSO calls
-  // setOpen(false) — same gate catches it. Once submitted=true the
-  // "Thank you" auto-closes via closeTimer (calls setOpen(false) directly,
-  // which the gate now permits).
+  // 2026-04-28 (after user feedback "I still see cancel as option"):
+  //   The previous gate on onOpenChange blocked dismiss but the X icon
+  //   in the dialog header was still rendered (and read as "cancel" by
+  //   the user). Now we also pass hideClose + blockOutsideClick to
+  //   DialogContent so the X disappears AND backdrop click is no-op
+  //   until the user submits a rating.
   const allowDismiss = submitted;
   return (
     <Dialog open={open} onOpenChange={(next) => { if (allowDismiss || next) setOpen(next); }}>
-      <DialogContent className="sm:max-w-sm p-0 gap-0 rounded-2xl overflow-hidden">
+      <DialogContent
+        className="sm:max-w-sm p-0 gap-0 rounded-2xl overflow-hidden"
+        hideClose={!allowDismiss}
+        blockOutsideClick={!allowDismiss}
+      >
         <div className="p-6 text-center space-y-5">
           {submitted ? (
             <div className="py-4 space-y-2">
