@@ -1,0 +1,200 @@
+[
+  {
+    "group": "SAT",
+    "pdf": "data\\official\\SAT\\sat-practice-test-4-answers-digital.pdf",
+    "sizeKB": 804,
+    "wordCount": 24504,
+    "visualRefs": 68,
+    "visualPerKWord": "2.78",
+    "matchBreakdown": {
+      "\\bthe (graph|figure|table|chart|diagram|scatterplot|histogram)\\b": 46,
+      "\\bgraph of [a-z=]": 16,
+      "\\bbar (graph|chart)\\b": 1,
+      "\\bline (graph|chart)\\b": 2,
+      "\\bin the (figure|graph|table|chart)\\b": 3
+    }
+  },
+  {
+    "group": "SAT",
+    "pdf": "data\\official\\SAT\\digital-sat-sample-questions.pdf",
+    "sizeKB": 526,
+    "wordCount": 9090,
+    "visualRefs": 23,
+    "visualPerKWord": "2.53",
+    "matchBreakdown": {
+      "\\bthe (graph|figure|table|chart|diagram|scatterplot|histogram)\\b": 15,
+      "\\bgraph of [a-z=]": 6,
+      "\\bscatterplot\\b": 2
+    }
+  },
+  {
+    "group": "CLEP",
+    "pdf": "data\\official\\CLEP\\college_algebra_fact_sheet.pdf",
+    "sizeKB": 221,
+    "wordCount": 1599,
+    "visualRefs": 4,
+    "visualPerKWord": "2.50",
+    "matchBreakdown": {
+      "\\bthe (graph|figure|table|chart|diagram|scatterplot|histogram)\\b": 3,
+      "\\bgraph of [a-z=]": 1
+    }
+  },
+  {
+    "group": "DSST",
+    "pdf": "data\\official\\DSST\\DSST_TechnicalWriting.pdf",
+    "sizeKB": 244,
+    "wordCount": 879,
+    "visualRefs": 2,
+    "visualPerKWord": "2.28",
+    "matchBreakdown": {
+      "\\bbar (graph|chart)\\b": 1,
+      "\\bline (graph|chart)\\b": 1
+    }
+  },
+  {
+    "group": "SAT",
+    "pdf": "data\\official\\SAT\\scoring-sat-practice-test-4-digital.pdf",
+    "sizeKB": 928,
+    "wordCount": 3003,
+    "visualRefs": 6,
+    "visualPerKWord": "2.00",
+    "matchBreakdown": {
+      "\\bthe (graph|figure|table|chart|diagram|scatterplot|histogram)\\b": 3,
+      "\\b(shown|figure|table|chart|diagram) (above|below)\\b": 3
+    }
+  },
+  {
+    "group": "SAT",
+    "pdf": "data\\official\\SAT\\sat-practice-test-4-digital.pdf",
+    "sizeKB": 10291,
+    "wordCount": 13789,
+    "visualRefs": 21,
+    "visualPerKWord": "1.52",
+    "matchBreakdown": {
+      "\\bthe (graph|figure|table|chart|diagram|scatterplot|histogram)\\b": 14,
+      "\\bgraph of [a-z=]": 2,
+      "\\bscatterplot\\b": 1,
+      "\\bbar (graph|chart)\\b": 1,
+      "\\bline (graph|chart)\\b": 2,
+      "\\bin the (figure|graph|table|chart)\\b": 1
+    }
+  },
+  {
+    "group": "CLEP",
+    "pdf": "data\\official\\CLEP\\introductory_sociology_fact_sheet.pdf",
+    "sizeKB": 112,
+    "wordCount": 1321,
+    "visualRefs": 2,
+    "visualPerKWord": "1.51",
+    "matchBreakdown": {
+      "\\bthe (graph|figure|table|chart|diagram|scatterplot|histogram)\\b": 2
+    }
+  },
+  {
+    "group": "SAT",
+    "pdf": "data\\official\\SAT\\assessment-framework-for-digital-sat-suite.pdf",
+    "sizeKB": 2673,
+    "wordCount": 91414,
+    "visualRefs": 86,
+    "visualPerKWord": "0.94",
+    "matchBreakdown": {
+      "\\bthe (graph|figure|table|chart|diagram|scatterplot|histogram)\\b": 33,
+      "\\bgraph of [a-z=]": 40,
+      "\\bscatterplot\\b": 13
+    }
+  },
+  {
+    "group": "CLEP",
+    "pdf": "data\\official\\CLEP\\principles_management_fact_sheet.pdf",
+    "sizeKB": 108,
+    "wordCount": 1129,
+    "visualRefs": 1,
+    "visualPerKWord": "0.89",
+    "matchBreakdown": {
+      "\\bthe (graph|figure|table|chart|diagram|scatterplot|histogram)\\b": 1
+    }
+  },
+  {
+    "group": "CLEP",
+    "pdf": "data\\official\\CLEP\\principles_marketing_fact_sheet.pdf",
+    "sizeKB": 216,
+    "wordCount": 1275,
+    "visualRefs": 1,
+    "visualPerKWord": "0.78",
+    "matchBreakdown": {
+      "\\bthe (graph|figure|table|chart|diagram|scatterplot|histogram)\\b": 1
+    }
+  },
+  {
+    "group": "CLEP",
+    "pdf": "data\\official\\CLEP\\introductory_psychology_fact_sheet.pdf",
+    "sizeKB": 119,
+    "wordCount": 1507,
+    "visualRefs": 1,
+    "visualPerKWord": "0.66",
+    "matchBreakdown": {
+      "\\bthe (graph|figure|table|chart|diagram|scatterplot|histogram)\\b": 1
+    }
+  },
+  {
+    "group": "ACT",
+    "pdf": "data\\official\\ACT\\preparing-for-the-act-2025.pdf",
+    "sizeKB": 1855,
+    "wordCount": 30095,
+    "visualRefs": 14,
+    "visualPerKWord": "0.47",
+    "matchBreakdown": {
+      "\\bthe (graph|figure|table|chart|diagram|scatterplot|histogram)\\b": 8,
+      "\\bgraph of [a-z=]": 3,
+      "\\b(shown|figure|table|chart|diagram) (above|below)\\b": 1,
+      "\\bin the (figure|graph|table|chart)\\b": 2
+    }
+  },
+  {
+    "group": "CLEP",
+    "pdf": "data\\official\\CLEP\\Composition_fact_sheet.pdf",
+    "sizeKB": 825,
+    "wordCount": 4168,
+    "visualRefs": 1,
+    "visualPerKWord": "0.24",
+    "matchBreakdown": {
+      "\\bthe (graph|figure|table|chart|diagram|scatterplot|histogram)\\b": 1
+    }
+  },
+  {
+    "group": "SAT",
+    "pdf": "data\\official\\SAT\\digital-sat-test-spec-overview.pdf",
+    "sizeKB": 1708,
+    "wordCount": 5538,
+    "visualRefs": 0,
+    "visualPerKWord": "0.00",
+    "matchBreakdown": {}
+  },
+  {
+    "group": "DSST",
+    "pdf": "data\\official\\DSST\\PersonalFinance.pdf",
+    "sizeKB": 86,
+    "wordCount": 904,
+    "visualRefs": 0,
+    "visualPerKWord": "0.00",
+    "matchBreakdown": {}
+  },
+  {
+    "group": "DSST",
+    "pdf": "data\\official\\DSST\\PrinciplesOfSupervision.pdf",
+    "sizeKB": 97,
+    "wordCount": 819,
+    "visualRefs": 0,
+    "visualPerKWord": "0.00",
+    "matchBreakdown": {}
+  },
+  {
+    "group": "DSST",
+    "pdf": "data\\official\\DSST\\SubstanceAbuse.pdf",
+    "sizeKB": 78,
+    "wordCount": 939,
+    "visualRefs": 0,
+    "visualPerKWord": "0.00",
+    "matchBreakdown": {}
+  }
+]
