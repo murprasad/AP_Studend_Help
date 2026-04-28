@@ -93,11 +93,12 @@ const rows = await sql`
     AND stimulus NOT LIKE '%mermaid%'
     AND ("modelUsed" IS NULL OR "modelUsed" NOT LIKE ${'%' + MARKER + '%'})
     AND (
-      "questionText" ILIKE '%the graph %' OR
-      "questionText" ILIKE '%graph of%' OR
-      "questionText" ILIKE '%scatterplot%' OR
-      "questionText" ILIKE '%shown%' OR
-      stimulus ILIKE '%y =%'
+      "questionText" ILIKE '%the graph %' OR "questionText" ILIKE '%graph of%' OR
+      "questionText" ILIKE '%scatterplot%' OR "questionText" ILIKE '%shown%' OR
+      "questionText" ILIKE '%function%' OR "questionText" ILIKE '%line%' OR
+      "questionText" ILIKE '%slope%' OR "questionText" ILIKE '%y-intercept%' OR
+      stimulus ILIKE '%y =%' OR stimulus ILIKE '%f(x)%' OR
+      stimulus LIKE '%=%x%' OR stimulus ILIKE '%inequality%'
     )
   ORDER BY RANDOM()
   LIMIT ${LIMIT === Infinity ? 200 : LIMIT}
