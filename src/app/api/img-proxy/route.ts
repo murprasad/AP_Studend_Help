@@ -21,7 +21,10 @@
 import { NextRequest, NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
-export const runtime = "edge";
+// Note: NOT using `runtime = "edge"` — OpenNext bundles all API routes
+// together, and a single edge-runtime export breaks the build. The Cache
+// API is still available via globalThis.caches.default on the Workers
+// runtime that OpenNext targets.
 
 const ALLOWED_HOSTS = new Set([
   "upload.wikimedia.org",
@@ -70,11 +73,7 @@ export async function GET(req: NextRequest) {
       "User-Agent": "studentnest.ai-img-proxy/1.0 (https://studentnest.ai)",
       "Accept": "image/*",
     },
-    cf: {
-      cacheTtl: CACHE_SECONDS,
-      cacheEverything: true,
-    },
-  } as RequestInit);
+  });
 
   if (!upstream.ok) {
     return NextResponse.json(
