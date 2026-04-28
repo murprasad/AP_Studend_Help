@@ -36,7 +36,7 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const GROQ_API_KEY = process.env.GROQ_API_KEY;
 if (!GROQ_API_KEY && !dry) { console.error("Missing GROQ_API_KEY"); process.exit(1); }
 
-const TARGET_COURSES = ["AP_US_GOVERNMENT", "AP_HUMAN_GEOGRAPHY", "AP_ENVIRONMENTAL_SCIENCE"];
+const TARGET_COURSES = ["AP_US_GOVERNMENT", "AP_HUMAN_GEOGRAPHY", "AP_ENVIRONMENTAL_SCIENCE", "AP_US_HISTORY"];
 
 const STIMULUS_GUIDANCE = {
   AP_US_GOVERNMENT: `Choose ONE format that fits the question:
@@ -50,6 +50,12 @@ const STIMULUS_GUIDANCE = {
 - Von Thünen / Burgess / Hoyt model case study (urban land-use rings, sectors)
 - Migration/diffusion case study (gentrification, suburbanization, rural-to-urban)
 - Economic geography table (GDP by sector, fertility rate by HDI, etc.)`,
+  AP_US_HISTORY: `Choose ONE format that fits the question:
+- Primary-source excerpt with full source line "Source: [Author], [role], [document type], [year]" then 60-100 words excerpt. Use real historical figures: Jacob Riis (1890s), Frederick Douglass (1840s-60s), Walter LaFeber (post-WWII historian), Sean Wilentz (modern historian), W.E.B. Du Bois (1900s), Booker T. Washington, FDR (1930s), MLK Jr. (1960s).
+- Statistical/quantitative table: "Source: [BLS/Census/Historical Statistics], [Year]\\n\\n| Year | Variable | Value |\\n|---|---|---|"
+- Political cartoon described in text + brief caption.
+- Era-defining law/court-decision excerpt: Kansas-Nebraska Act (1854), Dred Scott (1857), 14th Amendment, Brown v. Board (1954), Voting Rights Act (1965).
+- Choose era-appropriate sources matching the question's period.`,
   AP_ENVIRONMENTAL_SCIENCE: `Choose ONE format that fits the question:
 - Markdown data table with Mean ± SE. Format: "| Treatment | Mean ± SE |\\n|---|---|\\n| Control | 4.2 ± 0.3 |\\n..."
 - Ecosystem case study (eutrophication, succession, food web). 100-200 words.
