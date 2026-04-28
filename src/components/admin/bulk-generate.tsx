@@ -42,7 +42,7 @@ const COURSES = Object.keys(AP_COURSES) as ApCourse[];
 export function AdminBulkGenerate() {
   const { toast } = useToast();
 
-  // ── Targeted generation ────────────────────────────────────────────────────
+  // â”€â”€ Targeted generation â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const [targetCourse, setTargetCourse] = useState<ApCourse>("AP_WORLD_HISTORY");
   const [unit, setUnit] = useState<string>("ALL");
   const [difficulty, setDifficulty] = useState<string>("ALL");
@@ -50,14 +50,14 @@ export function AdminBulkGenerate() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [results, setResults] = useState<GeneratedResult[]>([]);
 
-  // ── Populate-all ────────────────────────────────────────────────────────────
+  // â”€â”€ Populate-all â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const [populateCourse, setPopulateCourse] = useState<ApCourse>("AP_WORLD_HISTORY");
   const [minPerUnit, setMinPerUnit] = useState<string>("20");
   const [isPopulating, setIsPopulating] = useState(false);
   const [populateDetails, setPopulateDetails] = useState<PopulateDetail[]>([]);
   const [populateSummary, setPopulateSummary] = useState<{ filled: number; skipped: number; failed: number } | null>(null);
 
-  // ── Coverage report ─────────────────────────────────────────────────────────
+  // â”€â”€ Coverage report â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const [coverage, setCoverage] = useState<Record<string, UnitCoverage[]>>({});
   const [loadingCoverage, setLoadingCoverage] = useState(false);
 
@@ -79,7 +79,7 @@ export function AdminBulkGenerate() {
   // Reset unit when course changes
   useEffect(() => { setUnit("ALL"); }, [targetCourse]);
 
-  // ── Targeted generation handler ────────────────────────────────────────────
+  // â”€â”€ Targeted generation handler â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   async function handleGenerate() {
     setIsGenerating(true);
     setResults([]);
@@ -115,7 +115,7 @@ export function AdminBulkGenerate() {
     }
   }
 
-  // ── Populate-all handler ────────────────────────────────────────────────────
+  // â”€â”€ Populate-all handler â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   async function handlePopulateAll() {
     setIsPopulating(true);
     setPopulateDetails([]);
@@ -155,7 +155,7 @@ export function AdminBulkGenerate() {
 
   return (
     <div className="space-y-6">
-      {/* ── Question Bank Coverage ────────────────────────────────────────── */}
+      {/* â”€â”€ Question Bank Coverage â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <Card className="card-glow border-yellow-500/30">
         <CardHeader>
           <CardTitle className="text-lg flex items-center gap-2 justify-between">
@@ -168,8 +168,8 @@ export function AdminBulkGenerate() {
             </Button>
           </CardTitle>
           <p className="text-sm text-muted-foreground">
-            Students need ≥20 unique questions per unit for meaningful practice.
-            Red = critical (&lt;10), yellow = low (10–19), green = good (20+).
+            Students need â‰¥20 unique questions per unit for meaningful practice.
+            Red = critical (&lt;10), yellow = low (10â€“19), green = good (20+).
           </p>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -231,7 +231,7 @@ export function AdminBulkGenerate() {
         </CardContent>
       </Card>
 
-      {/* ── Populate All Units ────────────────────────────────────────────── */}
+      {/* â”€â”€ Populate All Units â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <Card className="card-glow border-emerald-500/30">
         <CardHeader>
           <CardTitle className="text-lg flex items-center gap-2">
@@ -239,7 +239,7 @@ export function AdminBulkGenerate() {
             Auto-Populate Question Bank
           </CardTitle>
           <p className="text-sm text-muted-foreground">
-            Fills every unit up to the minimum question count using the AI cascade (Groq → Pollinations fallback).
+            Fills every unit up to the minimum question count using the AI cascade (Groq â†’ Pollinations fallback).
             Only generates for units that are below the minimum.
           </p>
         </CardHeader>
@@ -287,12 +287,12 @@ export function AdminBulkGenerate() {
           <Button
             onClick={handlePopulateAll}
             disabled={isPopulating}
-            className="gap-2 bg-emerald-600 hover:bg-emerald-700"
+            className="gap-2 bg-emerald-700 hover:bg-emerald-800"
           >
             {isPopulating ? (
               <><Loader2 className="h-4 w-4 animate-spin" /> Generating (this takes a few minutes)...</>
             ) : (
-              <><Database className="h-4 w-4" /> Populate All Units — {AP_COURSES[populateCourse]}</>
+              <><Database className="h-4 w-4" /> Populate All Units â€” {AP_COURSES[populateCourse]}</>
             )}
           </Button>
 
@@ -332,7 +332,7 @@ export function AdminBulkGenerate() {
                 {populateDetails.map((d) => (
                   <div key={d.unit} className="flex items-center gap-2 text-xs">
                     {d.status === "ok" && <CheckCircle className="h-3 w-3 text-emerald-400 flex-shrink-0" />}
-                    {d.status === "skipped" && <span className="text-blue-400 flex-shrink-0">–</span>}
+                    {d.status === "skipped" && <span className="text-blue-400 flex-shrink-0">â€“</span>}
                     {d.status === "failed" && <AlertTriangle className="h-3 w-3 text-red-400 flex-shrink-0" />}
                     <span className="flex-1 text-muted-foreground truncate">{d.name}</span>
                     <span className="text-right">
@@ -350,7 +350,7 @@ export function AdminBulkGenerate() {
         </CardContent>
       </Card>
 
-      {/* ── Targeted generation ───────────────────────────────────────────── */}
+      {/* â”€â”€ Targeted generation â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <Card className="card-glow border-blue-500/30">
         <CardHeader>
           <CardTitle className="text-lg flex items-center gap-2">

@@ -66,7 +66,7 @@ export default function StudyPlanPage() {
   const { toast } = useToast();
   const [course] = useCourse();
 
-  // Full-screen mode — sidebar hidden for wider plan tables.
+  // Full-screen mode â€” sidebar hidden for wider plan tables.
   const { enterExamMode, exitExamMode } = useExamMode();
   useEffect(() => { enterExamMode(); return () => exitExamMode(); }, [enterExamMode, exitExamMode]);
 
@@ -255,7 +255,7 @@ export default function StudyPlanPage() {
                 <p className="text-muted-foreground mb-6">
                   Sage creates a day-by-day plan to get you exam-ready in one week.
                 </p>
-                <Button onClick={generate7DayPlan} disabled={generating} className="gap-2 bg-emerald-600 hover:bg-emerald-700">
+                <Button onClick={generate7DayPlan} disabled={generating} className="gap-2 bg-emerald-700 hover:bg-emerald-800">
                   {generating ? <><Loader2 className="h-4 w-4 animate-spin" /> Building Plan...</> : <><Zap className="h-4 w-4" /> Generate 7-Day Plan</>}
                 </Button>
               </CardContent>

@@ -24,7 +24,7 @@ export function MobileStickyCta() {
     return (
       <div className="fixed bottom-0 left-0 right-0 z-40 p-3 bg-background/95 backdrop-blur-sm border-t border-emerald-500/20 md:hidden">
         <Link href="/register?module=clep" className="block">
-          <Button size="sm" className="w-full gap-1 bg-emerald-600 hover:bg-emerald-700 text-white">
+          <Button size="sm" className="w-full gap-1 bg-emerald-700 hover:bg-emerald-800 text-white">
             Build My 7-Day CLEP Plan <ArrowRight className="h-4 w-4" />
           </Button>
         </Link>
@@ -41,7 +41,7 @@ export function MobileStickyCta() {
           </Button>
         </Link>
         <Link href="/register?module=clep" className="flex-1">
-          <Button size="sm" className="w-full gap-1 bg-emerald-600 hover:bg-emerald-700 text-white">
+          <Button size="sm" className="w-full gap-1 bg-emerald-700 hover:bg-emerald-800 text-white">
             CLEP Prep <ArrowRight className="h-4 w-4" />
           </Button>
         </Link>

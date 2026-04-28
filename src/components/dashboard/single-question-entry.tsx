@@ -64,20 +64,42 @@ async function logEvent(event: string, course: string, extra?: Record<string, un
   } catch { /* silent */ }
 }
 
+const Q1_COMPLETED_KEY = (course: string) => `q1_completed_${course}`;
+
 export function SingleQuestionEntry({ course }: Props) {
   const [q, setQ] = useState<Q1Question | null>(null);
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [hidden, setHidden] = useState(false);
 
   useEffect(() => {
+    // Once-per-course rule: if the user has already submitted this Quick
+    // Check for this course (or has any prior practice history for the
+    // course — server-side check), suppress this card forever for that
+    // course. Switching to a different course renders a fresh Q1.
+    if (typeof window !== "undefined" && localStorage.getItem(Q1_COMPLETED_KEY(course))) {
+      setHidden(true);
+      setLoading(false);
+      return;
+    }
+
     let cancelled = false;
     setLoading(true);
     fetch(`/api/q1?course=${course}`, { cache: "no-store" })
       .then((r) => (r.ok ? r.json() : null))
       .then((d) => {
         if (cancelled) return;
+        if (d?.hide) {
+          // Server says this user already has practice history for the course.
+          // Persist the flag so we don't re-fetch on every mount.
+          if (typeof window !== "undefined") {
+            localStorage.setItem(Q1_COMPLETED_KEY(course), "server-skip");
+          }
+          setHidden(true);
+          return;
+        }
         if (!d?.question) {
           setError("Couldn't load a question. Try Practice instead.");
           return;
@@ -89,6 +111,8 @@ export function SingleQuestionEntry({ course }: Props) {
       .finally(() => { if (!cancelled) setLoading(false); });
     return () => { cancelled = true; };
   }, [course]);
+
+  if (hidden) return null;
 
   if (loading) {
     return (
@@ -122,6 +146,12 @@ export function SingleQuestionEntry({ course }: Props) {
     const correct = selected === q.correctAnswer;
     logEvent("q1_answered", course, { questionId: q.id, correct });
     if (correct) logEvent("q1_correct", course, { questionId: q.id });
+    // Mark this course's Quick Check as done so the card never re-appears
+    // for this course on subsequent dashboard mounts. Switching to a
+    // different course renders a fresh Q1.
+    if (typeof window !== "undefined") {
+      localStorage.setItem(Q1_COMPLETED_KEY(course), "submitted");
+    }
   }
 
   return (

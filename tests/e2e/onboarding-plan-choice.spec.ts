@@ -65,7 +65,7 @@ test.describe("Onboarding plan-choice", () => {
     await walkToPlanStep(page);
     await expect(page.getByText("Pick your plan")).toBeVisible({ timeout: 10000 });
     const body = page.locator("body");
-    await expect(body).toContainText(/20 practice questions/i);
+    await expect(body).toContainText(/30 practice questions/i);
     await expect(body).toContainText(/Mock exam preview/i);
     await expect(body).toContainText(/Unlimited flashcards/i);
     await expect(body).toContainText(/Predicted AP\/SAT\/ACT/i);

@@ -69,7 +69,7 @@ export default function OnboardingPage() {
   // completeOnboarding awaits the PATCH that sets DB.onboardingCompletedAt=NOW.
   // During that await, the "if already onboarded, skip to dashboard" useEffect
   // below can re-fire, see the fresh flag, and router.replace("/dashboard")
-  // — beating the router.push("/billing?...") that comes after. That made
+  // â€” beating the router.push("/billing?...") that comes after. That made
   // "Start Premium" silently route to /dashboard instead of /billing.
   const isCompletingRef = useRef(false);
 
@@ -84,7 +84,7 @@ export default function OnboardingPage() {
       .catch(() => {});
   }, []);
 
-  // CLEP/DSST sunset 2026-04-14 — force any stale clep/dsst track to "ap" for onboarding flow
+  // CLEP/DSST sunset 2026-04-14 â€” force any stale clep/dsst track to "ap" for onboarding flow
   const effectiveTrack: string = "ap";
 
   // Auto-select first AP course on mount
@@ -95,7 +95,7 @@ export default function OnboardingPage() {
 
   const COURSE_GROUPS = AP_COURSE_GROUPS;
 
-  // If already onboarded, skip to dashboard. DB is authoritative — if
+  // If already onboarded, skip to dashboard. DB is authoritative â€” if
   // a user was reset (onboardingCompletedAt=null on server) they must
   // walk onboarding again, so we first check /api/user then fall back
   // to localStorage for users predating the DB flag.
@@ -115,13 +115,13 @@ export default function OnboardingPage() {
         if (onboardedAt) {
           router.replace("/dashboard");
         } else {
-          // DB says not onboarded — clear any stale localStorage flag.
+          // DB says not onboarded â€” clear any stale localStorage flag.
           try { localStorage.removeItem(ONBOARDING_KEY); } catch { /* ignore */ }
         }
       })
       .catch(() => {
         if (isCompletingRef.current) return;
-        // API unavailable — fall back to localStorage.
+        // API unavailable â€” fall back to localStorage.
         try {
           if (localStorage.getItem(ONBOARDING_KEY) === "true") {
             router.replace("/dashboard");
@@ -130,7 +130,7 @@ export default function OnboardingPage() {
       });
   }, [router]);
 
-  // completeOnboarding — finishes the flow. Optional `then` lets the
+  // completeOnboarding â€” finishes the flow. Optional `then` lets the
   // plan-choice step route to /billing after marking onboarded (for
   // users who picked Premium).
   async function completeOnboarding(then: "dashboard" | "billing" = "dashboard") {
@@ -146,7 +146,7 @@ export default function OnboardingPage() {
       }).catch(() => {});
     }
     // CRITICAL: await PATCH so the DB write completes before we navigate.
-    // Then call updateSession() to refresh the JWT — middleware reads
+    // Then call updateSession() to refresh the JWT â€” middleware reads
     // onboardingCompletedAt from the JWT to decide whether to redirect
     // back to /onboarding. Without this, the user is bounced back here
     // when they try to visit /dashboard, /analytics, /resources, etc.
@@ -156,7 +156,7 @@ export default function OnboardingPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ completeOnboarding: true }),
       });
-      // Refresh JWT — middleware uses token.onboardingCompletedAt
+      // Refresh JWT â€” middleware uses token.onboardingCompletedAt
       await updateSession();
     } catch {
       // Best-effort. If this fails, the localStorage flag still gets set
@@ -239,7 +239,7 @@ export default function OnboardingPage() {
               <div className="flex items-start gap-2 p-3 rounded-lg bg-emerald-500/5 border border-emerald-500/20 mb-3">
                 <Sparkles className="h-4 w-4 text-emerald-400 flex-shrink-0 mt-0.5" />
                 <p className="text-xs text-muted-foreground">
-                  <span className="text-emerald-400 font-medium">Not sure where to start?</span> Most students pick Psychology or Sociology first — highest pass rates.
+                  <span className="text-emerald-400 font-medium">Not sure where to start?</span> Most students pick Psychology or Sociology first â€” highest pass rates.
                 </p>
               </div>
             )}
@@ -286,7 +286,7 @@ export default function OnboardingPage() {
               </div>
             ))}
             <Button
-              className={`w-full mt-2 ${effectiveTrack === "clep" ? "bg-emerald-600 hover:bg-emerald-700" : ""}`}
+              className={`w-full mt-2 ${effectiveTrack === "clep" ? "bg-emerald-700 hover:bg-emerald-800" : ""}`}
               onClick={() => setStep(2)}
             >
               Continue with {COURSE_REGISTRY[course]?.shortName || course}
@@ -319,7 +319,7 @@ export default function OnboardingPage() {
               {
                 step: "2",
                 title: "Practice & get feedback",
-                desc: "Answer adaptive MCQ and FRQ questions — AI explains every answer.",
+                desc: "Answer adaptive MCQ and FRQ questions â€” AI explains every answer.",
                 action: "Start Practice",
                 href: "/practice",
                 color: "bg-emerald-500/20 text-emerald-400",
@@ -348,7 +348,7 @@ export default function OnboardingPage() {
                 Back
               </Button>
               <Button className="flex-1" onClick={() => setStep(3)}>
-                Got it — next
+                Got it â€” next
                 <ChevronRight className="h-4 w-4 ml-1" />
               </Button>
             </div>
@@ -397,7 +397,7 @@ export default function OnboardingPage() {
             <div className="flex flex-col gap-2 pt-2">
               <Button
                 size="lg"
-                className="w-full gap-2 bg-emerald-600 hover:bg-emerald-700"
+                className="w-full gap-2 bg-emerald-700 hover:bg-emerald-800"
                 onClick={() => {
                   // Fire-and-forget: save plan to DB
                   fetch("/api/study-plan", {
@@ -431,11 +431,11 @@ export default function OnboardingPage() {
               You&apos;re all set!
             </CardTitle>
             <CardDescription>
-              Your dashboard is ready. We&apos;ve picked a first step for you — you can calibrate with a 10-min diagnostic when you&apos;re ready, or jump straight into practice. No pressure.
+              Your dashboard is ready. We&apos;ve picked a first step for you â€” you can calibrate with a 10-min diagnostic when you&apos;re ready, or jump straight into practice. No pressure.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            {/* Primary CTA lands on /dashboard — the Coach Card surfaces the
+            {/* Primary CTA lands on /dashboard â€” the Coach Card surfaces the
                 soft diagnostic nudge as the first step. Prior version forced
                 a diagnostic entry-point here which caused bounces when the
                 student didn't want to commit 10 min immediately. */}
@@ -447,7 +447,7 @@ export default function OnboardingPage() {
               Continue <ChevronRight className="h-5 w-5" />
             </Button>
             <p className="text-[11px] text-muted-foreground text-center">
-              One more step — pick your plan.
+              One more step â€” pick your plan.
             </p>
             <div className="flex gap-2">
               <Button variant="outline" size="sm" onClick={() => setStep(2)} className="text-xs">
@@ -458,7 +458,7 @@ export default function OnboardingPage() {
         </Card>
       )}
 
-      {/* ── Step 4: Pick your plan ──────────────────────────────────────────
+      {/* â”€â”€ Step 4: Pick your plan â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
           Single source of truth for what each tier gets is src/lib/tier-limits.ts.
           If you change FREE_LIMITS, reflect the change here AND on /billing. */}
       {step === 4 && (
@@ -471,7 +471,7 @@ export default function OnboardingPage() {
               Pick your plan
             </CardTitle>
             <CardDescription>
-              Cancel anytime · 7-day money-back guarantee
+              Cancel anytime Â· 7-day money-back guarantee
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -483,7 +483,7 @@ export default function OnboardingPage() {
                   <p className="text-2xl font-bold">$0<span className="text-sm font-normal text-muted-foreground"> forever</span></p>
                 </div>
                 <ul className="space-y-1.5 text-[13px] text-foreground/90 flex-1 mb-4">
-                  <li className="flex gap-2"><Check className="h-3.5 w-3.5 text-emerald-500 mt-0.5 shrink-0" />20 practice questions / day</li>
+                  <li className="flex gap-2"><Check className="h-3.5 w-3.5 text-emerald-500 mt-0.5 shrink-0" />30 practice questions / day</li>
                   <li className="flex gap-2"><Check className="h-3.5 w-3.5 text-emerald-500 mt-0.5 shrink-0" />Mock exam preview (5 Qs)</li>
                   <li className="flex gap-2"><Check className="h-3.5 w-3.5 text-emerald-500 mt-0.5 shrink-0" />Unlimited flashcards</li>
                   <li className="flex gap-2"><Check className="h-3.5 w-3.5 text-emerald-500 mt-0.5 shrink-0" />Predicted AP/SAT/ACT score</li>
@@ -522,7 +522,7 @@ export default function OnboardingPage() {
                   className="w-full bg-blue-600 hover:bg-blue-700"
                   onClick={() => completeOnboarding("billing")}
                 >
-                  Start Premium — $9.99/mo
+                  Start Premium â€” $9.99/mo
                 </Button>
               </div>
             </div>

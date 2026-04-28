@@ -136,7 +136,7 @@ export default function DiagnosticPage() {
             Quick Score Estimate
           </h1>
           <p className="text-muted-foreground mt-2">
-            15-min MCQ check — we'll cover FRQs/essays in your next-step plan.
+            15-min MCQ check â€” we'll cover FRQs/essays in your next-step plan.
           </p>
         </div>
 
@@ -145,14 +145,14 @@ export default function DiagnosticPage() {
           <BookOpen className={`h-5 w-5 text-${accentColor}-400 flex-shrink-0`} />
           <div>
             <p className="text-sm font-semibold">{courseName}</p>
-            <p className="text-xs text-muted-foreground">{Object.keys(courseUnits).length} units · {isCLEP ? "CLEP Exam" : "AP/SAT/ACT"}</p>
+            <p className="text-xs text-muted-foreground">{Object.keys(courseUnits).length} units Â· {isCLEP ? "CLEP Exam" : "AP/SAT/ACT"}</p>
           </div>
         </div>
 
         <Card className={`card-glow border-${accentColor}-500/20`}>
           <CardHeader>
             <CardTitle>How It Works</CardTitle>
-            <CardDescription>One question per unit — quick and targeted</CardDescription>
+            <CardDescription>One question per unit â€” quick and targeted</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid sm:grid-cols-3 gap-4 text-center">
@@ -193,7 +193,7 @@ export default function DiagnosticPage() {
       try {
         options = JSON.parse(question.options)
       } catch {
-        options = [] // malformed JSON — render empty-options recovery below
+        options = [] // malformed JSON â€” render empty-options recovery below
       }
     }
 
@@ -259,7 +259,7 @@ export default function DiagnosticPage() {
   if (mode === "results" && result) {
     const sortedUnits = Object.entries(result.unitScores).sort((a, b) => a[1] - b[1])
 
-    // Overall predicted score — crude mapping from mean unit score to 1-5
+    // Overall predicted score â€” crude mapping from mean unit score to 1-5
     // scale. Used as the FREE-tier reveal that creates curiosity for the
     // paywalled detail below. Intentionally does NOT show unit-level detail.
     const scores = Object.values(result.unitScores)
@@ -278,10 +278,10 @@ export default function DiagnosticPage() {
             <Target className={`h-8 w-8 text-${accentColor}-400`} />
             Diagnostic Results
           </h1>
-          <p className="text-muted-foreground mt-1">{courseName} — personalized breakdown</p>
+          <p className="text-muted-foreground mt-1">{courseName} â€” personalized breakdown</p>
         </div>
 
-        {/* FREE reveal — predicted score headline. Creates curiosity for the
+        {/* FREE reveal â€” predicted score headline. Creates curiosity for the
             gated detail below. Shown to everyone (free + paid). */}
         <Card className={`border-${scoreColor}-500/30 bg-${scoreColor}-500/5`}>
           <CardContent className="p-6 text-center">
@@ -292,12 +292,12 @@ export default function DiagnosticPage() {
               {predictedScore}
             </p>
             <p className="text-sm text-muted-foreground mt-2">
-              {scoreLabel} · MCQ-only estimate from {scores.length} unit{scores.length === 1 ? "" : "s"}
+              {scoreLabel} Â· MCQ-only estimate from {scores.length} unit{scores.length === 1 ? "" : "s"}
             </p>
           </CardContent>
         </Card>
 
-        {/* FRQ bridge — added 2026-04-27 per user direction:
+        {/* FRQ bridge â€” added 2026-04-27 per user direction:
             "After diagnostic: 'You're strong in MCQs. Next: FRQs (40% of
             your AP score). Try 1 FRQ.'" The MCQ diagnostic is intentionally
             the entry. The bridge converts the score reveal into a deeper
@@ -325,7 +325,7 @@ export default function DiagnosticPage() {
         </Card>
 
         {/* Focused-practice hook (PrepLion REQ-023 port). Single weakest unit
-            is revealed outside the paywall as the hook — "you have a gap,
+            is revealed outside the paywall as the hook â€” "you have a gap,
             fix it in 2 min." Converts post-diagnostic insight into an
             immediate practice session without asking for an upgrade first. */}
         {sortedUnits.length > 0 && sortedUnits[0][1] < 70 && (() => {
@@ -342,8 +342,8 @@ export default function DiagnosticPage() {
                     <p className="text-sm font-semibold">Fix your weakest unit in 2 min</p>
                     <p className="text-xs text-muted-foreground mt-1">
                       <span className="font-medium text-foreground/80">{weakestName}</span>
-                      {" · "}
-                      you scored {weakestScore}% here — five focused questions will move the needle.
+                      {" Â· "}
+                      you scored {weakestScore}% here â€” five focused questions will move the needle.
                     </p>
                     <Link href={buildFocusedPracticeUrl(weakestUnitKey, 5)} className="inline-block mt-3">
                       <Button size="sm" className="gap-1.5 bg-amber-600 hover:bg-amber-700 text-white">
@@ -360,7 +360,7 @@ export default function DiagnosticPage() {
 
         {(() => {
           // Pass family + passing threshold to the overlay so the paywall
-          // headline can read the student's specific gap ("Predicted 2 —
+          // headline can read the student's specific gap ("Predicted 2 â€”
           // need 3 to pass"). AP passing = 3, SAT college-ready = 1200,
           // ACT college-ready = 24.
           const examFamily: "AP" | "SAT" | "ACT" = course.startsWith("SAT_")
@@ -451,7 +451,7 @@ export default function DiagnosticPage() {
           );
         })()}
 
-        {/* Study Plan CTA — always visible after results */}
+        {/* Study Plan CTA â€” always visible after results */}
         {result.weakUnits.length > 0 && (
           <div className="flex items-center gap-3 p-4 rounded-xl border border-blue-500/20 bg-blue-500/5">
             <BookOpen className="h-5 w-5 text-blue-500 flex-shrink-0" />
@@ -468,7 +468,7 @@ export default function DiagnosticPage() {
           </div>
         )}
 
-        {/* Premium upgrade CTA — shown to free users after they see their weak units */}
+        {/* Premium upgrade CTA â€” shown to free users after they see their weak units */}
         {session?.user?.subscriptionTier !== "PREMIUM" && session?.user?.subscriptionTier !== "AP_PREMIUM" && session?.user?.subscriptionTier !== "CLEP_PREMIUM" && result.weakUnits.length > 0 && (() => {
           const diagTrack = (session?.user as { track?: string })?.track ?? "ap";
           const isClep = diagTrack === "clep";
@@ -495,7 +495,7 @@ export default function DiagnosticPage() {
                   </p>
                   <div className="flex gap-2 mt-3">
                     <Link href="/billing">
-                      <Button size="sm" className={`gap-1.5 text-xs ${isClep ? "bg-emerald-600 hover:bg-emerald-700" : "bg-blue-600 hover:bg-blue-700"}`}>
+                      <Button size="sm" className={`gap-1.5 text-xs ${isClep ? "bg-emerald-700 hover:bg-emerald-800" : "bg-blue-600 hover:bg-blue-700"}`}>
                         <Crown className="h-3.5 w-3.5" />
                         Upgrade to {isClep ? "CLEP Premium" : "AP Premium"}
                       </Button>

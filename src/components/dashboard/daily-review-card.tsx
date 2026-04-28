@@ -144,13 +144,13 @@ export function DailyReviewCard({ course }: Props) {
         </CardHeader>
         <CardContent className="space-y-3">
           <p className="text-sm text-muted-foreground">
-            {count} question{count !== 1 ? "s" : ""} from 3–7 days ago need a refresher.
+            {count} question{count !== 1 ? "s" : ""} from 3â€“7 days ago need a refresher.
           </p>
           <div className="flex items-center gap-2 text-xs text-emerald-400">
-            <span>⏱</span>
-            <span>~{count * 30}s · Spaced Repetition</span>
+            <span>â±</span>
+            <span>~{count * 30}s Â· Spaced Repetition</span>
           </div>
-          <Button size="sm" onClick={startReview} className="w-full gap-2 bg-emerald-600 hover:bg-emerald-700">
+          <Button size="sm" onClick={startReview} className="w-full gap-2 bg-emerald-700 hover:bg-emerald-800">
             <RotateCcw className="h-3.5 w-3.5" />
             Start Daily Review
           </Button>
@@ -171,7 +171,7 @@ export function DailyReviewCard({ course }: Props) {
         <CardContent className="text-center space-y-2">
           <p className="text-3xl font-bold text-emerald-400">{score}/{questions.length}</p>
           <p className="text-sm text-muted-foreground">
-            {score === questions.length ? "Perfect! 🎉" : "Keep it up — practice makes progress!"}
+            {score === questions.length ? "Perfect! ðŸŽ‰" : "Keep it up â€” practice makes progress!"}
           </p>
           <Badge variant="outline" className="text-emerald-400 border-emerald-500/30 text-xs">
             +{score * 5} XP Daily Boost
@@ -231,7 +231,7 @@ export function DailyReviewCard({ course }: Props) {
           <div className="space-y-1">
             <p className="text-xs text-muted-foreground leading-relaxed">{q.explanation}</p>
             <Button size="sm" onClick={next} className="w-full mt-1">
-              {currentIdx + 1 >= questions.length ? "See Score" : "Next →"}
+              {currentIdx + 1 >= questions.length ? "See Score" : "Next â†’"}
             </Button>
           </div>
         )}

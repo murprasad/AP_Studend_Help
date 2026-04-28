@@ -171,7 +171,7 @@ export default async function CLEPSubjectPage({ params }: { params: { slug: stri
           <p className="text-muted-foreground">Build your 7-day plan and start practicing today.</p>
           <div className="flex gap-3 justify-center">
             <Link href={`/register?module=clep`}>
-              <Button size="lg" className="gap-2 bg-emerald-600 hover:bg-emerald-700">
+              <Button size="lg" className="gap-2 bg-emerald-700 hover:bg-emerald-800">
                 Build My 7-Day Plan <ArrowRight className="h-5 w-5" />
               </Button>
             </Link>

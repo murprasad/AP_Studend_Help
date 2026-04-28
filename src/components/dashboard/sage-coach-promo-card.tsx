@@ -1,12 +1,12 @@
 "use client";
 
 /**
- * SageCoachPromoCard — Phase B (Beta 8.3 prep), 2026-04-26.
+ * SageCoachPromoCard â€” Phase B (Beta 8.3 prep), 2026-04-26.
  *
  * Promotes the FRQ grader (Sage Coach) from a buried sidebar link to a
  * prominent dashboard card. Shipping the 220 official CB FRQs in
  * Beta 8.2 doesn't help conversion if students don't know the AI grader
- * exists — this card surfaces it where they actually look.
+ * exists â€” this card surfaces it where they actually look.
  *
  * Rendering rules:
  *   - Hides when: course has 0 FRQs (no value to promote) OR Sage Coach
@@ -16,7 +16,7 @@
  *     CTA to /billing with utm_source=sage_coach_promo.
  *
  * Dashboard placement: between WeaknessFocusCard and FlashcardsDueCard
- * — that's where students naturally look after seeing their score +
+ * â€” that's where students naturally look after seeing their score +
  * weakest unit ("OK, I see what to fix; how do I get help writing it?").
  */
 
@@ -43,10 +43,10 @@ export function SageCoachPromoCard({ course }: Props) {
 
   useEffect(() => {
     let cancelled = false;
-    // Cheap probe — just need to know if at least 1 FRQ exists for course.
+    // Cheap probe â€” just need to know if at least 1 FRQ exists for course.
     // Beta 8.3 hotfix (2026-04-26): URL was /api/frq/list (404); actual
     // route is /api/frq. Card was silently never rendering because the
-    // 404 produced null → setHasFrqs never fired → !hasFrqs guard hid card.
+    // 404 produced null â†’ setHasFrqs never fired â†’ !hasFrqs guard hid card.
     // Also switched to fetchCached so this card shares the /api/frq fetch
     // with CramModeCard + DailyStudyOSCard.
     fetchCached<{ frqs?: unknown[]; list?: unknown[] } | null>(`/api/frq?course=${course}&limit=1`)
@@ -82,18 +82,18 @@ export function SageCoachPromoCard({ course }: Props) {
             </div>
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-2">
-                <p className="text-[16px] font-semibold leading-tight">Sage Coach — FRQ Grader</p>
+                <p className="text-[16px] font-semibold leading-tight">Sage Coach â€” FRQ Grader</p>
                 <Badge variant="outline" className="text-[10px] border-emerald-500/40 text-emerald-700 dark:text-emerald-400 bg-emerald-500/5">
                   Premium
                 </Badge>
               </div>
               <p className="text-[13px] text-muted-foreground mt-1">
-                Submit your free-response answer → instant AI feedback against the official College Board rubric. Practice the writing the exam actually rewards.
+                Submit your free-response answer â†’ instant AI feedback against the official College Board rubric. Practice the writing the exam actually rewards.
               </p>
             </div>
           </div>
           <Link href={`/sage-coach?course=${course}`} className="block">
-            <Button size="sm" className="w-full h-10 gap-2 rounded-[10px] bg-emerald-600 hover:bg-emerald-700">
+            <Button size="sm" className="w-full h-10 gap-2 rounded-[10px] bg-emerald-700 hover:bg-emerald-800">
               Try Sage Coach
               <ArrowRight className="h-4 w-4" />
             </Button>
@@ -103,7 +103,7 @@ export function SageCoachPromoCard({ course }: Props) {
     );
   }
 
-  // Free tier — paywalled CTA into billing.
+  // Free tier â€” paywalled CTA into billing.
   return (
     <Card className="rounded-[16px] border-amber-500/30 bg-amber-500/5">
       <CardContent className="p-5 space-y-3">
@@ -119,7 +119,7 @@ export function SageCoachPromoCard({ course }: Props) {
               </Badge>
             </div>
             <p className="text-[13px] text-muted-foreground mt-1">
-              Sage Coach grades your written FRQ responses against the official College Board rubric — line by line. Premium feature.
+              Sage Coach grades your written FRQ responses against the official College Board rubric â€” line by line. Premium feature.
             </p>
           </div>
         </div>

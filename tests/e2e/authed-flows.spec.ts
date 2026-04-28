@@ -124,7 +124,7 @@ test.describe("API contracts (authed)", () => {
     const data = await r.json();
     expect(["FREE", "PREMIUM"]).toContain(data.tier);
     if (data.tier === "FREE") {
-      expect(data.limits.practiceQuestionsPerDay).toBe(20);
+      expect(data.limits.practiceQuestionsPerDay).toBe(30);
       expect(data.limits.tutorChatsPerDay).toBe(3);
       expect(data.limits.mockExamQuestions).toBe(5);
       expect(data.limits.frqAccess).toBe(false);

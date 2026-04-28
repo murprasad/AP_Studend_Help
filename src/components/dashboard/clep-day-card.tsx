@@ -76,7 +76,7 @@ export function CLEPDayCard({ planData, generatedAt, course }: CLEPDayCardProps)
               <p className="text-sm text-muted-foreground">You&apos;ve finished your prep plan. Ready to schedule your exam?</p>
             </div>
             <a href="https://clep.collegeboard.org/clep-search" target="_blank" rel="noopener noreferrer">
-              <Button size="sm" className="gap-1 bg-emerald-600 hover:bg-emerald-700">
+              <Button size="sm" className="gap-1 bg-emerald-700 hover:bg-emerald-800">
                 Find Test Center <ChevronRight className="h-3.5 w-3.5" />
               </Button>
             </a>

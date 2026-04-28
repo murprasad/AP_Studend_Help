@@ -1,0 +1,29 @@
+{
+  "cookies": [
+    {
+      "name": "__Secure-next-auth.session-token",
+      "value": "eyJhbGciOiJkaXIiLCJlbmMiOiJBMjU2R0NNIn0..sBFPQ_f8Bml_A61X.9wFbJzbnmTdLOGrQwFir3w4HPhPLzkA8QDGAd4odpeleentE58tGFv1hORAibzZJn3t_W7A4FMe9d5S1f2KMSzL9kmvEU8y01-7YX5a59ffDPpO3SIeBIYKFQkZYQFvfwkvbnw3YDOZeNH032LQzKY5oJPIynftkyi4YC4dpd2Wu5LYJAkz2GIgxCKEfOBWkSx6_grFcA7s7ZHK8PD7U-iVnCHjtw1n6N5EeyyN5aRHNlCqHCR-8N_Aew75ixZArA0RIt3U7KAEkm7jdBFk6Dws0WYLY300Pm-3vwlYqsZm-kWgxDLCEdJ3--7XmpTOI7SwV2JwWGKKoC-njvg8HVDraL1Y2P-gtfLTK6_TC8WOz_RMfQrMXQoLwmRQ3hPTkmgxQFp4kJTb7wJuFkEnc5T_B_NXXUCIFdUQ.orxnCwcaJbPQayu7XMT2Xg",
+      "domain": "staging.studentnest.pages.dev",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    }
+  ],
+  "origins": [
+    {
+      "origin": "https://staging.studentnest.pages.dev",
+      "localStorage": [
+        {
+          "name": "ap_selected_course",
+          "value": "AP_WORLD_HISTORY"
+        },
+        {
+          "name": "onboarding_completed",
+          "value": "true"
+        }
+      ]
+    }
+  ]
+}

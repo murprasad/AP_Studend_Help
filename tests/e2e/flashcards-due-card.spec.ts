@@ -37,14 +37,17 @@ test.describe("FlashcardsDueCard", () => {
   test("block renders for fresh user (≥5 seeded cards available)", async ({ page }) => {
     await page.goto("/dashboard");
     if (page.url().includes("/onboarding")) test.skip();
-    // The block uses "cards ready for review" copy. Wait up to 10s for
-    // the due-count fetch to resolve + the component to mount.
+    // Dashboard v2 (2026-04-27) collapsed secondary cards behind "Show more
+    // tools" to focus first-time users on Q1. FlashcardsDueCard lives in
+    // that collapsed section now — expand it before asserting.
+    await page.getByRole("button", { name: /Show more tools/i }).click();
     await expect(page.getByText(/cards ready for review/i).first()).toBeVisible({ timeout: 10000 });
   });
 
   test("Review button routes to /flashcards", async ({ page }) => {
     await page.goto("/dashboard");
     if (page.url().includes("/onboarding")) test.skip();
+    await page.getByRole("button", { name: /Show more tools/i }).click();
     const card = page.getByText(/cards ready for review/i).first();
     await card.waitFor({ state: "visible", timeout: 10000 });
     await page.waitForLoadState("networkidle", { timeout: 10000 }).catch(() => {});

@@ -8,7 +8,7 @@ import { MockupStudyPlan } from "@/components/landing/mockup-study-plan";
 import { MockupPractice } from "@/components/landing/mockup-practice";
 
 export const metadata: Metadata = {
-  title: "AP Exam Prep — AI Practice & Tutoring | StudentNest Prep",
+  title: "AP Exam Prep â€” AI Practice & Tutoring | StudentNest Prep",
   description: "Score a 5 on your AP exam with AI-powered practice questions, instant feedback, and mastery tracking across 10 AP courses. Free to start.",
   openGraph: {
     title: "AP Exam Prep | StudentNest Prep",
@@ -57,17 +57,17 @@ export default function ApPrepPage() {
   return (
     <div className="max-w-5xl mx-auto px-4 py-16 space-y-16">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      {/* Hero — two-column */}
+      {/* Hero â€” two-column */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
         <div className="text-center lg:text-left space-y-4">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-500 text-sm font-medium">
             <Sparkles className="h-4 w-4" /> 10 AP Courses
           </div>
           <h1 className="text-4xl sm:text-5xl font-bold">
-            Turn your AP prep into a 5 — with AI that teaches, quizzes, and adapts.
+            Turn your AP prep into a 5 â€” with AI that teaches, quizzes, and adapts.
           </h1>
           <p className="text-xl text-muted-foreground max-w-xl mx-auto lg:mx-0">
-            Sage teaches concepts, quizzes you, and tracks mastery by unit — so every session improves your score. <span className="text-foreground font-medium">30 minutes a day is enough.</span>
+            Sage teaches concepts, quizzes you, and tracks mastery by unit â€” so every session improves your score. <span className="text-foreground font-medium">30 minutes a day is enough.</span>
           </p>
           <div className="flex gap-3 justify-center lg:justify-start pt-2">
             <Link href="/register?module=ap">
@@ -79,33 +79,33 @@ export default function ApPrepPage() {
           </div>
         </div>
         <div className="hidden lg:block animate-float">
-          <BrowserFrame title="StudentNest Prep · AP Analytics" className="shadow-2xl shadow-blue-500/10">
+          <BrowserFrame title="StudentNest Prep Â· AP Analytics" className="shadow-2xl shadow-blue-500/10">
             <MockupAnalytics variant="ap-generic" />
           </BrowserFrame>
         </div>
         <div className="lg:hidden max-w-md mx-auto w-full">
-          <BrowserFrame title="StudentNest Prep · AP Analytics">
+          <BrowserFrame title="StudentNest Prep Â· AP Analytics">
             <MockupAnalytics variant="ap-generic" />
           </BrowserFrame>
         </div>
       </div>
 
-      {/* Pain statement — why most AP prep stalls */}
+      {/* Pain statement â€” why most AP prep stalls */}
       <div className="rounded-xl border border-orange-500/20 bg-orange-500/5 p-5 text-center max-w-3xl mx-auto">
         <p className="text-base font-medium text-foreground/90 leading-relaxed">
           Most AP prep stalls because students re-read units they already know. Sage drills you only on the content you&apos;re losing points on.
         </p>
       </div>
 
-      {/* Features — alternating text + mockups */}
+      {/* Features â€” alternating text + mockups */}
       <div className="space-y-20">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
           <div className="space-y-3">
             <div className="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center"><Target className="h-5 w-5 text-blue-500" /></div>
             <h2 className="text-2xl font-bold">AI builds your study plan by unit</h2>
-            <p className="text-muted-foreground leading-relaxed">10–15 diagnostic questions identify your weak spots. Sage creates a weekly plan targeting your lowest-scoring units first — and adjusts as you improve.</p>
+            <p className="text-muted-foreground leading-relaxed">10â€“15 diagnostic questions identify your weak spots. Sage creates a weekly plan targeting your lowest-scoring units first â€” and adjusts as you improve.</p>
           </div>
-          <BrowserFrame title="StudentNest Prep · AP Study Plan" className="shadow-xl"><MockupStudyPlan variant="ap-generic" /></BrowserFrame>
+          <BrowserFrame title="StudentNest Prep Â· AP Study Plan" className="shadow-xl"><MockupStudyPlan variant="ap-generic" /></BrowserFrame>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
           <div className="lg:order-2 space-y-3">
@@ -114,26 +114,26 @@ export default function ApPrepPage() {
               <h2 className="text-2xl font-bold">Practice FRQs with AI scoring on real AP rubrics</h2>
               <span className="text-[10px] font-bold uppercase tracking-wider bg-blue-600 text-white px-2 py-0.5 rounded">Premium</span>
             </div>
-            <p className="text-muted-foreground leading-relaxed">Most platforms only do MCQs. Sage scores your free-response answers (SAQ, LEQ, DBQ) against the actual College Board rubrics — point by point — so you know exactly what AP graders want before exam day. <span className="text-foreground/70">Free tier includes one full FRQ to try; unlimited with Premium.</span></p>
+            <p className="text-muted-foreground leading-relaxed">Most platforms only do MCQs. Sage scores your free-response answers (SAQ, LEQ, DBQ) against the actual College Board rubrics â€” point by point â€” so you know exactly what AP graders want before exam day. <span className="text-foreground/70">Free tier includes one full FRQ to try; unlimited with Premium.</span></p>
           </div>
-          <div className="lg:order-1"><BrowserFrame title="StudentNest Prep · AP Practice" className="shadow-xl"><MockupPractice /></BrowserFrame></div>
+          <div className="lg:order-1"><BrowserFrame title="StudentNest Prep Â· AP Practice" className="shadow-xl"><MockupPractice /></BrowserFrame></div>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
           <div className="space-y-3">
             <div className="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center"><BarChart3 className="h-5 w-5 text-blue-500" /></div>
             <h2 className="text-2xl font-bold">Track mastery and see your estimated AP score</h2>
-            <p className="text-muted-foreground leading-relaxed">Per-unit mastery scores, accuracy trends, and a readiness heatmap — all in real time. Know exactly when you&apos;re ready for exam day.</p>
+            <p className="text-muted-foreground leading-relaxed">Per-unit mastery scores, accuracy trends, and a readiness heatmap â€” all in real time. Know exactly when you&apos;re ready for exam day.</p>
           </div>
-          <BrowserFrame title="StudentNest Prep · AP Analytics" className="shadow-xl"><MockupAnalytics variant="ap-generic" /></BrowserFrame>
+          <BrowserFrame title="StudentNest Prep Â· AP Analytics" className="shadow-xl"><MockupAnalytics variant="ap-generic" /></BrowserFrame>
         </div>
       </div>
 
-      {/* Outcomes — what students get */}
+      {/* Outcomes â€” what students get */}
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { icon: Brain, title: "Understand, Don't Memorize", desc: "Sage explains why each answer is correct — and why wrong answers are common mistakes." },
+          { icon: Brain, title: "Understand, Don't Memorize", desc: "Sage explains why each answer is correct â€” and why wrong answers are common mistakes." },
           { icon: Target, title: "Focus Where It Matters", desc: "Practice adapts to your weakest units automatically. No wasted study time." },
-          { icon: BarChart3, title: "See Your Progress", desc: "Per-unit mastery scores, accuracy trends, and an estimated AP score — all in real time." },
+          { icon: BarChart3, title: "See Your Progress", desc: "Per-unit mastery scores, accuracy trends, and an estimated AP score â€” all in real time." },
           { icon: Clock, title: "Know When You're Ready", desc: "Mock exams simulate real AP pacing. Walk in confident, not guessing." },
         ].map((f) => (
           <div key={f.title} className="p-5 rounded-xl border border-border/40 bg-card/50 space-y-2">
@@ -152,9 +152,9 @@ export default function ApPrepPage() {
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           {[
             { week: "Week 1", task: "Diagnostic test + start Unit 1" },
-            { week: "Weeks 2–5", task: "2 units per week with daily practice" },
+            { week: "Weeks 2â€“5", task: "2 units per week with daily practice" },
             { week: "Week 6", task: "Review weak areas + ask Sage" },
-            { week: "Weeks 7–8", task: "Full mock exams + final review" },
+            { week: "Weeks 7â€“8", task: "Full mock exams + final review" },
           ].map((w) => (
             <div key={w.week} className="p-4 rounded-xl border border-blue-500/15 bg-card/50 text-center">
               <p className="text-xs font-semibold text-blue-500 mb-1">{w.week}</p>
@@ -166,7 +166,7 @@ export default function ApPrepPage() {
 
       {/* Course List */}
       <div>
-        <h2 className="text-2xl font-bold mb-6 text-center">10 AP Courses — Full Curriculum Coverage</h2>
+        <h2 className="text-2xl font-bold mb-6 text-center">10 AP Courses â€” Full Curriculum Coverage</h2>
         <div className="grid sm:grid-cols-2 gap-3">
           {courses.map((c) => {
             const inner = (
@@ -206,7 +206,7 @@ export default function ApPrepPage() {
         <div className="rounded-xl border-2 border-blue-500 bg-blue-500/5 p-6 space-y-3">
           <p className="font-bold text-blue-500">AP Premium</p>
           <p className="text-2xl font-bold">$9.99<span className="text-sm font-normal text-muted-foreground">/mo</span></p>
-          <p className="text-xs text-green-500 font-medium">or $79.99/yr — save 33%</p>
+          <p className="text-xs text-green-700 dark:text-green-400 font-medium">or $79.99/yr â€” save 33%</p>
           {["Everything in Free", "Unlimited Sage Live Tutor chats", "FRQ with AI rubric scoring", "Personalized study plan", "Streaming AI"].map((f) => (
             <div key={f} className="flex items-center gap-2 text-sm"><CheckCircle className="h-4 w-4 text-blue-500" />{f}</div>
           ))}
@@ -220,7 +220,7 @@ export default function ApPrepPage() {
       <div className="rounded-xl border border-border/40 bg-card/50 p-6 text-center space-y-2">
         <p className="text-sm font-semibold">For parents</p>
         <p className="text-xs text-muted-foreground leading-relaxed max-w-xl mx-auto">
-          All practice questions align with College Board AP curriculum standards. Your child gets adaptive practice, real-time mastery tracking, and a clear study plan — for less than one hour of AP tutoring per month.
+          All practice questions align with College Board AP curriculum standards. Your child gets adaptive practice, real-time mastery tracking, and a clear study plan â€” for less than one hour of AP tutoring per month.
         </p>
       </div>
 
@@ -233,7 +233,7 @@ export default function ApPrepPage() {
       </div>
 
       <p className="text-xs text-center text-muted-foreground/60">
-        AP® is a trademark of the College Board, which is not affiliated with StudentNest.
+        APÂ® is a trademark of the College Board, which is not affiliated with StudentNest.
       </p>
     </div>
   );

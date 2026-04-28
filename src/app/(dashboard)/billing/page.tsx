@@ -539,7 +539,7 @@ export default function BillingPage() {
             </div>
             <div className="flex items-center gap-1 p-1 bg-secondary/50 rounded-lg">
               <button onClick={() => setBillingCycle("monthly")} className={`px-3 py-1 rounded-md text-xs font-medium transition-colors ${billingCycle === "monthly" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground"}`}>Monthly</button>
-              <button onClick={() => setBillingCycle("annual")} className={`px-3 py-1 rounded-md text-xs font-medium transition-colors ${billingCycle === "annual" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground"}`}>Annual <span className="text-green-500 text-[10px] ml-1">-33%</span></button>
+              <button onClick={() => setBillingCycle("annual")} className={`px-3 py-1 rounded-md text-xs font-medium transition-colors ${billingCycle === "annual" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground"}`}>Annual <span className="text-green-700 dark:text-green-400 text-[10px] ml-1 font-semibold">-33%</span></button>
             </div>
           </div>
           <div className="grid sm:grid-cols-2 gap-3">
@@ -547,7 +547,7 @@ export default function BillingPage() {
               { module: "ap", label: "AP Premium", desc: "10 AP courses + FRQ scoring", color: "indigo", btn: "bg-blue-600 hover:bg-blue-700", border: "border-blue-500/30" },
               { module: "sat", label: "SAT Premium", desc: "SAT Math + Reading & Writing", color: "blue", btn: "bg-blue-600 hover:bg-blue-700", border: "border-blue-500/30" },
               { module: "act", label: "ACT Premium", desc: "All 4 ACT sections", color: "violet", btn: "bg-violet-600 hover:bg-violet-700", border: "border-violet-500/30" },
-              { module: "clep", label: "CLEP Premium", desc: "34 CLEP exams · Save $1,200+", color: "emerald", btn: "bg-emerald-600 hover:bg-emerald-700", border: "border-emerald-500/30" },
+              { module: "clep", label: "CLEP Premium", desc: "34 CLEP exams · Save $1,200+", color: "emerald", btn: "bg-emerald-700 hover:bg-emerald-800", border: "border-emerald-500/30" },
             ] as const).map((m) => {
               const activeSub = moduleSubs.find(s => s.module === m.module && (s.status === "active" || s.status === "canceling"));
               return (

@@ -34,15 +34,33 @@ export async function GET(req: NextRequest) {
   // Pull a small candidate pool of EASY MCQs, then pick one at random.
   // Avoid questions the user has already answered correctly (so we don't
   // re-show them stale content).
+  //
+  // Also: if the user already has ANY practice response for this course,
+  // skip Q1 entirely. Q1 is a commitment hook for fresh users; returning
+  // users hitting the dashboard don't need to be re-prompted with a "quick
+  // check" they've already moved past. Hiding here (server-side) backs up
+  // the localStorage flag the client sets on submit — covers cross-device
+  // and cleared-storage cases.
   let excludeIds: string[] = [];
   try {
     const session = await getServerSession(authOptions);
     if (session?.user?.id) {
-      const correct = await prisma.studentResponse.findMany({
-        where: { userId: session.user.id, isCorrect: true },
-        select: { questionId: true },
-        take: 100,
-      });
+      const [responseCount, correct] = await Promise.all([
+        prisma.studentResponse.count({
+          where: { userId: session.user.id, question: { course } },
+        }),
+        prisma.studentResponse.findMany({
+          where: { userId: session.user.id, isCorrect: true },
+          select: { questionId: true },
+          take: 100,
+        }),
+      ]);
+      if (responseCount > 0) {
+        return NextResponse.json(
+          { question: null, hide: true, reason: "has_practice_history" },
+          { headers: { "Cache-Control": "no-store" } },
+        );
+      }
       excludeIds = correct.map((r) => r.questionId);
     }
   } catch { /* anonymous — no exclusion list */ }

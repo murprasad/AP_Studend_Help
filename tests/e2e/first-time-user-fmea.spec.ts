@@ -74,7 +74,7 @@ test.describe("First-time-user FMEA — end-to-end walkthrough", () => {
     const body = page.locator("body");
     // 6 canonical free features — if any of these change, update tier-limits.ts
     // + this test + billing page in lockstep.
-    await expect(body).toContainText("20 practice questions");
+    await expect(body).toContainText("30 practice questions");
     await expect(body).toContainText(/Mock exam preview.*5 Qs/i);
     await expect(body).toContainText(/Unlimited flashcards/i);
     await expect(body).toContainText(/Predicted AP\/SAT\/ACT score/i);
@@ -103,15 +103,16 @@ test.describe("First-time-user FMEA — end-to-end walkthrough", () => {
     await walkOnboarding(page);
     await page.getByRole("button", { name: /^start free/i }).click();
     await page.waitForURL(/\/dashboard/, { timeout: 10000 });
-    // Switch to a course that has FRQs (AP_PHYSICS_1 is in CLUSTER_A)
+    // Switch to a course that has FRQs
     await page.goto("/frq-practice?course=AP_PHYSICS_1");
-    // Paywall copy — LOCK_COPY.frqLocked
-    await expect(page.locator("body")).toContainText(
-      /graded on written answers/i,
-      { timeout: 10000 },
-    );
-    // Upgrade CTA present
-    await expect(page.getByRole("button", { name: /Upgrade to unlock/i })).toBeVisible();
+    // 2026-04-27: Free-preview model — show 1 stem + rubric, lock the
+    // submit-for-grading flow. Free users should see the "Free Preview"
+    // header and an Upgrade CTA. The actual write-and-grade flow is
+    // gated.
+    await expect(page.locator("body")).toContainText(/Free Preview|Premium/i, {
+      timeout: 10000,
+    });
+    await expect(page.getByRole("link", { name: /Upgrade.*\$9\.99/i }).first()).toBeVisible();
   });
 
   test("FMEA-5: Flashcards page shows current course name prominently", async ({ page }) => {
@@ -164,7 +165,7 @@ test.describe("First-time-user FMEA — end-to-end walkthrough", () => {
     expect(r.ok()).toBe(true);
     const d = await r.json();
     if (d.tier === "FREE") {
-      expect(d.limits.practiceQuestionsPerDay).toBe(20);
+      expect(d.limits.practiceQuestionsPerDay).toBe(30);
       expect(d.limits.tutorChatsPerDay).toBe(3);
       expect(d.limits.mockExamQuestions).toBe(5);
       expect(d.limits.frqAccess).toBe(false);
