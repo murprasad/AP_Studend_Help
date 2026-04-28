@@ -55,7 +55,7 @@ test.describe("Journey 1 — Revenue (practice cap enforcement)", () => {
     // Seed exactly 20 responses to put user AT the cap.
     const seedRes = await request.post("/api/test/auth", {
       headers: { Authorization: `Bearer ${CRON_SECRET}` },
-      data: { action: "seed-usage", count: 20, clear: true },
+      data: { action: "seed-usage", count: 30, clear: true },
     });
     expect(seedRes.ok(), `seed-usage failed: ${seedRes.status()}`).toBeTruthy();
 
@@ -110,21 +110,21 @@ test.describe("Journey 1 — Revenue (practice cap enforcement)", () => {
   test.skip("19 answered → 20th still allowed (off-by-one guard)", async ({ request }) => {
     await request.post("/api/test/auth", {
       headers: { Authorization: `Bearer ${CRON_SECRET}` },
-      data: { action: "seed-usage", count: 19, clear: true },
+      data: { action: "seed-usage", count: 29, clear: true },
     });
     const res = await request.post("/api/practice", {
       data: { course: "AP_WORLD_HISTORY", unit: "ALL", sessionType: "PRACTICE", questionCount: 1, difficulty: "MEDIUM" },
     });
     expect(
       [200, 201].includes(res.status()),
-      `20th practice at count=19 must succeed; got ${res.status()}`,
+      `30th practice at count=29 must succeed; got ${res.status()}`,
     ).toBe(true);
   });
 
   test("cap survives refresh — server-side enforcement, not UI state", async ({ request }) => {
     await request.post("/api/test/auth", {
       headers: { Authorization: `Bearer ${CRON_SECRET}` },
-      data: { action: "seed-usage", count: 20, clear: true },
+      data: { action: "seed-usage", count: 30, clear: true },
     });
     // Two consecutive blocked requests — neither bypasses the cap.
     const a = await request.post("/api/practice", {
@@ -141,7 +141,7 @@ test.describe("Journey 1 — Revenue (practice cap enforcement)", () => {
     // Mock exams have their own Q5 paywall; practice cap must not apply.
     await request.post("/api/test/auth", {
       headers: { Authorization: `Bearer ${CRON_SECRET}` },
-      data: { action: "seed-usage", count: 20, clear: true },
+      data: { action: "seed-usage", count: 30, clear: true },
     });
     const res = await request.post("/api/practice", {
       data: { course: "AP_WORLD_HISTORY", unit: "ALL", sessionType: "MOCK_EXAM", questionCount: 1, difficulty: "MEDIUM" },
@@ -155,7 +155,7 @@ test.describe("Journey 1 — Revenue (practice cap enforcement)", () => {
   test("upgrade CTA URL carries UTM source for funnel analytics", async ({ request }) => {
     await request.post("/api/test/auth", {
       headers: { Authorization: `Bearer ${CRON_SECRET}` },
-      data: { action: "seed-usage", count: 20, clear: true },
+      data: { action: "seed-usage", count: 30, clear: true },
     });
     const res = await request.post("/api/practice", {
       data: { course: "AP_WORLD_HISTORY", unit: "ALL", sessionType: "PRACTICE", questionCount: 1, difficulty: "MEDIUM" },

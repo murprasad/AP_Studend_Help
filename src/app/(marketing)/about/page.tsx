@@ -18,7 +18,7 @@ import { MockupStudyPlan } from "@/components/landing/mockup-study-plan";
 
 const COURSES = [
   // AP
-  { name: "AP World History: Modern",       category: "AP Courses",   color: "bg-blue-500/10 text-blue-300 border-blue-500/20 dark:text-blue-300 dark:border-blue-500/20 light:text-blue-700 light:border-blue-400/40", desc: "Civilizations, empires, revolutions, globalization" },
+  { name: "AP World History: Modern",       category: "AP Courses",   color: "bg-blue-500/10 text-blue-700 dark:text-blue-300 border-blue-500/20", desc: "Civilizations, empires, revolutions, globalization" },
   { name: "AP Computer Science Principles", category: "AP Courses",   color: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-300 border-emerald-500/20", desc: "Algorithms, data, internet, impact of computing" },
   { name: "AP Physics 1: Algebra-Based",    category: "AP Courses",   color: "bg-yellow-500/10 text-yellow-600 dark:text-yellow-300 border-yellow-500/20", desc: "Kinematics, forces, energy, waves, circuits" },
   { name: "AP Calculus AB",                 category: "AP Courses",   color: "bg-blue-500/10 text-blue-600 dark:text-blue-700 dark:text-blue-400 border-blue-500/20", desc: "Limits, derivatives, integrals, differential equations" },

@@ -19,7 +19,10 @@ test.describe("Paywall accuracy", () => {
     await page.waitForLoadState("networkidle");
 
     const text = await page.locator("body").innerText();
-    expect(text).toMatch(/premium feature|upgrade to unlock|FRQ practice is a premium/i);
+    // 2026-04-27: FRQ paywall is now a "Free Preview" model (see commit
+    // aa3047b) — show 1 stem + rubric, lock submit-for-grading. Updated
+    // regex to match the current copy.
+    expect(text).toMatch(/Free Preview|Submit.*Premium|AI rubric scoring is Premium|FRQ practice is a premium/i);
     // Must show some sort of upgrade CTA
     const upgradeButton = page.getByRole("link", { name: /upgrade/i }).or(page.getByRole("button", { name: /upgrade/i }));
     expect(await upgradeButton.count()).toBeGreaterThan(0);
