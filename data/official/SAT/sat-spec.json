@@ -1,0 +1,117 @@
+{
+  "_source": "satsuite.collegeboard.org/media/pdf/digital-sat-test-spec-overview.pdf + assessment-framework-for-digital-sat-suite.pdf",
+  "_retrievedOn": "2026-04-27",
+  "_version": "Digital SAT, valid 2024+",
+  "totalMinutes": 134,
+  "scoreScale": { "total": [400, 1600], "perSection": [200, 800] },
+  "breakBetweenSections": 10,
+  "sections": {
+    "READING_WRITING": {
+      "totalQuestions": 54,
+      "totalMinutes": 64,
+      "modules": [
+        { "label": "Module 1", "operationalQs": 25, "pretestQs": 2, "minutes": 32, "difficultyMix": "broad easy/medium/hard" },
+        { "label": "Module 2", "operationalQs": 25, "pretestQs": 2, "minutes": 32, "difficultyMix": "adaptive — easier or harder based on Module 1" }
+      ],
+      "questionType": "discrete; one short passage per question; 4-option MCQ",
+      "stimulusRequired": true,
+      "stimulusTopics": ["Literature", "History/Social Studies", "Humanities", "Science"],
+      "informationalGraphics": ["tables", "bar graphs", "line graphs"],
+      "contentDomains": [
+        {
+          "name": "Craft and Structure",
+          "percent": 28,
+          "operationalQs": "13-15",
+          "skills": ["Words in Context", "Text Structure and Purpose", "Cross-Text Connections"]
+        },
+        {
+          "name": "Information and Ideas",
+          "percent": 26,
+          "operationalQs": "12-14",
+          "skills": ["Central Ideas and Details", "Command of Evidence (Textual)", "Command of Evidence (Quantitative)", "Inferences"]
+        },
+        {
+          "name": "Standard English Conventions",
+          "percent": 26,
+          "operationalQs": "11-15",
+          "skills": ["Boundaries", "Form, Structure, and Sense"]
+        },
+        {
+          "name": "Expression of Ideas",
+          "percent": 20,
+          "operationalQs": "8-12",
+          "skills": ["Rhetorical Synthesis", "Transitions"]
+        }
+      ]
+    },
+    "MATH": {
+      "totalQuestions": 44,
+      "totalMinutes": 70,
+      "modules": [
+        { "label": "Module 1", "operationalQs": 20, "pretestQs": 2, "minutes": 35, "difficultyMix": "broad easy/medium/hard" },
+        { "label": "Module 2", "operationalQs": 20, "pretestQs": 2, "minutes": 35, "difficultyMix": "adaptive — easier or harder based on Module 1" }
+      ],
+      "questionType": "75% 4-option MCQ + 25% Student-Produced Response (SPR / fill-in-grid)",
+      "calculatorAllowed": "throughout — built-in graphing calculator + student may bring own",
+      "referenceSheet": "common formulas provided",
+      "stimulusTopics": ["Science", "Social Science", "Real-world contexts (in-context word problems)"],
+      "contentDomains": [
+        {
+          "name": "Algebra",
+          "percent": 35,
+          "operationalQs": "13-15",
+          "skills": [
+            "Linear equations in one variable",
+            "Linear equations in two variables",
+            "Linear functions",
+            "Systems of two linear equations in two variables",
+            "Linear inequalities in one or two variables"
+          ]
+        },
+        {
+          "name": "Advanced Math",
+          "percent": 35,
+          "operationalQs": "13-15",
+          "skills": [
+            "Equivalent expressions",
+            "Nonlinear equations in one variable and systems of equations in two variables",
+            "Nonlinear functions"
+          ]
+        },
+        {
+          "name": "Problem-Solving and Data Analysis",
+          "percent": 15,
+          "operationalQs": "5-7",
+          "skills": [
+            "Ratios, rates, proportional relationships, and units",
+            "Percentages",
+            "One-variable data: distributions and measures of center and spread",
+            "Two-variable data: models and scatterplots",
+            "Probability and conditional probability",
+            "Inference from sample statistics and margin of error",
+            "Evaluating statistical claims: observational studies and experiments"
+          ]
+        },
+        {
+          "name": "Geometry and Trigonometry",
+          "percent": 15,
+          "operationalQs": "5-7",
+          "skills": [
+            "Area and volume",
+            "Lines, angles, and triangles",
+            "Right triangles and trigonometry",
+            "Circles"
+          ]
+        }
+      ]
+    }
+  },
+  "_keyDeltasFromOldSAT": [
+    "Single R&W section (was Reading + Writing & Language separate)",
+    "Short single-passage-per-Q model (was long passages with multi-Q sets)",
+    "Calculator allowed throughout Math (was no-calc + calc split)",
+    "2-stage adaptive — Module 2 difficulty depends on Module 1 score",
+    "Total time 134min (was 180min for paper SAT)",
+    "Average more time per question (≈71s/Q on R&W, ≈95s/Q on Math)"
+  ]
+}
