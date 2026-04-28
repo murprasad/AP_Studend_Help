@@ -50,12 +50,30 @@ function tokenOverlap(aTokens, bTokens) {
   return matched / aTokens.length;
 }
 
-const courses = [
+const args = process.argv.slice(2);
+const groupArg = args.find(a => a.startsWith("--group="))?.split("=")[1];
+const AP_COURSES = [
   "AP_WORLD_HISTORY", "AP_US_HISTORY", "AP_US_GOVERNMENT", "AP_HUMAN_GEOGRAPHY",
   "AP_PSYCHOLOGY", "AP_ENVIRONMENTAL_SCIENCE", "AP_BIOLOGY", "AP_CHEMISTRY",
   "AP_PHYSICS_1", "AP_STATISTICS", "AP_CALCULUS_AB", "AP_CALCULUS_BC",
   "AP_PRECALCULUS", "AP_COMPUTER_SCIENCE_PRINCIPLES",
 ];
+const SAT_COURSES = ["SAT_MATH", "SAT_READING_WRITING"];
+const ACT_COURSES = ["ACT_MATH", "ACT_ENGLISH", "ACT_SCIENCE", "ACT_READING"];
+const CLEP_COURSES = (() => {
+  // Prisma enum names — pulled from schema.prisma
+  return [
+    "CLEP_INTRO_PSYCHOLOGY","CLEP_INTRODUCTORY_SOCIOLOGY","CLEP_PRINCIPLES_OF_MARKETING",
+    "CLEP_PRINCIPLES_OF_MANAGEMENT","CLEP_COLLEGE_ALGEBRA","CLEP_COLLEGE_COMPOSITION",
+  ];
+})();
+const courses = (() => {
+  if (groupArg === "SAT") return SAT_COURSES;
+  if (groupArg === "ACT") return ACT_COURSES;
+  if (groupArg === "CLEP") return CLEP_COURSES;
+  if (groupArg === "ALL") return [...AP_COURSES, ...SAT_COURSES, ...ACT_COURSES, ...CLEP_COURSES];
+  return AP_COURSES;
+})();
 
 const totals = { scanned: 0, leak5: 0, leak60: 0, byCourse: {} };
 

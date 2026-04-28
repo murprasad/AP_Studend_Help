@@ -73,6 +73,9 @@ async function callGroq(systemPrompt, userPrompt) {
   return JSON.parse(data.choices?.[0]?.message?.content ?? "{}");
 }
 
+const groupArg = args.find(a => a.startsWith("--group="))?.split("=")[1];
+const groupPrefix = groupArg === "SAT" ? "SAT_" : groupArg === "ACT" ? "ACT_" : groupArg === "CLEP" ? "CLEP_" : "AP_";
+
 const rows = courseArg
   ? await sql`
       SELECT id, course::text AS course, "questionText", stimulus, options, "correctAnswer"
@@ -87,7 +90,7 @@ const rows = courseArg
   : await sql`
       SELECT id, course::text AS course, "questionText", stimulus, options, "correctAnswer"
       FROM questions
-      WHERE course::text LIKE 'AP_%'
+      WHERE course::text LIKE ${groupPrefix + '%'}
         AND "isApproved" = true
         AND "questionType" = 'MCQ'
         AND stimulus IS NOT NULL

@@ -46,12 +46,16 @@ function answerKeyTerm(option) {
   return s;
 }
 
-const courses = [
-  "AP_WORLD_HISTORY", "AP_US_HISTORY", "AP_US_GOVERNMENT", "AP_HUMAN_GEOGRAPHY",
-  "AP_PSYCHOLOGY", "AP_ENVIRONMENTAL_SCIENCE", "AP_BIOLOGY", "AP_CHEMISTRY",
-  "AP_PHYSICS_1", "AP_STATISTICS", "AP_CALCULUS_AB", "AP_CALCULUS_BC",
-  "AP_PRECALCULUS", "AP_COMPUTER_SCIENCE_PRINCIPLES",
-];
+const groupArg = args.find(a => a.startsWith("--group="))?.split("=")[1] ?? "AP";
+const COURSE_GROUPS = {
+  AP: ["AP_WORLD_HISTORY", "AP_US_HISTORY", "AP_US_GOVERNMENT", "AP_HUMAN_GEOGRAPHY",
+       "AP_PSYCHOLOGY", "AP_ENVIRONMENTAL_SCIENCE", "AP_BIOLOGY", "AP_CHEMISTRY",
+       "AP_PHYSICS_1", "AP_STATISTICS", "AP_CALCULUS_AB", "AP_CALCULUS_BC",
+       "AP_PRECALCULUS", "AP_COMPUTER_SCIENCE_PRINCIPLES"],
+  SAT: ["SAT_MATH", "SAT_READING_WRITING"],
+  ACT: ["ACT_MATH", "ACT_ENGLISH", "ACT_SCIENCE", "ACT_READING"],
+};
+const courses = COURSE_GROUPS[groupArg] ?? COURSE_GROUPS.AP;
 
 const totals = { byCourse: {}, scanned: 0, leak: 0 };
 
