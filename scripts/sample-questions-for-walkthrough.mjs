@@ -21,7 +21,7 @@ for (const c of courses) {
       AND "isApproved" = true
       AND "questionType" = 'MCQ'
     ORDER BY RANDOM()
-    LIMIT 3
+    LIMIT 5
   `;
   console.log("\n" + "=".repeat(80));
   console.log(c);
