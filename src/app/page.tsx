@@ -36,12 +36,12 @@ const features = [
   {
     icon: Brain,
     title: "Get Instant AI Explanations",
-    description: "Ask Sage anything â€” get clear explanations and instant comprehension checks that prove you understood it.",
+    description: "Ask Sage anything — get clear explanations and instant comprehension checks that prove you understood it.",
   },
   {
     icon: Target,
     title: "Practice What You Actually Need",
-    description: "The practice engine tracks every unit you've attempted and targets your weakest areas automatically â€” so every session counts.",
+    description: "The practice engine tracks every unit you've attempted and targets your weakest areas automatically — so every session counts.",
   },
   {
     icon: BarChart3,
@@ -75,9 +75,9 @@ const courses = [
 ];
 
 const clepCourses = [
-  { name: "CLEP Introductory Sociology",          units: 5, savings: "$1,200", topics: "Social structures, culture, institutions â€” easiest CLEP" },
+  { name: "CLEP Introductory Sociology",          units: 5, savings: "$1,200", topics: "Social structures, culture, institutions — easiest CLEP" },
   { name: "CLEP Introductory Psychology",          units: 5, savings: "$1,200", topics: "Behavior, cognition, development, disorders" },
-  { name: "CLEP Analyzing & Interpreting Lit",     units: 5, savings: "$2,400", topics: "No reading list â€” pure passage analysis skills" },
+  { name: "CLEP Analyzing & Interpreting Lit",     units: 5, savings: "$2,400", topics: "No reading list — pure passage analysis skills" },
   { name: "CLEP Principles of Marketing",          units: 5, savings: "$1,200", topics: "Real-world business intuition helps a lot" },
   { name: "CLEP College Mathematics",              units: 5, savings: "$2,400", topics: "Broader but shallower than College Algebra" },
   { name: "CLEP American Government",              units: 5, savings: "$1,200", topics: "High school civics goes far on this exam" },
@@ -121,7 +121,7 @@ const testimonials = [
   },
 ];
 
-// Cold-start defense (Beta 8.0 hotfix #3): see pricing/page.tsx â€” same fix.
+// Cold-start defense (Beta 8.0 hotfix #3): see pricing/page.tsx — same fix.
 async function safeFlag(p: () => Promise<boolean>, fallback: boolean): Promise<boolean> {
   try { return await p(); } catch { return fallback; }
 }
@@ -150,7 +150,7 @@ export default async function LandingPage() {
   return (
     <div className="min-h-screen bg-background">
 
-      {/* AP Season urgency banner â€” auto-hides after 2026-05-17. Conversion
+      {/* AP Season urgency banner — auto-hides after 2026-05-17. Conversion
           lever for the May 5-16 exam window. */}
       <APSeasonBanner />
 
@@ -205,12 +205,12 @@ export default async function LandingPage() {
         </div>
       </nav>
 
-      {/* Hero â€” two-column: text left, product mockup right */}
+      {/* Hero — two-column: text left, product mockup right */}
       <section className="relative pt-20 pb-16 lg:pt-28 lg:pb-24 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-blue-950/40 via-blue-950/20 to-transparent pointer-events-none" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-            {/* Left â€” text */}
+            {/* Left — text */}
             <div className="text-center lg:text-left">
               <Badge className="mb-6 bg-white/10 dark:bg-white/10 text-white dark:text-white border-white/20 text-sm px-4 py-1.5">
                 <Sparkles className="h-3.5 w-3.5 mr-1.5" />
@@ -220,7 +220,7 @@ export default async function LandingPage() {
                 <span className="gradient-text">Student</span><span className="text-foreground/80 font-medium">Nest</span><span className="text-blue-600 dark:text-blue-400 font-normal text-[0.6em] ml-1">Prep</span>
               </h1>
               <p className="text-xl sm:text-2xl font-semibold text-foreground/90 mb-2">
-                Improve your {examLabel} scores â€” with AI that adapts to your weak areas.
+                Improve your {examLabel} scores — with AI that adapts to your weak areas.
               </p>
               <p className="text-lg text-muted-foreground mb-2 max-w-xl mx-auto lg:mx-0">
                 Stop guessing what to study. See real score improvement in weeks, not months.
@@ -228,10 +228,10 @@ export default async function LandingPage() {
               <p className="text-base text-muted-foreground/80 mb-4 max-w-xl mx-auto lg:mx-0">
                 Take a free diagnostic. Get a personalized study plan. Practice with AI that explains every mistake.
               </p>
-              {/* PRIMARY CTA: Am I Ready picker â€” 3-min no-signup readiness check */}
+              {/* PRIMARY CTA: Am I Ready picker — 3-min no-signup readiness check */}
               <HeroReadinessPicker />
 
-              {/* Secondary CTA row â€” direct signup for users who want the full product */}
+              {/* Secondary CTA row — direct signup for users who want the full product */}
               <div className="mt-5 flex flex-col sm:flex-row gap-3 justify-center lg:justify-start items-center">
                 <span className="text-sm text-muted-foreground">Ready for the full experience?</span>
                 <div className="flex gap-2">
@@ -258,13 +258,13 @@ export default async function LandingPage() {
               </div>
             </div>
 
-            {/* Right â€” product mockup */}
+            {/* Right — product mockup */}
             <div className="hidden lg:block animate-float">
               <BrowserFrame title="StudentNest Prep Â· Analytics" className="shadow-2xl shadow-blue-500/10">
                 <MockupAnalytics />
               </BrowserFrame>
             </div>
-            {/* Mobile mockup â€” no float, compact */}
+            {/* Mobile mockup — no float, compact */}
             <div className="lg:hidden max-w-md mx-auto w-full">
               <BrowserFrame title="StudentNest Prep Â· Analytics">
                 <MockupAnalytics />
@@ -317,7 +317,7 @@ export default async function LandingPage() {
         </div>
       </section>
 
-      {/* Meet Sage â€” AI differentiator */}
+      {/* Meet Sage — AI differentiator */}
       <section className="py-24 bg-gradient-to-b from-blue-950/20 to-transparent">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-500 text-sm font-medium mb-6">
@@ -325,14 +325,14 @@ export default async function LandingPage() {
           </div>
           <h2 className="text-4xl font-bold mb-4">Meet Sage ðŸŒ¿</h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-12">
-            Sage is your personal Sage Live Tutor â€” available 24/7, never judges, and always explains in a way that clicks.
+            Sage is your personal Sage Live Tutor — available 24/7, never judges, and always explains in a way that clicks.
           </p>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
               {
                 icon: MessageSquare,
                 title: "Ask Sage Anything",
-                desc: "Get step-by-step explanations of any concept â€” then Sage quizzes you back with 3 targeted questions to lock in what you just learned.",
+                desc: "Get step-by-step explanations of any concept — then Sage quizzes you back with 3 targeted questions to lock in what you just learned.",
                 color: "text-blue-500",
                 bg: "bg-blue-500/10",
               },
@@ -343,13 +343,13 @@ export default async function LandingPage() {
                 color: "text-yellow-600 dark:text-yellow-400",
                 bg: "bg-yellow-500/10",
               },
-              // NEW 2026-04-25: Sage Coach was missing from landing surface â€” only
+              // NEW 2026-04-25: Sage Coach was missing from landing surface — only
               // mentioned on /about. Real differentiator (voice oral practice) was
               // invisible to 92% of new users (last-48-users.mjs funnel).
               {
                 icon: Sparkles,
                 title: "Sage Coach (Voice)",
-                desc: "Talk through what you know in plain English. Sage Coach listens, scores your understanding, and tells you exactly what to study next â€” like a private tutor on call.",
+                desc: "Talk through what you know in plain English. Sage Coach listens, scores your understanding, and tells you exactly what to study next — like a private tutor on call.",
                 color: "text-violet-600 dark:text-violet-400",
                 bg: "bg-violet-500/10",
               },
@@ -377,7 +377,7 @@ export default async function LandingPage() {
       <section className="py-16 px-4">
         <div className="max-w-2xl mx-auto">
           <p className="text-center text-sm text-muted-foreground mb-2 font-medium uppercase tracking-wide">
-            Try it yourself â€” no sign-up needed
+            Try it yourself — no sign-up needed
           </p>
           <p className="text-center text-xs text-muted-foreground mb-6">
             Answer a real AP World History question and see how Sage explains it
@@ -386,11 +386,11 @@ export default async function LandingPage() {
         </div>
       </section>
 
-      {/* Product Demo â€” Sage conversation snippet */}
+      {/* Product Demo — Sage conversation snippet */}
       <section className="py-16 px-4">
         <div className="max-w-2xl mx-auto">
           <p className="text-center text-sm text-muted-foreground mb-4 font-medium uppercase tracking-wide">
-            This is Sage â€” your 24/7 AI study tutor
+            This is Sage — your 24/7 AI study tutor
           </p>
           <div className="rounded-2xl border border-border/40 bg-card/60 overflow-hidden shadow-xl">
             {/* Window chrome */}
@@ -418,7 +418,7 @@ export default async function LandingPage() {
                   <p className="text-foreground/80 leading-relaxed">
                     The French Revolution (1789) had three main causes: <strong>financial crisis</strong> from war debt, <strong>social inequality</strong> under the Estates system where the Third Estate bore heavy taxes, and <strong>Enlightenment ideas</strong> about liberty and popular sovereignty.
                   </p>
-                  <p className="text-foreground/80">The immediate trigger was a bread shortage â€” food prices spiked after crop failures, pushing the already-desperate commoners to revolt.</p>
+                  <p className="text-foreground/80">The immediate trigger was a bread shortage — food prices spiked after crop failures, pushing the already-desperate commoners to revolt.</p>
                 </div>
               </div>
               {/* Follow-up chips */}
@@ -434,7 +434,7 @@ export default async function LandingPage() {
         </div>
       </section>
 
-      {/* Product Demo â€” Sage CLEP conversation snippet */}
+      {/* Product Demo — Sage CLEP conversation snippet */}
       {clepOn && (
         <section className="py-16 px-4">
           <div className="max-w-2xl mx-auto">
@@ -447,7 +447,7 @@ export default async function LandingPage() {
                 <div className="w-3 h-3 rounded-full bg-red-500/60" />
                 <div className="w-3 h-3 rounded-full bg-yellow-500/60" />
                 <div className="w-3 h-3 rounded-full bg-green-500/60" />
-                <span className="ml-2 text-xs text-muted-foreground">StudentNest Prep Â· Tutor â€” CLEP College Algebra</span>
+                <span className="ml-2 text-xs text-muted-foreground">StudentNest Prep Â· Tutor — CLEP College Algebra</span>
               </div>
               {/* Chat */}
               <div className="p-5 space-y-4 text-sm">
@@ -468,7 +468,7 @@ export default async function LandingPage() {
                       To factor <strong>xÂ² + 5x + 6</strong>, find two numbers that <strong>multiply to 6</strong> and <strong>add to 5</strong>. Those numbers are 2 and 3.
                     </p>
                     <p className="text-foreground/80">So xÂ² + 5x + 6 = <strong>(x + 2)(x + 3)</strong> âœ“</p>
-                    <p className="text-foreground/80 text-xs mt-1 text-muted-foreground">This is a common CLEP College Algebra topic â€” Unit 2: Algebraic Expressions.</p>
+                    <p className="text-foreground/80 text-xs mt-1 text-muted-foreground">This is a common CLEP College Algebra topic — Unit 2: Algebraic Expressions.</p>
                   </div>
                 </div>
                 {/* Follow-up chips */}
@@ -493,18 +493,18 @@ export default async function LandingPage() {
           </div>
           <h2 className="text-2xl font-bold">Most Sage Live Tutors explain. Sage tests you back.</h2>
           <p className="text-muted-foreground">
-            After every answer, Sage offers a quick 3-question comprehension check â€” optional, instant, and built around exactly what it just taught you.
+            After every answer, Sage offers a quick 3-question comprehension check — optional, instant, and built around exactly what it just taught you.
             Your score builds your Comprehension % on the Analytics page. Active recall at zero extra effort.
           </p>
         </div>
       </section>
 
-      {/* Features â€” alternating text + product mockups */}
+      {/* Features — alternating text + product mockups */}
       <section id="how-it-works" className="py-20 scroll-mt-20">
         <div className="max-w-6xl mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold mb-3">Everything You Need to Score Higher</h2>
-            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">Built around how {examLabel} exams actually work â€” not generic quiz apps.</p>
+            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">Built around how {examLabel} exams actually work — not generic quiz apps.</p>
           </div>
 
           <div className="space-y-24">
@@ -563,7 +563,7 @@ export default async function LandingPage() {
             </div>
           </div>
 
-          {/* Engagement row â€” compact */}
+          {/* Engagement row — compact */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-16">
             {[
               { emoji: "ðŸ”¥", label: "Daily Streaks" },
@@ -580,16 +580,16 @@ export default async function LandingPage() {
         </div>
       </section>
 
-      {/* Product Showcase â€” full workflow */}
+      {/* Product Showcase — full workflow */}
       <ProductShowcase />
 
-      {/* Why StudentNest â€” Comparison Table */}
+      {/* Why StudentNest — Comparison Table */}
       <section className="py-16 bg-secondary/20">
         <div className="max-w-3xl mx-auto px-4">
           <div className="text-center mb-8 space-y-3">
             <h2 className="text-2xl font-bold mb-2">Why StudentNest Prep?</h2>
             <p className="text-sm text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-              ChatGPT gives random answers. StudentNest Prep gives structured, exam-aligned practice with mastery tracking â€” that&apos;s the difference between studying and actually improving. Premium prep courses charge $200â€“500. Private tutors cost $50â€“150/hr. StudentNest starts at $0 and does what both do: explains mistakes, tracks progress, and builds a plan around your weak areas.
+              ChatGPT gives random answers. StudentNest Prep gives structured, exam-aligned practice with mastery tracking — that&apos;s the difference between studying and actually improving. Premium prep courses charge $200–500. Private tutors cost $50–150/hr. StudentNest starts at $0 and does what both do: explains mistakes, tracks progress, and builds a plan around your weak areas.
             </p>
           </div>
           <div className="rounded-xl border border-border/40 overflow-hidden">
@@ -610,7 +610,7 @@ export default async function LandingPage() {
                   ["Mastery tracking by topic", true, false, false],
                   ...(clepOn ? [["CLEP college credit prep", true, false, "rare"]] : []),
                   ["Available 24/7", true, true, false],
-                  ["Cost", "$9.99/mo", "Freeâ€“$20/mo", "$50â€“150/hr"],
+                  ["Cost", "$9.99/mo", "Free–$20/mo", "$50–150/hr"],
                 ].map(([feature, sn, ai, tutor], i) => (
                   <tr key={i} className="hover:bg-secondary/30">
                     <td className="p-3 text-foreground/90">{feature as string}</td>
@@ -618,10 +618,10 @@ export default async function LandingPage() {
                       {sn === true ? <CheckCircle className="h-4 w-4 text-emerald-400 mx-auto" /> : <span className="text-xs text-emerald-400 font-medium">{sn as string}</span>}
                     </td>
                     <td className="p-3 text-center">
-                      {ai === true ? <CheckCircle className="h-4 w-4 text-muted-foreground/50 mx-auto" /> : ai === false ? <span className="text-muted-foreground/40">â€”</span> : <span className="text-xs text-muted-foreground">{ai as string}</span>}
+                      {ai === true ? <CheckCircle className="h-4 w-4 text-muted-foreground/50 mx-auto" /> : ai === false ? <span className="text-muted-foreground/40">—</span> : <span className="text-xs text-muted-foreground">{ai as string}</span>}
                     </td>
                     <td className="p-3 text-center">
-                      {tutor === true ? <CheckCircle className="h-4 w-4 text-muted-foreground/50 mx-auto" /> : tutor === false ? <span className="text-muted-foreground/40">â€”</span> : <span className="text-xs text-muted-foreground">{tutor as string}</span>}
+                      {tutor === true ? <CheckCircle className="h-4 w-4 text-muted-foreground/50 mx-auto" /> : tutor === false ? <span className="text-muted-foreground/40">—</span> : <span className="text-xs text-muted-foreground">{tutor as string}</span>}
                     </td>
                   </tr>
                 ))}
@@ -631,14 +631,14 @@ export default async function LandingPage() {
         </div>
       </section>
 
-      {/* Curriculum Coverage â€” AP / SAT / ACT */}
+      {/* Curriculum Coverage — AP / SAT / ACT */}
       <section className="py-24 bg-secondary/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
               <h2 className="text-4xl font-bold mb-4">Complete Curriculum Coverage</h2>
               <p className="text-muted-foreground text-lg mb-8">
-                Every unit across 10 AP courses, SAT, and ACT â€” hundreds of exam-aligned questions per unit, free for every student.
+                Every unit across 10 AP courses, SAT, and ACT — hundreds of exam-aligned questions per unit, free for every student.
               </p>
               <Link href="/register?track=ap">
                 <Button size="lg" className="gap-2">
@@ -665,19 +665,19 @@ export default async function LandingPage() {
         </div>
       </section>
 
-      {/* CLEP Section â€” College Credit */}
+      {/* CLEP Section — College Credit */}
       {clepOn && <section className="py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm font-medium mb-4">
               <GraduationCap className="h-4 w-4" /> College Credit
             </div>
-            <h2 className="text-4xl font-bold mb-3">Earn College Credit Faster â€” Save Thousands</h2>
+            <h2 className="text-4xl font-bold mb-3">Earn College Credit Faster — Save Thousands</h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
               Pass CLEP exams and skip introductory college courses. One exam. One passing score. Up to $2,400 in tuition savings.
             </p>
             <p className="text-sm text-muted-foreground/70 mt-2 max-w-xl mx-auto">
-              CLEPÂ® exams cost $93 each. StudentNest Prep prepares you with the same AI-powered practice and tutoring used for AP â€” optimized for CLEP content.
+              CLEPÂ® exams cost $93 each. StudentNest Prep prepares you with the same AI-powered practice and tutoring used for AP — optimized for CLEP content.
             </p>
           </div>
 
@@ -685,15 +685,15 @@ export default async function LandingPage() {
           <div className="grid sm:grid-cols-3 gap-4 mb-10 max-w-3xl mx-auto text-center">
             <div className="p-4 rounded-xl border border-emerald-500/15 bg-card/50">
               <p className="text-sm font-semibold text-emerald-400">Passing Score</p>
-              <p className="text-xs text-muted-foreground mt-1">Scaled score of 50 (roughly 50â€“60% correct answers)</p>
+              <p className="text-xs text-muted-foreground mt-1">Scaled score of 50 (roughly 50–60% correct answers)</p>
             </div>
             <div className="p-4 rounded-xl border border-emerald-500/15 bg-card/50">
               <p className="text-sm font-semibold text-emerald-400">Average Prep Time</p>
-              <p className="text-xs text-muted-foreground mt-1">20â€“40 hours per exam, depending on prior familiarity</p>
+              <p className="text-xs text-muted-foreground mt-1">20–40 hours per exam, depending on prior familiarity</p>
             </div>
             <div className="p-4 rounded-xl border border-emerald-500/15 bg-card/50">
               <p className="text-sm font-semibold text-emerald-400">Exam Format</p>
-              <p className="text-xs text-muted-foreground mt-1">90â€“120 minutes, all multiple choice for most exams</p>
+              <p className="text-xs text-muted-foreground mt-1">90–120 minutes, all multiple choice for most exams</p>
             </div>
           </div>
 
@@ -747,12 +747,12 @@ export default async function LandingPage() {
 
           <p className="text-center text-[11px] text-muted-foreground/50 mt-6">
             CLEPÂ® is a registered trademark of College Board, which is not affiliated with, and does not endorse, this product.
-            All practice questions are original AI-generated content â€” not reproduced from any official exam.
+            All practice questions are original AI-generated content — not reproduced from any official exam.
           </p>
         </div>
       </section>}
 
-      {/* DSST Section â€” College Credit */}
+      {/* DSST Section — College Credit */}
       {dsstOn && <section className="py-20 bg-gradient-to-b from-transparent via-orange-500/[0.03] to-transparent">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
@@ -761,18 +761,18 @@ export default async function LandingPage() {
             </div>
             <h2 className="text-4xl font-bold mb-3">Skip Intro Courses with DSST</h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              22 DSST exams across 6 domains â€” Business, Social Sciences, Humanities, STEM, English, and History. $85 per exam. Accepted at 1,900+ colleges.
+              22 DSST exams across 6 domains — Business, Social Sciences, Humanities, STEM, English, and History. $85 per exam. Accepted at 1,900+ colleges.
             </p>
           </div>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-10 max-w-4xl mx-auto">
             {[
-              { name: "Principles of Supervision", tip: "Easiest DSST â€” highest pass rate" },
-              { name: "Introduction to Business", tip: "Broad but shallow â€” intuitive content" },
+              { name: "Principles of Supervision", tip: "Easiest DSST — highest pass rate" },
+              { name: "Introduction to Business", tip: "Broad but shallow — intuitive content" },
               { name: "Organizational Behavior", tip: "Leadership theories + motivation" },
               { name: "Personal Finance", tip: "Real-world knowledge helps a lot" },
-              { name: "Ethics in America", tip: "Moral reasoning â€” less memorization" },
-              { name: "Environmental Science", tip: "Ecosystems + policy â€” practical" },
+              { name: "Ethics in America", tip: "Moral reasoning — less memorization" },
+              { name: "Environmental Science", tip: "Ecosystems + policy — practical" },
               { name: "Technical Writing", tip: "Most practical DSST exam" },
               { name: "Lifespan Developmental Psychology", tip: "Overlaps with AP/CLEP Psych" },
             ].map((c) => (
@@ -811,7 +811,7 @@ export default async function LandingPage() {
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-10">
             <h2 className="text-3xl font-bold mb-2">What Do You Actually Get?</h2>
-            <p className="text-muted-foreground text-sm">Free is genuinely useful. Premium unlocks the full engine â€” pick your track.</p>
+            <p className="text-muted-foreground text-sm">Free is genuinely useful. Premium unlocks the full engine — pick your track.</p>
           </div>
           <div className={`grid ${clepOn ? "sm:grid-cols-3" : "sm:grid-cols-2"} gap-4`}>
             {/* Free column */}
@@ -822,7 +822,7 @@ export default async function LandingPage() {
                 <span className="text-xs text-muted-foreground">/ forever</span>
               </div>
               {[
-                `All ${courseCount} courses â€” ${examLabel}`,
+                `All ${courseCount} courses — ${examLabel}`,
                 // Beta 7.3 (2026-04-25): "Unlimited MCQ practice" was a
                 // direct contradiction with /pricing's "3 sessions/day"
                 // free-tier limit. Aligning landing copy to the real cap.
@@ -852,7 +852,7 @@ export default async function LandingPage() {
                 <span className="text-xl font-bold text-blue-400">$9.99</span>
                 <span className="text-xs text-muted-foreground">/ month</span>
               </div>
-              <p className="text-xs text-green-700 dark:text-green-400 font-medium mb-1">or $79.99/yr â€” save 33%</p>
+              <p className="text-xs text-green-700 dark:text-green-400 font-medium mb-1">or $79.99/yr — save 33%</p>
               <p className="text-xs text-muted-foreground/60 mb-3">Less than a single hour of tutoring</p>
               {[
                 "Everything in Free, plus:",
@@ -882,7 +882,7 @@ export default async function LandingPage() {
                 <span className="text-xl font-bold text-emerald-300">$9.99</span>
                 <span className="text-xs text-muted-foreground">/ month</span>
               </div>
-              <p className="text-xs text-green-700 dark:text-green-400 font-medium mb-1">or $79.99/yr â€” save 33%</p>
+              <p className="text-xs text-green-700 dark:text-green-400 font-medium mb-1">or $79.99/yr — save 33%</p>
               <p className="text-xs text-muted-foreground/60 mb-3">Less than a single hour of tutoring</p>
               {[
                 "Everything in Free, plus:",
@@ -910,7 +910,7 @@ export default async function LandingPage() {
         </div>
       </section>
 
-      {/* Testimonials â€” 3 cards */}
+      {/* Testimonials — 3 cards */}
       <section className="py-24 lg:py-32">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
@@ -964,15 +964,15 @@ export default async function LandingPage() {
             <p className="text-xs font-semibold uppercase tracking-wider text-blue-500 mb-2">For Parents</p>
             <h2 className="text-3xl font-bold mb-3">You want to see your child succeed. So do we.</h2>
             <p className="text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-              A typical AP student needs 8â€“12 weeks of focused practice before exam day. With a private tutor at $50/hr twice a week, that&apos;s $800â€“$1,200. StudentNest Prep Premium covers the same period for about $20 total. Your child gets adaptive practice and AI explanations, and you get visibility into their actual progress: which units they&apos;ve mastered, where they&apos;re struggling, how many days they&apos;ve studied this week, and whether their accuracy is trending up.
+              A typical AP student needs 8–12 weeks of focused practice before exam day. With a private tutor at $50/hr twice a week, that&apos;s $800–$1,200. StudentNest Prep Premium covers the same period for about $20 total. Your child gets adaptive practice and AI explanations, and you get visibility into their actual progress: which units they&apos;ve mastered, where they&apos;re struggling, how many days they&apos;ve studied this week, and whether their accuracy is trending up.
             </p>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {[
-              { icon: BarChart3, title: "Track Progress", desc: "See mastery scores by unit, accuracy trends, and study streaks â€” all in real time." },
+              { icon: BarChart3, title: "Track Progress", desc: "See mastery scores by unit, accuracy trends, and study streaks — all in real time." },
               { icon: Target, title: "Identify Weak Areas", desc: "Know exactly which topics need work, so study time is never wasted." },
               { icon: GraduationCap, title: "Curriculum-Aligned", desc: clepOn ? "Every question aligns with College Board AP standards and official CLEP exam outlines." : "Every question aligns with College Board AP standards and official exam outlines." },
-              { icon: Clock, title: "Affordable Prep", desc: "$9.99/mo â€” less than one hour of private tutoring. Free tier available for every student." },
+              { icon: Clock, title: "Affordable Prep", desc: "$9.99/mo — less than one hour of private tutoring. Free tier available for every student." },
             ].map((item) => (
               <div key={item.title} className="p-5 rounded-xl border border-border/40 bg-card/50 text-center space-y-2">
                 <div className="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center mx-auto">
@@ -995,8 +995,8 @@ export default async function LandingPage() {
           <h2 className="text-4xl font-bold mb-4">Ready to prepare for the exam that changes everything?</h2>
           <p className="text-muted-foreground text-lg mb-8">
             {clepOn || dsstOn
-              ? <>Whether you&apos;re a high schooler aiming for a 5, or a college student saving thousands{clepOn && <> with CLEP</>}{dsstOn && <>{clepOn ? " and" : " with"} DSST</>} â€” StudentNest is free to start, and Sage is ready to teach.</>
-              : <>Whether you&apos;re aiming for a 5 on AP exams, a top SAT score, or a strong ACT composite â€” StudentNest is free to start, and Sage is ready to teach.</>
+              ? <>Whether you&apos;re a high schooler aiming for a 5, or a college student saving thousands{clepOn && <> with CLEP</>}{dsstOn && <>{clepOn ? " and" : " with"} DSST</>} — StudentNest is free to start, and Sage is ready to teach.</>
+              : <>Whether you&apos;re aiming for a 5 on AP exams, a top SAT score, or a strong ACT composite — StudentNest is free to start, and Sage is ready to teach.</>
             }
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -1020,7 +1020,7 @@ export default async function LandingPage() {
         </div>
       </section>
 
-      {/* Footer â€” 4-column */}
+      {/* Footer — 4-column */}
       <footer className="border-t border-border/40 pt-12 pb-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">

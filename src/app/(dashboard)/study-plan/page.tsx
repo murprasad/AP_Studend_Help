@@ -66,7 +66,7 @@ export default function StudyPlanPage() {
   const { toast } = useToast();
   const [course] = useCourse();
 
-  // Full-screen mode â€” sidebar hidden for wider plan tables.
+  // Full-screen mode — sidebar hidden for wider plan tables.
   const { enterExamMode, exitExamMode } = useExamMode();
   useEffect(() => { enterExamMode(); return () => exitExamMode(); }, [enterExamMode, exitExamMode]);
 

@@ -123,11 +123,9 @@ export function SessionFeedbackPopup({ sessionId, triggerCondition, source, cour
     if (pendingRating !== null) submitFeedback(pendingRating, reasonText);
   }
 
-  function handleSkipReason() {
-    // Still record the thumbs-down even if user skips the text box — the
-    // rating itself is valuable signal.
-    if (pendingRating !== null) submitFeedback(pendingRating, "");
-  }
+  // handleSkipReason removed 2026-04-27: per user direction, Bad rating now
+  // requires at least a brief reason — keep them on the reason phase until
+  // they fill the textarea.
 
   if (!sessionId) return null;
 
@@ -208,21 +206,20 @@ export function SessionFeedbackPopup({ sessionId, triggerCondition, source, cour
                 maxLength={500}
                 className="w-full rounded-xl border border-border/60 bg-background px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-primary/40"
               />
-              <div className="flex gap-2">
-                <Button
-                  variant="outline"
-                  className="flex-1 text-sm"
-                  onClick={handleSkipReason}
-                >
-                  Skip
-                </Button>
-                <Button
-                  className="flex-1 gap-2 text-sm"
-                  onClick={handleReasonSubmit}
-                >
-                  <Send className="h-4 w-4" /> Send
-                </Button>
-              </div>
+              {/* Skip button removed 2026-04-27 (user feedback): "if Bad,
+                  pop up a message to check for improvements" — make the
+                  reason mandatory rather than dismissable. Send button is
+                  disabled until 3+ chars so we still capture useful signal. */}
+              <Button
+                className="w-full gap-2 text-sm"
+                onClick={handleReasonSubmit}
+                disabled={reasonText.trim().length < 3}
+              >
+                <Send className="h-4 w-4" /> Send feedback
+              </Button>
+              <p className="text-[11px] text-muted-foreground">
+                Even one sentence helps us fix what didn't work.
+              </p>
             </>
           )}
         </div>

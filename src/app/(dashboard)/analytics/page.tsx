@@ -70,7 +70,7 @@ export default function AnalyticsPage() {
   const { data: session } = useSession();
   const { toast } = useToast();
 
-  // Full-screen mode â€” hide sidebar + SageChat + bottom nav for chart
+  // Full-screen mode — hide sidebar + SageChat + bottom nav for chart
   // breathing room. Slim top bar with "â† Dashboard" still available.
   const { enterExamMode, exitExamMode } = useExamMode();
   useEffect(() => { enterExamMode(); return () => exitExamMode(); }, [enterExamMode, exitExamMode]);
@@ -136,13 +136,13 @@ export default function AnalyticsPage() {
           setStale(false);
           setError(null);
         } else {
-          // Analytics fetch failed â€” show stale data or error
+          // Analytics fetch failed — show stale data or error
           if (hasData) {
             setStale(true);
           } else {
             const reason = analyticsResult.reason;
             if (reason?.message === "under-maintenance") return;
-            setError("Failed to load analytics â€” check your connection and try again.");
+            setError("Failed to load analytics — check your connection and try again.");
           }
         }
         const goalMap: Record<string, { targetScore: number; targetDate?: string }> = {};
@@ -154,7 +154,7 @@ export default function AnalyticsPage() {
       .finally(() => { setLoading(false); setRefreshing(false); });
 
     // Fire-and-forget readiness fetch for the early-stage predicted-score
-    // panel. Silently swallowed on failure â€” the panel just won't render.
+    // panel. Silently swallowed on failure — the panel just won't render.
     fetch(`/api/readiness?course=${course}`, { cache: "no-store" })
       .then((r) => (r.ok ? r.json() : null))
       .then((d) => {
@@ -169,7 +169,7 @@ export default function AnalyticsPage() {
           });
         }
       })
-      .catch(() => { /* silent â€” early-estimate panel just hides */ });
+      .catch(() => { /* silent — early-estimate panel just hides */ });
   }, [course]); // eslint-disable-line react-hooks/exhaustive-deps
 
   async function saveGoal() {
@@ -341,7 +341,7 @@ export default function AnalyticsPage() {
                 disabled={goalSaving}
                 className="flex-1 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium transition-colors disabled:opacity-50"
               >
-                {goalSaving ? "Savingâ€¦" : "Set Goal"}
+                {goalSaving ? "Saving…" : "Set Goal"}
               </button>
             </div>
           </div>
@@ -456,10 +456,10 @@ export default function AnalyticsPage() {
           <TrendingUp className="h-4 w-4 text-emerald-400 flex-shrink-0" />
           <p className="text-sm text-muted-foreground">
             {stats.overallAccuracy >= 80
-              ? `You're doing great â€” ${stats.overallAccuracy}% accuracy across ${stats.totalAnswered} questions. Keep pushing toward 90%+!`
+              ? `You're doing great — ${stats.overallAccuracy}% accuracy across ${stats.totalAnswered} questions. Keep pushing toward 90%+!`
               : stats.overallAccuracy >= 60
-              ? `Solid progress â€” ${stats.overallAccuracy}% accuracy. Focus on your weakest units to break through to 80%+.`
-              : `You're building momentum â€” ${stats.totalAnswered} questions answered. Keep practicing daily and watch your accuracy climb.`}
+              ? `Solid progress — ${stats.overallAccuracy}% accuracy. Focus on your weakest units to break through to 80%+.`
+              : `You're building momentum — ${stats.totalAnswered} questions answered. Keep practicing daily and watch your accuracy climb.`}
             {masteryData.length > 0 && (() => {
               const mastered = masteryData.filter((u) => u.masteryScore >= 70).length;
               const total = masteryData.length;
@@ -469,7 +469,7 @@ export default function AnalyticsPage() {
         </div>
       )}
 
-      {/* Tutor Comprehension card â€” only if user has taken at least one check */}
+      {/* Tutor Comprehension card — only if user has taken at least one check */}
       {knowledgeCheckStats && knowledgeCheckStats.totalChecks > 0 && (
         <Card className="card-glow">
           <CardContent className="p-5">
@@ -481,7 +481,7 @@ export default function AnalyticsPage() {
                 <p className="text-2xl font-bold">
                   {knowledgeCheckStats.avgComprehension !== null
                     ? `${knowledgeCheckStats.avgComprehension}%`
-                    : "â€”"}
+                    : "—"}
                 </p>
                 <p className="text-xs text-muted-foreground">
                   Tutor Comprehension ({knowledgeCheckStats.totalChecks}{" "}
@@ -493,7 +493,7 @@ export default function AnalyticsPage() {
         </Card>
       )}
 
-      {/* Early-stage predicted-score panel â€” renders for users who have â‰¥1
+      {/* Early-stage predicted-score panel — renders for users who have ≥1
           answer but no mock-exam-derived estimatedApScore yet. Catches the
           first-answer-reward-modal cohort so the "see my predicted score"
           CTA actually delivers something visible. The /api/readiness route
@@ -517,19 +517,19 @@ export default function AnalyticsPage() {
               <p className="font-semibold text-lg">
                 {earlyReadiness.showScore && earlyReadiness.scaledScore !== null
                   ? `Predicted ${earlyReadiness.family} Score: ${earlyReadiness.scaledScore}${earlyReadiness.family === "AP" ? "/5" : `/${earlyReadiness.scaleMax}`}`
-                  : "Building your predicted scoreâ€¦"}
+                  : "Building your predicted score…"}
               </p>
               <p className="text-sm text-muted-foreground">
                 {earlyReadiness.showScore
                   ? `Based on ${stats.totalAnswered} ${stats.totalAnswered === 1 ? "answer" : "answers"} so far. Confidence: ${earlyReadiness.confidence.replace("_", " ")}. Take a mock exam for a more accurate score.`
-                  : `You've answered ${stats.totalAnswered}. Predicted score sharpens with each question â€” most students see a stable estimate around 10 answers in.`}
+                  : `You've answered ${stats.totalAnswered}. Predicted score sharpens with each question — most students see a stable estimate around 10 answers in.`}
               </p>
             </div>
           </CardContent>
         </Card>
       )}
 
-      {/* Estimated AP Score (mock-exam-derived â€” shown once user has a real mock result) */}
+      {/* Estimated AP Score (mock-exam-derived — shown once user has a real mock result) */}
       {stats?.estimatedApScore && (
         <Card className="card-glow border-blue-500/30 bg-blue-500/5">
           <CardContent className="p-5 flex items-center gap-6">
@@ -575,7 +575,7 @@ export default function AnalyticsPage() {
                 </ResponsiveContainer>
               ) : (
                 <div className="h-full flex items-center justify-center text-muted-foreground text-sm">
-                  No mastery data yet â€” start practicing!
+                  No mastery data yet — start practicing!
                 </div>
               )}
             </div>
@@ -732,7 +732,7 @@ export default function AnalyticsPage() {
         </Card>
       )}
 
-      {/* Premium upgrade CTA â€” shown to free users */}
+      {/* Premium upgrade CTA — shown to free users */}
       {session?.user?.subscriptionTier !== "PREMIUM" && session?.user?.subscriptionTier !== "AP_PREMIUM" && session?.user?.subscriptionTier !== "CLEP_PREMIUM" && (() => {
         const analyticsTrack = (session?.user as { track?: string })?.track ?? "ap";
         const isClep = analyticsTrack === "clep";

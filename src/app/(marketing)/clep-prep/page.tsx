@@ -19,7 +19,7 @@ import { ExamReadinessMockup } from "@/components/landing/exam-readiness";
 import { FadeIn } from "@/components/landing/fade-in";
 
 export const metadata: Metadata = {
-  title: "CLEP Exam Prep â€” Pass in 7 Days, Save $1,200+ | StudentNest Prep",
+  title: "CLEP Exam Prep — Pass in 7 Days, Save $1,200+ | StudentNest Prep",
   description: "Pass your CLEP exam in 7 days with AI-powered prep. 34 exams, all 5 domains. $93 exam replaces a $1,200 college course. Free to start.",
   openGraph: {
     title: "Pass Your CLEP Exam in 7 Days | StudentNest Prep",
@@ -30,14 +30,14 @@ export const metadata: Metadata = {
 
 // Top 8 "easiest" CLEP exams by approachability (based on pass rates + student feedback)
 const easiestExams = [
-  { name: "Introductory Sociology", hours: "15â€“25", difficulty: "High", savings: "$1,200", tip: "Mostly common sense + vocabulary" },
-  { name: "Introductory Psychology", hours: "15â€“25", difficulty: "High", savings: "$1,200", tip: "If you took AP Psych, you're halfway there" },
-  { name: "Analyzing & Interpreting Lit", hours: "10â€“20", difficulty: "High", savings: "$2,400", tip: "No reading list â€” pure passage analysis" },
-  { name: "Principles of Marketing", hours: "20â€“30", difficulty: "High", savings: "$1,200", tip: "Real-world business intuition helps a lot" },
-  { name: "College Mathematics", hours: "20â€“30", difficulty: "Medium", savings: "$2,400", tip: "Easier than College Algebra â€” broader but shallower" },
-  { name: "American Government", hours: "20â€“30", difficulty: "Medium", savings: "$1,200", tip: "Civics knowledge from high school goes far" },
-  { name: "Principles of Management", hours: "20â€“30", difficulty: "High", savings: "$1,200", tip: "Common sense management + key theorists" },
-  { name: "Introductory Sociology", hours: "15â€“25", difficulty: "High", savings: "$1,200", tip: "Consistently one of the highest pass rates" },
+  { name: "Introductory Sociology", hours: "15–25", difficulty: "High", savings: "$1,200", tip: "Mostly common sense + vocabulary" },
+  { name: "Introductory Psychology", hours: "15–25", difficulty: "High", savings: "$1,200", tip: "If you took AP Psych, you're halfway there" },
+  { name: "Analyzing & Interpreting Lit", hours: "10–20", difficulty: "High", savings: "$2,400", tip: "No reading list — pure passage analysis" },
+  { name: "Principles of Marketing", hours: "20–30", difficulty: "High", savings: "$1,200", tip: "Real-world business intuition helps a lot" },
+  { name: "College Mathematics", hours: "20–30", difficulty: "Medium", savings: "$2,400", tip: "Easier than College Algebra — broader but shallower" },
+  { name: "American Government", hours: "20–30", difficulty: "Medium", savings: "$1,200", tip: "Civics knowledge from high school goes far" },
+  { name: "Principles of Management", hours: "20–30", difficulty: "High", savings: "$1,200", tip: "Common sense management + key theorists" },
+  { name: "Introductory Sociology", hours: "15–25", difficulty: "High", savings: "$1,200", tip: "Consistently one of the highest pass rates" },
 ];
 // Deduplicate (Sociology listed twice intentionally as #1, remove duplicate)
 const topExams = easiestExams.filter((e, i, a) => a.findIndex(x => x.name === e.name) === i).slice(0, 8);
@@ -121,7 +121,7 @@ const jsonLd = {
   "@context": "https://schema.org",
   "@type": "ItemList",
   name: "CLEP Exam Prep Courses",
-  description: "34 CLEP exams with AI-powered practice â€” earn college credit and save thousands",
+  description: "34 CLEP exams with AI-powered practice — earn college credit and save thousands",
   numberOfItems: 34,
   itemListElement: allCourses.map((c, i) => ({
     "@type": "ListItem",
@@ -158,7 +158,7 @@ export default async function ClepPrepPage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
 
-      {/* â•â•â• HERO â€” asymmetric, human feel â•â•â• */}
+      {/* â•â•â• HERO — asymmetric, human feel â•â•â• */}
       <section className="max-w-5xl mx-auto px-4 pt-16 pb-12">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
           <FadeIn>
@@ -171,7 +171,7 @@ export default async function ClepPrepPage() {
                 <span className="text-emerald-400">Save $1,200.</span>
               </h1>
               <p className="text-lg text-muted-foreground max-w-lg mx-auto lg:mx-0">
-                One $93 exam replaces a full college course. Sage builds your custom 7-day plan â€” study only what&apos;s on the test.
+                One $93 exam replaces a full college course. Sage builds your custom 7-day plan — study only what&apos;s on the test.
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start pt-1">
                 <Link href="/register?module=clep">
@@ -198,7 +198,7 @@ export default async function ClepPrepPage() {
         </div>
       </section>
 
-      {/* â•â•â• 4-STEP TIMELINE â€” how it works â•â•â• */}
+      {/* â•â•â• 4-STEP TIMELINE — how it works â•â•â• */}
       <section className="bg-secondary/20 py-14">
         <div className="max-w-5xl mx-auto px-4">
           <FadeIn>
@@ -209,7 +209,7 @@ export default async function ClepPrepPage() {
         </div>
       </section>
 
-      {/* â•â•â• EASIEST CLEP EXAMS â€” #1 SEO target â•â•â• */}
+      {/* â•â•â• EASIEST CLEP EXAMS — #1 SEO target â•â•â• */}
       <section id="easiest" className="max-w-5xl mx-auto px-4 py-16 scroll-mt-20">
         <FadeIn>
           <div className="text-center mb-8">
@@ -248,7 +248,7 @@ export default async function ClepPrepPage() {
         </div>
       </section>
 
-      {/* â•â•â• PERSONA CARDS â€” who is this for â•â•â• */}
+      {/* â•â•â• PERSONA CARDS — who is this for â•â•â• */}
       <section className="bg-gradient-to-b from-transparent via-emerald-500/[0.03] to-transparent py-14">
         <div className="max-w-5xl mx-auto px-4">
           <FadeIn>
@@ -260,13 +260,13 @@ export default async function ClepPrepPage() {
               {
                 icon: TrendingUp, color: "emerald", label: "Credit Hackers",
                 title: "Skip a full semester",
-                desc: "Stack 4-5 CLEPs in one summer. Enter college as a sophomore â€” or graduate a year early.",
+                desc: "Stack 4-5 CLEPs in one summer. Enter college as a sophomore — or graduate a year early.",
                 cta: "I want to skip ahead",
               },
               {
                 icon: Users, color: "teal", label: "Working Adults",
                 title: "Study on your schedule",
-                desc: "Study after the kids are in bed. Schedule your exam any week â€” no waiting for test dates.",
+                desc: "Study after the kids are in bed. Schedule your exam any week — no waiting for test dates.",
                 cta: "I'm finishing my degree",
               },
               {
@@ -295,7 +295,7 @@ export default async function ClepPrepPage() {
         </div>
       </section>
 
-      {/* â•â•â• EXAM READINESS â€” feature preview with mockup â•â•â• */}
+      {/* â•â•â• EXAM READINESS — feature preview with mockup â•â•â• */}
       <section className="max-w-5xl mx-auto px-4 py-16">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
           <FadeIn>
@@ -320,14 +320,14 @@ export default async function ClepPrepPage() {
         </div>
       </section>
 
-      {/* â•â•â• FEATURES â€” alternating text + mockups â•â•â• */}
+      {/* â•â•â• FEATURES — alternating text + mockups â•â•â• */}
       <section className="bg-secondary/20 py-16">
         <div className="max-w-5xl mx-auto px-4 space-y-20">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
             <FadeIn>
               <div className="space-y-3">
                 <h3 className="text-2xl font-bold">CLEP-aligned practice, not random quizzes</h3>
-                <p className="text-muted-foreground leading-relaxed">AI generates questions matching official CLEP format. Sage explains every answer using free resources â€” OpenStax, Khan Academy, LibreTexts.</p>
+                <p className="text-muted-foreground leading-relaxed">AI generates questions matching official CLEP format. Sage explains every answer using free resources — OpenStax, Khan Academy, LibreTexts.</p>
                 <p className="text-sm text-emerald-400 font-medium">Practice only what&apos;s actually on the exam.</p>
               </div>
             </FadeIn>
@@ -359,7 +359,7 @@ export default async function ClepPrepPage() {
               Question Quality Guarantee
             </div>
             <h2 className="text-2xl sm:text-3xl font-bold">College Board-Level Questions</h2>
-            <p className="text-muted-foreground mt-2 max-w-2xl mx-auto">Every practice question goes through a rigorous quality pipeline â€” not random AI output</p>
+            <p className="text-muted-foreground mt-2 max-w-2xl mx-auto">Every practice question goes through a rigorous quality pipeline — not random AI output</p>
           </div>
         </FadeIn>
 
@@ -375,14 +375,14 @@ export default async function ClepPrepPage() {
             <div className="relative overflow-hidden rounded-2xl border border-blue-500/20 bg-gradient-to-br from-blue-500/[0.06] to-transparent p-6 text-center">
               <div className="text-4xl font-bold text-blue-500 mb-1">80%+</div>
               <div className="text-sm font-semibold mb-2">Application-Level</div>
-              <p className="text-xs text-muted-foreground">Real CLEP exams test understanding, not memorization. Our questions require you to apply concepts to scenarios â€” just like the real exam</p>
+              <p className="text-xs text-muted-foreground">Real CLEP exams test understanding, not memorization. Our questions require you to apply concepts to scenarios — just like the real exam</p>
             </div>
           </FadeIn>
           <FadeIn>
             <div className="relative overflow-hidden rounded-2xl border border-violet-500/20 bg-gradient-to-br from-violet-500/[0.06] to-transparent p-6 text-center">
               <div className="text-4xl font-bold text-violet-500 mb-1">34</div>
               <div className="text-sm font-semibold mb-2">Exam Topic Maps</div>
-              <p className="text-xs text-muted-foreground">Questions follow College Board&apos;s official topic distribution â€” the same percentages tested on your actual CLEP exam</p>
+              <p className="text-xs text-muted-foreground">Questions follow College Board&apos;s official topic distribution — the same percentages tested on your actual CLEP exam</p>
             </div>
           </FadeIn>
         </div>
@@ -421,7 +421,7 @@ export default async function ClepPrepPage() {
         <CLEPTestimonials />
       </section>
 
-      {/* â•â•â• SCHEDULE ANYTIME â€” year-round advantage â•â•â• */}
+      {/* â•â•â• SCHEDULE ANYTIME — year-round advantage â•â•â• */}
       <section className="bg-emerald-500/[0.04] border-y border-emerald-500/10 py-12">
         <div className="max-w-3xl mx-auto px-4 text-center space-y-4">
           <FadeIn>
@@ -435,7 +435,7 @@ export default async function ClepPrepPage() {
         </div>
       </section>
 
-      {/* â•â•â• ALL 34 EXAMS â€” domain-grouped accordion â•â•â• */}
+      {/* â•â•â• ALL 34 EXAMS — domain-grouped accordion â•â•â• */}
       <section className="max-w-5xl mx-auto px-4 py-16">
         <FadeIn>
           <h2 className="text-2xl sm:text-3xl font-bold text-center mb-2">All 34 CLEP Exams</h2>
@@ -472,7 +472,7 @@ export default async function ClepPrepPage() {
         </div>
       </section>
 
-      {/* â•â•â• WHAT IS CLEP? â€” for confused beginners â•â•â• */}
+      {/* â•â•â• WHAT IS CLEP? — for confused beginners â•â•â• */}
       <section className="bg-secondary/20 py-14">
         <div className="max-w-3xl mx-auto px-4">
           <FadeIn>
@@ -483,14 +483,14 @@ export default async function ClepPrepPage() {
               </div>
               <div className="grid sm:grid-cols-2 gap-4 text-sm text-muted-foreground">
                 <div className="space-y-3">
-                  <p><span className="text-foreground font-medium">What:</span> A standardized exam that earns you college credit â€” without taking the class.</p>
+                  <p><span className="text-foreground font-medium">What:</span> A standardized exam that earns you college credit — without taking the class.</p>
                   <p><span className="text-foreground font-medium">Cost:</span> $93 per exam (vs. $1,200+ for the course).</p>
                   <p><span className="text-foreground font-medium">Time:</span> 90-120 minutes per exam. Prep takes 7-30 days depending on prior knowledge.</p>
                 </div>
                 <div className="space-y-3">
                   <p><span className="text-foreground font-medium">Credits:</span> 3-6 college credits per passing exam.</p>
                   <p><span className="text-foreground font-medium">Accepted by:</span> 2,900+ colleges and universities.</p>
-                  <p><span className="text-foreground font-medium">Who can take it:</span> Anyone â€” high school students, college students, adults, military.</p>
+                  <p><span className="text-foreground font-medium">Who can take it:</span> Anyone — high school students, college students, adults, military.</p>
                 </div>
               </div>
             </div>
@@ -503,7 +503,7 @@ export default async function ClepPrepPage() {
         <CLEPFaq />
       </section>
 
-      {/* â•â•â• PRICING â€” Free vs Premium â•â•â• */}
+      {/* â•â•â• PRICING — Free vs Premium â•â•â• */}
       <section className="bg-secondary/20 py-14">
         <div className="max-w-4xl mx-auto px-4">
           <FadeIn>
@@ -527,7 +527,7 @@ export default async function ClepPrepPage() {
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full bg-emerald-600 text-white text-xs font-semibold">Most Popular</div>
                 <p className="font-bold text-emerald-400">CLEP Premium</p>
                 <p className="text-3xl font-bold">$9.99<span className="text-sm font-normal text-muted-foreground">/mo</span></p>
-                <p className="text-xs text-green-700 dark:text-green-400 font-medium">or $79.99/yr â€” save 33%</p>
+                <p className="text-xs text-green-700 dark:text-green-400 font-medium">or $79.99/yr — save 33%</p>
                 {["Everything in Free", "7-Day Pass Plan (AI-personalized)", "Unlimited Sage Live Tutor chats", "Exam Readiness Score", "Save $1,200+ per exam"].map((f) => (
                   <div key={f} className="flex items-center gap-2 text-sm"><CheckCircle className="h-4 w-4 text-emerald-400 flex-shrink-0" />{f}</div>
                 ))}
@@ -546,7 +546,7 @@ export default async function ClepPrepPage() {
           <div className="text-center space-y-3">
             <p className="text-sm font-semibold">For parents &amp; adult learners</p>
             <p className="text-sm text-muted-foreground leading-relaxed max-w-xl mx-auto">
-              CLEP exams are administered by the College Board and accepted by 2,900+ institutions for real college credit. StudentNest prepares students with AI-powered practice aligned to official CLEP content outlines. All practice questions are original â€” never copied from official materials.
+              CLEP exams are administered by the College Board and accepted by 2,900+ institutions for real college credit. StudentNest prepares students with AI-powered practice aligned to official CLEP content outlines. All practice questions are original — never copied from official materials.
             </p>
           </div>
         </FadeIn>

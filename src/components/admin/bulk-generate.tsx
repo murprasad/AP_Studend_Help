@@ -168,8 +168,8 @@ export function AdminBulkGenerate() {
             </Button>
           </CardTitle>
           <p className="text-sm text-muted-foreground">
-            Students need â‰¥20 unique questions per unit for meaningful practice.
-            Red = critical (&lt;10), yellow = low (10â€“19), green = good (20+).
+            Students need ≥20 unique questions per unit for meaningful practice.
+            Red = critical (&lt;10), yellow = low (10–19), green = good (20+).
           </p>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -292,7 +292,7 @@ export function AdminBulkGenerate() {
             {isPopulating ? (
               <><Loader2 className="h-4 w-4 animate-spin" /> Generating (this takes a few minutes)...</>
             ) : (
-              <><Database className="h-4 w-4" /> Populate All Units â€” {AP_COURSES[populateCourse]}</>
+              <><Database className="h-4 w-4" /> Populate All Units — {AP_COURSES[populateCourse]}</>
             )}
           </Button>
 
@@ -332,7 +332,7 @@ export function AdminBulkGenerate() {
                 {populateDetails.map((d) => (
                   <div key={d.unit} className="flex items-center gap-2 text-xs">
                     {d.status === "ok" && <CheckCircle className="h-3 w-3 text-emerald-400 flex-shrink-0" />}
-                    {d.status === "skipped" && <span className="text-blue-400 flex-shrink-0">â€“</span>}
+                    {d.status === "skipped" && <span className="text-blue-400 flex-shrink-0">–</span>}
                     {d.status === "failed" && <AlertTriangle className="h-3 w-3 text-red-400 flex-shrink-0" />}
                     <span className="flex-1 text-muted-foreground truncate">{d.name}</span>
                     <span className="text-right">

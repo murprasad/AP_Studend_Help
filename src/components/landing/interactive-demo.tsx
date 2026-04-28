@@ -17,9 +17,9 @@ const AP_QUESTION = {
   ],
   correct: "B",
   explanation:
-    "Napoleon's military campaigns (1799â€“1815) carried Revolutionary ideals of liberty, equality, and nationalism into conquered territories across Europe. He spread the Napoleonic Code, abolished feudal privileges, and dismantled old aristocratic orders â€” directly exporting the political legacy of the Revolution far beyond France's borders.",
+    "Napoleon's military campaigns (1799–1815) carried Revolutionary ideals of liberty, equality, and nationalism into conquered territories across Europe. He spread the Napoleonic Code, abolished feudal privileges, and dismantled old aristocratic orders — directly exporting the political legacy of the Revolution far beyond France's borders.",
   wrongExplanation:
-    "Not quite. The correct answer is B â€” Napoleon's military campaigns. While the printing press (A) spread ideas earlier, and trade routes (D) facilitated cultural exchange, neither directly spread Revolutionary democratic ideals. Napoleon's conquests explicitly carried the Revolutionary Code into Europe, abolishing feudal systems and installing democratic legal frameworks across conquered nations.",
+    "Not quite. The correct answer is B — Napoleon's military campaigns. While the printing press (A) spread ideas earlier, and trade routes (D) facilitated cultural exchange, neither directly spread Revolutionary democratic ideals. Napoleon's conquests explicitly carried the Revolutionary Code into Europe, abolishing feudal systems and installing democratic legal frameworks across conquered nations.",
   track: "ap" as const,
 };
 
@@ -35,9 +35,9 @@ const CLEP_QUESTION = {
   ],
   correct: "B",
   explanation:
-    "Subtract 7 from both sides: 2x = 8. Then divide both sides by 2: x = 4. This is a fundamental linear equation â€” mastering these is essential for the CLEP College Algebra exam, where they appear in both standalone and word-problem formats.",
+    "Subtract 7 from both sides: 2x = 8. Then divide both sides by 2: x = 4. This is a fundamental linear equation — mastering these is essential for the CLEP College Algebra exam, where they appear in both standalone and word-problem formats.",
   wrongExplanation:
-    "Not quite. The correct answer is B â€” x = 4. To solve 2x + 7 = 15, subtract 7 from both sides to get 2x = 8, then divide by 2 to get x = 4. Always isolate the variable step-by-step.",
+    "Not quite. The correct answer is B — x = 4. To solve 2x + 7 = 15, subtract 7 from both sides to get 2x = 8, then divide by 2 to get x = 4. Always isolate the variable step-by-step.",
   track: "clep" as const,
 };
 
@@ -112,7 +112,7 @@ export function InteractiveDemo() {
               } else if (isSelected && !isRightAnswer) {
                 borderClass = "border-red-500/60 bg-red-500/10 cursor-default";
               } else {
-                // Drop opacity-50 â€” combined with text-foreground/90 it failed
+                // Drop opacity-50 — combined with text-foreground/90 it failed
                 // WCAG AA (2.92:1 on light bg). Muted text on muted bg keeps
                 // de-emphasis without breaking contrast.
                 borderClass = "border-border/20 bg-secondary/10 text-muted-foreground cursor-default";

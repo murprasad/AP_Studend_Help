@@ -144,7 +144,7 @@ export function DailyReviewCard({ course }: Props) {
         </CardHeader>
         <CardContent className="space-y-3">
           <p className="text-sm text-muted-foreground">
-            {count} question{count !== 1 ? "s" : ""} from 3â€“7 days ago need a refresher.
+            {count} question{count !== 1 ? "s" : ""} from 3–7 days ago need a refresher.
           </p>
           <div className="flex items-center gap-2 text-xs text-emerald-400">
             <span>â±</span>
@@ -171,7 +171,7 @@ export function DailyReviewCard({ course }: Props) {
         <CardContent className="text-center space-y-2">
           <p className="text-3xl font-bold text-emerald-400">{score}/{questions.length}</p>
           <p className="text-sm text-muted-foreground">
-            {score === questions.length ? "Perfect! ðŸŽ‰" : "Keep it up â€” practice makes progress!"}
+            {score === questions.length ? "Perfect! ðŸŽ‰" : "Keep it up — practice makes progress!"}
           </p>
           <Badge variant="outline" className="text-emerald-400 border-emerald-500/30 text-xs">
             +{score * 5} XP Daily Boost

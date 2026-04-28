@@ -1,12 +1,12 @@
 "use client";
 
 /**
- * SageCoachPromoCard â€” Phase B (Beta 8.3 prep), 2026-04-26.
+ * SageCoachPromoCard — Phase B (Beta 8.3 prep), 2026-04-26.
  *
  * Promotes the FRQ grader (Sage Coach) from a buried sidebar link to a
  * prominent dashboard card. Shipping the 220 official CB FRQs in
  * Beta 8.2 doesn't help conversion if students don't know the AI grader
- * exists â€” this card surfaces it where they actually look.
+ * exists — this card surfaces it where they actually look.
  *
  * Rendering rules:
  *   - Hides when: course has 0 FRQs (no value to promote) OR Sage Coach
@@ -16,7 +16,7 @@
  *     CTA to /billing with utm_source=sage_coach_promo.
  *
  * Dashboard placement: between WeaknessFocusCard and FlashcardsDueCard
- * â€” that's where students naturally look after seeing their score +
+ * — that's where students naturally look after seeing their score +
  * weakest unit ("OK, I see what to fix; how do I get help writing it?").
  */
 
@@ -43,7 +43,7 @@ export function SageCoachPromoCard({ course }: Props) {
 
   useEffect(() => {
     let cancelled = false;
-    // Cheap probe â€” just need to know if at least 1 FRQ exists for course.
+    // Cheap probe — just need to know if at least 1 FRQ exists for course.
     // Beta 8.3 hotfix (2026-04-26): URL was /api/frq/list (404); actual
     // route is /api/frq. Card was silently never rendering because the
     // 404 produced null â†’ setHasFrqs never fired â†’ !hasFrqs guard hid card.
@@ -82,7 +82,7 @@ export function SageCoachPromoCard({ course }: Props) {
             </div>
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-2">
-                <p className="text-[16px] font-semibold leading-tight">Sage Coach â€” FRQ Grader</p>
+                <p className="text-[16px] font-semibold leading-tight">Sage Coach — FRQ Grader</p>
                 <Badge variant="outline" className="text-[10px] border-emerald-500/40 text-emerald-700 dark:text-emerald-400 bg-emerald-500/5">
                   Premium
                 </Badge>
@@ -103,7 +103,7 @@ export function SageCoachPromoCard({ course }: Props) {
     );
   }
 
-  // Free tier â€” paywalled CTA into billing.
+  // Free tier — paywalled CTA into billing.
   return (
     <Card className="rounded-[16px] border-amber-500/30 bg-amber-500/5">
       <CardContent className="p-5 space-y-3">
@@ -119,7 +119,7 @@ export function SageCoachPromoCard({ course }: Props) {
               </Badge>
             </div>
             <p className="text-[13px] text-muted-foreground mt-1">
-              Sage Coach grades your written FRQ responses against the official College Board rubric â€” line by line. Premium feature.
+              Sage Coach grades your written FRQ responses against the official College Board rubric — line by line. Premium feature.
             </p>
           </div>
         </div>

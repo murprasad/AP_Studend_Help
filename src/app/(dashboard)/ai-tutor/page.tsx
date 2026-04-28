@@ -70,7 +70,7 @@ export default function AiTutorPage() {
   const router = useRouter();
   const [course, setCourse] = useCourse();
 
-  // Full-screen Sage chat â€” hide sidebar + floating SageChat widget
+  // Full-screen Sage chat — hide sidebar + floating SageChat widget
   // for an app-like deep-work experience. Matches PrepLion's Sage Live Tutor.
   const { enterExamMode, exitExamMode } = useExamMode();
   useEffect(() => { enterExamMode(); return () => exitExamMode(); }, [enterExamMode, exitExamMode]);
@@ -139,7 +139,7 @@ export default function AiTutorPage() {
           const hi = firstName ? `Hey ${firstName}!` : "Hey!";
           setMessages([{
             role: "assistant",
-            content: `${hi} I'm Sage ðŸŒ¿ Ready to help with ${courseLabel}. Here's how most students start with me: paste a practice question you got wrong and ask "why is [X] the answer?" â€” it's the fastest way to close knowledge gaps. What do you want to work on?`,
+            content: `${hi} I'm Sage ðŸŒ¿ Ready to help with ${courseLabel}. Here's how most students start with me: paste a practice question you got wrong and ask "why is [X] the answer?" — it's the fastest way to close knowledge gaps. What do you want to work on?`,
           }]);
         }
       })
@@ -420,7 +420,7 @@ export default function AiTutorPage() {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder={limitReached ? `5 free chats used today â€” upgrade to ${tutorPremiumName} to continue` : `Ask anything about ${courseLabel}â€¦`}
+            placeholder={limitReached ? `5 free chats used today — upgrade to ${tutorPremiumName} to continue` : `Ask anything about ${courseLabel}…`}
             className="min-h-[44px] max-h-32 resize-none border-0 focus-visible:ring-0 p-0 text-sm bg-transparent"
             rows={1}
             disabled={limitReached}
@@ -489,7 +489,7 @@ export default function AiTutorPage() {
         <div className="flex items-center justify-between bg-blue-500/10 border border-blue-500/30 rounded-lg px-4 py-2.5 mb-4 -mx-0">
           <p className="text-sm text-blue-400 flex items-center gap-2">
             <Sparkles className="h-4 w-4" />
-            Your practice session is waiting â€” come back any time.
+            Your practice session is waiting — come back any time.
           </p>
           <Link
             href="/practice"
@@ -555,13 +555,13 @@ export default function AiTutorPage() {
                   </div>
                   <h2 className="text-base font-bold mb-1">I&apos;m Sage ðŸŒ¿</h2>
                   <p className="text-muted-foreground text-xs">
-                    Your personal {courseLabel} tutor. Ask me anything â€” concepts, why you got a question wrong, or &ldquo;explain [topic] like I&apos;m 14.&rdquo;
+                    Your personal {courseLabel} tutor. Ask me anything — concepts, why you got a question wrong, or &ldquo;explain [topic] like I&apos;m 14.&rdquo;
                   </p>
                 </div>
                 <div>
                   <p className="text-xs font-medium text-muted-foreground mb-2 flex items-center gap-1">
                     <Lightbulb className="h-3 w-3" />
-                    Try askingâ€¦
+                    Try asking…
                   </p>
                   <div className="space-y-1.5">
                     {suggestedQuestions.map((q) => (
@@ -613,7 +613,7 @@ export default function AiTutorPage() {
                           ) : (
                             <span className="flex items-center gap-1 text-muted-foreground">
                               <Loader2 className="h-3 w-3 animate-spin" />
-                              Thinkingâ€¦
+                              Thinking…
                             </span>
                           )}
                         </button>
@@ -626,7 +626,7 @@ export default function AiTutorPage() {
             )}
           </div>
 
-          {/* Follow-up chips â€” above input so they're always reachable */}
+          {/* Follow-up chips — above input so they're always reachable */}
           {!isStreaming && lastFollowUps.length > 0 && (
             <div className="flex-shrink-0 space-y-1.5">
               <p className="text-xs text-muted-foreground flex items-center gap-1">
@@ -649,7 +649,7 @@ export default function AiTutorPage() {
             </div>
           )}
 
-          {/* Knowledge check â€” optional, click-to-start */}
+          {/* Knowledge check — optional, click-to-start */}
           {!isStreaming && lastAssistantIdx >= 0 && messages[lastAssistantIdx]?.content && (
             <div className="flex-shrink-0 overflow-y-auto max-h-80">
               <KnowledgeCheck
@@ -745,13 +745,13 @@ export default function AiTutorPage() {
                 </div>
                 <h2 className="text-xl font-bold mb-2">I&apos;m Sage ðŸŒ¿</h2>
                 <p className="text-muted-foreground max-w-md mx-auto text-sm">
-                  Your personal {courseLabel} tutor. Ask me anything â€” concepts, why you got a question wrong, or &ldquo;explain [topic] like I&apos;m 14.&rdquo;
+                  Your personal {courseLabel} tutor. Ask me anything — concepts, why you got a question wrong, or &ldquo;explain [topic] like I&apos;m 14.&rdquo;
                 </p>
               </div>
               <div>
                 <p className="text-sm font-medium text-muted-foreground mb-3 flex items-center gap-2">
                   <Lightbulb className="h-4 w-4" />
-                  Try askingâ€¦
+                  Try asking…
                 </p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   {suggestedQuestions.map((q) => (
@@ -800,7 +800,7 @@ export default function AiTutorPage() {
                         ) : (
                           <div className="flex items-center gap-2 text-muted-foreground">
                             <Loader2 className="h-3 w-3 animate-spin" />
-                            <span>Thinkingâ€¦</span>
+                            <span>Thinking…</span>
                           </div>
                         )}
                       </div>
@@ -827,7 +827,7 @@ export default function AiTutorPage() {
               <div className="bg-card border border-border/40 rounded-xl p-4">
                 <div className="flex items-center gap-2 text-muted-foreground">
                   <Loader2 className="h-4 w-4 animate-spin" />
-                  <span className="text-sm">Thinkingâ€¦</span>
+                  <span className="text-sm">Thinking…</span>
                 </div>
               </div>
             </div>
@@ -836,7 +836,7 @@ export default function AiTutorPage() {
           <div ref={messagesEndRef} />
         </div>
 
-        {/* Follow-up chips â€” above input, always visible without scrolling */}
+        {/* Follow-up chips — above input, always visible without scrolling */}
         {!isStreaming && lastFollowUps.length > 0 && (
           <div className="mb-3 space-y-1.5 flex-shrink-0">
             <p className="text-xs text-muted-foreground flex items-center gap-1">
@@ -859,7 +859,7 @@ export default function AiTutorPage() {
           </div>
         )}
 
-        {/* Knowledge check â€” optional, click-to-start */}
+        {/* Knowledge check — optional, click-to-start */}
         {!isStreaming && lastAssistantIdx >= 0 && messages[lastAssistantIdx]?.content && (
           <div className="mb-3 flex-shrink-0 overflow-y-auto max-h-80">
             <KnowledgeCheck

@@ -12,9 +12,9 @@ const ALL_MODULE_CONFIGS = {
     color: "indigo",
     features: [
       "Everything in Free, plus:",
-      "Unlimited practice â€” no daily limits",
+      "Unlimited practice — no daily limits",
       "FRQ / SAQ / DBQ / LEQ with AI rubric scoring",
-      "Unlimited AI explanations â€” ask Sage anything",
+      "Unlimited AI explanations — ask Sage anything",
       "Personalized AP study plan that adapts weekly",
       "Faster AI responses (streaming)",
       "Cancel anytime Â· 7-day money-back guarantee",
@@ -25,8 +25,8 @@ const ALL_MODULE_CONFIGS = {
     color: "blue",
     features: [
       "Everything in Free, plus:",
-      "Unlimited practice â€” no daily limits",
-      "Unlimited AI explanations â€” ask Sage anything",
+      "Unlimited practice — no daily limits",
+      "Unlimited AI explanations — ask Sage anything",
       "Personalized SAT study plan targeting weak areas",
       "Advanced analytics with score prediction",
       "Faster AI responses (streaming)",
@@ -38,8 +38,8 @@ const ALL_MODULE_CONFIGS = {
     color: "violet",
     features: [
       "Everything in Free, plus:",
-      "Unlimited practice â€” no daily limits",
-      "Unlimited AI explanations â€” ask Sage anything",
+      "Unlimited practice — no daily limits",
+      "Unlimited AI explanations — ask Sage anything",
       "Personalized ACT study plan by section",
       "Section-by-section composite tracking",
       "Faster AI responses (streaming)",
@@ -52,8 +52,8 @@ const ALL_MODULE_CONFIGS = {
     features: [
       "Everything in Free, plus:",
       "Full prep for all 34 CLEP exams",
-      "Unlimited AI explanations â€” ask Sage anything",
-      "Personalized CLEP study plan (6â€“12 weeks)",
+      "Unlimited AI explanations — ask Sage anything",
+      "Personalized CLEP study plan (6–12 weeks)",
       "Faster AI responses (streaming)",
       "Save $1,200+ per exam passed in tuition",
       "Cancel anytime Â· 7-day money-back guarantee",
@@ -65,7 +65,7 @@ const ALL_MODULE_CONFIGS = {
     features: [
       "Everything in Free, plus:",
       "Full prep for all 22 DSST exams",
-      "Unlimited AI explanations â€” ask Sage anything",
+      "Unlimited AI explanations — ask Sage anything",
       "Personalized DSST study plan",
       "Faster AI responses (streaming)",
       "Save $1,000+ per exam passed in tuition",
@@ -98,11 +98,11 @@ export default function PricingClient({ clepEnabled, dsstEnabled }: PricingClien
   const examLabel = getExamLabel(clepEnabled, dsstEnabled);
 
   const FREE_FEATURES = [
-    `All ${courseCount} courses â€” ${examLabel}`,
+    `All ${courseCount} courses — ${examLabel}`,
     // Single line consolidates the previous "Unlimited practice" + "3 sessions/day"
     // pair that flagged as contradictory in the 2026-04-25 conversion review.
     "Practice questions in 3 daily sessions",
-    "5 AI explanations per day â€” never get stuck",
+    "5 AI explanations per day — never get stuck",
     "Progress tracking & mastery heatmap",
     "Mock exam simulator with score estimate",
     "Basic study plan",
@@ -135,10 +135,10 @@ export default function PricingClient({ clepEnabled, dsstEnabled }: PricingClien
       <div className="text-center mb-8">
         <h1 className="text-4xl font-bold mb-4">Simple, transparent pricing</h1>
         <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-          One subscription unlocks every exam. AP, SAT, ACT â€” all included for $9.99/mo.
+          One subscription unlocks every exam. AP, SAT, ACT — all included for $9.99/mo.
         </p>
         <p className="text-sm text-emerald-700 dark:text-emerald-400 font-medium mt-3">
-          âœ¦ Sign up via any exam below â€” Premium is all-access.
+          âœ¦ Sign up via any exam below — Premium is all-access.
         </p>
       </div>
 
@@ -186,7 +186,7 @@ export default function PricingClient({ clepEnabled, dsstEnabled }: PricingClien
         })}
       </div>
 
-      {/* Pricing cards â€” 2 columns */}
+      {/* Pricing cards — 2 columns */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
         {/* Free tier */}
         <div className="rounded-2xl border border-border/40 bg-card p-8 flex flex-col">
@@ -230,7 +230,7 @@ export default function PricingClient({ clepEnabled, dsstEnabled }: PricingClien
                   <span className="text-4xl font-bold">${annualPrice}</span>
                   <span className="text-muted-foreground mb-1">/year</span>
                 </div>
-                <p className="text-sm text-green-700 dark:text-green-400 font-medium">${annualMonthly}/mo â€” save 33%</p>
+                <p className="text-sm text-green-700 dark:text-green-400 font-medium">${annualMonthly}/mo — save 33%</p>
               </>
             ) : (
               <>
@@ -259,11 +259,11 @@ export default function PricingClient({ clepEnabled, dsstEnabled }: PricingClien
         </div>
       </div>
 
-      {/* Trust + outcome anchor + refund (single line â€” refund repetition was
+      {/* Trust + outcome anchor + refund (single line — refund repetition was
           flagged in the 2026-04-25 conversion review for sub-conscious doubt) */}
       <div className="mt-8 text-center space-y-2">
         <p className="text-base font-medium text-foreground/90 max-w-xl mx-auto">
-          Everything you need to raise your score â€” without paying for full tutoring.
+          Everything you need to raise your score — without paying for full tutoring.
         </p>
         <p className="text-sm text-emerald-700 dark:text-emerald-400 font-medium">
           Cancel anytime Â· 7-day money-back guarantee
@@ -287,7 +287,7 @@ export default function PricingClient({ clepEnabled, dsstEnabled }: PricingClien
             </thead>
             <tbody className="divide-y divide-border/30">
               {[
-                ["Price", "$0â€“9.99/mo", "$200â€“500", "$50â€“150/hr", "Freeâ€“$20/mo"],
+                ["Price", "$0–9.99/mo", "$200–500", "$50–150/hr", "Free–$20/mo"],
                 ["Exam-Aligned Questions", "âœ…", "âœ…", "âœ…", "Not exam-format"],
                 ["Mastery Tracking", "âœ…", "Partial", "âŒ", "âŒ"],
                 ["Personalized Study Plan", "âœ… AI-generated", "Static", "âœ…", "âŒ"],
@@ -311,12 +311,12 @@ export default function PricingClient({ clepEnabled, dsstEnabled }: PricingClien
         <h2 className="text-2xl font-bold text-center mb-8">Frequently asked questions</h2>
         <div className="space-y-6">
           {[
-            { q: "Do I need to subscribe to multiple modules?", a: `No â€” one $9.99/mo subscription unlocks everything. Sign up via any exam (${moduleListLabel}) and you get full Premium access to all of them. The module dropdowns just decide which checkout flow you go through.` },
+            { q: "Do I need to subscribe to multiple modules?", a: `No — one $9.99/mo subscription unlocks everything. Sign up via any exam (${moduleListLabel}) and you get full Premium access to all of them. The module dropdowns just decide which checkout flow you go through.` },
             { q: "Can I cancel anytime?", a: "Yes. Cancel from your billing page and you'll keep Premium access until the end of your billing period." },
-            { q: "Can I pay annually?", a: "Yes â€” $79.99/year saves you 33% compared to monthly billing ($6.67/mo). Same all-access Premium." },
-            { q: "What is your refund policy?", a: "We offer a 7-day money-back guarantee on new Premium subscriptions. If you're not satisfied within 7 days of your first payment, email contact@studentnest.ai and we'll issue a full refund â€” no questions asked. After 7 days, subscriptions are non-refundable but you can cancel anytime and keep access until the end of your billing period." },
+            { q: "Can I pay annually?", a: "Yes — $79.99/year saves you 33% compared to monthly billing ($6.67/mo). Same all-access Premium." },
+            { q: "What is your refund policy?", a: "We offer a 7-day money-back guarantee on new Premium subscriptions. If you're not satisfied within 7 days of your first payment, email contact@studentnest.ai and we'll issue a full refund — no questions asked. After 7 days, subscriptions are non-refundable but you can cancel anytime and keep access until the end of your billing period." },
             { q: "What happens when I hit the free AI limit?", a: "Free users can start 5 new Sage Live Tutor conversations per day. Your existing conversations are never deleted." },
-            { q: "Is there a student discount?", a: "We keep the free tier generous so every student can prepare for their exams. Premium is $9.99/month or $79.99/year â€” one all-access subscription." },
+            { q: "Is there a student discount?", a: "We keep the free tier generous so every student can prepare for their exams. Premium is $9.99/month or $79.99/year — one all-access subscription." },
             { q: "Which payment methods are accepted?", a: "All major credit and debit cards via Stripe. Your payment info is never stored on our servers." },
           ].map(({ q, a }) => (
             <div key={q} className="border-b border-border/40 pb-6">
