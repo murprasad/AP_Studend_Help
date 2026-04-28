@@ -1,0 +1,7 @@
+Thermodynamics (heat transfer, ideal gas law, entropy, PV diagrams)
+Electric force, field, and potential (Coulomb's law, field lines)
+Electric circuits (Ohm's law, Kirchhoff's laws, RC circuits)
+Magnetism and electromagnetism (Lenz's law, Faraday's law)
+Geometric optics (reflection, refraction, mirrors, lenses)
+Waves, sound, and physical optics (interference, diffraction, double-slit)
+Modern physics (photoelectric effect, atomic structure, nuclear)

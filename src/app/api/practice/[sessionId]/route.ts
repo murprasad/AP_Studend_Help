@@ -319,6 +319,16 @@ export async function PATCH(
     const xpEarned = Math.round(correctCount * 10 + (accuracy >= 80 ? 50 : 0));
     await updateUserProgress(session.user.id, xpEarned);
 
+    // Beta 8.12 funnel fix — mark onboarding done after the user completes
+    // their FIRST session. This is what differentiates the new-student
+    // auto-redirect (to /practice/quickstart) from the returning-student
+    // experience (lands on /dashboard normally). Idempotent — only sets
+    // if currently null.
+    await prisma.user.updateMany({
+      where: { id: session.user.id, onboardingCompletedAt: null },
+      data: { onboardingCompletedAt: new Date() },
+    }).catch(() => { /* non-fatal */ });
+
     // Fetch previous session accuracy for improvement comparison
     const previousSession = await prisma.practiceSession.findFirst({
       where: {

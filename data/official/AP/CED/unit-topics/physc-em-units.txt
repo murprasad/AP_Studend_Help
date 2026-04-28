@@ -1,0 +1,6 @@
+Electric charges, fields, and Gauss's law (calculus-based)
+Electric potential and energy
+Conductors and capacitors (capacitance, dielectrics, energy stored)
+Electric circuits (resistance, Kirchhoff's laws, RC circuits)
+Magnetic fields and electromagnetism (Biot-Savart, Ampere's law)
+Electromagnetic induction (Faraday's law, inductance, LC circuits)

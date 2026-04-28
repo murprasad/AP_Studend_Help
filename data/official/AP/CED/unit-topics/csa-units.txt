@@ -1,0 +1,4 @@
+Java primitive types, objects, methods, string operations
+Selection and iteration (if statements, while loops, for loops, boolean logic)
+Class creation (constructors, encapsulation, inheritance, polymorphism)
+Data collections (1D arrays, 2D arrays, ArrayList, recursion, search/sort)

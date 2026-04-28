@@ -1,0 +1,7 @@
+Calculus-based kinematics (derivatives, velocity, acceleration)
+Force and translational dynamics (Newton's laws, friction, drag)
+Work, energy, and power (work-energy theorem, conservation)
+Linear momentum (impulse, collisions, center of mass)
+Rotation (torque, rotational dynamics, angular momentum, moment of inertia)
+Oscillations (simple harmonic motion, springs, pendulum)
+Gravitation (Newton's law, orbital motion, Kepler's laws)

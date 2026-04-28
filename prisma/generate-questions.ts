@@ -41,14 +41,14 @@ const DELAY_MS = 700; // rate-limit padding between calls
 
 // ── Course/unit metadata ──────────────────────────────────────────────────────
 // Inlined here so the script has no Next.js dependencies
-const UNIT_DATA: Record<ApCourse, Array<{
+const UNIT_DATA: Partial<Record<ApCourse, Array<{
   unit: ApUnit;
   name: string;
   timePeriod?: string;
   keyThemes: string[];
   examNotes: string;
   stimulusGuide: string;
-}>> = {
+}>>> = {
   AP_ENVIRONMENTAL_SCIENCE: [
     { unit: ApUnit.APES_1_ECOSYSTEMS, name: "Unit 1: Ecosystems",
       keyThemes: ["Biomes", "Energy flow (10% rule)", "Biogeochemical cycles", "Trophic levels"],
@@ -1313,7 +1313,7 @@ async function callAI(prompt: string, course?: string): Promise<string> {
 }
 
 // ── Question generation prompt ────────────────────────────────────────────────
-function buildPrompt(course: ApCourse, unitData: (typeof UNIT_DATA)[ApCourse][number], difficulty: Difficulty, topic: string): string {
+function buildPrompt(course: ApCourse, unitData: NonNullable<(typeof UNIT_DATA)[ApCourse]>[number], difficulty: Difficulty, topic: string): string {
   const courseName = course === "AP_WORLD_HISTORY"
     ? "AP World History: Modern"
     : course === "AP_COMPUTER_SCIENCE_PRINCIPLES"

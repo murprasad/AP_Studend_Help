@@ -40,14 +40,20 @@ export default function DashboardLayout({
     }
   }, [status, router]);
 
-  // Redirect first-time users to onboarding. Server-side
-  // `onboardingCompletedAt` on the user row is the source of truth;
-  // localStorage is a legacy fallback for existing users whose account
-  // predates the DB flag. Admin reset nulls the DB field so test users
-  // walk onboarding again on next login.
+  // Beta 8.12 (2026-04-29) — Funnel fix: send first-time users straight
+  // into a 5-question starter session via /practice/quickstart, NOT the
+  // 3-step onboarding wizard. The 7-day funnel showed 37% of new signups
+  // never started a session — dashboard with multiple cards = decision
+  // paralysis. Auto-start removes the decision point. Quickstart sets
+  // onboardingCompletedAt on session completion so this only fires once.
+  //
+  // Skip paths: already on quickstart route, or pre-existing /onboarding
+  // (still works for users who deep-link to it manually).
   useEffect(() => {
     if (status !== "authenticated") return;
     if (pathname === "/onboarding") return;
+    if (pathname.startsWith("/practice/quickstart")) return;
+    if (pathname.startsWith("/practice/") && new URLSearchParams(window.location.search).get("quickstart") === "1") return;
 
     const onboardedAtServer = (session?.user as { onboardingCompletedAt?: string | null } | undefined)?.onboardingCompletedAt;
 
@@ -58,7 +64,7 @@ export default function DashboardLayout({
         .then((data) => {
           if (!data?.user) return;
           if (data.user.onboardingCompletedAt == null) {
-            router.replace("/onboarding");
+            router.replace("/practice/quickstart");
           }
         })
         .catch(() => { /* silent */ });
