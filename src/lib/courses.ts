@@ -6086,7 +6086,7 @@ Topics: antebellum America (20%), secession/early war (20%), major campaigns (20
   AP_ENGLISH_LITERATURE: {
     name: "AP English Literature and Composition",
     shortName: "AP Eng Lit",
-    hidden: true, // Added 2026-04-29 — awaiting full CB material (practice tests, samples) per user directive
+    // Unhidden 2026-04-29 (Beta 8.12.1) — 50 CED-anchored questions added in Unit 1
     examSecsPerQuestion: 60,
     mockExam: { mcqCount: 55, mcqTimeMinutes: 60 },
     enrichWithEduAPIs: true,
@@ -6113,7 +6113,7 @@ Topics: antebellum America (20%), secession/early war (20%), major campaigns (20
   AP_EUROPEAN_HISTORY: {
     name: "AP European History",
     shortName: "AP Euro",
-    hidden: true, // Added 2026-04-29 — awaiting full CB material per user directive
+    // Unhidden 2026-04-29 (Beta 8.12.1) — 50 CED-anchored questions added in Unit 1
     examSecsPerQuestion: 51,
     mockExam: { mcqCount: 55, mcqTimeMinutes: 55 },
     enrichWithEduAPIs: true,
@@ -6140,7 +6140,7 @@ Topics: antebellum America (20%), secession/early war (20%), major campaigns (20
   AP_MACROECONOMICS: {
     name: "AP Macroeconomics",
     shortName: "AP Macro",
-    hidden: true, // Added 2026-04-29 — awaiting full CB material per user directive
+    // Unhidden 2026-04-29 (Beta 8.12.1) — 50 CED-anchored questions added in Unit 1
     examSecsPerQuestion: 70,
     mockExam: { mcqCount: 60, mcqTimeMinutes: 70 },
     enrichWithEduAPIs: true,
@@ -6164,7 +6164,7 @@ Topics: antebellum America (20%), secession/early war (20%), major campaigns (20
   AP_MICROECONOMICS: {
     name: "AP Microeconomics",
     shortName: "AP Micro",
-    hidden: true, // Added 2026-04-29 — awaiting full CB material per user directive
+    // Unhidden 2026-04-29 (Beta 8.12.1) — 50 CED-anchored questions added in Unit 1
     examSecsPerQuestion: 70,
     mockExam: { mcqCount: 60, mcqTimeMinutes: 70 },
     enrichWithEduAPIs: true,
@@ -6188,7 +6188,7 @@ Topics: antebellum America (20%), secession/early war (20%), major campaigns (20
   AP_PHYSICS_2: {
     name: "AP Physics 2: Algebra-Based",
     shortName: "AP Physics 2",
-    hidden: true, // Added 2026-04-29 — awaiting full CB material per user directive
+    // Unhidden 2026-04-29 (Beta 8.12.1) — 50 CED-anchored questions added in Unit 9
     examSecsPerQuestion: 96,
     mockExam: { mcqCount: 50, mcqTimeMinutes: 80 },
     enrichWithEduAPIs: true,
@@ -6238,7 +6238,7 @@ Topics: antebellum America (20%), secession/early war (20%), major campaigns (20
   AP_PHYSICS_C_ELECTRICITY_MAGNETISM: {
     name: "AP Physics C: Electricity and Magnetism",
     shortName: "AP Phys C E&M",
-    hidden: true, // Added 2026-04-29 — awaiting full CB material per user directive
+    // Unhidden 2026-04-29 (Beta 8.12.1) — 50 CED-anchored questions added in Unit 8
     examSecsPerQuestion: 108,
     mockExam: { mcqCount: 35, mcqTimeMinutes: 45 },
     enrichWithEduAPIs: true,
@@ -6262,7 +6262,7 @@ Topics: antebellum America (20%), secession/early war (20%), major campaigns (20
   AP_COMPUTER_SCIENCE_A: {
     name: "AP Computer Science A",
     shortName: "AP CS A",
-    hidden: true, // Added 2026-04-29 — awaiting full CB material per user directive
+    // Unhidden 2026-04-29 (Beta 8.12.1) — 55 CED-anchored questions added across Units 1-2
     examSecsPerQuestion: 90,
     mockExam: { mcqCount: 40, mcqTimeMinutes: 90 },
     enrichWithEduAPIs: true,
