@@ -326,7 +326,7 @@ export default async function DsstPrepPage() {
             ].map((s) => (
               <FadeIn key={s.step}>
                 <div className="text-center">
-                  <div className="w-10 h-10 rounded-full bg-orange-500/20 text-orange-700 dark:text-orange-400 font-bold flex items-center justify-center mx-auto mb-3">
+                  <div className="w-10 h-10 rounded-full bg-orange-500/20 text-orange-800 dark:text-orange-400 font-bold flex items-center justify-center mx-auto mb-3">
                     {s.step}
                   </div>
                   <p className="font-bold text-sm">{s.title}</p>

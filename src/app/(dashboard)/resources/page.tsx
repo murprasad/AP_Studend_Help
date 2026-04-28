@@ -51,11 +51,11 @@ const TYPE_LABELS: Record<string, string> = {
 };
 
 const TYPE_COLORS: Record<string, string> = {
-  video_channel: "bg-red-500/20 text-red-700 dark:text-red-400 border-red-500/30",
-  practice: "bg-purple-500/20 text-purple-700 dark:text-purple-400 border-purple-500/30",
-  reading: "bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 border-emerald-500/30",
-  primary_source: "bg-orange-500/20 text-orange-700 dark:text-orange-400 border-orange-500/30",
-  curriculum: "bg-blue-500/20 text-blue-700 dark:text-blue-400 border-blue-500/30",
+  video_channel: "bg-red-500/20 text-red-800 dark:text-red-400 border-red-500/30",
+  practice: "bg-purple-500/20 text-purple-800 dark:text-purple-400 border-purple-500/30",
+  reading: "bg-emerald-500/20 text-emerald-800 dark:text-emerald-400 border-emerald-500/30",
+  primary_source: "bg-orange-500/20 text-orange-800 dark:text-orange-400 border-orange-500/30",
+  curriculum: "bg-blue-500/20 text-blue-800 dark:text-blue-400 border-blue-500/30",
 };
 
 function getCourseUnits(course: ApCourse) {

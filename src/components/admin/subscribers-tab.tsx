@@ -62,9 +62,9 @@ export function AdminSubscribersTab() {
   };
 
   const statusColors: Record<string, string> = {
-    active: "bg-emerald-500/20 text-emerald-700 dark:text-emerald-400",
-    canceling: "bg-yellow-500/20 text-yellow-700 dark:text-yellow-400",
-    canceled: "bg-red-500/20 text-red-700 dark:text-red-400",
+    active: "bg-emerald-500/20 text-emerald-800 dark:text-emerald-400",
+    canceling: "bg-yellow-500/20 text-yellow-800 dark:text-yellow-400",
+    canceled: "bg-red-500/20 text-red-800 dark:text-red-400",
   };
 
   return (

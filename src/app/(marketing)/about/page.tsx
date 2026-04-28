@@ -62,7 +62,7 @@ export default function AboutPage() {
           </div>
           <div className="flex items-center gap-2 flex-wrap">
             <h1 className="text-3xl font-bold gradient-text">About StudentNest Prep</h1>
-            <Badge className="bg-blue-500/20 text-blue-700 dark:text-blue-400 border-blue-500/30 text-xs font-semibold">Beta 8.5</Badge>
+            <Badge className="bg-blue-500/20 text-blue-800 dark:text-blue-400 border-blue-500/30 text-xs font-semibold">Beta 8.5</Badge>
           </div>
         </div>
         <p className="text-muted-foreground leading-relaxed max-w-2xl mx-auto">
@@ -313,7 +313,7 @@ export default function AboutPage() {
       {/* Section 7: What's New in Beta 8.3 — Phases B + C + D (Sage promo, Cram Mode, Daily Study OS) */}
       <div className="space-y-6">
         <div className="text-center space-y-1">
-          <Badge className="bg-blue-500/20 text-blue-700 dark:text-blue-400 border-blue-500/30 text-xs font-semibold mb-2">Latest Release</Badge>
+          <Badge className="bg-blue-500/20 text-blue-800 dark:text-blue-400 border-blue-500/30 text-xs font-semibold mb-2">Latest Release</Badge>
           <h2 className="text-xl font-bold">What&apos;s New in Beta 8.3</h2>
           <p className="text-sm text-muted-foreground">Three Phase rollouts in one release — Sage Coach FRQ grader promoted to a prominent dashboard tile (Phase B), an exam-countdown Cram Mode card with daily prioritized plan when you&apos;re &lt;30 days out (Phase C), and a daily-adaptive Study OS that adjusts today&apos;s volume based on yesterday&apos;s accuracy + your streak (Phase D). Plus a flashcard design fix that retires the leak-prone &ldquo;Why&rdquo; section in favor of an &ldquo;Ask Sage&rdquo; chat link.</p>
         </div>

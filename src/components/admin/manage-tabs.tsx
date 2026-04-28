@@ -88,9 +88,9 @@ export function AdminManageTabs({ questionsByUnit, questionsByTopic }: Props) {
                       variant={row._count.id < 3 ? "destructive" : "secondary"}
                       className={
                         row._count.id >= 8
-                          ? "bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 border-emerald-500/30 ml-2 shrink-0"
+                          ? "bg-emerald-500/20 text-emerald-800 dark:text-emerald-400 border-emerald-500/30 ml-2 shrink-0"
                           : row._count.id >= 3
-                          ? "bg-yellow-500/20 text-yellow-700 dark:text-yellow-400 border-yellow-500/30 ml-2 shrink-0"
+                          ? "bg-yellow-500/20 text-yellow-800 dark:text-yellow-400 border-yellow-500/30 ml-2 shrink-0"
                           : "ml-2 shrink-0"
                       }
                     >

@@ -160,7 +160,7 @@ export default function PricingClient({ clepEnabled, dsstEnabled }: PricingClien
         >
           Annual
           <span className={`text-xs font-bold px-1.5 py-0.5 rounded ${
-            isAnnual ? "bg-white/20 text-white" : "bg-green-500/20 text-green-700 dark:text-green-400"
+            isAnnual ? "bg-white/20 text-white" : "bg-green-500/20 text-green-900 dark:text-green-400"
           }`}>Save 33%</span>
         </button>
       </div>

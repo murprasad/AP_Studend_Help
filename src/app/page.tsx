@@ -112,7 +112,7 @@ const testimonials = [
     quote: "I passed CLEP College Algebra on my first try. Sage drilled me on every weak unit and I walked in knowing exactly where I stood. Saved me $1,200 and a full semester.",
     name: "Jordan M.",
     initials: "JM",
-    avatarColor: "bg-emerald-500/20 text-emerald-700 dark:text-emerald-400",
+    avatarColor: "bg-emerald-500/20 text-emerald-800 dark:text-emerald-400",
     location: "Sophomore, Florida",
     context: "CLEP College Algebra",
     metric: "Passed first attempt (scored 62, need 50)",

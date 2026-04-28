@@ -332,7 +332,7 @@ export default function BillingPage() {
           <CardTitle className="text-lg flex items-center gap-2">
             Current plan
             {isPremium && (
-              <Badge className="bg-blue-500/20 text-blue-700 dark:text-blue-400 border-blue-500/30 text-xs">
+              <Badge className="bg-blue-500/20 text-blue-800 dark:text-blue-400 border-blue-500/30 text-xs">
                 <Crown className="h-3 w-3 mr-1" />
                 {premiumLabel}
               </Badge>
@@ -556,7 +556,7 @@ export default function BillingPage() {
                     <div className="flex items-center justify-between">
                       <p className="font-semibold text-sm">{m.label}</p>
                       {activeSub ? (
-                        <Badge className={`text-xs ${activeSub.status === "canceling" ? "bg-amber-500/20 text-amber-700 dark:text-amber-400 border-amber-500/30" : "bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 border-emerald-500/30"}`}>
+                        <Badge className={`text-xs ${activeSub.status === "canceling" ? "bg-amber-500/20 text-amber-800 dark:text-amber-400 border-amber-500/30" : "bg-emerald-500/20 text-emerald-800 dark:text-emerald-400 border-emerald-500/30"}`}>
                           {activeSub.status === "canceling" ? "Canceling" : "Active"}
                         </Badge>
                       ) : (

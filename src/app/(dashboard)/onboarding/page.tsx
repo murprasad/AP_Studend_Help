@@ -51,11 +51,11 @@ const CLEP_COURSE_META: Record<string, { badge: string; color: string }> = {
   CLEP_INTRO_PSYCHOLOGY: { badge: "Highest pass rate", color: "bg-green-500/20 text-green-400 border-green-500/30" },
   CLEP_INTRODUCTORY_SOCIOLOGY: { badge: "Easiest", color: "bg-green-500/20 text-green-400 border-green-500/30" },
   CLEP_PRINCIPLES_OF_MARKETING: { badge: "Most popular", color: "bg-green-500/20 text-green-400 border-green-500/30" },
-  CLEP_ANALYZING_INTERPRETING_LIT: { badge: "No reading list needed", color: "bg-blue-500/20 text-blue-700 dark:text-blue-400 border-blue-500/30" },
-  CLEP_COLLEGE_MATH: { badge: "Easier than Algebra", color: "bg-blue-500/20 text-blue-700 dark:text-blue-400 border-blue-500/30" },
-  CLEP_AMERICAN_GOVERNMENT: { badge: "Great if you took civics", color: "bg-blue-500/20 text-blue-700 dark:text-blue-400 border-blue-500/30" },
-  CLEP_PRINCIPLES_OF_MANAGEMENT: { badge: "Common sense + theorists", color: "bg-blue-500/20 text-blue-700 dark:text-blue-400 border-blue-500/30" },
-  CLEP_COLLEGE_ALGEBRA: { badge: "Math-heavy", color: "bg-amber-500/20 text-amber-700 dark:text-amber-400 border-amber-500/30" },
+  CLEP_ANALYZING_INTERPRETING_LIT: { badge: "No reading list needed", color: "bg-blue-500/20 text-blue-800 dark:text-blue-400 border-blue-500/30" },
+  CLEP_COLLEGE_MATH: { badge: "Easier than Algebra", color: "bg-blue-500/20 text-blue-800 dark:text-blue-400 border-blue-500/30" },
+  CLEP_AMERICAN_GOVERNMENT: { badge: "Great if you took civics", color: "bg-blue-500/20 text-blue-800 dark:text-blue-400 border-blue-500/30" },
+  CLEP_PRINCIPLES_OF_MANAGEMENT: { badge: "Common sense + theorists", color: "bg-blue-500/20 text-blue-800 dark:text-blue-400 border-blue-500/30" },
+  CLEP_COLLEGE_ALGEBRA: { badge: "Math-heavy", color: "bg-amber-500/20 text-amber-800 dark:text-amber-400 border-amber-500/30" },
 };
 
 export default function OnboardingPage() {
@@ -314,7 +314,7 @@ export default function OnboardingPage() {
                 desc: "Take a quick diagnostic to find which units need the most attention.",
                 action: "Go to Diagnostic",
                 href: "/diagnostic",
-                color: "bg-blue-500/20 text-blue-700 dark:text-blue-400",
+                color: "bg-blue-500/20 text-blue-800 dark:text-blue-400",
               },
               {
                 step: "2",
@@ -322,7 +322,7 @@ export default function OnboardingPage() {
                 desc: "Answer adaptive MCQ and FRQ questions — AI explains every answer.",
                 action: "Start Practice",
                 href: "/practice",
-                color: "bg-emerald-500/20 text-emerald-700 dark:text-emerald-400",
+                color: "bg-emerald-500/20 text-emerald-800 dark:text-emerald-400",
               },
               {
                 step: "3",
@@ -330,7 +330,7 @@ export default function OnboardingPage() {
                 desc: "Watch your unit-by-unit mastery scores climb toward a 4 or 5.",
                 action: "View Analytics",
                 href: "/analytics",
-                color: "bg-purple-500/20 text-purple-700 dark:text-purple-400",
+                color: "bg-purple-500/20 text-purple-800 dark:text-purple-400",
               },
             ].map((item) => (
               <div key={item.step} className="flex items-start gap-4 p-4 rounded-lg bg-secondary/30">

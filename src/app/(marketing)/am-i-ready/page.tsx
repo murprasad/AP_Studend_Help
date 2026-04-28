@@ -138,7 +138,7 @@ export default function AmIReadyIndexPage() {
       {/* ACT Courses */}
       <FamilySection
         label="ACT"
-        badgeClass="bg-amber-500/20 text-amber-700 dark:text-amber-400 dark:text-amber-700 dark:text-amber-400 border-amber-500/30"
+        badgeClass="bg-amber-500/20 text-amber-800 dark:text-amber-400 dark:text-amber-700 dark:text-amber-400 border-amber-500/30"
         iconClass="text-amber-700 dark:text-amber-400 dark:text-amber-700 dark:text-amber-400"
         hoverBorderClass="hover:border-amber-500/40"
         hoverBgClass="hover:bg-amber-500/5"

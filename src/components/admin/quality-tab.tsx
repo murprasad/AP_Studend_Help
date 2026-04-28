@@ -41,10 +41,10 @@ interface QualityMetrics {
 
 function gradeColor(grade: string): string {
   const letter = grade.charAt(0).toUpperCase();
-  if (letter === "A") return "bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 border-emerald-500/40";
-  if (letter === "B") return "bg-blue-500/20 text-blue-700 dark:text-blue-400 border-blue-500/40";
-  if (letter === "C") return "bg-yellow-500/20 text-yellow-700 dark:text-yellow-400 border-yellow-500/40";
-  return "bg-red-500/20 text-red-700 dark:text-red-400 border-red-500/40";
+  if (letter === "A") return "bg-emerald-500/20 text-emerald-800 dark:text-emerald-400 border-emerald-500/40";
+  if (letter === "B") return "bg-blue-500/20 text-blue-800 dark:text-blue-400 border-blue-500/40";
+  if (letter === "C") return "bg-yellow-500/20 text-yellow-800 dark:text-yellow-400 border-yellow-500/40";
+  return "bg-red-500/20 text-red-800 dark:text-red-400 border-red-500/40";
 }
 
 function gradeBgLarge(grade: string): string {

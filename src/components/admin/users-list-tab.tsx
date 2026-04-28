@@ -77,7 +77,7 @@ export function AdminUsersListTab() {
 
   const tierColors: Record<string, string> = {
     FREE: "bg-zinc-500/20 text-zinc-400",
-    PREMIUM: "bg-amber-500/20 text-amber-700 dark:text-amber-400",
+    PREMIUM: "bg-amber-500/20 text-amber-800 dark:text-amber-400",
     AP_PREMIUM: "bg-indigo-500/20 text-indigo-300",
     SAT_PREMIUM: "bg-blue-500/20 text-blue-300",
     ACT_PREMIUM: "bg-violet-500/20 text-violet-300",

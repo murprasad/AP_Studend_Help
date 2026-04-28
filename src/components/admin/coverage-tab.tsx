@@ -129,8 +129,8 @@ export function AdminCoverageTab({ questionsByUnit }: Props) {
                         )}
                         <Badge
                           variant={count < 10 ? "destructive" : "secondary"}
-                          className={count >= 20 ? "bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 border-emerald-500/30" :
-                                     count >= 10 ? "bg-yellow-500/20 text-yellow-700 dark:text-yellow-400 border-yellow-500/30" : ""}
+                          className={count >= 20 ? "bg-emerald-500/20 text-emerald-800 dark:text-emerald-400 border-emerald-500/30" :
+                                     count >= 10 ? "bg-yellow-500/20 text-yellow-800 dark:text-yellow-400 border-yellow-500/30" : ""}
                         >
                           {count}
                           {added > 0 && <span className="ml-1 text-emerald-300">(+{added})</span>}
