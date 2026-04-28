@@ -1,0 +1,15 @@
+2.1 Change in Arithmetic and Geometric Sequences
+2.2 Change in Linear and Exponential Functions
+2.3 Exponential Functions
+2.4 Exponential Function Manipulation
+2.5 Exponential Function Context and Data Modeling
+2.6 Competing Function Model Validation
+2.7 Composition of Functions
+2.8 Inverse Functions
+2.9 Logarithmic Expressions
+2.10 Inverses of Exponential Functions
+2.11 Logarithmic Functions
+2.12 Logarithmic Function Manipulation
+2.13 Exponential and Logarithmic Equations and Inequalities
+2.14 Logarithmic Function Context and Data Modeling
+2.15 Semi-log Plots

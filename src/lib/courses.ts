@@ -698,33 +698,22 @@ When referencing resources:
         ck12Url: "https://www.ck12.org/section/torque",
         openStaxUrl: "https://openstax.org/books/university-physics-vol-1/pages/10-introduction",
       },
-      PHY1_8_ELECTRIC_CHARGE_AND_FORCE: {
-        name: "Unit 8: Electric Charge and Electric Force",
-        keyThemes: ["Charge", "Coulomb's Law", "Electric Fields"],
-        fiveableUrl: "https://library.fiveable.me/ap-physics-1/unit-8",
-        phetUrl: "https://phet.colorado.edu/en/simulations/coulombs-law",
-        khanUrl: "https://www.khanacademy.org/science/ap-physics-1/ap-electric-charge-electric-force-and-voltage",
-        ck12Url: "https://www.ck12.org/section/electric-charge",
-        openStaxUrl: "https://openstax.org/books/university-physics-vol-2/pages/5-introduction",
-      },
-      PHY1_9_DC_CIRCUITS: {
-        name: "Unit 9: DC Circuits",
-        keyThemes: ["Current", "Voltage", "Resistance", "Ohm's Law", "Series/Parallel Circuits", "Power"],
-        fiveableUrl: "https://library.fiveable.me/ap-physics-1/unit-9",
-        phetUrl: "https://phet.colorado.edu/en/simulations/circuit-construction-kit-dc",
-        khanUrl: "https://www.khanacademy.org/science/ap-physics-1/ap-circuits-topic",
-        ck12Url: "https://www.ck12.org/section/electric-circuits",
-        openStaxUrl: "https://openstax.org/books/university-physics-vol-2/pages/10-introduction",
-      },
-      PHY1_10_WAVES_AND_SOUND: {
-        name: "Unit 10: Mechanical Waves and Sound",
-        keyThemes: ["Wave Properties", "Interference", "Standing Waves", "Sound"],
-        fiveableUrl: "https://library.fiveable.me/ap-physics-1/unit-10",
-        mitocwUrl: "https://ocw.mit.edu/courses/8-03sc-physics-iii-vibrations-and-waves-fall-2016/pages/part-i-mechanical-vibrations-and-waves/",
-        phetUrl: "https://phet.colorado.edu/en/simulations/wave-on-a-string",
-        khanUrl: "https://www.khanacademy.org/science/ap-physics-1/ap-mechanical-waves-and-sound",
-        ck12Url: "https://www.ck12.org/section/waves",
-        openStaxUrl: "https://openstax.org/books/university-physics-vol-1/pages/16-introduction",
+      // PHY1_8 (Electric Charge & Force) and PHY1_9 (DC Circuits) removed
+      // 2026-04-29 — College Board moved both units to AP Physics 2 in the
+      // 2024-25 AP Physics 1 redesign. User feedback (Luke Hagood) flagged
+      // them as off-syllabus minutes after sign-up. Approved questions in
+      // those units were unapproved via scripts/unapprove-physics1-deprecated-units.mjs
+      // (95 questions retired, marker "ap-physics-1-redesign-2024").
+      // PHY1_10 (Mechanical Waves & Sound) removed 2026-04-29 — also moved to
+      // AP Physics 2 in 2024-25 CB redesign (52 questions retired, marker
+      // "ap-physics-1-redesign-2024-waves").
+      PHY1_FLUIDS: {
+        name: "Unit 8: Fluids",
+        keyThemes: ["Density", "Pressure", "Buoyancy", "Archimedes' Principle", "Continuity Equation", "Bernoulli's Equation"],
+        fiveableUrl: "https://library.fiveable.me/ap-physics-1/unit-8-fluids",
+        phetUrl: "https://phet.colorado.edu/en/simulations/fluid-pressure-and-flow",
+        khanUrl: "https://www.khanacademy.org/science/ap-physics-1/ap-fluids",
+        openStaxUrl: "https://openstax.org/books/university-physics-vol-1/pages/14-introduction",
       },
     },
 
@@ -807,9 +796,7 @@ When referencing resources:
       PHY1_5_MOMENTUM: 0.125,                    // CB: 10–15%
       PHY1_6_SIMPLE_HARMONIC_MOTION: 0.065,      // CB: 5–8% (Oscillations)
       PHY1_7_TORQUE_AND_ROTATION: 0.115,         // CB: 10–15% (Torque & Rotational Dynamics)
-      PHY1_8_ELECTRIC_CHARGE_AND_FORCE: 0.02,    // legacy unit, deprioritised
-      PHY1_9_DC_CIRCUITS: 0.02,                  // legacy unit, deprioritised
-      PHY1_10_WAVES_AND_SOUND: 0.02,             // legacy unit, deprioritised
+      PHY1_FLUIDS: 0.065,                         // CB: 5–8% (Unit 8 Fluids — added Fall 2024 redesign)
     },
   },
 
@@ -1237,8 +1224,8 @@ AP Exam: Section I — 40 MCQ (90 min). Section II — 6 FRQ (90 min) including 
         openStaxUrl: "https://openstax.org/books/chemistry-2e/pages/14-introduction",
       },
       CHEM_9_ELECTROCHEMISTRY: {
-        name: "Unit 9: Applications of Thermodynamics",
-        keyThemes: ["electrochemical cells", "standard reduction potentials", "Nernst equation", "electrolysis", "cell potential"],
+        name: "Unit 9: Thermodynamics and Electrochemistry",
+        keyThemes: ["entropy", "Gibbs free energy", "thermodynamic vs kinetic control", "free energy of dissolution", "coupled reactions", "galvanic and electrolytic cells", "cell potential and free energy", "Nernst equation", "electrolysis"],
         khanUrl: "https://www.khanacademy.org/science/ap-chemistry-beta/x2eef969c74e0d802:applications-of-thermodynamics",
         openStaxUrl: "https://openstax.org/books/chemistry-2e/pages/17-introduction",
         phetUrl: "https://phet.colorado.edu/en/simulation/circuit-construction-kit-dc",
@@ -1261,7 +1248,7 @@ AP Exam: Section I — 40 MCQ (90 min). Section II — 6 FRQ (90 min) including 
 - Unit 6: Thermodynamics — enthalpy, entropy, Gibbs free energy
 - Unit 7: Equilibrium — K expressions, Le Chatelier, ICE tables
 - Unit 8: Acids & Bases — Ka/Kb, buffers, titrations
-- Unit 9: Electrochemistry — cell potential, Nernst, electrolysis
+- Unit 9: Thermodynamics and Electrochemistry — entropy, Gibbs free energy, cell potential, electrolysis (Fall 2024 CED title)
 
 AP Exam: Section I — 60 MCQ (90 min). Section II — 7 FRQ (105 min).
 Science Practices: Models, Math/Calculation, Experimental Design, Data Analysis, Argumentation.`,

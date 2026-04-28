@@ -683,9 +683,10 @@ enum ApUnit {
   PHY1_5_MOMENTUM
   PHY1_6_SIMPLE_HARMONIC_MOTION
   PHY1_7_TORQUE_AND_ROTATION
-  PHY1_8_ELECTRIC_CHARGE_AND_FORCE
-  PHY1_9_DC_CIRCUITS
-  PHY1_10_WAVES_AND_SOUND
+  PHY1_8_ELECTRIC_CHARGE_AND_FORCE  // retired in CB 2024-25 redesign — moved to AP Physics 2
+  PHY1_9_DC_CIRCUITS                // retired in CB 2024-25 redesign — moved to AP Physics 2
+  PHY1_10_WAVES_AND_SOUND           // retired in CB 2024-25 redesign — moved to AP Physics 2
+  PHY1_FLUIDS                        // NEW in CB 2024-25 redesign — Unit 8 of new framework
 
   // AP Calculus AB
   CALC_AB_1_LIMITS

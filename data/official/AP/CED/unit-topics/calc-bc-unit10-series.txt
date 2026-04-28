@@ -1,0 +1,15 @@
+10.1 Defining Convergent and Divergent Infinite Series
+10.2 Working with Geometric Series
+10.3 The nth Term Test for Divergence
+10.4 Integral Test for Convergence
+10.5 Harmonic Series and p-Series
+10.6 Comparison Tests for Convergence
+10.7 Alternating Series Test for Convergence
+10.8 Ratio Test for Convergence
+10.9 Determining Absolute or Conditional Convergence
+10.10 Alternating Series Error Bound
+10.11 Finding Taylor Polynomial Approximations of Functions
+10.12 Lagrange Error Bound
+10.13 Radius and Interval of Convergence of Power Series
+10.14 Finding Taylor or Maclaurin Series for a Function
+10.15 Representing Functions as Power Series

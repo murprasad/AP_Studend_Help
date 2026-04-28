@@ -1,0 +1,15 @@
+3.1 Periodic Phenomena
+3.2 Sine, Cosine, and Tangent
+3.3 Sine and Cosine Function Values
+3.4 Sine and Cosine Function Graphs
+3.5 Sinusoidal Functions
+3.6 Sinusoidal Function Transformations
+3.7 Sinusoidal Function Context and Data Modeling
+3.8 The Tangent Function
+3.9 Inverse Trigonometric Functions
+3.10 Trigonometric Equations and Inequalities
+3.11 The Secant, Cosecant, and Cotangent Functions
+3.12 Equivalent Representations of Trigonometric Functions
+3.13 Trigonometry and Polar Coordinates
+3.14 Polar Function Graphs
+3.15 Rates of Change in Polar Functions

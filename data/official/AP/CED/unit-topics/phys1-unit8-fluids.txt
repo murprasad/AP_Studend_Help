@@ -1,0 +1,4 @@
+8.1 Internal Structure and Density of Fluids
+8.2 Pressure (gauge, absolute, hydrostatic)
+8.3 Fluids and Newton's Laws (buoyancy, Archimedes' principle)
+8.4 Fluids and Conservation Laws (continuity equation, Bernoulli's equation)
