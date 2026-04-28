@@ -161,6 +161,18 @@ export const authOptions: NextAuthOptions = {
     },
 
     async jwt({ token, user, account, trigger }) {
+      // Admin users get full PREMIUM across every module. Synthesizing the
+      // entitlements here means every downstream gate (hasAnyPremium,
+      // isPremiumForTrack, /api/user/limits, FRQ pages, mock exam, etc.)
+      // works without per-call-site role checks.
+      const ADMIN_MODULE_SUBS = [
+        { module: "ap", status: "active" },
+        { module: "sat", status: "active" },
+        { module: "act", status: "active" },
+        { module: "clep", status: "active" },
+        { module: "dsst", status: "active" },
+      ];
+
       // Helper: fetch module subscriptions for a user ID
       async function fetchModuleSubs(userId: string) {
         try {
@@ -180,10 +192,11 @@ export const authOptions: NextAuthOptions = {
         if (dbUser) {
           token.id = dbUser.id;
           token.role = dbUser.role;
-          token.subscriptionTier = dbUser.subscriptionTier;
+          const isAdmin = dbUser.role === "ADMIN";
+          token.subscriptionTier = isAdmin ? "PREMIUM" : dbUser.subscriptionTier;
           token.track = dbUser.track ?? "ap";
           token.onboardingCompletedAt = dbUser.onboardingCompletedAt?.toISOString() ?? null;
-          token.moduleSubs = await fetchModuleSubs(dbUser.id);
+          token.moduleSubs = isAdmin ? ADMIN_MODULE_SUBS : await fetchModuleSubs(dbUser.id);
         }
         return token;
       }
@@ -191,29 +204,31 @@ export const authOptions: NextAuthOptions = {
       if (user) {
         token.id = user.id;
         token.role = (user as unknown as { role: string }).role;
+        const isAdmin = token.role === "ADMIN";
         const dbUser = await prisma.user.findUnique({
           where: { id: user.id },
           select: { subscriptionTier: true, track: true, onboardingCompletedAt: true },
         });
-        token.subscriptionTier = dbUser?.subscriptionTier ?? "FREE";
+        token.subscriptionTier = isAdmin ? "PREMIUM" : (dbUser?.subscriptionTier ?? "FREE");
         token.track = dbUser?.track ?? "ap";
         token.onboardingCompletedAt = dbUser?.onboardingCompletedAt?.toISOString() ?? null;
-        token.moduleSubs = await fetchModuleSubs(user.id);
+        token.moduleSubs = isAdmin ? ADMIN_MODULE_SUBS : await fetchModuleSubs(user.id);
       } else if (token.id) {
         // Only refresh from DB on explicit update trigger (track change, subscription update,
         // onboarding completion). Avoids 1-2 hidden DB calls on every getServerSession() —
         // critical for CF Workers perf.
         if (trigger === "update") {
+          const isAdmin = token.role === "ADMIN";
           const dbUser = await prisma.user.findUnique({
             where: { id: token.id as string },
             select: { subscriptionTier: true, track: true, onboardingCompletedAt: true },
           });
           if (dbUser) {
-            token.subscriptionTier = dbUser.subscriptionTier;
+            token.subscriptionTier = isAdmin ? "PREMIUM" : dbUser.subscriptionTier;
             token.track = dbUser.track ?? "ap";
             token.onboardingCompletedAt = dbUser.onboardingCompletedAt?.toISOString() ?? null;
           }
-          token.moduleSubs = await fetchModuleSubs(token.id as string);
+          token.moduleSubs = isAdmin ? ADMIN_MODULE_SUBS : await fetchModuleSubs(token.id as string);
         }
       }
       return token;
