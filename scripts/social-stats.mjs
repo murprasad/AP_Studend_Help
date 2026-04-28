@@ -1,0 +1,13 @@
+import "dotenv/config";
+import { neon } from "@neondatabase/serverless";
+const sql = neon(process.env.DATABASE_URL);
+const totalStudents = await sql`SELECT COUNT(*)::int as n FROM users WHERE role='STUDENT'`;
+const activeWeek = await sql`SELECT COUNT(DISTINCT "userId")::int as n FROM student_responses WHERE "answeredAt" > NOW() - INTERVAL '7 days'`;
+const totalAnswered = await sql`SELECT COUNT(*)::int as n FROM student_responses WHERE "answeredAt" > NOW() - INTERVAL '7 days'`;
+const totalSessions = await sql`SELECT COUNT(*)::int as n FROM practice_sessions WHERE "startedAt" > NOW() - INTERVAL '7 days'`;
+const totalQ = await sql`SELECT COUNT(*)::int as n FROM questions WHERE "isApproved"=true`;
+console.log("Total students:", totalStudents[0].n);
+console.log("Active last 7d:", activeWeek[0].n);
+console.log("Questions answered last 7d:", totalAnswered[0].n);
+console.log("Sessions started last 7d:", totalSessions[0].n);
+console.log("Total approved questions in bank:", totalQ[0].n);

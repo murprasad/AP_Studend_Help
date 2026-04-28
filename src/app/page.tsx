@@ -30,6 +30,7 @@ import { FadeIn } from "@/components/landing/fade-in";
 import { LandingFaq } from "@/components/landing/faq";
 import { SageChat } from "@/components/layout/sage-chat";
 import { isClepEnabled, isDsstEnabled, getExamLabel, getCourseCount } from "@/lib/settings";
+import { SocialProofBadge } from "@/components/social-proof-badge";
 
 const features = [
   {
@@ -251,6 +252,9 @@ export default async function LandingPage() {
                 <span className="flex items-center gap-1"><Shield className="h-3.5 w-3.5 text-emerald-400" /> No credit card required</span>
                 <span className="hidden sm:inline text-border">|</span>
                 <span className="hidden sm:flex items-center gap-1"><CheckCircle className="h-3.5 w-3.5 text-emerald-400" /> 7-day refund policy</span>
+              </div>
+              <div className="mt-3">
+                <SocialProofBadge variant="compact" metric="students" />
               </div>
             </div>
 

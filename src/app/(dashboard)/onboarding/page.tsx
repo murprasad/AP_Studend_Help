@@ -12,6 +12,7 @@ import {
   Sparkles, BookOpen, ClipboardList, BarChart3, ChevronRight, Check, Clock, GraduationCap,
 } from "lucide-react";
 import { staticCLEP7DayPlan } from "@/lib/clep-plan";
+import { SocialProofBadge } from "@/components/social-proof-badge";
 
 const ONBOARDING_KEY = "onboarding_completed";
 
@@ -233,6 +234,7 @@ export default function OnboardingPage() {
             <CardDescription>You can change this anytime from the sidebar.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
+            <SocialProofBadge variant="banner" metric="students" />
             {effectiveTrack === "clep" && (
               <div className="flex items-start gap-2 p-3 rounded-lg bg-emerald-500/5 border border-emerald-500/20 mb-3">
                 <Sparkles className="h-4 w-4 text-emerald-400 flex-shrink-0 mt-0.5" />

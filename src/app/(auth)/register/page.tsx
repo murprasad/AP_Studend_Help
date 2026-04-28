@@ -14,6 +14,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Eye, EyeOff, CheckCircle } from "lucide-react";
+import { SocialProofBadge } from "@/components/social-proof-badge";
 
 const registerSchema = z.object({
   firstName: z.string().min(2, "First name must be at least 2 characters"),
@@ -202,6 +203,7 @@ export default function RegisterPage() {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
+        <SocialProofBadge variant="banner" metric="students" />
         {/* Persistent error banner — same UX pattern as /login. Stays
             visible until next submit. Shows recovery link. */}
         {registerError && (

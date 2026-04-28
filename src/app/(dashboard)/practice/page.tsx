@@ -14,6 +14,7 @@ import { getCourseConfig } from "@/lib/courses";
 import { isPremiumForTrack } from "@/lib/tiers";
 import { Textarea } from "@/components/ui/textarea";
 import { CourseSelectorInline } from "@/components/layout/course-selector-inline";
+import { SocialProofBadge } from "@/components/social-proof-badge";
 import { CourseExamOverview } from "@/components/practice/course-exam-overview";
 import { SessionFeedbackPopup } from "@/components/feedback/session-feedback-popup";
 import { SessionDeltaCard } from "@/components/practice/session-delta-card";
@@ -171,6 +172,55 @@ export default function PracticePage() {
     if (mode === "practicing") enterExamMode();
     else exitExamMode();
   }, [mode, enterExamMode, exitExamMode]);
+
+  // Abandon detection — when a student bails mid-session (closes tab, switches
+  // app, or navigates away while mode === "practicing"), stash the sessionId
+  // so the next /practice load can fire the SessionFeedbackPopup with
+  // context="abandon" to capture the "why did you stop" signal. Audit data
+  // showed 0 abandon-context feedback rows ever — the trigger was dead code.
+  const [abandonedSessionId, setAbandonedSessionId] = useState<string | null>(null);
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    // On mount, check if we left an unrated abandoned session within the last
+    // 2 hours and surface the abandon-context popup once.
+    try {
+      const raw = sessionStorage.getItem("studentnest_abandoned_session");
+      if (raw) {
+        const { sessionId: sid, ts } = JSON.parse(raw);
+        if (sid && ts && Date.now() - ts < 2 * 60 * 60 * 1000) {
+          setAbandonedSessionId(sid);
+        }
+        sessionStorage.removeItem("studentnest_abandoned_session");
+      }
+    } catch {}
+  }, []);
+  // Read sessionId via ref so the unload handler always sees the latest
+  // value (the effect only re-mounts on mode change, not on sessionId set).
+  const sessionIdRef = useRef<string | null>(null);
+  // While mode === "practicing", listen for visibility-hidden / beforeunload.
+  // Stash the sessionId so the *next* page load can prompt for abandon
+  // feedback. This is more reliable than trying to fire a popup synchronously
+  // on unload, which modern browsers block.
+  useEffect(() => {
+    if (mode !== "practicing") return;
+    const stash = () => {
+      const sid = sessionIdRef.current;
+      if (!sid) return;
+      try {
+        sessionStorage.setItem(
+          "studentnest_abandoned_session",
+          JSON.stringify({ sessionId: sid, ts: Date.now() }),
+        );
+      } catch {}
+    };
+    const onVisibility = () => { if (document.visibilityState === "hidden") stash(); };
+    window.addEventListener("beforeunload", stash);
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => {
+      window.removeEventListener("beforeunload", stash);
+      document.removeEventListener("visibilitychange", onVisibility);
+    };
+  }, [mode]);
   const [selectedUnit, setSelectedUnit] = useState<string>("ALL");
   const [selectedDifficulty, setSelectedDifficulty] = useState<string>("ALL");
   const [questionCount, setQuestionCount] = useState(10);
@@ -248,6 +298,8 @@ export default function PracticePage() {
   }, []);
 
   const [sessionId, setSessionId] = useState<string | null>(null);
+  // Mirror sessionId into the ref the abandon-detection useEffect reads.
+  useEffect(() => { sessionIdRef.current = sessionId; }, [sessionId]);
   const [questions, setQuestions] = useState<Question[]>([]);
   const questionsRef = useRef<Question[]>([]);  // always up-to-date for async callbacks
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -1179,9 +1231,24 @@ export default function PracticePage() {
   // Session selection screen
   return (
     <div className="max-w-2xl mx-auto space-y-6">
+      {/* Abandon-context popup — fires when the user returns after closing
+          the tab / switching apps mid-session. The 0 abandon-rows ever
+          finding showed our previous never-fired state. */}
+      {abandonedSessionId && (
+        <SessionFeedbackPopup
+          sessionId={abandonedSessionId}
+          triggerCondition="always"
+          source="practice"
+          course={course}
+          context="abandon"
+          onComplete={() => setAbandonedSessionId(null)}
+        />
+      )}
+
       <div>
         <h1 className="text-3xl font-bold mb-1">Practice</h1>
         <p className="text-muted-foreground">Choose your practice mode and settings</p>
+        <div className="mt-2"><SocialProofBadge variant="compact" metric="active-week" /></div>
       </div>
 
       <CourseSelectorInline />
