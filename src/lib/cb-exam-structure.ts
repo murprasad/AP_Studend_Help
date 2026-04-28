@@ -55,12 +55,15 @@ export const AP_EXAM_STRUCTURES: Record<string, CourseExamStructure> = {
   },
   AP_US_GOVERNMENT: {
     course: "AP_US_GOVERNMENT",
+    // Section I MCQ = 80 min, Section II FRQs = 100 min (CB-recommended
+    // 20/20/20/40), total 180. Audit-fix 2026-04-27: per-FRQ minutes were
+    // 25/25/25/40 = 115, summing to 195 — adjusted to match CB.
     totalMinutes: 180,
     sections: [
       { cbName: "Multiple Choice", questionType: "MCQ", count: 55, percentOfScore: 50, minutes: 80, freeAccess: true },
-      { cbName: "Concept Application", questionType: "FRQ", count: 1, percentOfScore: 12.5, minutes: 25, freeAccess: false, subtopic: "Concept Application" },
-      { cbName: "Quantitative Analysis", questionType: "FRQ", count: 1, percentOfScore: 12.5, minutes: 25, freeAccess: false, subtopic: "Quantitative Analysis" },
-      { cbName: "SCOTUS Comparison", questionType: "FRQ", count: 1, percentOfScore: 12.5, minutes: 25, freeAccess: false, subtopic: "SCOTUS Comparison" },
+      { cbName: "Concept Application", questionType: "FRQ", count: 1, percentOfScore: 12.5, minutes: 20, freeAccess: false, subtopic: "Concept Application" },
+      { cbName: "Quantitative Analysis", questionType: "FRQ", count: 1, percentOfScore: 12.5, minutes: 20, freeAccess: false, subtopic: "Quantitative Analysis" },
+      { cbName: "SCOTUS Comparison", questionType: "FRQ", count: 1, percentOfScore: 12.5, minutes: 20, freeAccess: false, subtopic: "SCOTUS Comparison" },
       { cbName: "Argument Essay", questionType: "LEQ", count: 1, percentOfScore: 12.5, minutes: 40, freeAccess: false, subtopic: "Argument Essay" },
     ],
   },
@@ -95,6 +98,11 @@ export const AP_EXAM_STRUCTURES: Record<string, CourseExamStructure> = {
   },
   AP_BIOLOGY: {
     course: "AP_BIOLOGY",
+    // Section I MCQ 90 min + Section II Written 90 min = 180. Audit-fix
+    // 2026-04-27: per-FRQ recommended times were 22+22+12+12+12+12=92 (off
+    // by 2). Real CB allots 22 for one Long, 22 for the other Long, then
+    // 12+12+10+12=46 for the four Shorts (not perfectly uniform). Adjusted
+    // one Short to 10 min so sum tiles to 180.
     totalMinutes: 180,
     sections: [
       { cbName: "Multiple Choice", questionType: "MCQ", count: 60, percentOfScore: 50, minutes: 90, freeAccess: true },
@@ -102,7 +110,7 @@ export const AP_EXAM_STRUCTURES: Record<string, CourseExamStructure> = {
       { cbName: "Long FRQ (Graphing)", questionType: "FRQ", count: 1, percentOfScore: 11.25, minutes: 22, freeAccess: false, subtopic: "Long FRQ (Graphing)" },
       { cbName: "Short FRQ (Investigation)", questionType: "FRQ", count: 1, percentOfScore: 6.875, minutes: 12, freeAccess: false, subtopic: "Short FRQ (Investigation)" },
       { cbName: "Short FRQ (Conceptual)", questionType: "FRQ", count: 1, percentOfScore: 6.875, minutes: 12, freeAccess: false, subtopic: "Short FRQ (Conceptual)" },
-      { cbName: "Short FRQ (Model/Visual)", questionType: "FRQ", count: 1, percentOfScore: 6.875, minutes: 12, freeAccess: false, subtopic: "Short FRQ (Model/Visual)" },
+      { cbName: "Short FRQ (Model/Visual)", questionType: "FRQ", count: 1, percentOfScore: 6.875, minutes: 10, freeAccess: false, subtopic: "Short FRQ (Model/Visual)" },
       { cbName: "Short FRQ (Data Analysis)", questionType: "FRQ", count: 1, percentOfScore: 6.875, minutes: 12, freeAccess: false, subtopic: "Short FRQ (Data Analysis)" },
     ],
   },
@@ -169,7 +177,14 @@ export const AP_EXAM_STRUCTURES: Record<string, CourseExamStructure> = {
   },
   AP_COMPUTER_SCIENCE_PRINCIPLES: {
     course: "AP_COMPUTER_SCIENCE_PRINCIPLES",
-    totalMinutes: 120,
+    // CB CSP exam = 70 MCQ in 120 min (Section I, the only timed exam-day
+    // session). The Create Performance Task was discontinued; in-class
+    // written responses are now collected as portfolio (no exam-day timer).
+    // For practice, we still surface WR1 + WR2 as 30-min sections so
+    // students can rehearse the format — totalMinutes reflects full
+    // practice load (120 + 30 + 30 = 180), not the exam-day cap.
+    // Audit-fix 2026-04-27: was 120 vs sum-of-sections 180.
+    totalMinutes: 180,
     sections: [
       { cbName: "Multiple Choice", questionType: "MCQ", count: 70, percentOfScore: 70, minutes: 120, freeAccess: true },
       { cbName: "Written Response 1 (Program Design)", questionType: "FRQ", count: 1, percentOfScore: 15, minutes: 30, freeAccess: false, subtopic: "Written Response 1 (Program Design)" },
