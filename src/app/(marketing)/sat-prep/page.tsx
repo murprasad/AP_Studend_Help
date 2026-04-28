@@ -71,12 +71,12 @@ export default function SatPrepPage() {
           </div>
         </div>
         <div className="hidden lg:block animate-float">
-          <BrowserFrame title="StudentNest Prep Â· SAT Analytics" className="shadow-2xl shadow-blue-500/10">
+          <BrowserFrame title="StudentNest Prep · SAT Analytics" className="shadow-2xl shadow-blue-500/10">
             <MockupAnalytics variant="sat" />
           </BrowserFrame>
         </div>
         <div className="lg:hidden max-w-md mx-auto w-full">
-          <BrowserFrame title="StudentNest Prep Â· SAT Analytics">
+          <BrowserFrame title="StudentNest Prep · SAT Analytics">
             <MockupAnalytics variant="sat" />
           </BrowserFrame>
         </div>
@@ -97,7 +97,7 @@ export default function SatPrepPage() {
             <h2 className="text-2xl font-bold">AI targets your weakest SAT areas</h2>
             <p className="text-muted-foreground leading-relaxed">Quick diagnostic across Math and Reading &amp; Writing. Choose your timeline (2–6 weeks) and Sage builds a plan targeting your lowest-scoring topics first.</p>
           </div>
-          <BrowserFrame title="StudentNest Prep Â· SAT Study Plan" className="shadow-xl"><MockupStudyPlan variant="sat" /></BrowserFrame>
+          <BrowserFrame title="StudentNest Prep · SAT Study Plan" className="shadow-xl"><MockupStudyPlan variant="sat" /></BrowserFrame>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
           <div className="lg:order-2 space-y-3">
@@ -105,15 +105,15 @@ export default function SatPrepPage() {
             <h2 className="text-2xl font-bold">SAT-format questions with instant explanations</h2>
             <p className="text-muted-foreground leading-relaxed">AI-generated questions matching real SAT format. Get instant feedback explaining why each answer is right or wrong — ask Sage for deeper explanations anytime.</p>
           </div>
-          <div className="lg:order-1"><BrowserFrame title="StudentNest Prep Â· SAT Practice" className="shadow-xl"><MockupPractice variant="sat" /></BrowserFrame></div>
+          <div className="lg:order-1"><BrowserFrame title="StudentNest Prep · SAT Practice" className="shadow-xl"><MockupPractice variant="sat" /></BrowserFrame></div>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
           <div className="space-y-3">
             <div className="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center"><BarChart3 className="h-5 w-5 text-blue-700 dark:text-blue-400" /></div>
             <h2 className="text-2xl font-bold">See your readiness range improve</h2>
-            <p className="text-muted-foreground leading-relaxed">Track session-by-session progress as your estimated SAT range climbs (typical pattern: 1050 â†’ 1150 â†’ 1250+). Real data, timed practice, and the pacing instincts you need on test day.</p>
+            <p className="text-muted-foreground leading-relaxed">Track session-by-session progress as your estimated SAT range climbs (typical pattern: 1050 ←’ 1150 ←’ 1250+). Real data, timed practice, and the pacing instincts you need on test day.</p>
           </div>
-          <BrowserFrame title="StudentNest Prep Â· SAT Analytics" className="shadow-xl"><MockupAnalytics variant="sat" /></BrowserFrame>
+          <BrowserFrame title="StudentNest Prep · SAT Analytics" className="shadow-xl"><MockupAnalytics variant="sat" /></BrowserFrame>
         </div>
       </div>
 
@@ -122,7 +122,7 @@ export default function SatPrepPage() {
         {[
           { icon: Brain, title: "Understand Every Mistake", desc: "Sage explains why your answer was wrong and what the correct reasoning looks like." },
           { icon: Target, title: "Improve Faster", desc: "Practice adapts to your weakest areas. Every session targets where you lose the most points." },
-          { icon: BarChart3, title: "Track Your Range", desc: "Watch your estimated SAT range improve session by session (typical pattern: 1050 â†’ 1150 â†’ 1250+). Real data, week by week." },
+          { icon: BarChart3, title: "Track Your Range", desc: "Watch your estimated SAT range improve session by session (typical pattern: 1050 ←’ 1150 ←’ 1250+). Real data, week by week." },
           { icon: Clock, title: "Build Test Stamina", desc: "Timed practice builds the pacing instincts you need on test day." },
         ].map((f) => (
           <div key={f.title} className="p-5 rounded-xl border border-border/40 bg-card/50 space-y-2">
@@ -208,7 +208,7 @@ export default function SatPrepPage() {
       </div>
 
       <p className="text-xs text-center text-muted-foreground">
-        SATÂ® is a trademark of the College Board, which is not affiliated with StudentNest.
+        SAT® is a trademark of the College Board, which is not affiliated with StudentNest.
       </p>
     </div>
   );

@@ -7,7 +7,7 @@ import Link from "next/link";
 
 const AP_QUESTION = {
   label: "AP World History",
-  unit: "MCQ Â· Unit 5: Revolutions",
+  unit: "MCQ · Unit 5: Revolutions",
   text: "Which of the following BEST explains why the French Revolution spread ideas of democracy across Europe?",
   options: [
     { id: "A", text: "The invention of the printing press" },
@@ -25,7 +25,7 @@ const AP_QUESTION = {
 
 const CLEP_QUESTION = {
   label: "CLEP College Algebra",
-  unit: "MCQ Â· Unit 2: Equations & Inequalities",
+  unit: "MCQ · Unit 2: Equations & Inequalities",
   text: "If 2x + 7 = 15, what is the value of x?",
   options: [
     { id: "A", text: "3" },
@@ -63,7 +63,7 @@ export function InteractiveDemo() {
         <div className="w-3 h-3 rounded-full bg-red-500/60" />
         <div className="w-3 h-3 rounded-full bg-yellow-500/60" />
         <div className="w-3 h-3 rounded-full bg-green-500/60" />
-        <span className="ml-2 text-xs text-muted-foreground">StudentNest Â· Practice</span>
+        <span className="ml-2 text-xs text-muted-foreground">StudentNest · Practice</span>
         <div className="ml-auto flex gap-1">
           <button
             onClick={() => switchTrack("ap")}

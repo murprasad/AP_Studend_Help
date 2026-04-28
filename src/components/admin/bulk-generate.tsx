@@ -239,7 +239,7 @@ export function AdminBulkGenerate() {
             Auto-Populate Question Bank
           </CardTitle>
           <p className="text-sm text-muted-foreground">
-            Fills every unit up to the minimum question count using the AI cascade (Groq â†’ Pollinations fallback).
+            Fills every unit up to the minimum question count using the AI cascade (Groq ←’ Pollinations fallback).
             Only generates for units that are below the minimum.
           </p>
         </CardHeader>

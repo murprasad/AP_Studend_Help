@@ -145,7 +145,7 @@ export default function DiagnosticPage() {
           <BookOpen className={`h-5 w-5 text-${accentColor}-400 flex-shrink-0`} />
           <div>
             <p className="text-sm font-semibold">{courseName}</p>
-            <p className="text-xs text-muted-foreground">{Object.keys(courseUnits).length} units Â· {isCLEP ? "CLEP Exam" : "AP/SAT/ACT"}</p>
+            <p className="text-xs text-muted-foreground">{Object.keys(courseUnits).length} units · {isCLEP ? "CLEP Exam" : "AP/SAT/ACT"}</p>
           </div>
         </div>
 
@@ -292,7 +292,7 @@ export default function DiagnosticPage() {
               {predictedScore}
             </p>
             <p className="text-sm text-muted-foreground mt-2">
-              {scoreLabel} Â· MCQ-only estimate from {scores.length} unit{scores.length === 1 ? "" : "s"}
+              {scoreLabel} · MCQ-only estimate from {scores.length} unit{scores.length === 1 ? "" : "s"}
             </p>
           </CardContent>
         </Card>
@@ -342,7 +342,7 @@ export default function DiagnosticPage() {
                     <p className="text-sm font-semibold">Fix your weakest unit in 2 min</p>
                     <p className="text-xs text-muted-foreground mt-1">
                       <span className="font-medium text-foreground/80">{weakestName}</span>
-                      {" Â· "}
+                      {" · "}
                       you scored {weakestScore}% here — five focused questions will move the needle.
                     </p>
                     <Link href={buildFocusedPracticeUrl(weakestUnitKey, 5)} className="inline-block mt-3">

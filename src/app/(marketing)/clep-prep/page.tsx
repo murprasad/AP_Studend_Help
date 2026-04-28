@@ -46,7 +46,7 @@ const topExams = easiestExams.filter((e, i, a) => a.findIndex(x => x.name === e.
 const domains = [
   {
     name: "Composition & Literature",
-    emoji: "ðŸ“š",
+    emoji: "📚",
     totalSavings: "$12,000",
     courses: [
       { name: "American Literature", savings: "$1,200" },
@@ -59,7 +59,7 @@ const domains = [
   },
   {
     name: "History & Social Sciences",
-    emoji: "ðŸŒ",
+    emoji: "🌍",
     totalSavings: "$15,600",
     courses: [
       { name: "American Government", savings: "$1,200" },
@@ -78,7 +78,7 @@ const domains = [
   },
   {
     name: "Science & Mathematics",
-    emoji: "ðŸ”¬",
+    emoji: "🔬",
     totalSavings: "$12,000",
     courses: [
       { name: "Biology", savings: "$2,400" },
@@ -92,7 +92,7 @@ const domains = [
   },
   {
     name: "Business",
-    emoji: "ðŸ’¼",
+    emoji: "💼",
     totalSavings: "$6,000",
     courses: [
       { name: "Financial Accounting", savings: "$1,200" },
@@ -104,7 +104,7 @@ const domains = [
   },
   {
     name: "World Languages",
-    emoji: "ðŸŒ",
+    emoji: "🌍",
     totalSavings: "$9,600",
     courses: [
       { name: "French (Levels 1 & 2)", savings: "$2,400" },
@@ -164,7 +164,7 @@ export default async function ClepPrepPage() {
           <FadeIn>
             <div className="text-center lg:text-left space-y-5">
               <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-700 dark:text-emerald-400 text-sm font-medium">
-                <GraduationCap className="h-4 w-4" /> 34 CLEP Exams Â· All 5 Domains
+                <GraduationCap className="h-4 w-4" /> 34 CLEP Exams · All 5 Domains
               </div>
               <h1 className="text-4xl sm:text-5xl lg:text-[3.4rem] font-bold leading-[1.1] tracking-tight">
                 Pass Your CLEP Exam in 7 Days.<br />
@@ -190,7 +190,7 @@ export default async function ClepPrepPage() {
           </FadeIn>
           <FadeIn className="hidden lg:block">
             <div className="animate-float">
-              <BrowserFrame title="StudentNest Prep Â· CLEP Study Plan" className="shadow-2xl shadow-emerald-500/10">
+              <BrowserFrame title="StudentNest Prep · CLEP Study Plan" className="shadow-2xl shadow-emerald-500/10">
                 <MockupStudyPlan />
               </BrowserFrame>
             </div>
@@ -332,7 +332,7 @@ export default async function ClepPrepPage() {
               </div>
             </FadeIn>
             <FadeIn>
-              <BrowserFrame title="StudentNest Prep Â· CLEP Practice" className="shadow-xl"><MockupPractice /></BrowserFrame>
+              <BrowserFrame title="StudentNest Prep · CLEP Practice" className="shadow-xl"><MockupPractice /></BrowserFrame>
             </FadeIn>
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
@@ -344,7 +344,7 @@ export default async function ClepPrepPage() {
               </div>
             </FadeIn>
             <FadeIn className="lg:order-1">
-              <BrowserFrame title="StudentNest Prep Â· 7-Day Plan" className="shadow-xl"><MockupStudyPlan /></BrowserFrame>
+              <BrowserFrame title="StudentNest Prep · 7-Day Plan" className="shadow-xl"><MockupStudyPlan /></BrowserFrame>
             </FadeIn>
           </div>
         </div>
@@ -409,7 +409,7 @@ export default async function ClepPrepPage() {
             </div>
           </div>
         </FadeIn>
-        <p className="text-[10px] text-muted-foreground/50 text-center mt-4">StudentNest is not affiliated with or endorsed by the College Board. CLEPÂ® is a registered trademark of the College Board.</p>
+        <p className="text-[10px] text-muted-foreground/50 text-center mt-4">StudentNest is not affiliated with or endorsed by the College Board. CLEP® is a registered trademark of the College Board.</p>
       </section>
 
       {/* â•â•â• TESTIMONIALS â•â•â• */}
@@ -450,7 +450,7 @@ export default async function ClepPrepPage() {
                     <span className="text-xl">{domain.emoji}</span>
                     <div>
                       <p className="font-semibold text-sm">{domain.name}</p>
-                      <p className="text-xs text-muted-foreground">{domain.courses.length} exams Â· Save up to {domain.totalSavings}</p>
+                      <p className="text-xs text-muted-foreground">{domain.courses.length} exams · Save up to {domain.totalSavings}</p>
                     </div>
                   </div>
                   <ChevronDown className="h-4 w-4 text-muted-foreground transition-transform group-open:rotate-180" />
@@ -565,7 +565,7 @@ export default async function ClepPrepPage() {
                 Build My 7-Day Plan <ArrowRight className="h-5 w-5" />
               </Button>
             </Link>
-            <p className="text-xs text-muted-foreground">Free to start Â· No credit card Â· Cancel anytime</p>
+            <p className="text-xs text-muted-foreground">Free to start · No credit card · Cancel anytime</p>
           </FadeIn>
         </div>
       </section>
@@ -573,7 +573,7 @@ export default async function ClepPrepPage() {
       {/* â•â•â• TRADEMARK â•â•â• */}
       <div className="max-w-3xl mx-auto px-4 pb-8">
         <p className="text-xs text-center text-muted-foreground">
-          CLEPÂ® is a registered trademark of College Board, which is not affiliated with StudentNest. All practice questions are original AI-generated content.
+          CLEP® is a registered trademark of College Board, which is not affiliated with StudentNest. All practice questions are original AI-generated content.
         </p>
       </div>
     </div>

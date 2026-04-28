@@ -93,7 +93,7 @@ const testimonials = [
     avatarColor: "bg-blue-500/20 text-blue-500",
     location: "Grade 11, California",
     context: "AP World History",
-    metric: "62% â†’ 89% unit mastery",
+    metric: "62% ←’ 89% unit mastery",
     timeline: "30 min/day for 4 weeks",
     stars: 5,
   },
@@ -104,7 +104,7 @@ const testimonials = [
     avatarColor: "bg-blue-500/20 text-blue-500",
     location: "Grade 12, Texas",
     context: "AP Calculus AB",
-    metric: "D â†’ B in one marking period",
+    metric: "D ←’ B in one marking period",
     timeline: "3 weeks with Sage",
     stars: 5,
   },
@@ -214,7 +214,7 @@ export default async function LandingPage() {
             <div className="text-center lg:text-left">
               <Badge className="mb-6 bg-white/10 dark:bg-white/10 text-white dark:text-white border-white/20 text-sm px-4 py-1.5">
                 <Sparkles className="h-3.5 w-3.5 mr-1.5" />
-                Free forever Â· {courseCount} courses Â· No credit card
+                Free forever · {courseCount} courses · No credit card
               </Badge>
               <h1 className="text-4xl sm:text-5xl lg:text-5xl font-bold tracking-tight mb-4">
                 <span className="gradient-text">Student</span><span className="text-foreground/80 font-medium">Nest</span><span className="text-blue-600 dark:text-blue-700 dark:text-blue-400 font-normal text-[0.6em] ml-1">Prep</span>
@@ -236,15 +236,15 @@ export default async function LandingPage() {
                 <span className="text-sm text-muted-foreground">Ready for the full experience?</span>
                 <div className="flex gap-2">
                   <Link href="/register?track=ap" className="text-primary hover:text-primary/80 font-medium underline underline-offset-4 text-sm">AP</Link>
-                  <span className="text-muted-foreground">Â·</span>
+                  <span className="text-muted-foreground">·</span>
                   <Link href="/register?track=sat" className="text-primary hover:text-primary/80 font-medium underline underline-offset-4 text-sm">SAT</Link>
-                  <span className="text-muted-foreground">Â·</span>
+                  <span className="text-muted-foreground">·</span>
                   <Link href="/register?track=act" className="text-primary hover:text-primary/80 font-medium underline underline-offset-4 text-sm">ACT</Link>
                 </div>
                 {clepOn && (
                   <>
                     <span className="hidden sm:inline text-muted-foreground">|</span>
-                    <Link href="/register?track=clep" className="text-emerald-600 dark:text-emerald-700 dark:text-emerald-400 hover:underline font-medium text-sm">Pass CLEP in 7 days â†’</Link>
+                    <Link href="/register?track=clep" className="text-emerald-600 dark:text-emerald-700 dark:text-emerald-400 hover:underline font-medium text-sm">Pass CLEP in 7 days ←’</Link>
                   </>
                 )}
               </div>
@@ -260,13 +260,13 @@ export default async function LandingPage() {
 
             {/* Right — product mockup */}
             <div className="hidden lg:block animate-float">
-              <BrowserFrame title="StudentNest Prep Â· Analytics" className="shadow-2xl shadow-blue-500/10">
+              <BrowserFrame title="StudentNest Prep · Analytics" className="shadow-2xl shadow-blue-500/10">
                 <MockupAnalytics />
               </BrowserFrame>
             </div>
             {/* Mobile mockup — no float, compact */}
             <div className="lg:hidden max-w-md mx-auto w-full">
-              <BrowserFrame title="StudentNest Prep Â· Analytics">
+              <BrowserFrame title="StudentNest Prep · Analytics">
                 <MockupAnalytics />
               </BrowserFrame>
             </div>
@@ -303,9 +303,9 @@ export default async function LandingPage() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
             {[
-              { icon: "ðŸŽ¯", stat: `${courseCount} courses covered`, sub: examLabel },
-              ...(clepOn ? [{ icon: "ðŸ’°", stat: "$1,200+ saved per CLEP exam", sub: "Skip courses, keep the credit" }] : [{ icon: "ðŸ“š", stat: "Exam-aligned AI", sub: "Questions match real exam formats" }]),
-              { icon: "ðŸ”¥", stat: "8 engagement features", sub: "Stay motivated daily" },
+              { icon: "🎯", stat: `${courseCount} courses covered`, sub: examLabel },
+              ...(clepOn ? [{ icon: "💰", stat: "$1,200+ saved per CLEP exam", sub: "Skip courses, keep the credit" }] : [{ icon: "📚", stat: "Exam-aligned AI", sub: "Questions match real exam formats" }]),
+              { icon: "🔥", stat: "8 engagement features", sub: "Stay motivated daily" },
             ].map(({ icon, stat, sub }) => (
               <div key={stat} className="flex flex-col items-center gap-1">
                 <span className="text-2xl">{icon}</span>
@@ -323,7 +323,7 @@ export default async function LandingPage() {
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-500 text-sm font-medium mb-6">
             <Sparkles className="h-4 w-4" /> Study Smarter. Score Higher.
           </div>
-          <h2 className="text-4xl font-bold mb-4">Meet Sage ðŸŒ¿</h2>
+          <h2 className="text-4xl font-bold mb-4">Meet Sage 🌿</h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-12">
             Sage is your personal Sage Live Tutor — available 24/7, never judges, and always explains in a way that clicks.
           </p>
@@ -398,7 +398,7 @@ export default async function LandingPage() {
               <div className="w-3 h-3 rounded-full bg-red-500/60" />
               <div className="w-3 h-3 rounded-full bg-yellow-500/60" />
               <div className="w-3 h-3 rounded-full bg-green-500/60" />
-              <span className="ml-2 text-xs text-muted-foreground">StudentNest Prep Â· Tutor</span>
+              <span className="ml-2 text-xs text-muted-foreground">StudentNest Prep · Tutor</span>
             </div>
             {/* Chat */}
             <div className="p-5 space-y-4 text-sm">
@@ -447,7 +447,7 @@ export default async function LandingPage() {
                 <div className="w-3 h-3 rounded-full bg-red-500/60" />
                 <div className="w-3 h-3 rounded-full bg-yellow-500/60" />
                 <div className="w-3 h-3 rounded-full bg-green-500/60" />
-                <span className="ml-2 text-xs text-muted-foreground">StudentNest Prep Â· Tutor — CLEP College Algebra</span>
+                <span className="ml-2 text-xs text-muted-foreground">StudentNest Prep · Tutor — CLEP College Algebra</span>
               </div>
               {/* Chat */}
               <div className="p-5 space-y-4 text-sm">
@@ -520,7 +520,7 @@ export default async function LandingPage() {
                 </p>
               </div>
               <div>
-                <BrowserFrame title="StudentNest Prep Â· Study Plan" className="shadow-xl">
+                <BrowserFrame title="StudentNest Prep · Study Plan" className="shadow-xl">
                   <MockupStudyPlan />
                 </BrowserFrame>
               </div>
@@ -538,7 +538,7 @@ export default async function LandingPage() {
                 </p>
               </div>
               <div className="lg:order-1">
-                <BrowserFrame title="StudentNest Prep Â· Practice" className="shadow-xl">
+                <BrowserFrame title="StudentNest Prep · Practice" className="shadow-xl">
                   <MockupPractice />
                 </BrowserFrame>
               </div>
@@ -556,7 +556,7 @@ export default async function LandingPage() {
                 </p>
               </div>
               <div>
-                <BrowserFrame title="StudentNest Prep Â· Analytics" className="shadow-xl">
+                <BrowserFrame title="StudentNest Prep · Analytics" className="shadow-xl">
                   <MockupAnalytics />
                 </BrowserFrame>
               </div>
@@ -566,10 +566,10 @@ export default async function LandingPage() {
           {/* Engagement row — compact */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-16">
             {[
-              { emoji: "ðŸ”¥", label: "Daily Streaks" },
-              { emoji: "ðŸ“…", label: "Exam Countdown" },
-              { emoji: "ðŸŽ¯", label: "Daily Goals" },
-              { emoji: "ðŸƒ", label: "Spaced Repetition" },
+              { emoji: "🔥", label: "Daily Streaks" },
+              { emoji: "📅", label: "Exam Countdown" },
+              { emoji: "🎯", label: "Daily Goals" },
+              { emoji: "🃏", label: "Spaced Repetition" },
             ].map((f) => (
               <div key={f.label} className="flex items-center gap-2 p-3 rounded-lg border border-border/40 bg-card/50">
                 <span className="text-lg">{f.emoji}</span>
@@ -677,7 +677,7 @@ export default async function LandingPage() {
               Pass CLEP exams and skip introductory college courses. One exam. One passing score. Up to $2,400 in tuition savings.
             </p>
             <p className="text-sm text-muted-foreground/70 mt-2 max-w-xl mx-auto">
-              CLEPÂ® exams cost $93 each. StudentNest Prep prepares you with the same AI-powered practice and tutoring used for AP — optimized for CLEP content.
+              CLEP® exams cost $93 each. StudentNest Prep prepares you with the same AI-powered practice and tutoring used for AP — optimized for CLEP content.
             </p>
           </div>
 
@@ -720,9 +720,9 @@ export default async function LandingPage() {
 
           <div className="grid sm:grid-cols-3 gap-6 mb-10 max-w-3xl mx-auto">
             {[
-              { icon: "ðŸ’°", title: "99% Savings", desc: "Pay $93 for an exam. Skip a $1,200 college course." },
+              { icon: "💰", title: "99% Savings", desc: "Pay $93 for an exam. Skip a $1,200 college course." },
               { icon: "â±ï¸", title: "Faster Graduation", desc: "Earn up to 30 credits before your first class." },
-              { icon: "ðŸ¤–", title: "Same Sage Live Tutor", desc: "Sage explains CLEP topics with the same depth as AP." },
+              { icon: "🤖", title: "Same Sage Live Tutor", desc: "Sage explains CLEP topics with the same depth as AP." },
             ].map(({ icon, title, desc }) => (
               <div key={title} className="text-center p-5 rounded-xl border border-emerald-500/15 bg-card/50">
                 <span className="text-3xl mb-3 block">{icon}</span>
@@ -746,7 +746,7 @@ export default async function LandingPage() {
           </div>
 
           <p className="text-center text-[11px] text-muted-foreground/50 mt-6">
-            CLEPÂ® is a registered trademark of College Board, which is not affiliated with, and does not endorse, this product.
+            CLEP® is a registered trademark of College Board, which is not affiliated with, and does not endorse, this product.
             All practice questions are original AI-generated content — not reproduced from any official exam.
           </p>
         </div>
@@ -800,7 +800,7 @@ export default async function LandingPage() {
           </div>
 
           <p className="text-center text-[11px] text-muted-foreground/50 mt-6">
-            DSSTÂ® is a registered trademark of Prometric, which is not affiliated with, and does not endorse, this product.
+            DSST® is a registered trademark of Prometric, which is not affiliated with, and does not endorse, this product.
             All practice questions are original AI-generated content.
           </p>
         </div>
@@ -905,7 +905,7 @@ export default async function LandingPage() {
             </div>}
           </div>
           <p className="text-center text-xs text-muted-foreground mt-5">
-            <Link href="/pricing" className="text-blue-500 hover:underline">See full pricing details â†’</Link>
+            <Link href="/pricing" className="text-blue-500 hover:underline">See full pricing details ←’</Link>
           </p>
         </div>
       </section>
@@ -947,7 +947,7 @@ export default async function LandingPage() {
                     </div>
                     <div>
                       <p className="text-sm font-semibold">{t.name}</p>
-                      <p className="text-xs text-muted-foreground">{t.location} Â· {t.context}</p>
+                      <p className="text-xs text-muted-foreground">{t.location} · {t.context}</p>
                     </div>
                   </div>
                 </div>
@@ -1014,7 +1014,7 @@ export default async function LandingPage() {
             )}
           </div>
           <p className="mt-3 text-sm text-muted-foreground">
-            Free forever Â· Premium from $6.67/mo (annual) or $9.99/mo Â·{" "}
+            Free forever · Premium from $6.67/mo (annual) or $9.99/mo ·{" "}
             <Link href="/pricing" className="text-blue-500 hover:underline">See full pricing</Link>
           </p>
         </div>

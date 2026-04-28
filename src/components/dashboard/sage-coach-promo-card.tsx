@@ -46,7 +46,7 @@ export function SageCoachPromoCard({ course }: Props) {
     // Cheap probe — just need to know if at least 1 FRQ exists for course.
     // Beta 8.3 hotfix (2026-04-26): URL was /api/frq/list (404); actual
     // route is /api/frq. Card was silently never rendering because the
-    // 404 produced null â†’ setHasFrqs never fired â†’ !hasFrqs guard hid card.
+    // 404 produced null ←’ setHasFrqs never fired ←’ !hasFrqs guard hid card.
     // Also switched to fetchCached so this card shares the /api/frq fetch
     // with CramModeCard + DailyStudyOSCard.
     fetchCached<{ frqs?: unknown[]; list?: unknown[] } | null>(`/api/frq?course=${course}&limit=1`)
@@ -88,7 +88,7 @@ export function SageCoachPromoCard({ course }: Props) {
                 </Badge>
               </div>
               <p className="text-[13px] text-muted-foreground mt-1">
-                Submit your free-response answer â†’ instant AI feedback against the official College Board rubric. Practice the writing the exam actually rewards.
+                Submit your free-response answer ←’ instant AI feedback against the official College Board rubric. Practice the writing the exam actually rewards.
               </p>
             </div>
           </div>

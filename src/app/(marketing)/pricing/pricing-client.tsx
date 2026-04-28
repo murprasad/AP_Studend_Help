@@ -17,7 +17,7 @@ const ALL_MODULE_CONFIGS = {
       "Unlimited AI explanations — ask Sage anything",
       "Personalized AP study plan that adapts weekly",
       "Faster AI responses (streaming)",
-      "Cancel anytime Â· 7-day money-back guarantee",
+      "Cancel anytime · 7-day money-back guarantee",
     ],
   },
   sat: {
@@ -30,7 +30,7 @@ const ALL_MODULE_CONFIGS = {
       "Personalized SAT study plan targeting weak areas",
       "Advanced analytics with score prediction",
       "Faster AI responses (streaming)",
-      "Cancel anytime Â· 7-day money-back guarantee",
+      "Cancel anytime · 7-day money-back guarantee",
     ],
   },
   act: {
@@ -43,7 +43,7 @@ const ALL_MODULE_CONFIGS = {
       "Personalized ACT study plan by section",
       "Section-by-section composite tracking",
       "Faster AI responses (streaming)",
-      "Cancel anytime Â· 7-day money-back guarantee",
+      "Cancel anytime · 7-day money-back guarantee",
     ],
   },
   clep: {
@@ -56,7 +56,7 @@ const ALL_MODULE_CONFIGS = {
       "Personalized CLEP study plan (6–12 weeks)",
       "Faster AI responses (streaming)",
       "Save $1,200+ per exam passed in tuition",
-      "Cancel anytime Â· 7-day money-back guarantee",
+      "Cancel anytime · 7-day money-back guarantee",
     ],
   },
   dsst: {
@@ -69,7 +69,7 @@ const ALL_MODULE_CONFIGS = {
       "Personalized DSST study plan",
       "Faster AI responses (streaming)",
       "Save $1,000+ per exam passed in tuition",
-      "Cancel anytime Â· 7-day money-back guarantee",
+      "Cancel anytime · 7-day money-back guarantee",
     ],
   },
 };
@@ -138,7 +138,7 @@ export default function PricingClient({ clepEnabled, dsstEnabled }: PricingClien
           One subscription unlocks every exam. AP, SAT, ACT — all included for $9.99/mo.
         </p>
         <p className="text-sm text-emerald-700 dark:text-emerald-700 dark:text-emerald-400 font-medium mt-3">
-          âœ¦ Sign up via any exam below — Premium is all-access.
+          ✦ Sign up via any exam below — Premium is all-access.
         </p>
       </div>
 
@@ -266,7 +266,7 @@ export default function PricingClient({ clepEnabled, dsstEnabled }: PricingClien
           Everything you need to raise your score — without paying for full tutoring.
         </p>
         <p className="text-sm text-emerald-700 dark:text-emerald-700 dark:text-emerald-400 font-medium">
-          Cancel anytime Â· 7-day money-back guarantee
+          Cancel anytime · 7-day money-back guarantee
         </p>
       </div>
 
@@ -288,11 +288,11 @@ export default function PricingClient({ clepEnabled, dsstEnabled }: PricingClien
             <tbody className="divide-y divide-border/30">
               {[
                 ["Price", "$0–9.99/mo", "$200–500", "$50–150/hr", "Free–$20/mo"],
-                ["Exam-Aligned Questions", "âœ…", "âœ…", "âœ…", "Not exam-format"],
-                ["Mastery Tracking", "âœ…", "Partial", "âŒ", "âŒ"],
-                ["Personalized Study Plan", "âœ… AI-generated", "Static", "âœ…", "âŒ"],
-                ["Instant AI Explanations", "âœ… 24/7", "âŒ", "Scheduled", "âœ… General-purpose"],
-                ["Score Prediction", "âœ…", "Partial", "âŒ", "âŒ"],
+                ["Exam-Aligned Questions", "✅", "✅", "✅", "Not exam-format"],
+                ["Mastery Tracking", "✅", "Partial", "âŒ", "âŒ"],
+                ["Personalized Study Plan", "✅ AI-generated", "Static", "✅", "âŒ"],
+                ["Instant AI Explanations", "✅ 24/7", "âŒ", "Scheduled", "✅ General-purpose"],
+                ["Score Prediction", "✅", "Partial", "âŒ", "âŒ"],
               ].map(([feature, ...values]) => (
                 <tr key={feature} className="hover:bg-secondary/20">
                   <td className="p-3 font-medium text-left">{feature}</td>

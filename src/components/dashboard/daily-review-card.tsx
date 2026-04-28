@@ -148,7 +148,7 @@ export function DailyReviewCard({ course }: Props) {
           </p>
           <div className="flex items-center gap-2 text-xs text-emerald-700 dark:text-emerald-400">
             <span>â±</span>
-            <span>~{count * 30}s Â· Spaced Repetition</span>
+            <span>~{count * 30}s · Spaced Repetition</span>
           </div>
           <Button size="sm" onClick={startReview} className="w-full gap-2 bg-emerald-700 hover:bg-emerald-800">
             <RotateCcw className="h-3.5 w-3.5" />
@@ -231,7 +231,7 @@ export function DailyReviewCard({ course }: Props) {
           <div className="space-y-1">
             <p className="text-xs text-muted-foreground leading-relaxed">{q.explanation}</p>
             <Button size="sm" onClick={next} className="w-full mt-1">
-              {currentIdx + 1 >= questions.length ? "See Score" : "Next â†’"}
+              {currentIdx + 1 >= questions.length ? "See Score" : "Next ←’"}
             </Button>
           </div>
         )}

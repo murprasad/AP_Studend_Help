@@ -139,7 +139,7 @@ export default function AiTutorPage() {
           const hi = firstName ? `Hey ${firstName}!` : "Hey!";
           setMessages([{
             role: "assistant",
-            content: `${hi} I'm Sage ðŸŒ¿ Ready to help with ${courseLabel}. Here's how most students start with me: paste a practice question you got wrong and ask "why is [X] the answer?" — it's the fastest way to close knowledge gaps. What do you want to work on?`,
+            content: `${hi} I'm Sage 🌿 Ready to help with ${courseLabel}. Here's how most students start with me: paste a practice question you got wrong and ask "why is [X] the answer?" — it's the fastest way to close knowledge gaps. What do you want to work on?`,
           }]);
         }
       })
@@ -445,7 +445,7 @@ export default function AiTutorPage() {
           </Button>
         </div>
         <p className="text-xs text-muted-foreground mt-1">
-          Enter to send Â· Shift+Enter for new line Â· ðŸŽ™ voice input supported
+          Enter to send · Shift+Enter for new line · ðŸŽ™ voice input supported
         </p>
       </CardContent>
     </Card>
@@ -496,7 +496,7 @@ export default function AiTutorPage() {
             className="text-xs font-semibold text-blue-700 dark:text-blue-400 hover:text-blue-300 border border-blue-500/40 hover:border-blue-500/60 rounded-full px-3 py-1 transition-colors"
             onClick={() => sessionStorage.removeItem("sage_practice_return")}
           >
-            â† Continue Practice
+            ← Continue Practice
           </Link>
         </div>
       )}
@@ -511,7 +511,7 @@ export default function AiTutorPage() {
             <div>
               <h1 className="text-xl font-bold flex items-center gap-2">
                 <MessageSquare className="h-5 w-5 text-blue-500" />
-                Sage ðŸŒ¿
+                Sage 🌿
               </h1>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -553,7 +553,7 @@ export default function AiTutorPage() {
                   <div className="w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center mx-auto mb-3">
                     <Bot className="h-6 w-6 text-blue-500" />
                   </div>
-                  <h2 className="text-base font-bold mb-1">I&apos;m Sage ðŸŒ¿</h2>
+                  <h2 className="text-base font-bold mb-1">I&apos;m Sage 🌿</h2>
                   <p className="text-muted-foreground text-xs">
                     Your personal {courseLabel} tutor. Ask me anything — concepts, why you got a question wrong, or &ldquo;explain [topic] like I&apos;m 14.&rdquo;
                   </p>
@@ -701,7 +701,7 @@ export default function AiTutorPage() {
           <div>
             <h1 className="text-2xl sm:text-3xl font-bold flex items-center gap-2">
               <MessageSquare className="h-6 w-6 sm:h-8 sm:w-8 text-blue-500" />
-              Sage ðŸŒ¿
+              Sage 🌿
             </h1>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -743,7 +743,7 @@ export default function AiTutorPage() {
                 <div className="w-16 h-16 rounded-full bg-blue-500/20 flex items-center justify-center mx-auto mb-4">
                   <Bot className="h-8 w-8 text-blue-500" />
                 </div>
-                <h2 className="text-xl font-bold mb-2">I&apos;m Sage ðŸŒ¿</h2>
+                <h2 className="text-xl font-bold mb-2">I&apos;m Sage 🌿</h2>
                 <p className="text-muted-foreground max-w-md mx-auto text-sm">
                   Your personal {courseLabel} tutor. Ask me anything — concepts, why you got a question wrong, or &ldquo;explain [topic] like I&apos;m 14.&rdquo;
                 </p>

@@ -71,7 +71,7 @@ export default function AnalyticsPage() {
   const { toast } = useToast();
 
   // Full-screen mode — hide sidebar + SageChat + bottom nav for chart
-  // breathing room. Slim top bar with "â† Dashboard" still available.
+  // breathing room. Slim top bar with "← Dashboard" still available.
   const { enterExamMode, exitExamMode } = useExamMode();
   useEffect(() => { enterExamMode(); return () => exitExamMode(); }, [enterExamMode, exitExamMode]);
   const [masteryData, setMasteryData] = useState<MasteryData[]>([]);
@@ -382,7 +382,7 @@ export default function AnalyticsPage() {
                 <p className="text-xs text-muted-foreground mt-1">Target: {clepReadiness.threshold}% mastery across all units</p>
                 {clepReadiness.score >= 70 && (
                   <a href="https://clep.collegeboard.org/clep-search" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-xs text-emerald-700 dark:text-emerald-400 hover:text-emerald-300 mt-2 font-medium">
-                    Find a test center â†’
+                    Find a test center ←’
                   </a>
                 )}
               </div>
@@ -654,7 +654,7 @@ export default function AnalyticsPage() {
                       <span className="text-sm font-bold">{Math.round(unit.masteryScore)}%</span>
                       {goal ? (
                         <div className="flex items-center gap-1">
-                          <span className="text-xs text-blue-500">â†’ {Math.round(goal.targetScore)}%</span>
+                          <span className="text-xs text-blue-500">←’ {Math.round(goal.targetScore)}%</span>
                           <button
                             onClick={() => deleteGoal(unit.unit)}
                             className="text-muted-foreground hover:text-red-700 dark:text-red-400 transition-colors"
@@ -701,7 +701,7 @@ export default function AnalyticsPage() {
                   {goal && ptsToGo !== null && ptsToGo > 0 && (
                     <p className="text-[10px] text-blue-500">
                       {Math.round(ptsToGo)} pts to goal
-                      {goal.targetDate ? ` Â· by ${new Date(goal.targetDate).toLocaleDateString("en-US", { month: "short", day: "numeric" })}` : ""}
+                      {goal.targetDate ? ` · by ${new Date(goal.targetDate).toLocaleDateString("en-US", { month: "short", day: "numeric" })}` : ""}
                     </p>
                   )}
                   {goal && ptsToGo === 0 && (

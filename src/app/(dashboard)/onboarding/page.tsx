@@ -471,7 +471,7 @@ export default function OnboardingPage() {
               Pick your plan
             </CardTitle>
             <CardDescription>
-              Cancel anytime Â· 7-day money-back guarantee
+              Cancel anytime · 7-day money-back guarantee
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
