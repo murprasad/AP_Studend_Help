@@ -64,6 +64,32 @@ WHAT MAKES THIS CB-QUALITY:
 - Distractors include factual errors (C: Mali was Islamic not Christian; D: Mali was inland not maritime)
 - Correct answer uses INFERENCE from "great markets" + "trade in gold and salt"
 - Student must connect source detail to broader concept`,
+
+  // Generic AP MCQ CB-fidelity standard for any course without a course-specific reference.
+  // Captures the 4 universal dimensions the audit measures.
+  AP_GENERIC: `[CB AP MCQ — generic gold standard]
+A CB-quality AP MCQ has these 4 universal traits regardless of subject:
+
+1. STIM PROVIDES EVIDENCE, NOT THE ANSWER:
+   - History/Social Science: real primary source quote, data table, map, or scholar excerpt with proper attribution
+   - Science: experiment setup, data table, or graph showing observations (NOT the conclusion)
+   - Math/Calc: function definition, geometric figure, or applied scenario (NOT the calculated value)
+   - The student must SYNTHESIZE the stim into the answer; stim does NOT contain the answer phrase verbatim or near-verbatim.
+
+2. ALL 4 OPTIONS ARE PLAUSIBLE:
+   - Distractors are CB's "tempting but wrong" — each has a recognizable misconception or partial-truth pattern
+   - NO option is obviously absurd (e.g. "Mali joined NATO in 1300")
+   - Distractors cluster near the right answer in vocabulary/structure
+
+3. COGNITIVE DEMAND IS SYNTHESIS / INFERENCE / APPLICATION:
+   - Student must apply concept to scenario, infer from evidence, or perform multi-step reasoning
+   - NOT word-spotting (matching stim phrase to option)
+   - NOT pure recall ("which answer is the textbook definition")
+
+4. AUTHENTIC SOURCE FEEL:
+   - Real-sounding attributions (real people, real journals, real dates within their lifespan)
+   - Tone matches the source genre (primary source ≠ secondary commentary ≠ data table)
+   - No anachronism (Ibn Battuta can't talk about NATO; Reagan can't reference Twitter)`,
 };
 
 async function judgeAgainstCB(q, cbRef) {
@@ -115,7 +141,21 @@ Return JSON: {"score": <1-10>, "vs_cb": "<one sentence diff vs CB>", "weakest_di
   return JSON.parse(data.choices?.[0]?.message?.content ?? "{}");
 }
 
-const courses = courseArg ? [courseArg] : Object.keys(CB_REFERENCES);
+const ALL_AP_COURSES = [
+  "AP_WORLD_HISTORY", "AP_US_HISTORY", "AP_US_GOVERNMENT", "AP_HUMAN_GEOGRAPHY",
+  "AP_PSYCHOLOGY", "AP_ENVIRONMENTAL_SCIENCE", "AP_BIOLOGY", "AP_CHEMISTRY",
+  "AP_PHYSICS_1", "AP_STATISTICS", "AP_CALCULUS_AB", "AP_CALCULUS_BC",
+  "AP_PRECALCULUS", "AP_COMPUTER_SCIENCE_PRINCIPLES",
+];
+const groupArg = args.find(a => a.startsWith("--group="))?.split("=")[1];
+const courses = courseArg ? [courseArg]
+              : groupArg === "AP" ? ALL_AP_COURSES
+              : Object.keys(CB_REFERENCES);
+
+// For courses without a specific CB reference, use the generic standard.
+function getCBRef(course) {
+  return CB_REFERENCES[course] ?? CB_REFERENCES.AP_GENERIC;
+}
 const stats = {
   total: 0, processed: 0, errors: 0,
   scores: { strong: 0, solid: 0, border: 0, blocker: 0 },
@@ -123,7 +163,7 @@ const stats = {
 };
 
 for (const c of courses) {
-  if (!CB_REFERENCES[c]) continue;
+  const cbRef = getCBRef(c);
   const rows = await sql`
     SELECT id, course::text AS course, "questionText", stimulus, options, "correctAnswer"
     FROM questions
@@ -141,7 +181,7 @@ for (const c of courses) {
     while (i < rows.length) {
       const r = rows[i++];
       try {
-        const j = await judgeAgainstCB(r, CB_REFERENCES[c]);
+        const j = await judgeAgainstCB(r, cbRef);
         const score = Number(j.score ?? 0);
         const dim = j.weakest_dim ?? "none";
         stats.weakestDims[dim] = (stats.weakestDims[dim] ?? 0) + 1;
