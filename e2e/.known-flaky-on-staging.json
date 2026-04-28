@@ -25,6 +25,7 @@
     { "file": "journey-4-diagnostic", "title": "start diagnostic → session has DIAGNOSTIC type + multi-unit coverage" },
     { "file": "journey-4-diagnostic", "title": "focused-practice route accepts" },
     { "file": "nawal-nudge", "title": "Not now dismisses + does not re-show on reload" },
+    { "file": "nawal-nudge", "title": "Start warmup routes to /practice with auto_warmup src" },
     { "file": "persona-b-sidebar-walk", "title": "/dashboard — loads" },
     { "file": "persona-b-sidebar-walk", "title": "/practice — loads" },
     { "file": "persona-b-sidebar-walk", "title": "/flashcards — loads" },
