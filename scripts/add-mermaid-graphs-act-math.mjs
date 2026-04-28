@@ -20,20 +20,33 @@ const GROQ_API_KEY = process.env.GROQ_API_KEY;
 
 async function genGraph(q) {
   const opts = typeof q.options === "string" ? JSON.parse(q.options) : q.options;
+  // Use a very strict prompt with EXACT format example. Earlier R1 had 91/92 invalid
+  // because Groq emitted "x: [...]" informal syntax instead of "x-axis [...]".
   const prompt = `Generate a Mermaid xychart-beta diagram for this ACT Math question.
 
 Stim: ${q.stimulus}
 Question: ${q.questionText}
 Options: ${opts.map((o, i) => String.fromCharCode(65 + i) + ") " + o).join(" | ")}
 
-Requirements:
-- xychart-beta syntax
-- title (short, descriptive)
-- x-axis with 6-8 sample points or labels
-- y-axis with appropriate range
-- 'line' or 'bar' series with realistic values
+OUTPUT FORMAT — your mermaid string MUST follow EXACTLY this structure (5 lines):
 
-Return JSON only: {"mermaid": "<mermaid code, NO triple backticks>"}`;
+xychart-beta
+  title "<short title>"
+  x-axis [<6 to 8 numeric values, comma-separated>]
+  y-axis "<label>" <min> --> <max>
+  line [<6 to 8 numeric values matching x-axis count>]
+
+Example for y = 2x + 3:
+
+xychart-beta
+  title "Linear Function"
+  x-axis [0, 1, 2, 3, 4, 5]
+  y-axis "y" 0 --> 15
+  line [3, 5, 7, 9, 11, 13]
+
+CRITICAL: literal tokens "x-axis" and "y-axis" — NOT "x:" or "y:". Literal "line [...]" — NOT "y: [...]".
+
+Return JSON only: {"mermaid": "<mermaid code following exact format above, NO triple backticks>"}`;
 
   const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
     method: "POST",
