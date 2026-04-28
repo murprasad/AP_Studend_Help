@@ -112,7 +112,10 @@ export function InteractiveDemo() {
               } else if (isSelected && !isRightAnswer) {
                 borderClass = "border-red-500/60 bg-red-500/10 cursor-default";
               } else {
-                borderClass = "border-border/20 bg-secondary/10 opacity-50 cursor-default";
+                // Drop opacity-50 — combined with text-foreground/90 it failed
+                // WCAG AA (2.92:1 on light bg). Muted text on muted bg keeps
+                // de-emphasis without breaking contrast.
+                borderClass = "border-border/20 bg-secondary/10 text-muted-foreground cursor-default";
               }
             }
 

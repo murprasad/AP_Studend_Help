@@ -310,7 +310,7 @@ export default function RegisterPage() {
           <div className="space-y-2">
             <Label htmlFor="gradeLevel">Grade Level</Label>
             <Select onValueChange={(value) => setValue("gradeLevel", value)}>
-              <SelectTrigger>
+              <SelectTrigger id="gradeLevel" aria-label="Grade level">
                 <SelectValue placeholder="Select your grade" />
               </SelectTrigger>
               <SelectContent>

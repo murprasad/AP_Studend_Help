@@ -92,13 +92,13 @@ export function MockupPractice({ variant = "ap" }: { variant?: Variant }) {
             className={`flex items-center gap-2 px-3 py-2 rounded-lg border text-xs transition-all ${
               opt.state === "correct"
                 ? "border-emerald-500/60 bg-emerald-500/10"
-                : "border-border/20 bg-secondary/10 opacity-50"
+                : "border-border/20 bg-secondary/10"
             }`}
           >
             <span className="font-mono font-semibold text-[10px] text-muted-foreground w-4 flex-shrink-0">
               {opt.id}
             </span>
-            <span className="flex-1 text-foreground/90">{opt.text}</span>
+            <span className={`flex-1 ${opt.state === "correct" ? "text-foreground/90" : "text-muted-foreground"}`}>{opt.text}</span>
             {opt.state === "correct" && (
               <CheckCircle className="h-3.5 w-3.5 text-emerald-400 flex-shrink-0" />
             )}
