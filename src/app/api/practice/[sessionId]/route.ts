@@ -355,21 +355,27 @@ export async function PATCH(
       },
     });
 
-    // Beta 9.0.2 hotfix (2026-04-29) — when this PATCH is the one that
-    // flips onboardingCompletedAt from null to NOW, set the
-    // `onboarding_completed` cookie that middleware reads. Without this
-    // bridge, the user's JWT still has onboardingCompletedAt=null until
-    // their next sign-in, so any post-session navigation (notably
-    // FrqTasteNudge → /frq-practice) gets bounced back to
-    // /practice/quickstart, looping the user back to MCQs.
-    if (justCompletedOnboarding) {
-      response.cookies.set("onboarding_completed", "true", {
-        path: "/",
-        maxAge: 60 * 60 * 24, // 1 day — long enough to bridge until JWT refresh
-        sameSite: "lax",
-        httpOnly: false, // client may also read for localStorage parity
-      });
-    }
+    // Beta 9.0.3 hotfix (2026-04-29) — set onboarding_completed cookie
+    // ALWAYS at session-complete (not just when DB transitions). Reason:
+    // user's JWT may have onboardingCompletedAt=null even when DB has a
+    // date (sign-in happened pre-Beta-9, JWT cached null, DB later updated
+    // by a PATCH that ran 200ms ago). The 9.0.2 fix only set the cookie
+    // when DB transitioned, missing the case where DB was already set
+    // from a prior session but JWT was still null. Setting cookie always
+    // is safe — middleware only reads the bridge when JWT says null,
+    // and only honors it for "user has finished at least one session."
+    // (justCompletedOnboarding is preserved as a signal but no longer
+    //  gates the cookie — see Task #36/#37 followup for proper JWT
+    //  refresh on session complete.)
+    response.cookies.set("onboarding_completed", "true", {
+      path: "/",
+      maxAge: 60 * 60 * 24, // 1 day — long enough to bridge until JWT refresh
+      sameSite: "lax",
+      httpOnly: false,
+    });
+    // Reference justCompletedOnboarding to keep the variable used (for
+    // future analytics or response-payload extension).
+    void justCompletedOnboarding;
 
     return response;
   } catch (error) {
