@@ -53,7 +53,14 @@ export default function DashboardLayout({
     if (status !== "authenticated") return;
     if (pathname === "/onboarding") return;
     if (pathname.startsWith("/practice/quickstart")) return;
-    if (pathname.startsWith("/practice/") && new URLSearchParams(window.location.search).get("quickstart") === "1") return;
+    // Beta 9.0.1 hotfix — exempt /practice (with or without subpath) when
+    // arriving from quickstart. Prior check used startsWith("/practice/")
+    // which DOESN'T match the bare "/practice" pathname (no trailing slash),
+    // causing fresh user click → router.push(/practice?quickstart=1) → layout
+    // sees onboardingCompletedAt=null → fetch /api/user → redirect back to
+    // /practice/quickstart. Loop. Now matches both /practice and /practice/*
+    // when ?quickstart=1 is present.
+    if ((pathname === "/practice" || pathname.startsWith("/practice/")) && new URLSearchParams(window.location.search).get("quickstart") === "1") return;
 
     const onboardedAtServer = (session?.user as { onboardingCompletedAt?: string | null } | undefined)?.onboardingCompletedAt;
 
