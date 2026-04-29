@@ -3,6 +3,9 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { rateLimit } from "@/lib/rate-limit";
+import { FREE_LIMITS } from "@/lib/tier-limits";
+import { hasAnyPremium, isPremiumForTrack } from "@/lib/tiers";
+import type { ModuleSub } from "@/lib/tiers";
 
 /**
  * POST /api/frq/[id]/submit
@@ -68,6 +71,55 @@ export async function POST(
         { error: `selfScore must be between 0 and ${frq.totalPoints}` },
         { status: 400 }
       );
+    }
+
+    // Beta 9.0.8 — enforce per-type/per-course free attempt cap. Without
+    // this, free users can submit unlimited FRQ attempts via this route
+    // (the cap on /api/practice only covered the MCQ-session-with-FRQ-type
+    // path, not the dedicated /frq-practice flow).
+    const userTrack = session.user.track ?? "ap";
+    const moduleSubs: ModuleSub[] = (session.user as { moduleSubs?: ModuleSub[] }).moduleSubs ?? [];
+    const isAdmin = (session.user as { role?: string }).role === "ADMIN";
+    const hasPremium = isAdmin || hasAnyPremium(moduleSubs) || isPremiumForTrack(session.user.subscriptionTier, userTrack);
+
+    if (!hasPremium) {
+      const frqTypeKey = frq.type.toLowerCase();
+      const limitKey = (
+        frqTypeKey === "dbq" ? "dbqFreeAttemptsPerCourse" :
+        frqTypeKey === "leq" ? "leqFreeAttemptsPerCourse" :
+        frqTypeKey === "saq" ? "saqFreeAttemptsPerCourse" :
+        "frqFreeAttemptsPerCourse"
+      ) as keyof typeof FREE_LIMITS;
+      const limit = FREE_LIMITS[limitKey] as number;
+
+      // Count distinct FRQs of this type in this course where the user has
+      // already attempted. Multiple attempts on the SAME FRQ count as 1
+      // ("free re-attempt with fresh eyes" is fine; cap is on coverage, not
+      // re-tries). Distinct count avoids counting a 2nd attempt on the
+      // same FRQ as a 2nd cap consumption.
+      const distinctFrqsAttempted = await prisma.frqAttempt.findMany({
+        where: {
+          userId: session.user.id,
+          frq: { type: frq.type, course: frq.course },
+        },
+        select: { frqId: true },
+        distinct: ["frqId"],
+      });
+      const distinctCount = distinctFrqsAttempted.length;
+      const alreadyAttemptedThisFrq = distinctFrqsAttempted.some((a) => a.frqId === id);
+
+      // Block if: user is at cap AND this is a NEW FRQ (not a re-attempt
+      // of one they've already started).
+      if (distinctCount >= limit && !alreadyAttemptedThisFrq) {
+        return NextResponse.json({
+          error: `You've used your free ${frq.type} attempt for this course. Premium unlocks unlimited attempts + detailed coaching.`,
+          limitExceeded: true,
+          limitType: "frq_per_type_cap",
+          attemptsUsed: distinctCount,
+          attemptsAllowed: limit,
+          upgradeUrl: `/billing?utm_source=frq_cap&utm_campaign=frq_taste&type=${frq.type}`,
+        }, { status: 403 });
+      }
     }
 
     // Record the attempt. Multiple attempts per FRQ are allowed — gives the

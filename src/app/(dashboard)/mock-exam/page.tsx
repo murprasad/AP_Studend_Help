@@ -392,9 +392,22 @@ export default function MockExamPage() {
 
         <CourseSelectorInline />
 
+        {/* Beta 9.0.8 — honest framing: the timed Start button runs the MCQ
+            section only. SAQ/DBQ/LEQ are practiced via /frq-practice (linked
+            from the Real-AP-exam card above). Multi-section simulation is
+            on the roadmap (Task #42). */}
+        <Card className="border-amber-500/30 bg-amber-500/5">
+          <CardContent className="p-4 text-sm">
+            <p className="font-medium mb-1">Heads up: the timed Start runs the MCQ section only.</p>
+            <p className="text-xs text-muted-foreground">
+              SAQ, DBQ, and LEQ practice are at <Link href={`/frq-practice?course=${course}`} className="text-blue-700 dark:text-blue-400 hover:underline">FRQ Practice</Link> with the official CB rubric. Full multi-section timed simulation (MCQ → SAQ → DBQ → LEQ) is in development.
+            </p>
+          </CardContent>
+        </Card>
+
         <Card className="card-glow">
           <CardHeader>
-            <CardTitle>Section Overview</CardTitle>
+            <CardTitle>Section Overview <span className="text-sm font-normal text-muted-foreground">— MCQ section</span></CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             {/* Length toggle — Quick Mock vs Full Section */}
