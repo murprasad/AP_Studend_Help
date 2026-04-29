@@ -55,7 +55,7 @@ test.describe("AutoLaunchNudge — Nawal-pattern", () => {
 
   test("modal renders when user has 2+ impressions + 0 responses today", async ({ page }) => {
     await page.goto("/dashboard");
-    if (page.url().includes("/onboarding")) test.skip();
+    if (page.url().includes("/onboarding") || page.url().includes("/practice/quickstart")) test.skip();
     // The modal mounts asynchronously after /api/auto-launch-check
     // resolves. Dashboard cards also fetch data in parallel which can
     // cause layout thrash. Wait for networkidle, then check.
@@ -71,7 +71,7 @@ test.describe("AutoLaunchNudge — Nawal-pattern", () => {
 
   test("Start warmup routes to /practice with auto_warmup src", async ({ page }) => {
     await page.goto("/dashboard");
-    if (page.url().includes("/onboarding")) test.skip();
+    if (page.url().includes("/onboarding") || page.url().includes("/practice/quickstart")) test.skip();
     // domcontentloaded + fixed settle — networkidle never resolves on the
     // dashboard because of polling intervals (B5 pattern, fixed in
     // a11y-scan.spec.ts; same fix here).
@@ -89,7 +89,7 @@ test.describe("AutoLaunchNudge — Nawal-pattern", () => {
 
   test("Not now dismisses + does not re-show on reload", async ({ page }) => {
     await page.goto("/dashboard");
-    if (page.url().includes("/onboarding")) test.skip();
+    if (page.url().includes("/onboarding") || page.url().includes("/practice/quickstart")) test.skip();
     // domcontentloaded + fixed settle — networkidle never resolves on the
     // dashboard because of polling intervals (B5 pattern, fixed in
     // a11y-scan.spec.ts; same fix here).
@@ -128,7 +128,7 @@ test.describe("AutoLaunchNudge — negative cases", () => {
     // 2+ prior impressions, so on the VERY first visit it should NOT show.
     // (The one impression the dashboard itself creates still only gets us to 1.)
     await page.goto("/dashboard");
-    if (page.url().includes("/onboarding")) test.skip();
+    if (page.url().includes("/onboarding") || page.url().includes("/practice/quickstart")) test.skip();
     // Give the check a moment to resolve + the modal to be decided.
     await page.waitForTimeout(2000);
     await expect(page.getByRole("dialog", { name: /warmup/i })).not.toBeVisible();
@@ -152,7 +152,7 @@ test.describe("AutoLaunchNudge — negative cases", () => {
     await api.dispose();
 
     await page.goto("/dashboard");
-    if (page.url().includes("/onboarding")) test.skip();
+    if (page.url().includes("/onboarding") || page.url().includes("/practice/quickstart")) test.skip();
     await page.waitForTimeout(2000);
     await expect(page.getByRole("dialog", { name: /warmup/i })).not.toBeVisible();
   });

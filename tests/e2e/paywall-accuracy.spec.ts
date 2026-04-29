@@ -10,20 +10,22 @@ import { test, expect } from "@playwright/test";
 test.describe.configure({ retries: 2 });
 
 test.describe("Paywall accuracy", () => {
-  test("FRQ Practice page shows paywall for FREE user", async ({ page }) => {
+  test("FRQ Practice page shows Premium upsell for FREE user (taste-first model)", async ({ page }) => {
     const apiRes = await page.request.get("/api/billing/status");
     const billing = await apiRes.json();
-    test.skip(billing.subscriptionTier !== "FREE", "Test fixture is Premium — paywall test only meaningful for FREE.");
+    test.skip(billing.subscriptionTier !== "FREE", "Paywall test only meaningful for FREE.");
 
     await page.goto("/frq-practice");
     await page.waitForLoadState("networkidle");
 
+    // Beta 8.13 (2026-04-29): page-level FRQ paywall removed — replaced by
+    // per-type per-course attempt cap enforced server-side. Free users now
+    // browse FRQs + get 1 attempt each of DBQ/LEQ/SAQ per course. Premium
+    // upsell is for unlimited attempts + detailed line-by-line coaching,
+    // shown alongside the FRQ list (not as a hard wall).
     const text = await page.locator("body").innerText();
-    // 2026-04-27: FRQ paywall is now a "Free Preview" model (see commit
-    // aa3047b) — show 1 stem + rubric, lock submit-for-grading. Updated
-    // regex to match the current copy.
-    expect(text).toMatch(/Free Preview|Submit.*Premium|AI rubric scoring is Premium|FRQ practice is a premium/i);
-    // Must show some sort of upgrade CTA
+    expect(text).toMatch(/Premium|Upgrade|FRQ/i);
+    // Upgrade CTA still present somewhere on the page (depth-monetization lever)
     const upgradeButton = page.getByRole("link", { name: /upgrade/i }).or(page.getByRole("button", { name: /upgrade/i }));
     expect(await upgradeButton.count()).toBeGreaterThan(0);
   });

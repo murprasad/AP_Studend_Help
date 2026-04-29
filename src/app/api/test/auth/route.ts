@@ -117,6 +117,16 @@ export async function POST(req: NextRequest) {
         await prisma.dashboardImpression.deleteMany({ where: { userId: user.id } });
       }
 
+      // Beta 8.12 (2026-04-29) — ensure onboardingCompletedAt is set when
+      // seeding impressions. The premise of the nawal-nudge tests is "user
+      // has visited dashboard 2+ times" which implies they're past
+      // onboarding. Without this, the dashboard layout's first-time-user
+      // redirect (to /practice/quickstart) fires and tests can't run.
+      await prisma.user.update({
+        where: { id: user.id },
+        data: { onboardingCompletedAt: new Date() },
+      });
+
       // Create N impressions across a spread window. Row i gets timestamp
       // (now - spreadMinutes) + (i / (count-1)) * spreadMinutes, so the
       // first is `spreadMinutes` old and the last is now-ish.
