@@ -38,59 +38,49 @@ test.describe("First-time-user FMEA — end-to-end walkthrough", () => {
     await api.dispose();
   });
 
-  // Helper — walk steps 1..4. Each step's primary advance button has
-  // different text:
-  //   Step 1: "Continue with {course short name}" (e.g. "Continue with AP World Hist")
-  //   Step 2: "Got it — next"  (em-dash)
-  //   Step 3: "Continue"
-  // Matching each by a distinct regex avoids false matches against
-  // sidebar items / Back buttons.
-  async function walkOnboarding(page: import("@playwright/test").Page) {
-    await page.goto("/onboarding");
-    const step1 = page.getByRole("button", { name: /continue with/i });
-    await step1.waitFor({ state: "visible", timeout: 15000 });
-    await step1.click();
-    await page.waitForTimeout(800);
-    const step2 = page.getByRole("button", { name: /got it|next/i }).first();
-    await step2.waitFor({ state: "visible", timeout: 10000 });
-    await step2.click();
-    await page.waitForTimeout(800);
-    // Step 3 "Continue" button — avoid matching Back (which also has a
-    // "Continue with..." ? no, Back is distinct) or a nav.
-    const step3 = page.getByRole("button", { name: /^continue$/i }).first();
-    await step3.waitFor({ state: "visible", timeout: 10000 });
-    await step3.click();
+  // Beta 8.13.2 (2026-04-29) — the legacy 4-step onboarding wizard was
+  // deleted. /onboarding now redirects to /practice/quickstart. New
+  // helper drives the new single-screen quickstart flow.
+  async function walkQuickstart(page: import("@playwright/test").Page) {
+    await page.goto("/practice/quickstart");
+    // Wait for the recommended-course card to appear, then click its
+    // "Start your first question" CTA. The card label depends on track
+    // (default: AP World History for ap-track users).
+    const startCta = page.getByRole("button", { name: /start your first question/i }).first();
+    await startCta.waitFor({ state: "visible", timeout: 15000 });
+    await startCta.click();
+    // Should land on /practice with a session.
+    await page.waitForURL(/\/practice/, { timeout: 15000 });
   }
 
-  test("FMEA-1: onboarding wizard walks 1 → 2 → 3 → 4 with sensible copy", async ({ page }) => {
-    await walkOnboarding(page);
-    // Step 4: Pick your plan
-    await expect(page.getByText("Pick your plan")).toBeVisible({ timeout: 10000 });
+  test("FMEA-1: quickstart shows recommended course + Start CTA, no wizard", async ({ page }) => {
+    // Beta 8.13.2 — wizard deleted. New flow: single-screen smart-default.
+    await page.goto("/practice/quickstart");
+    // Headline matches outcome-driven copy
+    await expect(page.locator("body")).toContainText(/Let.s start with one question/i, { timeout: 15000 });
+    // Recommended-course card with Start CTA
+    await expect(page.getByRole("button", { name: /start your first question/i })).toBeVisible({ timeout: 10000 });
+    // No legacy wizard markers (Step 4 "Pick your plan" should be GONE)
+    await expect(page.locator("body")).not.toContainText("Pick your plan");
+    await expect(page.locator("body")).not.toContainText("3 quick steps");
   });
 
-  test("FMEA-2: Free card copy matches Option B spec exactly", async ({ page }) => {
-    await walkOnboarding(page);
-    await expect(page.getByText("Pick your plan")).toBeVisible({ timeout: 10000 });
+  test("FMEA-2: NO premature pricing/Pick Plan in onboarding flow", async ({ page }) => {
+    // Per user critique: no Pick Plan in onboarding. Pricing only after value.
+    await page.goto("/practice/quickstart");
+    await expect(page.getByRole("button", { name: /start your first question/i })).toBeVisible({ timeout: 15000 });
     const body = page.locator("body");
-    // 6 canonical free features — if any of these change, update tier-limits.ts
-    // + this test + billing page in lockstep.
-    await expect(body).toContainText("30 practice questions");
-    await expect(body).toContainText(/Mock exam preview.*5 Qs/i);
-    await expect(body).toContainText(/Unlimited flashcards/i);
-    await expect(body).toContainText(/Predicted AP\/SAT\/ACT score/i);
-    await expect(body).toContainText(/3 Sage tutor chats/i);
-    await expect(body).toContainText(/Diagnostic every 14 days/i);
-    // Money-back + cancel-anytime disclaimers present
-    await expect(body).toContainText(/Cancel anytime.*money-back/i);
+    await expect(body).not.toContainText("Pick your plan");
+    await expect(body).not.toContainText(/Start Premium/i);
+    await expect(body).not.toContainText("$9.99");
   });
 
-  test("FMEA-3: Free path lands on dashboard with 'Ready to get your score moving?' gate NOT fired", async ({ page }) => {
-    await walkOnboarding(page);
-    await page.getByRole("button", { name: /^start free/i }).click();
-    await page.waitForURL(/\/dashboard/, { timeout: 10000 });
-    // Nawal nudge MUST NOT fire for a fresh user (account < 30 min OR
-    // clustered impressions). This was the bug report that prompted
-    // the 30-min age + 30-min-spread guardrails.
+  test("FMEA-3: Quickstart click → /practice with focused mode + correct course", async ({ page }) => {
+    await walkQuickstart(page);
+    // URL should carry mode=focused + course= so practice page auto-launches
+    expect(page.url()).toMatch(/mode=focused/);
+    expect(page.url()).toMatch(/course=AP_/);
+    // Nawal nudge must not fire for a fresh user (clustered impressions)
     await page.waitForTimeout(2500);
     await expect(
       page.getByRole("dialog", { name: /warmup|score moving/i }),
@@ -98,15 +88,11 @@ test.describe("First-time-user FMEA — end-to-end walkthrough", () => {
   });
 
   test("FMEA-4: FRQ Practice — taste-first model (free user can browse + try, depth gated)", async ({ page }) => {
-    // Fresh user from beforeEach. Navigate to FRQ.
     // Beta 8.13 (2026-04-29): replaced page-level paywall with per-type
     // per-course attempt cap (1 DBQ + 1 LEQ + 1 SAQ + 1 generic FRQ
-    // lifetime per course). Free users should now see the FULL FRQ list
-    // and be able to read prompts. The "Premium" upsell language remains
-    // for the depth (detailed line-by-line coaching, unlimited attempts).
-    await walkOnboarding(page);
-    await page.getByRole("button", { name: /^start free/i }).click();
-    await page.waitForURL(/\/dashboard/, { timeout: 10000 });
+    // lifetime per course). Free users see the FULL FRQ list + can read
+    // prompts. Premium upsell remains for depth (detailed coaching).
+    await walkQuickstart(page);
     await page.goto("/frq-practice?course=AP_PHYSICS_1");
     // Verify the page loaded SOME FRQ content (list or detail) AND mentions
     // Premium for the upgrade lever — exact copy may vary by viewport but
@@ -117,9 +103,9 @@ test.describe("First-time-user FMEA — end-to-end walkthrough", () => {
   });
 
   test("FMEA-5: Flashcards page shows current course name prominently", async ({ page }) => {
-    await walkOnboarding(page);
-    await page.getByRole("button", { name: /^start free/i }).click();
-    await page.waitForURL(/\/dashboard/, { timeout: 10000 });
+    await walkQuickstart(page);
+    // Navigate back to dashboard to test the rest of the flow
+    await page.goto("/dashboard");
     await page.goto("/flashcards");
     // Course name banner — bugfix 2026-04-23 for user confusion about
     // wrong-subject cards. Must be visible whether the deck is loaded
@@ -128,9 +114,9 @@ test.describe("First-time-user FMEA — end-to-end walkthrough", () => {
   });
 
   test("FMEA-6: Sidebar nav items all resolve to 200 for free user", async ({ page }) => {
-    await walkOnboarding(page);
-    await page.getByRole("button", { name: /^start free/i }).click();
-    await page.waitForURL(/\/dashboard/, { timeout: 10000 });
+    await walkQuickstart(page);
+    // Navigate back to dashboard to test the rest of the flow
+    await page.goto("/dashboard");
     const paths = ["/practice", "/mock-exam", "/diagnostic", "/flashcards", "/analytics", "/study-plan", "/resources", "/billing"];
     for (const p of paths) {
       const resp = await page.goto(p);
@@ -140,9 +126,9 @@ test.describe("First-time-user FMEA — end-to-end walkthrough", () => {
   });
 
   test("FMEA-7: Dashboard has no 'pass probability' language leak", async ({ page }) => {
-    await walkOnboarding(page);
-    await page.getByRole("button", { name: /^start free/i }).click();
-    await page.waitForURL(/\/dashboard/, { timeout: 10000 });
+    await walkQuickstart(page);
+    // Navigate back to dashboard to test the rest of the flow
+    await page.goto("/dashboard");
     await page.waitForLoadState("networkidle", { timeout: 15000 }).catch(() => {});
     await page.waitForTimeout(1500);
     const text = await page.locator("body").innerText();
@@ -154,11 +140,13 @@ test.describe("First-time-user FMEA — end-to-end walkthrough", () => {
     expect(text.toLowerCase()).not.toContain("pass probability");
   });
 
-  test("FMEA-8: Premium path routes to /billing with utm_source=onboarding", async ({ page }) => {
-    await walkOnboarding(page);
-    await page.getByRole("button", { name: /Start Premium/i }).click();
-    await page.waitForURL(/\/billing/, { timeout: 10000 });
-    expect(page.url()).toContain("utm_source=onboarding");
+  test("FMEA-8: Premium upgrade reachable from /billing (post-value, not onboarding)", async ({ page }) => {
+    // Beta 8.13.2 — premature "Pick Plan" step removed. Premium upsell now
+    // happens AFTER value (post-Q1, post-FRQ taste, etc.). Direct /billing
+    // page must still expose a working upgrade CTA.
+    await page.goto("/billing");
+    const upgradeCta = page.getByRole("link", { name: /upgrade/i }).or(page.getByRole("button", { name: /upgrade/i }));
+    expect(await upgradeCta.count()).toBeGreaterThan(0);
   });
 
   test("FMEA-9: /api/user/limits returns Option B tier-limits for free user", async ({ request }) => {

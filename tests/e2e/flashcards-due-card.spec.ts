@@ -36,7 +36,7 @@ test.describe("FlashcardsDueCard", () => {
 
   test("block renders for fresh user (≥5 seeded cards available)", async ({ page }) => {
     await page.goto("/dashboard");
-    if (page.url().includes("/onboarding")) test.skip();
+    if (page.url().includes("/onboarding") || page.url().includes("/practice/quickstart")) test.skip();
     // Dashboard v2 (2026-04-27) collapsed secondary cards behind "Show more
     // tools" to focus first-time users on Q1. FlashcardsDueCard lives in
     // that collapsed section now — expand it before asserting.
@@ -46,7 +46,7 @@ test.describe("FlashcardsDueCard", () => {
 
   test("Review button routes to /flashcards", async ({ page }) => {
     await page.goto("/dashboard");
-    if (page.url().includes("/onboarding")) test.skip();
+    if (page.url().includes("/onboarding") || page.url().includes("/practice/quickstart")) test.skip();
     await page.getByRole("button", { name: /Show more tools/i }).click();
     const card = page.getByText(/cards ready for review/i).first();
     await card.waitFor({ state: "visible", timeout: 10000 });

@@ -21,7 +21,7 @@ test.describe("Dashboard v2", () => {
     // bounced to /login, that page also doesn't contain "pass probability"
     // so the assertion would pass despite the spec being meaningless.
     // Skip only for onboarding; fail loudly if bounced to /login.
-    if (page.url().includes("/onboarding")) {
+    if (page.url().includes("/onboarding") || page.url().includes("/practice/quickstart")) {
       test.skip();
     }
     expect(
@@ -38,7 +38,7 @@ test.describe("Dashboard v2", () => {
 
   test("locked value visible to free user (Block 5)", async ({ page }) => {
     await page.goto("/dashboard");
-    if (page.url().includes("/onboarding")) test.skip();
+    if (page.url().includes("/onboarding") || page.url().includes("/practice/quickstart")) test.skip();
     const text = await page.locator("body").innerText();
     // The LockedValueCard always anchors $9.99/mo and the "Send to parent"
     // CTA. If the test user has been upgraded to PREMIUM somehow, this
@@ -52,7 +52,7 @@ test.describe("Dashboard v2", () => {
 
   test("sidebar shows Flashcards nav item", async ({ page }) => {
     await page.goto("/dashboard");
-    if (page.url().includes("/onboarding")) test.skip();
+    if (page.url().includes("/onboarding") || page.url().includes("/practice/quickstart")) test.skip();
     // Sidebar nav is visible on desktop viewport (default Playwright).
     // The label "Flashcards" is unique — no other surface uses it.
     await expect(page.getByRole("link", { name: /flashcards/i }).first()).toBeVisible();
@@ -62,7 +62,7 @@ test.describe("Dashboard v2", () => {
 test.describe("Flashcards", () => {
   test("flashcards page loads with a card OR empty state", async ({ page }) => {
     await page.goto("/flashcards");
-    if (page.url().includes("/onboarding")) test.skip();
+    if (page.url().includes("/onboarding") || page.url().includes("/practice/quickstart")) test.skip();
     // Either a card is loaded ("Show answer" button) or empty state
     // ("No flashcards yet for this course") — both are valid renders.
     await expect(
@@ -72,7 +72,7 @@ test.describe("Flashcards", () => {
 
   test("show answer reveals back + rating buttons", async ({ page }) => {
     await page.goto("/flashcards");
-    if (page.url().includes("/onboarding")) test.skip();
+    if (page.url().includes("/onboarding") || page.url().includes("/practice/quickstart")) test.skip();
     const showBtn = page.getByRole("button", { name: /show answer/i });
     if (!(await showBtn.isVisible().catch(() => false))) {
       // Empty state — no card to test
@@ -87,7 +87,7 @@ test.describe("Flashcards", () => {
 
   test("rating advances the card", async ({ page }) => {
     await page.goto("/flashcards");
-    if (page.url().includes("/onboarding")) test.skip();
+    if (page.url().includes("/onboarding") || page.url().includes("/practice/quickstart")) test.skip();
     const showBtn = page.getByRole("button", { name: /show answer/i });
     if (!(await showBtn.isVisible().catch(() => false))) test.skip();
     await showBtn.click();
