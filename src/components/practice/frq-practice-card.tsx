@@ -118,18 +118,22 @@ export function FrqPracticeCard({
           // (per-type submissions) or a raw string (legacy).
           if (data.latestAttempt?.studentText) {
             const parsed = parseAnswersFromStored(data.latestAttempt.studentText);
-            // parseAnswersFromStored returns { structured, fallback }
-            // — structured is a Record (preferred), fallback is the raw
-            // string (used for legacy single-textarea attempts).
+            // Beta 9.0.7 — DEBUG temporary instrumentation to find why
+            // rehydrate isn't sticking.
+            // eslint-disable-next-line no-console
+            console.log("[FrqPracticeCard] rehydrate", {
+              raw: data.latestAttempt.studentText.slice(0, 80),
+              structured: parsed.structured,
+              fallback: parsed.fallback?.slice(0, 80),
+            });
             if (parsed.structured) {
               setStudentAnswers(parsed.structured);
             } else if (parsed.fallback) {
-              // Legacy single-string attempt — write under 'essay' key so
-              // DBQ/LEQ reveal can pick it up. SAQ-style multi-key reveals
-              // won't echo legacy data, but that's acceptable since legacy
-              // attempts predate the per-type input UI.
               setStudentAnswers({ essay: parsed.fallback });
             }
+          } else {
+            // eslint-disable-next-line no-console
+            console.log("[FrqPracticeCard] rehydrate skipped — no latestAttempt.studentText", { hasAttempt: !!data.latestAttempt, keys: Object.keys(data) });
           }
         }
       })
@@ -267,12 +271,12 @@ export function FrqPracticeCard({
 
   // ── Revealed state ────────────────────────────────────────────────────────
   if (revealed && parsedRubric) {
-    // If the student just submitted, `studentAnswers` is already structured.
-    // If we arrived here via an auto-unlock (prior attempt), there's no in-
-    // memory structure yet — we leave it empty and the reveal components
-    // display the "(no answer recorded)" fallback. Future work: fetch the
-    // most recent FrqAttempt and rehydrate.
+    // Beta 9.0.7 — studentAnswers is rehydrated from latestAttempt in the
+    // useEffect above when the user comes back to a previously-attempted
+    // FRQ. Reveal components echo this back via StudentAnswerEcho.
     const answersForReveal = studentAnswers;
+    // eslint-disable-next-line no-console
+    console.log("[FrqPracticeCard] rendering reveal with studentAnswers", { keys: Object.keys(answersForReveal), values: Object.values(answersForReveal).map(v => (v ?? "").slice(0, 50)) });
     return (
       <Card>
         {header}
