@@ -118,22 +118,11 @@ export function FrqPracticeCard({
           // (per-type submissions) or a raw string (legacy).
           if (data.latestAttempt?.studentText) {
             const parsed = parseAnswersFromStored(data.latestAttempt.studentText);
-            // Beta 9.0.7 — DEBUG temporary instrumentation to find why
-            // rehydrate isn't sticking.
-            // eslint-disable-next-line no-console
-            console.log("[FrqPracticeCard] rehydrate", {
-              raw: data.latestAttempt.studentText.slice(0, 80),
-              structured: parsed.structured,
-              fallback: parsed.fallback?.slice(0, 80),
-            });
             if (parsed.structured) {
               setStudentAnswers(parsed.structured);
             } else if (parsed.fallback) {
               setStudentAnswers({ essay: parsed.fallback });
             }
-          } else {
-            // eslint-disable-next-line no-console
-            console.log("[FrqPracticeCard] rehydrate skipped — no latestAttempt.studentText", { hasAttempt: !!data.latestAttempt, keys: Object.keys(data) });
           }
         }
       })
@@ -275,8 +264,6 @@ export function FrqPracticeCard({
     // useEffect above when the user comes back to a previously-attempted
     // FRQ. Reveal components echo this back via StudentAnswerEcho.
     const answersForReveal = studentAnswers;
-    // eslint-disable-next-line no-console
-    console.log("[FrqPracticeCard] rendering reveal with studentAnswers", { keys: Object.keys(answersForReveal), values: Object.values(answersForReveal).map(v => (v ?? "").slice(0, 50)) });
     return (
       <Card>
         {header}
