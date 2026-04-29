@@ -1137,28 +1137,31 @@ export default function PracticePage() {
                   </button>
                 );
               })}
-
-              {/* Beta 9.1 — "I don't know" button (Mikayla Como feedback +
-                  user spec 2026-04-29). Honest signal beats forced guess.
-                  Reveals correct answer + explanation, recorded as a
-                  knowledge-gap signal (not a wrong-answer penalty). NOT
-                  shown on Mock Exam (timed real-test simulation) or
-                  Flashcards (already has self-grade flow). */}
-              {!feedback && !isSubmitting && (
-                <button
-                  onClick={() => submitAnswer("__IDK__")}
-                  disabled={!!feedback || isSubmitting}
-                  className="w-full text-center p-3 rounded-lg border border-dashed border-border/40 text-muted-foreground hover:bg-accent hover:text-foreground transition-all min-h-[44px] text-xs"
-                >
-                  I don&apos;t know — show me the answer
-                </button>
-              )}
             </div>
 
             {isSubmitting && (
               <div className="flex items-center justify-center gap-2 text-muted-foreground">
                 <Loader2 className="h-4 w-4 animate-spin" />
                 <span className="text-sm">Checking answer...</span>
+              </div>
+            )}
+
+            {/* Beta 9.1 — "I don't know" special action. Visually separate
+                from A/B/C/D answer choices (NOT a 5th option). Subtle
+                text-link styling so students reach for it as a fallback,
+                not a default. Reveals correct answer + explanation. Marked
+                in DB as an honest knowledge-gap signal (sentinel
+                studentAnswer='__IDK__', isCorrect=false but distinct from
+                a wrong guess). NOT on Mock Exam / Flashcards. */}
+            {!feedback && !isSubmitting && (
+              <div className="pt-2 mt-1 border-t border-border/30 flex items-center justify-end">
+                <button
+                  type="button"
+                  onClick={() => submitAnswer("__IDK__")}
+                  className="text-xs text-muted-foreground hover:text-foreground underline-offset-4 hover:underline transition-colors px-2 py-1.5"
+                >
+                  I don&apos;t know — show me the answer
+                </button>
               </div>
             )}
           </CardContent>
