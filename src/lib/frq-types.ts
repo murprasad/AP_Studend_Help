@@ -239,8 +239,12 @@ export function parseRubric(json: unknown, type: FrqType): FrqRubric {
     if (coerced) return coerced;
   }
 
-  if (!isObj(json)) {
-    warn("rubric JSON is not an object");
+  // Beta 9.0.7 fix — SAQ/DBQ/LEQ rubrics are stored as flat arrays in DB
+  // (e.g. SAQ: [{step:'A',points,keywords},...]). The top-level isObj
+  // guard below rejected ALL arrays, falling through to empty fallback.
+  // Allow arrays through here; per-type case statements handle them.
+  if (!isObj(json) && !Array.isArray(json)) {
+    warn("rubric JSON is not an object or array");
     return emptyFallback(type);
   }
 
@@ -248,6 +252,12 @@ export function parseRubric(json: unknown, type: FrqType): FrqRubric {
     case "SHORT":
     case "LONG":
     case "MULTI_PART": {
+      // These cases require object form — if we got here with an array,
+      // bail to empty fallback (legacy array handling already happened above).
+      if (Array.isArray(json)) {
+        warn("array rubric for SHORT/LONG/MULTI_PART; using empty fallback");
+        return emptyFallback(type);
+      }
       const parts = arr(json.parts).map(parsePart);
       if (parts.length === 0) {
         warn("no `parts` in rubric");
@@ -263,6 +273,10 @@ export function parseRubric(json: unknown, type: FrqType): FrqRubric {
     }
 
     case "INVESTIGATIVE": {
+      if (Array.isArray(json)) {
+        warn("array rubric for INVESTIGATIVE; using empty fallback");
+        return emptyFallback(type);
+      }
       const parts = arr(json.parts).map(parsePart);
       return {
         type: "INVESTIGATIVE",
@@ -296,6 +310,11 @@ export function parseRubric(json: unknown, type: FrqType): FrqRubric {
     }
 
     case "DBQ": {
+      // Beta 9.0.7 — array form not yet mapped; pass through with empty
+      // sections (essay echo still works in DbqReveal). Followup #38.
+      if (Array.isArray(json)) {
+        return { type: "DBQ", sections: { thesis: parseSection(undefined), context: parseSection(undefined), evidenceFromDocs: { ...parseSection(undefined), minDocs: 3 }, evidenceBeyondDocs: parseSection(undefined), hipp: { ...parseSection(undefined), minDocsAnalyzed: 2 }, complexity: parseSection(undefined) }, documents: [], totalPoints: 7 };
+      }
       const s = isObj(json.sections) ? json.sections : {};
       const evDocs = isObj(s.evidenceFromDocs) ? s.evidenceFromDocs : {};
       const hipp = isObj(s.hipp) ? s.hipp : {};
@@ -325,6 +344,9 @@ export function parseRubric(json: unknown, type: FrqType): FrqRubric {
     }
 
     case "LEQ": {
+      if (Array.isArray(json)) {
+        return { type: "LEQ", sections: { thesis: parseSection(undefined), context: parseSection(undefined), evidence: parseSection(undefined), reasoning: parseSection(undefined), complexity: parseSection(undefined) }, totalPoints: 6 };
+      }
       const s = isObj(json.sections) ? json.sections : {};
       const sections: LeqSections = {
         thesis: parseSection(s.thesis),
@@ -337,6 +359,7 @@ export function parseRubric(json: unknown, type: FrqType): FrqRubric {
     }
 
     case "AAQ": {
+      if (Array.isArray(json)) return emptyFallback("AAQ");
       const meta = isObj(json.articleMeta) ? json.articleMeta : {};
       const parts = arr(json.parts).map(parsePart);
       return {
@@ -357,6 +380,7 @@ export function parseRubric(json: unknown, type: FrqType): FrqRubric {
     }
 
     case "EBQ": {
+      if (Array.isArray(json)) return emptyFallback("EBQ");
       const excerpts = arr<unknown>(json.excerpts).map((e) => {
         const o = isObj(e) ? e : {};
         return {
