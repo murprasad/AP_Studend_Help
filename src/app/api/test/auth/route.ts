@@ -98,6 +98,16 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ reset: true, userId: user.id });
     }
 
+    if (action === "clear-frq-attempts") {
+      // Beta 9.0.7 — for E2E tests that need a clean FRQ state. Without
+      // this, /api/frq/[id] auto-unlocks the reveal because of prior
+      // attempts, hiding the input phase that some tests need to walk.
+      const user = await prisma.user.findUnique({ where: { email: TEST_EMAIL }, select: { id: true } });
+      if (!user) return NextResponse.json({ error: "Test user not found" }, { status: 404 });
+      const result = await prisma.frqAttempt.deleteMany({ where: { userId: user.id } });
+      return NextResponse.json({ deleted: result.count, userId: user.id });
+    }
+
     if (action === "complete-onboarding") {
       // Beta 9 — for tests that need post-onboarding state without
       // walking a full session. Sets onboardingCompletedAt = NOW so

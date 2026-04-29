@@ -22,13 +22,17 @@ test.describe.configure({ retries: 2, timeout: 90_000 });
 test.describe("FRQ submit → reveal echo (Beta 9.0.6)", () => {
   test.beforeEach(async ({ baseURL }) => {
     if (!CRON_SECRET) test.skip();
-    // Set onboarding_completed cookie via API so middleware bridges /frq-practice
-    // (test fixture has stale-JWT-style state where DB has date but JWT is null
-    // for the test runner user — same shape as a real user mid-flow).
     const api = await apiRequest.newContext();
+    // Mark DB onboarded so middleware allows /frq-practice
     await api.post(`${baseURL}/api/test/auth`, {
       headers: { Authorization: `Bearer ${CRON_SECRET}`, "Content-Type": "application/json" },
       data: { action: "complete-onboarding" },
+    });
+    // CRITICAL: clear prior FRQ attempts so the page renders the INPUT
+    // phase (not the auto-revealed state from a previous attempt).
+    await api.post(`${baseURL}/api/test/auth`, {
+      headers: { Authorization: `Bearer ${CRON_SECRET}`, "Content-Type": "application/json" },
+      data: { action: "clear-frq-attempts" },
     });
     await api.dispose();
   });
@@ -80,5 +84,62 @@ test.describe("FRQ submit → reveal echo (Beta 9.0.6)", () => {
     const bodyText = await page.locator("body").innerText();
     expect(bodyText, "reveal must NOT show '(no answer recorded)' fallback").not.toContain("(no answer recorded)");
     expect(bodyText, "reveal must echo first 50 chars of typed answer").toContain(TEST_ANSWER.slice(0, 50));
+  });
+
+  test("Reload after prior submission rehydrates the typed answer (Beta 9.0.7)", async ({ page, baseURL }) => {
+    // This is the EXACT bug the user reported: submit once, navigate
+    // away, come back, and reveal echo shows '(no answer recorded)'.
+    // /api/frq/[id] auto-unlocks reveal but never returned latestAttempt
+    // until 9.0.7. Now it does, and FrqPracticeCard rehydrates
+    // studentAnswers from it.
+    await page.context().addCookies([{
+      name: "onboarding_completed",
+      value: "true",
+      domain: new URL(baseURL ?? "https://studentnest.ai").hostname,
+      path: "/",
+      secure: true,
+      sameSite: "Lax",
+    }]);
+
+    // Step 1: navigate, find SAQ, submit content
+    await page.goto(`${baseURL}/frq-practice?course=AP_WORLD_HISTORY`, { waitUntil: "domcontentloaded" });
+    await page.locator('button').filter({ hasText: /\d{4}\s*Q\d+/ }).first().waitFor({ state: "visible", timeout: 30000 });
+    const cards = await page.locator('button').filter({ hasText: /\d{4}\s*Q\d+/ }).all();
+    let saqCard = null;
+    let saqId: string | null = null;
+    for (const c of cards) {
+      const txt = await c.innerText();
+      if (txt.includes("SAQ")) { saqCard = c; break; }
+    }
+    expect(saqCard, "no SAQ card available").not.toBeNull();
+    await saqCard!.click();
+    await page.locator('textarea').first().waitFor({ state: "visible", timeout: 30000 });
+
+    const REHYDRATE_TEST_ANSWER = "Rehydrate-test answer A: cultural exchange between nomads and merchants in pre-1450 Eurasia included Silk Road trade. This crosses the 100-character threshold required by the FRQ submit guard.";
+    await page.locator('textarea').first().fill(REHYDRATE_TEST_ANSWER);
+    await page.getByRole("button", { name: /reveal/i }).click();
+    await page.locator('text=/your answer/i').first().waitFor({ state: "visible", timeout: 15000 });
+
+    // Step 2: navigate away, then come back to the same FRQ
+    saqId = await saqCard!.getAttribute("data-frq-id"); // may be null if not set
+    await page.goto(`${baseURL}/dashboard`, { waitUntil: "domcontentloaded" });
+    await page.waitForTimeout(500);
+    await page.goto(`${baseURL}/frq-practice?course=AP_WORLD_HISTORY`, { waitUntil: "domcontentloaded" });
+    await page.locator('button').filter({ hasText: /\d{4}\s*Q\d+/ }).first().waitFor({ state: "visible", timeout: 30000 });
+
+    // Click the SAME first SAQ card
+    const cards2 = await page.locator('button').filter({ hasText: /\d{4}\s*Q\d+/ }).all();
+    let saq2 = null;
+    for (const c of cards2) {
+      const txt = await c.innerText();
+      if (txt.includes("SAQ")) { saq2 = c; break; }
+    }
+    await saq2!.click();
+    await page.waitForTimeout(4000); // give /api/frq/[id] time to return + rehydrate
+
+    // Step 3: assert prior text rehydrated, no '(no answer recorded)'
+    const bodyText = await page.locator("body").innerText();
+    expect(bodyText, "rehydrate must NOT show '(no answer recorded)'").not.toContain("(no answer recorded)");
+    expect(bodyText, "rehydrate must echo prior submission text").toContain(REHYDRATE_TEST_ANSWER.slice(0, 50));
   });
 });
