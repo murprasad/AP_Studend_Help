@@ -171,18 +171,26 @@ function parsePart(p: unknown): RubricPart {
 
 function parseSaqSubPart(p: unknown, fallbackIdx = 0): SaqSubPart {
   const o = isObj(p) ? p : {};
-  // Beta 9.0.5 fix — DB rubric stores label as `step` (e.g. "A"/"B"/"C").
-  // Older code only read `o.label` and defaulted "A" for every part, which
-  // collapsed all 3 parts to label="A" and broke the reveal echo.
-  const rawLabel = str(o.label, str(o.step, ["A", "B", "C"][fallbackIdx] ?? "A"));
+  // Beta 9.0.6 fix — DB rubric stores `step` as the FULL CRITERION TEXT
+  // (e.g. "Identify ONE specific historical example..."), not a single
+  // letter. So we must use index-based fallback for the label, and use
+  // `step`/`criterion` as the criterion text. Beta 9.0.5 incorrectly used
+  // `step` as a label fallback, collapsing all 3 parts to label="A".
+  const explicitLabel = str(o.label, "");
   const safeLabel: "A" | "B" | "C" =
-    rawLabel === "A" || rawLabel === "B" || rawLabel === "C" ? rawLabel : "A";
-  // For criterion: prefer explicit criterion, then keywords joined, then step text
+    explicitLabel === "A" || explicitLabel === "B" || explicitLabel === "C"
+      ? (explicitLabel as "A" | "B" | "C")
+      : ((["A", "B", "C"][fallbackIdx] as "A" | "B" | "C") ?? "A");
+  // For criterion: prefer explicit criterion, then step text (if it's
+  // descriptive — i.e. NOT a single letter), then keywords joined.
   const keywordsStr = Array.isArray(o.keywords) ? (o.keywords as unknown[]).filter(k => typeof k === "string").join(", ") : "";
+  const stepText = str(o.step, "");
+  const stepIsDescriptive = stepText.length > 1; // "A" → false, "Thesis" → true
+  const criterion = str(o.criterion, "") || (stepIsDescriptive ? stepText : "") || keywordsStr;
   return {
     label: safeLabel,
     points: num(o.points, 1),
-    criterion: str(o.criterion, keywordsStr || str(o.step, "")),
+    criterion,
   };
 }
 
