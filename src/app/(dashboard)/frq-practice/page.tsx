@@ -132,7 +132,7 @@ export default function FrqPracticePage() {
         </h1>
         <p className="text-muted-foreground mt-1">
           Write your answer, reveal the official rubric, and self-score. {" "}
-          <span className="text-amber-500 font-medium">{AP_COURSES[course] || course}</span>
+          <span className="text-amber-700 dark:text-amber-400 font-medium">{AP_COURSES[course] || course}</span>
         </p>
       </div>
 
@@ -255,7 +255,7 @@ export default function FrqPracticePage() {
                           {f.year} Q{f.questionNumber}
                         </CardTitle>
                         <div className="flex gap-1.5 flex-shrink-0">
-                          <Badge variant="outline" className="border-amber-500/30 text-amber-500 text-[10px]">
+                          <Badge variant="outline" className="border-amber-500/30 text-amber-700 dark:text-amber-400 text-[10px]">
                             {f.type}
                           </Badge>
                           <Badge variant="outline" className="text-[10px]">{f.totalPoints} pts</Badge>
@@ -271,7 +271,7 @@ export default function FrqPracticePage() {
                           {unitMeta[f.unit]?.name}
                         </p>
                       )}
-                      <div className="flex items-center justify-end mt-3 text-xs text-amber-500 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <div className="flex items-center justify-end mt-3 text-xs text-amber-700 dark:text-amber-400 opacity-0 group-hover:opacity-100 transition-opacity">
                         Start <ChevronRight className="h-3 w-3" />
                       </div>
                     </CardContent>
