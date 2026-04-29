@@ -48,12 +48,18 @@ for (const { path, mustContain, mustNot } of SIDEBAR_PATHS) {
 
     const res = await page.goto(path, { waitUntil: "domcontentloaded" });
 
-    // Middleware may bounce a brand-new test user to /onboarding — if so,
-    // the auth.setup already set the cookie/localStorage flag; a bounce
-    // here means that flag didn't stick. Tolerated (skip, not fail) because
-    // auth.setup has a race-sensitive window.
-    if (page.url().includes("/onboarding") && path !== "/onboarding") {
-      test.skip(true, `${path} bounced to /onboarding — test fixture not primed`);
+    // Middleware may bounce a brand-new test user to /onboarding (legacy)
+    // or /practice/quickstart (Beta 9). If so, the auth.setup already
+    // set the cookie/localStorage flag; a bounce here means that flag
+    // didn't stick. Tolerated (skip, not fail) because auth.setup has a
+    // race-sensitive window.
+    const url = page.url();
+    if (
+      (url.includes("/onboarding") || url.includes("/practice/quickstart")) &&
+      path !== "/onboarding" &&
+      path !== "/practice/quickstart"
+    ) {
+      test.skip(true, `${path} bounced to onboarding/quickstart — test fixture not primed`);
     }
     // Also skip if JWT expired mid-run (E8 protection).
     if (page.url().includes("/login") && path !== "/login") {
