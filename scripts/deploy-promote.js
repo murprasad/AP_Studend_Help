@@ -16,7 +16,9 @@
  *   npm run pages:promote
  */
 
-import { spawn } from "node:child_process";
+import { spawn, execSync } from "node:child_process";
+import fs from "node:fs";
+import path from "node:path";
 
 function run(cmd, args, opts = {}) {
   return new Promise((resolve, reject) => {
@@ -34,9 +36,31 @@ function run(cmd, args, opts = {}) {
   await run("node", ["scripts/pre-release-check.js"]);
   await run("npx", ["vitest", "run"]);
 
-  // Build fresh (don't reuse staging .cf-deploy in case it had env-vary
-  // staging-only artifacts).
-  await run("npm", ["run", "pages:build"]);
+  // Beta 9 (2026-04-29) — speed fix: reuse staging artifact when commit
+  // is unchanged + workdir is clean. Saves 5-7 min of redundant build.
+  // Safety: rebuild if marker missing OR commit mismatch OR workdir
+  // dirty (so any post-staging edits trigger fresh build).
+  const markerPath = path.join(".cf-deploy", ".staging-marker.json");
+  let reuseArtifact = false;
+  try {
+    if (fs.existsSync(markerPath)) {
+      const marker = JSON.parse(fs.readFileSync(markerPath, "utf8"));
+      const headCommit = execSync("git rev-parse HEAD", { encoding: "utf8" }).trim();
+      const isClean = execSync("git status --porcelain", { encoding: "utf8" }).trim() === "";
+      if (marker.commit === headCommit && marker.gitClean && isClean) {
+        reuseArtifact = true;
+        console.log(`⚡ Reusing staging-validated artifact (commit ${headCommit.slice(0, 8)}) — skipping rebuild.`);
+      } else {
+        console.log(`🔄 Rebuilding (marker=${marker.commit?.slice(0, 8)}, head=${headCommit.slice(0, 8)}, clean=${isClean}).`);
+      }
+    }
+  } catch (e) {
+    console.log(`🔄 Rebuilding (marker check failed: ${e.message}).`);
+  }
+
+  if (!reuseArtifact) {
+    await run("npm", ["run", "pages:build"]);
+  }
 
   // Upload to production branch.
   await run(

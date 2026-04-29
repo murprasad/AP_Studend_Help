@@ -151,8 +151,20 @@ const pkgMajorMinor = pkgVersion.split(".").slice(0, 2).join(".");
 if (pkgMajorMinor === aboutBeta) {
   ok(`Version consistent: package.json ${pkgVersion} matches About page Beta ${aboutBeta}`);
 } else {
-  fail(`Version mismatch: package.json is ${pkgVersion} but About page shows Beta ${aboutBeta}. ` +
-    `Update package.json version OR About page badge before deploying.`);
+  // Beta 9 (2026-04-29) — auto-suggest the exact fix to save the
+  // typical "Beta 9" vs "Beta 9.0" retry cycle (15+ min wasted today).
+  const pkgMajor = pkgVersion.split(".")[0];
+  const aboutMajor = aboutBeta.split(".")[0];
+  let suggestion = "";
+  if (pkgMajor === aboutMajor && !aboutBeta.includes(".")) {
+    suggestion = `\n\n   💡 Quick fix: change About page badge "Beta ${aboutBeta}" → "Beta ${pkgMajorMinor}"\n` +
+      `      (sed: replace 'Beta ${aboutBeta}<' with 'Beta ${pkgMajorMinor}<' in src/app/(marketing)/about/page.tsx)`;
+  } else if (pkgMajor !== aboutMajor) {
+    suggestion = `\n\n   💡 Pick which side is correct, then sync the other:\n` +
+      `      • If About page is right (still Beta ${aboutBeta}): bump package.json to "${aboutBeta}.0"\n` +
+      `      • If package.json is right (now ${pkgVersion}): change badge to "Beta ${pkgMajorMinor}"`;
+  }
+  fail(`Version mismatch: package.json is ${pkgVersion} but About page shows Beta ${aboutBeta}.${suggestion}`);
 }
 
 // ─── 7. Practice test plan coverage ──────────────────────────────────────────

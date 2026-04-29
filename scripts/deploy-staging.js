@@ -19,7 +19,9 @@
  *   STAGING_BRANCH=phase-b npm run pages:deploy:staging   # custom alias
  */
 
-import { spawn } from "node:child_process";
+import { spawn, execSync } from "node:child_process";
+import fs from "node:fs";
+import path from "node:path";
 
 function run(cmd, args, opts = {}) {
   return new Promise((resolve, reject) => {
@@ -125,6 +127,25 @@ const STAGING_BRANCH = process.env.STAGING_BRANCH || "staging";
   }
 
   // 6. Green light. Print promote command but do NOT auto-promote.
+  // Beta 9 (2026-04-29) — write a marker so promote can skip rebuild
+  // when commit + workdir state match. Saves 5-7 min per release.
+  try {
+    const headCommit = execSync("git rev-parse HEAD", { encoding: "utf8" }).trim();
+    const isClean = execSync("git status --porcelain", { encoding: "utf8" }).trim() === "";
+    fs.writeFileSync(
+      path.join(".cf-deploy", ".staging-marker.json"),
+      JSON.stringify({
+        commit: headCommit,
+        gitClean: isClean,
+        stagedAt: new Date().toISOString(),
+        stagingUrl,
+      }, null, 2),
+    );
+    console.log(`📌 Staging marker written (.cf-deploy/.staging-marker.json) — promote can skip rebuild.`);
+  } catch (e) {
+    console.warn(`⚠️  Could not write staging marker: ${e.message} (promote will rebuild — non-fatal)`);
+  }
+
   console.log(`\n────────────────────────────────────────────────────────────`);
   console.log(`✅ STAGING GATE PASSED.`);
   console.log(`   Preview URL: ${stagingUrl}`);
