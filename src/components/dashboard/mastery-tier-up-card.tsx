@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Trophy, TrendingUp, Sparkles } from "lucide-react";
+import { useCourse } from "@/hooks/use-course";
 
 interface TierUp {
   id: string;
@@ -21,10 +22,21 @@ interface TierUp {
 }
 
 export function MasteryTierUpCard() {
-  const [tierUp, setTierUp] = useState<TierUp | null>(null);
+  const [course] = useCourse();
+  const [allTierUps, setAllTierUps] = useState<TierUp[]>([]);
   const [displayedScore, setDisplayedScore] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
   const [dismissing, setDismissing] = useState(false);
+
+  // Beta 9.0.9 — filter tier-up announcement to the CURRENTLY SELECTED
+  // course. Without this, switching course in the sidebar still showed
+  // a stale celebration card from the prior course (user-reported:
+  // "I switched to AP World History but dashboard still says I moved
+  // AP Biology Unit 6 from 0% → 100%").
+  const tierUp = useMemo(
+    () => allTierUps.find((t) => t.course === course) ?? null,
+    [allTierUps, course]
+  );
 
   // Fetch unread tier-ups on mount.
   useEffect(() => {
@@ -33,11 +45,8 @@ export function MasteryTierUpCard() {
       .then((r) => (r.ok ? r.json() : null))
       .then((d) => {
         if (cancelled) return;
-        const first = d?.tierUps?.[0] as TierUp | undefined;
-        if (first) {
-          setTierUp(first);
-          setDisplayedScore(first.beforeScore);
-        }
+        const tierUps = (d?.tierUps ?? []) as TierUp[];
+        setAllTierUps(tierUps);
       })
       .catch(() => {
         /* silent degrade — celebration is a nice-to-have */
@@ -49,6 +58,12 @@ export function MasteryTierUpCard() {
       cancelled = true;
     };
   }, []);
+
+  // Reset displayed score when the visible tier-up changes (e.g. course switch).
+  useEffect(() => {
+    if (tierUp) setDisplayedScore(tierUp.beforeScore);
+    else setDisplayedScore(null);
+  }, [tierUp?.id]);
 
   // Animate the score counter from beforeScore → afterScore.
   useEffect(() => {
@@ -77,7 +92,10 @@ export function MasteryTierUpCard() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ id: tierUp.id }),
     }).catch(() => {});
-    setTierUp(null);
+    // Remove this tier-up from the list so the next-most-recent for the
+    // current course (if any) surfaces, and so course-switching shows
+    // the right pending tier-up.
+    setAllTierUps((prev) => prev.filter((t) => t.id !== tierUp.id));
   };
 
   const tierLabel = (t: number) =>
