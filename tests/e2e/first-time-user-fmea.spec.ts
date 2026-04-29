@@ -49,8 +49,11 @@ test.describe("First-time-user FMEA — end-to-end walkthrough", () => {
     const startCta = page.getByRole("button", { name: /start your first question/i }).first();
     await startCta.waitFor({ state: "visible", timeout: 15000 });
     await startCta.click();
-    // Should land on /practice with a session.
-    await page.waitForURL(/\/practice/, { timeout: 15000 });
+    // Wait for navigation OFF /practice/quickstart to /practice?mode=focused...
+    // The previous regex /\/practice/ was too permissive — matched both
+    // /practice AND /practice/quickstart, so waitForURL resolved instantly
+    // while still on the picker page (caused FMEA-3 false-failure).
+    await page.waitForURL((u) => /\/practice(?!\/quickstart)/.test(u.pathname) || u.searchParams.get("mode") === "focused", { timeout: 15000 });
   }
 
   test("FMEA-1: quickstart shows recommended course + Start CTA, no wizard", async ({ page }) => {
@@ -99,6 +102,41 @@ test.describe("First-time-user FMEA — end-to-end walkthrough", () => {
     // both signals must be present.
     await expect(page.locator("body")).toContainText(/Premium|Upgrade|FRQ/i, {
       timeout: 10000,
+    });
+  });
+
+  test("FMEA-4b: /frq-practice?first_taste=1 shows blue first-taste banner", async ({ page }) => {
+    // Beta 8.13.3 — when user arrives via FrqTasteNudge, the page shows
+    // a banner explaining the free-first-attempt model.
+    await page.goto("/frq-practice?course=AP_WORLD_HISTORY&first_taste=1");
+    // Banner copy from src/app/(dashboard)/frq-practice/page.tsx
+    await expect(page.locator("body")).toContainText(/first free FRQ|see how the AP rubric grades/i, {
+      timeout: 10000,
+    });
+  });
+
+  test("FMEA-4c: FRQ submit under 100 chars is blocked with guidance", async ({ page }) => {
+    // Beta 8.13.4 (FMEA gap 6.N2) — first-time user submitting 1-2
+    // sentences gets a 0/6 from AI which is demoralizing. Hard-block
+    // under 100 chars at the client with a guidance toast.
+    await page.goto("/frq-practice?course=AP_WORLD_HISTORY");
+    // Pick the first FRQ in the list (best-effort — the list might be
+    // empty if no approved FRQs exist for this course).
+    const firstFrq = page.locator('[role="button"], button, a').filter({ hasText: /Q\d|DBQ|LEQ|SAQ|FRQ/i }).first();
+    const hasFrqs = await firstFrq.count() > 0;
+    if (!hasFrqs) test.skip(true, "No FRQs in the list for this course");
+    await firstFrq.click().catch(() => { /* skip if not interactive */ });
+    // Fill the first textarea with a too-short answer (50 chars)
+    const textarea = page.locator("textarea").first();
+    if ((await textarea.count()) === 0) test.skip(true, "No textarea — FRQ detail not loaded");
+    await textarea.fill("This is way too short to be a real AP-style answer.");
+    // Click submit / reveal — text varies, try common labels
+    const submitBtn = page.getByRole("button", { name: /submit|reveal|grade/i }).first();
+    if ((await submitBtn.count()) === 0) test.skip(true, "Submit button not found");
+    await submitBtn.click();
+    // Expect the min-length guidance toast
+    await expect(page.locator("body")).toContainText(/Write a bit more|developed evidence|1-2 paragraphs/i, {
+      timeout: 5000,
     });
   });
 
