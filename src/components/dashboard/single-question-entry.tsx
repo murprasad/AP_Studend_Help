@@ -223,9 +223,13 @@ export function SingleQuestionEntry({ course }: Props) {
                 <QuestionContent content={q.explanation} />
               </div>
             )}
-            <Link href={`/practice?course=${course}`}>
+            {/* Beta 9.0.10 — button promised "see your full score" but
+                routed to /practice (picker), confusing students who expected
+                the score view. Routing to /analytics where the projected
+                score + mastery breakdown actually lives. */}
+            <Link href={`/analytics?course=${course}`}>
               <Button className="w-full rounded-full h-11 gap-2 group">
-                Keep going — see your full score
+                See your full score
                 <ArrowRight className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
               </Button>
             </Link>
