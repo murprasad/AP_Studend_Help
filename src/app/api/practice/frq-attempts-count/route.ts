@@ -21,15 +21,30 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Invalid course" }, { status: 400 });
   }
 
-  const count = await prisma.studentResponse.count({
-    where: {
-      userId: session.user.id,
-      question: {
-        course,
-        questionType: { in: [QuestionType.DBQ, QuestionType.LEQ, QuestionType.SAQ, QuestionType.FRQ, QuestionType.CODING] },
+  // Beta 9.1.1 fix — count BOTH:
+  //   (a) studentResponse rows where question is FRQ-type (legacy MCQ
+  //       session with FRQ questionType — older path)
+  //   (b) frqAttempt rows for this course (current /frq-practice +
+  //       /api/frq/[id]/submit path — what real users actually use)
+  // Original code only counted (a), so users submitting via the dedicated
+  // FRQ flow stayed at count=0 → FrqTasteNudge kept showing forever.
+  const [legacyCount, dedicatedCount] = await Promise.all([
+    prisma.studentResponse.count({
+      where: {
+        userId: session.user.id,
+        question: {
+          course,
+          questionType: { in: [QuestionType.DBQ, QuestionType.LEQ, QuestionType.SAQ, QuestionType.FRQ, QuestionType.CODING] },
+        },
       },
-    },
-  });
+    }),
+    prisma.frqAttempt.count({
+      where: {
+        userId: session.user.id,
+        frq: { course },
+      },
+    }),
+  ]);
 
-  return NextResponse.json({ count });
+  return NextResponse.json({ count: legacyCount + dedicatedCount });
 }
