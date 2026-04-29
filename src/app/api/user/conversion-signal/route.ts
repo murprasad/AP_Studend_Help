@@ -31,10 +31,10 @@ export async function GET() {
   }
   const userId = session.user.id;
 
-  // Beta 9.1.4 — extended for JourneyHeroCard state machine.
+  // Beta 9.1.4 / 9.2 — extended for JourneyHeroCard state machine.
   const startOfDay = new Date();
   startOfDay.setHours(0, 0, 0, 0);
-  const [responseCount, diag, user, frqAttempt, sessionsToday] = await Promise.all([
+  const [responseCount, diag, user, frqAttempt, sessionsToday, latestResponse, premiumSub] = await Promise.all([
     prisma.studentResponse.count({ where: { userId } }),
     prisma.diagnosticResult.findFirst({ where: { userId }, select: { id: true } }),
     prisma.user.findUnique({
@@ -43,11 +43,29 @@ export async function GET() {
     }),
     prisma.frqAttempt.findFirst({ where: { userId }, select: { id: true, frq: { select: { course: true } } } }),
     prisma.studentResponse.count({ where: { userId, answeredAt: { gte: startOfDay } } }),
+    prisma.studentResponse.findFirst({
+      where: { userId },
+      orderBy: { answeredAt: "desc" },
+      select: { answeredAt: true },
+    }),
+    // Earliest active ModuleSubscription tells us when they became Premium.
+    prisma.moduleSubscription.findFirst({
+      where: { userId, status: { in: ["active", "ACTIVE", "trialing", "TRIALING"] } },
+      orderBy: { createdAt: "asc" },
+      select: { createdAt: true },
+    }),
   ]);
 
   const cohortAgeDays = user?.createdAt
     ? Math.floor((Date.now() - new Date(user.createdAt).getTime()) / (1000 * 60 * 60 * 24))
     : 0;
+  const daysSinceLastSession = latestResponse?.answeredAt
+    ? Math.floor((Date.now() - new Date(latestResponse.answeredAt).getTime()) / (1000 * 60 * 60 * 24))
+    : null;
+  const isPremium = !!premiumSub || (user?.subscriptionTier && user.subscriptionTier !== "FREE");
+  const daysAsPremium = premiumSub
+    ? Math.floor((Date.now() - new Date(premiumSub.createdAt).getTime()) / (1000 * 60 * 60 * 24))
+    : null;
 
   return NextResponse.json({
     responseCount,
@@ -58,5 +76,8 @@ export async function GET() {
     subscriptionTier: user?.subscriptionTier ?? "FREE",
     cohortAgeDays,
     answeredToday: sessionsToday,
+    daysSinceLastSession,
+    isPremium,
+    daysAsPremium,
   });
 }

@@ -37,6 +37,9 @@ interface Signal {
   cohortAgeDays: number;
   answeredToday: number;
   subscriptionTier: string;
+  daysSinceLastSession: number | null;
+  isPremium: boolean;
+  daysAsPremium: number | null;
 }
 
 interface ReadinessData {
@@ -50,6 +53,9 @@ interface Props {
 type JourneyState =
   | { kind: "loading" }
   | { kind: "capped"; isPremium: boolean }
+  | { kind: "premium-welcome" }
+  | { kind: "premium-active" }
+  | { kind: "returning-after-gap"; daysSince: number; weakestUnitName: string | null; unit: string | null }
   | { kind: "brand-new" }
   | { kind: "mcq-fresh"; count: number }
   | { kind: "mcq-done-pre-frq" }
@@ -70,20 +76,50 @@ export function JourneyHeroCard({ course }: Props) {
       if (cancelled) return;
       if (!signal) { setState({ kind: "mature" }); return; }
 
-      const isPremium = signal.subscriptionTier !== "FREE";
-      // Capped check — applies to FREE users regardless of journey state
-      if (!isPremium && signal.answeredToday >= FREE_LIMITS.practiceQuestionsPerDay) {
+      const isPremium = signal.isPremium;
+
+      // Premium states take priority — different journey for paying users
+      if (isPremium) {
+        // Day 1 of Premium: welcome carousel
+        if ((signal.daysAsPremium ?? 0) <= 1) {
+          setState({ kind: "premium-welcome" });
+          return;
+        }
+        // Mature Premium: trend-based hero
+        setState({ kind: "premium-active" });
+        return;
+      }
+
+      // FREE: capped today → cap message regardless of journey state
+      if (signal.answeredToday >= FREE_LIMITS.practiceQuestionsPerDay) {
         setState({ kind: "capped", isPremium });
         return;
       }
 
-      // Mature — has completed the journey, let standard dashboard show
+      // FREE: returning after 3+ days inactive AND has done diagnostic
+      // (mid-journey or mature) → welcome-back card to re-anchor habit
+      // BEFORE the upgrade push.
+      if (
+        signal.hasDiagnostic &&
+        signal.daysSinceLastSession !== null &&
+        signal.daysSinceLastSession >= 3
+      ) {
+        setState({
+          kind: "returning-after-gap",
+          daysSince: signal.daysSinceLastSession,
+          weakestUnitName: readiness?.weakestUnit?.unitName ?? null,
+          unit: readiness?.weakestUnit?.unit ?? null,
+        });
+        return;
+      }
+
+      // FREE: mature — has completed the journey, let standard dashboard show
       if (signal.hasDiagnostic && signal.cohortAgeDays > 14) {
         setState({ kind: "mature" });
         return;
       }
 
-      // Journey states
+      // FREE: onboarding journey states
       if (signal.responseCount === 0) {
         setState({ kind: "brand-new" });
       } else if (signal.responseCount > 0 && signal.responseCount < 5 && !signal.hasFrqAttempt) {
@@ -107,6 +143,119 @@ export function JourneyHeroCard({ course }: Props) {
   }, [course]);
 
   if (state.kind === "loading" || state.kind === "mature") return null;
+
+  // ─── Premium Day 1 — welcome to Premium ────────────────────────────────
+  if (state.kind === "premium-welcome") {
+    return (
+      <Card className="card-glow border-blue-500/40 bg-gradient-to-br from-blue-500/15 via-indigo-500/10 to-blue-500/5">
+        <CardContent className="p-5 space-y-3">
+          <div className="flex items-start gap-3">
+            <div className="w-12 h-12 rounded-xl bg-blue-500/25 flex items-center justify-center flex-shrink-0">
+              <Sparkles className="h-6 w-6 text-blue-700 dark:text-blue-400" />
+            </div>
+            <div className="flex-1 space-y-2">
+              <p className="text-[11px] font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-400">
+                Welcome to Premium 🎉
+              </p>
+              <p className="text-base font-semibold leading-snug">
+                You just unlocked everything. Here&apos;s what changed:
+              </p>
+              <ul className="text-xs text-muted-foreground space-y-1 ml-1">
+                <li>· <strong>Line-by-line FRQ coaching</strong> — exactly which rubric points to add</li>
+                <li>· <strong>Unlimited daily practice</strong> — no 30/day cap</li>
+                <li>· <strong>Personalized study plan</strong> — Sage Coach deep plan</li>
+                <li>· <strong>Smart-scheduled flashcards</strong> — SM-2 spaced repetition</li>
+                <li>· <strong>Full analytics</strong> — prescriptive weak-area breakdowns</li>
+              </ul>
+              <Link href={`/diagnostic?course=${course}&src=premium_welcome`}>
+                <Button size="sm" className="rounded-full mt-2 gap-2 bg-blue-600 hover:bg-blue-700 text-white">
+                  Take a Diagnostic — see your starting point
+                  <ArrowRight className="h-4 w-4" />
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  // ─── Premium active — trend / momentum hero, NO upgrade CTAs ───────────
+  if (state.kind === "premium-active") {
+    return (
+      <Card className="card-glow border-emerald-500/40 bg-gradient-to-br from-emerald-500/10 via-blue-500/5 to-transparent">
+        <CardContent className="p-5">
+          <div className="flex items-start gap-3">
+            <div className="w-12 h-12 rounded-xl bg-emerald-500/20 flex items-center justify-center flex-shrink-0">
+              <TrendingUp className="h-6 w-6 text-emerald-700 dark:text-emerald-400" />
+            </div>
+            <div className="flex-1 space-y-2">
+              <p className="text-[11px] font-semibold uppercase tracking-wide text-emerald-700 dark:text-emerald-400">
+                Today&apos;s practice — Premium
+              </p>
+              <p className="text-base font-semibold leading-snug">
+                Keep climbing. No daily cap, full coaching, full analytics.
+              </p>
+              <div className="flex flex-wrap gap-2 pt-1">
+                <Link href={`/practice?course=${course}&src=premium_hero`}>
+                  <Button size="sm" className="rounded-full gap-2">
+                    Practice <ArrowRight className="h-4 w-4" />
+                  </Button>
+                </Link>
+                <Link href={`/frq-practice?course=${course}&src=premium_hero`}>
+                  <Button size="sm" variant="outline" className="rounded-full gap-2">
+                    FRQ practice
+                  </Button>
+                </Link>
+                <Link href="/sage-coach">
+                  <Button size="sm" variant="outline" className="rounded-full gap-2">
+                    Sage Coach
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  // ─── Returning after gap — re-anchor habit ─────────────────────────────
+  if (state.kind === "returning-after-gap") {
+    const href = state.unit
+      ? `/practice?mode=focused&unit=${encodeURIComponent(state.unit)}&course=${course}&src=returning`
+      : `/practice?course=${course}&src=returning`;
+    return (
+      <Card className="card-glow border-blue-500/40 bg-gradient-to-br from-blue-500/10 to-blue-500/5">
+        <CardContent className="p-5">
+          <div className="flex items-start gap-3">
+            <div className="w-12 h-12 rounded-xl bg-blue-500/20 flex items-center justify-center flex-shrink-0">
+              <Sparkles className="h-6 w-6 text-blue-700 dark:text-blue-400" />
+            </div>
+            <div className="flex-1 space-y-2">
+              <p className="text-[11px] font-semibold uppercase tracking-wide text-blue-700 dark:text-blue-400">
+                Welcome back — {state.daysSince} day{state.daysSince === 1 ? "" : "s"} away
+              </p>
+              <p className="text-base font-semibold leading-snug">
+                {state.weakestUnitName
+                  ? `Pick up in ${state.weakestUnitName} — your biggest gap.`
+                  : "Pick up where you left off — 5 quick questions."}
+              </p>
+              <p className="text-xs text-muted-foreground">
+                Streaks restart fast. One session today rebuilds momentum.
+              </p>
+              <Link href={href}>
+                <Button size="sm" className="rounded-full mt-1 gap-2">
+                  {state.weakestUnitName ? `Practice ${state.weakestUnitName}` : "Start a session"}
+                  <ArrowRight className="h-4 w-4" />
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   // ─── Capped today ───────────────────────────────────────────────────────
   if (state.kind === "capped") {
