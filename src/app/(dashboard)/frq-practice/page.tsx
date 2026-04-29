@@ -11,7 +11,7 @@ import { AP_COURSES } from "@/lib/utils";
 import { CourseSelectorInline } from "@/components/layout/course-selector-inline";
 import { FrqPracticeCard } from "@/components/practice/frq-practice-card";
 import { ApCourse, ApUnit } from "@prisma/client";
-import { Loader2, ChevronRight, PenLine, BookOpen, Lock } from "lucide-react";
+import { Loader2, ChevronRight, PenLine, BookOpen, Lock, Target, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { LOCK_COPY } from "@/lib/tier-limits";
 
@@ -342,6 +342,48 @@ export default function FrqPracticePage() {
             frqId={selected.id}
             onNext={() => setSelectedId(null)}
           />
+
+          {/* Beta 9.1.5 — post-FRQ "what's next" guidance for free users
+              who just used their free attempt. Without this, they finish
+              the FRQ reveal and have no clear direction (user reported:
+              'After completing 1st FRQ as free user, it stays in FRQ
+              page with no direction'). Maps to JourneyHero's
+              frq-done-pre-diag state. */}
+          {showFrqCapCard && (
+            <Card className="border-amber-500/40 bg-gradient-to-br from-amber-500/10 via-yellow-500/5 to-transparent">
+              <CardContent className="p-5">
+                <div className="flex items-start gap-3">
+                  <div className="w-12 h-12 rounded-xl bg-amber-500/20 flex items-center justify-center flex-shrink-0">
+                    <Target className="h-6 w-6 text-amber-700 dark:text-amber-400" />
+                  </div>
+                  <div className="flex-1 space-y-2">
+                    <p className="text-[11px] font-semibold uppercase tracking-wide text-amber-700 dark:text-amber-400">
+                      What&apos;s next
+                    </p>
+                    <p className="text-base font-semibold leading-snug">
+                      You&apos;ve seen how the rubric grades essays. Now find out where you stand.
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      A 10-minute diagnostic gives you a projected AP score and a personalized plan to lift it.
+                    </p>
+                    <div className="flex flex-wrap gap-2 pt-1">
+                      <Link href={`/diagnostic?course=${course}&src=post_frq`}>
+                        <Button size="sm" className="rounded-full gap-2 bg-amber-600 hover:bg-amber-700 text-white">
+                          Take 10-min Diagnostic
+                          <ArrowRight className="h-4 w-4" />
+                        </Button>
+                      </Link>
+                      <Link href="/dashboard">
+                        <Button size="sm" variant="outline" className="rounded-full gap-2">
+                          Back to Dashboard
+                        </Button>
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
         </div>
       )}
     </div>
