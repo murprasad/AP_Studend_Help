@@ -13,6 +13,7 @@ import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Sparkles, ArrowRight } from "lucide-react";
 import { ApCourse } from "@prisma/client";
+import { useCourse } from "@/hooks/use-course";
 
 // 10 marketed AP courses (matches landing-page courses[] block, AP only).
 // Shown in popularity order per CB exam-taker counts.
@@ -31,29 +32,27 @@ const QUICKSTART_COURSES: { course: ApCourse; label: string; topics: string }[] 
 
 export default function QuickstartPage() {
   const router = useRouter();
+  const [, setCourse] = useCourse();
   const [picked, setPicked] = useState<ApCourse | null>(null);
-  const [error, setError] = useState<string | null>(null);
   const startedRef = useRef(false);
 
-  async function startSession(course: ApCourse) {
+  // Beta 8.12.2 fix (2026-04-29): pure client-side course set + redirect.
+  // The previous flow called a /api/practice/quickstart endpoint that
+  // returned a sessionId and redirected to /practice/SESSION_ID — but
+  // /practice has no [sessionId] dynamic route, AND the practice page
+  // reads its course from useCourse() (localStorage) not URL. Result:
+  // user picked AP Biology, page loaded AP World History (the default).
+  //
+  // Correct flow: setCourse() pushes to localStorage + cookie + dispatches
+  // an event the practice page subscribes to. Then router.push to the
+  // existing auto-start URL pattern that the dashboard auto-launch nudge
+  // already uses successfully — practice page auto-creates the session.
+  function startSession(course: ApCourse) {
     if (startedRef.current) return;
     startedRef.current = true;
     setPicked(course);
-    setError(null);
-    try {
-      const res = await fetch(`/api/practice/quickstart?course=${course}`, { method: "POST" });
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
-        throw new Error(data.error || `quickstart ${res.status}`);
-      }
-      const data = await res.json();
-      if (!data.sessionId) throw new Error("no sessionId");
-      router.replace(`/practice/${data.sessionId}?quickstart=1`);
-    } catch (e: unknown) {
-      startedRef.current = false;
-      setPicked(null);
-      setError(e instanceof Error ? e.message : "Couldn't start. Please try again.");
-    }
+    setCourse(course);
+    router.push(`/practice?mode=focused&count=5&course=${course}&src=quickstart`);
   }
 
   // While the API call + redirect is in-flight, swap the picker for a
@@ -80,12 +79,6 @@ export default function QuickstartPage() {
             One click. 5 questions. ~3 minutes.
           </p>
         </div>
-
-        {error && (
-          <div className="mb-4 rounded-md border border-destructive/40 bg-destructive/10 px-4 py-3 text-sm">
-            {error}
-          </div>
-        )}
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {QUICKSTART_COURSES.map((c) => (

@@ -47,16 +47,47 @@ export async function POST(req: NextRequest) {
       getSetting("ai_generation_enabled", "true").then((v) => v === "true"),
     ]);
 
-    // FRQ/SAQ/LEQ/DBQ are Premium-only under Option B. No feature-flag
-    // dependency — FRQ access is simply not in FREE_LIMITS.frqAccess.
+    // Beta 8.13 (2026-04-29) — taste-first FRQ access for free users.
+    // Replaces the blanket FRQ paywall (which was killing conversion since
+    // students couldn't evaluate DBQ/LEQ quality before paying).
+    //
+    // Each FRQ type (DBQ, LEQ, SAQ, FRQ-generic, CODING) gives free users
+    // 1 lifetime attempt PER COURSE. They see full prompt + documents +
+    // rubric, submit answer, get basic AI scoring. Premium unlocks
+    // detailed line-by-line feedback + unlimited attempts.
     const isFrqType = requestedType && requestedType !== "MCQ";
-    if (isFrqType && !hasPremium && !FREE_LIMITS.frqAccess) {
-      return NextResponse.json({
-        error: LOCK_COPY.frqLocked,
-        limitExceeded: true,
-        limitType: "frq_locked",
-        upgradeUrl: "/billing?utm_source=frq_lock&utm_campaign=frq",
-      }, { status: 403 });
+    if (isFrqType && !hasPremium) {
+      const frqTypeKey = (requestedType ?? "FRQ").toLowerCase();
+      const limitKey = (
+        frqTypeKey === "dbq" ? "dbqFreeAttemptsPerCourse" :
+        frqTypeKey === "leq" ? "leqFreeAttemptsPerCourse" :
+        frqTypeKey === "saq" ? "saqFreeAttemptsPerCourse" :
+        "frqFreeAttemptsPerCourse"
+      ) as keyof typeof FREE_LIMITS;
+      const limit = FREE_LIMITS[limitKey] as number;
+
+      // Count prior submitted FRQ responses of this type for this user+course.
+      // Joins via session→course since StudentResponse has no course directly.
+      const priorAttempts = await prisma.studentResponse.count({
+        where: {
+          userId: session.user.id,
+          question: {
+            questionType: requestedType as QuestionType,
+            course: course as ApCourse,
+          },
+        },
+      });
+
+      if (priorAttempts >= limit) {
+        return NextResponse.json({
+          error: `You've used your free ${requestedType} attempt for ${course}. Premium unlocks unlimited + detailed coaching.`,
+          limitExceeded: true,
+          limitType: "frq_per_type_cap",
+          attemptsUsed: priorAttempts,
+          attemptsAllowed: limit,
+          upgradeUrl: "/billing?utm_source=frq_cap&utm_campaign=frq_taste",
+        }, { status: 403 });
+      }
     }
 
     // Single daily question cap for FREE users (Option B — 2026-04-22).

@@ -40,10 +40,41 @@ export const FREE_LIMITS = {
   tutorChatsPerDay: 3,
   /** How many mock-exam questions the student sees before the paywall. */
   mockExamQuestions: 5,
-  /** Whether FRQ (SAQ, LEQ, DBQ, Coding) practice is available at all. */
+  /** Legacy blanket FRQ access flag — superseded by per-type/per-course
+   *  caps below in Beta 8.13. Kept for backward compat with old gates that
+   *  may still read it; new code should use the per-type limits. */
   frqAccess: false,
-  /** Free FRQ attempts LIFETIME. 1 = experience AI scoring once, then lock. */
+  /** Legacy lifetime cap (across all FRQ types). Superseded by per-type. */
   frqFreeAttempts: 1,
+  /**
+   * Beta 8.13 (2026-04-29) — taste-first conversion model.
+   *
+   * Free users get 1 attempt of EACH FRQ type PER COURSE (lifetime).
+   * They see the FULL prompt + DBQ documents + scoring rubric BEFORE
+   * answering. They can submit and receive a basic AI score with the
+   * rubric points they hit. PREMIUM unlocks: detailed line-by-line
+   * coaching ("on line 3 you said X, the rubric expects Y because…")
+   * + unlimited attempts + "+1 point" coaching.
+   *
+   * Reasoning: students don't pay for access — they pay for confidence
+   * the tool will lift their score. They build that confidence by
+   * SEEING the DBQ/LEQ format firsthand. Hard-paywalling these means
+   * they never trust us. Conversion now happens AFTER first DBQ/LEQ
+   * attempt instead of trying to gate users into pre-paying for
+   * something they haven't seen.
+   */
+  dbqFreeAttemptsPerCourse: 1,
+  leqFreeAttemptsPerCourse: 1,
+  saqFreeAttemptsPerCourse: 1,
+  /** Generic non-history FRQ type (Math/Science/CS) — also 1 per course. */
+  frqFreeAttemptsPerCourse: 1,
+  /**
+   * Whether AI grading produces detailed line-by-line coaching.
+   * FREE: basic rubric points hit + sample answer.
+   * PREMIUM: line-by-line feedback + "+1 point" specific coaching.
+   * THIS is the monetization lever, not access itself.
+   */
+  detailedFrqFeedback: false,
   /** Whether analytics shows prescriptive detail (what to fix) vs just diagnosis (where they're weak). */
   fullAnalytics: false,
   /** Whether Sage Coach produces a deep personalized plan (free users get a brief snippet). */

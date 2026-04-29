@@ -112,94 +112,13 @@ export default function FrqPracticePage() {
     );
   }
 
-  // ── FREE preview — show 1 sample FRQ stem before locking submission ──
-  // Updated 2026-04-27: previously full paywall, no preview. User feedback:
-  // "Why would I pay if I haven't seen the hardest part yet? Khan lets me
-  // explore freely." Now show free users a real DBQ/SAQ stem they can read
-  // in full (with rubric exposed), but lock the submit-for-grading flow.
-  // Builds credibility before asking for upgrade.
-  if (isFreeTier) {
-    // Show 1 sample stem from the loaded list (filter by type pref: DBQ→LEQ→SAQ→FRQ)
-    const sample = (list.length > 0)
-      ? (list.find((f) => f.type === "DBQ")
-        ?? list.find((f) => f.type === "LEQ")
-        ?? list.find((f) => f.type === "SAQ")
-        ?? list[0])
-      : null;
-    return (
-      <div className="space-y-6 max-w-3xl mx-auto">
-        <div>
-          <h1 className="text-3xl font-bold flex items-center gap-2">
-            <PenLine className="h-7 w-7 text-amber-500" />
-            FRQ Practice — Free Preview
-          </h1>
-          <p className="text-muted-foreground mt-1">
-            Read one real {sample?.type ?? "FRQ"} stem with the official rubric. Submit + AI scoring is Premium.
-          </p>
-        </div>
-
-        <CourseSelectorInline />
-
-        {sample ? (
-          <Card className="border-amber-500/30 bg-amber-500/5">
-            <CardContent className="p-5 space-y-4">
-              <div className="flex items-center gap-2 flex-wrap">
-                <Badge variant="outline" className="border-amber-500/40 text-amber-700 dark:text-amber-400 dark:text-amber-700 dark:text-amber-400">
-                  {sample.type} · {sample.totalPoints} pts
-                </Badge>
-                <Badge variant="outline" className="text-[10px]">
-                  {sample.year} Q{sample.questionNumber}
-                </Badge>
-              </div>
-              {sample.stimulus && (
-                <div className="prose prose-sm max-w-none">
-                  <p className="text-xs uppercase tracking-wide text-muted-foreground mb-1">Source / Context</p>
-                  <p className="text-sm leading-relaxed whitespace-pre-wrap">{sample.stimulus.slice(0, 800)}{sample.stimulus.length > 800 ? "…" : ""}</p>
-                </div>
-              )}
-              <div className="prose prose-sm max-w-none">
-                <p className="text-xs uppercase tracking-wide text-muted-foreground mb-1">Question</p>
-                <p className="text-sm font-medium leading-relaxed whitespace-pre-wrap">{sample.promptText}</p>
-              </div>
-              <div className="pt-3 border-t border-amber-500/20 flex items-center gap-2">
-                <Lock className="h-4 w-4 text-amber-700 dark:text-amber-400 flex-shrink-0" />
-                <p className="text-xs text-muted-foreground flex-1">
-                  Write your answer + AI rubric scoring is Premium. Upgrade to grade against the official rubric.
-                </p>
-                <Link href="/billing?utm_source=frq_preview&utm_campaign=frq_unlock">
-                  <Button size="sm" className="rounded-full">Upgrade — $9.99/mo</Button>
-                </Link>
-              </div>
-            </CardContent>
-          </Card>
-        ) : (
-          <Card>
-            <CardContent className="p-8 text-center text-sm text-muted-foreground">
-              Loading sample FRQ for {AP_COURSES[course] || course}…
-            </CardContent>
-          </Card>
-        )}
-
-        <Card className="border-border/40">
-          <CardContent className="p-5 space-y-2">
-            <p className="text-sm font-semibold">All you get with Premium</p>
-            <ul className="text-sm text-muted-foreground space-y-1 leading-relaxed">
-              <li>• Every AP FRQ from 2013 onward, all 14 courses</li>
-              <li>• Type your answer → AI grades against the official CB rubric</li>
-              <li>• Detailed feedback on thesis, evidence, analysis</li>
-              <li>• Unlimited MCQ practice (no daily cap)</li>
-              <li>• AI tutor (Sage) unlimited chats</li>
-            </ul>
-            <Link href="/billing?utm_source=frq_preview&utm_campaign=premium_upsell">
-              <Button className="w-full mt-3 rounded-full h-10">
-                Upgrade — $9.99/month
-              </Button>
-            </Link>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
+  // ── FREE preview block REMOVED 2026-04-29 (Beta 8.13) ──
+  // The hard page-level paywall here was killing conversion: students
+  // couldn't evaluate DBQ/LEQ quality before paying, so they didn't pay.
+  // Replaced by server-side per-type per-course caps (1 DBQ + 1 LEQ +
+  // 1 SAQ free lifetime per course) enforced in POST /api/practice.
+  // Detailed line-by-line coaching stays Premium-only at the grading step.
+  // See FREE_LIMITS.{dbq,leq,saq,frq}FreeAttemptsPerCourse in tier-limits.ts.
 
   // ── List view (legacy CLUSTER_A gate removed Beta 8.2) ───────────────────
   const selected = list.find((f) => f.id === selectedId) ?? null;
