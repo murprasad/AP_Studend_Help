@@ -1356,6 +1356,13 @@ export default function PracticePage() {
 
       <CourseSelectorInline />
 
+      {/* Beta 9.1.3 — daily-cap card now renders AT THE TOP when reached.
+          Was rendering at the BOTTOM of the page after the picker, so users
+          who hit the cap saw the picker first, clicked Start, and got
+          confused why nothing happened. Now: cap message is the first thing
+          they see, and the picker below is purely decorative until tomorrow. */}
+      {sessionLimitReached && <SessionLimitHitCard course={course} />}
+
       {/* CB exam structure overview — added 2026-04-27 to fix conversion
           gap where free students didn't realize SAQ/DBQ/LEQ practice
           existed (FRQ Practice was paywalled, no preview shown). */}
@@ -1459,9 +1466,8 @@ export default function PracticePage() {
         })()}
       </div>
 
-      {/* Session limit reached — sharpened lock copy + projected-time-
-          to-pass comparison (Option B, reviewer 2026-04-22). */}
-      {sessionLimitReached && <SessionLimitHitCard course={course} />}
+      {/* (Daily-cap card moved to top of page in Beta 9.1.3 so users see
+          it before the picker.) */}
 
       {/* Premium upsell — only when the premium-restriction flag is ON.
           When the flag is OFF (dev/QA), non-premium users have full FRQ

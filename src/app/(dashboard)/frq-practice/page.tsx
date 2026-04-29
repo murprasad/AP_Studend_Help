@@ -60,18 +60,25 @@ export default function FrqPracticePage() {
   // users see a paywall, not a list they can't actually use.
   const [tierLoading, setTierLoading] = useState(true);
   const [isFreeTier, setIsFreeTier] = useState(false);
+  // Beta 9.1.3 — track free-FRQ attempts used so we can show graceful
+  // upgrade-locked card when user has used their 1 free attempt for this
+  // course. Without this, they keep clicking FRQs and bouncing off 403.
+  const [freeAttemptsUsed, setFreeAttemptsUsed] = useState(0);
   useEffect(() => {
     let cancelled = false;
-    fetch("/api/user/limits", { cache: "no-store" })
-      .then((r) => (r.ok ? r.json() : null))
-      .then((d) => {
-        if (cancelled || !d) return;
-        setIsFreeTier(d.tier === "FREE" && d.unlimited !== true);
-      })
-      .catch(() => { /* fail open — assume premium, don't break the page */ })
-      .finally(() => { if (!cancelled) setTierLoading(false); });
+    Promise.all([
+      fetch("/api/user/limits", { cache: "no-store" }).then((r) => (r.ok ? r.json() : null)).catch(() => null),
+      fetch(`/api/practice/frq-attempts-count?course=${course}`, { cache: "no-store" }).then((r) => (r.ok ? r.json() : null)).catch(() => null),
+    ]).then(([limits, count]: [{ tier?: string; unlimited?: boolean } | null, { count?: number } | null]) => {
+      if (cancelled) return;
+      const free = limits?.tier === "FREE" && limits.unlimited !== true;
+      setIsFreeTier(free);
+      setFreeAttemptsUsed(count?.count ?? 0);
+    }).finally(() => {
+      if (!cancelled) setTierLoading(false);
+    });
     return () => { cancelled = true; };
-  }, []);
+  }, [course]);
 
   const fetchList = useCallback(async () => {
     setLoading(true);
@@ -128,9 +135,38 @@ export default function FrqPracticePage() {
   // explaining what's about to happen so they don't bounce.
   const isFirstTaste = searchParams.get("first_taste") === "1";
 
+  // Beta 9.1.3 — graceful free-cap UX. Free user with attempts used >= 1
+  // gets an amber card at the top explaining they've used their free
+  // attempt + an Upgrade CTA. Doesn't hide the list (they can still
+  // re-view what they've done) but sets clear expectations so they don't
+  // click a new FRQ → 403 → confusion.
+  const showFrqCapCard = isFreeTier && freeAttemptsUsed >= 1;
+
   return (
     <div className="space-y-6">
-      {isFirstTaste && (
+      {showFrqCapCard && (
+        <div className="rounded-xl border-2 border-amber-500/30 bg-gradient-to-br from-amber-500/5 via-yellow-500/5 to-transparent p-4 sm:p-5 flex items-start gap-3">
+          <Lock className="h-5 w-5 text-amber-700 dark:text-amber-400 shrink-0 mt-0.5" />
+          <div className="flex-1 min-w-0 space-y-2">
+            <div>
+              <p className="text-[15px] font-semibold leading-tight">
+                You&apos;ve used your free FRQ attempt for this course
+              </p>
+              <p className="text-[13px] text-muted-foreground mt-1 leading-relaxed">
+                Premium unlocks <strong>unlimited FRQ attempts</strong> + line-by-line coaching that tells you exactly which rubric points you&apos;re missing and how to earn them.
+              </p>
+            </div>
+            <Link href="/billing?utm_source=frq_list_cap&utm_campaign=frq_cap">
+              <Button size="sm" className="rounded-full gap-2 bg-amber-600 hover:bg-amber-700 text-white">
+                Upgrade — $9.99/mo
+                <ChevronRight className="h-4 w-4" />
+              </Button>
+            </Link>
+          </div>
+        </div>
+      )}
+
+      {isFirstTaste && !showFrqCapCard && (
         <div className="rounded-xl border-2 border-blue-500/30 bg-gradient-to-br from-blue-500/5 via-indigo-500/5 to-blue-500/5 p-4 sm:p-5">
           <p className="text-[15px] font-semibold mb-1">Your first free FRQ — see how the AP rubric grades you</p>
           <p className="text-[13px] text-muted-foreground leading-relaxed">
