@@ -40,6 +40,7 @@ import { LockedValueCard } from "@/components/dashboard/locked-value-card";
 import { AutoLaunchNudge } from "@/components/dashboard/auto-launch-nudge";
 import { FlashcardsDueCard } from "@/components/dashboard/flashcards-due-card";
 import { SingleQuestionEntry } from "@/components/dashboard/single-question-entry";
+import { DiagnosticPromptCard } from "@/components/dashboard/diagnostic-prompt-card";
 
 function DashboardSkeleton() {
   return (
@@ -152,6 +153,14 @@ export function DashboardView() {
           takes precedence). Standard mode for non-cram-window users —
           Mode 1 + Mode 2 in the time-aware framework. */}
       <DailyStudyOSCard course={course as string} />
+
+      {/* 1e. Beta 9.1 — Diagnostic prompt. Surfaces the diagnostic option
+          for users with 5+ questions answered AND no diagnostic taken.
+          Without this, students "keep practicing" without ever measuring
+          their baseline — the rest of the product (Sage plan, week-by-
+          week, weak units) can't personalize. Hides itself when conditions
+          aren't met (renders null). */}
+      <DiagnosticPromptCard course={course as string} />
 
       {/* 2. Predicted native-scale score + delta */}
       <OutcomeProgressStrip course={course as string} />

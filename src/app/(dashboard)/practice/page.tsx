@@ -1137,6 +1137,22 @@ export default function PracticePage() {
                   </button>
                 );
               })}
+
+              {/* Beta 9.1 — "I don't know" button (Mikayla Como feedback +
+                  user spec 2026-04-29). Honest signal beats forced guess.
+                  Reveals correct answer + explanation, recorded as a
+                  knowledge-gap signal (not a wrong-answer penalty). NOT
+                  shown on Mock Exam (timed real-test simulation) or
+                  Flashcards (already has self-grade flow). */}
+              {!feedback && !isSubmitting && (
+                <button
+                  onClick={() => submitAnswer("__IDK__")}
+                  disabled={!!feedback || isSubmitting}
+                  className="w-full text-center p-3 rounded-lg border border-dashed border-border/40 text-muted-foreground hover:bg-accent hover:text-foreground transition-all min-h-[44px] text-xs"
+                >
+                  I don&apos;t know — show me the answer
+                </button>
+              )}
             </div>
 
             {isSubmitting && (

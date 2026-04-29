@@ -151,6 +151,14 @@ Return ONLY valid JSON (no markdown, no extra text):
           { status: 503 },
         );
       }
+    } else if (answer === "__IDK__") {
+      // Beta 9.1 — "I don't know" sentinel. Student admits they don't know
+      // the answer. Treated as not-correct (so it doesn't pollute mastery
+      // stats with false-positive correctness) but recorded distinctly via
+      // the sentinel value in studentAnswer. Future analytics can split
+      // honest knowledge gaps from careless wrong answers via:
+      //   WHERE studentAnswer = '__IDK__'
+      isCorrect = false;
     } else {
       isCorrect = answer.toUpperCase() === question.correctAnswer.toUpperCase();
     }
