@@ -41,6 +41,7 @@ import { AutoLaunchNudge } from "@/components/dashboard/auto-launch-nudge";
 import { FlashcardsDueCard } from "@/components/dashboard/flashcards-due-card";
 import { SingleQuestionEntry } from "@/components/dashboard/single-question-entry";
 import { DiagnosticPromptCard } from "@/components/dashboard/diagnostic-prompt-card";
+import { GreetingCard } from "@/components/dashboard/greeting-card";
 
 function DashboardSkeleton() {
   return (
@@ -119,6 +120,11 @@ export function DashboardView() {
 
   return (
     <div className="space-y-4 max-w-2xl mx-auto px-0 sm:px-2 py-2">
+      {/* Beta 9.1.2 — personalized greeting + plan badge. Tells the user
+          we know who they are and what plan they're on. Free users see a
+          small upgrade pill ($9.99/mo); Premium users see a Crown badge. */}
+      <GreetingCard />
+
       {/* Nawal-pattern nudge — renders null unless user has 2+ dashboard
           views today AND zero questions answered today. One-shot modal
           offering a 3-Q warmup so dashboard-staring converts to action. */}

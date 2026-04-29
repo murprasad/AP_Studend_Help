@@ -1361,8 +1361,12 @@ export default function PracticePage() {
           existed (FRQ Practice was paywalled, no preview shown). */}
       <CourseExamOverview course={course} isFreeTier={!isPremiumForTrack(subscriptionTier ?? "FREE", userTrack)} />
 
-      {/* Mode selection */}
-      <div className="grid grid-cols-2 gap-4">
+      {/* Beta 9.1.2 — simplified mode picker. Removed redundant
+          'Focused Study' (was just 20 MCQs vs Quick Practice's 10 — same
+          content, only diff was count, which the Session Settings panel
+          below already controls). Renamed 'Quick Practice' → 'Practice'
+          since it's now the only one. Decision-paralysis tax goes down. */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <button
           onClick={() => { setSessionType("QUICK_PRACTICE"); setQuestionCount(10); setQuestionType("MCQ"); }}
           className={`p-4 rounded-xl border text-left transition-all ${
@@ -1372,20 +1376,8 @@ export default function PracticePage() {
           }`}
         >
           <Zap className="h-6 w-6 text-yellow-700 dark:text-yellow-400 mb-2" />
-          <p className="font-medium">Quick Practice</p>
-          <p className="text-xs text-muted-foreground">10 MCQs · Free</p>
-        </button>
-        <button
-          onClick={() => { setSessionType("FOCUSED_STUDY"); setQuestionCount(20); setQuestionType("MCQ"); }}
-          className={`p-4 rounded-xl border text-left transition-all ${
-            sessionType === "FOCUSED_STUDY" && questionType === "MCQ"
-              ? "border-blue-500 bg-blue-500/10"
-              : "border-border/40 hover:bg-accent"
-          }`}
-        >
-          <BookOpen className="h-6 w-6 text-blue-700 dark:text-blue-400 mb-2" />
-          <p className="font-medium">Focused Study</p>
-          <p className="text-xs text-muted-foreground">20 MCQs · Free</p>
+          <p className="font-medium">Practice</p>
+          <p className="text-xs text-muted-foreground">MCQs · Free · adjust count below</p>
         </button>
 
         {/* For MCQ-only courses (CLEP), show session limit indicator when premium restriction is enabled */}

@@ -823,11 +823,14 @@ export default async function LandingPage() {
               </div>
               {[
                 `All ${courseCount} courses — ${examLabel}`,
-                // Beta 7.3 (2026-04-25): "Unlimited MCQ practice" was a
-                // direct contradiction with /pricing's "3 sessions/day"
-                // free-tier limit. Aligning landing copy to the real cap.
-                "3 practice sessions per day",
-                "5 Sage Live Tutor chats per day",
+                // Beta 9.1.2 (2026-04-29) — aligned to FREE_LIMITS source
+                // of truth in src/lib/tier-limits.ts. Was incorrectly
+                // saying "3 practice sessions/day" + "5 Sage chats/day"
+                // — actual caps are 30 Qs/day + 3 Sage chats/day + 1 free
+                // FRQ per type per course.
+                "30 practice questions per day",
+                "3 Sage Live Tutor chats per day",
+                "1 free FRQ attempt per type, per course (DBQ, LEQ, SAQ)",
                 "Basic study plan",
                 "Per-unit mastery analytics",
               ].map((item) => (

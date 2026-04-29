@@ -362,7 +362,7 @@ export default function BillingPage() {
                     ? isCanceling
                       ? "Access until end of billing period"
                       : "$9.99 / month · Cancel anytime"
-                    : "5 AI conversations / day"}
+                    : "30 questions/day · 3 Sage chats/day · 1 free FRQ per type per course"}
                 </p>
               </div>
             </div>

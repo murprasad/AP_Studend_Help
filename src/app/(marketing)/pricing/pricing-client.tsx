@@ -99,12 +99,14 @@ export default function PricingClient({ clepEnabled, dsstEnabled }: PricingClien
 
   const FREE_FEATURES = [
     `All ${courseCount} courses — ${examLabel}`,
-    // Single line consolidates the previous "Unlimited practice" + "3 sessions/day"
-    // pair that flagged as contradictory in the 2026-04-25 conversion review.
-    "Practice questions in 3 daily sessions",
-    "5 AI explanations per day — never get stuck",
+    // Beta 9.1.2 — aligned to FREE_LIMITS source of truth
+    // (src/lib/tier-limits.ts). Was previously contradictory across
+    // landing/pricing/billing.
+    "30 practice questions per day",
+    "3 Sage Live Tutor chats per day",
+    "1 free FRQ attempt per type, per course (DBQ, LEQ, SAQ)",
+    "5-question mock exam preview",
     "Progress tracking & mastery heatmap",
-    "Mock exam simulator with score estimate",
     "Basic study plan",
     "Streaks, XP & achievements",
   ];
@@ -315,7 +317,7 @@ export default function PricingClient({ clepEnabled, dsstEnabled }: PricingClien
             { q: "Can I cancel anytime?", a: "Yes. Cancel from your billing page and you'll keep Premium access until the end of your billing period." },
             { q: "Can I pay annually?", a: "Yes — $79.99/year saves you 33% compared to monthly billing ($6.67/mo). Same all-access Premium." },
             { q: "What is your refund policy?", a: "We offer a 7-day money-back guarantee on new Premium subscriptions. If you're not satisfied within 7 days of your first payment, email contact@studentnest.ai and we'll issue a full refund — no questions asked. After 7 days, subscriptions are non-refundable but you can cancel anytime and keep access until the end of your billing period." },
-            { q: "What happens when I hit the free AI limit?", a: "Free users can start 5 new Sage Live Tutor conversations per day. Your existing conversations are never deleted." },
+            { q: "What happens when I hit the free AI limit?", a: "Free users can start 3 new Sage Live Tutor conversations per day. Your existing conversations are never deleted." },
             { q: "Is there a student discount?", a: "We keep the free tier generous so every student can prepare for their exams. Premium is $9.99/month or $79.99/year — one all-access subscription." },
             { q: "Which payment methods are accepted?", a: "All major credit and debit cards via Stripe. Your payment info is never stored on our servers." },
           ].map(({ q, a }) => (
