@@ -358,13 +358,13 @@ export default function FrqPracticePage() {
                   </div>
                   <div className="flex-1 space-y-2">
                     <p className="text-[11px] font-semibold uppercase tracking-wide text-amber-700 dark:text-amber-400">
-                      What&apos;s next
+                      You&apos;ve unlocked your score
                     </p>
                     <p className="text-base font-semibold leading-snug">
-                      You&apos;ve seen how the rubric grades essays. Now find out where you stand.
+                      Want your projected AP score?
                     </p>
                     <p className="text-xs text-muted-foreground">
-                      A 10-minute diagnostic gives you a projected AP score and a personalized plan to lift it.
+                      10 minutes, then you&apos;ll see exactly where you stand on a 1–5 scale + which units to fix first.
                     </p>
                     <div className="flex flex-wrap gap-2 pt-1">
                       <Link href={`/diagnostic?course=${course}&src=post_frq`}>

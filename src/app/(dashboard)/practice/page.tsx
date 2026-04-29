@@ -21,6 +21,7 @@ import { SessionDeltaCard } from "@/components/practice/session-delta-card";
 import { NextSessionNudge } from "@/components/practice/next-session-nudge";
 import { FrqTasteNudge } from "@/components/practice/frq-taste-nudge";
 import { DiagnosticNudgeModal } from "@/components/practice/diagnostic-nudge-modal";
+import { FrqMidSessionModal, shouldShowFrqMidSession } from "@/components/practice/frq-mid-session-modal";
 import { useExamMode } from "@/hooks/use-exam-mode";
 import { useSearchParams } from "next/navigation";
 import { hapticSuccess, hapticError } from "@/lib/haptics";
@@ -319,6 +320,11 @@ export default function PracticePage() {
   const [results, setResults] = useState<Array<{ correct: boolean; timeSecs: number }>>([]);
   const [openEndedAnswer, setOpenEndedAnswer] = useState("");
   const [feedbackRating, setFeedbackRating] = useState<1 | -1 | null>(null);
+  // Beta 9.3 — FRQ mid-session interrupt (Q3 trigger). 97% of users today
+  // never see FRQ because the existing post-session FrqTasteNudge fires too
+  // late. Moving the trigger earlier where engagement is highest.
+  const [frqMidSessionOpen, setFrqMidSessionOpen] = useState(false);
+  const frqMidSessionFiredRef = useRef(false);
   const [startMsgIndex, setStartMsgIndex] = useState(0);
   // Embedded knowledge check after wrong MCQ answers
   const [checkQuestion, setCheckQuestion] = useState<{
@@ -709,12 +715,58 @@ export default function PracticePage() {
   }
 
   async function nextQuestion() {
+    // Beta 9.3 — Q3 FRQ interrupt. After answering Q3 (results.length===3
+    // at this moment, since results was just appended in submitAnswer), if
+    // the user hasn't yet attempted any FRQ in this course AND we haven't
+    // shown them the prompt before, open the mid-session modal. Modal is
+    // non-blocking — they can dismiss with 'Continue MCQs' to keep going.
+    if (
+      !frqMidSessionFiredRef.current &&
+      results.length === 3 &&
+      course &&
+      shouldShowFrqMidSession(course as string)
+    ) {
+      try {
+        const res = await fetch(`/api/practice/frq-attempts-count?course=${course}`, { cache: "no-store" });
+        if (res.ok) {
+          const d = (await res.json()) as { count?: number };
+          if ((d?.count ?? 0) === 0) {
+            frqMidSessionFiredRef.current = true;
+            setFrqMidSessionOpen(true);
+            return; // Don't advance the question; user picks via the modal.
+          }
+        }
+      } catch { /* fail open — proceed with normal advance */ }
+    }
+
     // Use ref so this always sees the live questions array, not a stale closure value
     const total = questionsRef.current.length;
     setCurrentIndex((prev) => {
       const next = prev + 1;
       if (next >= total) {
         // trigger session completion
+        completeSession();
+        return prev;
+      }
+      setSelectedAnswer(null);
+      setFeedback(null);
+      setOpenEndedAnswer("");
+      setCheckQuestion(null);
+      setCheckAnswer(null);
+      setCheckLoading(false);
+      setQuestionStartTime(new Date());
+      return next;
+    });
+  }
+
+  // Helper called by FrqMidSessionModal's "Continue MCQs" — advances Q without
+  // re-firing the modal logic.
+  function continueAfterFrqDismiss() {
+    setFrqMidSessionOpen(false);
+    const total = questionsRef.current.length;
+    setCurrentIndex((prev) => {
+      const next = prev + 1;
+      if (next >= total) {
         completeSession();
         return prev;
       }
@@ -984,6 +1036,14 @@ export default function PracticePage() {
             user has no diagnostic yet. Self-gated. Exposes a hook on
             window that submitAnswer() calls after each successful submit. */}
         <DiagnosticNudgeModal course={course as string} />
+        {/* Beta 9.3 — Q3 FRQ interrupt. Surfaces the FRQ taste moment
+            mid-session instead of post-session, where 97% of users
+            never reach it. */}
+        <FrqMidSessionModal
+          open={frqMidSessionOpen}
+          course={course as string}
+          onContinue={continueAfterFrqDismiss}
+        />
 
         {/* Progress header */}
         <div className="flex items-center justify-between">

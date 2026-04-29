@@ -385,28 +385,30 @@ export function JourneyHeroCard({ course }: Props) {
     );
   }
 
-  // ─── FRQ done, no Diagnostic ────────────────────────────────────────────
+  // ─── FRQ done, no Diagnostic — REWARD framing (Beta 9.3) ────────────────
+  // Was 'Take a 10-minute diagnostic' (task framing). Now reward framing:
+  // 'Want your projected AP score?' — feels like an unlock, not a chore.
   if (state.kind === "frq-done-pre-diag") {
     return (
-      <Card className="card-glow border-amber-500/40 bg-gradient-to-br from-amber-500/10 via-yellow-500/5 to-transparent">
+      <Card className="card-glow border-amber-500/40 bg-gradient-to-br from-amber-500/15 via-yellow-500/10 to-transparent">
         <CardContent className="p-5">
           <div className="flex items-start gap-3">
-            <div className="w-12 h-12 rounded-xl bg-amber-500/20 flex items-center justify-center flex-shrink-0">
-              <Target className="h-6 w-6 text-amber-700 dark:text-amber-400" />
+            <div className="w-12 h-12 rounded-xl bg-amber-500/25 flex items-center justify-center flex-shrink-0">
+              <Sparkles className="h-6 w-6 text-amber-700 dark:text-amber-400" />
             </div>
             <div className="flex-1 space-y-2">
               <p className="text-[11px] font-semibold uppercase tracking-wide text-amber-700 dark:text-amber-400">
-                Next: see your score
+                You&apos;ve unlocked your score
               </p>
               <p className="text-base font-semibold leading-snug">
-                Take a 10-minute diagnostic — get your projected AP score.
+                Want your projected AP score?
               </p>
               <p className="text-xs text-muted-foreground">
-                Diagnoses your weakest units, projects a 1–5 score, and personalizes everything else.
+                10 minutes, then you&apos;ll see exactly where you stand on a 1–5 scale and which units to fix first.
               </p>
               <Link href={`/diagnostic?course=${course}&src=journey_hero`}>
                 <Button size="sm" className="rounded-full mt-1 gap-2 bg-amber-600 hover:bg-amber-700 text-white">
-                  Take Diagnostic
+                  Take 10-min Diagnostic
                   <ArrowRight className="h-4 w-4" />
                 </Button>
               </Link>
