@@ -169,15 +169,20 @@ function parsePart(p: unknown): RubricPart {
   };
 }
 
-function parseSaqSubPart(p: unknown): SaqSubPart {
+function parseSaqSubPart(p: unknown, fallbackIdx = 0): SaqSubPart {
   const o = isObj(p) ? p : {};
-  const label = str(o.label, "A");
+  // Beta 9.0.5 fix — DB rubric stores label as `step` (e.g. "A"/"B"/"C").
+  // Older code only read `o.label` and defaulted "A" for every part, which
+  // collapsed all 3 parts to label="A" and broke the reveal echo.
+  const rawLabel = str(o.label, str(o.step, ["A", "B", "C"][fallbackIdx] ?? "A"));
   const safeLabel: "A" | "B" | "C" =
-    label === "A" || label === "B" || label === "C" ? label : "A";
+    rawLabel === "A" || rawLabel === "B" || rawLabel === "C" ? rawLabel : "A";
+  // For criterion: prefer explicit criterion, then keywords joined, then step text
+  const keywordsStr = Array.isArray(o.keywords) ? (o.keywords as unknown[]).filter(k => typeof k === "string").join(", ") : "";
   return {
     label: safeLabel,
-    points: num(o.points, 0),
-    criterion: str(o.criterion, str(o.step, "")),
+    points: num(o.points, 1),
+    criterion: str(o.criterion, keywordsStr || str(o.step, "")),
   };
 }
 
@@ -264,12 +269,19 @@ export function parseRubric(json: unknown, type: FrqType): FrqRubric {
     }
 
     case "SAQ": {
-      const subParts = arr(json.subParts).map(parseSaqSubPart);
+      // Beta 9.0.5 fix — accept BOTH wrapped form `{subParts: [...]}` AND
+      // flat array `[{step, points, keywords}, ...]` (the actual ingested
+      // shape). Without this, the flat-array form parsed to empty subParts,
+      // SaqInput fell back to a hardcoded A/B/C scaffold (so user could
+      // type), but SaqReveal then had empty rubric.subParts → reveal echo
+      // showed "(no answer recorded)" despite DB having content.
+      const rawArray = Array.isArray(json) ? json : arr(json.subParts);
+      const subParts = rawArray.map((item, idx) => parseSaqSubPart(item, idx));
       return {
         type: "SAQ",
         subParts,
         totalPoints: num(
-          json.totalPoints,
+          (json as { totalPoints?: unknown }).totalPoints,
           subParts.reduce((a, p) => a + p.points, 0)
         ),
       };
