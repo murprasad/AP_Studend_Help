@@ -232,11 +232,6 @@ export async function POST(req: NextRequest) {
       } else {
         // Existing test user — always ensure they're onboarded AND
         // backdated so age-gated features don't fail during tests.
-        // functional-tests.js deletes the test user on every deploy,
-        // so on the next deploy the auth.setup creates fresh (now ~3 min
-        // old) and features gated on "account ≥30 min old" break.
-        // This branch covers the path where the user DID persist but
-        // their createdAt is recent.
         const ageMinutes = (Date.now() - new Date(user.createdAt).getTime()) / 60_000;
         const updates: Record<string, unknown> = {};
         if (!user.onboardingCompletedAt) updates.onboardingCompletedAt = new Date();
@@ -244,6 +239,12 @@ export async function POST(req: NextRequest) {
         if (Object.keys(updates).length > 0) {
           await prisma.user.update({ where: { id: user.id }, data: updates });
         }
+        // Reset per-day quota state so consecutive test runs (or partial cleanup
+        // failures from prior runs) don't hit the FREE 30/day practice cap.
+        // Mirrors what cleanup would have done, except we keep the user row.
+        await prisma.studentResponse.deleteMany({ where: { userId: user.id } });
+        await prisma.practiceSession.deleteMany({ where: { userId: user.id } });
+        await prisma.dashboardImpression.deleteMany({ where: { userId: user.id } });
       }
       // After both branches, `user` is guaranteed non-null.
       if (!user) {

@@ -6,8 +6,10 @@ pages_build_output_dir = ".open-next"
 [vars]
 APP_URL = "https://studentnest.ai"
 NEXT_PUBLIC_APP_URL = "https://studentnest.ai"
-NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY = "pk_live_51TByoMRVh9BYsR467EsjvOCFtSBWDgjWxncfMLyHiFiFkSvGhnmsJhhxHI6PA0UCqNJbNvFqyJIjsXwNhgfKLxod005BwsBI5u"
 RESEND_FROM_EMAIL = "noreply@studentnest.ai"
+# NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY — sourced from CF Pages dashboard env vars
+# (Production + Preview). Removed from wrangler.toml per security hygiene
+# (avoid Stripe scanner false-positive flags via git push protection).
 
 # ─── Stripe Payment Secrets ───────────────────────────────────────────────────
 # Set these via the Cloudflare Pages dashboard or with:
