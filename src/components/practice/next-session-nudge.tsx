@@ -53,9 +53,30 @@ export function NextSessionNudge({ course }: Props) {
   }, [course]);
 
   if (!loaded) return null;
-  if (!weakestUnit) return null;
 
   const hasStreak = streakDays > 0;
+
+  // Beta 8.13.1 (2026-04-29) — fallback for new users (no weakest unit yet).
+  // Per QA walkthrough (docs/qa-post-session-next-step-walkthrough.md):
+  // returning null left blank space where the most important "what next"
+  // guidance should live — user feedback "as a new user, after certain
+  // number of MCQs there is no clear path." Now we always render a
+  // specific next-action recommendation, regardless of mastery maturity.
+  const isNewUser = !weakestUnit;
+
+  const headline = isNewUser
+    ? `Keep momentum — 5 more questions in ${course.replace(/^AP_/, "AP ").replace(/_/g, " ")}`
+    : `Keep going — close the gap on ${weakestUnit.unitName}`;
+
+  const subtext = isNewUser
+    ? "A few more sessions and we'll surface your weakest unit specifically. For now, keep building the muscle."
+    : `You're missing ${weakestUnit.missRatePct}% of questions here. 5 focused questions here move your score faster than any other unit.`;
+
+  // Where the "Start 5 more" CTA points. New users get a course-level
+  // focused session; users with weakestUnit data get a unit-targeted one.
+  const ctaHref = isNewUser
+    ? `/practice?mode=focused&count=5&course=${course}&src=next_session_new`
+    : `/practice?mode=focused&unit=${encodeURIComponent(weakestUnit.unit)}&count=5&course=${course}&src=next_session`;
 
   return (
     <Card className="rounded-[16px] border-amber-500/30 bg-gradient-to-br from-amber-500/5 via-rose-500/5 to-orange-500/5">
@@ -65,12 +86,8 @@ export function NextSessionNudge({ course }: Props) {
             <Target className="h-5 w-5 text-amber-700 dark:text-amber-400" />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-[15px] font-semibold leading-tight">
-              Keep going — close the gap on {weakestUnit.unitName}
-            </p>
-            <p className="text-[13px] text-muted-foreground mt-1 leading-relaxed">
-              You&apos;re missing {weakestUnit.missRatePct}% of questions here. 5 focused questions here move your score faster than any other unit.
-            </p>
+            <p className="text-[15px] font-semibold leading-tight">{headline}</p>
+            <p className="text-[13px] text-muted-foreground mt-1 leading-relaxed">{subtext}</p>
           </div>
         </div>
 
@@ -85,12 +102,11 @@ export function NextSessionNudge({ course }: Props) {
 
         {/* Full-navigation link (window.location) forces the practice page
             to re-mount so the focused-practice auto-launch fires cleanly.
-            A Next.js Link doesn't unmount the page when navigating to the
+            Next.js Link doesn't unmount the page when navigating to the
             same /practice route, so the autoLaunchedRef guard blocks the
-            re-trigger and the user's click appears to do nothing. Bug
-            reported by user 2026-04-22 — same-URL click-through broken. */}
+            re-trigger and the user's click appears to do nothing. */}
         <a
-          href={`/practice?mode=focused&unit=${encodeURIComponent(weakestUnit.unit)}&count=5&course=${course}&src=next_session`}
+          href={ctaHref}
           className="inline-flex items-center gap-1.5 text-[14px] font-semibold text-amber-700 hover:text-amber-800 underline-offset-2 hover:underline"
         >
           <Zap className="h-4 w-4" />
