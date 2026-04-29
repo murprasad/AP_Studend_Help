@@ -83,7 +83,11 @@ export default function QuickstartPage() {
     startedRef.current = true;
     setPicked(course);
     setCourse(course);
-    router.push(`/practice?mode=focused&count=5&course=${course}&src=quickstart`);
+    // Beta 9.0.1 hotfix (2026-04-29) — also pass quickstart=1 to satisfy
+    // both middleware AND DashboardLayout's "exempt this nav from new-user
+    // bounce-to-quickstart" check. Without this, fresh user click → /practice
+    // → middleware sees onboardingCompletedAt=null → bounces back to here.
+    router.push(`/practice?mode=focused&count=5&course=${course}&src=quickstart&quickstart=1`);
   }
 
   if (picked) {

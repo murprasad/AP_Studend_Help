@@ -35,11 +35,18 @@ export default withAuth(
     // complete their first session → click any nav link → middleware
     // reads stale JWT (still null) → bounces them back to quickstart.
     const recentlyOnboarded = req.cookies.get("onboarding_completed")?.value === "true";
+    // Beta 9.0.1 hotfix — exempt the FIRST hop from quickstart click into
+    // /practice. Without this, fresh user clicks Start on /practice/quickstart
+    // → router.push(/practice?...&quickstart=1) → middleware sees
+    // onboardingCompletedAt=null → bounces them back to /practice/quickstart.
+    // The user lands on the loading screen and never advances.
+    const isFromQuickstart = req.nextUrl.searchParams.get("quickstart") === "1";
     if (
       token &&
       !isOnboardingRoute &&
       !isAdminRoute &&
       !recentlyOnboarded &&
+      !isFromQuickstart &&
       // onboardingCompletedAt is null for new users, ISO string for completed
       (token.onboardingCompletedAt === null || token.onboardingCompletedAt === undefined)
     ) {
