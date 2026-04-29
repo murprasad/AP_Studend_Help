@@ -19,6 +19,7 @@ import { CourseExamOverview } from "@/components/practice/course-exam-overview";
 import { SessionFeedbackPopup } from "@/components/feedback/session-feedback-popup";
 import { SessionDeltaCard } from "@/components/practice/session-delta-card";
 import { NextSessionNudge } from "@/components/practice/next-session-nudge";
+import { FrqTasteNudge } from "@/components/practice/frq-taste-nudge";
 import { DiagnosticNudgeModal } from "@/components/practice/diagnostic-nudge-modal";
 import { useExamMode } from "@/hooks/use-exam-mode";
 import { useSearchParams } from "next/navigation";
@@ -841,9 +842,19 @@ export default function PracticePage() {
           correctAnswers={sessionSummary.correctAnswers}
         />
 
+        {/* Beta 8.13.3 (2026-04-29) — FRQ taste insertion. Renders only
+            when user has 0 prior FRQ submissions in this course. The
+            differentiator vs every other MCQ tool is FRQ + AI rubric
+            grading; if a first-time user finishes an MCQ session and
+            never sees that, the product looks generic. Inserted ABOVE
+            NextSessionNudge so it's the first call-to-action for users
+            who haven't tasted FRQ yet. */}
+        <FrqTasteNudge course={course} />
+
         {/* Incomplete-loop retention nudge — surfaces weakest unit +
-            streak protection as a reason to return tomorrow. Renders null
-            if we don't have a weakestUnit to reference. */}
+            streak protection as a reason to return tomorrow. Renders
+            even for first-timers (with course-level fallback) per
+            Beta 8.13.1. */}
         <NextSessionNudge course={course} />
 
         {/* Cross-module usage-expansion nudge — Premium users only.

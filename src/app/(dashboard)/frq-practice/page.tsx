@@ -123,8 +123,22 @@ export default function FrqPracticePage() {
   // ── List view (legacy CLUSTER_A gate removed Beta 8.2) ───────────────────
   const selected = list.find((f) => f.id === selectedId) ?? null;
 
+  // Beta 8.13.3 — first_taste=1 query lands users here from the
+  // FrqTasteNudge after their first MCQ session. Show a confidence banner
+  // explaining what's about to happen so they don't bounce.
+  const isFirstTaste = searchParams.get("first_taste") === "1";
+
   return (
     <div className="space-y-6">
+      {isFirstTaste && (
+        <div className="rounded-xl border-2 border-blue-500/30 bg-gradient-to-br from-blue-500/5 via-indigo-500/5 to-blue-500/5 p-4 sm:p-5">
+          <p className="text-[15px] font-semibold mb-1">Your first free FRQ — see how the AP rubric grades you</p>
+          <p className="text-[13px] text-muted-foreground leading-relaxed">
+            Pick any question below. Read the prompt, write a 1-2 paragraph answer, and we&apos;ll score it against the official College Board rubric. No card, no upgrade — just see how it works.
+          </p>
+        </div>
+      )}
+
       <div>
         <h1 className="text-3xl font-bold flex items-center gap-2">
           <PenLine className="h-7 w-7 text-amber-500" />

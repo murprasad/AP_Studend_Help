@@ -9,35 +9,70 @@
 // the prior 10-card quickstart picker.
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Sparkles, ArrowRight, ChevronDown } from "lucide-react";
 import { ApCourse } from "@prisma/client";
 import { useCourse } from "@/hooks/use-course";
 
-// 10 marketed AP courses, popularity-ordered per CB exam-taker counts.
-// AP World History first because it's the highest-volume entry course
-// (~310k test-takers/year, often Grade 10's first AP).
-const QUICKSTART_COURSES: { course: ApCourse; label: string; topics: string }[] = [
-  { course: "AP_WORLD_HISTORY",               label: "AP World History",         topics: "1200–present" },
-  { course: "AP_US_HISTORY",                  label: "AP US History",            topics: "1491–present" },
-  { course: "AP_PSYCHOLOGY",                  label: "AP Psychology",            topics: "5 units (CB redesign 2024-25)" },
-  { course: "AP_BIOLOGY",                     label: "AP Biology",               topics: "Cells, genetics, ecology" },
-  { course: "AP_CHEMISTRY",                   label: "AP Chemistry",             topics: "Atomic structure → thermo" },
-  { course: "AP_CALCULUS_AB",                 label: "AP Calculus AB",           topics: "Limits, derivatives, integrals" },
-  { course: "AP_CALCULUS_BC",                 label: "AP Calculus BC",           topics: "AB plus series, polar" },
-  { course: "AP_STATISTICS",                  label: "AP Statistics",            topics: "Data, probability, inference" },
-  { course: "AP_PHYSICS_1",                   label: "AP Physics 1",             topics: "8 units, includes Fluids" },
-  { course: "AP_COMPUTER_SCIENCE_PRINCIPLES", label: "AP Computer Science Principles", topics: "Algorithms, data, computing" },
-];
-const RECOMMENDED = QUICKSTART_COURSES[0]; // AP_WORLD_HISTORY
+// Track-aware course catalogs. Beta 8.13.4 fix (FMEA gap 1.N1):
+// SAT/ACT signups were seeing the AP-only picker which is wrong.
+type TrackCourses = { recommended: { course: ApCourse; label: string; topics: string }; others: { course: ApCourse; label: string; topics: string }[] };
+const COURSES_BY_TRACK: Record<string, TrackCourses> = {
+  ap: {
+    recommended: { course: "AP_WORLD_HISTORY", label: "AP World History", topics: "1200–present" },
+    others: [
+      { course: "AP_US_HISTORY",                  label: "AP US History",            topics: "1491–present" },
+      { course: "AP_PSYCHOLOGY",                  label: "AP Psychology",            topics: "5 units (CB redesign 2024-25)" },
+      { course: "AP_BIOLOGY",                     label: "AP Biology",               topics: "Cells, genetics, ecology" },
+      { course: "AP_CHEMISTRY",                   label: "AP Chemistry",             topics: "Atomic structure → thermo" },
+      { course: "AP_CALCULUS_AB",                 label: "AP Calculus AB",           topics: "Limits, derivatives, integrals" },
+      { course: "AP_CALCULUS_BC",                 label: "AP Calculus BC",           topics: "AB plus series, polar" },
+      { course: "AP_STATISTICS",                  label: "AP Statistics",            topics: "Data, probability, inference" },
+      { course: "AP_PHYSICS_1",                   label: "AP Physics 1",             topics: "8 units, includes Fluids" },
+      { course: "AP_COMPUTER_SCIENCE_PRINCIPLES", label: "AP Computer Science Principles", topics: "Algorithms, data, computing" },
+    ],
+  },
+  sat: {
+    recommended: { course: "SAT_MATH", label: "SAT Math", topics: "Algebra, advanced math, geometry" },
+    others: [
+      { course: "SAT_READING_WRITING", label: "SAT Reading & Writing", topics: "Passages, evidence, grammar" },
+    ],
+  },
+  act: {
+    recommended: { course: "ACT_MATH", label: "ACT Math", topics: "Pre-algebra through trig, 5-choice" },
+    others: [
+      { course: "ACT_ENGLISH", label: "ACT English",  topics: "Grammar, rhetoric" },
+      { course: "ACT_SCIENCE", label: "ACT Science",  topics: "Data interpretation" },
+      { course: "ACT_READING", label: "ACT Reading",  topics: "Literary, social, humanities" },
+    ],
+  },
+};
 
 export default function QuickstartPage() {
   const router = useRouter();
   const [, setCourse] = useCourse();
   const [picked, setPicked] = useState<ApCourse | null>(null);
   const [browseOpen, setBrowseOpen] = useState(false);
+  const [track, setTrack] = useState<string>("ap"); // default before user fetch
   const startedRef = useRef(false);
+
+  // Fetch user track to pick the right course catalog.
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/user", { cache: "no-store" })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d: { user?: { track?: string } } | null) => {
+        if (cancelled) return;
+        if (d?.user?.track && COURSES_BY_TRACK[d.user.track]) setTrack(d.user.track);
+      })
+      .catch(() => { /* fail open — default ap */ });
+    return () => { cancelled = true; };
+  }, []);
+
+  const catalog = COURSES_BY_TRACK[track] ?? COURSES_BY_TRACK.ap;
+  const RECOMMENDED = catalog.recommended;
+  const OTHERS = catalog.others;
 
   // setCourse() pushes to localStorage + cookie + dispatches an event the
   // practice page subscribes to. Then router.push to the existing
@@ -72,7 +107,7 @@ export default function QuickstartPage() {
           <Sparkles className="h-10 w-10 mx-auto text-primary" />
           <h1 className="text-2xl sm:text-3xl font-bold">Let&apos;s start with one question</h1>
           <p className="text-sm text-muted-foreground">
-            See how close you are to passing your AP. ~3 minutes.
+            See how close you are to passing your {track === "sat" ? "SAT" : track === "act" ? "ACT" : "AP"}. ~3 minutes.
           </p>
         </div>
 
@@ -104,9 +139,9 @@ export default function QuickstartPage() {
           <ChevronDown className={`h-3.5 w-3.5 transition-transform ${browseOpen ? "rotate-180" : ""}`} />
         </button>
 
-        {browseOpen && (
+        {browseOpen && OTHERS.length > 0 && (
           <div className="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-2">
-            {QUICKSTART_COURSES.slice(1).map((c) => (
+            {OTHERS.map((c) => (
               <button
                 key={c.course}
                 onClick={() => startSession(c.course)}

@@ -134,6 +134,23 @@ export function FrqPracticeCard({
       });
       return;
     }
+    // Beta 8.13.4 (FMEA gap 6.N2/6.N4): a 1-2 sentence FRQ submit gets
+    // graded 0/6 by the AI, which demoralizes first-time users seeing
+    // their FIRST FRQ score. Hard-block submits under 100 chars total
+    // and surface guidance. Avoids the "0/6 from a 5-word answer" UX.
+    const totalChars = Object.values(answers).reduce(
+      (n, v) => n + (typeof v === "string" ? v.trim().length : 0),
+      0,
+    );
+    const MIN_CHARS = 100;
+    if (totalChars < MIN_CHARS) {
+      toast({
+        title: "Write a bit more before submitting",
+        description: `AP rubrics expect developed evidence + analysis. Aim for at least 1-2 paragraphs (${totalChars}/${MIN_CHARS} characters so far).`,
+        variant: "destructive",
+      });
+      return;
+    }
     setStudentAnswers(answers);
     setSubmitting(true);
     try {
