@@ -98,6 +98,19 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ reset: true, userId: user.id });
     }
 
+    if (action === "complete-onboarding") {
+      // Beta 9 — for tests that need post-onboarding state without
+      // walking a full session. Sets onboardingCompletedAt = NOW so
+      // middleware no longer redirects to /practice/quickstart.
+      const user = await prisma.user.findUnique({ where: { email: TEST_EMAIL }, select: { id: true } });
+      if (!user) return NextResponse.json({ error: "Test user not found — create first" }, { status: 404 });
+      await prisma.user.update({
+        where: { id: user.id },
+        data: { onboardingCompletedAt: new Date() },
+      });
+      return NextResponse.json({ completed: true, userId: user.id });
+    }
+
     if (action === "seed-dashboard-impressions") {
       const count = Math.min(20, Math.max(0, Number(body.count ?? 2)));
       const course = String(body.course ?? "AP_WORLD_HISTORY").slice(0, 64);
