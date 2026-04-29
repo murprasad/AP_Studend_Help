@@ -1,9 +1,19 @@
-# NovaNest — Architecture Document
+# StudentNest — Architecture Document
 
 **Document ID:** ARCH-001
-**Version:** 1.7
-**Last Updated:** 2026-03-17
+**Version:** 2.0 (Beta 9 — FTUE redesign milestone)
+**Last Updated:** 2026-04-29
 **Status:** Active
+
+**Beta 9 architectural changes (vs v1.7):**
+- FTUE flow restructured: signup → `/practice/quickstart` (single-screen smart-default) instead of 4-step wizard
+- New `<FrqTasteNudge>` + always-on `<NextSessionNudge>` on session-summary screen
+- FRQ access model: hard paywall → per-type per-course cap (`FREE_LIMITS.{dbq,leq,saq,frq}FreeAttemptsPerCourse=1`)
+- New API endpoint `/api/practice/frq-attempts-count` (gates FrqTasteNudge visibility)
+- Track-aware quickstart catalog (`ap`/`sat`/`act` each get their own course list)
+- Min-char client-side validation on FRQ submit (frq-practice-card.tsx)
+- Server-side `redirect()` on legacy `/onboarding` → `/practice/quickstart` (was: hanging client-side useEffect)
+- Bank: 22 AP courses, 7,186+ approved questions (Beta 8.11 added 8 new + 611 CED-anchored Qs)
 
 ---
 
@@ -28,6 +38,115 @@
 | Deployment | Cloudflare Pages | — | Global CDN; custom domain novaprep.ai |
 | Build | OpenNext CF | 1.17.1 | Converts Next.js build for CF Pages |
 | Package Manager | npm | — | `--legacy-peer-deps` required |
+
+---
+
+## 1A. Beta 9 FTUE Flow (added 2026-04-29)
+
+```
+                   ┌─────────────────┐
+                   │  Landing page   │
+                   │ (track=ap|sat|act)│
+                   └────────┬────────┘
+                            │ Click "Start AP Prep"
+                            ▼
+                   ┌─────────────────┐
+                   │  /register      │
+                   │ (email or       │
+                   │  Google OAuth)  │
+                   └────────┬────────┘
+                            │ Submit / verify
+                            ▼
+                   ┌─────────────────┐
+                   │  /login         │── existing user ──┐
+                   └────────┬────────┘                   │
+                            │ Auth cookie set            │
+                            ▼                            │
+                   ┌─────────────────────────────────┐  │
+                   │  (dashboard)/layout.tsx         │  │
+                   │  useEffect:                     │  │
+                   │  onboardingCompletedAt === null?│  │
+                   └──┬──────────────────────────┬───┘  │
+                  yes │                       no │       │
+                      ▼                          ▼       │
+              ┌──────────────────┐     ┌────────────────┐│
+              │ /practice/       │     │  /dashboard    │◄┘
+              │  quickstart      │     │ (returning)    │
+              │ Track-aware:     │     └────────────────┘
+              │ ap → AP World    │
+              │ sat → SAT Math   │
+              │ act → ACT Math   │
+              │                  │
+              │ Big card +       │
+              │ "Or pick another"│
+              └────────┬─────────┘
+                       │ Click recommended
+                       ▼
+              ┌──────────────────────────────┐
+              │ setCourse(c) →               │
+              │   localStorage + cookie      │
+              │ router.push                  │
+              │   /practice?mode=focused     │
+              │   &count=5&course=X          │
+              │   &src=quickstart            │
+              └────────┬─────────────────────┘
+                       ▼
+              ┌──────────────────────────────┐
+              │ /practice page autoLaunch    │
+              │ POST /api/practice → session │
+              └────────┬─────────────────────┘
+                       │ 5 EASY MCQs
+                       ▼
+              ┌──────────────────────────────┐
+              │ Session summary (mode=summary│
+              │  ┌────────────────────────┐  │
+              │  │ Stats card             │  │
+              │  ├────────────────────────┤  │
+              │  │ <FrqTasteNudge>        │  │
+              │  │ "Now try one real FRQ" │  │
+              │  │ (renders if 0 prior   │  │
+              │  │  FRQ attempts)         │  │
+              │  ├────────────────────────┤  │
+              │  │ <NextSessionNudge>     │  │
+              │  │ Always renders (with   │  │
+              │  │  new-user fallback)    │  │
+              │  ├────────────────────────┤  │
+              │  │ Quick feedback 👍/👎   │  │
+              │  └────────────────────────┘  │
+              └────────┬─────────────────────┘
+                       │ Click FRQ taste nudge
+                       ▼
+              ┌──────────────────────────────┐
+              │ /frq-practice                │
+              │ ?course=X&first_taste=1      │
+              │ Blue banner:                 │
+              │  "Your first free FRQ"       │
+              │ FRQ list (browse + try)      │
+              └────────┬─────────────────────┘
+                       │ Pick + submit
+                       ▼
+              ┌──────────────────────────────┐
+              │ frq-practice-card.tsx        │
+              │  ├─ <100 chars? → toast:    │
+              │  │   "Write a bit more..."  │
+              │  └─ ≥100 chars → POST       │
+              │      /api/frq/[id]/submit    │
+              │      ├─ Per-type cap?       │
+              │      │  ├─ Hit → 403 + CTA  │
+              │      │  └─ OK → AI grade    │
+              │      └─ Reveal rubric +     │
+              │          sample answer       │
+              └──────────────────────────────┘
+```
+
+**Per-type FRQ caps (per course, lifetime — FREE_LIMITS):**
+
+| FRQ Type | Free attempts | Premium |
+|---|---|---|
+| DBQ (Document-Based Question) | 1 | unlimited + detailed coaching |
+| LEQ (Long Essay Question) | 1 | unlimited + detailed coaching |
+| SAQ (Short Answer Question) | 1 | unlimited + detailed coaching |
+| FRQ (generic — math/science/CS) | 1 | unlimited + detailed coaching |
 
 ---
 
@@ -466,3 +585,4 @@ All external calls have explicit timeouts:
 | 1.5 | 2026-03-16 | Scalability hardening: 7 DB indexes (§4.4), rate-limit.ts added to lib/ (§8.4), caching table updated (§8.2), bulk-gen cap updated in Known Limitations (§9) |
 | 1.6 | 2026-03-16 | Two-tier AI generation: §5.5 added (callAIForTier, validateQuestion, provider pools, new Question columns) |
 | 1.7 | 2026-03-17 | Rebranded from NovAP / PrepNova Smart to NovaNest across all pages, docs, emails, and API headers |
+| 2.0 | 2026-04-29 | **Beta 9 — FTUE redesign milestone.** New /practice/quickstart route (single-screen smart-default, replaces legacy 4-step onboarding wizard). New `<FrqTasteNudge>` + always-on `<NextSessionNudge>`. FRQ access changed from page-level paywall to per-type per-course caps (1 free DBQ + 1 LEQ + 1 SAQ + 1 generic FRQ per course, lifetime). New API endpoint `/api/practice/frq-attempts-count`. Track-aware quickstart catalog (ap/sat/act). Min-100-char client validation on FRQ submit. Server-side `redirect()` on legacy `/onboarding`. Bank: 22 AP courses, 7,186+ approved questions. AP Physics 1 redesigned (CB 2024-25): Charge/Circuits/Waves moved to Physics 2, new Unit 8 Fluids added. AP Chemistry Unit 9 renamed to "Thermodynamics and Electrochemistry" (CED title). 7 new AP courses unhidden (Eng Lit, Euro, Macro, Micro, Phys 2, Phys C E&M, CS A). |

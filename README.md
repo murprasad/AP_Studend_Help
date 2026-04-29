@@ -1,8 +1,15 @@
 # StudentNest — AI-Powered AP, SAT & ACT Prep
 
-> **Beta 1.3** · Live at [studentnest.ai](https://studentnest.ai)
+> **Beta 9.0** · Live at [studentnest.ai](https://studentnest.ai)
 
-StudentNest is a full-stack exam preparation platform for high school students. It combines AI-generated practice questions, a 24/7 AI tutor (Sage), per-unit mastery tracking, mock exams, and personalized study plans — all free to start.
+StudentNest is a full-stack exam preparation platform for high school students. It combines AI-generated practice questions, a 24/7 AI tutor (Sage), per-unit mastery tracking, mock exams, FRQ practice graded against the official CB rubric, and personalized study plans — all free to start.
+
+**What's new in Beta 9 (FTUE redesign milestone):**
+- **Auto-start onboarding** — fresh signup → 1-click course pick → first question in 30 seconds. No 4-step wizard, no premature pricing, no setup mode.
+- **FRQ taste-first model** — 1 free DBQ + 1 free LEQ + 1 free SAQ + 1 free generic FRQ per course (lifetime). Free users see the full prompt + documents + rubric + AI scoring on their first attempt. Premium unlocks unlimited + detailed line-by-line coaching.
+- **Always-on next-step direction** — every session ends with a clear "what to do next" CTA. No blank-state dead-ends.
+- **Track-aware quickstart** — AP / SAT / ACT signups each see their relevant courses; no AP-only catalog for SAT students.
+- **CB-aligned content** — 22 AP courses, 7,186+ approved questions. Every course unit list matches the latest College Board CED. AP Physics 1 redesign (Charge/Circuits → Physics 2; new Unit 8 Fluids) reflected. AP Psychology 9→5 unit migration in flight (Beta 9.1).
 
 ---
 
