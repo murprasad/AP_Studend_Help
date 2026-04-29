@@ -38,6 +38,8 @@ test.describe("FRQ submit → reveal echo (Beta 9.0.6)", () => {
   });
 
   test("SAQ submit echoes typed answer (NOT 'no answer recorded')", async ({ page, baseURL }) => {
+    const consoleLogs: string[] = [];
+    page.on("console", (msg) => { consoleLogs.push(`[${msg.type()}] ${msg.text()}`); });
     // Plant the bridge cookie so middleware lets us reach /frq-practice
     // even with a stale JWT (matches real-user state after quickstart).
     await page.context().addCookies([{
@@ -77,11 +79,24 @@ test.describe("FRQ submit → reveal echo (Beta 9.0.6)", () => {
     // Click "Reveal rubric & sample response"
     await page.getByRole("button", { name: /reveal/i }).click();
 
-    // Wait for the reveal section to render
-    await page.locator('text=/your answer/i').first().waitFor({ state: "visible", timeout: 15000 });
+    // Wait for the reveal section to render. After submit:
+    //   - input textareas disappear
+    //   - "Your answer" + rubric checklist appear
+    //   - "Reveal rubric" button is replaced by "Next FRQ"
+    // Wait for the visual transition (rubric checklist) — most reliable.
+    await page.locator('text=/Official rubric/i').first().waitFor({ state: "visible", timeout: 20000 });
+    // Extra settle time for studentAnswers state to populate the echo
+    await page.waitForTimeout(1500);
 
     // KEY ASSERTION: typed text appears in body, "(no answer recorded)" does NOT
     const bodyText = await page.locator("body").innerText();
+    if (bodyText.includes("(no answer recorded)")) {
+      console.log("\n--- console logs from page ---");
+      for (const l of consoleLogs.filter((l) => l.includes("FrqPracticeCard"))) {
+        console.log(l);
+      }
+      console.log("--- end console logs ---\n");
+    }
     expect(bodyText, "reveal must NOT show '(no answer recorded)' fallback").not.toContain("(no answer recorded)");
     expect(bodyText, "reveal must echo first 50 chars of typed answer").toContain(TEST_ANSWER.slice(0, 50));
   });
@@ -121,7 +136,6 @@ test.describe("FRQ submit → reveal echo (Beta 9.0.6)", () => {
     await page.locator('text=/your answer/i').first().waitFor({ state: "visible", timeout: 15000 });
 
     // Step 2: navigate away, then come back to the same FRQ
-    saqId = await saqCard!.getAttribute("data-frq-id"); // may be null if not set
     await page.goto(`${baseURL}/dashboard`, { waitUntil: "domcontentloaded" });
     await page.waitForTimeout(500);
     await page.goto(`${baseURL}/frq-practice?course=AP_WORLD_HISTORY`, { waitUntil: "domcontentloaded" });
