@@ -6,24 +6,34 @@ export default withAuth(
     const token = req.nextauth.token;
     const path = req.nextUrl.pathname;
     const isAdminRoute = path.startsWith("/admin");
-    const isOnboardingRoute = path === "/onboarding" || path.startsWith("/onboarding/");
+    // Beta 9 (2026-04-29) — quickstart replaced the legacy 4-step wizard.
+    // Both /onboarding (legacy URL — server-redirects to /practice/quickstart)
+    // AND /practice/quickstart are valid landing points for new users.
+    // Exempting both from the "redirect new users to onboarding" rule
+    // below is what prevents the redirect loop:
+    //   /dashboard → middleware → /onboarding → my page redirect →
+    //   /practice/quickstart → middleware sees onboardingCompletedAt=null
+    //   → bounces to /onboarding → loop.
+    const isOnboardingRoute = path === "/onboarding"
+      || path.startsWith("/onboarding/")
+      || path === "/practice/quickstart"
+      || path.startsWith("/practice/quickstart/");
 
     if (isAdminRoute && token?.role !== "ADMIN") {
       return NextResponse.redirect(new URL("/dashboard", req.url));
     }
 
-    // Redirect first-time users to /onboarding BEFORE any dashboard page
-    // renders. The earlier client-side redirect (in dashboard/layout.tsx)
-    // caused a flash-of-dashboard for new users — visible bug, killed
-    // first-impression. Server-side redirect via middleware fires before
-    // the page even loads.
+    // Redirect first-time users to the new quickstart flow BEFORE any
+    // dashboard page renders. Beta 9 changed the target from /onboarding
+    // (deleted 4-step wizard) to /practice/quickstart (single-screen
+    // smart-default). Server-side redirect via middleware fires before
+    // the page even loads — no flash-of-dashboard for new users.
     //
     // The "onboarding_completed" cookie is a short-lived hint set by the
-    // onboarding page when the user completes the flow. It bridges the
-    // window between PATCH /api/user (DB write) and JWT refresh (which
-    // happens on the next request). Without this, users complete
-    // onboarding → click any nav link → middleware reads stale JWT (still
-    // null) → bounces them back here. Real user reported this 2026-04-24.
+    // session-complete handler. It bridges the window between PATCH
+    // (DB write) and JWT refresh (next request). Without this, users
+    // complete their first session → click any nav link → middleware
+    // reads stale JWT (still null) → bounces them back to quickstart.
     const recentlyOnboarded = req.cookies.get("onboarding_completed")?.value === "true";
     if (
       token &&
@@ -33,7 +43,7 @@ export default withAuth(
       // onboardingCompletedAt is null for new users, ISO string for completed
       (token.onboardingCompletedAt === null || token.onboardingCompletedAt === undefined)
     ) {
-      return NextResponse.redirect(new URL("/onboarding", req.url));
+      return NextResponse.redirect(new URL("/practice/quickstart", req.url));
     }
 
     return NextResponse.next();
