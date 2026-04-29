@@ -1168,7 +1168,13 @@ export default function PracticePage() {
         </Card>
 
         {feedback && (
-          <Card className={`card-glow border ${feedback.isCorrect ? "border-emerald-500/30 bg-emerald-500/5" : "border-red-500/30 bg-red-500/5"}`}>
+          <Card className={`card-glow border ${
+            feedback.isCorrect
+              ? "border-emerald-500/30 bg-emerald-500/5"
+              : selectedAnswer === "__IDK__"
+              ? "border-blue-500/30 bg-blue-500/5"
+              : "border-red-500/30 bg-red-500/5"
+          }`}>
             <CardContent className="p-5 space-y-4">
               {feedback.frqScore ? (
                 // FRQ Score Card
@@ -1207,6 +1213,8 @@ export default function PracticePage() {
                 <div className="flex items-start gap-3">
                   {feedback.isCorrect ? (
                     <CheckCircle className="h-6 w-6 text-emerald-700 dark:text-emerald-400 flex-shrink-0 mt-0.5" />
+                  ) : selectedAnswer === "__IDK__" ? (
+                    <Sparkles className="h-6 w-6 text-blue-700 dark:text-blue-400 flex-shrink-0 mt-0.5" />
                   ) : (
                     <XCircle className="h-6 w-6 text-red-700 dark:text-red-400 flex-shrink-0 mt-0.5" />
                   )}
@@ -1215,9 +1223,6 @@ export default function PracticePage() {
                       {feedback.isCorrect ? (() => {
                         // Beta 8.10 v2 — competence reinforcement on every
                         // correct answer. Tone shifts up by streak count.
-                        // No score numbers, no analytics framing.
-                        // results[] doesn't include current Q yet, so count
-                        // this correct answer + the trailing streak in results.
                         let streak = 1;
                         for (let i = results.length - 1; i >= 0; i--) {
                           if (results[i].correct) streak++;
@@ -1228,7 +1233,10 @@ export default function PracticePage() {
                         if (streak === 2) return "Correct! Nice — 2 in a row";
                         if (results.length === 0) return "Correct! Strong start";
                         return "Correct!";
-                      })() : `Incorrect — Answer: ${feedback.correctAnswer}`}
+                      })()
+                        : selectedAnswer === "__IDK__"
+                        ? `Answer: ${feedback.correctAnswer}`
+                        : `Incorrect — Answer: ${feedback.correctAnswer}`}
                     </p>
                     <ExplanationDisplay text={feedback.explanation} />
 

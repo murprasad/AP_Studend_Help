@@ -68,7 +68,7 @@ export async function GET() {
       freeTrialExpiresAt: true,
       trialEmailsSent: true,
       track: true,
-      _count: { select: { practiceSessions: true, responses: true, masteryScores: true } },
+      _count: { select: { practiceSessions: true, responses: true, masteryScores: true, frqAttempts: true } },
     },
     orderBy: { email: "asc" },
   });
@@ -88,6 +88,7 @@ export async function GET() {
     sessions: u._count.practiceSessions,
     responses: u._count.responses,
     masteryUnits: u._count.masteryScores,
+    frqAttempts: u._count.frqAttempts,
   }));
 
   return NextResponse.json({ users: result });
@@ -117,6 +118,11 @@ async function resetUser(email: string) {
   totalDeleted += (await prisma.masteryGoal.deleteMany({ where: { userId: uid } })).count;
   totalDeleted += (await prisma.studentResponse.deleteMany({ where: { userId: uid } })).count;
   totalDeleted += (await prisma.trialReengagement.deleteMany({ where: { userId: uid } })).count;
+  // Beta 9.1.1 — FRQ attempts were NOT being reset. User reported: FRQ
+  // responses persist after admin reset. Without this, the per-type/
+  // per-course FRQ free-attempt cap stays consumed across resets, blocking
+  // re-test of the FRQ flow.
+  totalDeleted += (await prisma.frqAttempt.deleteMany({ where: { userId: uid } })).count;
 
   // SessionQuestion — delete via sessions
   const sessions = await prisma.practiceSession.findMany({ where: { userId: uid }, select: { id: true } });

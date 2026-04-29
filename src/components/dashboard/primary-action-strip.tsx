@@ -253,27 +253,29 @@ export function PrimaryActionStrip({ course, impressionId }: Props) {
     detail = "Verify you're ready for test day";
     href = "/mock-exam";
   } else if (tierLabel && (tierLabel === "high_risk" || tierLabel === "below_passing")) {
-    // At-risk with signal — outcome-framed CTA. User's feedback: stateful
-    // copy beats generic action verbs. Reveal what they'll learn.
+    // Beta 9.1.1 fix — title was "See Your Predicted Score" + button
+    // "SEE MY SCORE" but href routed to /practice (auto-launching a
+    // focused session). User report: "When I hit See my Score from
+    // dashboard, it goes to Practice and directly opens Practice session."
+    // Now routes to /analytics where the actual predicted score lives.
+    // The unit-focused practice is surfaced separately by WeaknessFocusCard.
     title = "See Your Predicted Score";
     buttonLabel = "SEE MY SCORE →";
     subtitle = weakestUnit ? weakestUnit.unitName : "Your predicted AP score";
     detail = weakestUnit
-      ? `Biggest gap: ${weakestUnit.missRatePct}% miss rate. Fix this → +score.`
+      ? `Biggest gap: ${weakestUnit.missRatePct}% miss rate. See score, then fix it.`
       : "Based on what you've answered so far";
-    href = weakestUnit
-      ? `/practice?mode=focused&unit=${encodeURIComponent(weakestUnit.unit)}`
-      : (nextAction.url || "/practice");
+    href = `/analytics?course=${course}&utm_source=primary_action_strip`;
   } else if (tierLabel === "near_passing") {
+    // Same fix as above — promised score, delivered practice. Route to
+    // /analytics for the score; WeaknessFocusCard surfaces the practice CTA.
     title = "Close Your Score Gap";
-    buttonLabel = "BOOST MY SCORE →";
+    buttonLabel = "SEE MY SCORE →";
     subtitle = weakestUnit ? weakestUnit.unitName : "You're close to passing";
     detail = weakestUnit
-      ? `${weakestUnit.missRatePct}% miss here — fix and you pass.`
+      ? `${weakestUnit.missRatePct}% miss in ${weakestUnit.unitName} — see your score, then close it.`
       : "A few focused sessions closes the gap";
-    href = weakestUnit
-      ? `/practice?mode=focused&unit=${encodeURIComponent(weakestUnit.unit)}`
-      : (nextAction.url || "/practice");
+    href = `/analytics?course=${course}&utm_source=primary_action_strip`;
   } else if (weakestUnit) {
     // on_track with a weak unit, or unknown tier — keep the fix-unit framing.
     title = "Continue Your Pass Plan";
