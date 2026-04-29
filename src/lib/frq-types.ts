@@ -274,8 +274,15 @@ export function parseRubric(json: unknown, type: FrqType): FrqRubric {
 
     case "INVESTIGATIVE": {
       if (Array.isArray(json)) {
-        warn("array rubric for INVESTIGATIVE; using empty fallback");
-        return emptyFallback(type);
+        // Beta 9.3.1 — flat-array rubric → parts list. INVESTIGATIVE has
+        // a small set of analysis sub-prompts (typically 4), 1pt each.
+        const parts = json.map(parsePart);
+        return {
+          type: "INVESTIGATIVE",
+          parts,
+          datasetNotes: undefined,
+          totalPoints: parts.reduce((a, p) => a + p.points, 0),
+        };
       }
       const parts = arr(json.parts).map(parsePart);
       return {
@@ -310,10 +317,44 @@ export function parseRubric(json: unknown, type: FrqType): FrqRubric {
     }
 
     case "DBQ": {
-      // Beta 9.0.7 — array form not yet mapped; pass through with empty
-      // sections (essay echo still works in DbqReveal). Followup #38.
+      // Beta 9.3.1 — map flat-array rubric to DBQ sections by step-name
+      // keyword matching. CB DBQ rubric has named sections (Thesis,
+      // Contextualization, Evidence from Documents, Evidence Beyond
+      // Documents, Sourcing/HIPP, Complexity). DB stores as flat array of
+      // {step, points, keywords}; map each step to the right section.
       if (Array.isArray(json)) {
-        return { type: "DBQ", sections: { thesis: parseSection(undefined), context: parseSection(undefined), evidenceFromDocs: { ...parseSection(undefined), minDocs: 3 }, evidenceBeyondDocs: parseSection(undefined), hipp: { ...parseSection(undefined), minDocsAnalyzed: 2 }, complexity: parseSection(undefined) }, documents: [], totalPoints: 7 };
+        const sections: DbqSections = {
+          thesis: parseSection(undefined),
+          context: parseSection(undefined),
+          evidenceFromDocs: { ...parseSection(undefined), minDocs: 3 },
+          evidenceBeyondDocs: parseSection(undefined),
+          hipp: { ...parseSection(undefined), minDocsAnalyzed: 2 },
+          complexity: parseSection(undefined),
+        };
+        for (const item of json) {
+          if (!isObj(item)) continue;
+          const stepLower = String(item.step ?? item.criterion ?? "").toLowerCase();
+          const points = num(item.points, 1);
+          const keywordsStr = Array.isArray(item.keywords)
+            ? (item.keywords as unknown[]).filter((k) => typeof k === "string").join(", ")
+            : "";
+          const criterion = str(item.criterion, str(item.step, "")) || keywordsStr;
+          if (/thesis|claim/.test(stepLower)) {
+            sections.thesis = { points, criterion };
+          } else if (/context/.test(stepLower)) {
+            sections.context = { points, criterion };
+          } else if (/from\s+the?\s*document|from\s+document/.test(stepLower)) {
+            sections.evidenceFromDocs = { points, criterion, minDocs: 3 };
+          } else if (/beyond\s+the?\s*document|beyond\s+document|outside\s+evidence/.test(stepLower)) {
+            sections.evidenceBeyondDocs = { points, criterion };
+          } else if (/sourc|hipp|happ/.test(stepLower)) {
+            sections.hipp = { points, criterion, minDocsAnalyzed: 2 };
+          } else if (/complex|analysis|reasoning/.test(stepLower)) {
+            sections.complexity = { points, criterion };
+          }
+        }
+        const totalPoints = json.reduce((acc, item) => acc + (isObj(item) ? num(item.points, 0) : 0), 0);
+        return { type: "DBQ", sections, documents: [], totalPoints: totalPoints || 7 };
       }
       const s = isObj(json.sections) ? json.sections : {};
       const evDocs = isObj(s.evidenceFromDocs) ? s.evidenceFromDocs : {};
@@ -345,7 +386,46 @@ export function parseRubric(json: unknown, type: FrqType): FrqRubric {
 
     case "LEQ": {
       if (Array.isArray(json)) {
-        return { type: "LEQ", sections: { thesis: parseSection(undefined), context: parseSection(undefined), evidence: parseSection(undefined), reasoning: parseSection(undefined), complexity: parseSection(undefined) }, totalPoints: 6 };
+        // Beta 9.3.1 — map flat-array rubric to LEQ sections by step-name
+        // keyword matching. CB LEQ rubric has 5 sections: Thesis, Context,
+        // Evidence, Reasoning, Complexity. Some DB LEQs are seeded as
+        // flat-part lists (e.g. 3 sub-prompts). For those, the section
+        // matches won't fire and sections stay empty — students still get
+        // their essay echo via DbqInput's single-textarea path.
+        const sections: LeqSections = {
+          thesis: parseSection(undefined),
+          context: parseSection(undefined),
+          evidence: parseSection(undefined),
+          reasoning: parseSection(undefined),
+          complexity: parseSection(undefined),
+        };
+        let totalPoints = 0;
+        for (const item of json) {
+          if (!isObj(item)) continue;
+          const stepLower = String(item.step ?? item.criterion ?? "").toLowerCase();
+          const points = num(item.points, 1);
+          totalPoints += points;
+          const keywordsStr = Array.isArray(item.keywords)
+            ? (item.keywords as unknown[]).filter((k) => typeof k === "string").join(", ")
+            : "";
+          const criterion = str(item.criterion, str(item.step, "")) || keywordsStr;
+          if (/thesis|claim/.test(stepLower)) {
+            sections.thesis = { points, criterion };
+          } else if (/context/.test(stepLower)) {
+            sections.context = { points, criterion };
+          } else if (/evidence/.test(stepLower)) {
+            sections.evidence = { points, criterion };
+          } else if (/reasoning|analysis/.test(stepLower)) {
+            sections.reasoning = { points, criterion };
+          } else if (/complex|sophistication/.test(stepLower)) {
+            sections.complexity = { points, criterion };
+          }
+        }
+        // LeqRubric.totalPoints is a literal 6 in the type — it's the
+        // standard CB LEQ score ceiling regardless of how many sub-parts
+        // a particular DB rubric has. Use 6 always.
+        void totalPoints;
+        return { type: "LEQ", sections, totalPoints: 6 };
       }
       const s = isObj(json.sections) ? json.sections : {};
       const sections: LeqSections = {
@@ -359,7 +439,18 @@ export function parseRubric(json: unknown, type: FrqType): FrqRubric {
     }
 
     case "AAQ": {
-      if (Array.isArray(json)) return emptyFallback("AAQ");
+      if (Array.isArray(json)) {
+        // Beta 9.3.1 — flat-array rubric → parts list. AAQ has multiple
+        // sub-questions (typically 6-7), 1pt each. parsePart already
+        // accepts step as label fallback.
+        const parts = json.map(parsePart);
+        return {
+          type: "AAQ",
+          articleMeta: {},
+          parts,
+          totalPoints: parts.reduce((a, p) => a + p.points, 0),
+        };
+      }
       const meta = isObj(json.articleMeta) ? json.articleMeta : {};
       const parts = arr(json.parts).map(parsePart);
       return {
@@ -380,7 +471,17 @@ export function parseRubric(json: unknown, type: FrqType): FrqRubric {
     }
 
     case "EBQ": {
-      if (Array.isArray(json)) return emptyFallback("EBQ");
+      if (Array.isArray(json)) {
+        // Beta 9.3.1 — flat-array rubric → parts list. EBQ has multiple
+        // sub-questions tied to article excerpts.
+        const parts = json.map(parsePart);
+        return {
+          type: "EBQ",
+          excerpts: [],
+          parts,
+          totalPoints: parts.reduce((a, p) => a + p.points, 0),
+        };
+      }
       const excerpts = arr<unknown>(json.excerpts).map((e) => {
         const o = isObj(e) ? e : {};
         return {
