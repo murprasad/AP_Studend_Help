@@ -103,10 +103,35 @@ export function FrqPracticeCard({
         if (!r.ok) throw new Error(`HTTP ${r.status}`);
         return r.json();
       })
-      .then((data: { frq: FrqFull; unlocked: boolean }) => {
+      .then((data: {
+        frq: FrqFull;
+        unlocked: boolean;
+        latestAttempt?: { studentText: string; selfScore: number | null; submittedAt: string } | null;
+      }) => {
         if (cancelled) return;
         setFrq(data.frq);
-        if (data.unlocked && data.frq.rubric) setRevealed(true);
+        if (data.unlocked && data.frq.rubric) {
+          setRevealed(true);
+          // Beta 9.0.7 — rehydrate prior attempt's answers so reveal echo
+          // shows the user's actual typed text instead of '(no answer
+          // recorded)'. studentText is either a JSON-stringified record
+          // (per-type submissions) or a raw string (legacy).
+          if (data.latestAttempt?.studentText) {
+            const parsed = parseAnswersFromStored(data.latestAttempt.studentText);
+            // parseAnswersFromStored returns { structured, fallback }
+            // — structured is a Record (preferred), fallback is the raw
+            // string (used for legacy single-textarea attempts).
+            if (parsed.structured) {
+              setStudentAnswers(parsed.structured);
+            } else if (parsed.fallback) {
+              // Legacy single-string attempt — write under 'essay' key so
+              // DBQ/LEQ reveal can pick it up. SAQ-style multi-key reveals
+              // won't echo legacy data, but that's acceptable since legacy
+              // attempts predate the per-type input UI.
+              setStudentAnswers({ essay: parsed.fallback });
+            }
+          }
+        }
       })
       .catch(() => {
         if (cancelled) return;

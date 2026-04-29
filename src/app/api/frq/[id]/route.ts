@@ -33,13 +33,17 @@ export async function GET(
     const reveal = searchParams.get("reveal") === "true";
 
     // If not explicitly revealing, only unlock full details if the student
-    // has already submitted an attempt.
-    const hasAttempt = await prisma.frqAttempt.findFirst({
+    // has already submitted an attempt. Beta 9.0.7 — also fetch the
+    // latest attempt's studentText so the UI can rehydrate the user's
+    // typed answer in the reveal echo (previously this was empty,
+    // showing '(no answer recorded)' even though DB had content).
+    const latestAttempt = await prisma.frqAttempt.findFirst({
       where: { userId: session.user.id, frqId: id },
-      select: { id: true },
+      orderBy: { submittedAt: "desc" },
+      select: { id: true, studentText: true, selfScore: true, submittedAt: true },
     });
 
-    const unlocked = reveal || !!hasAttempt;
+    const unlocked = reveal || !!latestAttempt;
 
     const frq = await prisma.freeResponseQuestion.findUnique({
       where: { id },
@@ -64,7 +68,20 @@ export async function GET(
       return NextResponse.json({ error: "FRQ not found" }, { status: 404 });
     }
 
-    return NextResponse.json({ frq, unlocked });
+    // Beta 9.0.7 — return latest attempt so UI can rehydrate the echo.
+    // studentText is JSON-stringified Record<string,string> (or legacy
+    // raw string); UI parses with parseAnswersFromStored.
+    return NextResponse.json({
+      frq,
+      unlocked,
+      latestAttempt: latestAttempt
+        ? {
+            studentText: latestAttempt.studentText,
+            selfScore: latestAttempt.selfScore,
+            submittedAt: latestAttempt.submittedAt,
+          }
+        : null,
+    });
   } catch (error) {
     console.error("GET /api/frq/[id] error:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
