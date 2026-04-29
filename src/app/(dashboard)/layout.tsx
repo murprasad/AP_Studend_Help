@@ -62,6 +62,13 @@ export default function DashboardLayout({
     // when ?quickstart=1 is present.
     if ((pathname === "/practice" || pathname.startsWith("/practice/")) && new URLSearchParams(window.location.search).get("quickstart") === "1") return;
 
+    // Beta 9.0.4 hotfix — also honor the onboarding_completed bridge cookie
+    // that PATCH /api/practice/[id] sets at session-complete. Without this,
+    // even though middleware lets /frq-practice through (bridged by cookie),
+    // this layout's client-side redirect can still fire because JWT is stale
+    // null. Reading document.cookie here is OK — same source middleware uses.
+    if (typeof document !== "undefined" && document.cookie.includes("onboarding_completed=true")) return;
+
     const onboardedAtServer = (session?.user as { onboardingCompletedAt?: string | null } | undefined)?.onboardingCompletedAt;
 
     if (onboardedAtServer === null || onboardedAtServer === undefined) {
