@@ -42,6 +42,7 @@ import { FlashcardsDueCard } from "@/components/dashboard/flashcards-due-card";
 import { SingleQuestionEntry } from "@/components/dashboard/single-question-entry";
 import { DiagnosticPromptCard } from "@/components/dashboard/diagnostic-prompt-card";
 import { GreetingCard } from "@/components/dashboard/greeting-card";
+import { JourneyHeroCard } from "@/components/dashboard/journey-hero-card";
 
 function DashboardSkeleton() {
   return (
@@ -120,10 +121,16 @@ export function DashboardView() {
 
   return (
     <div className="space-y-4 max-w-2xl mx-auto px-0 sm:px-2 py-2">
-      {/* Beta 9.1.2 — personalized greeting + plan badge. Tells the user
-          we know who they are and what plan they're on. Free users see a
-          small upgrade pill ($9.99/mo); Premium users see a Crown badge. */}
+      {/* Beta 9.1.2 — personalized greeting + plan badge. */}
       <GreetingCard />
+
+      {/* Beta 9.1.4 — JourneyHeroCard: ONE forced next-step CTA based on
+          user's funnel state. Replaces the buffet of competing cards
+          (Diagnostic prompt + Weakness focus + Daily plan + ...) for
+          users mid-onboarding. Hides itself for mature users (cohort>14d
+          AND hasDiagnostic) so the standard dashboard renders. Capped
+          users always see the cap message regardless of journey stage. */}
+      <JourneyHeroCard course={course as string} />
 
       {/* Nawal-pattern nudge — renders null unless user has 2+ dashboard
           views today AND zero questions answered today. One-shot modal
@@ -160,12 +167,12 @@ export function DashboardView() {
           Mode 1 + Mode 2 in the time-aware framework. */}
       <DailyStudyOSCard course={course as string} />
 
-      {/* 1e. Beta 9.1 — Diagnostic prompt. Surfaces the diagnostic option
-          for users with 5+ questions answered AND no diagnostic taken.
-          Without this, students "keep practicing" without ever measuring
-          their baseline — the rest of the product (Sage plan, week-by-
-          week, weak units) can't personalize. Hides itself when conditions
-          aren't met (renders null). */}
+      {/* 1e. DiagnosticPromptCard — superseded by JourneyHeroCard at top
+          of stack (Beta 9.1.4). The hero card now covers the
+          "take a diagnostic" prompt as one of its journey states. Keeping
+          this import as a fallback in case JourneyHero is hidden but a
+          mature user's hasDiagnostic flag drifts. Renders null when user
+          has taken diagnostic. */}
       <DiagnosticPromptCard course={course as string} />
 
       {/* 2. Predicted native-scale score + delta */}

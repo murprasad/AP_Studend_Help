@@ -31,19 +31,32 @@ export async function GET() {
   }
   const userId = session.user.id;
 
-  const [responseCount, diag, user] = await Promise.all([
+  // Beta 9.1.4 — extended for JourneyHeroCard state machine.
+  const startOfDay = new Date();
+  startOfDay.setHours(0, 0, 0, 0);
+  const [responseCount, diag, user, frqAttempt, sessionsToday] = await Promise.all([
     prisma.studentResponse.count({ where: { userId } }),
     prisma.diagnosticResult.findFirst({ where: { userId }, select: { id: true } }),
     prisma.user.findUnique({
       where: { id: userId },
-      select: { freeTrialCourse: true, subscriptionTier: true },
+      select: { freeTrialCourse: true, subscriptionTier: true, createdAt: true },
     }),
+    prisma.frqAttempt.findFirst({ where: { userId }, select: { id: true, frq: { select: { course: true } } } }),
+    prisma.studentResponse.count({ where: { userId, answeredAt: { gte: startOfDay } } }),
   ]);
+
+  const cohortAgeDays = user?.createdAt
+    ? Math.floor((Date.now() - new Date(user.createdAt).getTime()) / (1000 * 60 * 60 * 24))
+    : 0;
 
   return NextResponse.json({
     responseCount,
     hasDiagnostic: !!diag,
+    hasFrqAttempt: !!frqAttempt,
+    frqAttemptCourse: frqAttempt?.frq?.course ?? null,
     hasTrial: !!user?.freeTrialCourse,
     subscriptionTier: user?.subscriptionTier ?? "FREE",
+    cohortAgeDays,
+    answeredToday: sessionsToday,
   });
 }
