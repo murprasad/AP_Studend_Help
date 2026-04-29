@@ -6,20 +6,33 @@ pages_build_output_dir = ".open-next"
 [vars]
 APP_URL = "https://studentnest.ai"
 NEXT_PUBLIC_APP_URL = "https://studentnest.ai"
-NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY = "pk_live_51TByoMRVh9BYsR467EsjvOCFtSBWDgjWxncfMLyHiFiFkSvGhnmsJhhxHI6PA0UCqNJbNvFqyJIjsXwNhgfKLxod005BwsBI5u"
 RESEND_FROM_EMAIL = "noreply@studentnest.ai"
 
-# ─── Stripe Payment Secrets ───────────────────────────────────────────────────
-# Set these via the Cloudflare Pages dashboard or with:
+# ─── Stripe — ALL Stripe values now via CF Pages env vars ────────────────────
+# Beta 9.3.2 (2026-04-30) — moved NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY out of
+# wrangler.toml after a reddit user flagged that it was committed to git.
+# The pk_live_ publishable key is *designed by Stripe to be public* (it's
+# shipped to every browser that loads Stripe.js), so this is a hygiene fix
+# rather than a security fix — but keeping it out of source control means
+# rotating it doesn't require a code commit.
+#
+# Set publishable key via:
+#   wrangler pages env set NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY \
+#     --project-name=studentnest --env production
+# OR via Cloudflare Pages dashboard → Settings → Environment variables.
+#
+# Secret keys (already managed via CF Pages secrets, never in this file):
 #   wrangler pages secret put STRIPE_SECRET_KEY       --project-name=studentnest
 #   wrangler pages secret put STRIPE_WEBHOOK_SECRET   --project-name=studentnest
 #   wrangler pages secret put STRIPE_PREMIUM_PRICE_ID --project-name=studentnest
 #   wrangler pages secret put STRIPE_ANNUAL_PRICE_ID  --project-name=studentnest
 #
-# STRIPE_SECRET_KEY         = "sk_live_..."   ← CF Pages Secret (not here)
-# STRIPE_WEBHOOK_SECRET     = "whsec_..."     ← CF Pages Secret (not here)
-# STRIPE_PREMIUM_PRICE_ID   = "price_..."     ← CF Pages Secret (not here)  (monthly $9.99)
-# STRIPE_ANNUAL_PRICE_ID    = "price_..."     ← CF Pages Secret (not here)  (annual  $79.99)
+# Variables now sourced from CF Pages env vars (not in this file):
+#   NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY = "pk_live_..."   (publishable, client-side)
+#   STRIPE_SECRET_KEY                  = "sk_live_..."   (server-side only)
+#   STRIPE_WEBHOOK_SECRET              = "whsec_..."     (webhook signing)
+#   STRIPE_PREMIUM_PRICE_ID            = "price_..."     (monthly $9.99)
+#   STRIPE_ANNUAL_PRICE_ID             = "price_..."     (annual  $79.99)
 # ─────────────────────────────────────────────────────────────────────────────
 
 # ─── Native Cloudflare rate-limit bindings (SEC-2b, 2026-04-25) ──────────────
