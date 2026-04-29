@@ -324,10 +324,11 @@ export async function PATCH(
     // auto-redirect (to /practice/quickstart) from the returning-student
     // experience (lands on /dashboard normally). Idempotent — only sets
     // if currently null.
-    await prisma.user.updateMany({
+    const onboardingResult = await prisma.user.updateMany({
       where: { id: session.user.id, onboardingCompletedAt: null },
       data: { onboardingCompletedAt: new Date() },
-    }).catch(() => { /* non-fatal */ });
+    }).catch(() => ({ count: 0 }));
+    const justCompletedOnboarding = onboardingResult.count > 0;
 
     // Fetch previous session accuracy for improvement comparison
     const previousSession = await prisma.practiceSession.findFirst({
@@ -341,7 +342,7 @@ export async function PATCH(
       select: { score: true },
     });
 
-    return NextResponse.json({
+    const response = NextResponse.json({
       session: updatedSession,
       summary: {
         totalQuestions: responses.length,
@@ -353,6 +354,24 @@ export async function PATCH(
         previousAccuracy: previousSession?.score != null ? Math.round(previousSession.score) : null,
       },
     });
+
+    // Beta 9.0.2 hotfix (2026-04-29) — when this PATCH is the one that
+    // flips onboardingCompletedAt from null to NOW, set the
+    // `onboarding_completed` cookie that middleware reads. Without this
+    // bridge, the user's JWT still has onboardingCompletedAt=null until
+    // their next sign-in, so any post-session navigation (notably
+    // FrqTasteNudge → /frq-practice) gets bounced back to
+    // /practice/quickstart, looping the user back to MCQs.
+    if (justCompletedOnboarding) {
+      response.cookies.set("onboarding_completed", "true", {
+        path: "/",
+        maxAge: 60 * 60 * 24, // 1 day — long enough to bridge until JWT refresh
+        sameSite: "lax",
+        httpOnly: false, // client may also read for localStorage parity
+      });
+    }
+
+    return response;
   } catch (error) {
     console.error("PATCH /api/practice/[sessionId] error:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
