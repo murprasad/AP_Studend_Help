@@ -50,7 +50,14 @@ export default withAuth(
       // onboardingCompletedAt is null for new users, ISO string for completed
       (token.onboardingCompletedAt === null || token.onboardingCompletedAt === undefined)
     ) {
-      return NextResponse.redirect(new URL("/practice/quickstart", req.url));
+      // Beta 9.6.4 (2026-04-30) — was /practice/quickstart, now /journey.
+      // The dashboard layout already routes null-onboardingCompletedAt
+      // users to /journey (Beta 9.6.1). Middleware MUST match or fresh
+      // signups bounce off middleware to /practice/quickstart before
+      // layout ever runs — and never reach the journey rail. The
+      // onboarding_completed bridge cookie still exempts users in the
+      // middle of completing their first session.
+      return NextResponse.redirect(new URL("/journey", req.url));
     }
 
     return NextResponse.next();
