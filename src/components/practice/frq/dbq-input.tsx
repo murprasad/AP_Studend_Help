@@ -97,36 +97,48 @@ export function DbqInput({ rubric, onSubmit, submitting }: DbqInputProps) {
                 No documents attached to this DBQ.
               </div>
             ) : (
-              rubric.documents.map((doc) => (
-                <article
-                  key={doc.id}
-                  className="rounded-md border bg-muted/30 p-3 text-sm space-y-1.5"
-                >
-                  <header className="flex items-center justify-between gap-2">
-                    <div className="flex items-center gap-1.5 text-xs font-semibold text-amber-500">
-                      <FileText className="h-3.5 w-3.5" />
-                      {doc.id}
-                    </div>
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      className="h-6 px-2 text-[10px]"
-                      onClick={() => insertDocCitation(doc.id)}
-                    >
-                      Cite [{doc.id}]
-                    </Button>
-                  </header>
-                  {doc.sourceCitation && (
-                    <p className="text-[11px] italic text-muted-foreground">
-                      {doc.sourceCitation}
+              rubric.documents.map((doc) => {
+                // Beta 9.3.4 — match CB DBQ document layout (user feedback,
+                // 2026-04-30): full "Document N" header (not "Doc1"),
+                // prominent "Source:" citation line (not italic muted),
+                // and 14px reading body. Mirrors the DBQ format students
+                // see on the AP exam, so the practice surface feels like
+                // the real test.
+                const docNum =
+                  doc.id.match(/(\d+)/)?.[1] ?? doc.id.replace(/^Doc\s*/i, "");
+                const docHeading = /^[A-Z]$/.test(doc.id) ? doc.id : `Document ${docNum}`;
+                return (
+                  <article
+                    key={doc.id}
+                    className="rounded-md border bg-muted/30 p-4 space-y-2"
+                  >
+                    <header className="flex items-center justify-between gap-2">
+                      <div className="flex items-center gap-1.5 text-sm font-bold">
+                        <FileText className="h-4 w-4 text-amber-500" />
+                        {docHeading}
+                      </div>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        className="h-6 px-2 text-[10px]"
+                        onClick={() => insertDocCitation(doc.id)}
+                      >
+                        Cite [{doc.id}]
+                      </Button>
+                    </header>
+                    {doc.sourceCitation && (
+                      <p className="text-[12px] leading-snug">
+                        <span className="font-semibold">Source:</span>{" "}
+                        <span className="text-muted-foreground">{doc.sourceCitation}</span>
+                      </p>
+                    )}
+                    <p className="whitespace-pre-wrap text-[14px] leading-relaxed pt-1 border-t border-border/30">
+                      {doc.excerpt}
                     </p>
-                  )}
-                  <p className="whitespace-pre-wrap text-[13px] leading-relaxed">
-                    {doc.excerpt}
-                  </p>
-                </article>
-              ))
+                  </article>
+                );
+              })
             )}
           </div>
         </div>

@@ -11,7 +11,7 @@
  *
  * State machine:
  *   - capped-today        → "You've hit today's cap" (Premium upgrade)
- *   - brand-new           → "Welcome — answer 1 to warm up"
+ *   - brand-new           → "Welcome — answer 3 to see your level"
  *   - mcq-fresh           → "Keep going — finish your warm-up"
  *   - mcq-done-pre-frq    → "Now try a real FRQ — see the rubric"
  *   - frq-done-pre-diag   → "Take 10-min Diagnostic — get your score"
@@ -303,14 +303,14 @@ export function JourneyHeroCard({ course }: Props) {
                 Welcome — let&apos;s start
               </p>
               <p className="text-base font-semibold leading-snug">
-                Answer one question to warm up. ~30 seconds.
+                Answer 3 questions to see your level. ~60 seconds.
               </p>
               <p className="text-xs text-muted-foreground">
-                One question. Smart-default course. No setup.
+                Three questions. Smart-default course. No setup.
               </p>
               <Link href="/practice/quickstart">
                 <Button size="sm" className="rounded-full mt-1 gap-2">
-                  Start your first question
+                  Start your warm-up
                   <ArrowRight className="h-4 w-4" />
                 </Button>
               </Link>

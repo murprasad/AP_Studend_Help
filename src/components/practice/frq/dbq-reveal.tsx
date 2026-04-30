@@ -117,25 +117,31 @@ export function DbqReveal({
         <section>
           <SectionHeading>Documents (refresher)</SectionHeading>
           <div className="grid gap-2 sm:grid-cols-2">
-            {rubric.documents.map((doc) => (
-              <div
-                key={doc.id}
-                className="rounded-md border bg-muted/20 p-2.5 text-xs space-y-1"
-              >
-                <div className="flex items-center gap-1.5 text-amber-500 font-semibold">
-                  <FileText className="h-3 w-3" />
-                  {doc.id}
-                </div>
-                {doc.sourceCitation && (
-                  <p className="italic text-muted-foreground">
-                    {doc.sourceCitation}
+            {rubric.documents.map((doc) => {
+              const docNum =
+                doc.id.match(/(\d+)/)?.[1] ?? doc.id.replace(/^Doc\s*/i, "");
+              const docHeading = /^[A-Z]$/.test(doc.id) ? doc.id : `Document ${docNum}`;
+              return (
+                <div
+                  key={doc.id}
+                  className="rounded-md border bg-muted/20 p-3 text-xs space-y-1.5"
+                >
+                  <div className="flex items-center gap-1.5 font-bold text-sm">
+                    <FileText className="h-3.5 w-3.5 text-amber-500" />
+                    {docHeading}
+                  </div>
+                  {doc.sourceCitation && (
+                    <p className="text-[11px] leading-snug">
+                      <span className="font-semibold">Source:</span>{" "}
+                      <span className="text-muted-foreground">{doc.sourceCitation}</span>
+                    </p>
+                  )}
+                  <p className="whitespace-pre-wrap leading-relaxed line-clamp-4 pt-1 border-t border-border/30">
+                    {doc.excerpt}
                   </p>
-                )}
-                <p className="whitespace-pre-wrap leading-relaxed line-clamp-4">
-                  {doc.excerpt}
-                </p>
-              </div>
-            ))}
+                </div>
+              );
+            })}
           </div>
         </section>
       )}

@@ -87,7 +87,7 @@ export default function QuickstartPage() {
     // both middleware AND DashboardLayout's "exempt this nav from new-user
     // bounce-to-quickstart" check. Without this, fresh user click → /practice
     // → middleware sees onboardingCompletedAt=null → bounces back to here.
-    router.push(`/practice?mode=focused&count=5&course=${course}&src=quickstart&quickstart=1`);
+    router.push(`/practice?mode=focused&count=3&course=${course}&src=quickstart&quickstart=1`);
   }
 
   if (picked) {
@@ -96,7 +96,7 @@ export default function QuickstartPage() {
         <div className="max-w-md text-center space-y-3">
           <Sparkles className="h-8 w-8 mx-auto text-primary" />
           <h1 className="text-xl font-semibold">Loading your first question…</h1>
-          <p className="text-sm text-muted-foreground">5 quick questions. No setup.</p>
+          <p className="text-sm text-muted-foreground">3 quick questions. ~60 seconds.</p>
         </div>
       </div>
     );
