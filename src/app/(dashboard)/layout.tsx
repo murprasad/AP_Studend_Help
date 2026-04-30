@@ -78,7 +78,14 @@ export default function DashboardLayout({
         .then((data) => {
           if (!data?.user) return;
           if (data.user.onboardingCompletedAt == null) {
-            router.replace("/practice/quickstart");
+            // Beta 9.6 (2026-04-30) — for users who haven't completed
+            // onboarding YET, prefer the new /journey rail over the
+            // legacy /practice/quickstart. The journey provides the
+            // same auto-start-first-Q UX (in Step 1) plus FRQ taste,
+            // diagnostic, flashcards, targeted practice, and Step 5
+            // upgrade hub. /practice/quickstart is kept as a fallback
+            // for users explicitly deep-linked to it.
+            router.replace("/journey");
           }
         })
         .catch(() => { /* silent */ });
