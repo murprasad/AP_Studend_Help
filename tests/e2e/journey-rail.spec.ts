@@ -91,7 +91,12 @@ test.describe("Journey Mode rail (Beta 9.5)", () => {
 
     await page.goto("/journey");
     await expect(page.getByRole("heading", { name: /Welcome to StudentNest/i })).toBeVisible({ timeout: 15000 });
-    await page.getByRole("link", { name: /Exit/i }).click();
+    // Beta 9.6 — Exit now opens an exit-intent modal first. Click Skip
+    // to dismiss without feedback (preserves the original "redirects"
+    // contract this test asserts).
+    await page.getByRole("button", { name: /Exit/i }).click();
+    await expect(page.getByRole("heading", { name: /Before you go/i })).toBeVisible({ timeout: 5000 });
+    await page.getByRole("button", { name: /^Skip$/i }).click();
     await page.waitForURL(/\/dashboard/, { timeout: 10000 });
     expect(page.url()).toContain("/dashboard");
   });

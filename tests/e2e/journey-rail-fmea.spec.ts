@@ -71,10 +71,14 @@ test.describe("Journey FMEA — every screen renders + copy is coherent", () => 
     await expect(page.getByRole("heading", { name: /Welcome to StudentNest/i })).toBeVisible({ timeout: 15000 });
     // Top-bar progress + step counter
     await expect(page.getByText(/Step 0 of 5/i)).toBeVisible();
-    // Exit link
-    const exit = page.getByRole("link", { name: /Exit/i });
+    // Beta 9.6 — Exit is a button that opens an exit-intent modal first
+    // (not a Link to /dashboard anymore). Click it, then click Skip in
+    // the modal, which is what triggers the redirect.
+    const exit = page.getByRole("button", { name: /Exit/i });
     await expect(exit).toBeVisible();
     await exit.click();
+    await expect(page.getByRole("heading", { name: /Before you go/i })).toBeVisible({ timeout: 5000 });
+    await page.getByRole("button", { name: /^Skip$/i }).click();
     await page.waitForURL(/\/dashboard/, { timeout: 10000 });
   });
 
