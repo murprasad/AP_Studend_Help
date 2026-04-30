@@ -1,29 +1,37 @@
 "use client";
 
 /**
- * JourneyShell — shared chrome for every step inside /journey (Beta 9.5).
+ * JourneyShell — shared chrome for every step inside /journey.
  *
  * Renders:
- *   - top progress bar ("Step N of 5") + small "Exit" button (returns to
- *     dashboard; journey state is preserved for resume)
+ *   - top progress bar ("Step N of 5") + small "Exit" button
  *   - centered card content area with max-width for readability
+ *
+ * Beta 9.6 (2026-04-30): Exit click no longer calls /api/journey
+ * directly — it opens the ExitIntentModal first so we can capture
+ * preloaded reason + optional free-text. Modal handles the API write
+ * and the redirect.
  */
 
-import Link from "next/link";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { X } from "lucide-react";
+import { ExitIntentModal } from "./exit-intent-modal";
 
 interface Props {
   step: number;
   totalSteps?: number;
   children: React.ReactNode;
   /** When true, the step itself owns the full viewport — no padded
-   *  card wrapper. Use for step 1/3/4 MCQ carousels which want their
-   *  own immersive layout. */
+   *  card wrapper. */
   raw?: boolean;
 }
 
 export function JourneyShell({ step, totalSteps = 5, children, raw = false }: Props) {
+  const router = useRouter();
+  const [exitOpen, setExitOpen] = useState(false);
   const pct = Math.min(100, Math.max(0, (step / totalSteps) * 100));
+
   return (
     <div className="min-h-screen flex flex-col">
       {/* Top progress bar + exit */}
@@ -34,20 +42,13 @@ export function JourneyShell({ step, totalSteps = 5, children, raw = false }: Pr
               <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
                 Step {step} of {totalSteps}
               </p>
-              <Link
-                href="/dashboard"
+              <button
+                type="button"
+                onClick={() => setExitOpen(true)}
                 className="text-[11px] text-muted-foreground hover:text-foreground inline-flex items-center gap-1"
-                onClick={() => {
-                  // fire-and-forget journey exit so resume works
-                  fetch("/api/journey", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ action: "exit" }),
-                  }).catch(() => {});
-                }}
               >
                 <X className="h-3 w-3" /> Exit
-              </Link>
+              </button>
             </div>
             <div className="h-1 rounded-full bg-secondary/60 overflow-hidden">
               <div
@@ -62,6 +63,15 @@ export function JourneyShell({ step, totalSteps = 5, children, raw = false }: Pr
       <main className={raw ? "flex-1" : "flex-1 px-4 py-8"}>
         {raw ? children : <div className="max-w-2xl mx-auto">{children}</div>}
       </main>
+
+      <ExitIntentModal
+        open={exitOpen}
+        onOpenChange={setExitOpen}
+        onExited={() => {
+          try { localStorage.setItem("journey_status_v1", "exited"); } catch { /* ignore */ }
+          router.push("/dashboard");
+        }}
+      />
     </div>
   );
 }

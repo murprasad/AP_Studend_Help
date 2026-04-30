@@ -25,12 +25,13 @@ import { Step0CoursePick } from "@/components/journey/step-0-course-pick";
 import { Step1Mcq } from "@/components/journey/step-1-mcq";
 import { Step2Frq } from "@/components/journey/step-2-frq";
 import { Step3Diagnostic } from "@/components/journey/step-3-diagnostic";
+import { Step3aFlashcards } from "@/components/journey/step-3a-flashcards";
 import { Step5Done } from "@/components/journey/step-5-done";
 import { TransitionCard } from "@/components/journey/transition-card";
 import { COURSE_REGISTRY } from "@/lib/courses";
 import type { ApCourse } from "@prisma/client";
 
-type Mode = "loading" | "step0" | "step1" | "trans12" | "step2" | "trans23" | "step3" | "trans34" | "step4" | "step5";
+type Mode = "loading" | "step0" | "step1" | "trans12" | "step2" | "trans23" | "step3" | "trans34" | "step3a" | "step4" | "step5";
 
 interface Journey {
   id: string;
@@ -159,8 +160,12 @@ export default function JourneyPage() {
     setMode("trans34");
   }, [apiPost]);
 
-  // ── trans34 → step 4 ───────────────────────────────────────────────────────
-  const handleTrans34 = () => setMode("step4");
+  // ── trans34 → step 3a (flashcards) → step 4 ───────────────────────────────
+  // Beta 9.6 — insert flashcard micro-step between score reveal and
+  // targeted MCQ practice. Per user spec: "Quick memory boost before
+  // practice" — light touch, no separate feature, just micro-step.
+  const handleTrans34 = () => setMode("step3a");
+  const handleStep3aDone = () => setMode("step4");
 
   // ── Step 4 → step 5 (done) ─────────────────────────────────────────────────
   const handleStep4Done = useCallback(async (artifact: { sessionId: string }) => {
@@ -258,32 +263,53 @@ export default function JourneyPage() {
   }
 
   if (mode === "trans34") {
+    // Beta 9.6 — tightened copy per user spec: "You're at a 3.2 / Focus:
+    // Unit 3 (weakest)". Score and weak unit on the same screen, no
+    // dashboard chrome — that IS the analytics moment.
     return (
       <JourneyShell step={4} totalSteps={5}>
         <div className="pt-8 space-y-5">
           {predictedScore !== null && (
             <div className="rounded-2xl border border-blue-500/30 bg-blue-500/5 p-6 text-center">
               <p className="text-xs uppercase tracking-wide text-muted-foreground mb-1">
-                Your projected AP score
+                You&apos;re at a
               </p>
               <p className="text-7xl font-bold text-blue-700 dark:text-blue-400 leading-none">
                 {predictedScore}
               </p>
-              <p className="text-xs text-muted-foreground mt-2">out of 5</p>
+              <p className="text-xs text-muted-foreground mt-2">projected AP score · out of 5</p>
+              {weakestUnitName && (
+                <p className="text-sm mt-4 font-medium">
+                  Focus: <span className="text-foreground">{weakestUnitName}</span> <span className="text-muted-foreground">(weakest)</span>
+                </p>
+              )}
             </div>
           )}
           <TransitionCard
             eyebrow="Here's how to improve"
-            title={weakestUnitName ? `Your biggest gap: ${weakestUnitName}` : "Targeted practice next"}
+            title={weakestUnitName ? `5 questions in ${weakestUnitName}` : "Targeted practice next"}
             body={weakestUnitName
-              ? "5 quick MCQs in this unit will move your projected score the most."
-              : "5 quick MCQs to lock in what you've learned so far."}
-            cta="Start targeted practice"
+              ? "These move your projected score the most. Plus a quick memory boost first."
+              : "5 quick MCQs to lock in what you've learned. Plus a quick memory boost first."}
+            cta="Continue"
             tone="emerald"
             icon="target"
             onContinue={handleTrans34}
           />
         </div>
+      </JourneyShell>
+    );
+  }
+
+  if (mode === "step3a") {
+    // Beta 9.6 — flashcard micro-step (between trans34 reveal and step 4)
+    return (
+      <JourneyShell step={4} totalSteps={5} raw>
+        <Step3aFlashcards
+          course={course}
+          weakestUnit={weakestUnit}
+          onComplete={handleStep3aDone}
+        />
       </JourneyShell>
     );
   }

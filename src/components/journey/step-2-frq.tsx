@@ -8,8 +8,9 @@
  */
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Loader2, ArrowRight } from "lucide-react";
+import { Loader2, ArrowRight, Sparkles } from "lucide-react";
 import { FrqPracticeCard } from "@/components/practice/frq-practice-card";
 
 interface FrqRow {
@@ -98,15 +99,46 @@ export function Step2Frq({ course, prefetchedFrq, onComplete }: Props) {
       />
 
       {revealed && (
-        <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/5 p-5 text-center space-y-3">
-          <p className="text-base font-semibold">That&apos;s how AP scores work.</p>
-          <p className="text-sm text-muted-foreground max-w-md mx-auto">
-            Now a quick diagnostic to estimate your overall AP score.
-          </p>
-          <Button onClick={() => onComplete(frq.id)} className="rounded-full gap-2">
-            See my projected score
-            <ArrowRight className="h-4 w-4" />
-          </Button>
+        <div className="space-y-3">
+          {/* Beta 9.6 — Sage taste at the moment of need. Pre-loads tutor
+              with this FRQ's prompt so the user sees Sage's value
+              right after seeing the rubric. Opens in a new tab so the
+              journey state on this tab survives the diversion. */}
+          <div className="rounded-xl border border-indigo-500/30 bg-indigo-500/5 p-4 flex items-start gap-3">
+            <Sparkles className="h-5 w-5 text-indigo-700 dark:text-indigo-400 flex-shrink-0 mt-0.5" />
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-semibold leading-tight">
+                Want help improving this answer?
+              </p>
+              <p className="text-xs text-muted-foreground mt-1">
+                Sage can explain the rubric, suggest stronger evidence, or grade your draft. One free chat.
+              </p>
+              <Link
+                href={`/ai-tutor?prompt=${encodeURIComponent(
+                  `I'm working on this AP FRQ. Can you help me improve my answer based on the rubric?\n\nQuestion:\n${frq.promptText.slice(0, 800)}\n\nWhat are the key things AP graders look for in a strong response here?`,
+                )}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block mt-2"
+              >
+                <Button size="sm" variant="outline" className="rounded-full gap-2 border-indigo-500/40 hover:bg-indigo-500/10">
+                  <Sparkles className="h-3.5 w-3.5" />
+                  Ask Sage
+                </Button>
+              </Link>
+            </div>
+          </div>
+
+          <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/5 p-5 text-center space-y-3">
+            <p className="text-base font-semibold">That&apos;s how AP scores work.</p>
+            <p className="text-sm text-muted-foreground max-w-md mx-auto">
+              Now a quick diagnostic to estimate your overall AP score.
+            </p>
+            <Button onClick={() => onComplete(frq.id)} className="rounded-full gap-2">
+              See my projected score
+              <ArrowRight className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
       )}
     </div>

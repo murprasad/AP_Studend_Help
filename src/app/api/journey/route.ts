@@ -38,6 +38,9 @@ export async function POST(req: Request) {
     step?: number;
     weakestUnit?: string;
     artifactId?: string;
+    // Beta 9.6 — exit-intent feedback fields
+    reason?: string;
+    feedback?: string;
   };
   const userId = session.user.id;
   const action = body.action;
@@ -71,10 +74,20 @@ export async function POST(req: Request) {
   }
 
   if (action === "exit") {
+    // Beta 9.6 — capture optional exit-intent feedback (preloaded reason
+    // + optional free text). Both nullable; modal can be skipped.
+    const reason = typeof body.reason === "string" ? body.reason.slice(0, 100) : null;
+    const feedback = typeof body.feedback === "string" ? body.feedback.slice(0, 1000) : null;
+    const exitData: Record<string, unknown> = {
+      currentStep: 99,
+      exitAt: new Date(),
+    };
+    if (reason) exitData.exitReason = reason;
+    if (feedback) exitData.exitFeedback = feedback;
     const journey = await prisma.userJourney.upsert({
       where: { userId },
-      update: { currentStep: 99 },
-      create: { userId, course: "AP_WORLD_HISTORY", currentStep: 99 },
+      update: exitData,
+      create: { userId, course: "AP_WORLD_HISTORY", ...exitData },
     });
     return NextResponse.json({ journey });
   }

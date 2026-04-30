@@ -1,17 +1,20 @@
 "use client";
 
 /**
- * Step 5 — Done / cap reached (Beta 9.5).
+ * Step 5 — "You're set up" (Beta 9.6 redesign).
  *
- * Final screen when the user finishes all 4 active steps in a day.
- * Frames the cap as a completed plan, not a "limit hit" wall. CTA:
- *   1. Upgrade — primary
- *   2. Come back tomorrow — secondary (returns to dashboard)
+ * Per user spec: replace "Come back tomorrow" wall with a guided exit
+ * to the dashboard. Three checkmarks summarize what they did, three
+ * tiles route to the dashboard with focus= so the matching feature is
+ * highlighted (scroll-and-pulse). Premium upgrade is a subtle link
+ * underneath, not a competing CTA.
  */
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Trophy, Crown, ArrowRight } from "lucide-react";
+import {
+  Trophy, Check, ArrowRight, Brain, Sparkles, BarChart3,
+} from "lucide-react";
 
 interface Props {
   predictedScore: number | null;
@@ -21,58 +24,101 @@ interface Props {
 
 export function Step5Done({ predictedScore, weakestUnitName }: Props) {
   return (
-    <div className="pt-12 pb-8 max-w-xl mx-auto space-y-6">
+    <div className="pt-10 pb-12 max-w-xl mx-auto space-y-6">
       <div className="text-center">
         <div className="w-20 h-20 rounded-2xl bg-emerald-500/15 flex items-center justify-center mx-auto mb-4">
           <Trophy className="h-10 w-10 text-emerald-700 dark:text-emerald-400" />
         </div>
-        <h1 className="text-3xl font-bold">You completed today&apos;s plan</h1>
+        <h1 className="text-3xl font-bold">You&apos;re set up</h1>
         <p className="text-muted-foreground mt-2 max-w-md mx-auto">
-          Great work — you walked the same arc real AP students walk in their first study session.
+          You completed your first AP session.
         </p>
       </div>
 
-      {predictedScore !== null && (
-        <div className="rounded-2xl border border-blue-500/30 bg-blue-500/5 p-6 text-center">
-          <p className="text-xs uppercase tracking-wide text-muted-foreground mb-1">
-            Your projected AP score
-          </p>
-          <p className="text-7xl font-bold text-blue-700 dark:text-blue-400 leading-none">
-            {predictedScore}
-          </p>
-          <p className="text-xs text-muted-foreground mt-2">out of 5</p>
-          {weakestUnitName && (
-            <p className="text-sm text-muted-foreground mt-3">
-              Biggest gap: <span className="font-medium text-foreground">{weakestUnitName}</span>
-            </p>
-          )}
-        </div>
-      )}
-
-      <div className="rounded-2xl border border-amber-500/30 bg-amber-500/5 p-5 space-y-3">
-        <div className="flex items-start gap-3">
-          <Crown className="h-6 w-6 text-amber-700 dark:text-amber-400 mt-0.5 flex-shrink-0" />
-          <div>
-            <p className="text-base font-semibold">Keep the momentum — upgrade to Premium</p>
-            <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
-              $9.99/mo unlocks unlimited practice + every FRQ + AI rubric grading on your essays.
-              One subscription covers AP, SAT, ACT.
-            </p>
+      {/* Three ✓ summary */}
+      <div className="rounded-2xl border border-border/40 bg-card p-5 space-y-2.5">
+        {[
+          "Practiced real questions",
+          "Tried an FRQ + saw the rubric",
+          predictedScore !== null
+            ? `Got your projected AP score: ${predictedScore}/5${weakestUnitName ? ` · weakest unit ${weakestUnitName}` : ""}`
+            : "Got your projected AP score",
+        ].map((line, i) => (
+          <div key={i} className="flex items-start gap-2.5">
+            <div className="w-5 h-5 rounded-full bg-emerald-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <Check className="h-3 w-3 text-emerald-700 dark:text-emerald-400" />
+            </div>
+            <p className="text-sm leading-relaxed">{line}</p>
           </div>
-        </div>
-        <Link href="/billing?utm_source=journey_done&utm_campaign=journey_v95" className="block">
-          <Button size="lg" className="w-full rounded-full gap-2 bg-amber-600 hover:bg-amber-700 text-white">
-            Upgrade — $9.99/mo
-            <ArrowRight className="h-4 w-4" />
-          </Button>
-        </Link>
+        ))}
       </div>
 
-      <div className="text-center">
-        <Link href="/dashboard" className="text-sm text-muted-foreground hover:text-foreground">
-          Or come back tomorrow →
+      {/* Three next-step tiles — each routes to dashboard with focus=*/}
+      <div className="space-y-2">
+        <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground text-center mb-1">
+          What to do next
+        </p>
+        <NextTile
+          icon={<Brain className="h-5 w-5 text-blue-700 dark:text-blue-400" />}
+          title="Continue practice tomorrow"
+          subtitle="Pick up your daily plan + drill weakest units."
+          href="/dashboard?focus=primary-action"
+        />
+        <NextTile
+          icon={<BarChart3 className="h-5 w-5 text-emerald-700 dark:text-emerald-400" />}
+          title="Review flashcards"
+          subtitle="Spaced repetition on the concepts you just saw."
+          href="/dashboard?focus=flashcards"
+        />
+        <NextTile
+          icon={<Sparkles className="h-5 w-5 text-indigo-700 dark:text-indigo-400" />}
+          title="Ask Sage for help"
+          subtitle="Stuck on a concept? Sage explains anything in 30 seconds."
+          href="/ai-tutor"
+        />
+      </div>
+
+      {/* Subtle upgrade link below — not a competing CTA */}
+      <div className="text-center pt-2">
+        <Link
+          href="/billing?utm_source=journey_done&utm_campaign=v96"
+          className="text-xs text-muted-foreground hover:text-foreground"
+        >
+          Or unlock unlimited everything — Premium $9.99/mo →
         </Link>
       </div>
     </div>
+  );
+}
+
+function NextTile({
+  icon,
+  title,
+  subtitle,
+  href,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  subtitle: string;
+  href: string;
+}) {
+  return (
+    <Link href={href} className="block">
+      <Button
+        variant="outline"
+        className="w-full h-auto py-3 px-4 justify-start gap-3 border-border/40 hover:bg-accent"
+      >
+        <div className="w-9 h-9 rounded-lg bg-background flex items-center justify-center flex-shrink-0">
+          {icon}
+        </div>
+        <div className="flex-1 min-w-0 text-left">
+          <p className="text-sm font-semibold leading-tight">{title}</p>
+          <p className="text-[11px] text-muted-foreground mt-0.5 leading-snug whitespace-normal">
+            {subtitle}
+          </p>
+        </div>
+        <ArrowRight className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+      </Button>
+    </Link>
   );
 }

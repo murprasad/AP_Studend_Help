@@ -44,6 +44,7 @@ import { DiagnosticPromptCard } from "@/components/dashboard/diagnostic-prompt-c
 import { GreetingCard } from "@/components/dashboard/greeting-card";
 import { JourneyHeroCard } from "@/components/dashboard/journey-hero-card";
 import { useJourneyForcing } from "@/hooks/use-journey-forcing";
+import { useDashboardFocus } from "@/hooks/use-dashboard-focus";
 
 function DashboardSkeleton() {
   return (
@@ -132,6 +133,8 @@ function DashboardBody({ course, impressionId }: { course: string; impressionId:
   //   PrimaryActionStrip("Warm up") + SingleQuestionEntry("TRY IT") +
   //   DiagnosticPrompt + OutcomeProgressStrip — duplicated welcome vibe.
   const { forcing, loading: journeyLoading } = useJourneyForcing(course);
+  // Beta 9.6 — focus pulse when arriving from /journey "What to do next" tile
+  useDashboardFocus();
 
   return (
     <div className="space-y-4 max-w-2xl mx-auto px-0 sm:px-2 py-2">
@@ -162,7 +165,9 @@ function DashboardBody({ course, impressionId }: { course: string; impressionId:
           card already supplies the start CTA — showing this strip too gave
           users 2 competing "Warm up / TRY IT" buttons). */}
       {!forcing && !journeyLoading && (
-        <PrimaryActionStrip course={course} impressionId={impressionId} />
+        <div data-focus-target="primary-action">
+          <PrimaryActionStrip course={course} impressionId={impressionId} />
+        </div>
       )}
 
       {/* 1b-Q1. Single-question entry — Q1 commitment fix (2026-04-27).
@@ -195,7 +200,9 @@ function DashboardBody({ course, impressionId }: { course: string; impressionId:
       <DiagnosticPromptCard course={course as string} />
 
       {/* 2. Predicted native-scale score + delta */}
-      <OutcomeProgressStrip course={course as string} />
+      <div data-focus-target="analytics">
+        <OutcomeProgressStrip course={course as string} />
+      </div>
 
       {/* Secondary cards collapsed behind "Show more" toggle.
           User-directed (2026-04-27): "reduce dashboard to ONE primary
@@ -209,7 +216,14 @@ function DashboardBody({ course, impressionId }: { course: string; impressionId:
 }
 
 function DashboardSecondaryCards({ course }: { course: string }) {
-  const [expanded, setExpanded] = useState(false);
+  // Beta 9.6 — auto-expand if user arrived with a focus target inside this
+  // collapsed section. Otherwise scrollIntoView fails because the card is
+  // hidden behind the "Show more" button.
+  const [expanded, setExpanded] = useState(() => {
+    if (typeof window === "undefined") return false;
+    const focus = new URLSearchParams(window.location.search).get("focus");
+    return focus === "flashcards" || focus === "sage" || focus === "weakness" || focus === "daily-goal";
+  });
   if (!expanded) {
     return (
       <button
@@ -222,10 +236,10 @@ function DashboardSecondaryCards({ course }: { course: string }) {
   }
   return (
     <div className="space-y-4">
-      <WeaknessFocusCard course={course} />
-      <SageCoachPromoCard course={course} />
-      <FlashcardsDueCard course={course} />
-      <DailyGoalCard course={course} />
+      <div data-focus-target="weakness"><WeaknessFocusCard course={course} /></div>
+      <div data-focus-target="sage"><SageCoachPromoCard course={course} /></div>
+      <div data-focus-target="flashcards"><FlashcardsDueCard course={course} /></div>
+      <div data-focus-target="daily-goal"><DailyGoalCard course={course} /></div>
       <LockedValueCard />
       <button
         onClick={() => setExpanded(false)}

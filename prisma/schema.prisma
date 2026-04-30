@@ -107,6 +107,12 @@ model UserJourney {
   step4SessionId  String?
   startedAt       DateTime   @default(now())
   completedAt     DateTime?
+  // Beta 9.6 — exit-intent feedback. Captured when user hits Exit at any
+  // step. Preloaded reason ("too long", "didn't help", etc.) + optional
+  // free-text. Helps us understand why students bail.
+  exitReason      String?
+  exitFeedback    String?    @db.Text
+  exitAt          DateTime?
   updatedAt       DateTime   @updatedAt
 
   @@index([userId])
