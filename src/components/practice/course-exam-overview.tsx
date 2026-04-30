@@ -6,20 +6,20 @@
  *
  * Conversion fix (2026-04-27): student arrived at /practice and saw only
  * "Quick Practice (10 MCQs)" — they didn't know that AP World History has
- * 4 question types (MCQ + SAQ + DBQ + LEQ). Free users especially had no
- * visibility into the full exam shape, so they dropped off thinking we
- * only had MCQs.
+ * 4 question types (MCQ + SAQ + DBQ + LEQ).
  *
- * This component lists every CB-defined section with weight + time + a
- * "Practice" CTA that takes them to the right place. Premium-gated
- * sections show "Premium" badge and route to /billing if free user clicks.
+ * Beta 9.3.3 (2026-04-30): user feedback — "The Practice information is
+ * too long." The 6-row exam-structure card was overwhelming new users
+ * who just want to start a session. Collapsed by default; expand with a
+ * one-line button. Power users still get one click away.
  */
 
+import { useState } from "react";
 import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Lock, ArrowRight } from "lucide-react";
+import { Lock, ArrowRight, ChevronDown, ChevronUp } from "lucide-react";
 import { getCBExamStructure } from "@/lib/cb-exam-structure";
 
 interface Props {
@@ -29,10 +29,30 @@ interface Props {
 }
 
 export function CourseExamOverview({ course, isFreeTier }: Props) {
+  const [expanded, setExpanded] = useState(false);
   const struct = getCBExamStructure(course);
   if (!struct) return null;
 
   const totalQuestions = struct.sections.reduce((s, sec) => s + sec.count, 0);
+
+  if (!expanded) {
+    return (
+      <button
+        type="button"
+        onClick={() => setExpanded(true)}
+        className="w-full flex items-center justify-between gap-2 px-4 py-2.5 rounded-lg border border-blue-500/20 bg-blue-500/5 hover:bg-blue-500/10 transition-colors text-left"
+        aria-expanded="false"
+      >
+        <div className="min-w-0">
+          <p className="text-sm font-medium">See real AP exam structure</p>
+          <p className="text-xs text-muted-foreground">
+            {totalQuestions} questions · {struct.totalMinutes} min · {struct.sections.length} sections
+          </p>
+        </div>
+        <ChevronDown className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+      </button>
+    );
+  }
 
   return (
     <Card className="border-blue-500/20 bg-gradient-to-br from-blue-500/5 to-transparent">
@@ -40,14 +60,19 @@ export function CourseExamOverview({ course, isFreeTier }: Props) {
         <div>
           <div className="flex items-center justify-between gap-2 flex-wrap">
             <h3 className="text-base font-semibold">
-              Real AP exam — what you'll face
+              Real AP exam — what you&apos;ll face
             </h3>
-            <span className="text-xs text-muted-foreground">
-              {totalQuestions} questions · {struct.totalMinutes} min total
-            </span>
+            <button
+              type="button"
+              onClick={() => setExpanded(false)}
+              className="text-xs text-muted-foreground hover:text-foreground inline-flex items-center gap-1"
+              aria-label="Collapse exam structure"
+            >
+              Hide <ChevronUp className="h-3 w-3" />
+            </button>
           </div>
           <p className="text-xs text-muted-foreground mt-1">
-            College Board exam structure. Practice each section here.
+            {totalQuestions} questions · {struct.totalMinutes} min total · College Board structure.
           </p>
         </div>
 

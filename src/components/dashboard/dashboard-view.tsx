@@ -43,6 +43,7 @@ import { SingleQuestionEntry } from "@/components/dashboard/single-question-entr
 import { DiagnosticPromptCard } from "@/components/dashboard/diagnostic-prompt-card";
 import { GreetingCard } from "@/components/dashboard/greeting-card";
 import { JourneyHeroCard } from "@/components/dashboard/journey-hero-card";
+import { useJourneyForcing } from "@/hooks/use-journey-forcing";
 
 function DashboardSkeleton() {
   return (
@@ -119,6 +120,19 @@ export function DashboardView() {
 
   if (status === "loading") return <DashboardSkeleton />;
 
+  return <DashboardBody course={course as string} impressionId={impressionId} />;
+}
+
+function DashboardBody({ course, impressionId }: { course: string; impressionId: string | null }) {
+  // Beta 9.3.3 (2026-04-30) — when JourneyHeroCard is forcing a single
+  // next-step (any state except mature), suppress competing surfaces so
+  // the brand-new user sees ONE welcome + ONE start, not 4 stacked
+  // "warm up" / "try it" CTAs. Without this gate, dashboard-view rendered:
+  //   GreetingCard + JourneyHero("Welcome — let's start") +
+  //   PrimaryActionStrip("Warm up") + SingleQuestionEntry("TRY IT") +
+  //   DiagnosticPrompt + OutcomeProgressStrip — duplicated welcome vibe.
+  const { forcing, loading: journeyLoading } = useJourneyForcing();
+
   return (
     <div className="space-y-4 max-w-2xl mx-auto px-0 sm:px-2 py-2">
       {/* Beta 9.1.2 — personalized greeting + plan badge. */}
@@ -143,17 +157,22 @@ export function DashboardView() {
       {/* 1a. Resume — renders only when in-progress session exists */}
       <ResumeCard course={course as string} />
 
-      {/* 1b. Start — renders null when ResumeCard would show. One CTA, not two. */}
-      <PrimaryActionStrip course={course as string} impressionId={impressionId} />
+      {/* 1b. Start — renders null when ResumeCard would show. One CTA, not two.
+          Beta 9.3.3: also hidden when JourneyHeroCard is forcing (the journey
+          card already supplies the start CTA — showing this strip too gave
+          users 2 competing "Warm up / TRY IT" buttons). */}
+      {!forcing && !journeyLoading && (
+        <PrimaryActionStrip course={course} impressionId={impressionId} />
+      )}
 
       {/* 1b-Q1. Single-question entry — Q1 commitment fix (2026-04-27).
-          Data showed 80% of new sign-ups bounce before answering a single
-          question. The full /practice flow has too much commitment friction
-          (course pick, mode pick, "10 questions" framing). This drops ONE
-          easy MCQ on the dashboard with no session framing — answer in
-          ~30s, see instant feedback, then a soft CTA to "keep going" routes
-          to the full Practice flow once the user is committed. */}
-      <SingleQuestionEntry course={course as string} />
+          Beta 9.3.3: hidden during journey-forcing for the same reason as
+          PrimaryActionStrip. The JourneyHero "brand-new" state owns the
+          first-question CTA for new users; this card returns once the user
+          matures past the forcing gate. */}
+      {!forcing && !journeyLoading && (
+        <SingleQuestionEntry course={course} />
+      )}
 
       {/* 1c. Phase C (Beta 8.3) — Cram Mode countdown + today's plan.
           Renders ONLY when User.examDate is set AND <30 days out. Placed
