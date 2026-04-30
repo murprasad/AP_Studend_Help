@@ -36,6 +36,8 @@ type Signal = {
   answeredTodayInCourse?: number;
 };
 
+type JourneyResp = { journey: { currentStep: number } | null } | null;
+
 export function useJourneyForcing(course?: string): { forcing: boolean; loading: boolean } {
   const [state, setState] = useState<{ forcing: boolean; loading: boolean }>({
     forcing: false,
@@ -44,33 +46,41 @@ export function useJourneyForcing(course?: string): { forcing: boolean; loading:
 
   useEffect(() => {
     let aborted = false;
-    const url = course
+    // Beta 9.6 fix — also check the user's journey state. If they
+    // explicitly Exited (currentStep=99) or completed (>=5), they
+    // should see the standard dashboard NOT have surfaces hidden by
+    // forcing. Previously: a fresh exited user still had forcing=true
+    // because cohortAgeDays<14, which broke the focus-pulse target on
+    // /dashboard?focus=X.
+    const sigUrl = course
       ? `/api/user/conversion-signal?course=${course}`
       : "/api/user/conversion-signal";
-    fetch(url, { cache: "no-store" })
-      .then((r) => (r.ok ? r.json() : null))
-      .then((d: Signal | null) => {
-        if (aborted) return;
-        if (!d) {
-          setState({ forcing: false, loading: false });
-          return;
-        }
-        // Beta 9.4 — mature/forcing decision is now per-course when
-        // course was supplied. A user who's mature in one course but
-        // brand-new in this one should see the journey hero (forcing)
-        // here.
-        const hasDiag = d.hasDiagnosticInCourse ?? d.hasDiagnostic;
-        const isMature = d.cohortAgeDays > 14 && hasDiag;
-        const isCapped =
-          typeof d.answeredToday === "number" &&
-          typeof d.capLimit === "number" &&
-          d.answeredToday >= d.capLimit;
-        const forcing = isCapped || !isMature;
-        setState({ forcing, loading: false });
-      })
-      .catch(() => {
-        if (!aborted) setState({ forcing: false, loading: false });
-      });
+    Promise.all([
+      fetch(sigUrl, { cache: "no-store" }).then((r) => (r.ok ? r.json() : null)).catch(() => null),
+      fetch("/api/journey", { cache: "no-store" }).then((r) => (r.ok ? r.json() : null)).catch(() => null),
+    ]).then(([d, jResp]: [Signal | null, JourneyResp]) => {
+      if (aborted) return;
+      if (!d) {
+        setState({ forcing: false, loading: false });
+        return;
+      }
+      // Exited (99) or completed (>=5) → never force
+      const journeyStep = jResp?.journey?.currentStep ?? null;
+      if (journeyStep !== null && (journeyStep === 99 || journeyStep >= 5)) {
+        setState({ forcing: false, loading: false });
+        return;
+      }
+      const hasDiag = d.hasDiagnosticInCourse ?? d.hasDiagnostic;
+      const isMature = d.cohortAgeDays > 14 && hasDiag;
+      const isCapped =
+        typeof d.answeredToday === "number" &&
+        typeof d.capLimit === "number" &&
+        d.answeredToday >= d.capLimit;
+      const forcing = isCapped || !isMature;
+      setState({ forcing, loading: false });
+    }).catch(() => {
+      if (!aborted) setState({ forcing: false, loading: false });
+    });
     return () => { aborted = true; };
   }, [course]);
 

@@ -168,12 +168,16 @@ test.describe("Journey FMEA — every screen renders + copy is coherent", () => 
     await api.dispose();
 
     await page.goto("/journey");
-    // Done copy
-    await expect(page.getByRole("heading", { name: /You completed today.s plan/i })).toBeVisible({ timeout: 15000 });
-    // Upgrade CTA
-    await expect(page.getByRole("link", { name: /Upgrade.*\$9\.99/i })).toBeVisible();
-    // Return-tomorrow link
-    await expect(page.getByText(/come back tomorrow/i)).toBeVisible();
+    // Beta 9.6 — Step 5 redesigned. Header is "You're set up" (was
+    // "You completed today's plan"). Three next-step tiles instead of
+    // a "come back tomorrow" wall. Premium upgrade is a subtle link
+    // below, not a primary button.
+    await expect(page.getByRole("heading", { name: /You're set up/i })).toBeVisible({ timeout: 15000 });
+    // Three next-step tiles — coverage moved to journey-rail-96.spec.ts,
+    // but smoke-check that at least one renders here.
+    await expect(page.getByText(/Continue practice tomorrow/i)).toBeVisible();
+    // Subtle upgrade link
+    await expect(page.getByText(/unlock unlimited everything|Upgrade.*\$9\.99/i)).toBeVisible();
   });
 
   // ── Resume mid-journey ─────────────────────────────────────────────────────
