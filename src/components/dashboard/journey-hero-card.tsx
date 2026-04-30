@@ -40,6 +40,11 @@ interface Signal {
   daysSinceLastSession: number | null;
   isPremium: boolean;
   daysAsPremium: number | null;
+  // Beta 9.4 — per-course aware
+  responseCountInCourse?: number;
+  hasDiagnosticInCourse?: boolean;
+  hasFrqAttemptInCourse?: boolean;
+  answeredTodayInCourse?: number;
 }
 
 interface ReadinessData {
@@ -70,13 +75,22 @@ export function JourneyHeroCard({ course }: Props) {
   useEffect(() => {
     let cancelled = false;
     Promise.all([
-      fetch("/api/user/conversion-signal", { cache: "no-store" }).then((r) => (r.ok ? r.json() : null)).catch(() => null),
+      fetch(`/api/user/conversion-signal?course=${course}`, { cache: "no-store" }).then((r) => (r.ok ? r.json() : null)).catch(() => null),
       fetch(`/api/readiness?course=${course}`, { cache: "no-store" }).then((r) => (r.ok ? r.json() : null)).catch(() => null),
     ]).then(([signal, readiness]: [Signal | null, ReadinessData | null]) => {
       if (cancelled) return;
       if (!signal) { setState({ kind: "mature" }); return; }
 
       const isPremium = signal.isPremium;
+
+      // Beta 9.4 — drive onboarding states off PER-COURSE counters when
+      // available. A user who has done 22 Qs in AP World History but
+      // just switched to AP Bio should see "brand-new" on AP Bio, not
+      // "frq-done-pre-diag" carried over from the other course.
+      const responseCountForJourney = signal.responseCountInCourse ?? signal.responseCount;
+      const hasFrqForJourney = signal.hasFrqAttemptInCourse ?? signal.hasFrqAttempt;
+      const hasDiagForJourney = signal.hasDiagnosticInCourse ?? signal.hasDiagnostic;
+      const answeredTodayForCap = signal.answeredTodayInCourse ?? signal.answeredToday;
 
       // Premium states take priority — different journey for paying users
       if (isPremium) {
@@ -91,14 +105,15 @@ export function JourneyHeroCard({ course }: Props) {
       }
 
       // FREE: capped today → cap message regardless of journey state
-      if (signal.answeredToday >= FREE_LIMITS.practiceQuestionsPerDay) {
+      if (answeredTodayForCap >= FREE_LIMITS.practiceQuestionsPerDay) {
         setState({ kind: "capped", isPremium });
         return;
       }
 
       // FREE: returning after 3+ days inactive AND has done diagnostic
       // (mid-journey or mature) → welcome-back card to re-anchor habit
-      // BEFORE the upgrade push.
+      // BEFORE the upgrade push. (Use global hasDiagnostic + global
+      // daysSinceLastSession — the gap is about the user, not a course.)
       if (
         signal.hasDiagnostic &&
         signal.daysSinceLastSession !== null &&
@@ -113,20 +128,20 @@ export function JourneyHeroCard({ course }: Props) {
         return;
       }
 
-      // FREE: mature — has completed the journey, let standard dashboard show
-      if (signal.hasDiagnostic && signal.cohortAgeDays > 14) {
+      // FREE: mature in THIS course — has completed the journey here
+      if (hasDiagForJourney && signal.cohortAgeDays > 14) {
         setState({ kind: "mature" });
         return;
       }
 
-      // FREE: onboarding journey states
-      if (signal.responseCount === 0) {
+      // FREE: onboarding journey states (per-course)
+      if (responseCountForJourney === 0) {
         setState({ kind: "brand-new" });
-      } else if (signal.responseCount > 0 && signal.responseCount < 5 && !signal.hasFrqAttempt) {
-        setState({ kind: "mcq-fresh", count: signal.responseCount });
-      } else if (!signal.hasFrqAttempt) {
+      } else if (responseCountForJourney > 0 && responseCountForJourney < 5 && !hasFrqForJourney) {
+        setState({ kind: "mcq-fresh", count: responseCountForJourney });
+      } else if (!hasFrqForJourney) {
         setState({ kind: "mcq-done-pre-frq" });
-      } else if (!signal.hasDiagnostic) {
+      } else if (!hasDiagForJourney) {
         setState({ kind: "frq-done-pre-diag" });
       } else if (readiness?.weakestUnit) {
         setState({

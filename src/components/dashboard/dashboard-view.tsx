@@ -131,7 +131,7 @@ function DashboardBody({ course, impressionId }: { course: string; impressionId:
   //   GreetingCard + JourneyHero("Welcome — let's start") +
   //   PrimaryActionStrip("Warm up") + SingleQuestionEntry("TRY IT") +
   //   DiagnosticPrompt + OutcomeProgressStrip — duplicated welcome vibe.
-  const { forcing, loading: journeyLoading } = useJourneyForcing();
+  const { forcing, loading: journeyLoading } = useJourneyForcing(course);
 
   return (
     <div className="space-y-4 max-w-2xl mx-auto px-0 sm:px-2 py-2">

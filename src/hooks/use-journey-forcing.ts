@@ -29,9 +29,14 @@ type Signal = {
   daysAsPremium?: number | null;
   answeredToday?: number;
   capLimit?: number;
+  // Beta 9.4 — per-course aware
+  responseCountInCourse?: number;
+  hasDiagnosticInCourse?: boolean;
+  hasFrqAttemptInCourse?: boolean;
+  answeredTodayInCourse?: number;
 };
 
-export function useJourneyForcing(): { forcing: boolean; loading: boolean } {
+export function useJourneyForcing(course?: string): { forcing: boolean; loading: boolean } {
   const [state, setState] = useState<{ forcing: boolean; loading: boolean }>({
     forcing: false,
     loading: true,
@@ -39,7 +44,10 @@ export function useJourneyForcing(): { forcing: boolean; loading: boolean } {
 
   useEffect(() => {
     let aborted = false;
-    fetch("/api/user/conversion-signal", { cache: "no-store" })
+    const url = course
+      ? `/api/user/conversion-signal?course=${course}`
+      : "/api/user/conversion-signal";
+    fetch(url, { cache: "no-store" })
       .then((r) => (r.ok ? r.json() : null))
       .then((d: Signal | null) => {
         if (aborted) return;
@@ -47,11 +55,12 @@ export function useJourneyForcing(): { forcing: boolean; loading: boolean } {
           setState({ forcing: false, loading: false });
           return;
         }
-        // Mature exit (matches journey-hero-card.tsx line 145):
-        //   cohortAgeDays > 14 AND hasDiagnostic AND no other gate.
-        const isMature =
-          d.cohortAgeDays > 14 && d.hasDiagnostic;
-        // Capped state always forces.
+        // Beta 9.4 — mature/forcing decision is now per-course when
+        // course was supplied. A user who's mature in one course but
+        // brand-new in this one should see the journey hero (forcing)
+        // here.
+        const hasDiag = d.hasDiagnosticInCourse ?? d.hasDiagnostic;
+        const isMature = d.cohortAgeDays > 14 && hasDiag;
         const isCapped =
           typeof d.answeredToday === "number" &&
           typeof d.capLimit === "number" &&
@@ -63,7 +72,7 @@ export function useJourneyForcing(): { forcing: boolean; loading: boolean } {
         if (!aborted) setState({ forcing: false, loading: false });
       });
     return () => { aborted = true; };
-  }, []);
+  }, [course]);
 
   return state;
 }

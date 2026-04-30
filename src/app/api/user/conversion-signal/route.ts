@@ -1,40 +1,59 @@
 /**
- * GET /api/user/conversion-signal
+ * GET /api/user/conversion-signal[?course=AP_WORLD_HISTORY]
  *
  * Single-shot endpoint that tells the client everything it needs to
- * decide whether to show the diagnostic nudge modal:
- *   - `responseCount` — lifetime correct+wrong answers
- *   - `hasDiagnostic` — whether a diagnostic result row exists
- *   - `hasTrial`     — whether a free trial was ever started
+ * decide which next-step CTA to render.
  *
- * Called after answer submission in the practice flow. If the count
- * crosses a threshold (5 or 10) and `!hasDiagnostic`, the client opens
- * the nudge modal. Cheap — three `count`/`exists` queries, no joins.
+ * Beta 9.4 (2026-04-30): per-course aware. Without `?course=`, we
+ * return only the lifetime/global counters (back-compat). With a
+ * course, we *also* return *InCourse counters so JourneyHeroCard +
+ * PostSessionNextStep can choose the right state for the current
+ * course — previously a user who switched to a fresh course saw
+ * "You've unlocked your score" / "22+ questions" messaging from
+ * their global stats, even with 0 Qs in this course.
  */
 
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { ApCourse } from "@prisma/client";
 
 export const dynamic = "force-dynamic";
 
-export async function GET() {
+export async function GET(req: Request) {
   const session = await getServerSession(authOptions);
-  // SEC-3 (2026-04-24): return 401 for anonymous to match the rest of the
-  // user-scoped API surface. Previous 200 with placeholder was not a data
-  // leak (values are invariant for anon) but broke the auth convention
-  // flagged in the security audit. Callers (diagnostic-nudge-modal) handle
-  // non-OK responses gracefully — no client change needed.
   if (!session?.user?.id) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
   const userId = session.user.id;
 
-  // Beta 9.1.4 / 9.2 — extended for JourneyHeroCard state machine.
+  // Optional course param — when present, also return per-course stats.
+  const url = new URL(req.url);
+  const courseParam = url.searchParams.get("course");
+  const validCourses = new Set(Object.values(ApCourse));
+  const course =
+    courseParam && validCourses.has(courseParam as ApCourse)
+      ? (courseParam as ApCourse)
+      : null;
+
   const startOfDay = new Date();
   startOfDay.setHours(0, 0, 0, 0);
-  const [responseCount, diag, user, frqAttempt, sessionsToday, latestResponse, premiumSub] = await Promise.all([
+
+  const [
+    responseCount,
+    diag,
+    user,
+    frqAttempt,
+    sessionsToday,
+    latestResponse,
+    premiumSub,
+    // Per-course (only fetched when course param is supplied)
+    responseCountInCourse,
+    diagInCourse,
+    frqAttemptInCourse,
+    answeredTodayInCourse,
+  ] = await Promise.all([
     prisma.studentResponse.count({ where: { userId } }),
     prisma.diagnosticResult.findFirst({ where: { userId }, select: { id: true } }),
     prisma.user.findUnique({
@@ -48,12 +67,25 @@ export async function GET() {
       orderBy: { answeredAt: "desc" },
       select: { answeredAt: true },
     }),
-    // Earliest active ModuleSubscription tells us when they became Premium.
     prisma.moduleSubscription.findFirst({
       where: { userId, status: { in: ["active", "ACTIVE", "trialing", "TRIALING"] } },
       orderBy: { createdAt: "asc" },
       select: { createdAt: true },
     }),
+    course
+      ? prisma.studentResponse.count({ where: { userId, question: { course } } })
+      : Promise.resolve(0),
+    course
+      ? prisma.diagnosticResult.findFirst({ where: { userId, course }, select: { id: true } })
+      : Promise.resolve(null),
+    course
+      ? prisma.frqAttempt.findFirst({ where: { userId, frq: { course } }, select: { id: true } })
+      : Promise.resolve(null),
+    course
+      ? prisma.studentResponse.count({
+          where: { userId, answeredAt: { gte: startOfDay }, question: { course } },
+        })
+      : Promise.resolve(0),
   ]);
 
   const cohortAgeDays = user?.createdAt
@@ -68,6 +100,7 @@ export async function GET() {
     : null;
 
   return NextResponse.json({
+    // Global (back-compat)
     responseCount,
     hasDiagnostic: !!diag,
     hasFrqAttempt: !!frqAttempt,
@@ -79,5 +112,11 @@ export async function GET() {
     daysSinceLastSession,
     isPremium,
     daysAsPremium,
+    // Per-course (only meaningful when ?course= was supplied; zeros otherwise)
+    course: course ?? null,
+    responseCountInCourse,
+    hasDiagnosticInCourse: !!diagInCourse,
+    hasFrqAttemptInCourse: !!frqAttemptInCourse,
+    answeredTodayInCourse,
   });
 }

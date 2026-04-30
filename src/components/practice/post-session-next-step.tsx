@@ -47,6 +47,11 @@ type Sig = {
   capLimit?: number;
   isPremium?: boolean;
   weakestUnit?: { unit: string; unitName: string; missRatePct: number } | null;
+  // Beta 9.4 — per-course aware
+  responseCountInCourse?: number;
+  hasDiagnosticInCourse?: boolean;
+  hasFrqAttemptInCourse?: boolean;
+  answeredTodayInCourse?: number;
 };
 
 type State =
@@ -63,49 +68,46 @@ export function PostSessionNextStep({ course, source }: Props) {
 
   useEffect(() => {
     let cancelled = false;
-    Promise.all([
-      fetch("/api/user/conversion-signal", { cache: "no-store" })
-        .then((r) => (r.ok ? r.json() : null))
-        .catch(() => null),
-      fetch(`/api/practice/frq-attempts-count?course=${course}`, { cache: "no-store" })
-        .then((r) => (r.ok ? r.json() : null))
-        .catch(() => null),
-    ]).then(([sigRaw, frqRaw]: [Sig | null, { count?: number } | null]) => {
-      if (cancelled) return;
-      if (!sigRaw) {
-        setState({ kind: "keep-going" });
-        return;
-      }
-      const sig = sigRaw;
-      const frqCountForCourse = frqRaw?.count ?? 0;
-      // Use course-specific FRQ count when available — global hasFrqAttempt
-      // can be true (user did FRQ in another course) but in THIS course
-      // they haven't, and the next-step CTA should reflect this course.
-      const hasFrqHere = frqCountForCourse > 0 || sig.hasFrqAttempt;
+    fetch(`/api/user/conversion-signal?course=${course}`, { cache: "no-store" })
+      .then((r) => (r.ok ? r.json() : null))
+      .catch(() => null)
+      .then((sigRaw: Sig | null) => {
+        if (cancelled) return;
+        if (!sigRaw) {
+          setState({ kind: "keep-going" });
+          return;
+        }
+        const sig = sigRaw;
+        // Beta 9.4 — drive next-step decisions off PER-COURSE counters when
+        // available. A user mature in WH but new in Bio should see "try
+        // first FRQ" on Bio, not "take Mock Exam" carried over from WH.
+        const responseCountHere = sig.responseCountInCourse ?? sig.responseCount;
+        const hasFrqHere = sig.hasFrqAttemptInCourse ?? sig.hasFrqAttempt;
+        const hasDiagHere = sig.hasDiagnosticInCourse ?? sig.hasDiagnostic;
 
-      if (
-        typeof sig.answeredToday === "number" &&
-        typeof sig.capLimit === "number" &&
-        sig.answeredToday >= sig.capLimit
-      ) {
-        setState({ kind: "capped" });
-      } else if (!hasFrqHere) {
-        setState({ kind: "try-frq" });
-      } else if (!sig.hasDiagnostic) {
-        setState({ kind: "take-diagnostic" });
-      } else if (sig.weakestUnit && sig.weakestUnit.missRatePct >= 30) {
-        setState({
-          kind: "drill-weakest",
-          unit: sig.weakestUnit.unit,
-          unitName: sig.weakestUnit.unitName,
-          missRatePct: sig.weakestUnit.missRatePct,
-        });
-      } else if (sig.cohortAgeDays >= 7 && sig.responseCount >= 30) {
-        setState({ kind: "mock-exam" });
-      } else {
-        setState({ kind: "keep-going" });
-      }
-    });
+        if (
+          typeof sig.answeredToday === "number" &&
+          typeof sig.capLimit === "number" &&
+          sig.answeredToday >= sig.capLimit
+        ) {
+          setState({ kind: "capped" });
+        } else if (!hasFrqHere) {
+          setState({ kind: "try-frq" });
+        } else if (!hasDiagHere) {
+          setState({ kind: "take-diagnostic" });
+        } else if (sig.weakestUnit && sig.weakestUnit.missRatePct >= 30) {
+          setState({
+            kind: "drill-weakest",
+            unit: sig.weakestUnit.unit,
+            unitName: sig.weakestUnit.unitName,
+            missRatePct: sig.weakestUnit.missRatePct,
+          });
+        } else if (sig.cohortAgeDays >= 7 && responseCountHere >= 30) {
+          setState({ kind: "mock-exam" });
+        } else {
+          setState({ kind: "keep-going" });
+        }
+      });
     return () => { cancelled = true; };
   }, [course]);
 
