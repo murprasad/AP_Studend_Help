@@ -213,7 +213,7 @@ export default function JourneyPage() {
         <TransitionCard
           eyebrow="Good start"
           title="Now try a real AP question"
-          body="One short-answer FRQ. You'll see the official rubric and how AP graders score it — that's the part most students never see."
+          body="One AP-style FRQ. You'll see the official rubric and how AP graders score it — the part most students never see."
           cta="Continue"
           tone="indigo"
           icon="scroll"
