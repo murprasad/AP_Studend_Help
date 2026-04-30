@@ -44,6 +44,7 @@
     { "file": "first-time-user-real", "title": "welcome copy on /practice/quickstart is encouraging, not negative" },
     { "file": "persona-c-crawler-anonymous", "title": "Persona C: anonymous crawler finds no broken pages" },
     { "file": "persona-b-sidebar-walk", "title": "/billing — loads" },
-    { "file": "authed-flows", "title": "locked value visible to free user (Block 5)" }
+    { "file": "authed-flows", "title": "locked value visible to free user (Block 5)" },
+    { "file": "journey-rail-96", "title": "Dashboard ?focus=primary-action scrolls + pulses target" }
   ]
 }
