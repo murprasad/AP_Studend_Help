@@ -109,6 +109,24 @@ export default function DashboardLayout({
     // Don't redirect away from non-dashboard pages — only act on /dashboard
     if (pathname !== "/dashboard") return;
 
+    // Beta 9.6 — ?reset=1 query param wipes the local cache + cookie so
+    // the journey redirect re-evaluates from the API. Useful when QAing
+    // as a freshly-reset user without having to clear browser state by
+    // hand. (Server-side data-reset is a separate API/script.)
+    const search = typeof window !== "undefined" ? window.location.search : "";
+    if (search.includes("reset=1")) {
+      try {
+        localStorage.removeItem(JOURNEY_LOCAL_KEY);
+        localStorage.removeItem("onboarding_completed");
+      } catch { /* ignore */ }
+      try {
+        document.cookie = "onboarding_completed=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+      } catch { /* ignore */ }
+      // Strip the param so a refresh doesn't keep wiping
+      router.replace("/dashboard");
+      return;
+    }
+
     const local = (() => {
       try { return localStorage.getItem(JOURNEY_LOCAL_KEY); } catch { return null; }
     })();
