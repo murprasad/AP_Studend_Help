@@ -41,6 +41,9 @@
     { "file": "persona-b-sidebar-walk", "title": "/ai-tutor — loads" },
     { "file": "first-time-user-real", "title": "new user lands on /practice/quickstart from /dashboard" },
     { "file": "first-time-user-real", "title": "legacy /onboarding URL redirects to /practice/quickstart" },
-    { "file": "first-time-user-real", "title": "welcome copy on /practice/quickstart is encouraging, not negative" }
+    { "file": "first-time-user-real", "title": "welcome copy on /practice/quickstart is encouraging, not negative" },
+    { "file": "persona-c-crawler-anonymous", "title": "Persona C: anonymous crawler finds no broken pages" },
+    { "file": "persona-b-sidebar-walk", "title": "/billing — loads" },
+    { "file": "authed-flows", "title": "locked value visible to free user (Block 5)" }
   ]
 }

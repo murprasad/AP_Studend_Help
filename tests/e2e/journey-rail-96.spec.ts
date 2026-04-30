@@ -117,10 +117,18 @@ test.describe("Journey Rail Beta 9.6", () => {
     });
 
     await page.goto("/dashboard?focus=primary-action");
-    // Wait for the focus target to render + receive the pulse class
+    // Wait for the focus target to render + receive the pulse class.
+    // Assert DOM presence (toBeAttached), not visibility (toBeVisible) —
+    // the focus contract is "scroll-and-pulse the target if it exists"
+    // not "make sure the target has non-zero height". The wrapper div
+    // exists whenever PrimaryActionStrip is rendered (forcing=false +
+    // !journeyLoading) but PrimaryActionStrip itself can return null
+    // for users with an active in-progress session, leaving the wrapper
+    // empty and 0-height. That's the right behavior — the focus
+    // mechanism still attached the target.
     await page.waitForTimeout(800);
     const target = page.locator('[data-focus-target="primary-action"]');
-    await expect(target).toBeVisible({ timeout: 10000 });
+    await expect(target).toBeAttached({ timeout: 10000 });
   });
 
   test("Dashboard ?focus=flashcards auto-expands secondary cards", async ({ page, baseURL, context }) => {
