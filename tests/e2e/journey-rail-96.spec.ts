@@ -76,6 +76,68 @@ test.describe("Journey Rail Beta 9.6", () => {
     await page.waitForURL(/\/dashboard/, { timeout: 10000 });
   });
 
+  test("Step 5 — clicking 'Continue practice tomorrow' navigates to /dashboard", async ({ page, baseURL }) => {
+    if (!baseURL) test.skip();
+    const api = await apiRequest.newContext();
+    const r = await api.post(`${baseURL}/api/test/auth`, {
+      headers: { Authorization: `Bearer ${CRON_SECRET}`, "Content-Type": "application/json" },
+      data: { action: "create" },
+    });
+    const j = await r.json();
+    const cookieHeader = `${j.cookieName}=${j.sessionToken}`;
+    await api.post(`${baseURL}/api/journey`, { headers: { Cookie: cookieHeader, "Content-Type": "application/json" }, data: { action: "start", course: "AP_WORLD_HISTORY" } });
+    await api.post(`${baseURL}/api/journey`, { headers: { Cookie: cookieHeader, "Content-Type": "application/json" }, data: { action: "advance", step: 5, weakestUnit: "WHM_2_NETWORKS_OF_EXCHANGE" } });
+    await api.dispose();
+
+    await page.goto("/journey");
+    await expect(page.getByRole("heading", { name: /You're set up/i })).toBeVisible({ timeout: 15000 });
+
+    // Click the tile and assert URL navigates. Catches Link-wrapping-Button
+    // HTML invariants that render but swallow the click navigation.
+    await page.getByText(/Continue practice tomorrow/i).click();
+    await page.waitForURL(/\/dashboard/, { timeout: 10000 });
+    expect(page.url()).toContain("focus=primary-action");
+  });
+
+  test("Step 5 — clicking 'Review flashcards' navigates to /dashboard", async ({ page, baseURL }) => {
+    if (!baseURL) test.skip();
+    const api = await apiRequest.newContext();
+    const r = await api.post(`${baseURL}/api/test/auth`, {
+      headers: { Authorization: `Bearer ${CRON_SECRET}`, "Content-Type": "application/json" },
+      data: { action: "create" },
+    });
+    const j = await r.json();
+    const cookieHeader = `${j.cookieName}=${j.sessionToken}`;
+    await api.post(`${baseURL}/api/journey`, { headers: { Cookie: cookieHeader, "Content-Type": "application/json" }, data: { action: "start", course: "AP_WORLD_HISTORY" } });
+    await api.post(`${baseURL}/api/journey`, { headers: { Cookie: cookieHeader, "Content-Type": "application/json" }, data: { action: "advance", step: 5 } });
+    await api.dispose();
+
+    await page.goto("/journey");
+    await expect(page.getByRole("heading", { name: /You're set up/i })).toBeVisible({ timeout: 15000 });
+    await page.getByText(/Review flashcards/i).click();
+    await page.waitForURL(/\/dashboard/, { timeout: 10000 });
+    expect(page.url()).toContain("focus=flashcards");
+  });
+
+  test("Step 5 — clicking 'Ask Sage for help' navigates to /ai-tutor", async ({ page, baseURL }) => {
+    if (!baseURL) test.skip();
+    const api = await apiRequest.newContext();
+    const r = await api.post(`${baseURL}/api/test/auth`, {
+      headers: { Authorization: `Bearer ${CRON_SECRET}`, "Content-Type": "application/json" },
+      data: { action: "create" },
+    });
+    const j = await r.json();
+    const cookieHeader = `${j.cookieName}=${j.sessionToken}`;
+    await api.post(`${baseURL}/api/journey`, { headers: { Cookie: cookieHeader, "Content-Type": "application/json" }, data: { action: "start", course: "AP_WORLD_HISTORY" } });
+    await api.post(`${baseURL}/api/journey`, { headers: { Cookie: cookieHeader, "Content-Type": "application/json" }, data: { action: "advance", step: 5 } });
+    await api.dispose();
+
+    await page.goto("/journey");
+    await expect(page.getByRole("heading", { name: /You're set up/i })).toBeVisible({ timeout: 15000 });
+    await page.getByText(/Ask Sage for help/i).click();
+    await page.waitForURL(/\/ai-tutor/, { timeout: 10000 });
+  });
+
   test("Step 5 — 'You're set up' + 3 next-step tiles", async ({ page, baseURL }) => {
     if (!baseURL) test.skip();
     const api = await apiRequest.newContext();
