@@ -42,16 +42,47 @@ function run(cmd, args, opts = {}) {
   // dirty (so any post-staging edits trigger fresh build).
   const markerPath = path.join(".cf-deploy", ".staging-marker.json");
   let reuseArtifact = false;
+  // Beta 9.6 (Task #49) — only block reuse when BUILD-INPUT files
+  // are dirty. The original `git status --porcelain` check counted
+  // ANY file (data fixtures, deploy logs, scratch scripts) and made
+  // the optimization useless in practice. Real build inputs are:
+  // src/, prisma/, package*.json, next.config.mjs, public/, and the
+  // two build-time patch scripts. Anything else doesn't affect the
+  // .cf-deploy/ artifact.
+  const BUILD_PATHS = [
+    "src",
+    "prisma",
+    "package.json",
+    "package-lock.json",
+    "next.config.mjs",
+    "public",
+    "scripts/patch-prisma-wasm.js",
+    "scripts/prepare-cf-deploy.js",
+  ];
+  function buildInputsDirty() {
+    try {
+      const diff = execSync(`git diff HEAD -- ${BUILD_PATHS.join(" ")}`, { encoding: "utf8" }).trim();
+      if (diff) return true;
+      const untracked = execSync(
+        `git ls-files --others --exclude-standard -- ${BUILD_PATHS.join(" ")}`,
+        { encoding: "utf8" },
+      ).trim();
+      return !!untracked;
+    } catch {
+      // If git fails for any reason, fail-safe: treat as dirty (rebuild).
+      return true;
+    }
+  }
   try {
     if (fs.existsSync(markerPath)) {
       const marker = JSON.parse(fs.readFileSync(markerPath, "utf8"));
       const headCommit = execSync("git rev-parse HEAD", { encoding: "utf8" }).trim();
-      const isClean = execSync("git status --porcelain", { encoding: "utf8" }).trim() === "";
-      if (marker.commit === headCommit && marker.gitClean && isClean) {
+      const buildDirty = buildInputsDirty();
+      if (marker.commit === headCommit && !buildDirty) {
         reuseArtifact = true;
         console.log(`⚡ Reusing staging-validated artifact (commit ${headCommit.slice(0, 8)}) — skipping rebuild.`);
       } else {
-        console.log(`🔄 Rebuilding (marker=${marker.commit?.slice(0, 8)}, head=${headCommit.slice(0, 8)}, clean=${isClean}).`);
+        console.log(`🔄 Rebuilding (marker=${marker.commit?.slice(0, 8)}, head=${headCommit.slice(0, 8)}, buildInputsDirty=${buildDirty}).`);
       }
     }
   } catch (e) {

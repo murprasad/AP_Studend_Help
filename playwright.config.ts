@@ -26,6 +26,26 @@ dotenv.config({ path: path.resolve(__dirname, ".env") });
 
 const AUTH_FILE = path.join(__dirname, "tests", "e2e", ".auth", "user.json");
 const HAS_CRON_SECRET = !!process.env.CRON_SECRET;
+// Beta 9.6 (Task #49) — deploy-gate vs nightly split.
+//   GATE_MODE=deploy → ~5 min subset that runs on every staging deploy.
+//   Default (any other value or unset) → full suite (nightly + manual).
+//
+// Subset rationale: catch deploy-blocking regressions only.
+//   - public-paths / public-entry-points: ensure marketing pages render
+//   - persona-c-api-smoke: ensure auth guards return correct status
+//   - journey-rail / journey-rail-fmea / journey-rail-96: the active
+//     conversion surface; most-changed code path
+//   - frq-submit-reveal-echo: explicit prior-incident regression test
+//
+// Skipped on deploy-gate (still run nightly):
+//   - a11y-scan (slow, results don't change per-deploy unless DOM changes)
+//   - persona-b-sidebar-walk (chronic flake, deferred)
+//   - journey-1..5 (older smoke; redundant with journey-rail tests)
+//   - persona-a-* (auth + landing; covered by smoke tests in deploy-staging)
+//   - billing-*, paywall-accuracy (covered by smoke tests for auth status)
+const DEPLOY_GATE = process.env.GATE_MODE === "deploy";
+const DEPLOY_GATE_PUBLIC = /(public-paths|public-entry-points|persona-c-api-smoke)\.spec\.ts/;
+const DEPLOY_GATE_AUTHED = /(journey-rail|journey-rail-fmea|journey-rail-96|frq-submit-reveal-echo)\.spec\.ts/;
 
 export default defineConfig({
   testDir: "./tests/e2e",
@@ -71,7 +91,9 @@ export default defineConfig({
     {
       name: "chromium-public",
       use: { ...devices["Desktop Chrome"] },
-      testMatch: /(public-paths|public-entry-points|persona-a-landing-ctas|persona-a-register-tracks|persona-a-login|persona-a-auth-misc|persona-a-mobile|persona-a-mobile-ipad|persona-c-crawler-anonymous|persona-c-broken-links|persona-c-console-errors|persona-c-api-smoke|persona-c-security-headers|persona-c-headers-audit|persona-c-content-audit)\.spec\.ts/,
+      testMatch: DEPLOY_GATE
+        ? DEPLOY_GATE_PUBLIC
+        : /(public-paths|public-entry-points|persona-a-landing-ctas|persona-a-register-tracks|persona-a-login|persona-a-auth-misc|persona-a-mobile|persona-a-mobile-ipad|persona-c-crawler-anonymous|persona-c-broken-links|persona-c-console-errors|persona-c-api-smoke|persona-c-security-headers|persona-c-headers-audit|persona-c-content-audit)\.spec\.ts/,
     },
     ...(HAS_CRON_SECRET
       ? [
@@ -83,7 +105,9 @@ export default defineConfig({
             },
             // Match any authed spec. Currently: authed-flows + nawal-nudge.
             // New authed specs drop in without config changes.
-            testMatch: /(authed-flows|nawal-nudge|flashcards-due-card|quality-audit-cron|onboarding-plan-choice|first-time-user-fmea|first-time-user-real|billing-page-consistency|paywall-accuracy|billing-flicker|a11y-scan|persona-b-sidebar-walk|journey-1-revenue|journey-2-mock-exam|journey-3-sage-tutor|journey-4-diagnostic|journey-5-parent-payment|frq-submit-reveal-echo|journey-rail|journey-rail-fmea|journey-rail-96)\.spec\.ts/,
+            testMatch: DEPLOY_GATE
+              ? DEPLOY_GATE_AUTHED
+              : /(authed-flows|nawal-nudge|flashcards-due-card|quality-audit-cron|onboarding-plan-choice|first-time-user-fmea|first-time-user-real|billing-page-consistency|paywall-accuracy|billing-flicker|a11y-scan|persona-b-sidebar-walk|journey-1-revenue|journey-2-mock-exam|journey-3-sage-tutor|journey-4-diagnostic|journey-5-parent-payment|frq-submit-reveal-echo|journey-rail|journey-rail-fmea|journey-rail-96)\.spec\.ts/,
             dependencies: ["setup"],
           },
         ]

@@ -97,7 +97,17 @@ const STAGING_BRANCH = process.env.STAGING_BRANCH || "staging";
   // 5. Run smoke + functional + Playwright against the staging URL.
   // Each subprocess gets E2E_BASE_URL pointing at the preview, so prod
   // is never hit during the gate.
-  const env = { ...process.env, E2E_BASE_URL: stagingUrl };
+  //
+  // Beta 9.6 (Task #49) — GATE_MODE=deploy filters Playwright to a
+  // ~5 min subset (smoke specs + journey-rail). Full suite runs nightly
+  // via a separate cron-triggered job. Override with FULL_GATE=1 to run
+  // everything synchronously (e.g., before a major release tag).
+  const gateMode = process.env.FULL_GATE === "1" ? undefined : "deploy";
+  const env = {
+    ...process.env,
+    E2E_BASE_URL: stagingUrl,
+    ...(gateMode ? { GATE_MODE: gateMode } : {}),
+  };
 
   console.log(`\n🔍 Smoke tests against staging…\n`);
   await run("node", ["scripts/smoke-tests.js", "--base-url", stagingUrl], { env });
@@ -119,7 +129,7 @@ const STAGING_BRANCH = process.env.STAGING_BRANCH || "staging";
   // e2e/.known-flaky-on-staging.json) are reported but do NOT block.
   // Without the allowlist the gate never went green and real regressions
   // hid in the noise (5+ deploys in a row failed on the same chronic 21).
-  console.log(`\n🎭 Playwright E2E (full suite) against staging…\n`);
+  console.log(`\n🎭 Playwright E2E (${gateMode === "deploy" ? "deploy-gate subset, ~5 min" : "FULL suite"}) against staging…\n`);
   let playwrightExitCode = 0;
   try {
     // playwright.config.ts always writes test-results.json + list reporter.
