@@ -63,12 +63,16 @@ function run(cmd, args, opts = {}) {
   }
 
   // Upload to production branch.
+  // Beta 9.6 — explicit ASCII --commit-message override to bypass CF's
+  // UTF-8 commit-message validator (chokes on en-dashes).
+  const promoteMsg = `prod-promote ${new Date().toISOString().slice(0, 19)}`;
   await run(
     "npx",
     ["wrangler", "pages", "deploy", ".cf-deploy",
      "--project-name=studentnest",
      "--branch=main",
-     "--commit-dirty=true"],
+     "--commit-dirty=true",
+     `--commit-message=${promoteMsg}`],
   );
 
   // Quick smoke against prod — catches CF Pages global propagation

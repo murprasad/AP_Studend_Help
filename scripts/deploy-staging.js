@@ -55,12 +55,20 @@ const STAGING_BRANCH = process.env.STAGING_BRANCH || "staging";
 
   // 3. Upload to staging branch alias (NOT production).
   // CF Pages: --branch=<not-prod> creates a preview URL.
+  //
+  // Beta 9.6 (2026-04-30): pass an explicit ASCII --commit-message.
+  // Without this, wrangler reads `git log -1` for the message, and
+  // recent commits with en-dashes (—) fail CF's UTF-8 validation
+  // ("Invalid commit message" code 8000111). The override sidesteps
+  // git-log entirely — every staging deploy gets a clean ASCII tag.
+  const stagingMsg = `staging-deploy ${new Date().toISOString().slice(0, 19)}`;
   const wranglerOut = await run(
     "npx",
     ["wrangler", "pages", "deploy", ".cf-deploy",
      "--project-name=studentnest",
      `--branch=${STAGING_BRANCH}`,
-     "--commit-dirty=true"],
+     "--commit-dirty=true",
+     `--commit-message=${stagingMsg}`],
     { captureStdout: true },
   );
 
