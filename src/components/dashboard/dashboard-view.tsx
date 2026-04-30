@@ -43,6 +43,7 @@ import { SingleQuestionEntry } from "@/components/dashboard/single-question-entr
 import { DiagnosticPromptCard } from "@/components/dashboard/diagnostic-prompt-card";
 import { GreetingCard } from "@/components/dashboard/greeting-card";
 import { JourneyHeroCard } from "@/components/dashboard/journey-hero-card";
+import { PostJourneyHero } from "@/components/dashboard/post-journey-hero";
 import { useJourneyForcing } from "@/hooks/use-journey-forcing";
 import { useDashboardFocus } from "@/hooks/use-dashboard-focus";
 
@@ -132,9 +133,30 @@ function DashboardBody({ course, impressionId }: { course: string; impressionId:
   //   GreetingCard + JourneyHero("Welcome — let's start") +
   //   PrimaryActionStrip("Warm up") + SingleQuestionEntry("TRY IT") +
   //   DiagnosticPrompt + OutcomeProgressStrip — duplicated welcome vibe.
-  const { forcing, loading: journeyLoading } = useJourneyForcing(course);
+  const { forcing, loading: journeyLoading, postJourney } = useJourneyForcing(course);
   // Beta 9.6 — focus pulse when arriving from /journey "What to do next" tile
   useDashboardFocus();
+  // Beta 9.7 — post-journey streamlined dashboard. For users who completed
+  // the journey rail in the last 3 days, show ONE diagnostic-derived
+  // hero card + 3 tools tiles (no buffet). Graduates to standard dashboard
+  // after Day 3.
+  const inPostJourney = postJourney?.active ?? false;
+
+  // Beta 9.7 — Post-journey streamlined view (Day 0-3 after Step 5).
+  // Replaces the buffet with ONE diagnostic-derived action + 3 tools.
+  if (inPostJourney && postJourney) {
+    return (
+      <div className="space-y-4 max-w-2xl mx-auto px-0 sm:px-2 py-2">
+        <GreetingCard />
+        <PostJourneyHero
+          course={postJourney.course ?? (course as string)}
+          weakestUnit={postJourney.weakestUnit}
+          daysSinceCompleted={postJourney.daysSinceCompleted}
+        />
+        <DashboardSecondaryCards course={course as string} />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-4 max-w-2xl mx-auto px-0 sm:px-2 py-2">

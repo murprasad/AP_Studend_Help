@@ -36,12 +36,49 @@ type Signal = {
   answeredTodayInCourse?: number;
 };
 
-type JourneyResp = { journey: { currentStep: number } | null } | null;
+type JourneyResp = {
+  journey: {
+    currentStep: number;
+    completedAt?: string | null;
+    weakestUnit?: string | null;
+    course?: string | null;
+  } | null;
+} | null;
 
-export function useJourneyForcing(course?: string): { forcing: boolean; loading: boolean } {
-  const [state, setState] = useState<{ forcing: boolean; loading: boolean }>({
+/**
+ * Beta 9.7 — post-journey state
+ *
+ * Returned alongside `forcing` so the dashboard can render a streamlined
+ * "one action based on diagnostic" view for the first 3 days after a
+ * user completes the journey rail. After 3 days, postJourney.active is
+ * false and the dashboard graduates to its standard "mature" view.
+ *
+ * Contract:
+ *   active = true       UserJourney.currentStep >= 5
+ *                       AND UserJourney.completedAt within last 3 days
+ *   weakestUnit = unit  captured during Step 3 diagnostic
+ *   daysSince  = 0..3   for celebration / "Day N of your plan" framing
+ */
+export type PostJourneyState = {
+  active: boolean;
+  daysSinceCompleted: number;
+  weakestUnit: string | null;
+  course: string | null;
+};
+
+export function useJourneyForcing(course?: string): {
+  forcing: boolean;
+  loading: boolean;
+  postJourney: PostJourneyState | null;
+} {
+  const [state, setState] = useState<{
+    forcing: boolean;
+    loading: boolean;
+    postJourney: PostJourneyState | null;
+  }>({
     forcing: false,
     loading: true,
+    postJourney: null,
   });
 
   useEffect(() => {
@@ -60,14 +97,34 @@ export function useJourneyForcing(course?: string): { forcing: boolean; loading:
       fetch("/api/journey", { cache: "no-store" }).then((r) => (r.ok ? r.json() : null)).catch(() => null),
     ]).then(([d, jResp]: [Signal | null, JourneyResp]) => {
       if (aborted) return;
+
+      // Beta 9.7 — post-journey detection. Compute once and pass through.
+      const completedAtStr = jResp?.journey?.completedAt ?? null;
+      const journeyStep = jResp?.journey?.currentStep ?? null;
+      let postJourney: PostJourneyState | null = null;
+      if (
+        journeyStep !== null &&
+        journeyStep >= 5 &&
+        completedAtStr
+      ) {
+        const daysSince = Math.floor(
+          (Date.now() - new Date(completedAtStr).getTime()) / (1000 * 60 * 60 * 24),
+        );
+        postJourney = {
+          active: daysSince <= 3,
+          daysSinceCompleted: daysSince,
+          weakestUnit: jResp?.journey?.weakestUnit ?? null,
+          course: jResp?.journey?.course ?? null,
+        };
+      }
+
       if (!d) {
-        setState({ forcing: false, loading: false });
+        setState({ forcing: false, loading: false, postJourney });
         return;
       }
       // Exited (99) or completed (>=5) → never force
-      const journeyStep = jResp?.journey?.currentStep ?? null;
       if (journeyStep !== null && (journeyStep === 99 || journeyStep >= 5)) {
-        setState({ forcing: false, loading: false });
+        setState({ forcing: false, loading: false, postJourney });
         return;
       }
       const hasDiag = d.hasDiagnosticInCourse ?? d.hasDiagnostic;
@@ -77,9 +134,9 @@ export function useJourneyForcing(course?: string): { forcing: boolean; loading:
         typeof d.capLimit === "number" &&
         d.answeredToday >= d.capLimit;
       const forcing = isCapped || !isMature;
-      setState({ forcing, loading: false });
+      setState({ forcing, loading: false, postJourney });
     }).catch(() => {
-      if (!aborted) setState({ forcing: false, loading: false });
+      if (!aborted) setState({ forcing: false, loading: false, postJourney: null });
     });
     return () => { aborted = true; };
   }, [course]);
