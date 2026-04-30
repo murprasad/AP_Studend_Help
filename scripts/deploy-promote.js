@@ -64,8 +64,9 @@ function run(cmd, args, opts = {}) {
 
   // Upload to production branch.
   // Beta 9.6 — explicit ASCII --commit-message override to bypass CF's
-  // UTF-8 commit-message validator (chokes on en-dashes).
-  const promoteMsg = `prod-promote ${new Date().toISOString().slice(0, 19)}`;
+  // UTF-8 commit-message validator (chokes on en-dashes). No spaces —
+  // shell with shell:true splits even `--flag=value` at spaces.
+  const promoteMsg = `prod-promote-${new Date().toISOString().slice(0, 19).replace(/[:T]/g, "-")}`;
   await run(
     "npx",
     ["wrangler", "pages", "deploy", ".cf-deploy",

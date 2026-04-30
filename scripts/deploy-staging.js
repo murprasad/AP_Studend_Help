@@ -60,8 +60,9 @@ const STAGING_BRANCH = process.env.STAGING_BRANCH || "staging";
   // Without this, wrangler reads `git log -1` for the message, and
   // recent commits with en-dashes (—) fail CF's UTF-8 validation
   // ("Invalid commit message" code 8000111). The override sidesteps
-  // git-log entirely — every staging deploy gets a clean ASCII tag.
-  const stagingMsg = `staging-deploy ${new Date().toISOString().slice(0, 19)}`;
+  // git-log entirely. NO SPACES — shell with shell:true splits at
+  // spaces even on `--flag=value` form. Use only ASCII + hyphens.
+  const stagingMsg = `staging-deploy-${new Date().toISOString().slice(0, 19).replace(/[:T]/g, "-")}`;
   const wranglerOut = await run(
     "npx",
     ["wrangler", "pages", "deploy", ".cf-deploy",
