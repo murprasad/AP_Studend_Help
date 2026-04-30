@@ -39,8 +39,16 @@ if (!COURSE || !UNIT || !TOPICS_FILE) {
   process.exit(1);
 }
 
-const TOPICS = fs.readFileSync(TOPICS_FILE, "utf8").split("\n").map(l => l.trim()).filter(Boolean);
-console.log(`Course=${COURSE} Unit=${UNIT} Target=${TARGET} Topics=${TOPICS.length}`);
+// Topics file may include lines in the form "[UNIT_ID] topic text" to override
+// the default --unit on a per-line basis (used when generating across multiple
+// units of the same course in one run).
+const TOPIC_LINES = fs.readFileSync(TOPICS_FILE, "utf8").split("\n").map(l => l.trim()).filter(Boolean);
+const TOPICS = TOPIC_LINES.map(line => {
+  const m = line.match(/^\[([A-Z][A-Z0-9_]+)\]\s+(.*)$/);
+  if (m) return { unit: m[1], topic: m[2] };
+  return { unit: UNIT, topic: line };
+});
+console.log(`Course=${COURSE} BaseUnit=${UNIT} Target=${TARGET} TopicLines=${TOPICS.length}`);
 
 async function callGroq(prompt) {
   const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
@@ -63,10 +71,14 @@ async function callGroq(prompt) {
   return data.choices?.[0]?.message?.content ?? "{}";
 }
 
-function buildPrompt(topic) {
+function buildPrompt(topicObj) {
+  // Beta 9.6 bugfix (2026-04-30): topicObj is {unit, topic}; previously
+  // we templated ${topic} which rendered as "[object Object]" → Groq
+  // got no topic constraint and produced off-topic generic Physics Qs.
+  const topicStr = typeof topicObj === "string" ? topicObj : topicObj?.topic ?? "";
   return `Generate ONE College Board ${COURSE_DESC}-style multiple-choice question on this exact topic from the official CB Course and Exam Description:
 
-  TOPIC: ${topic}
+  TOPIC: ${topicStr}
 
 CB-quality requirements:
 - 4 answer options (A, B, C, D), exactly one correct
@@ -86,7 +98,7 @@ Return JSON:
 }`;
 }
 
-async function insertQuestion(q, topic) {
+async function insertQuestion(q, topicObj) {
   const id = randomUUID();
   const now = new Date();
   const normalized = q.questionText.toLowerCase().replace(/\s+/g, " ").trim();
@@ -97,6 +109,12 @@ async function insertQuestion(q, topic) {
 
   const optionsJson = JSON.stringify(q.options);
   const model = `groq/llama-3.3-70b-versatile|${SOURCE_MARKER}`;
+  // Beta 9.6 bugfix (2026-04-30): use the per-line unit from the topic
+  // object, not the base --unit arg. With multi-unit topic files (lines
+  // prefixed [PHYC_M_X_NAME]), every Q was previously stored under the
+  // base unit, breaking unit-targeted diagnostic + analytics.
+  const unit = typeof topicObj === "string" ? UNIT : (topicObj?.unit ?? UNIT);
+  const topicText = typeof topicObj === "string" ? topicObj : (topicObj?.topic ?? "");
   try {
     await sql`
       INSERT INTO questions (
@@ -105,7 +123,7 @@ async function insertQuestion(q, topic) {
         "isAiGenerated", "isApproved", "modelUsed", "generatedForTier",
         "contentHash", "createdAt", "updatedAt"
       ) VALUES (
-        ${id}, ${COURSE}::"ApCourse", ${UNIT}::"ApUnit", ${topic}, ${DIFFICULTY}::"Difficulty", 'MCQ',
+        ${id}, ${COURSE}::"ApCourse", ${unit}::"ApUnit", ${topicText}, ${DIFFICULTY}::"Difficulty", 'MCQ',
         ${q.questionText}, ${q.stimulus ?? null}, ${optionsJson}::jsonb, ${q.correctAnswer}, ${q.explanation},
         true, true, ${model}, 'PREMIUM',
         ${contentHash}, ${now.toISOString()}, ${now.toISOString()}
