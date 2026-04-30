@@ -102,12 +102,20 @@ function NextTile({
   subtitle: string;
   href: string;
 }) {
+  // Beta 9.6.2 (2026-04-30) — fix nav-loop bug. Previous markup was
+  // <Link><Button>...</Button></Link> which renders <a><button>…</button></a>.
+  // That's invalid HTML (button-in-anchor); browsers handle it inconsistently
+  // and some block the <a>'s default navigation when the inner button is
+  // clicked. Result: clicking a Step 5 tile did nothing on some browsers.
+  // Use shadcn's `asChild` pattern instead — Button renders as the Link's
+  // root <a>, so the click reliably navigates.
   return (
-    <Link href={href} className="block">
-      <Button
-        variant="outline"
-        className="w-full h-auto py-3 px-4 justify-start gap-3 border-border/40 hover:bg-accent"
-      >
+    <Button
+      asChild
+      variant="outline"
+      className="w-full h-auto py-3 px-4 justify-start gap-3 border-border/40 hover:bg-accent"
+    >
+      <Link href={href}>
         <div className="w-9 h-9 rounded-lg bg-background flex items-center justify-center flex-shrink-0">
           {icon}
         </div>
@@ -118,7 +126,7 @@ function NextTile({
           </p>
         </div>
         <ArrowRight className="h-4 w-4 text-muted-foreground flex-shrink-0" />
-      </Button>
-    </Link>
+      </Link>
+    </Button>
   );
 }
