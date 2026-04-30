@@ -24,12 +24,18 @@ const CRON_SECRET = process.env.CRON_SECRET;
 test.describe("FlashcardsDueCard", () => {
   test.beforeEach(async ({ baseURL }) => {
     if (!CRON_SECRET) return;
-    // Clear DashboardImpression rows so AutoLaunchNudge doesn't fire.
-    // The seed action with count=0 + clearFirst clears the slate.
     const api = await apiRequest.newContext();
+    // Clear DashboardImpression rows so AutoLaunchNudge doesn't fire.
     await api.post(`${baseURL}/api/test/auth`, {
       headers: { Authorization: `Bearer ${CRON_SECRET}`, "Content-Type": "application/json" },
       data: { action: "seed-dashboard-impressions", count: 0, clearFirst: true, course: "AP_WORLD_HISTORY" },
+    });
+    // Beta 9.5 — bypass the new /dashboard → /journey redirect by
+    // marking the test user's journey as exited. Without this, the
+    // test never reaches the dashboard.
+    await api.post(`${baseURL}/api/test/auth`, {
+      headers: { Authorization: `Bearer ${CRON_SECRET}`, "Content-Type": "application/json" },
+      data: { action: "complete-journey" },
     });
     await api.dispose();
   });

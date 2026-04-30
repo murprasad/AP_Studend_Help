@@ -121,6 +121,21 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ completed: true, userId: user.id });
     }
 
+    if (action === "complete-journey") {
+      // Beta 9.5 — for tests that need to bypass the new /dashboard →
+      // /journey redirect. Marks the user's UserJourney as exited
+      // (currentStep=99) so the dashboard layout's redirect doesn't
+      // fire and the test runs against the standard dashboard.
+      const user = await prisma.user.findUnique({ where: { email: TEST_EMAIL }, select: { id: true } });
+      if (!user) return NextResponse.json({ error: "Test user not found — create first" }, { status: 404 });
+      await prisma.userJourney.upsert({
+        where: { userId: user.id },
+        update: { currentStep: 99 },
+        create: { userId: user.id, course: "AP_WORLD_HISTORY", currentStep: 99 },
+      });
+      return NextResponse.json({ completed: true, userId: user.id });
+    }
+
     if (action === "seed-dashboard-impressions") {
       const count = Math.min(20, Math.max(0, Number(body.count ?? 2)));
       const course = String(body.course ?? "AP_WORLD_HISTORY").slice(0, 64);

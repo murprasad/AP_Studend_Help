@@ -58,6 +58,17 @@ setup("authenticate as functional test user", async ({ request, page }) => {
     },
   ]);
 
+  // Beta 9.5 — bypass the new /dashboard → /journey redirect by marking
+  // the test user's journey as exited. Without this, every authed test
+  // that visits /dashboard would be bounced to /journey first.
+  // (Specs that explicitly test the journey rail can call
+  //  /api/journey?action=reset to drop this state.)
+  const journeyRes = await request.post(`${baseURL}/api/test/auth`, {
+    headers: { Authorization: `Bearer ${cronSecret}`, "Content-Type": "application/json" },
+    data: { action: "complete-journey" },
+  });
+  expect(journeyRes.ok(), `complete-journey failed: ${journeyRes.status()}`).toBe(true);
+
   // Inject init script BEFORE navigating. addInitScript runs on every
   // page load within this context — this beats the dashboard layout's
   // client-side onboarding redirect useEffect, which otherwise races
@@ -67,6 +78,10 @@ setup("authenticate as functional test user", async ({ request, page }) => {
     try {
       localStorage.setItem("onboarding_completed", "true");
       localStorage.setItem("ap_selected_course", "AP_WORLD_HISTORY");
+      // Beta 9.5 — also set the local-cached journey flag so the
+      // dashboard layout skips its journey redirect even before the
+      // /api/journey round-trip resolves.
+      localStorage.setItem("journey_status_v1", "exited");
     } catch { /* private mode — fall through */ }
   });
 
@@ -83,6 +98,7 @@ setup("authenticate as functional test user", async ({ request, page }) => {
     try {
       localStorage.setItem("onboarding_completed", "true");
       localStorage.setItem("ap_selected_course", "AP_WORLD_HISTORY");
+      localStorage.setItem("journey_status_v1", "exited");
     } catch { /* private mode — fall through */ }
   });
 
