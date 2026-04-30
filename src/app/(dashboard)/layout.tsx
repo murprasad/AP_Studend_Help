@@ -93,6 +93,46 @@ export default function DashboardLayout({
     } catch { /* ignore */ }
   }, [status, session, pathname, router]);
 
+  // Beta 9.5 (2026-04-30) — Journey Mode redirect.
+  // Authenticated user lands on /dashboard. If they don't have a journey
+  // yet, OR their journey is in steps 0-4 (not done, not user-exited),
+  // route them to /journey for the guided rail. Once journey is complete
+  // (currentStep >= 5) or user explicitly exited (currentStep === 99),
+  // they get the standard dashboard.
+  //
+  // Why client-side redirect (not middleware): edge runtime can't query
+  // Prisma. localStorage check first to avoid the round-trip on every
+  // dashboard view; API call only when the local cache is missing.
+  const JOURNEY_LOCAL_KEY = "journey_status_v1"; // values: "in_progress" | "done" | "exited"
+  useEffect(() => {
+    if (status !== "authenticated") return;
+    // Don't redirect away from non-dashboard pages — only act on /dashboard
+    if (pathname !== "/dashboard") return;
+
+    const local = (() => {
+      try { return localStorage.getItem(JOURNEY_LOCAL_KEY); } catch { return null; }
+    })();
+    if (local === "done" || local === "exited") return; // standard dashboard for them
+
+    fetch("/api/journey", { cache: "no-store" })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d: { journey: { currentStep: number } | null } | null) => {
+        const cs = d?.journey?.currentStep ?? null;
+        if (cs === null) {
+          // Brand new — start the rail
+          router.replace("/journey");
+        } else if (cs >= 5) {
+          try { localStorage.setItem(JOURNEY_LOCAL_KEY, "done"); } catch { /* ignore */ }
+        } else if (cs === 99) {
+          try { localStorage.setItem(JOURNEY_LOCAL_KEY, "exited"); } catch { /* ignore */ }
+        } else {
+          // Mid-journey — resume
+          router.replace("/journey");
+        }
+      })
+      .catch(() => { /* silent */ });
+  }, [status, pathname, router]);
+
   // Auto-exit exam mode when navigating away from exam-mode pages
   useEffect(() => {
     if (examModeState.examMode && !EXAM_MODE_PAGES.some(p => pathname.startsWith(p))) {

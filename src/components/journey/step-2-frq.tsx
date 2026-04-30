@@ -1,0 +1,114 @@
+"use client";
+
+/**
+ * Step 2 — 1 curated FRQ (Beta 9.5).
+ *
+ * Picks the first available FRQ for the course, embeds the existing
+ * FrqPracticeCard. On reveal complete → continue.
+ */
+
+import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Loader2, ArrowRight } from "lucide-react";
+import { FrqPracticeCard } from "@/components/practice/frq-practice-card";
+
+interface FrqRow {
+  id: string;
+  course: string;
+  unit: string | null;
+  year: number | null;
+  questionNumber: number | null;
+  type: string;
+  sourceUrl: string | null;
+  promptText: string;
+  stimulus: string | null;
+  totalPoints: number | null;
+}
+
+interface Props {
+  course: string;
+  /** When the FRQ is already in flight from a parent prefetch. */
+  prefetchedFrq?: FrqRow | null;
+  onComplete: (frqId: string) => void;
+}
+
+export function Step2Frq({ course, prefetchedFrq, onComplete }: Props) {
+  const [frq, setFrq] = useState<FrqRow | null>(prefetchedFrq ?? null);
+  const [loading, setLoading] = useState(!prefetchedFrq);
+  const [error, setError] = useState<string | null>(null);
+  const [revealed, setRevealed] = useState(false);
+
+  useEffect(() => {
+    if (frq) return;
+    let cancelled = false;
+    fetch(`/api/frq?course=${course}&limit=1`, { cache: "no-store" })
+      .then((r) => r.json())
+      .then((d) => {
+        if (cancelled) return;
+        const first = Array.isArray(d.frqs) && d.frqs.length > 0 ? d.frqs[0] : null;
+        if (!first) {
+          setError("No FRQ available for this course yet.");
+        } else {
+          setFrq(first);
+        }
+        setLoading(false);
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setError("Network error.");
+          setLoading(false);
+        }
+      });
+    return () => { cancelled = true; };
+  }, [course, frq]);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
+
+  if (error || !frq) {
+    return (
+      <div className="text-center pt-12 space-y-3">
+        <p className="text-sm text-muted-foreground">{error ?? "No FRQ found."}</p>
+        <Button variant="outline" onClick={() => onComplete("")}>
+          Skip step
+        </Button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="py-4 space-y-4">
+      <div className="text-center">
+        <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+          Step 2 · Real AP question
+        </p>
+        <p className="text-sm mt-0.5">
+          Try one — see how AP is graded.
+        </p>
+      </div>
+
+      <FrqPracticeCard
+        frqId={frq.id}
+        onRevealed={() => setRevealed(true)}
+      />
+
+      {revealed && (
+        <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/5 p-5 text-center space-y-3">
+          <p className="text-base font-semibold">That&apos;s how AP scores work.</p>
+          <p className="text-sm text-muted-foreground max-w-md mx-auto">
+            Now a quick diagnostic to estimate your overall AP score.
+          </p>
+          <Button onClick={() => onComplete(frq.id)} className="rounded-full gap-2">
+            See my projected score
+            <ArrowRight className="h-4 w-4" />
+          </Button>
+        </div>
+      )}
+    </div>
+  );
+}

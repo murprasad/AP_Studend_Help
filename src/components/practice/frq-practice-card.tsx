@@ -77,12 +77,18 @@ interface FrqPracticeCardProps {
   initialFrq?: FrqFull;
   /** Called when the student clicks "Next FRQ" after self-grading. */
   onNext?: () => void;
+  /** Beta 9.5 — fired the moment rubric reveal happens. Lets a parent
+   *  (e.g. journey orchestrator) display its own follow-up CTA below
+   *  the card without triggering FrqPracticeCard's built-in "Next FRQ"
+   *  button (which would conflict with the journey label). */
+  onRevealed?: () => void;
 }
 
 export function FrqPracticeCard({
   frqId,
   initialFrq,
   onNext,
+  onRevealed,
 }: FrqPracticeCardProps) {
   const { toast } = useToast();
   const [loading, setLoading] = useState(!initialFrq && !!frqId);
@@ -112,6 +118,7 @@ export function FrqPracticeCard({
         setFrq(data.frq);
         if (data.unlocked && data.frq.rubric) {
           setRevealed(true);
+      onRevealed?.();
           // Beta 9.0.7 — rehydrate prior attempt's answers so reveal echo
           // shows the user's actual typed text instead of '(no answer
           // recorded)'. studentText is either a JSON-stringified record
@@ -186,6 +193,7 @@ export function FrqPracticeCard({
       const data = (await res.json()) as { frq: FrqFull };
       setFrq(data.frq);
       setRevealed(true);
+      onRevealed?.();
     } catch (e) {
       toast({
         title: "Submission failed",

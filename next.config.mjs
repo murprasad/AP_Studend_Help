@@ -61,6 +61,19 @@ const nextConfig = {
       },
     ];
   },
+  // Beta 9.5 (2026-04-30) — `canvas` is a Node-native package that
+  // vega-canvas tries to resolve when react-vega is imported (even via
+  // dynamic import, Next.js's webpack pre-analysis follows the chain).
+  // We don't ship server-side vega rendering — react-vega is loaded
+  // client-side only via dynamic import in visual-block.tsx — so
+  // aliasing canvas to false on the server is safe.
+  webpack: (config, { isServer }) => {
+    if (isServer) {
+      config.resolve = config.resolve || {};
+      config.resolve.alias = { ...(config.resolve.alias ?? {}), canvas: false };
+    }
+    return config;
+  },
 };
 
 export default nextConfig;

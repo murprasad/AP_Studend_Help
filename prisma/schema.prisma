@@ -75,8 +75,42 @@ model User {
   dashboardImpressions DashboardImpression[]
   sageCoachSessions    SageCoachSession[]
   flashcardReviews     FlashcardReview[]
+  userJourney          UserJourney?
 
   @@map("users")
+}
+
+// Beta 9.5 (2026-04-30) — guided "Journey Mode" rail for first-time
+// (and re-directed) users. One row per user. Tracks current step,
+// course chosen, and references to the artifacts produced during
+// each step so we can resume on dropout.
+//
+// Step IDs:
+//   0  course-pick (default AP_WORLD_HISTORY, switchable)
+//   1  3-MCQ warm-up
+//   2  1 curated FRQ + rubric reveal
+//   3  short diagnostic (5–10 Qs)
+//   4  5-Q targeted MCQ in weakest unit
+//   5  done — cap-reached / upgrade screen
+//   99 exited (user clicked exit; can resume anytime)
+model UserJourney {
+  id              String     @id @default(cuid())
+  userId          String     @unique
+  user            User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course          String     @default("AP_WORLD_HISTORY")
+  currentStep     Int        @default(0)
+  weakestUnit     String?
+  // Per-step artifact pointers — used for resume-where-you-left-off
+  step1SessionId  String?
+  step2FrqId      String?    // FreeResponseQuestion.id used in step 2
+  step3DiagnosticId String?
+  step4SessionId  String?
+  startedAt       DateTime   @default(now())
+  completedAt     DateTime?
+  updatedAt       DateTime   @updatedAt
+
+  @@index([userId])
+  @@map("user_journeys")
 }
 
 // Dashboard → Coach Card → CTA click funnel instrumentation.
