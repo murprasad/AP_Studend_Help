@@ -133,14 +133,20 @@ export default function PricingClient({ clepEnabled, dsstEnabled }: PricingClien
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-16">
-      {/* Header */}
+      {/* Header — Beta 9.4.1 outcome-driven framing (Task #34, 2026-04-30):
+          previous "Simple, transparent pricing" was logistical not
+          outcome-anchored. New hero leads with the result the student
+          gets (a passing exam score) and quantifies the value vs
+          tutoring. The price-anchor stays prominent below. */}
       <div className="text-center mb-8">
-        <h1 className="text-4xl font-bold mb-4">Simple, transparent pricing</h1>
+        <h1 className="text-4xl font-bold mb-4">
+          Score higher on AP, SAT &amp; ACT — for $9.99/month
+        </h1>
         <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-          One subscription unlocks every exam. AP, SAT, ACT — all included for $9.99/mo.
+          The cost of one tutoring session covers a full year of practice across every exam — graded against the official rubric.
         </p>
-        <p className="text-sm text-emerald-700 dark:text-emerald-700 dark:text-emerald-400 font-medium mt-3">
-          ✦ Sign up via any exam below — Premium is all-access.
+        <p className="text-sm text-emerald-700 dark:text-emerald-400 font-medium mt-3">
+          ✦ One subscription unlocks every exam · Cancel anytime · 7-day refund
         </p>
       </div>
 
