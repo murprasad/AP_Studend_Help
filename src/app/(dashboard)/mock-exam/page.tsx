@@ -28,6 +28,7 @@ import {
 } from "lucide-react";
 import { CourseSelectorInline } from "@/components/layout/course-selector-inline";
 import { CourseExamOverview } from "@/components/practice/course-exam-overview";
+import { PostSessionNextStep } from "@/components/practice/post-session-next-step";
 import Link from "next/link";
 import { FREE_LIMITS, LOCK_COPY, projectedDaysToTarget } from "@/lib/tier-limits";
 
@@ -531,6 +532,9 @@ export default function MockExamPage() {
           <Trophy className="h-16 w-16 text-yellow-700 dark:text-yellow-400 mx-auto mb-4" />
           <h1 className="text-3xl font-bold">Exam Complete!</h1>
         </div>
+
+        {/* Beta 9.3.5 — ONE clear next step at top of mock-exam summary. */}
+        <PostSessionNextStep course={course} source="mock_summary" />
 
         <Card className="card-glow">
           <CardContent className="p-6 text-center">

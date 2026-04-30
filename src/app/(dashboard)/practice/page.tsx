@@ -18,8 +18,7 @@ import { SocialProofBadge } from "@/components/social-proof-badge";
 import { CourseExamOverview } from "@/components/practice/course-exam-overview";
 import { SessionFeedbackPopup } from "@/components/feedback/session-feedback-popup";
 import { SessionDeltaCard } from "@/components/practice/session-delta-card";
-import { NextSessionNudge } from "@/components/practice/next-session-nudge";
-import { FrqTasteNudge } from "@/components/practice/frq-taste-nudge";
+import { PostSessionNextStep } from "@/components/practice/post-session-next-step";
 import { DiagnosticNudgeModal } from "@/components/practice/diagnostic-nudge-modal";
 import { FrqMidSessionModal, shouldShowFrqMidSession } from "@/components/practice/frq-mid-session-modal";
 import { useExamMode } from "@/hooks/use-exam-mode";
@@ -894,20 +893,14 @@ export default function PracticePage() {
           correctAnswers={sessionSummary.correctAnswers}
         />
 
-        {/* Beta 8.13.3 (2026-04-29) — FRQ taste insertion. Renders only
-            when user has 0 prior FRQ submissions in this course. The
-            differentiator vs every other MCQ tool is FRQ + AI rubric
-            grading; if a first-time user finishes an MCQ session and
-            never sees that, the product looks generic. Inserted ABOVE
-            NextSessionNudge so it's the first call-to-action for users
-            who haven't tasted FRQ yet. */}
-        <FrqTasteNudge course={course} />
-
-        {/* Incomplete-loop retention nudge — surfaces weakest unit +
-            streak protection as a reason to return tomorrow. Renders
-            even for first-timers (with course-level fallback) per
-            Beta 8.13.1. */}
-        <NextSessionNudge course={course} />
+        {/* Beta 9.3.5 (2026-04-30) — ONE clear next step. User feedback
+            "After every step, completing a practice/mock/diagnostic/FRQs,
+            there should be clear next step. I still see its missing."
+            PostSessionNextStep picks the best forward CTA based on the
+            user's funnel state and renders ONE hero card. Replaces the
+            buffet of 3 conditional nudges (FrqTaste + NextSession +
+            CrossModule) that previously stacked in this slot. */}
+        <PostSessionNextStep course={course} source="practice_summary" />
 
         {/* Cross-module usage-expansion nudge — Premium users only.
             Surfaces a "you also unlocked SAT/ACT" card so paying users
