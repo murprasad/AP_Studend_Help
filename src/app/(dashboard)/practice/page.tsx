@@ -1165,6 +1165,12 @@ export default function PracticePage() {
             <div className="space-y-2">
               {parsedOptions.map((option, i) => {
                 const letter = option.charAt(0);
+                // Beta 9.6 — match CB exam look-and-feel from journey rail.
+                // Display "(A)" / "(B)" / etc. as a bold prefix and strip
+                // the leading "A. " / "A) " / "(A) " from the option text
+                // so we don't render the letter twice. Existing `letter`
+                // var still drives selection logic.
+                const cleanText = option.replace(/^\s*(?:\(?[A-E]\)?[.)]\s*)/, "");
                 let optionClass = "border border-border/40 hover:bg-accent cursor-pointer";
 
                 if (feedback && selectedAnswer) {
@@ -1184,9 +1190,10 @@ export default function PracticePage() {
                     key={i}
                     onClick={() => !feedback && !isSubmitting && submitAnswer(letter)}
                     disabled={!!feedback || isSubmitting}
-                    className={`w-full text-left p-4 rounded-lg transition-all min-h-[48px] ${optionClass}`}
+                    className={`w-full text-left p-4 rounded-lg transition-all min-h-[48px] flex items-start gap-3 ${optionClass}`}
                   >
-                    <span className="text-sm leading-relaxed">{option}</span>
+                    <span className="font-bold text-sm w-6 flex-shrink-0">({letter})</span>
+                    <span className="text-sm leading-relaxed flex-1">{cleanText}</span>
                   </button>
                 );
               })}

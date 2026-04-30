@@ -225,17 +225,20 @@ export default function DiagnosticPage() {
               {options.map((opt, i) => {
                 const letter = String.fromCharCode(65 + i)
                 const isSelected = selectedAnswer === letter
+                // Beta 9.6 — CB-style (A)(B)(C)(D) labeled prefix.
+                const cleanText = opt.replace(/^\s*(?:\(?[A-E]\)?[.)]\s*)/, "")
                 return (
                   <button
                     key={i}
                     onClick={() => handleAnswerSelect(letter)}
-                    className={`w-full text-left px-4 py-3 rounded-lg border text-sm transition-colors min-h-[48px] leading-relaxed ${
+                    className={`w-full text-left px-4 py-3 rounded-lg border text-sm transition-colors min-h-[48px] leading-relaxed flex items-start gap-3 ${
                       isSelected
                         ? "border-blue-500 bg-blue-500/10 text-blue-700 dark:text-blue-400"
                         : "border-border/40 hover:bg-accent"
                     }`}
                   >
-                    {opt}
+                    <span className="font-bold w-6 flex-shrink-0">({letter})</span>
+                    <span className="flex-1">{cleanText}</span>
                   </button>
                 )
               })}

@@ -689,6 +689,8 @@ export default function MockExamPage() {
             <div className="space-y-2">
               {parsedOptions.map((option, i) => {
                 const letter = option.charAt(0);
+                // Beta 9.6 — CB-style (A)(B)(C)(D) labeled prefix.
+                const cleanText = option.replace(/^\s*(?:\(?[A-E]\)?[.)]\s*)/, "");
                 let cls = "border border-border/40 hover:bg-accent cursor-pointer";
                 if (feedback) {
                   if (letter === feedback.correctAnswer) cls = "border-emerald-500 bg-emerald-500/10 text-emerald-700 dark:text-emerald-400";
@@ -702,9 +704,10 @@ export default function MockExamPage() {
                     key={i}
                     onClick={() => !feedback && !isSubmitting && submitAnswer(letter)}
                     disabled={!!feedback || isSubmitting}
-                    className={`w-full text-left p-4 rounded-lg transition-all min-h-[48px] ${cls}`}
+                    className={`w-full text-left p-4 rounded-lg transition-all min-h-[48px] flex items-start gap-3 ${cls}`}
                   >
-                    <span className="text-sm leading-relaxed">{option}</span>
+                    <span className="font-bold text-sm w-6 flex-shrink-0">({letter})</span>
+                    <span className="text-sm leading-relaxed flex-1">{cleanText}</span>
                   </button>
                 );
               })}
