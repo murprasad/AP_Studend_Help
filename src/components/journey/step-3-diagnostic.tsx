@@ -79,12 +79,18 @@ export function Step3Diagnostic({ course, onComplete }: Props) {
     setSubmitting(true);
     setSelected(answer);
     try {
+      // 2026-05-01 fix — server stores correctAnswer as a single letter
+      // and grades by letter comparison. Option strings start with
+      // "A) ...", "B) ..." etc., so we send the leading letter, not the
+      // full option text. Same bug + fix as step-1-mcq.tsx — every Step 3
+      // diagnostic answer was being marked incorrect regardless of choice.
+      const letter = answer.charAt(0).toUpperCase();
       const res = await fetch(`/api/practice/${sessionId}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           questionId: questions[idx].id,
-          answer,
+          answer: letter,
           timeSpentSecs: 30,
         }),
       });
@@ -193,7 +199,10 @@ export function Step3Diagnostic({ course, onComplete }: Props) {
           {q.options.map((opt, i) => {
             const letter = ["A", "B", "C", "D", "E"][i] ?? String(i + 1);
             const isSelected = selected === opt;
-            const isCorrectAnswer = feedback && feedback.correctAnswer === opt;
+            // 2026-05-01 fix — feedback.correctAnswer is a letter ("C"),
+            // not the full option string. Compare against this option's
+            // letter so the green correct-highlight fires on the right choice.
+            const isCorrectAnswer = feedback && feedback.correctAnswer.toUpperCase() === letter;
             const wasSelectedAndWrong = feedback && isSelected && !feedback.correct;
             const cls = feedback
               ? isCorrectAnswer

@@ -85,12 +85,19 @@ export function Step1Mcq({ course, questionCount = 3, unit = null, label = "Warm
     setSubmitting(true);
     setSelected(answer);
     try {
+      // 2026-05-01 fix — server stores correctAnswer as a single letter
+      // ("A"/"B"/"C"/"D"/"E") and grades by `answer.toUpperCase() ===
+      // question.correctAnswer.toUpperCase()`. Option strings start with
+      // "A) ...", "B) ..." etc., so we send the leading letter, not the
+      // full option text. Without this, every Step 1/Step 4 MCQ was
+      // marked incorrect regardless of which choice the student picked.
+      const letter = answer.charAt(0).toUpperCase();
       const res = await fetch(`/api/practice/${sessionId}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           questionId: questions[idx].id,
-          answer,
+          answer: letter,
           timeSpentSecs: 30,
         }),
       });
@@ -167,7 +174,11 @@ export function Step1Mcq({ course, questionCount = 3, unit = null, label = "Warm
           {q.options.map((opt, i) => {
             const letter = ["A", "B", "C", "D", "E"][i] ?? String(i + 1);
             const isSelected = selected === opt;
-            const isCorrectAnswer = feedback && feedback.correctAnswer === opt;
+            // 2026-05-01 fix — feedback.correctAnswer is a letter ("C"),
+            // not the full option string ("C) Synthesis..."). Compare to
+            // this option's leading letter so the green "this is correct"
+            // highlight actually fires on the right choice.
+            const isCorrectAnswer = feedback && feedback.correctAnswer.toUpperCase() === letter;
             const wasSelectedAndWrong = feedback && isSelected && !feedback.correct;
             const cls = feedback
               ? isCorrectAnswer
