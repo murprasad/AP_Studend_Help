@@ -19,6 +19,7 @@
 
 import { useEffect, useState, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import { Loader2 } from "lucide-react";
 import { JourneyShell } from "@/components/journey/journey-shell";
 import { Step0CoursePick } from "@/components/journey/step-0-course-pick";
@@ -55,6 +56,7 @@ interface FrqRow {
 
 export default function JourneyPage() {
   const router = useRouter();
+  const { update: updateSession } = useSession();
   const [mode, setMode] = useState<Mode>("loading");
   const [course, setCourse] = useState<string>("AP_WORLD_HISTORY");
   const [weakestUnit, setWeakestUnit] = useState<string | null>(null);
@@ -170,8 +172,15 @@ export default function JourneyPage() {
   // ── Step 4 → step 5 (done) ─────────────────────────────────────────────────
   const handleStep4Done = useCallback(async (artifact: { sessionId: string }) => {
     await apiPost("advance", { step: 5, artifactId: artifact.sessionId });
+    // Beta 9.7.2 — force NextAuth to refresh the JWT from DB. The advance
+    // handler just wrote `onboardingCompletedAt = NOW` to the User row;
+    // without this update() call, the cookie-based session in the
+    // browser still has the OLD value (null) until next sign-in. With
+    // it, the next request to /dashboard sees a fresh JWT and middleware
+    // doesn't bounce the user back to /journey.
+    try { await updateSession(); } catch { /* non-fatal */ }
     setMode("step5");
-  }, [apiPost]);
+  }, [apiPost, updateSession]);
 
   // ── Helper: pretty unit name ───────────────────────────────────────────────
   const courseConfig = COURSE_REGISTRY[course as ApCourse] ?? null;
