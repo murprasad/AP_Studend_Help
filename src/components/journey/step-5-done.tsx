@@ -13,7 +13,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
-  Trophy, Check, ArrowRight, Brain, Sparkles, BarChart3,
+  Trophy, Check, ArrowRight, Brain, Sparkles, BarChart3, Crown,
 } from "lucide-react";
 
 interface Props {
@@ -76,18 +76,37 @@ export function Step5Done({ predictedScore, weakestUnitName }: Props) {
           subtitle="Stuck on a concept? Sage explains anything in 30 seconds."
           href="/ai-tutor"
         />
-      </div>
-
-      {/* Subtle upgrade link below — not a competing CTA */}
-      <div className="text-center pt-2">
-        <Link
-          href="/billing?utm_source=journey_done&utm_campaign=v96"
-          className="text-xs text-muted-foreground hover:text-foreground"
-        >
-          Or unlock unlimited everything — Premium $9.99/mo →
-        </Link>
+        {/* 2026-05-01 — promote upgrade from subtle text link to a co-equal
+            tinted tile so the price is visible at the conversion moment.
+            Previous version hid $9.99 under "or unlock unlimited everything"
+            small grey text — undersold the offer. */}
+        <UpgradeTile />
       </div>
     </div>
+  );
+}
+
+function UpgradeTile() {
+  return (
+    <Button
+      asChild
+      className="w-full h-auto py-3 px-4 justify-start gap-3 border border-amber-500/40 bg-gradient-to-r from-amber-500/15 via-yellow-500/10 to-amber-500/5 hover:from-amber-500/25 hover:via-yellow-500/20 hover:to-amber-500/10 text-foreground"
+    >
+      <Link href="/billing?utm_source=journey_done&utm_campaign=step5_tile">
+        <div className="w-9 h-9 rounded-lg bg-amber-500/20 flex items-center justify-center flex-shrink-0">
+          <Crown className="h-5 w-5 text-amber-700 dark:text-amber-400" />
+        </div>
+        <div className="flex-1 min-w-0 text-left">
+          <p className="text-sm font-semibold leading-tight">
+            Unlock full prep — <span className="text-amber-700 dark:text-amber-400">$9.99/mo</span>
+          </p>
+          <p className="text-[11px] text-muted-foreground mt-0.5 leading-snug whitespace-normal">
+            Unlimited daily practice · line-by-line FRQ coaching · Sage Coach.
+          </p>
+        </div>
+        <ArrowRight className="h-4 w-4 text-amber-700 dark:text-amber-400 flex-shrink-0" />
+      </Link>
+    </Button>
   );
 }
 

@@ -34,6 +34,7 @@ import { OutcomeProgressStrip } from "@/components/dashboard/outcome-progress-st
 import { WeaknessFocusCard } from "@/components/dashboard/weakness-focus-card";
 import { SageCoachPromoCard } from "@/components/dashboard/sage-coach-promo-card";
 import { CramModeCard } from "@/components/dashboard/cram-mode-card";
+import { ExamDatePromptCard } from "@/components/dashboard/exam-date-prompt-card";
 import { DailyStudyOSCard } from "@/components/dashboard/daily-study-os-card";
 import { DailyGoalCard } from "@/components/dashboard/daily-goal-card";
 import { LockedValueCard } from "@/components/dashboard/locked-value-card";
@@ -45,6 +46,7 @@ import { GreetingCard } from "@/components/dashboard/greeting-card";
 import { JourneyHeroCard } from "@/components/dashboard/journey-hero-card";
 import { PostJourneyHero } from "@/components/dashboard/post-journey-hero";
 import { useJourneyForcing } from "@/hooks/use-journey-forcing";
+import type { ApCourse } from "@prisma/client";
 import { useDashboardFocus } from "@/hooks/use-dashboard-focus";
 
 function DashboardSkeleton() {
@@ -200,6 +202,12 @@ function DashboardBody({ course, impressionId }: { course: string; impressionId:
       {!forcing && !journeyLoading && (
         <SingleQuestionEntry course={course} />
       )}
+
+      {/* 1c-pre. (2026-05-01) — Exam-date prompt. Renders ONLY when the
+          user hasn't set their exam date yet. Without this entry point,
+          CramModeCard + DailyStudyOSCard's exam-aware behaviour stays
+          dark for everyone. Disappears the moment a date is saved. */}
+      <ExamDatePromptCard course={course as ApCourse} />
 
       {/* 1c. Phase C (Beta 8.3) — Cram Mode countdown + today's plan.
           Renders ONLY when User.examDate is set AND <30 days out. Placed

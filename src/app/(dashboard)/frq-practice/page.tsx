@@ -106,6 +106,27 @@ export default function FrqPracticePage() {
     fetchList();
   }, [fetchList]);
 
+  // 2026-05-01 — auto-pick path for guided users. When ?first_taste=1
+  // (entry from journey/post-session next-step) OR ?guided=1 is set,
+  // fetch ONE recommended FRQ and auto-select it instead of rendering
+  // the 25-item grid. Kills choice paralysis for first-timers. Power
+  // users override with ?browse=1.
+  const isGuided =
+    (searchParams.get("first_taste") === "1" || searchParams.get("guided") === "1") &&
+    searchParams.get("browse") !== "1";
+  const [autoPickAttempted, setAutoPickAttempted] = useState(false);
+  useEffect(() => {
+    if (!isGuided || autoPickAttempted || tierLoading) return;
+    setAutoPickAttempted(true);
+    fetch(`/api/frq?course=${course}&recommended=1`, { cache: "no-store" })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d: { frqs?: FrqListItem[] } | null) => {
+        const picked = d?.frqs?.[0];
+        if (picked) setSelectedId(picked.id);
+      })
+      .catch(() => { /* fall through to grid */ });
+  }, [isGuided, autoPickAttempted, course, tierLoading]);
+
   const unitMeta = COURSE_REGISTRY[course]?.units ?? {};
   const unitOptions = Object.entries(unitMeta) as [ApUnit, { name: string }][];
 

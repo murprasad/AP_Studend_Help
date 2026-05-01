@@ -32,9 +32,41 @@ export async function GET(req: NextRequest) {
     const course = searchParams.get("course") as ApCourse | null;
     const unit = searchParams.get("unit") as ApUnit | null;
     const limit = Math.min(parseInt(searchParams.get("limit") || "10"), 50);
+    // 2026-05-01 — recommended=1 returns ONE curated FRQ targeted at the
+    // user's weakest unit. Used by /frq-practice auto-pick path so first-
+    // time users (?first_taste=1) skip the 25-item grid and land on a
+    // single appropriate FRQ. Falls back to any course FRQ if no mastery
+    // signal exists yet.
+    const recommended = searchParams.get("recommended") === "1";
 
     if (!course) {
       return NextResponse.json({ error: "course query param is required" }, { status: 400 });
+    }
+
+    if (recommended) {
+      const mastery = await prisma.masteryScore.findFirst({
+        where: { userId: session.user.id, course, totalAttempts: { gt: 0 } },
+        orderBy: { masteryScore: "asc" },
+        select: { unit: true },
+      });
+      const targetUnit = mastery?.unit ?? null;
+      const baseSelect = {
+        id: true, course: true, unit: true, year: true, questionNumber: true,
+        type: true, sourceUrl: true, promptText: true, stimulus: true, totalPoints: true,
+      };
+      const targeted = targetUnit
+        ? await prisma.freeResponseQuestion.findFirst({
+            where: { course, isApproved: true, unit: targetUnit as ApUnit },
+            select: baseSelect,
+            orderBy: [{ year: "desc" }, { questionNumber: "asc" }],
+          })
+        : null;
+      const picked = targeted ?? await prisma.freeResponseQuestion.findFirst({
+        where: { course, isApproved: true },
+        select: baseSelect,
+        orderBy: [{ year: "desc" }, { questionNumber: "asc" }],
+      });
+      return NextResponse.json({ frqs: picked ? [picked] : [], recommended: true });
     }
 
     const where: Record<string, unknown> = {

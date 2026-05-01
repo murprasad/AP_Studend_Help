@@ -161,8 +161,11 @@ test.describe("Journey Rail Beta 9.6", () => {
     await expect(page.getByText(/Continue practice tomorrow/i)).toBeVisible();
     await expect(page.getByText(/Review flashcards/i)).toBeVisible();
     await expect(page.getByText(/Ask Sage for help/i)).toBeVisible();
-    // Subtle Premium link below
-    await expect(page.getByText(/unlock unlimited everything/i)).toBeVisible();
+    // 2026-05-01: subtle "unlock unlimited everything" text link was
+    // promoted to a co-equal tile with the price visible. Assert the new
+    // tile copy + ensure $9.99 is rendered (the conversion-moment fix).
+    await expect(page.getByText(/Unlock full prep/i)).toBeVisible();
+    await expect(page.locator(":text('$9.99/mo')").first()).toBeVisible();
   });
 
   test("Dashboard ?focus=primary-action scrolls + pulses target", async ({ page, baseURL, context }) => {
