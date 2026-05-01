@@ -310,9 +310,19 @@ export default function FrqPracticePage() {
                   <Card className="h-full transition-colors hover:border-amber-500/40">
                     <CardHeader className="pb-2">
                       <div className="flex items-start justify-between gap-2">
-                        <CardTitle className="text-base">
-                          {f.year} Q{f.questionNumber}
-                        </CardTitle>
+                        <div className="min-w-0">
+                          <CardTitle className="text-base">
+                            {f.year} Q{f.questionNumber}
+                          </CardTitle>
+                          {/* 2026-05-01 — surface "official CB" provenance prominently
+                              instead of leaving it implicit. Reddit feedback: "feels
+                              like AI trying to simulate AP" — these ARE official
+                              released-exam questions, the UI should say so. */}
+                          <p className="text-[10px] text-blue-700 dark:text-blue-400 mt-0.5 inline-flex items-center gap-1">
+                            <span aria-hidden>📋</span>
+                            Official College Board released exam
+                          </p>
+                        </div>
                         <div className="flex gap-1.5 flex-shrink-0">
                           <Badge variant="outline" className="border-amber-500/30 text-amber-700 dark:text-amber-400 text-[10px]">
                             {f.type}

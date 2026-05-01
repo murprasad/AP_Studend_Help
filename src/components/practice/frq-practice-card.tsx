@@ -255,13 +255,19 @@ export function FrqPracticeCard({
           <Badge variant="outline">{frq.totalPoints} pts</Badge>
         </div>
       </div>
+      {/* 2026-05-01 — promote source attribution from a small grey link to a
+          visible chip. The FRQ is an actual College Board released exam and
+          we should say so prominently — credibility is the differentiator
+          versus AI-generated content from competitors. */}
       <a
         href={frq.sourceUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className="text-xs text-muted-foreground hover:text-foreground inline-flex items-center gap-1"
+        className="text-[11px] text-blue-700 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-blue-500/10 border border-blue-500/20 self-start"
       >
-        College Board source <ExternalLink className="h-3 w-3" />
+        <span aria-hidden>📋</span>
+        Official source: apcentral.collegeboard.org
+        <ExternalLink className="h-3 w-3" />
       </a>
     </CardHeader>
   );

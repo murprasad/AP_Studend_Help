@@ -13,7 +13,7 @@ const ALL_MODULE_CONFIGS = {
     features: [
       "Everything in Free, plus:",
       "Unlimited practice — no daily limits",
-      "FRQ / SAQ / DBQ / LEQ with AI rubric scoring",
+      "FRQ / SAQ / DBQ / LEQ scored against the official College Board rubric",
       "Unlimited AI explanations — ask Sage anything",
       "Personalized AP study plan that adapts weekly",
       "Faster AI responses (streaming)",

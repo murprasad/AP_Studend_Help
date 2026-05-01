@@ -91,6 +91,16 @@ export function Step2Frq({ course, prefetchedFrq, onComplete }: Props) {
         <p className="text-sm mt-0.5">
           Try one — see how AP is graded.
         </p>
+        {/* 2026-05-01 — official-source provenance badge. The FRQ is a real
+            College Board released exam, not AI-generated. Showing year +
+            source builds trust at the conversion moment. */}
+        {(frq.year || frq.sourceUrl) && (
+          <p className="text-[11px] mt-1.5 inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-700 dark:text-blue-400 border border-blue-500/20">
+            <span aria-hidden>📋</span>
+            {frq.year ? `From ${frq.year} College Board released exam` : "Official College Board released exam"}
+            {frq.questionNumber ? ` · Q${frq.questionNumber}` : ""}
+          </p>
+        )}
       </div>
 
       <FrqPracticeCard

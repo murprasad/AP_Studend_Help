@@ -32,16 +32,20 @@ import { SageChat } from "@/components/layout/sage-chat";
 import { isClepEnabled, isDsstEnabled, getExamLabel, getCourseCount } from "@/lib/settings";
 import { SocialProofBadge } from "@/components/social-proof-badge";
 
+// 2026-05-01 — feature ordering reshuffled per Reddit-feedback plan.
+// Lead with AP-prep substance (official questions, real exam pressure),
+// AI as the differentiator second. Previous order led with "Get Instant
+// AI Explanations" which read as "AI product that happens to have AP."
 const features = [
   {
-    icon: Brain,
-    title: "Get Instant AI Explanations",
-    description: "Ask Sage anything — get clear explanations and instant comprehension checks that prove you understood it.",
+    icon: Target,
+    title: "Practice with official AP exam questions",
+    description: "500+ released College Board FRQs from past exams, plus rigorous MCQs targeted to your weakest units — so every session moves the needle.",
   },
   {
-    icon: Target,
-    title: "Practice What You Actually Need",
-    description: "The practice engine tracks every unit you've attempted and targets your weakest areas automatically — so every session counts.",
+    icon: Clock,
+    title: "Test Your Readiness with a Mock Exam",
+    description: "Simulate exam conditions under timed pressure. Get readiness scores per unit and see exactly where you stand before exam day.",
   },
   {
     icon: BarChart3,
@@ -49,9 +53,9 @@ const features = [
     description: "Per-unit mastery scores and a visual heatmap show weak areas at a glance. Stop guessing what to review.",
   },
   {
-    icon: Clock,
-    title: "Test Your Readiness with a Mock Exam",
-    description: "Simulate exam conditions under timed pressure. Get readiness scores per unit and see exactly where you stand before exam day.",
+    icon: Brain,
+    title: "Sage AI tutor — clear explanations, instant comprehension checks",
+    description: "Ask anything. Get clear explanations grounded in the College Board curriculum, plus knowledge-check follow-ups that prove you understood it.",
   },
 ];
 
