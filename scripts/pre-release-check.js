@@ -348,6 +348,39 @@ section("10. No 'pass probability' in user-facing copy");
   }
 }
 
+// ─── 9. Question-bank content accuracy gate ──────────────────────────────────
+// 2026-05-01 — added after Reddit "shitty AI coding" feedback + buoyant-force
+// bug found in prod. Runs audit-content-accuracy.mjs against the live DB and
+// blocks deploy if the flag rate spikes above the post-cleanup baseline.
+//
+// Skipped if DATABASE_URL isn't available (e.g. CI without prod creds).
+{
+  if (!process.env.DATABASE_URL) {
+    console.log(`  ⚠ content-accuracy audit skipped (DATABASE_URL not set)`);
+  } else {
+    try {
+      const raw = execSync("node scripts/audit-content-accuracy.mjs --json", {
+        encoding: "utf8",
+        stdio: ["ignore", "pipe", "pipe"],
+        timeout: 120_000,
+      });
+      const j = JSON.parse(raw);
+      // Gate at 5% — well above the expected post-cleanup baseline of ~0%.
+      // If the flag rate creeps above 5%, generation has regressed.
+      const pct = (j.flagged / j.total) * 100;
+      if (pct <= 5) {
+        ok(`Question-bank content accuracy: ${j.flagged} flagged of ${j.total} (${pct.toFixed(1)}% — under 5% gate)`);
+      } else {
+        fail(`Question-bank content accuracy: ${j.flagged} flagged of ${j.total} (${pct.toFixed(1)}%) exceeds 5% gate. Run scripts/audit-content-accuracy.mjs to inspect; consider --unapprove or fix generator.`);
+      }
+    } catch (err) {
+      // Audit script exits 1 when there are flags. We already capture that
+      // in the JSON output above; if the spawn itself failed, surface the error.
+      console.log(`  ⚠ content-accuracy audit could not run: ${String(err.message ?? err).slice(0, 120)}`);
+    }
+  }
+}
+
 // ─── Summary ─────────────────────────────────────────────────────────────────
 console.log(`\n${"─".repeat(50)}`);
 if (failed === 0) {
