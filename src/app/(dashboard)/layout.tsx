@@ -67,7 +67,17 @@ export default function DashboardLayout({
     // even though middleware lets /frq-practice through (bridged by cookie),
     // this layout's client-side redirect can still fire because JWT is stale
     // null. Reading document.cookie here is OK — same source middleware uses.
-    if (typeof document !== "undefined" && document.cookie.includes("onboarding_completed=true")) return;
+    //
+    // 2026-05-01 — cookie value is now the userId (was "true"), to match
+    // middleware's userId-scoped check. Treat ANY non-empty bridge cookie as
+    // proof the user has recently completed onboarding. Without this update,
+    // a freshly-completed user with stale JWT (pre-session.update) gets
+    // bounced back to /journey from this layout, even though middleware
+    // correctly let them through.
+    if (typeof document !== "undefined") {
+      const m = document.cookie.match(/(?:^|;\s*)onboarding_completed=([^;]+)/);
+      if (m && m[1] && m[1].length > 0 && m[1] !== "false") return;
+    }
 
     const onboardedAtServer = (session?.user as { onboardingCompletedAt?: string | null } | undefined)?.onboardingCompletedAt;
 
@@ -138,6 +148,19 @@ export default function DashboardLayout({
       try { return localStorage.getItem(JOURNEY_LOCAL_KEY); } catch { return null; }
     })();
     if (local === "done" || local === "exited") return; // standard dashboard for them
+
+    // 2026-05-01 — also short-circuit on the bridge cookie. If a user just
+    // completed Step 5, the cookie is set with their userId. The first
+    // useEffect above already trusts this; we mirror the check here so the
+    // delayed-redirect bug ("go to dashboard, wait 1 min, get bounced to
+    // /journey") doesn't fire when /api/journey races a session refresh.
+    if (typeof document !== "undefined") {
+      const m = document.cookie.match(/(?:^|;\s*)onboarding_completed=([^;]+)/);
+      if (m && m[1] && m[1].length > 0 && m[1] !== "false") {
+        try { localStorage.setItem(JOURNEY_LOCAL_KEY, "done"); } catch { /* ignore */ }
+        return;
+      }
+    }
 
     fetch("/api/journey", { cache: "no-store" })
       .then((r) => (r.ok ? r.json() : null))
