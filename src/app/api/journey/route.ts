@@ -70,6 +70,33 @@ export async function POST(req: Request) {
       where: { userId },
       data: updates,
     });
+
+    // Beta 9.7.1 — when journey completes, ALSO mark the User as
+    // onboarded so the middleware (which can't query Prisma at edge)
+    // doesn't bounce them back to /journey when they tap a Step 5
+    // next-step tile (-> /dashboard) and the JWT still has null
+    // onboardingCompletedAt. We update both:
+    //   1. User.onboardingCompletedAt in DB (so the next JWT refresh
+    //      picks it up cleanly).
+    //   2. onboarding_completed=true bridge cookie on this response,
+    //      which middleware checks before the redirect — so the very
+    //      next /dashboard navigation works without a JWT refresh.
+    if (nextStep >= 5) {
+      try {
+        await prisma.user.update({
+          where: { id: userId },
+          data: { onboardingCompletedAt: new Date() },
+        });
+      } catch { /* non-fatal — journey is already advanced */ }
+      const res = NextResponse.json({ journey });
+      res.cookies.set("onboarding_completed", "true", {
+        path: "/",
+        maxAge: 60 * 60 * 24 * 30, // 30 days
+        sameSite: "lax",
+        secure: true,
+      });
+      return res;
+    }
     return NextResponse.json({ journey });
   }
 
