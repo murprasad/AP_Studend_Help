@@ -139,6 +139,28 @@ async function main() {
   for (const q of questions) {
     const issues = [];
 
+    // Structural integrity (added 2026-05-01 after deep audit found 7
+    // orphan-correctAnswer questions and 1 concat-options question
+    // that the original heuristics missed).
+    const opts = Array.isArray(q.options) ? q.options : [];
+    const ca = String(q.correctAnswer ?? "").trim().toUpperCase();
+    if (opts.length < 2) {
+      issues.push({ kind: "structural_too_few_options", detail: { count: opts.length } });
+    } else if (opts.some((o) => !o || (typeof o === "string" && o.trim().length === 0))) {
+      issues.push({ kind: "structural_empty_option", detail: {} });
+    } else if (opts.some((o) => typeof o === "string" && o.includes("\n") && opts.length < 4)) {
+      // Concat bug: all options crammed into one entry separated by newlines
+      issues.push({ kind: "structural_concat_options", detail: {} });
+    }
+    if (/^[A-E]$/.test(ca)) {
+      const idx = ca.charCodeAt(0) - 65;
+      if (idx >= opts.length) {
+        issues.push({ kind: "structural_orphan_correct_answer", detail: { ca, optsLen: opts.length } });
+      }
+    } else if (ca.length > 0) {
+      issues.push({ kind: "structural_bad_correct_answer_format", detail: { ca: ca.slice(0, 20) } });
+    }
+
     const letterMismatch = findExplanationLetterRefMismatch(q.explanation, q.correctAnswer);
     if (letterMismatch) issues.push({ kind: "explanation_letter_ref_leak", detail: letterMismatch });
 
