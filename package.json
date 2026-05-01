@@ -4,7 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "dev:turbo": "next dev --turbo",
     "build": "next build",
+    "pages:build:lowmem": "node scripts/build-with-heap.mjs 4096",
     "start": "next start",
     "lint": "next lint",
     "db:push": "prisma db push",
