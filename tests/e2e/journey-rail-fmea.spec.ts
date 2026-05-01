@@ -168,16 +168,17 @@ test.describe("Journey FMEA — every screen renders + copy is coherent", () => 
     await api.dispose();
 
     await page.goto("/journey");
-    // Beta 9.6 — Step 5 redesigned. Header is "You're set up" (was
-    // "You completed today's plan"). Three next-step tiles instead of
-    // a "come back tomorrow" wall. Premium upgrade is a subtle link
-    // below, not a primary button.
+    // 2026-05-01 — Step 5 redesigned again. Subtle upgrade text link
+    // promoted to a co-equal tile. "Continue practice tomorrow" tile
+    // renamed to "Continue free practice". Sage tile demoted to small
+    // text link below the 3 main tiles.
     await expect(page.getByRole("heading", { name: /You're set up/i })).toBeVisible({ timeout: 15000 });
-    // Three next-step tiles — coverage moved to journey-rail-96.spec.ts,
-    // but smoke-check that at least one renders here.
-    await expect(page.getByText(/Continue practice tomorrow/i)).toBeVisible();
-    // Subtle upgrade link
-    await expect(page.getByText(/unlock unlimited everything|Upgrade.*\$9\.99/i)).toBeVisible();
+    // Three co-equal next-step tiles — coverage detail in journey-rail-96.
+    // Smoke-check the renamed primary tile renders.
+    await expect(page.getByText(/Continue free practice/i)).toBeVisible();
+    // Upgrade is now a co-equal tinted tile with $9.99/mo visible.
+    await expect(page.getByText(/Unlock full prep/i)).toBeVisible();
+    await expect(page.locator(":text('$9.99/mo')").first()).toBeVisible();
   });
 
   // ── Resume mid-journey ─────────────────────────────────────────────────────
