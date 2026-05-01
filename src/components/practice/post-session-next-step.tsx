@@ -31,6 +31,7 @@ import { Button } from "@/components/ui/button";
 import {
   ScrollText, Telescope, Target, Trophy, ArrowRight, Crown, Zap,
 } from "lucide-react";
+import { JourneyHeroCardEngine } from "@/components/dashboard/journey-hero-card-engine";
 
 interface Props {
   course: string;
@@ -65,8 +66,27 @@ type State =
 
 export function PostSessionNextStep({ course, source }: Props) {
   const [state, setState] = useState<State>({ kind: "loading" });
+  // Beta 10 (2026-05-01) — feature-flag dispatch. When on, hand off to the
+  // shared engine renderer so post-session and dashboard hero stay in sync.
+  // The `source` analytics tag is not threaded through yet — engine has its
+  // own analyticsTag from computeNextStep().
+  const [engineEnabled, setEngineEnabled] = useState<boolean | null>(null);
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/user", { cache: "no-store" })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => {
+        if (cancelled) return;
+        setEngineEnabled(Boolean(d?.flags?.nextStepEngineEnabled));
+      })
+      .catch(() => {
+        if (!cancelled) setEngineEnabled(false);
+      });
+    return () => { cancelled = true; };
+  }, []);
 
   useEffect(() => {
+    if (engineEnabled !== false) return; // engine path or still loading flag
     let cancelled = false;
     fetch(`/api/user/conversion-signal?course=${course}`, { cache: "no-store" })
       .then((r) => (r.ok ? r.json() : null))
@@ -109,7 +129,11 @@ export function PostSessionNextStep({ course, source }: Props) {
         }
       });
     return () => { cancelled = true; };
-  }, [course]);
+  }, [course, engineEnabled]);
+
+  // Engine path
+  if (engineEnabled === true) return <JourneyHeroCardEngine course={course} />;
+  if (engineEnabled === null) return null; // wait for flag
 
   if (state.kind === "loading") return null;
 

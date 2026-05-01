@@ -25,10 +25,27 @@ interface CoachPlanSlim {
   questionsToTarget?: number;
 }
 
-export function SessionLimitHitCard({ course }: { course: string }) {
+interface Props {
+  course: string;
+  /**
+   * Beta 10 (2026-05-01) — variant controls which limit surface this card
+   * represents. The shape and upgrade CTA stay consistent across surfaces
+   * so users see the same "you're capped, here's what to do" UX.
+   *
+   * - "daily": daily MCQ practice cap (default — backward compat)
+   * - "frq-type": per-type FRQ cap (DBQ/LEQ/SAQ/FRQ — 1 free attempt per
+   *   course)
+   */
+  variant?: "daily" | "frq-type";
+  /** Optional FRQ type label ("DBQ", "LEQ", etc.) for the frq-type variant. */
+  frqType?: string;
+}
+
+export function SessionLimitHitCard({ course, variant = "daily", frqType }: Props) {
   const [qsToTarget, setQsToTarget] = useState<number | null>(null);
 
   useEffect(() => {
+    if (variant !== "daily") return;
     let cancelled = false;
     fetch(`/api/coach-plan?course=${course}`, { cache: "no-store" })
       .then((r) => (r.ok ? r.json() : null))
@@ -39,7 +56,40 @@ export function SessionLimitHitCard({ course }: { course: string }) {
       })
       .catch(() => { /* fallback uses the coarse default below */ });
     return () => { cancelled = true; };
-  }, [course]);
+  }, [course, variant]);
+
+  if (variant === "frq-type") {
+    return (
+      <Card className="card-glow border-yellow-500/30 bg-yellow-500/5">
+        <CardContent className="p-5 space-y-4">
+          <div className="flex items-start gap-3">
+            <Crown className="h-5 w-5 text-yellow-700 dark:text-yellow-400 flex-shrink-0 mt-0.5" />
+            <div className="space-y-2 flex-1">
+              <p className="font-semibold text-yellow-300">
+                You&apos;ve used your free {frqType ?? "FRQ"} attempt for this course.
+              </p>
+              <p className="text-sm text-foreground/90">
+                Premium unlocks <strong>unlimited FRQ attempts</strong> + line-by-line coaching that tells you exactly which rubric points you&apos;re missing and how to earn them.
+              </p>
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <Link href={`/billing?utm_source=frq_type_cap&utm_campaign=frq_cap&course=${course}`} className="block">
+              <Button size="sm" className="gap-2 bg-blue-600 hover:bg-blue-700 w-full">
+                <Crown className="h-4 w-4" /> Upgrade — $9.99/mo
+              </Button>
+            </Link>
+            <Link href={`/practice?course=${course}&src=frq_cap_alt`} className="block">
+              <Button size="sm" variant="outline" className="w-full">
+                Practice MCQs instead
+              </Button>
+            </Link>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   // Fallback if coach-plan hasn't resolved — coarse but still directionally right.
   const qs = qsToTarget ?? 300;

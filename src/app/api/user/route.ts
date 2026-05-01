@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { isClepEnabled, isDsstEnabled } from "@/lib/settings";
+import { isClepEnabled, isDsstEnabled, isNextStepEngineEnabled } from "@/lib/settings";
 
 export const dynamic = "force-dynamic";
 
@@ -62,7 +62,7 @@ export async function GET(req: NextRequest) {
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   try {
-    const [user, clepEnabled, dsstEnabled, moduleSubs] = await Promise.all([
+    const [user, clepEnabled, dsstEnabled, nextStepEngineEnabled, moduleSubs] = await Promise.all([
       safe(
         prisma.user.findUnique({
           where: { id: session.user.id },
@@ -93,6 +93,7 @@ export async function GET(req: NextRequest) {
       ),
       safe(isClepEnabled(), false),
       safe(isDsstEnabled(), false),
+      safe(isNextStepEngineEnabled(), false),
       safe(
         prisma.moduleSubscription.findMany({
           where: { userId: session.user.id },
@@ -112,13 +113,13 @@ export async function GET(req: NextRequest) {
           subscriptionTier: "FREE",
           track: "ap",
         },
-        flags: { clepEnabled, dsstEnabled },
+        flags: { clepEnabled, dsstEnabled, nextStepEngineEnabled },
         moduleSubs,
         _degraded: true,
       });
     }
 
-    return NextResponse.json({ user, flags: { clepEnabled, dsstEnabled }, moduleSubs });
+    return NextResponse.json({ user, flags: { clepEnabled, dsstEnabled, nextStepEngineEnabled }, moduleSubs });
   } catch (error) {
     console.error("GET /api/user error:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });

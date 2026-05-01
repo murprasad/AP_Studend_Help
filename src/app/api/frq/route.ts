@@ -33,10 +33,10 @@ export async function GET(req: NextRequest) {
     const unit = searchParams.get("unit") as ApUnit | null;
     const limit = Math.min(parseInt(searchParams.get("limit") || "10"), 50);
     // 2026-05-01 — recommended=1 returns ONE curated FRQ targeted at the
-    // user's weakest unit. Used by /frq-practice auto-pick path so first-
-    // time users (?first_taste=1) skip the 25-item grid and land on a
-    // single appropriate FRQ. Falls back to any course FRQ if no mastery
-    // signal exists yet.
+    // user's weakest unit. Used by /frq-practice auto-pick path (?first_taste=1
+    // or ?guided=1) and by the Next Step Engine. Skips Prisma's `not: null`
+    // filter on totalPoints because Prisma 6 WASM rejects it; relies on
+    // isApproved being the rubric-quality gate.
     const recommended = searchParams.get("recommended") === "1";
 
     if (!course) {

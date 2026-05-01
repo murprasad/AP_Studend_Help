@@ -28,6 +28,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Sparkles, ArrowRight, Target, ScrollText, TrendingUp, Zap, Lock } from "lucide-react";
 import { FREE_LIMITS } from "@/lib/tier-limits";
+import { JourneyHeroCardEngine } from "./journey-hero-card-engine";
 
 interface Signal {
   responseCount: number;
@@ -71,8 +72,27 @@ type JourneyState =
 
 export function JourneyHeroCard({ course }: Props) {
   const [state, setState] = useState<JourneyState>({ kind: "loading" });
+  // Beta 10 (2026-05-01) — feature-flag dispatch. While flag is off the
+  // legacy 11-state machine below renders. Flip `next_step_engine_enabled`
+  // in SiteSetting to roll the engine out — no redeploy needed.
+  const [engineEnabled, setEngineEnabled] = useState<boolean | null>(null);
 
   useEffect(() => {
+    let cancelled = false;
+    fetch("/api/user", { cache: "no-store" })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => {
+        if (cancelled) return;
+        setEngineEnabled(Boolean(d?.flags?.nextStepEngineEnabled));
+      })
+      .catch(() => {
+        if (!cancelled) setEngineEnabled(false);
+      });
+    return () => { cancelled = true; };
+  }, []);
+
+  useEffect(() => {
+    if (engineEnabled !== false) return; // engine path or still loading flag
     let cancelled = false;
     Promise.all([
       fetch(`/api/user/conversion-signal?course=${course}`, { cache: "no-store" }).then((r) => (r.ok ? r.json() : null)).catch(() => null),
@@ -155,7 +175,14 @@ export function JourneyHeroCard({ course }: Props) {
       }
     });
     return () => { cancelled = true; };
-  }, [course]);
+  }, [course, engineEnabled]);
+
+  // Engine path — flag on, hand off entirely. The engine renderer subscribes
+  // to /api/next-step and returns a single CTA card with the same shape.
+  if (engineEnabled === true) return <JourneyHeroCardEngine course={course} />;
+  // Still loading the flag — render nothing rather than flash legacy then
+  // swap to engine.
+  if (engineEnabled === null) return null;
 
   if (state.kind === "loading" || state.kind === "mature") return null;
 

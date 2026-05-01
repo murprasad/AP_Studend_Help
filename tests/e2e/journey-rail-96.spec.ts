@@ -94,7 +94,7 @@ test.describe("Journey Rail Beta 9.6", () => {
 
     // Click the tile and assert URL navigates. Catches Link-wrapping-Button
     // HTML invariants that render but swallow the click navigation.
-    await page.getByText(/Continue practice tomorrow/i).click();
+    await page.getByText(/Continue free practice/i).click();
     await page.waitForURL(/\/dashboard/, { timeout: 10000 });
     expect(page.url()).toContain("focus=primary-action");
   });
@@ -114,7 +114,9 @@ test.describe("Journey Rail Beta 9.6", () => {
 
     await page.goto("/journey");
     await expect(page.getByRole("heading", { name: /You're set up/i })).toBeVisible({ timeout: 15000 });
-    await page.getByText(/Review flashcards/i).click();
+    // Tile renamed 2026-05-01 from "Review flashcards" to "Explore tools"
+    // (still routes to /dashboard?focus=flashcards).
+    await page.getByText(/Explore tools/i).click();
     await page.waitForURL(/\/dashboard/, { timeout: 10000 });
     expect(page.url()).toContain("focus=flashcards");
   });
@@ -134,7 +136,9 @@ test.describe("Journey Rail Beta 9.6", () => {
 
     await page.goto("/journey");
     await expect(page.getByRole("heading", { name: /You're set up/i })).toBeVisible({ timeout: 15000 });
-    await page.getByText(/Ask Sage for help/i).click();
+    // 2026-05-01: Sage tile demoted to a small text link below the 3 main
+    // tiles ("Or ask Sage a question first"). Still navigates to /ai-tutor.
+    await page.getByText(/Or ask Sage a question first/i).click();
     await page.waitForURL(/\/ai-tutor/, { timeout: 10000 });
   });
 
@@ -157,10 +161,10 @@ test.describe("Journey Rail Beta 9.6", () => {
     await expect(page.getByText(/Practiced real questions/i)).toBeVisible();
     await expect(page.getByText(/Tried an FRQ/i)).toBeVisible();
     await expect(page.getByText(/projected AP score/i).first()).toBeVisible();
-    // Three next-step tiles
-    await expect(page.getByText(/Continue practice tomorrow/i)).toBeVisible();
-    await expect(page.getByText(/Review flashcards/i)).toBeVisible();
-    await expect(page.getByText(/Ask Sage for help/i)).toBeVisible();
+    // Three co-equal next-step tiles + small Sage shortcut below
+    await expect(page.getByText(/Continue free practice/i)).toBeVisible();
+    await expect(page.getByText(/Explore tools/i)).toBeVisible();
+    await expect(page.getByText(/Or ask Sage a question first/i)).toBeVisible();
     // 2026-05-01: subtle "unlock unlimited everything" text link was
     // promoted to a co-equal tile with the price visible. Assert the new
     // tile copy + ensure $9.99 is rendered (the conversion-moment fix).

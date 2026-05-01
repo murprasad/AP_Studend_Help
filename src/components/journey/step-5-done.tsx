@@ -1,13 +1,17 @@
 "use client";
 
 /**
- * Step 5 — "You're set up" (Beta 9.6 redesign).
+ * Step 5 — "You're set up" (Beta 10 redesign — 2026-05-01).
  *
- * Per user spec: replace "Come back tomorrow" wall with a guided exit
- * to the dashboard. Three checkmarks summarize what they did, three
- * tiles route to the dashboard with focus= so the matching feature is
- * highlighted (scroll-and-pulse). Premium upgrade is a subtle link
- * underneath, not a competing CTA.
+ * Per brutal critique 2026-05-01: the previous "subtle upgrade text link"
+ * undersold the conversion moment. Promoted Premium to a co-equal third
+ * tile with the actual price visible. ChatGPT's "3 clear options" spec:
+ *   1. Continue free practice (FREE)
+ *   2. Explore tools (Flashcards / Sage)
+ *   3. Unlock full prep (PREMIUM, $9.99/mo)
+ *
+ * The closure moment matters most for conversion — students should leave
+ * the journey with a clear menu, not a forced default.
  */
 
 import Link from "next/link";
@@ -53,34 +57,40 @@ export function Step5Done({ predictedScore, weakestUnitName }: Props) {
         ))}
       </div>
 
-      {/* Three next-step tiles — each routes to dashboard with focus=*/}
+      {/* Three co-equal next-step tiles — Continue / Tools / Upgrade */}
       <div className="space-y-2">
         <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground text-center mb-1">
-          What to do next
+          What to do next — pick one
         </p>
         <NextTile
           icon={<Brain className="h-5 w-5 text-blue-700 dark:text-blue-400" />}
-          title="Continue practice tomorrow"
-          subtitle="Pick up your daily plan + drill weakest units."
-          href="/dashboard?focus=primary-action"
+          title="Continue free practice"
+          subtitle={weakestUnitName ? `Drill ${weakestUnitName} — your weakest unit.` : "Pick up your daily plan + drill weakest units."}
+          href="/dashboard?focus=primary-action&src=journey_done"
         />
         <NextTile
           icon={<BarChart3 className="h-5 w-5 text-emerald-700 dark:text-emerald-400" />}
-          title="Review flashcards"
-          subtitle="Spaced repetition on the concepts you just saw."
-          href="/dashboard?focus=flashcards"
-        />
-        <NextTile
-          icon={<Sparkles className="h-5 w-5 text-indigo-700 dark:text-indigo-400" />}
-          title="Ask Sage for help"
-          subtitle="Stuck on a concept? Sage explains anything in 30 seconds."
-          href="/ai-tutor"
+          title="Explore tools"
+          subtitle="Flashcards, Sage tutor, study plan — all free."
+          href="/dashboard?focus=flashcards&src=journey_done"
         />
         {/* 2026-05-01 — promote upgrade from subtle text link to a co-equal
             tinted tile so the price is visible at the conversion moment.
             Previous version hid $9.99 under "or unlock unlimited everything"
             small grey text — undersold the offer. */}
         <UpgradeTile />
+      </div>
+
+      {/* Demoted Sage shortcut as a small link — keeps it accessible without
+          competing with the three primary tiles. */}
+      <div className="text-center pt-1">
+        <Link
+          href="/ai-tutor?src=journey_done"
+          className="text-xs text-muted-foreground hover:text-foreground inline-flex items-center gap-1"
+        >
+          <Sparkles className="h-3 w-3" />
+          Or ask Sage a question first
+        </Link>
       </div>
     </div>
   );
@@ -149,3 +159,4 @@ function NextTile({
     </Button>
   );
 }
+

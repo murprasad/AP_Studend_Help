@@ -14,6 +14,7 @@ import { ApCourse, ApUnit } from "@prisma/client";
 import { Loader2, ChevronRight, PenLine, BookOpen, Lock, Target, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { LOCK_COPY } from "@/lib/tier-limits";
+import { SessionLimitHitCard } from "@/components/practice/session-limit-hit-card";
 
 // Beta 8.2 (2026-04-26): removed CLUSTER_A hardcoded gate. Now ALL AP
 // courses are served — the page checks the FRQ list at runtime via
@@ -106,11 +107,11 @@ export default function FrqPracticePage() {
     fetchList();
   }, [fetchList]);
 
-  // 2026-05-01 — auto-pick path for guided users. When ?first_taste=1
-  // (entry from journey/post-session next-step) OR ?guided=1 is set,
-  // fetch ONE recommended FRQ and auto-select it instead of rendering
-  // the 25-item grid. Kills choice paralysis for first-timers. Power
-  // users override with ?browse=1.
+  // Beta 10 (2026-05-01) — auto-pick path for guided users. When ?first_taste=1
+  // (entry from journey/post-session next-step) OR ?guided=1 (from the engine)
+  // is set, fetch ONE recommended FRQ and auto-select it instead of rendering
+  // the 25-item grid. ChatGPT critique: "kill choice explosion for new users."
+  // ?browse=1 opt-out lets a user override and see the grid anyway.
   const isGuided =
     (searchParams.get("first_taste") === "1" || searchParams.get("guided") === "1") &&
     searchParams.get("browse") !== "1";
@@ -166,25 +167,12 @@ export default function FrqPracticePage() {
   return (
     <div className="space-y-6">
       {showFrqCapCard && (
-        <div className="rounded-xl border-2 border-amber-500/30 bg-gradient-to-br from-amber-500/5 via-yellow-500/5 to-transparent p-4 sm:p-5 flex items-start gap-3">
-          <Lock className="h-5 w-5 text-amber-700 dark:text-amber-400 shrink-0 mt-0.5" />
-          <div className="flex-1 min-w-0 space-y-2">
-            <div>
-              <p className="text-[15px] font-semibold leading-tight">
-                You&apos;ve used your free FRQ attempt for this course
-              </p>
-              <p className="text-[13px] text-muted-foreground mt-1 leading-relaxed">
-                Premium unlocks <strong>unlimited FRQ attempts</strong> + line-by-line coaching that tells you exactly which rubric points you&apos;re missing and how to earn them.
-              </p>
-            </div>
-            <Link href="/billing?utm_source=frq_list_cap&utm_campaign=frq_cap">
-              <Button size="sm" className="rounded-full gap-2 bg-amber-600 hover:bg-amber-700 text-white">
-                Upgrade — $9.99/mo
-                <ChevronRight className="h-4 w-4" />
-              </Button>
-            </Link>
-          </div>
-        </div>
+        // Beta 10 (2026-05-01) — unified limit-hit UX: the per-FRQ-type cap
+        // now uses the same SessionLimitHitCard component as the daily MCQ
+        // cap, with variant="frq-type". One component, one upgrade CTA, one
+        // alt-action — kills the "two different cap UIs that confused users"
+        // problem flagged in the brutal critique.
+        <SessionLimitHitCard course={course} variant="frq-type" />
       )}
 
       {isFirstTaste && !showFrqCapCard && (

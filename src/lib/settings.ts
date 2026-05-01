@@ -93,6 +93,16 @@ export async function isPremiumRestrictionEnabled(): Promise<boolean> {
   return val === "true";
 }
 
+/**
+ * Beta 10 (2026-05-01) — Next Step Engine rollout flag. When enabled,
+ * recommendation surfaces (dashboard hero, post-session card, post-journey
+ * hero) consume /api/next-step instead of their bespoke decision logic.
+ * Default false — flip to true after staging E2E green.
+ */
+export async function isNextStepEngineEnabled(): Promise<boolean> {
+  return (await getSetting("next_step_engine_enabled", "false")) === "true";
+}
+
 export interface StripeConfig {
   secretKey: string;
   webhookSecret: string;

@@ -144,9 +144,27 @@ function DashboardBody({ course, impressionId }: { course: string; impressionId:
   // after Day 3.
   const inPostJourney = postJourney?.active ?? false;
 
+  // Beta 10 (2026-05-01) — when next_step_engine_enabled is on, the engine
+  // computes the post-journey hero from actual user state (first_frq,
+  // first_diagnostic, fix_weakest, etc.) — not just days-since-completed.
+  // Skip the legacy PostJourneyHero branch in that case so the engine
+  // owns the decision end-to-end.
+  const [engineEnabled, setEngineEnabled] = useState<boolean>(false);
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/user", { cache: "no-store" })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => {
+        if (cancelled) return;
+        setEngineEnabled(Boolean(d?.flags?.nextStepEngineEnabled));
+      })
+      .catch(() => {});
+    return () => { cancelled = true; };
+  }, []);
+
   // Beta 9.7 — Post-journey streamlined view (Day 0-3 after Step 5).
   // Replaces the buffet with ONE diagnostic-derived action + 3 tools.
-  if (inPostJourney && postJourney) {
+  if (inPostJourney && postJourney && !engineEnabled) {
     return (
       <div className="space-y-4 max-w-2xl mx-auto px-0 sm:px-2 py-2">
         <GreetingCard />

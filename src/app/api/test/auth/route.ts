@@ -318,6 +318,49 @@ export async function POST(req: NextRequest) {
       });
     }
 
+    if (action === "set-site-setting") {
+      // Beta 10 (2026-05-01) — for E2E specs that need to flip a SiteSetting
+      // flag (e.g. next_step_engine_enabled). Only valid keys are allowed
+      // so this can't be used to flip arbitrary admin settings. Routes
+      // through `setSetting` so the in-process settings cache is busted —
+      // direct prisma.upsert leaves the 30s cache stale and tests would
+      // see the old value.
+      const { setSetting } = await import("@/lib/settings");
+      const ALLOWED_KEYS = new Set([
+        "next_step_engine_enabled",
+        "premium_feature_restriction",
+      ]);
+      const settingKey = String(body.key ?? "");
+      const settingValue = String(body.value ?? "");
+      if (!ALLOWED_KEYS.has(settingKey)) {
+        return NextResponse.json(
+          { error: `Key not allowed for test toggling: ${settingKey}` },
+          { status: 400 },
+        );
+      }
+      await setSetting(settingKey, settingValue, "test-harness");
+      return NextResponse.json({ ok: true, key: settingKey, value: settingValue });
+    }
+
+    if (action === "reset-frq-attempts") {
+      // Beta 10 — wipe FrqAttempt and FRQ-typed StudentResponse rows for the
+      // test user. Used by next-step-engine.spec.ts to flip between
+      // "no FRQ tried" and "FRQ exhausted" states without rebuilding the
+      // entire user.
+      const user = await prisma.user.findUnique({ where: { email: TEST_EMAIL }, select: { id: true } });
+      if (!user) return NextResponse.json({ error: "Test user not found" }, { status: 404 });
+      const [frqAtt, frqResp] = await Promise.all([
+        prisma.frqAttempt.deleteMany({ where: { userId: user.id } }),
+        prisma.studentResponse.deleteMany({
+          where: {
+            userId: user.id,
+            question: { questionType: { in: ["DBQ", "LEQ", "SAQ", "FRQ"] } },
+          },
+        }),
+      ]);
+      return NextResponse.json({ deletedFrqAttempts: frqAtt.count, deletedFrqResponses: frqResp.count });
+    }
+
     return NextResponse.json({ error: "Invalid action. Use 'create' or 'cleanup'" }, { status: 400 });
   } catch (error) {
     console.error("POST /api/test/auth error:", error);
