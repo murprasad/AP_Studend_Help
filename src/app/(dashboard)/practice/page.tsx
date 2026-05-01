@@ -1164,12 +1164,19 @@ export default function PracticePage() {
 
             <div className="space-y-2">
               {parsedOptions.map((option, i) => {
-                const letter = option.charAt(0);
-                // Beta 9.6 — match CB exam look-and-feel from journey rail.
-                // Display "(A)" / "(B)" / etc. as a bold prefix and strip
-                // the leading "A. " / "A) " / "(A) " from the option text
-                // so we don't render the letter twice. Existing `letter`
-                // var still drives selection logic.
+                // 2026-05-01 fix — derive letter from POSITION (i), not the
+                // option text's first char. ~62% of approved MCQs in the
+                // bank are stored without "A) " / "B) " prefixes, so
+                // `option.charAt(0)` returned the actual first letter of
+                // the answer text (e.g. "A" for "Approximately 785 N",
+                // "Approximately 392 N", ...) — making EVERY option
+                // display as "(A)" and submitting "A" regardless of which
+                // choice the student picked. Index-based derivation is
+                // robust to both prefixed and unprefixed option storage.
+                const letter = String.fromCharCode(65 + i);
+                // Strip leading "A. " / "A) " / "(A) " from display text
+                // when the option happens to be prefixed, so we don't
+                // render the letter twice.
                 const cleanText = option.replace(/^\s*(?:\(?[A-E]\)?[.)]\s*)/, "");
                 let optionClass = "border border-border/40 hover:bg-accent cursor-pointer";
 

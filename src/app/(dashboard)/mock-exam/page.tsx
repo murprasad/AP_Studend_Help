@@ -688,7 +688,12 @@ export default function MockExamPage() {
 
             <div className="space-y-2">
               {parsedOptions.map((option, i) => {
-                const letter = option.charAt(0);
+                // 2026-05-01 fix — derive letter from POSITION (i), not
+                // option.charAt(0). Many MCQs in the bank are stored
+                // without "A) " prefixes, so the old code rendered every
+                // option as "(A)" and graded every click as "A".
+                // See practice/page.tsx for the full bug write-up.
+                const letter = String.fromCharCode(65 + i);
                 // Beta 9.6 — CB-style (A)(B)(C)(D) labeled prefix.
                 const cleanText = option.replace(/^\s*(?:\(?[A-E]\)?[.)]\s*)/, "");
                 let cls = "border border-border/40 hover:bg-accent cursor-pointer";

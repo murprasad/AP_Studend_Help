@@ -201,7 +201,10 @@ export function DailyReviewCard({ course }: Props) {
         {options.length > 0 && (
           <div className="space-y-1.5">
             {options.map((opt, i) => {
-              const letter = opt.charAt(0);
+              // 2026-05-01 fix — derive letter from POSITION (i), not
+              // opt.charAt(0). Same bug as practice/page.tsx — unprefixed
+              // options would all return "A" for charAt(0).
+              const letter = String.fromCharCode(65 + i);
               let cls = "border border-border/40 hover:bg-accent cursor-pointer";
               if (isAnswered) {
                 if (letter === q.correctAnswer) {
