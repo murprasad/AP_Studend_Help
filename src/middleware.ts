@@ -14,10 +14,18 @@ export default withAuth(
     //   /dashboard → middleware → /onboarding → my page redirect →
     //   /practice/quickstart → middleware sees onboardingCompletedAt=null
     //   → bounces to /onboarding → loop.
+    // G1 fix (2026-05-01) — /journey added to onboarding-exempt list AND
+    // to the matcher below. Two-line change, but order matters: without
+    // the exemption, an authed user with onboardingCompletedAt=null
+    // hitting /journey would be redirected to /journey by the rule below,
+    // creating an infinite loop. With the exemption, middleware authorizes
+    // the request (token gate) and the page renders.
     const isOnboardingRoute = path === "/onboarding"
       || path.startsWith("/onboarding/")
       || path === "/practice/quickstart"
-      || path.startsWith("/practice/quickstart/");
+      || path.startsWith("/practice/quickstart/")
+      || path === "/journey"
+      || path.startsWith("/journey/");
 
     if (isAdminRoute && token?.role !== "ADMIN") {
       return NextResponse.redirect(new URL("/dashboard", req.url));
@@ -89,6 +97,8 @@ export const config = {
     "/frq-practice/:path*",
     "/frq-practice",
     "/onboarding",
+    "/journey",
+    "/journey/:path*",
     "/billing",
     "/billing/:path*",
   ],

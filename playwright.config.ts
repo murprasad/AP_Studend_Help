@@ -107,7 +107,7 @@ export default defineConfig({
             // New authed specs drop in without config changes.
             testMatch: DEPLOY_GATE
               ? DEPLOY_GATE_AUTHED
-              : /(authed-flows|nawal-nudge|flashcards-due-card|quality-audit-cron|onboarding-plan-choice|first-time-user-fmea|first-time-user-real|billing-page-consistency|paywall-accuracy|billing-flicker|a11y-scan|persona-b-sidebar-walk|journey-1-revenue|journey-2-mock-exam|journey-3-sage-tutor|journey-4-diagnostic|journey-5-parent-payment|frq-submit-reveal-echo|journey-rail|journey-rail-fmea|journey-rail-96)\.spec\.ts/,
+              : /(authed-flows|nawal-nudge|flashcards-due-card|quality-audit-cron|onboarding-plan-choice|first-time-user-fmea|first-time-user-real|billing-page-consistency|paywall-accuracy|billing-flicker|a11y-scan|persona-b-sidebar-walk|journey-1-revenue|journey-2-mock-exam|journey-3-sage-tutor|journey-4-diagnostic|journey-5-parent-payment|frq-submit-reveal-echo|journey-rail|journey-rail-fmea|journey-rail-96|routing-gaps)\.spec\.ts/,
             dependencies: ["setup"],
           },
         ]
