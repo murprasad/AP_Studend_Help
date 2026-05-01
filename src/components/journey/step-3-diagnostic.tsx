@@ -13,6 +13,7 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Loader2, Check, X, ArrowRight } from "lucide-react";
 import { QuestionContent } from "@/components/question/question-content";
+import { optionLetter, cleanOptionText, lettersEqual } from "@/lib/options";
 
 interface Q {
   id: string;
@@ -74,17 +75,12 @@ export function Step3Diagnostic({ course, onComplete }: Props) {
     return () => { cancelled = true; };
   }, [course]);
 
-  const submit = async (answer: string) => {
+  const submit = async (letter: string) => {
+    // 2026-05-01 — caller passes the canonical letter via optionLetter(i).
     if (!sessionId || !questions[idx] || submitting) return;
     setSubmitting(true);
-    setSelected(answer);
+    setSelected(letter);
     try {
-      // 2026-05-01 fix — server stores correctAnswer as a single letter
-      // and grades by letter comparison. Option strings start with
-      // "A) ...", "B) ..." etc., so we send the leading letter, not the
-      // full option text. Same bug + fix as step-1-mcq.tsx — every Step 3
-      // diagnostic answer was being marked incorrect regardless of choice.
-      const letter = answer.charAt(0).toUpperCase();
       const res = await fetch(`/api/practice/${sessionId}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -197,12 +193,11 @@ export function Step3Diagnostic({ course, onComplete }: Props) {
         </div>
         <div className="space-y-2 pt-1">
           {q.options.map((opt, i) => {
-            const letter = ["A", "B", "C", "D", "E"][i] ?? String(i + 1);
-            const isSelected = selected === opt;
-            // 2026-05-01 fix — feedback.correctAnswer is a letter ("C"),
-            // not the full option string. Compare against this option's
-            // letter so the green correct-highlight fires on the right choice.
-            const isCorrectAnswer = feedback && feedback.correctAnswer.toUpperCase() === letter;
+            // 2026-05-01 — index-based via shared util.
+            const letter = optionLetter(i);
+            const cleanText = cleanOptionText(opt);
+            const isSelected = selected === letter;
+            const isCorrectAnswer = feedback ? lettersEqual(feedback.correctAnswer, letter) : false;
             const wasSelectedAndWrong = feedback && isSelected && !feedback.correct;
             const cls = feedback
               ? isCorrectAnswer
@@ -217,13 +212,13 @@ export function Step3Diagnostic({ course, onComplete }: Props) {
               <button
                 key={i}
                 type="button"
-                onClick={() => !feedback && !submitting && submit(opt)}
+                onClick={() => !feedback && !submitting && submit(letter)}
                 disabled={!!feedback || submitting}
                 className={`w-full text-left rounded-lg border p-3 transition-all flex gap-3 items-start ${cls}`}
               >
                 <span className="font-bold text-sm w-6 flex-shrink-0">({letter})</span>
                 <span className="flex-1 text-sm leading-relaxed">
-                  <QuestionContent content={opt} />
+                  <QuestionContent content={cleanText} />
                 </span>
                 {feedback && isCorrectAnswer && <Check className="h-4 w-4 text-emerald-700 dark:text-emerald-400" />}
                 {wasSelectedAndWrong && <X className="h-4 w-4 text-red-700 dark:text-red-400" />}

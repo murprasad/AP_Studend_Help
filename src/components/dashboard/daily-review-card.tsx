@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { RotateCcw, Loader2, CheckCircle, XCircle } from "lucide-react";
 import { ApCourse } from "@prisma/client";
+import { optionLetter, cleanOptionText } from "@/lib/options";
 
 interface ReviewQuestion {
   id: string;
@@ -201,10 +202,9 @@ export function DailyReviewCard({ course }: Props) {
         {options.length > 0 && (
           <div className="space-y-1.5">
             {options.map((opt, i) => {
-              // 2026-05-01 fix — derive letter from POSITION (i), not
-              // opt.charAt(0). Same bug as practice/page.tsx — unprefixed
-              // options would all return "A" for charAt(0).
-              const letter = String.fromCharCode(65 + i);
+              // 2026-05-01 — index-based via shared util. See src/lib/options.ts.
+              const letter = optionLetter(i);
+              const cleanText = cleanOptionText(opt);
               let cls = "border border-border/40 hover:bg-accent cursor-pointer";
               if (isAnswered) {
                 if (letter === q.correctAnswer) {
@@ -224,7 +224,7 @@ export function DailyReviewCard({ course }: Props) {
                 >
                   {isAnswered && letter === q.correctAnswer && <CheckCircle className="h-3.5 w-3.5 flex-shrink-0" />}
                   {isAnswered && letter === selectedAnswer && letter !== q.correctAnswer && <XCircle className="h-3.5 w-3.5 flex-shrink-0" />}
-                  <span>{opt}</span>
+                  <span>{cleanText}</span>
                 </button>
               );
             })}

@@ -674,6 +674,21 @@ export async function generateQuestion(
           lastError = lastRejectionReason;
           continue;
         }
+
+        // 2026-05-01 — structural integrity gate. Catches:
+        //   - empty option entries
+        //   - all-options-concat'd-into-one (newlines in <4 entries)
+        //   - correctAnswer letter out of bounds (e.g. "E" with 4 options)
+        //   - correctAnswer not a single A-E letter
+        // These bugs slipped through prior validation and produced
+        // unanswerable questions in the bank (7 found in deep audit).
+        const { validateMcqStructure } = await import("./options");
+        const structErr = validateMcqStructure(opts, candidate.correctAnswer);
+        if (structErr) {
+          lastRejectionReason = `Structural integrity: ${structErr}`;
+          lastError = lastRejectionReason;
+          continue;
+        }
         const refsPseudo = /\bpseudocode|\bcode (segment|block|below)|trace (the |this )(following |below )?(pseudo)?code/i.test(qtStr);
         if (refsPseudo && !/\b(PROCEDURE|DISPLAY|INPUT|IF|REPEAT|FOR EACH|RETURN|<-|←)\b/.test(stimStr)) {
           lastRejectionReason = "Question references pseudocode but stimulus lacks AP pseudocode syntax (PROCEDURE/DISPLAY/REPEAT/IF/etc.)";

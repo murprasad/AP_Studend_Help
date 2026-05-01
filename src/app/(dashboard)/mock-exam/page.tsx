@@ -10,6 +10,7 @@ import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
 import { useCourse } from "@/hooks/use-course";
 import { formatTime } from "@/lib/utils";
+import { optionLetter, cleanOptionText } from "@/lib/options";
 import { ApCourse } from "@prisma/client";
 import { getCourseTrack, getMockExamConfig } from "@/lib/courses";
 import { isPremiumForTrack, type ModuleSub } from "@/lib/tiers";
@@ -688,14 +689,9 @@ export default function MockExamPage() {
 
             <div className="space-y-2">
               {parsedOptions.map((option, i) => {
-                // 2026-05-01 fix — derive letter from POSITION (i), not
-                // option.charAt(0). Many MCQs in the bank are stored
-                // without "A) " prefixes, so the old code rendered every
-                // option as "(A)" and graded every click as "A".
-                // See practice/page.tsx for the full bug write-up.
-                const letter = String.fromCharCode(65 + i);
-                // Beta 9.6 — CB-style (A)(B)(C)(D) labeled prefix.
-                const cleanText = option.replace(/^\s*(?:\(?[A-E]\)?[.)]\s*)/, "");
+                // 2026-05-01 — index-based via shared util. See src/lib/options.ts.
+                const letter = optionLetter(i);
+                const cleanText = cleanOptionText(option);
                 let cls = "border border-border/40 hover:bg-accent cursor-pointer";
                 if (feedback) {
                   if (letter === feedback.correctAnswer) cls = "border-emerald-500 bg-emerald-500/10 text-emerald-700 dark:text-emerald-400";
