@@ -375,7 +375,11 @@ export async function PATCH(
     // (justCompletedOnboarding is preserved as a signal but no longer
     //  gates the cookie — see Task #36/#37 followup for proper JWT
     //  refresh on session complete.)
-    response.cookies.set("onboarding_completed", "true", {
+    // 2026-05-01 — cookie value is now the userId (not "true") so a
+    // cookie left in the browser by a different user can't bypass the
+    // /journey redirect for a fresh user on the same machine. Middleware
+    // requires cookie value === JWT.id.
+    response.cookies.set("onboarding_completed", session.user.id, {
       path: "/",
       maxAge: 60 * 60 * 24, // 1 day — long enough to bridge until JWT refresh
       sameSite: "lax",

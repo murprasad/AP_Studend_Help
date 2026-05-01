@@ -42,7 +42,14 @@ export default withAuth(
     // (DB write) and JWT refresh (next request). Without this, users
     // complete their first session → click any nav link → middleware
     // reads stale JWT (still null) → bounces them back to quickstart.
-    const recentlyOnboarded = req.cookies.get("onboarding_completed")?.value === "true";
+    //
+    // 2026-05-01 — value is the userId (not "true") so a cookie left by
+    // a different user on the same browser can't bypass the redirect
+    // for a fresh-state user. Legacy "true" cookies in the wild fail
+    // the match below and get correctly ignored — fresh users get sent
+    // to /journey, complete it, and a new userId-scoped cookie is set.
+    const cookieUserId = req.cookies.get("onboarding_completed")?.value;
+    const recentlyOnboarded = !!cookieUserId && cookieUserId === token?.id;
     // Beta 9.0.1 hotfix — exempt the FIRST hop from quickstart click into
     // /practice. Without this, fresh user clicks Start on /practice/quickstart
     // → router.push(/practice?...&quickstart=1) → middleware sees

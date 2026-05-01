@@ -25,6 +25,46 @@ export async function GET() {
   const journey = await prisma.userJourney.findUnique({
     where: { userId: session.user.id },
   });
+
+  // Beta 9.7.3 (2026-04-30) — Step 5 tile-click loop hardening.
+  // When the journey is complete, re-affirm both onboarded sentinels on
+  // EVERY GET. Two guards because either alone has been flaky in the wild:
+  //   (a) idempotently set User.onboardingCompletedAt if null — covers
+  //       the case where /api/journey advance step:5 raced or the User
+  //       update threw silently.
+  //   (b) re-set the bridge cookie on the response — covers JWT-stale
+  //       scenarios where useSession().update() didn't actually persist
+  //       a fresh JWT cookie. Middleware short-circuits on this cookie.
+  // The journey page calls /api/journey GET on every mount, so any
+  // reload of /journey at step 5 (boot effect, refresh, prefetch)
+  // re-fixes the bounce-back loop.
+  if (journey && journey.currentStep >= 5 && journey.currentStep !== 99) {
+    try {
+      const u = await prisma.user.findUnique({
+        where: { id: session.user.id },
+        select: { onboardingCompletedAt: true },
+      });
+      if (u && !u.onboardingCompletedAt) {
+        await prisma.user.update({
+          where: { id: session.user.id },
+          data: { onboardingCompletedAt: new Date() },
+        });
+      }
+    } catch { /* non-fatal — fall through to cookie set */ }
+    const res = NextResponse.json({ journey });
+    // 2026-05-01 — cookie value is the userId (not "true") so a stale
+    // cookie left in the browser after a different user completes the
+    // journey can't bypass the /journey redirect for a fresh-state user.
+    // Middleware compares the cookie value to JWT.id and ignores mismatches.
+    res.cookies.set("onboarding_completed", session.user.id, {
+      path: "/",
+      maxAge: 60 * 60 * 24 * 30, // 30 days
+      sameSite: "lax",
+      secure: true,
+    });
+    return res;
+  }
+
   return NextResponse.json({ journey });
 }
 
@@ -89,7 +129,11 @@ export async function POST(req: Request) {
         });
       } catch { /* non-fatal — journey is already advanced */ }
       const res = NextResponse.json({ journey });
-      res.cookies.set("onboarding_completed", "true", {
+      // 2026-05-01 — cookie value is the userId (not "true") so a stale
+    // cookie left in the browser after a different user completes the
+    // journey can't bypass the /journey redirect for a fresh-state user.
+    // Middleware compares the cookie value to JWT.id and ignores mismatches.
+    res.cookies.set("onboarding_completed", session.user.id, {
         path: "/",
         maxAge: 60 * 60 * 24 * 30, // 30 days
         sameSite: "lax",
