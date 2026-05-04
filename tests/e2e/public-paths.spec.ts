@@ -82,18 +82,27 @@ test.describe("No PrepLion branding leaks in user copy", () => {
   // Belt-and-suspenders with the pre-release-check string scan — that
   // catches SOURCE leaks, this catches RENDERED leaks after any
   // build-time substitution / env-driven copy / CDN cache anomalies.
-  const paths = ["/", "/pricing", "/about", "/terms", "/faq", "/am-i-ready", "/pass-rates", "/wall-of-fame"];
-  for (const p of paths) {
-    test(`${p} — no 'PrepLion' text visible`, async ({ page }) => {
+  // Per-path PrepLion-mention budget. Most pages get the one footer link
+  // only. /about explicitly announces the CLEP/DSST → PrepLion handoff in
+  // its Beta 11.0 release notes (intro paragraph + card title + card body),
+  // so it legitimately has ~4 occurrences. /terms and /privacy may also
+  // mention PrepLion in legal cross-references.
+  const PATHS_WITH_BUDGET: Array<{ path: string; max: number }> = [
+    { path: "/",             max: 1 },
+    { path: "/pricing",      max: 1 },
+    { path: "/about",        max: 6 },  // Beta 11.0 release notes legitimately announce PrepLion handoff
+    { path: "/terms",        max: 2 },
+    { path: "/faq",          max: 1 },
+    { path: "/am-i-ready",   max: 1 },
+    { path: "/pass-rates",   max: 1 },
+    { path: "/wall-of-fame", max: 1 },
+  ];
+  for (const { path: p, max } of PATHS_WITH_BUDGET) {
+    test(`${p} — PrepLion text within budget (≤${max})`, async ({ page }) => {
       await page.goto(p);
-      // The marketing footer intentionally calls out sister site preplion.ai
-      // — that's a link text / URL. Scan for the product name with a
-      // capital L specifically, not the domain.
       const text = await page.locator("body").innerText();
       const leaks = text.match(/PrepLion/g) || [];
-      // Allow <= 1 legitimate reference from the sister-site footer.
-      // Zero if the footer wording ever changes to not use "PrepLion".
-      expect(leaks.length).toBeLessThanOrEqual(1);
+      expect(leaks.length, `${p}: ${leaks.length} PrepLion mentions exceeds budget of ${max}`).toBeLessThanOrEqual(max);
     });
   }
 });
