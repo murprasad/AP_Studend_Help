@@ -123,6 +123,22 @@ export function SageChat() {
 
   const quickPrompts = getPrompts(pathname);
 
+  // Beta 11.0: on the marketing landing page, hide the floating Sage chat
+  // until the visitor scrolls past the hero. The chatbot bubble in the
+  // hero re-introduces the "AI chatbot" vibe we're trying to remove.
+  // Only applies to "/"; other pages show it immediately.
+  const isLanding = pathname === "/";
+  const [pastHero, setPastHero] = useState(!isLanding);
+  useEffect(() => {
+    if (!isLanding) return;
+    const onScroll = () => {
+      if (window.scrollY > 600) setPastHero(true);
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [isLanding]);
+
   // Stop pulsing after 8 seconds
   useEffect(() => {
     const t = setTimeout(() => setPulse(false), 8000);
@@ -139,6 +155,13 @@ export function SageChat() {
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading]);
+
+  // ⚠ Early return MUST come AFTER all hooks. Beta 11.0 originally placed
+  // this above the `useEffect`s for `open` and `messages,loading`, which
+  // triggered React error #310 ("Rendered more hooks than during the
+  // previous render") whenever pastHero flipped true on scroll. Moved
+  // here 2026-05-03.
+  if (!pastHero) return null;
 
   // Read course from cookie (works on both marketing and dashboard pages)
   function getCourse(): string {

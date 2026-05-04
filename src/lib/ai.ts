@@ -659,8 +659,13 @@ export async function generateQuestion(
       const rawText = raw.response.trim().replace(/^```(?:json)?\s*/i, "").replace(/```\s*$/i, "");
       const candidate = JSON.parse(rawText) as Record<string, unknown>;
 
-      // Structural checks (cheap, run before LLM validator) — catches CB-format violations
-      if (needsValidation && questionType === QuestionType.MCQ) {
+      // Deterministic gates ALWAYS run for MCQ — including quickMode.
+      // These are <10ms and catch the bug class that produced 1,056
+      // broken Qs in the 2026-05-01 bank audit. quickMode used to skip
+      // validation entirely; that was the "save 10s by skipping
+      // validation" optimization that produced the buoyant-force class
+      // of bug. Deterministic gates have no excuse to skip.
+      if (questionType === QuestionType.MCQ) {
         const isAP = (inferredCourse as string).startsWith("AP_");
         const isACTMath = inferredCourse === "ACT_MATH";
         const expectedOptions = isACTMath ? 5 : (isAP ? 4 : 4);
@@ -721,6 +726,29 @@ export async function generateQuestion(
         const eqCheck = checkOptionsForEquivalence(opts);
         if (!eqCheck.ok) {
           lastRejectionReason = `Equivalent distractors: ${eqCheck.reason}`;
+          lastError = lastRejectionReason;
+          continue;
+        }
+
+        // 2026-05-01 — math-recompute and final-number cross-check gates.
+        // Both deterministic via mathjs (see src/lib/math-validator.ts).
+        // Catches: (1) explanation says "50 * 9.8 = 500" when actual = 490
+        // (2) stored correctAnswer letter doesn't match option whose
+        // numeric value the explanation arrives at. The buoyant-force
+        // class of bug — stored A=245N but explanation arrives at 490N
+        // (option D) — is exactly what these gates flag. Skipped silently
+        // for non-numeric MCQs (validateExplanationMath returns null when
+        // no arithmetic statements found).
+        const { validateExplanationMath, validateAnswerNumericMatch } = await import("./math-validator");
+        const mathErr = validateExplanationMath(explStr);
+        if (mathErr) {
+          lastRejectionReason = `Math recompute: ${mathErr}`;
+          lastError = lastRejectionReason;
+          continue;
+        }
+        const matchErr = validateAnswerNumericMatch(opts as string[], String(candidate.correctAnswer ?? ""), explStr);
+        if (matchErr) {
+          lastRejectionReason = `Answer/explanation numeric mismatch: ${matchErr}`;
           lastError = lastRejectionReason;
           continue;
         }

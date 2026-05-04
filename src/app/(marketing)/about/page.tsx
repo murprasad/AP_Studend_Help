@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   description: "Learn how StudentNest Prep uses active recall, spaced repetition, and Sage Live Tutor to help students score higher on AP, SAT & ACT exams.",
   openGraph: {
     title: "About | StudentNest Prep",
-    description: "AI-powered exam prep built on learning science. 16+ courses, free to start.",
+    description: "Exam-aligned prep built on learning science. 16+ courses, free to start.",
   },
 };
 import { Globe, Mail, Target, Heart, Sparkles, Lightbulb, LayoutDashboard, GraduationCap, ShieldCheck, Brain, TrendingUp, Zap, Mic, Flame, Calendar } from "lucide-react";
@@ -67,7 +67,7 @@ export default function AboutPage() {
         </div>
         <p className="text-muted-foreground leading-relaxed max-w-2xl mx-auto">
           AP exams shape college admissions. But the best prep tools cost hundreds of dollars — or require hiring a tutor.
-          {" "}StudentNest exists to change that: world-class AI-powered {examLabel} prep, free for every student.
+          {" "}StudentNest exists to change that: world-class {examLabel} prep with the Sage tutor, free for every student.
         </p>
       </div>
 
@@ -139,8 +139,8 @@ export default function AboutPage() {
             { step: 2, title: "Bloom\u2019s Taxonomy",             desc: "50%+ questions test application and analysis, not just recall" },
             { step: 3, title: "Scenario-Based",                    desc: "80%+ of questions present real-world scenarios, matching official exam formats" },
             { step: 4, title: "Misconception-First Distractors",   desc: "Wrong answers target actual student misconceptions" },
-            { step: 5, title: "AI Generation",                     desc: "Gemini 2.5 Pro generates questions calibrated to exam level" },
-            { step: 6, title: "Cross-Model Validation",            desc: "A second AI model independently validates every question" },
+            { step: 5, title: "Generation Stage",                     desc: "Gemini 2.5 Pro generates questions calibrated to exam level (cross-model validation in next stage)" },
+            { step: 6, title: "Cross-Family Validation",            desc: "A second model from a different family independently validates every question — defeats single-model blind spots" },
             { step: 7, title: "8-Criterion Review",                desc: "Factual accuracy, single correct answer, distractor quality, cognitive level, exam alignment, scenario check, distractor distinctness, explanation quality" },
             { step: 8, title: "Difficulty Calibration",            desc: "Empirical tracking ensures questions match real exam difficulty" },
             { step: 9, title: "OpenStax Grounding",                desc: "Factual accuracy verified against free, peer-reviewed college textbooks" },
@@ -251,7 +251,7 @@ export default function AboutPage() {
               icon: Sparkles,
               color: "text-blue-500",
               bg: "bg-blue-500/10",
-              title: "AI as a Teacher",
+              title: "Sage as a Teacher",
               desc: "Sage doesn\u2019t just answer questions. It explains, checks your understanding, and adapts to your weak points.",
             },
           ].map(({ icon: Icon, color, bg, title, desc }) => (
@@ -319,10 +319,10 @@ export default function AboutPage() {
         </div>
         <div className="grid sm:grid-cols-2 gap-3 text-left">
           {[
-            { icon: Mic, color: "text-blue-500", bg: "bg-blue-500/10", title: "Sage Coach Promoted to Dashboard", desc: "The FRQ AI grader was buried in the sidebar. New green-tinted dashboard tile (or amber lock card for free users) puts it where students naturally look after seeing their weakest unit. With 220 official CB FRQs in the library, this is the &ldquo;OK, how do I get help writing this answer?&rdquo; moment." },
+            { icon: Mic, color: "text-blue-500", bg: "bg-blue-500/10", title: "Sage Coach Promoted to Dashboard", desc: "The FRQ grader was buried in the sidebar. New green-tinted dashboard tile (or amber lock card for free users) puts it where students naturally look after seeing their weakest unit. With 220 official CB FRQs in the library, this is the &ldquo;OK, how do I get help writing this answer?&rdquo; moment." },
             { icon: Flame, color: "text-blue-500", bg: "bg-blue-500/10", title: "Cram Mode (Exam Countdown)", desc: "Renders only when your AP exam is &lt;30 days out. Shows: days remaining, today&apos;s top 1-2 weak units to drill, write 1 official FRQ, take a timed mock when ≤14 days. Tier framing escalates &mdash; final 3 days, final week, two weeks out, cram window." },
             { icon: Calendar, color: "text-blue-500", bg: "bg-blue-500/10", title: "Daily Study OS (adaptive)", desc: "Replaces the static study-plan template. Adapts today&apos;s volume to yesterday: accuracy &lt;50% → focus mode (fewer Qs, deeper attention); accuracy ≥80% + streak ≥3 → stretch mode (more Qs + bonus unit). Hides during Cram Mode (Mode 3 takes precedence)." },
-            { icon: Brain, color: "text-blue-500", bg: "bg-blue-500/10", title: "Flashcard Design Fix (no more band-aid)", desc: "Three sanitizer iterations couldn&apos;t fully strip the &ldquo;Why A is correct&rdquo; / &ldquo;The correct answer, C, is supported by&rdquo; leaks. Real fix: removed the entire &ldquo;Why&rdquo; section. Real flashcards are just front → back. New &ldquo;Ask Sage why this is the answer&rdquo; link routes to AI tutor with the Q+A pre-loaded." },
+            { icon: Brain, color: "text-blue-500", bg: "bg-blue-500/10", title: "Flashcard Design Fix (no more band-aid)", desc: "Three sanitizer iterations couldn&apos;t fully strip the &ldquo;Why A is correct&rdquo; / &ldquo;The correct answer, C, is supported by&rdquo; leaks. Real fix: removed the entire &ldquo;Why&rdquo; section. Real flashcards are just front → back. New &ldquo;Ask Sage why this is the answer&rdquo; link routes to Sage with the Q+A pre-loaded." },
             { icon: Heart, color: "text-blue-500", bg: "bg-blue-500/10", title: "Cross-Product Callout w/ UTM Tracking", desc: "Marketing footer link to preplion.ai (sister site for CLEP/DSST) now includes utm_source=studentnest&utm_medium=footer&utm_campaign=cross_product. Captures cross-product interest signal before full Phase G unification." },
             { icon: ShieldCheck, color: "text-blue-500", bg: "bg-blue-500/10", title: "FRQ Seed Idempotency Fixed", desc: "Beta 8.2 incident: 04-seed.mjs ON CONFLICT (id) clause never fired (id is always unique), accumulated 628 duplicate rows. Fix: explicit pre-check on (course, year, questionNumber) tuple. Future seeds genuinely idempotent. One-time dedupe ran today — 220 unique CB-official FRQs across 14 AP courses." },
           ].map(({ icon: Icon, color, bg, title, desc }) => (
@@ -406,9 +406,9 @@ export default function AboutPage() {
           {[
             { icon: ShieldCheck, color: "text-blue-500", bg: "bg-blue-500/10", title: "Progress Bars Now Screen-Reader Friendly", desc: "Every <Progress> across analytics, practice, diagnostic, flashcards, am-i-ready, and the daily-goal card now carries a contextual aria-label. Caught by axe in the post-deploy a11y scan (rule: aria-progressbar-name, severity: serious)." },
             { icon: GraduationCap, color: "text-blue-500", bg: "bg-blue-500/10", title: "FRQ Library Foundation", desc: "Built the College Board FRQ ingestion pipeline: 47 official past-exam PDFs across 8 AP courses (Bio, Chem, Calc AB/BC, Stats, Physics 1, US History, World History) downloaded with rate-limiting and idempotent caching. Extraction stage uses Gemini 1.5 Pro PDF-native input. Currently waiting on a refreshed API key; once unblocked, ~200 official FRQs land in the library." },
-            { icon: Sparkles, color: "text-blue-500", bg: "bg-blue-500/10", title: "FRQ Empty-State Escape Hatch", desc: "Premium users picking an AP course with no seeded FRQs no longer dead-end with &ldquo;No FRQs available.&rdquo; Now offers a &ldquo;Generate FRQ with Sage&rdquo; CTA into the AI-FRQ flow already wired in /practice — same rubric scoring, same difficulty calibration." },
+            { icon: Sparkles, color: "text-blue-500", bg: "bg-blue-500/10", title: "FRQ Empty-State Escape Hatch", desc: "Premium users picking an AP course with no seeded FRQs no longer dead-end with &ldquo;No FRQs available.&rdquo; Now offers a &ldquo;Generate FRQ with Sage&rdquo; CTA into the Sage-FRQ flow already wired in /practice — same rubric scoring, same difficulty calibration." },
             { icon: Brain, color: "text-blue-500", bg: "bg-blue-500/10", title: "Flashcard Explanation Sanitizer", desc: "Flashcards no longer leak the source MCQ&apos;s &ldquo;Why A is correct / Why B is wrong&rdquo; scaffolding. The helper existed; just wasn&apos;t connected to the render path. Now it is." },
-            { icon: LayoutDashboard, color: "text-blue-500", bg: "bg-blue-500/10", title: "Cache Self-Heal", desc: "AI-tutor response cache no longer crashes on a single corrupt entry. JSON.parse failures self-heal — bad entry deleted, request falls through to fresh AI call. Previous behavior: every request hitting the same cacheKey would 500." },
+            { icon: LayoutDashboard, color: "text-blue-500", bg: "bg-blue-500/10", title: "Cache Self-Heal", desc: "Sage response cache no longer crashes on a single corrupt entry. JSON.parse failures self-heal — bad entry deleted, request falls through to fresh Sage call. Previous behavior: every request hitting the same cacheKey would 500." },
             { icon: Target, color: "text-blue-500", bg: "bg-blue-500/10", title: "Email Compliance + Deliverability", desc: "Every commercial email now includes List-Unsubscribe (RFC 8058 one-click) + reply-to. CAN-SPAM 5(a)(5) compliant + improved Gmail/Outlook inbox placement. Verification + password-reset opt out via { transactional: true }." },
           ].map(({ icon: Icon, color, bg, title, desc }) => (
             <div key={title} className="flex gap-3 p-4 rounded-xl border border-border/40 bg-card">
@@ -435,9 +435,9 @@ export default function AboutPage() {
           {[
             { icon: ShieldCheck, color: "text-blue-500", bg: "bg-blue-500/10", title: "Webhook Reliability", desc: "Stripe webhook now returns 200 with structured error info on transient failures instead of 500. Reason: a 500 triggers Stripe&apos;s 3-day retry loop, but if the same transient error recurs, Stripe eventually marks the event permanently failed — meaning a paid user never gets their tier flipped. The hourly stripe-reconcile cron is the safety net." },
             { icon: Target, color: "text-blue-500", bg: "bg-blue-500/10", title: "Failed Renewal Handling", desc: "When Stripe fires `invoice.payment_failed` after exhausting smart-retry (4th failed attempt), the matching ModuleSubscription now flips to `past_due` so gating can prompt for a card update. No more &ldquo;paid for Premium 60 days ago, card died, still has access&rdquo; situations." },
-            { icon: Brain, color: "text-blue-500", bg: "bg-blue-500/10", title: "Sage Chat Can&apos;t Freeze", desc: "AI streaming endpoint now caps the initial Groq response at 30 seconds via AbortSignal.timeout. Previously, a hung Groq endpoint would leave Sage chat&apos;s typing indicator running forever — fix avoids the worst-case UX." },
+            { icon: Brain, color: "text-blue-500", bg: "bg-blue-500/10", title: "Sage Chat Can&apos;t Freeze", desc: "Sage streaming endpoint now caps the initial Groq response at 30 seconds via AbortSignal.timeout. Previously, a hung Groq endpoint would leave Sage chat&apos;s typing indicator running forever — fix avoids the worst-case UX." },
             { icon: Sparkles, color: "text-blue-500", bg: "bg-blue-500/10", title: "Honest Free-Tier Copy", desc: "Landing-page free-tier card no longer says &ldquo;Unlimited MCQ practice&rdquo; (which directly contradicted /pricing&apos;s &ldquo;3 sessions/day&rdquo; cap). Now reads &ldquo;3 practice sessions per day&rdquo; — same number across landing + pricing + product. Cuts the &ldquo;I felt deceived&rdquo; support thread." },
-            { icon: GraduationCap, color: "text-blue-500", bg: "bg-blue-500/10", title: "FRQ Premium Badge", desc: "AP-prep page now badges the &ldquo;FRQs with AI rubric scoring&rdquo; feature as Premium and clarifies free-tier gets one full FRQ to try. Reduces refund risk from users assuming unlimited FRQ on free plan." },
+            { icon: GraduationCap, color: "text-blue-500", bg: "bg-blue-500/10", title: "FRQ Premium Badge", desc: "AP-prep page now badges the &ldquo;FRQs with rubric scoring&rdquo; feature as Premium and clarifies free-tier gets one full FRQ to try. Reduces refund risk from users assuming unlimited FRQ on free plan." },
             { icon: LayoutDashboard, color: "text-blue-500", bg: "bg-blue-500/10", title: "Iteration 1 P0 Closeout", desc: "Comprehensive bug-hunt sprint Phase 1 (10 parallel agent scans) found 660 candidates; after deduping + verifying false positives, 6 real P0s identified. All 6 now shipped — Beta 7.2 caught 3 cold-start bugs, Beta 7.3 caught the remaining 3. Next iteration targets the P1 backlog (~17 items)." },
           ].map(({ icon: Icon, color, bg, title, desc }) => (
             <div key={title} className="flex gap-3 p-4 rounded-xl border border-border/40 bg-card">
@@ -495,7 +495,7 @@ export default function AboutPage() {
             { icon: Target, color: "text-blue-500", bg: "bg-blue-500/10", title: "Landing Pages Rewritten for Clarity", desc: "ACT, AP, SAT, and pricing pages all got a conversion-audit pass: sharper outcome-driven headlines, exam-specific demo content (no more AP World units showing on the SAT page), pain statements, and a tighter pricing comparison table." },
             { icon: ShieldCheck, color: "text-blue-500", bg: "bg-blue-500/10", title: "Honest Score-Gain Language", desc: "Replaced absolute score-jump claims (e.g., &lsquo;1050→1350&rsquo;) with typical-pattern framing (&lsquo;1050 → 1150 → 1250+&rsquo;). More credible for parents, safer legally, more inclusive of students starting at any level." },
             { icon: LayoutDashboard, color: "text-blue-500", bg: "bg-blue-500/10", title: "Pricing Page De-cluttered", desc: "Removed the &ldquo;subscribe to multiple modules independently&rdquo; framing that was creating cognitive load. Free tier no longer says both &ldquo;unlimited practice&rdquo; AND &ldquo;3 sessions/day&rdquo;. Refund + cancel reassurances consolidated to one trust line." },
-            { icon: GraduationCap, color: "text-blue-500", bg: "bg-blue-500/10", title: "FRQ Differentiator Surfaced", desc: "AP page now leads its second feature with &ldquo;Practice FRQs with AI scoring on real AP rubrics&rdquo; — the actual differentiator vs Khan/Quizlet/ChatGPT. Was previously buried behind generic MCQ copy." },
+            { icon: GraduationCap, color: "text-blue-500", bg: "bg-blue-500/10", title: "FRQ Differentiator Surfaced", desc: "AP page now leads its second feature with &ldquo;Practice FRQs with rubric scoring on real AP standards&rdquo; — the actual differentiator vs Khan/Quizlet/ChatGPT. Was previously buried behind generic MCQ copy." },
             { icon: Target, color: "text-blue-500", bg: "bg-blue-500/10", title: "Pain Statements Added", desc: "AP and SAT pages now lead with the user-pain insight: students plateau because they re-read what they already know, not because they don&apos;t study enough. Sage drills only the points you&apos;re actually losing." },
           ].map(({ icon: Icon, color, bg, title, desc }) => (
             <div key={title} className="flex gap-3 p-4 rounded-xl border border-border/40 bg-card">

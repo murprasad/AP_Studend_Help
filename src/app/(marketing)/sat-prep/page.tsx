@@ -6,46 +6,57 @@ import { BrowserFrame } from "@/components/landing/browser-frame";
 import { MockupAnalytics } from "@/components/landing/mockup-analytics";
 import { MockupStudyPlan } from "@/components/landing/mockup-study-plan";
 import { MockupPractice } from "@/components/landing/mockup-practice";
+import { getVisibleCourses } from "@/lib/settings";
 
 export const metadata: Metadata = {
-  title: "SAT Prep — AI Practice & Score Tracking | StudentNest Prep",
-  description: "Raise your SAT score with AI-powered practice for Math and Reading & Writing. Weak area targeting, timed practice, and score tracking. Free to start.",
+  title: "SAT Prep — Practice & Score Tracking | StudentNest Prep",
+  description: "Raise your SAT score with exam-aligned practice for Math and Reading & Writing. Weak area targeting, timed practice, and score tracking. Free to start.",
   openGraph: {
     title: "SAT Prep | StudentNest Prep",
-    description: "AI-powered SAT prep. Math + Reading & Writing. Weak area targeting. Free to start.",
+    description: "Exam-aligned SAT prep. Math + Reading & Writing. Weak area targeting. Free to start.",
     url: "https://studentnest.ai/sat-prep",
   },
 };
 
+// Each entry tagged with its ApCourse enum so the server can filter by
+// the visible_courses SiteSetting (added 2026-05-02 — same source-of-
+// truth as sidebar / /api/practice / landing).
 const courses = [
-  { name: "SAT Math", units: 4, desc: "Algebra, geometry, data analysis, advanced math" },
-  { name: "SAT Reading & Writing", units: 4, desc: "Passages, evidence-based reasoning, grammar" },
+  { enum: "SAT_MATH",            name: "SAT Math",              units: 4, desc: "Algebra, geometry, data analysis, advanced math" },
+  { enum: "SAT_READING_WRITING", name: "SAT Reading & Writing", units: 4, desc: "Passages, evidence-based reasoning, grammar" },
 ];
 
-const jsonLd = {
-  "@context": "https://schema.org",
-  "@type": "ItemList",
-  name: "SAT Prep Courses",
-  description: "SAT Math and Reading & Writing with AI-powered practice",
-  numberOfItems: 2,
-  itemListElement: courses.map((c, i) => ({
-    "@type": "ListItem",
-    position: i + 1,
-    item: {
-      "@type": "Course",
-      name: c.name,
-      description: `AI-powered ${c.name} prep: ${c.desc}. ${c.units} units with mastery tracking.`,
-      provider: { "@type": "Organization", name: "StudentNest Prep", url: "https://studentnest.ai" },
-      isAccessibleForFree: true,
-      offers: [
-        { "@type": "Offer", price: "0", priceCurrency: "USD", name: "Free" },
-        { "@type": "Offer", price: "9.99", priceCurrency: "USD", name: "SAT Premium", billingIncrement: "P1M" },
-      ],
-    },
-  })),
-};
+function buildJsonLd(visible: typeof courses) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: "SAT Prep Courses",
+    description: visible.length > 0 ? "SAT prep with exam-aligned practice" : "Rebuilding SAT question banks",
+    numberOfItems: visible.length,
+    itemListElement: visible.map((c, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      item: {
+        "@type": "Course",
+        name: c.name,
+        description: `${c.name} prep: ${c.desc}. ${c.units} units with mastery tracking.`,
+        provider: { "@type": "Organization", name: "StudentNest Prep", url: "https://studentnest.ai" },
+        isAccessibleForFree: true,
+        offers: [
+          { "@type": "Offer", price: "0", priceCurrency: "USD", name: "Free" },
+          { "@type": "Offer", price: "9.99", priceCurrency: "USD", name: "SAT Premium", billingIncrement: "P1M" },
+        ],
+      },
+    })),
+  };
+}
 
-export default function SatPrepPage() {
+export default async function SatPrepPage() {
+  const allowlist = await getVisibleCourses().catch(() => "all" as const);
+  const visibleCourses = allowlist === "all"
+    ? courses
+    : courses.filter((c) => allowlist.includes(c.enum));
+  const jsonLd = buildJsonLd(visibleCourses);
   return (
     <div className="max-w-5xl mx-auto px-4 py-16 space-y-16">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
@@ -56,7 +67,7 @@ export default function SatPrepPage() {
             <Sparkles className="h-4 w-4" /> SAT Prep
           </div>
           <h1 className="text-4xl sm:text-5xl font-bold">
-            Raise your SAT score 100–200 points — with AI that adapts to your weak areas.
+            Raise your SAT score 100–200 points — with practice that adapts to your weak areas.
           </h1>
           <p className="text-xl text-muted-foreground max-w-xl mx-auto lg:mx-0">
             Sage identifies what you struggle with, drills you on those topics, and tracks your progress until you&apos;re ready.
@@ -94,7 +105,7 @@ export default function SatPrepPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
           <div className="space-y-3">
             <div className="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center"><Target className="h-5 w-5 text-blue-700 dark:text-blue-400" /></div>
-            <h2 className="text-2xl font-bold">AI targets your weakest SAT areas</h2>
+            <h2 className="text-2xl font-bold">Sage targets your weakest SAT areas</h2>
             <p className="text-muted-foreground leading-relaxed">Quick diagnostic across Math and Reading &amp; Writing. Choose your timeline (2–6 weeks) and Sage builds a plan targeting your lowest-scoring topics first.</p>
           </div>
           <BrowserFrame title="StudentNest Prep · SAT Study Plan" className="shadow-xl"><MockupStudyPlan variant="sat" /></BrowserFrame>
@@ -103,7 +114,7 @@ export default function SatPrepPage() {
           <div className="lg:order-2 space-y-3">
             <div className="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center"><Brain className="h-5 w-5 text-blue-700 dark:text-blue-400" /></div>
             <h2 className="text-2xl font-bold">SAT-format questions with instant explanations</h2>
-            <p className="text-muted-foreground leading-relaxed">AI-generated questions matching real SAT format. Get instant feedback explaining why each answer is right or wrong — ask Sage for deeper explanations anytime.</p>
+            <p className="text-muted-foreground leading-relaxed">Exam-aligned questions matching real SAT format. Instant feedback explaining why each answer is right or wrong — ask Sage for deeper explanations anytime.</p>
           </div>
           <div className="lg:order-1"><BrowserFrame title="StudentNest Prep · SAT Practice" className="shadow-xl"><MockupPractice variant="sat" /></BrowserFrame></div>
         </div>
@@ -155,19 +166,38 @@ export default function SatPrepPage() {
 
       {/* Course List */}
       <div>
-        <h2 className="text-2xl font-bold mb-6 text-center">SAT Math + Reading &amp; Writing</h2>
-        <div className="grid sm:grid-cols-2 gap-4">
-          {courses.map((c) => (
-            <div key={c.name} className="p-5 rounded-xl border border-blue-500/20 bg-blue-500/5 space-y-2">
-              <div className="flex items-center gap-2">
-                <CheckCircle className="h-5 w-5 text-blue-700 dark:text-blue-400" />
-                <p className="font-semibold">{c.name}</p>
-                <span className="ml-auto text-xs text-muted-foreground">{c.units} units</span>
+        <h2 className="text-2xl font-bold mb-6 text-center">
+          {visibleCourses.length === 0
+            ? "Rebuilding SAT Question Bank"
+            : visibleCourses.length === 1
+              ? visibleCourses[0].name
+              : "SAT Math + Reading & Writing"}
+        </h2>
+        {visibleCourses.length === 0 ? (
+          <div className="p-6 rounded-xl border border-blue-500/20 bg-blue-500/5 text-center">
+            <p className="text-sm text-muted-foreground">
+              We&apos;re rebuilding our SAT question bank with stricter quality validators
+              (math recompute, distractor leak detection, primary-source attribution).
+              SAT courses will be back online individually as each passes our 7-gate audit.
+            </p>
+            <p className="text-xs text-muted-foreground/70 mt-3">
+              In the meantime, try our AP and ACT prep courses (some already audited and live).
+            </p>
+          </div>
+        ) : (
+          <div className="grid sm:grid-cols-2 gap-4">
+            {visibleCourses.map((c) => (
+              <div key={c.name} className="p-5 rounded-xl border border-blue-500/20 bg-blue-500/5 space-y-2">
+                <div className="flex items-center gap-2">
+                  <CheckCircle className="h-5 w-5 text-blue-700 dark:text-blue-400" />
+                  <p className="font-semibold">{c.name}</p>
+                  <span className="ml-auto text-xs text-muted-foreground">{c.units} units</span>
+                </div>
+                <p className="text-sm text-muted-foreground">{c.desc}</p>
               </div>
-              <p className="text-sm text-muted-foreground">{c.desc}</p>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Free vs Premium */}
@@ -183,7 +213,7 @@ export default function SatPrepPage() {
           <p className="font-bold text-blue-700 dark:text-blue-400">SAT Premium</p>
           <p className="text-2xl font-bold">$9.99<span className="text-sm font-normal text-muted-foreground">/mo</span></p>
           <p className="text-xs text-green-700 dark:text-green-400 font-medium">or $79.99/yr — save 33%</p>
-          {["Everything in Free", "Unlimited Sage Live Tutor chats", "Personalized SAT study plan", "Advanced weak-area analytics", "Streaming AI"].map((f) => (
+          {["Everything in Free", "Unlimited Sage Live Tutor chats", "Personalized SAT study plan", "Advanced weak-area analytics", "Streaming Sage responses"].map((f) => (
             <div key={f} className="flex items-center gap-2 text-sm"><CheckCircle className="h-4 w-4 text-blue-700 dark:text-blue-400" />{f}</div>
           ))}
           <form action="/api/checkout?plan=monthly&module=sat" method="POST" className="pt-2">

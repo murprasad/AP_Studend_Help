@@ -199,7 +199,7 @@ export default function WallOfFamePage() {
           <Star className="h-8 w-8 text-blue-500 mx-auto" />
           <h2 className="text-xl font-bold">Passed your AP, SAT, or ACT exam?</h2>
           <p className="text-sm text-muted-foreground max-w-md mx-auto">
-            Share your result and inspire others. Your success story helps fellow students see that grounded, AI-driven practice works.
+            Share your result and inspire others. Your success story helps fellow students see that grounded, exam-aligned practice works.
           </p>
           <p className="text-xs text-muted-foreground">
             Complete a practice session with a top-tier predicted score to get featured here.

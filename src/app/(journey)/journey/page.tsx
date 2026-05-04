@@ -58,7 +58,12 @@ export default function JourneyPage() {
   const router = useRouter();
   const { update: updateSession } = useSession();
   const [mode, setMode] = useState<Mode>("loading");
-  const [course, setCourse] = useState<string>("AP_WORLD_HISTORY");
+  // Default course: "AP_CHEMISTRY" rather than the legacy AP_WORLD_HISTORY
+  // since the latter was hidden 2026-05-02 by the bank-quality visibility
+  // filter. Step 0 (course pick) overrides this with the user's actual
+  // pick from the dropdown — this default only matters during the
+  // brief loading window before Step 0 renders.
+  const [course, setCourse] = useState<string>("AP_CHEMISTRY");
   const [weakestUnit, setWeakestUnit] = useState<string | null>(null);
   const [predictedScore, setPredictedScore] = useState<number | null>(null);
   const [prefetchedFrq, setPrefetchedFrq] = useState<FrqRow | null>(null);
@@ -104,6 +109,22 @@ export default function JourneyPage() {
       body: JSON.stringify({ action, ...payload }),
     });
   }, []);
+
+  // ── Beta 9.7.3 — JWT refresh on Step 5 (any path) ─────────────────────────
+  // The 9.7.2 fix only refreshed the JWT inside handleStep4Done. If the user
+  // ever lands on Step 5 via the boot resume path (currentStep>=5 in DB),
+  // updateSession() never fires and middleware can bounce subsequent
+  // /dashboard navigations back to /journey. Always refresh on step5 mount.
+  // Idempotent — useSession().update() is cheap and trigger==="update" only
+  // re-reads onboardingCompletedAt/track/subscriptionTier from DB.
+  const sessionUpdatedRef = useRef(false);
+  useEffect(() => {
+    if (mode !== "step5" || sessionUpdatedRef.current) return;
+    sessionUpdatedRef.current = true;
+    (async () => {
+      try { await updateSession(); } catch { /* non-fatal */ }
+    })();
+  }, [mode, updateSession]);
 
   // ── Prefetch step 2 FRQ when step 1 starts ─────────────────────────────────
   useEffect(() => {

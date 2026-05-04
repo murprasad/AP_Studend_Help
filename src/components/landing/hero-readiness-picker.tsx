@@ -11,26 +11,34 @@ import { COURSE_REGISTRY, VISIBLE_AP_COURSES } from "@/lib/courses";
  * singular product hook. One dropdown → directly to `/am-i-ready/[slug]`.
  * Ships to the calibrated readiness check (no signup required).
  *
- * Ported from PrepLion's HeroReadinessPicker with exam-family swap:
- *  CLEP/DSST/Accuplacer → AP / SAT / ACT.
+ * `visibleCourses` is the bank-quality allowlist (added 2026-05-02).
+ * When passed, the picker only surfaces courses we can actually serve
+ * at College-Board grade. When undefined or null, falls back to the
+ * full registry (legacy behavior).
  */
-export function HeroReadinessPicker() {
+export function HeroReadinessPicker({ visibleCourses }: { visibleCourses?: string[] | null } = {}) {
   const router = useRouter();
-  // Default to AP World History — highest-volume AP course.
-  const [course, setCourse] = useState<string>("AP_WORLD_HISTORY");
 
   const options = useMemo(() => {
+    const allowed = (c: string) => !visibleCourses || visibleCourses.includes(c);
     const ap = VISIBLE_AP_COURSES
-      .filter((c) => c.startsWith("AP_"))
+      .filter((c) => c.startsWith("AP_") && allowed(c))
       .map((c) => ({ value: c, label: COURSE_REGISTRY[c]?.name ?? c }));
     const sat = VISIBLE_AP_COURSES
-      .filter((c) => c.startsWith("SAT_"))
+      .filter((c) => c.startsWith("SAT_") && allowed(c))
       .map((c) => ({ value: c, label: COURSE_REGISTRY[c]?.name ?? c }));
     const act = VISIBLE_AP_COURSES
-      .filter((c) => c.startsWith("ACT_"))
+      .filter((c) => c.startsWith("ACT_") && allowed(c))
       .map((c) => ({ value: c, label: COURSE_REGISTRY[c]?.name ?? c }));
     return { ap, sat, act };
-  }, []);
+  }, [visibleCourses]);
+
+  // Default-select: first visible AP, else first visible SAT, else first ACT,
+  // else fall back to the legacy "AP_WORLD_HISTORY" choice (only reached if
+  // every group is empty, which would mean visible_courses is mis-configured).
+  const defaultCourse =
+    options.ap[0]?.value ?? options.sat[0]?.value ?? options.act[0]?.value ?? "AP_WORLD_HISTORY";
+  const [course, setCourse] = useState<string>(defaultCourse);
 
   const handleStart = () => {
     const slug = course.toLowerCase().replace(/_/g, "-");
@@ -73,11 +81,11 @@ export function HeroReadinessPicker() {
           className="gap-2 bg-blue-600 hover:bg-blue-700 text-white sm:flex-shrink-0"
           onClick={handleStart}
         >
-          Check my projected score <ArrowRight className="h-4 w-4" />
+          Find my weak areas <ArrowRight className="h-4 w-4" />
         </Button>
       </div>
       <p className="mt-2 text-xs text-muted-foreground text-center">
-        3 minutes · No signup · Get your estimated AP/SAT/ACT score + next steps
+        3-min diagnostic · No signup · See exactly which units you'd fail
       </p>
     </div>
   );

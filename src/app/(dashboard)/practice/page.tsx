@@ -448,7 +448,7 @@ export default function PracticePage() {
         return;
       }
       if (data.aiGenerationWarning) {
-        toast({ title: "AI questions generated", description: data.aiGenerationWarning });
+        toast({ title: "Practice questions generated", description: data.aiGenerationWarning });
       }
       const qs: Question[] = data.questions ?? [];
       questionsRef.current = qs;
@@ -546,7 +546,7 @@ export default function PracticePage() {
       }
 
       if (data.aiGenerationWarning) {
-        toast({ title: "✨ AI questions generated", description: data.aiGenerationWarning });
+        toast({ title: "✨ Practice questions generated", description: data.aiGenerationWarning });
       } else if (data.lowBankWarning) {
         toast({ title: "Limited questions available", description: data.lowBankWarning });
       }
@@ -1493,7 +1493,7 @@ export default function PracticePage() {
                     {isLocked && <Lock className="h-4 w-4 text-muted-foreground" />}
                   </div>
                   <p className="font-medium">FRQ Practice</p>
-                  <p className="text-xs text-muted-foreground">{typeLabel} — AI-scored rubric feedback</p>
+                  <p className="text-xs text-muted-foreground">{typeLabel} — Sage-scored rubric feedback</p>
                 </div>
                 {isLocked && (
                   <Badge className="bg-blue-600 text-white text-xs">Premium</Badge>
@@ -1538,7 +1538,7 @@ export default function PracticePage() {
             <Crown className="h-5 w-5 text-purple-700 dark:text-purple-400 flex-shrink-0" />
             <div className="flex-1">
               <p className="text-sm font-medium">Unlock FRQ Practice</p>
-              <p className="text-xs text-muted-foreground">SAQ, LEQ & DBQ with AI rubric scoring — Premium only</p>
+              <p className="text-xs text-muted-foreground">SAQ, LEQ & DBQ scored against the official rubric — Premium only</p>
             </div>
             <Link href="/pricing">
               <Button size="sm" variant="outline" className="border-purple-500/50 text-purple-300 hover:bg-purple-500/10 text-xs">
@@ -1633,7 +1633,7 @@ export default function PracticePage() {
           <Button onClick={startSession} disabled={isStarting || sessionLimitReached} className="w-full gap-2">
             {isStarting ? (
               <><Loader2 className="h-4 w-4 animate-spin" />
-                {questionType !== "MCQ" ? " AI is preparing your question…" : " Starting…"}
+                {questionType !== "MCQ" ? " Sage is preparing your question…" : " Starting…"}
               </>
             ) : (
               <><Zap className="h-4 w-4" /> Start Session</>

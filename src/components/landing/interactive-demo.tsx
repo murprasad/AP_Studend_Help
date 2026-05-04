@@ -1,11 +1,14 @@
 "use client";
 
-import { useState } from "react";
-import { CheckCircle, XCircle, ArrowRight, Sparkles } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { CheckCircle, XCircle, ArrowRight, Sparkles, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
-const AP_QUESTION = {
+// 2026-05-03 — CLEP question + AP/CLEP toggle removed. CLEP lives on
+// PrepLion.ai now; StudentNest serves AP/SAT/ACT. The interactive demo
+// shows ONE question (AP World History) — the canonical hero example.
+const QUESTION = {
   label: "AP World History",
   unit: "MCQ · Unit 5: Revolutions",
   text: "Which of the following BEST explains why the French Revolution spread ideas of democracy across Europe?",
@@ -20,72 +23,56 @@ const AP_QUESTION = {
     "Napoleon's military campaigns (1799–1815) carried Revolutionary ideals of liberty, equality, and nationalism into conquered territories across Europe. He spread the Napoleonic Code, abolished feudal privileges, and dismantled old aristocratic orders — directly exporting the political legacy of the Revolution far beyond France's borders.",
   wrongExplanation:
     "Not quite. The correct answer is B — Napoleon's military campaigns. While the printing press (A) spread ideas earlier, and trade routes (D) facilitated cultural exchange, neither directly spread Revolutionary democratic ideals. Napoleon's conquests explicitly carried the Revolutionary Code into Europe, abolishing feudal systems and installing democratic legal frameworks across conquered nations.",
-  track: "ap" as const,
-};
-
-const CLEP_QUESTION = {
-  label: "CLEP College Algebra",
-  unit: "MCQ · Unit 2: Equations & Inequalities",
-  text: "If 2x + 7 = 15, what is the value of x?",
-  options: [
-    { id: "A", text: "3" },
-    { id: "B", text: "4" },
-    { id: "C", text: "5" },
-    { id: "D", text: "8" },
-  ],
-  correct: "B",
-  explanation:
-    "Subtract 7 from both sides: 2x = 8. Then divide both sides by 2: x = 4. This is a fundamental linear equation — mastering these is essential for the CLEP College Algebra exam, where they appear in both standalone and word-problem formats.",
-  wrongExplanation:
-    "Not quite. The correct answer is B — x = 4. To solve 2x + 7 = 15, subtract 7 from both sides to get 2x = 8, then divide by 2 to get x = 4. Always isolate the variable step-by-step.",
-  track: "clep" as const,
+  diagnostics: {
+    A: "You're confusing media history with political diffusion.",
+    C: "You're confusing demographic crisis with political revolution.",
+    D: "You're confusing economic exchange with ideological export.",
+  } as Record<string, string>,
+  topicPattern: "Students who pick this miss 3+ more questions on Unit 5 before they recover.",
 };
 
 export function InteractiveDemo() {
-  const [activeTrack, setActiveTrack] = useState<"ap" | "clep">("ap");
   const [selected, setSelected] = useState<string | null>(null);
+  const [checking, setChecking] = useState(false);
 
-  const QUESTION = activeTrack === "clep" ? CLEP_QUESTION : AP_QUESTION;
-  const answered = selected !== null;
+  const answered = selected !== null && !checking;
   const isCorrect = selected === QUESTION.correct;
-  const accentColor = activeTrack === "clep" ? "emerald" : "indigo";
 
-  function switchTrack(track: "ap" | "clep") {
-    if (track === activeTrack) return;
-    setActiveTrack(track);
-    setSelected(null);
+  function handleSelect(id: string) {
+    if (selected !== null) return;
+    userInteractedRef.current = true;
+    setSelected(id);
+    setChecking(true);
+    setTimeout(() => setChecking(false), 650);
   }
 
+  // Auto-pilot: if the visitor hasn't interacted within 2.5s, auto-click a wrong
+  // answer so they SEE the tension state without doing anything. Killed at the
+  // first user click. This is the load-bearing change that flips the demo from
+  // "static product showcase" → "live mistake experience" per Beta 11.0.
+  const userInteractedRef = useRef(false);
+  useEffect(() => {
+    if (selected !== null) return;
+    const wrongOption = QUESTION.options.find((o) => o.id !== QUESTION.correct);
+    if (!wrongOption) return;
+    const timer = setTimeout(() => {
+      if (userInteractedRef.current || selected !== null) return;
+      setSelected(wrongOption.id);
+      setChecking(true);
+      setTimeout(() => setChecking(false), 650);
+    }, 2500);
+    return () => clearTimeout(timer);
+  }, [selected]);
+
   return (
-    <div className="rounded-2xl border border-border/40 bg-card/60 overflow-hidden shadow-xl max-w-2xl mx-auto">
-      {/* Window chrome with track toggle */}
+    <div data-testid="interactive-demo" className="rounded-2xl border border-border/40 bg-card/60 overflow-hidden shadow-xl max-w-2xl mx-auto">
+      {/* Window chrome — no track toggle (CLEP removed 2026-05-03) */}
       <div className="flex items-center gap-2 px-4 py-3 border-b border-border/40 bg-secondary/40">
         <div className="w-3 h-3 rounded-full bg-red-500/60" />
         <div className="w-3 h-3 rounded-full bg-yellow-500/60" />
         <div className="w-3 h-3 rounded-full bg-green-500/60" />
         <span className="ml-2 text-xs text-muted-foreground">StudentNest · Practice</span>
-        <div className="ml-auto flex gap-1">
-          <button
-            onClick={() => switchTrack("ap")}
-            className={`text-xs px-4 py-2 rounded-full min-h-[44px] transition-colors ${
-              activeTrack === "ap"
-                ? "bg-blue-500/20 text-blue-800 dark:text-blue-300 border border-blue-500/30"
-                : "text-muted-foreground hover:text-foreground"
-            }`}
-          >
-            AP
-          </button>
-          <button
-            onClick={() => switchTrack("clep")}
-            className={`text-xs px-4 py-2 rounded-full min-h-[44px] transition-colors ${
-              activeTrack === "clep"
-                ? "bg-emerald-500/20 text-emerald-800 dark:text-emerald-300 border border-emerald-500/30"
-                : "text-muted-foreground hover:text-foreground"
-            }`}
-          >
-            CLEP
-          </button>
-        </div>
+        <span className="ml-auto text-[10px] uppercase tracking-wider text-muted-foreground/70">{QUESTION.label}</span>
       </div>
 
       <div className="p-5 space-y-4">
@@ -105,8 +92,10 @@ export function InteractiveDemo() {
             const isSelected = selected === opt.id;
             const isRightAnswer = opt.id === QUESTION.correct;
 
-            let borderClass = `border-border/40 bg-secondary/30 hover:border-${accentColor}-500/40 hover:bg-${accentColor}-500/5 cursor-pointer`;
-            if (answered) {
+            let borderClass = "border-border/40 bg-secondary/30 hover:border-blue-500/40 hover:bg-blue-500/5 cursor-pointer";
+            if (checking && isSelected) {
+              borderClass = "border-blue-500/60 bg-blue-500/10 cursor-default animate-pulse";
+            } else if (answered) {
               if (isRightAnswer) {
                 borderClass = "border-emerald-500/60 bg-emerald-500/10 cursor-default";
               } else if (isSelected && !isRightAnswer) {
@@ -122,8 +111,8 @@ export function InteractiveDemo() {
             return (
               <button
                 key={opt.id}
-                disabled={answered}
-                onClick={() => setSelected(opt.id)}
+                disabled={answered || checking}
+                onClick={() => handleSelect(opt.id)}
                 className={`w-full text-left flex items-center gap-3 px-4 py-3 rounded-lg border transition-all text-sm ${borderClass}`}
               >
                 <span className="font-mono font-semibold text-xs text-muted-foreground w-5 flex-shrink-0">
@@ -141,7 +130,36 @@ export function InteractiveDemo() {
           })}
         </div>
 
-        {/* Sage explanation (shown after answer) */}
+        {/* Checking state — shows briefly between click and reveal */}
+        {checking && (
+          <div className="flex items-center justify-center gap-2 py-3 text-sm text-blue-600 dark:text-blue-400 font-medium">
+            <span className="inline-flex gap-0.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-bounce" style={{ animationDelay: "0ms" }} />
+              <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-bounce" style={{ animationDelay: "120ms" }} />
+              <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-bounce" style={{ animationDelay: "240ms" }} />
+            </span>
+            <span>Checking your answer&hellip;</span>
+          </div>
+        )}
+
+        {/* Tension banner — wrong-answer diagnostic + topic-pattern warning */}
+        {answered && !isCorrect && (
+          <div className="rounded-xl border-2 border-red-500/50 bg-red-500/10 p-4 space-y-2">
+            <div className="flex items-start gap-2">
+              <AlertTriangle className="h-4 w-4 text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" />
+              <div className="space-y-1">
+                <p className="text-sm font-semibold text-red-700 dark:text-red-300 leading-snug">
+                  {QUESTION.diagnostics[selected!] ?? "That answer doesn't fit the question."}
+                </p>
+                <p className="text-xs text-red-700/80 dark:text-red-300/80 leading-relaxed">
+                  {QUESTION.topicPattern}
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Sage explanation */}
         {answered && (
           <div
             className={`rounded-xl border p-4 text-sm space-y-2 ${
@@ -151,13 +169,11 @@ export function InteractiveDemo() {
             }`}
           >
             <div className="flex items-center gap-2">
-              <div className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 ${
-                activeTrack === "clep" ? "bg-emerald-500/20" : "bg-blue-500/20"
-              }`}>
-                <Sparkles className={`h-3.5 w-3.5 ${activeTrack === "clep" ? "text-emerald-700 dark:text-emerald-400" : "text-blue-500"}`} />
+              <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 bg-blue-500/20">
+                <Sparkles className="h-3.5 w-3.5 text-blue-500" />
               </div>
-              <span className={`text-xs font-semibold ${activeTrack === "clep" ? "text-emerald-700 dark:text-emerald-400" : "text-blue-500"}`}>
-                {isCorrect ? "Correct! Sage explains:" : "Sage explains:"}
+              <span className="text-xs font-semibold text-blue-500">
+                {isCorrect ? "Correct! Sage explains:" : "Sage explains why:"}
               </span>
             </div>
             <p className="text-foreground/80 leading-relaxed text-xs">
@@ -166,14 +182,12 @@ export function InteractiveDemo() {
           </div>
         )}
 
-        {/* CTA after answering */}
+        {/* CTA after answering — outcome-based */}
         {answered && (
           <div className="pt-1">
-            <Link href={`/register?track=${activeTrack}`}>
-              <Button size="sm" className={`gap-2 w-full ${
-                activeTrack === "clep" ? "bg-emerald-700 hover:bg-emerald-800" : ""
-              }`}>
-                Want 10 more questions like this? Start free <ArrowRight className="h-4 w-4" />
+            <Link href="/register?track=ap">
+              <Button size="sm" className="gap-2 w-full">
+                {isCorrect ? "Find what you don't know" : "Fix my weak areas"} <ArrowRight className="h-4 w-4" />
               </Button>
             </Link>
           </div>

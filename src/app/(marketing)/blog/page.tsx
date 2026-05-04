@@ -13,8 +13,8 @@ export const metadata: Metadata = {
 
 const articles = [
   {
-    title: "How AI-Powered Practice Is Changing Test Prep",
-    excerpt: "Traditional flashcards and textbooks can only take you so far. Here's how adaptive AI practice targets your weak areas and accelerates improvement.",
+    title: "How Adaptive Practice Is Changing Test Prep",
+    excerpt: "Traditional flashcards and textbooks can only take you so far. Here's how adaptive practice targets your weak areas and accelerates improvement.",
     category: "Learning Science",
     categoryColor: "bg-blue-500/10 text-blue-500 border-blue-500/20",
     readTime: "5 min read",

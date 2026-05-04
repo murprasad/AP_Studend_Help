@@ -81,10 +81,21 @@ const BASE_COURSE_GROUPS: { label: string; shortLabel: string; keys: ApCourse[] 
   {
     label: "AP Courses",
     shortLabel: "AP",
+    // Extended 2026-05-02 to include the 4 newer AP courses that were
+    // already in COURSE_REGISTRY but never wired into the sidebar:
+    // AP_ENVIRONMENTAL_SCIENCE, AP_HUMAN_GEOGRAPHY, AP_US_GOVERNMENT,
+    // AP_PRECALCULUS. Without them, the visible_courses filter (which
+    // includes these) would have 0 keys to match against, leaving the
+    // sidebar with only AP_CHEMISTRY, AP_COMPUTER_SCIENCE_PRINCIPLES,
+    // and AP_PSYCHOLOGY (the 3 visible courses that overlap the legacy
+    // list). Bug surfaced 2026-05-02 evening when user signed in as test
+    // student and saw 10 unfiltered courses (loading-state fallback).
     keys: [
       "AP_WORLD_HISTORY", "AP_COMPUTER_SCIENCE_PRINCIPLES", "AP_PHYSICS_1",
       "AP_CALCULUS_AB", "AP_CALCULUS_BC", "AP_STATISTICS",
       "AP_CHEMISTRY", "AP_BIOLOGY", "AP_US_HISTORY", "AP_PSYCHOLOGY",
+      "AP_ENVIRONMENTAL_SCIENCE", "AP_HUMAN_GEOGRAPHY",
+      "AP_US_GOVERNMENT", "AP_PRECALCULUS",
     ] as ApCourse[],
   },
   {
@@ -115,21 +126,50 @@ export function Sidebar({ userRole, userTrack, isOpen = false, onClose = () => {
   const [streakFreezes, setStreakFreezes] = useState<number>(0);
   const [examDate, setExamDate] = useState<Date | null>(null);
   const [hiddenPages, setHiddenPages] = useState<Set<string>>(new Set());
+  // Bank-quality course filter (added 2026-05-02). Two pieces of state
+  // to distinguish "loading" from "loaded with no filter."
+  // - flagsLoaded=false : /api/feature-flags hasn't returned yet
+  // - visibleCourses=null after load : SiteSetting has no allowlist (show all)
+  // - visibleCourses=[...]      : allowlist applied
+  // For non-admin users during the brief loading window we render NO
+  // courses rather than flashing the unfiltered list (which previously
+  // showed students courses they couldn't actually use).
+  const [flagsLoaded, setFlagsLoaded] = useState<boolean>(false);
+  const [visibleCourses, setVisibleCourses] = useState<string[] | null>(null);
   // Always trust the session track prop when available
   const effectiveTrack = userTrack || "ap";
 
-  // Map track to the specific course group — strict filtering, no expansion
-  // CLEP/DSST sunset 2026-04-14 — redirected to preplion.ai, no longer exposed here
+  // 2026-05-03 — All ap/sat/act users see ALL 3 groups (AP + SAT + ACT).
+  // Reason: students prep for multiple exams simultaneously (AP students take
+  // SAT/ACT too; SAT/ACT students may take AP electives). Track determines the
+  // *default-selected* tab in the picker, not a hard lock. CLEP/DSST sunset
+  // 2026-05-03 — redirected to preplion.ai, no longer exposed here.
   const TRACK_TO_GROUP: Record<string, typeof BASE_COURSE_GROUPS[number][]> = {
-    ap: [BASE_COURSE_GROUPS[0]],     // AP Courses only
-    sat: [BASE_COURSE_GROUPS[1]],    // SAT Prep only
-    act: [BASE_COURSE_GROUPS[2]],    // ACT Prep only
+    ap: BASE_COURSE_GROUPS,
+    sat: BASE_COURSE_GROUPS,
+    act: BASE_COURSE_GROUPS,
   };
 
   // Admin and all tracks see AP/SAT/ACT groups only. CLEP/DSST hidden post-sunset.
-  const COURSE_GROUPS = userRole === "ADMIN"
+  const RAW_COURSE_GROUPS = userRole === "ADMIN"
     ? BASE_COURSE_GROUPS
     : (TRACK_TO_GROUP[effectiveTrack] ?? [BASE_COURSE_GROUPS[0]]);
+
+  // Apply bank-quality visibility filter (2026-05-02). Logic:
+  //   - Admin: always see RAW (validate quality).
+  //   - Non-admin, flags not yet loaded: render no courses (avoids the
+  //     unfiltered-flash bug where students briefly saw hidden courses).
+  //   - Non-admin, loaded, no allowlist: see RAW (no filter set in DB).
+  //   - Non-admin, loaded, allowlist: filter RAW by allowlist.
+  const COURSE_GROUPS = (userRole === "ADMIN")
+    ? RAW_COURSE_GROUPS
+    : !flagsLoaded
+      ? []
+      : !visibleCourses
+        ? RAW_COURSE_GROUPS
+        : RAW_COURSE_GROUPS
+            .map((g) => ({ ...g, keys: g.keys.filter((k) => visibleCourses.includes(k as string)) }))
+            .filter((g) => g.keys.length > 0);
 
   const DEFAULT_GROUP: Record<string, string> = {
     ap: "AP Courses", sat: "SAT Prep", act: "ACT Prep",
@@ -139,18 +179,28 @@ export function Sidebar({ userRole, userTrack, isOpen = false, onClose = () => {
     DEFAULT_GROUP[effectiveTrack] ?? "AP Courses"
   );
 
-  // Auto-switch course when it doesn't belong to the user's track (skip for admin)
+  // Auto-switch course when it doesn't belong to the user's track OR
+  // when it was just hidden by the bank-quality visibility filter.
+  // Skip for admin — they can access any course.
   useEffect(() => {
-    if (userRole === "ADMIN") return; // Admin can access any course
+    if (userRole === "ADMIN") return;
+    // Hold for the visibility list to load before we do anything; null
+    // means "haven't fetched yet" — switching during loading would
+    // bounce the user from a perfectly valid course.
     const trackGroup = TRACK_TO_GROUP[effectiveTrack];
-    if (trackGroup) {
-      const courseInTrack = trackGroup.some(g => g.keys.includes(course as ApCourse));
-      if (!courseInTrack && trackGroup[0]?.keys[0]) {
-        // Current course doesn't match track — switch to first course in track
-        setCourse(trackGroup[0].keys[0]);
-      }
+    if (!trackGroup) return;
+    const courseInTrack = trackGroup.some((g) => g.keys.includes(course as ApCourse));
+    const courseVisible = !visibleCourses || visibleCourses.includes(course as string);
+    if (courseInTrack && courseVisible) return;
+    // Pick the first visible-and-in-track course as the fallback.
+    for (const g of trackGroup) {
+      const candidate = g.keys.find((k) => !visibleCourses || visibleCourses.includes(k as string));
+      if (candidate) { setCourse(candidate); return; }
     }
-  }, [effectiveTrack]); // eslint-disable-line react-hooks/exhaustive-deps
+    // No visible course in the user's track — fall back to the first key
+    // in track even if hidden, just to avoid leaving the user stranded.
+    if (trackGroup[0]?.keys[0]) setCourse(trackGroup[0].keys[0]);
+  }, [effectiveTrack, visibleCourses]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Sync activeGroup when course changes
   useEffect(() => {
@@ -177,13 +227,16 @@ export function Sidebar({ userRole, userTrack, isOpen = false, onClose = () => {
     // Fetch feature flags to hide disabled pages
     fetch("/api/feature-flags")
       .then(r => r.json())
-      .then((flags: { analyticsEnabled?: boolean; studyPlanEnabled?: boolean }) => {
+      .then((flags: { analyticsEnabled?: boolean; studyPlanEnabled?: boolean; visibleCourses?: string[] | null }) => {
         const hidden = new Set<string>();
         if (flags.analyticsEnabled === false) hidden.add("/analytics");
         if (flags.studyPlanEnabled === false) hidden.add("/study-plan");
         setHiddenPages(hidden);
+        // null = no filter (show all). Array = allowlist.
+        if (Array.isArray(flags.visibleCourses)) setVisibleCourses(flags.visibleCourses);
+        setFlagsLoaded(true);
       })
-      .catch(() => {});
+      .catch(() => { setFlagsLoaded(true); });
   }, []);
 
   useEffect(() => {
@@ -334,7 +387,14 @@ export function Sidebar({ userRole, userTrack, isOpen = false, onClose = () => {
               // Track-scoped items (e.g. FRQ Practice is AP-only). Admins see all.
               if (!item.tracks) return true;
               if (userRole === "ADMIN") return true;
-              return item.tracks.includes(effectiveTrack);
+              // 2026-05-03 — gate by CURRENT course family, not signup track.
+              // FRQ Practice is meaningful only when the user's selected course
+              // is in the AP family. Since users can now switch across AP/SAT/
+              // ACT freely, the right gate is the course they're actually on.
+              if (item.tracks.includes("ap") && (course as string).startsWith("AP_")) return true;
+              if (item.tracks.includes("sat") && (course as string).startsWith("SAT_")) return true;
+              if (item.tracks.includes("act") && (course as string).startsWith("ACT_")) return true;
+              return false;
             })
             .map((item) => {
             const isActive = pathname === item.href || pathname.startsWith(item.href + "/");

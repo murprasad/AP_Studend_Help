@@ -173,10 +173,10 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   if (!meta) return { title: "Not Found" };
   return {
     title: `${config.name} — Exam Format, Units, Practice | StudentNest Prep`,
-    description: `${config.name}: ${meta.duration} exam, ${meta.scoring}. Practice every unit free with AI-generated questions matched to College Board format.`,
+    description: `${config.name}: ${meta.duration} exam, ${meta.scoring}. Practice every unit free with exam-aligned questions matched to College Board format.`,
     openGraph: {
       title: `${config.name} | StudentNest Prep`,
-      description: `Free AI-powered ${config.name} prep. Real exam format. Per-unit mastery tracking.`,
+      description: `Free ${config.name} prep. Real exam format. Per-unit mastery tracking.`,
       url: `https://studentnest.ai/ap-prep/${params.slug}`,
     },
   };
@@ -225,7 +225,7 @@ export default function ApSubjectPage({ params }: { params: { slug: string } }) 
           </div>
           <h1 className="text-3xl sm:text-4xl font-bold">{config.name}</h1>
           <p className="text-lg text-muted-foreground">
-            Practice every unit with AI-generated questions matched to the official College Board exam format. Free to start.
+            Practice every unit with exam-aligned questions matched to the official College Board format. Free to start.
           </p>
         </div>
       </FadeIn>
@@ -368,7 +368,7 @@ export default function ApSubjectPage({ params }: { params: { slug: string } }) 
         <div className="text-center space-y-4 pt-4">
           <h2 className="text-2xl font-bold">Ready to start practicing {SUBJECT_LABEL[courseKey]}?</h2>
           <p className="text-muted-foreground text-sm">
-            Free unlimited practice. AI explanations on every wrong answer. Per-unit mastery tracking.
+            Free unlimited practice. Sage explanations on every wrong answer. Per-unit mastery tracking.
           </p>
           <div className="flex gap-3 justify-center flex-wrap">
             <Link href="/register?module=ap">
@@ -397,7 +397,7 @@ export default function ApSubjectPage({ params }: { params: { slug: string } }) 
 
       {/* Trademark */}
       <p className="text-xs text-center text-muted-foreground pt-4">
-        AP&reg; is a registered trademark of the College Board, which is not affiliated with StudentNest. All practice questions are original AI-generated content.
+        AP&reg; is a registered trademark of the College Board, which is not affiliated with StudentNest. All practice questions are original content, generated and cross-model validated against published exam standards.
       </p>
     </div>
   );

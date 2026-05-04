@@ -17,6 +17,7 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { ApCourse, SessionType, Difficulty, QuestionType } from "@prisma/client";
 import { VALID_AP_COURSES, COURSE_REGISTRY } from "@/lib/courses";
+import { isCourseVisible, getVisibleCourses } from "@/lib/settings";
 
 export const dynamic = "force-dynamic";
 
@@ -33,10 +34,24 @@ export async function POST(req: NextRequest) {
   const url = new URL(req.url);
   const requestedCourse = url.searchParams.get("course") as ApCourse | null;
   const userTrack = session.user.track ?? "ap";
-  const course =
+  const isAdmin = (session.user as { role?: string }).role === "ADMIN";
+  let course: ApCourse =
     requestedCourse && VALID_AP_COURSES.includes(requestedCourse)
       ? requestedCourse
       : TRACK_DEFAULTS[userTrack] ?? "AP_WORLD_HISTORY";
+
+  // Bank-quality visibility gate (2026-05-02). If the requested or
+  // track-default course was hidden, fall back to the first visible
+  // course rather than 400-ing the new-user funnel.
+  if (!isAdmin) {
+    const okay = await isCourseVisible(course as string);
+    if (!okay) {
+      const visible = await getVisibleCourses();
+      if (Array.isArray(visible) && visible.length > 0) {
+        course = (visible[0] as ApCourse);
+      }
+    }
+  }
 
   // Pull 5 EASY MCQs at random from the approved bank.
   const questions = await prisma.question.findMany({

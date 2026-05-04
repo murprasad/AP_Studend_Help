@@ -280,6 +280,13 @@ section("9. No PrepLion branding leaks in user-facing copy");
         // The open/close pair is always on the same-or-nearby lines and
         // the whole block is stripped at build.
         if (/\{\s*\/\*/.test(line) || line.includes("*/}") ) continue;
+        // Skip lines explicitly marked as intentional handoff. Use the
+        // marker "preplion-intentional" on the line itself or the line
+        // immediately before. Added 2026-05-03 for the footer CLEP/DSST
+        // → PrepLion handoff link.
+        if (line.includes("preplion-intentional")) continue;
+        const prior = i > 0 ? lines[i - 1] : "";
+        if (prior.includes("preplion-intentional")) continue;
         leaks++;
         leakDetails.push(`${rel}:${i + 1} — ${line.trim().slice(0, 100)}`);
       }

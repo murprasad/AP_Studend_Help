@@ -10,6 +10,17 @@ const nextConfig = {
       },
     ],
   },
+  // 2026-05-03 — StudentNest is AP/SAT/ACT only. CLEP/DSST live on PrepLion.
+  // Permanent (308) redirect for any /clep-prep or /dsst-prep URL so existing
+  // search-engine links and bookmarks land on the right product.
+  async redirects() {
+    return [
+      { source: "/clep-prep", destination: "https://preplion.ai", permanent: true },
+      { source: "/clep-prep/:path*", destination: "https://preplion.ai", permanent: true },
+      { source: "/dsst-prep", destination: "https://preplion.ai", permanent: true },
+      { source: "/dsst-prep/:path*", destination: "https://preplion.ai", permanent: true },
+    ];
+  },
   async headers() {
     // CF Pages `_headers` file only applies to static assets, not to
     // OpenNext Worker-served requests. Setting headers here routes them

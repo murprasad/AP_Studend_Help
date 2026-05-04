@@ -6,54 +6,73 @@ import { BrowserFrame } from "@/components/landing/browser-frame";
 import { MockupAnalytics } from "@/components/landing/mockup-analytics";
 import { MockupStudyPlan } from "@/components/landing/mockup-study-plan";
 import { MockupPractice } from "@/components/landing/mockup-practice";
+import { getVisibleCourses } from "@/lib/settings";
 
 export const metadata: Metadata = {
-  title: "AP Exam Prep — AI Practice & Tutoring | StudentNest Prep",
-  description: "Score a 5 on your AP exam with AI-powered practice questions, instant feedback, and mastery tracking across 10 AP courses. Free to start.",
+  title: "AP Exam Prep — Practice & Tutoring | StudentNest Prep",
+  description: "Score a 5 on your AP exam with exam-aligned practice questions, instant feedback, and mastery tracking across 10 AP courses. Free to start.",
   openGraph: {
     title: "AP Exam Prep | StudentNest Prep",
-    description: "AI-powered AP exam prep. 10 courses. Instant AI explanations. Mastery tracking. Free to start.",
+    description: "Exam-aligned AP prep. 10 courses. Instant explanations. Mastery tracking. Free to start.",
     url: "https://studentnest.ai/ap-prep",
   },
 };
 
+// Each entry tagged with its ApCourse enum so the server can filter by
+// the bank-quality visible_courses SiteSetting allowlist (added 2026-05-02).
+// Includes ALL 14 AP courses — the filter trims down to whatever passes
+// the audit at runtime.
 const courses = [
-  { name: "AP World History: Modern", units: 9, slug: "ap-world-history-modern" },
-  { name: "AP Computer Science Principles", units: 5, slug: "ap-computer-science-principles" },
-  { name: "AP Physics 1: Algebra-Based", units: 10, slug: "ap-physics-1" },
-  { name: "AP Calculus AB", units: 8 },
-  { name: "AP Calculus BC", units: 10 },
-  { name: "AP Statistics", units: 9 },
-  { name: "AP Chemistry", units: 9 },
-  { name: "AP Biology", units: 8 },
-  { name: "AP US History", units: 9 },
-  { name: "AP Psychology", units: 9 },
+  { enum: "AP_WORLD_HISTORY",                 name: "AP World History: Modern",       units: 9,  slug: "ap-world-history-modern" },
+  { enum: "AP_COMPUTER_SCIENCE_PRINCIPLES",   name: "AP Computer Science Principles", units: 5,  slug: "ap-computer-science-principles" },
+  { enum: "AP_PHYSICS_1",                     name: "AP Physics 1: Algebra-Based",    units: 10, slug: "ap-physics-1" },
+  { enum: "AP_CALCULUS_AB",                   name: "AP Calculus AB",                 units: 8 },
+  { enum: "AP_CALCULUS_BC",                   name: "AP Calculus BC",                 units: 10 },
+  { enum: "AP_STATISTICS",                    name: "AP Statistics",                  units: 9 },
+  { enum: "AP_CHEMISTRY",                     name: "AP Chemistry",                   units: 9 },
+  { enum: "AP_BIOLOGY",                       name: "AP Biology",                     units: 8 },
+  { enum: "AP_US_HISTORY",                    name: "AP US History",                  units: 9 },
+  { enum: "AP_PSYCHOLOGY",                    name: "AP Psychology",                  units: 9 },
+  { enum: "AP_ENVIRONMENTAL_SCIENCE",         name: "AP Environmental Science",       units: 9 },
+  { enum: "AP_HUMAN_GEOGRAPHY",               name: "AP Human Geography",             units: 7 },
+  { enum: "AP_US_GOVERNMENT",                 name: "AP US Government & Politics",    units: 5 },
+  { enum: "AP_PRECALCULUS",                   name: "AP Precalculus",                 units: 4 },
 ];
 
-const jsonLd = {
-  "@context": "https://schema.org",
-  "@type": "ItemList",
-  name: "AP Exam Prep Courses",
-  description: "10 AP courses with AI-powered practice and tutoring",
-  numberOfItems: 10,
-  itemListElement: courses.map((c, i) => ({
-    "@type": "ListItem",
-    position: i + 1,
-    item: {
-      "@type": "Course",
-      name: c.name,
-      description: `AI-powered ${c.name} prep with ${c.units} units of practice questions, mastery tracking, and instant explanations.`,
-      provider: { "@type": "Organization", name: "StudentNest Prep", url: "https://studentnest.ai" },
-      isAccessibleForFree: true,
-      offers: [
-        { "@type": "Offer", price: "0", priceCurrency: "USD", name: "Free" },
-        { "@type": "Offer", price: "9.99", priceCurrency: "USD", name: "AP Premium", billingIncrement: "P1M" },
-      ],
-    },
-  })),
-};
+function buildJsonLd(visibleCourses: typeof courses) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: "AP Exam Prep Courses",
+    description: `${visibleCourses.length} AP courses with exam-aligned practice and Sage tutoring`,
+    numberOfItems: visibleCourses.length,
+    itemListElement: visibleCourses.map((c, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      item: {
+        "@type": "Course",
+        name: c.name,
+        description: `${c.name} prep with ${c.units} units of practice, mastery tracking, and instant explanations.`,
+        provider: { "@type": "Organization", name: "StudentNest Prep", url: "https://studentnest.ai" },
+        isAccessibleForFree: true,
+        offers: [
+          { "@type": "Offer", price: "0", priceCurrency: "USD", name: "Free" },
+          { "@type": "Offer", price: "9.99", priceCurrency: "USD", name: "AP Premium", billingIncrement: "P1M" },
+        ],
+      },
+    })),
+  };
+}
 
-export default function ApPrepPage() {
+export default async function ApPrepPage() {
+  // Apply bank-quality visibility filter (added 2026-05-02). Same source-
+  // of-truth as the sidebar/practice API — only show courses we can
+  // actually serve at College-Board grade.
+  const allowlist = await getVisibleCourses().catch(() => "all" as const);
+  const visibleCourses = allowlist === "all"
+    ? courses
+    : courses.filter((c) => allowlist.includes(c.enum));
+  const jsonLd = buildJsonLd(visibleCourses);
   return (
     <div className="max-w-5xl mx-auto px-4 py-16 space-y-16">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
@@ -61,10 +80,10 @@ export default function ApPrepPage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
         <div className="text-center lg:text-left space-y-4">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-500 text-sm font-medium">
-            <Sparkles className="h-4 w-4" /> 10 AP Courses
+            <Sparkles className="h-4 w-4" /> {visibleCourses.length} AP Courses
           </div>
           <h1 className="text-4xl sm:text-5xl font-bold">
-            Turn your AP prep into a 5 — with AI that teaches, quizzes, and adapts.
+            Turn your AP prep into a 5 — with a tutor that teaches, quizzes, and adapts.
           </h1>
           <p className="text-xl text-muted-foreground max-w-xl mx-auto lg:mx-0">
             Sage teaches concepts, quizzes you, and tracks mastery by unit — so every session improves your score. <span className="text-foreground font-medium">30 minutes a day is enough.</span>
@@ -102,7 +121,7 @@ export default function ApPrepPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
           <div className="space-y-3">
             <div className="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center"><Target className="h-5 w-5 text-blue-500" /></div>
-            <h2 className="text-2xl font-bold">AI builds your study plan by unit</h2>
+            <h2 className="text-2xl font-bold">Sage builds your study plan by unit</h2>
             <p className="text-muted-foreground leading-relaxed">10–15 diagnostic questions identify your weak spots. Sage creates a weekly plan targeting your lowest-scoring units first — and adjusts as you improve.</p>
           </div>
           <BrowserFrame title="StudentNest Prep · AP Study Plan" className="shadow-xl"><MockupStudyPlan variant="ap-generic" /></BrowserFrame>
@@ -111,7 +130,7 @@ export default function ApPrepPage() {
           <div className="lg:order-2 space-y-3">
             <div className="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center"><Brain className="h-5 w-5 text-blue-500" /></div>
             <div className="flex items-center gap-2">
-              <h2 className="text-2xl font-bold">Practice FRQs with AI scoring on real AP rubrics</h2>
+              <h2 className="text-2xl font-bold">Practice FRQs with rubric scoring on real AP standards</h2>
               <span className="text-[10px] font-bold uppercase tracking-wider bg-blue-600 text-white px-2 py-0.5 rounded">Premium</span>
             </div>
             <p className="text-muted-foreground leading-relaxed">Most platforms only do MCQs. Sage scores your free-response answers (SAQ, LEQ, DBQ) against the actual College Board rubrics — point by point — so you know exactly what AP graders want before exam day. <span className="text-foreground/70">Free tier includes one full FRQ to try; unlimited with Premium.</span></p>
@@ -166,9 +185,9 @@ export default function ApPrepPage() {
 
       {/* Course List */}
       <div>
-        <h2 className="text-2xl font-bold mb-6 text-center">10 AP Courses — Full Curriculum Coverage</h2>
+        <h2 className="text-2xl font-bold mb-6 text-center">{visibleCourses.length} AP Courses — Curriculum Coverage</h2>
         <div className="grid sm:grid-cols-2 gap-3">
-          {courses.map((c) => {
+          {visibleCourses.map((c) => {
             const inner = (
               <>
                 <CheckCircle className="h-5 w-5 text-emerald-700 dark:text-emerald-400 flex-shrink-0" />
@@ -207,7 +226,7 @@ export default function ApPrepPage() {
           <p className="font-bold text-blue-500">AP Premium</p>
           <p className="text-2xl font-bold">$9.99<span className="text-sm font-normal text-muted-foreground">/mo</span></p>
           <p className="text-xs text-green-700 dark:text-green-400 font-medium">or $79.99/yr — save 33%</p>
-          {["Everything in Free", "Unlimited Sage Live Tutor chats", "FRQ with AI rubric scoring", "Personalized study plan", "Streaming AI"].map((f) => (
+          {["Everything in Free", "Unlimited Sage Live Tutor chats", "FRQ scored against the official AP rubric", "Personalized study plan", "Streaming Sage responses"].map((f) => (
             <div key={f} className="flex items-center gap-2 text-sm"><CheckCircle className="h-4 w-4 text-blue-500" />{f}</div>
           ))}
           <form action="/api/checkout?plan=monthly&module=ap" method="POST" className="pt-2">

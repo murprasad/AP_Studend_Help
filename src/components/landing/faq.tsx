@@ -13,14 +13,13 @@ function buildFaqs(clepOn: boolean, dsstOn: boolean) {
   const courseCount = getCourseCount(clepOn, dsstOn);
   const examLabel = getExamLabel(clepOn, dsstOn);
 
-  let coverageAnswer = "10 AP courses (World History, Calculus AB/BC, Physics 1, Chemistry, Biology, Statistics, US History, Psychology, Computer Science), SAT Math & Reading/Writing, and 4 ACT sections (Math, English, Science, Reading).";
-  if (clepOn && dsstOn) {
-    coverageAnswer = "10 AP courses (World History, Calculus AB/BC, Physics 1, Chemistry, Biology, Statistics, US History, Psychology, Computer Science), SAT Math & Reading/Writing, 4 ACT sections (Math, English, Science, Reading), all 34 CLEP exams across 5 domains, and 22 DSST exams across Business, Social Sciences, Humanities, STEM, English, and History.";
-  } else if (clepOn) {
-    coverageAnswer = "10 AP courses (World History, Calculus AB/BC, Physics 1, Chemistry, Biology, Statistics, US History, Psychology, Computer Science), SAT Math & Reading/Writing, 4 ACT sections (Math, English, Science, Reading), and all 34 CLEP exams across 5 domains.";
-  } else if (dsstOn) {
-    coverageAnswer = "10 AP courses (World History, Calculus AB/BC, Physics 1, Chemistry, Biology, Statistics, US History, Psychology, Computer Science), SAT Math & Reading/Writing, 4 ACT sections (Math, English, Science, Reading), and 22 DSST exams across Business, Social Sciences, Humanities, STEM, English, and History.";
-  }
+  // 2026-05-03 — CLEP/DSST removed from StudentNest. Coverage now reflects only
+  // the courses that pass the bank-quality bar (≥200 approved questions). Listing
+  // specific course names was a regression: users would see "AP US History" in
+  // the FAQ but the course is hidden in-app because its bank is too thin.
+  // Phrased generically so the answer remains true as banks expand.
+  // preplion-intentional: cross-product handoff for CLEP/DSST seekers
+  const coverageAnswer = "AP, SAT, and ACT — only the courses that pass our quality bar (≥200 vetted questions per course) show up in the app. We add courses as their banks reach the bar. Looking for CLEP or DSST? Those live on PrepLion.ai.";
 
   return [
     {

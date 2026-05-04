@@ -10,11 +10,11 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "StudentNest Prep — AP, SAT & ACT Exam Prep",
   description:
-    "Raise your AP, SAT, or ACT score with AI that explains why — not just what. Personalized practice, instant feedback, mastery tracking. Free to start.",
+    "Raise your AP, SAT, or ACT score with explanations that show you why — not just what. Personalized practice, instant feedback, mastery tracking. Free to start.",
   metadataBase: new URL("https://studentnest.ai"),
   openGraph: {
     title: "StudentNest Prep — Score Higher on AP, SAT & ACT",
-    description: "AI-powered exam prep with personalized practice, instant feedback, and mastery tracking. Free for every student.",
+    description: "Exam-aligned practice with instant feedback and mastery tracking. Free for every student.",
     url: "https://studentnest.ai",
     siteName: "StudentNest Prep",
     type: "website",
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "StudentNest Prep — Score Higher on AP, SAT & ACT",
-    description: "AI-powered exam prep. Personalized practice. Free to start.",
+    description: "Exam-aligned practice. Personalized. Free to start.",
     images: ["/og-image.svg?v=2"],
   },
   robots: {
@@ -60,7 +60,7 @@ export default function RootLayout({
               "@type": "Organization",
               name: "StudentNest Prep",
               url: "https://studentnest.ai",
-              description: "AI-powered exam preparation for AP, SAT, and ACT exams",
+              description: "Exam-aligned preparation for AP, SAT, and ACT",
               contactPoint: { "@type": "ContactPoint", email: "contact@studentnest.ai", contactType: "customer support" },
             }),
           }}

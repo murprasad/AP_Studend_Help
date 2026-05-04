@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Target, ArrowRight, CheckCircle } from "lucide-react";
 import { Metadata } from "next";
+import { getVisibleCourses } from "@/lib/settings";
 
 export const metadata: Metadata = {
   title: "Am I Ready? — Free AP, SAT & ACT Readiness Check",
@@ -20,9 +21,12 @@ export const metadata: Metadata = {
 
 // StudentNest post-sunset: only AP/SAT/ACT live here. CLEP/DSST moved
 // to preplion.ai but still exist in the ApCourse enum — filter them out.
-const apCourses = VISIBLE_AP_COURSES.filter((c) => c.startsWith("AP_"));
-const satCourses = VISIBLE_AP_COURSES.filter((c) => c.startsWith("SAT_"));
-const actCourses = VISIBLE_AP_COURSES.filter((c) => c.startsWith("ACT_"));
+// (Per-family course lists are recomputed inside the page component
+// against the visible_courses allowlist — see below. The constants here
+// are the *full* sets; the page narrows them at request time.)
+const APcoursesAll = VISIBLE_AP_COURSES.filter((c) => c.startsWith("AP_"));
+const SATcoursesAll = VISIBLE_AP_COURSES.filter((c) => c.startsWith("SAT_"));
+const ACTcoursesAll = VISIBLE_AP_COURSES.filter((c) => c.startsWith("ACT_"));
 
 function courseSlug(course: ApCourse): string {
   return course.toLowerCase().replace(/_/g, "-");
@@ -80,7 +84,14 @@ function FamilySection({
   );
 }
 
-export default function AmIReadyIndexPage() {
+export default async function AmIReadyIndexPage() {
+  // Bank-quality visibility filter (added 2026-05-02). Narrow each
+  // family list to courses currently in the visible_courses allowlist.
+  const allowlist = await getVisibleCourses().catch(() => "all" as const);
+  const passes = (c: ApCourse) => allowlist === "all" || allowlist.includes(c);
+  const apCourses = APcoursesAll.filter(passes);
+  const satCourses = SATcoursesAll.filter(passes);
+  const actCourses = ACTcoursesAll.filter(passes);
   return (
     <div className="max-w-4xl mx-auto px-4 py-12 sm:py-16 space-y-10">
       {/* Hero */}

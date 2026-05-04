@@ -2,6 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
+/* 2026-05-03 — defensive global no-x-overflow.
+   Mobile nav at 375px overflows ~52px due to too many right-side
+   items (logo + nav links + Log In + Start Free). Proper fix is a
+   hamburger menu (tracked as next-sprint item U03). Until then,
+   prevent horizontal scroll on body so users don't see the page
+   scroll sideways. Section internals can still overflow if
+   intentional (e.g., wrapped tables) — this only clips the body. */
+html, body { overflow-x: hidden; }
+
 @layer base {
   /* Light mode (default) */
   :root {

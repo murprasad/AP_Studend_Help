@@ -278,7 +278,7 @@ export default function FrqPracticePage() {
                   <p className="text-sm text-muted-foreground max-w-md mx-auto leading-relaxed">
                     We&apos;re still building the official FRQ library for this course.
                     In the meantime, Sage can generate an FRQ on this exact topic with
-                    AI-scored rubric feedback — same difficulty, same scoring style.
+                    Sage-scored rubric feedback — same difficulty, same scoring style.
                   </p>
                 </div>
                 {/* Beta 7.4 (2026-04-25): escape-hatch out of the previously

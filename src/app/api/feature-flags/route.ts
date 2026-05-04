@@ -4,6 +4,7 @@ import {
   isAnalyticsEnabled,
   isStudyPlanEnabled,
   isKnowledgeCheckEnabled,
+  getVisibleCourses,
 } from "@/lib/settings";
 
 export const dynamic = "force-dynamic";
@@ -28,17 +29,21 @@ export async function GET() {
   // when the isolate cold-starts. Returning safe defaults is always
   // better than 500 — the dashboard renders, all flags assumed enabled.
   try {
-    const [premiumRestrictionEnabled, analyticsEnabled, studyPlanEnabled, knowledgeCheckEnabled] = await Promise.all([
+    const [premiumRestrictionEnabled, analyticsEnabled, studyPlanEnabled, knowledgeCheckEnabled, visibleCoursesRaw] = await Promise.all([
       safeFlag(isPremiumRestrictionEnabled, true),  // default ON — safer for revenue
       safeFlag(isAnalyticsEnabled, true),
       safeFlag(isStudyPlanEnabled, true),
       safeFlag(isKnowledgeCheckEnabled, false),     // OFF unless explicitly enabled
+      getVisibleCourses().catch(() => "all" as const),
     ]);
+    // visibleCourses: "all" (no filter) | string[] (allowlist)
+    const visibleCourses = visibleCoursesRaw === "all" ? null : visibleCoursesRaw;
     return NextResponse.json({
       premiumRestrictionEnabled,
       analyticsEnabled,
       studyPlanEnabled,
       knowledgeCheckEnabled,
+      visibleCourses,
     });
   } catch (e) {
     console.error("[/api/feature-flags] outer fallback:", e instanceof Error ? e.message : String(e));
@@ -47,6 +52,7 @@ export async function GET() {
       analyticsEnabled: true,
       studyPlanEnabled: true,
       knowledgeCheckEnabled: false,
+      visibleCourses: null, // null = no filter, show all
       _degraded: true,
     });
   }

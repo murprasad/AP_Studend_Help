@@ -7,6 +7,7 @@ import {
   MessageSquare,
   Zap,
   CheckCircle,
+  XCircle,
   ArrowRight,
   Sparkles,
   Clock,
@@ -29,7 +30,7 @@ import { ProductShowcase } from "@/components/landing/product-showcase";
 import { FadeIn } from "@/components/landing/fade-in";
 import { LandingFaq } from "@/components/landing/faq";
 import { SageChat } from "@/components/layout/sage-chat";
-import { isClepEnabled, isDsstEnabled, getExamLabel, getCourseCount } from "@/lib/settings";
+import { getExamLabel, getCourseCount, getVisibleCourses } from "@/lib/settings";
 import { SocialProofBadge } from "@/components/social-proof-badge";
 
 // 2026-05-01 — feature ordering reshuffled per Reddit-feedback plan.
@@ -54,40 +55,44 @@ const features = [
   },
   {
     icon: Brain,
-    title: "Sage AI tutor — clear explanations, instant comprehension checks",
+    title: "Sage tutor — clear explanations, instant comprehension checks",
     description: "Ask anything. Get clear explanations grounded in the College Board curriculum, plus knowledge-check follow-ups that prove you understood it.",
   },
 ];
 
+// Each entry tagged with its ApCourse enum so the server can filter by
+// the bank-quality visibility allowlist (visible_courses SiteSetting).
+// Added 2026-05-02: AP Environmental Science, Human Geography, US Gov,
+// Precalculus — all of which were already in the platform but never on
+// the marketing surface. Those four PLUS Chemistry, CSP, Psychology,
+// ACT English are the courses with vetted question banks today.
 const courses = [
-  { name: "AP World History: Modern",       units: 9,  topics: "Civilizations, empires, revolutions, globalization" },
-  { name: "AP Computer Science Principles", units: 5,  topics: "Algorithms, data, internet, impact of computing" },
-  { name: "AP Physics 1: Algebra-Based",    units: 8,  topics: "Kinematics, forces, energy, momentum, rotation, oscillations, fluids" },
-  { name: "AP Calculus AB",                 units: 8,  topics: "Limits, derivatives, integrals, differential equations" },
-  { name: "AP Calculus BC",                 units: 10, topics: "All AB topics plus series, parametric, polar" },
-  { name: "AP Statistics",                  units: 9,  topics: "Data analysis, probability, inference, regression" },
-  { name: "AP Chemistry",                   units: 9,  topics: "Atomic structure, bonding, reactions, thermodynamics" },
-  { name: "AP Biology",                     units: 8,  topics: "Cells, genetics, evolution, ecology, physiology" },
-  { name: "AP US History",                  units: 9,  topics: "Colonial era through modern America" },
-  { name: "AP Psychology",                  units: 5,  topics: "Biological bases, cognition, development & learning, social psychology, mental & physical health" },
-  { name: "SAT Math",                       units: 4,  topics: "Algebra, geometry, data analysis, advanced math" },
-  { name: "SAT Reading & Writing",          units: 4,  topics: "Passages, evidence-based reasoning, grammar" },
-  { name: "ACT Math",                       units: 5,  topics: "Pre-algebra through trigonometry, 5-choice format" },
-  { name: "ACT English",                    units: 3,  topics: "Grammar, sentence structure, rhetorical skills" },
-  { name: "ACT Science",                    units: 3,  topics: "Data interpretation, research summaries" },
-  { name: "ACT Reading",                    units: 4,  topics: "Literary, social science, humanities passages" },
+  { enum: "AP_WORLD_HISTORY",                 name: "AP World History: Modern",       units: 9,  topics: "Civilizations, empires, revolutions, globalization" },
+  { enum: "AP_COMPUTER_SCIENCE_PRINCIPLES",   name: "AP Computer Science Principles", units: 5,  topics: "Algorithms, data, internet, impact of computing" },
+  { enum: "AP_PHYSICS_1",                     name: "AP Physics 1: Algebra-Based",    units: 8,  topics: "Kinematics, forces, energy, momentum, rotation, oscillations, fluids" },
+  { enum: "AP_CALCULUS_AB",                   name: "AP Calculus AB",                 units: 8,  topics: "Limits, derivatives, integrals, differential equations" },
+  { enum: "AP_CALCULUS_BC",                   name: "AP Calculus BC",                 units: 10, topics: "All AB topics plus series, parametric, polar" },
+  { enum: "AP_STATISTICS",                    name: "AP Statistics",                  units: 9,  topics: "Data analysis, probability, inference, regression" },
+  { enum: "AP_CHEMISTRY",                     name: "AP Chemistry",                   units: 9,  topics: "Atomic structure, bonding, reactions, thermodynamics" },
+  { enum: "AP_BIOLOGY",                       name: "AP Biology",                     units: 8,  topics: "Cells, genetics, evolution, ecology, physiology" },
+  { enum: "AP_US_HISTORY",                    name: "AP US History",                  units: 9,  topics: "Colonial era through modern America" },
+  { enum: "AP_PSYCHOLOGY",                    name: "AP Psychology",                  units: 5,  topics: "Biological bases, cognition, development & learning, social psychology, mental & physical health" },
+  { enum: "AP_ENVIRONMENTAL_SCIENCE",         name: "AP Environmental Science",       units: 9,  topics: "Ecosystems, biodiversity, populations, pollution, sustainability" },
+  { enum: "AP_HUMAN_GEOGRAPHY",               name: "AP Human Geography",             units: 7,  topics: "Population, migration, culture, agriculture, cities, development" },
+  { enum: "AP_US_GOVERNMENT",                 name: "AP US Government & Politics",    units: 5,  topics: "Constitutional foundations, branches, civil liberties, ideology, participation" },
+  { enum: "AP_PRECALCULUS",                   name: "AP Precalculus",                 units: 4,  topics: "Polynomial & rational, exp & log, trig & polar, functions" },
+  { enum: "SAT_MATH",                         name: "SAT Math",                       units: 4,  topics: "Algebra, geometry, data analysis, advanced math" },
+  { enum: "SAT_READING_WRITING",              name: "SAT Reading & Writing",          units: 4,  topics: "Passages, evidence-based reasoning, grammar" },
+  { enum: "ACT_MATH",                         name: "ACT Math",                       units: 5,  topics: "Pre-algebra through trigonometry, 5-choice format" },
+  { enum: "ACT_ENGLISH",                      name: "ACT English",                    units: 3,  topics: "Grammar, sentence structure, rhetorical skills" },
+  { enum: "ACT_SCIENCE",                      name: "ACT Science",                    units: 3,  topics: "Data interpretation, research summaries" },
+  { enum: "ACT_READING",                      name: "ACT Reading",                    units: 4,  topics: "Literary, social science, humanities passages" },
 ];
 
-const clepCourses = [
-  { name: "CLEP Introductory Sociology",          units: 5, savings: "$1,200", topics: "Social structures, culture, institutions — easiest CLEP" },
-  { name: "CLEP Introductory Psychology",          units: 5, savings: "$1,200", topics: "Behavior, cognition, development, disorders" },
-  { name: "CLEP Analyzing & Interpreting Lit",     units: 5, savings: "$2,400", topics: "No reading list — pure passage analysis skills" },
-  { name: "CLEP Principles of Marketing",          units: 5, savings: "$1,200", topics: "Real-world business intuition helps a lot" },
-  { name: "CLEP College Mathematics",              units: 5, savings: "$2,400", topics: "Broader but shallower than College Algebra" },
-  { name: "CLEP American Government",              units: 5, savings: "$1,200", topics: "High school civics goes far on this exam" },
-  { name: "CLEP Principles of Management",         units: 5, savings: "$1,200", topics: "Common sense management + key theorists" },
-  { name: "CLEP College Algebra",                  units: 5, savings: "$1,200", topics: "Equations, inequalities, functions, graphing" },
-];
+// Empty stub — CLEP/DSST removed from StudentNest 2026-05-03 (live on PrepLion).
+// Kept as `[]` so the dead `{clepOn && <section>...{clepCourses.map(...)}` JSX
+// type-checks; bundler strips the whole block since clepOn=false at compile.
+const clepCourses: { name: string; units: number; savings: string; topics: string }[] = [];
 
 const testimonials = [
   {
@@ -112,17 +117,6 @@ const testimonials = [
     timeline: "3 weeks with Sage",
     stars: 5,
   },
-  {
-    quote: "I passed CLEP College Algebra on my first try. Sage drilled me on every weak unit and I walked in knowing exactly where I stood. Saved me $1,200 and a full semester.",
-    name: "Jordan M.",
-    initials: "JM",
-    avatarColor: "bg-emerald-500/20 text-emerald-800 dark:text-emerald-400",
-    location: "Sophomore, Florida",
-    context: "CLEP College Algebra",
-    metric: "Passed first attempt (scored 62, need 50)",
-    timeline: "~25 hours over 6 weeks",
-    stars: 4,
-  },
 ];
 
 // Cold-start defense (Beta 8.0 hotfix #3): see pricing/page.tsx — same fix.
@@ -131,24 +125,76 @@ async function safeFlag(p: () => Promise<boolean>, fallback: boolean): Promise<b
 }
 
 export default async function LandingPage() {
-  const [clepOn, dsstOn] = await Promise.all([
-    safeFlag(isClepEnabled, false),
-    safeFlag(isDsstEnabled, false),
-  ]);
+  // CLEP/DSST removed from StudentNest 2026-05-03 — those products live on PrepLion.
+  // Flags are constants now; existing {clepOn && ...} JSX dead-code-elims at build.
+  const clepOn = false;
+  const dsstOn = false;
+  const visibleCoursesAllowlist = await getVisibleCourses().catch(() => "all" as const);
   const examLabel = getExamLabel(clepOn, dsstOn);
   const courseCount = getCourseCount(clepOn, dsstOn);
 
-  const visibleTestimonials = testimonials.filter((t) => {
-    if (!clepOn && t.context.startsWith("CLEP")) return false;
-    return true;
-  });
+  // Apply bank-quality visibility filter (added 2026-05-02). When the
+  // visible_courses SiteSetting allowlist is populated, hide any course
+  // not in it from the marketing surface — same source-of-truth as the
+  // sidebar/practice API. This is the "don't lie to prospects" gate:
+  // we only advertise courses we can actually serve at CB quality.
+  const visibleCourses = visibleCoursesAllowlist === "all"
+    ? courses
+    : courses.filter((c) => visibleCoursesAllowlist.includes(c.enum));
 
+  const visibleTestimonials = testimonials;
+
+  // Compute live counts per family from the visibility allowlist so the
+  // module cards never advertise a course we can't actually serve. When
+  // a family hits zero visible courses, drop the module card entirely.
+  const apVisibleCount = visibleCourses.filter((c) => c.enum.startsWith("AP_")).length;
+  const satVisibleCount = visibleCourses.filter((c) => c.enum.startsWith("SAT_")).length;
+  const actVisibleCount = visibleCourses.filter((c) => c.enum.startsWith("ACT_")).length;
+
+  // 2026-05-03 hotfix — replace dynamic Tailwind class concat (`border-${m.color}-500/30`)
+  // with static class strings. The runtime template can't be JIT-purged statically,
+  // so the dynamic version produced UNSTYLED cards in production. (FMEA F03, RPN 125.)
   const moduleCards = [
-    { href: "/ap-prep", color: "indigo", icon: BookOpen, label: "AP Courses", count: "10 courses", desc: "Score a 5. Get into your dream school.", cta: "Explore AP Prep" },
-    { href: "/sat-prep", color: "blue", icon: BookOpen, label: "SAT Prep", count: "2 sections", desc: "Raise your SAT score with targeted practice.", cta: "Explore SAT Prep" },
-    { href: "/act-prep", color: "violet", icon: BookOpen, label: "ACT Prep", count: "4 sections", desc: "Boost your composite with section-specific AI.", cta: "Explore ACT Prep" },
-    ...(clepOn ? [{ href: "/clep-prep", color: "emerald", icon: GraduationCap, label: "CLEP Prep", count: "34 exams", desc: "Pass in 7 days. Save $1,200+ per exam.", cta: "Build My 7-Day Plan", badge: "Most Popular" }] : []),
-    ...(dsstOn ? [{ href: "/dsst-prep", color: "orange", icon: GraduationCap, label: "DSST Prep", count: "22 exams", desc: "Skip intro courses. Save $1,000+ per exam.", cta: "Explore DSST Prep" }] : []),
+    ...(apVisibleCount > 0 ? [{
+      href: "/ap-prep", icon: BookOpen, label: "AP Courses",
+      count: `${apVisibleCount} courses`,
+      desc: "Score a 5. Get into your dream school.",
+      cta: "Explore AP Prep",
+      classes: {
+        card: "border-indigo-500/30 bg-indigo-500/5 hover:bg-indigo-500/10",
+        badge: "bg-indigo-600",
+        icon: "text-indigo-400",
+        label: "text-indigo-400",
+        count: "text-indigo-400",
+      },
+    }] : []),
+    ...(satVisibleCount > 0 ? [{
+      href: "/sat-prep", icon: BookOpen, label: "SAT Prep",
+      count: `${satVisibleCount} section${satVisibleCount === 1 ? "" : "s"}`,
+      desc: "Raise your SAT score with targeted practice.",
+      cta: "Explore SAT Prep",
+      classes: {
+        card: "border-blue-500/30 bg-blue-500/5 hover:bg-blue-500/10",
+        badge: "bg-blue-600",
+        icon: "text-blue-400",
+        label: "text-blue-400",
+        count: "text-blue-400",
+      },
+    }] : []),
+    ...(actVisibleCount > 0 ? [{
+      href: "/act-prep", icon: BookOpen, label: "ACT Prep",
+      count: `${actVisibleCount} section${actVisibleCount === 1 ? "" : "s"}`,
+      desc: "Boost your composite with section-specific practice.",
+      cta: "Explore ACT Prep",
+      classes: {
+        card: "border-violet-500/30 bg-violet-500/5 hover:bg-violet-500/10",
+        badge: "bg-violet-600",
+        icon: "text-violet-400",
+        label: "text-violet-400",
+        count: "text-violet-400",
+      },
+    }] : []),
+    // CLEP and DSST never appear on StudentNest — they live on PrepLion.
   ];
 
   return (
@@ -177,13 +223,13 @@ export default async function LandingPage() {
             <a href="#how-it-works" className="hidden sm:block text-sm text-muted-foreground hover:text-foreground transition-colors">
               How It Works
             </a>
-            <Link href="/ap-prep" className="hidden lg:block text-sm text-muted-foreground hover:text-foreground transition-colors">
+            <Link href="/ap-prep" prefetch={false} className="hidden lg:block text-sm text-muted-foreground hover:text-foreground transition-colors">
               AP
             </Link>
-            <Link href="/sat-prep" className="hidden lg:block text-sm text-muted-foreground hover:text-foreground transition-colors">
+            <Link href="/sat-prep" prefetch={false} className="hidden lg:block text-sm text-muted-foreground hover:text-foreground transition-colors">
               SAT
             </Link>
-            <Link href="/act-prep" className="hidden lg:block text-sm text-muted-foreground hover:text-foreground transition-colors">
+            <Link href="/act-prep" prefetch={false} className="hidden lg:block text-sm text-muted-foreground hover:text-foreground transition-colors">
               ACT
             </Link>
             {clepOn && (
@@ -196,13 +242,13 @@ export default async function LandingPage() {
                 DSST
               </Link>
             )}
-            <Link href="/pricing" className="hidden sm:block text-sm text-muted-foreground hover:text-foreground transition-colors">
+            <Link href="/pricing" prefetch={false} className="hidden sm:block text-sm text-muted-foreground hover:text-foreground transition-colors">
               Pricing
             </Link>
-            <Link href="/login">
+            <Link href="/login" prefetch={false}>
               <Button variant="ghost">Log In</Button>
             </Link>
-            <Link href="/register?track=ap">
+            <Link href="/register?track=ap" prefetch={false}>
               <Button>Start Free</Button>
             </Link>
           </div>
@@ -220,61 +266,123 @@ export default async function LandingPage() {
                 <Sparkles className="h-3.5 w-3.5 mr-1.5" />
                 Free forever · {courseCount} courses · No credit card
               </Badge>
-              <h1 className="text-4xl sm:text-5xl lg:text-5xl font-bold tracking-tight mb-4">
-                <span className="gradient-text">Student</span><span className="text-foreground/80 font-medium">Nest</span><span className="text-blue-600 dark:text-blue-700 dark:text-blue-400 font-normal text-[0.6em] ml-1">Prep</span>
+              {/* PAIN-FIRST hero — replaces generic SaaS copy 2026-05-02 LATE.
+                  Pain → specific 5-min resolution → anti-chatbot line. */}
+              <h1 className="text-4xl sm:text-5xl lg:text-[3.25rem] font-bold tracking-tight mb-3 leading-[1.05]">
+                Find out exactly what's missing<span className="text-foreground/60"> —</span><br />
+                <span className="text-blue-600 dark:text-blue-400">before exam day.</span>
               </h1>
-              <p className="text-xl sm:text-2xl font-semibold text-foreground/90 mb-2">
-                Improve your {examLabel} scores — with AI that adapts to your weak areas.
+              <p className="text-lg sm:text-xl text-foreground/80 mb-3 max-w-xl mx-auto lg:mx-0 leading-snug">
+                5-minute diagnostic shows you the units you'd fail.
+                <span className="block mt-0.5 text-foreground/60">Then we drill them — until you don't.</span>
               </p>
-              <p className="text-lg text-muted-foreground mb-2 max-w-xl mx-auto lg:mx-0">
-                Stop guessing what to study. See real score improvement in weeks, not months.
-              </p>
-              <p className="text-base text-muted-foreground/80 mb-4 max-w-xl mx-auto lg:mx-0">
-                Take a free diagnostic. Get a personalized study plan. Practice with AI that explains every mistake.
+              <p className="text-sm text-muted-foreground/80 mb-5 max-w-xl mx-auto lg:mx-0 italic">
+                Not another chatbot. We make you actually remember it.
               </p>
               {/* PRIMARY CTA: Am I Ready picker — 3-min no-signup readiness check */}
-              <HeroReadinessPicker />
+              <HeroReadinessPicker visibleCourses={visibleCoursesAllowlist === "all" ? null : visibleCoursesAllowlist} />
 
-              {/* Secondary CTA row — direct signup for users who want the full product */}
-              <div className="mt-5 flex flex-col sm:flex-row gap-3 justify-center lg:justify-start items-center">
-                <span className="text-sm text-muted-foreground">Ready for the full experience?</span>
-                <div className="flex gap-2">
-                  <Link href="/register?track=ap" className="text-primary hover:text-primary/80 font-medium underline underline-offset-4 text-sm">AP</Link>
-                  <span className="text-muted-foreground">·</span>
-                  <Link href="/register?track=sat" className="text-primary hover:text-primary/80 font-medium underline underline-offset-4 text-sm">SAT</Link>
-                  <span className="text-muted-foreground">·</span>
-                  <Link href="/register?track=act" className="text-primary hover:text-primary/80 font-medium underline underline-offset-4 text-sm">ACT</Link>
-                </div>
-                {clepOn && (
-                  <>
-                    <span className="hidden sm:inline text-muted-foreground">|</span>
-                    <Link href="/register?track=clep" className="text-emerald-600 dark:text-emerald-700 dark:text-emerald-400 hover:underline font-medium text-sm">Pass CLEP in 7 days ←’</Link>
-                  </>
-                )}
-              </div>
               <div className="mt-4 flex items-center gap-4 justify-center lg:justify-start text-sm text-muted-foreground">
-                <span className="flex items-center gap-1"><Shield className="h-3.5 w-3.5 text-emerald-700 dark:text-emerald-400" /> No credit card required</span>
+                <span className="flex items-center gap-1"><Shield className="h-3.5 w-3.5 text-emerald-700 dark:text-emerald-400" /> No signup needed</span>
                 <span className="hidden sm:inline text-border">|</span>
-                <span className="hidden sm:flex items-center gap-1"><CheckCircle className="h-3.5 w-3.5 text-emerald-700 dark:text-emerald-400" /> 7-day refund policy</span>
+                <span className="hidden sm:flex items-center gap-1"><CheckCircle className="h-3.5 w-3.5 text-emerald-700 dark:text-emerald-400" /> Free forever — 7-day refund on Premium</span>
               </div>
               <div className="mt-3">
                 <SocialProofBadge variant="compact" metric="students" />
               </div>
             </div>
 
-            {/* Right — product mockup */}
-            <div className="hidden lg:block animate-float">
-              <BrowserFrame title="StudentNest Prep · Analytics" className="shadow-2xl shadow-blue-500/10">
-                <MockupAnalytics />
-              </BrowserFrame>
+            {/* Right — LIVE interactive product demo (replaced static
+                MockupAnalytics 2026-05-02 LATE per ChatGPT design plan: hero
+                must show the actual product wrong-answer flow, not a stock
+                analytics screenshot). InteractiveDemo handles its own window
+                chrome + animations + tension state. */}
+            <div className="hidden lg:block">
+              <InteractiveDemo />
             </div>
-            {/* Mobile mockup — no float, compact */}
             <div className="lg:hidden max-w-md mx-auto w-full">
-              <BrowserFrame title="StudentNest Prep · Analytics">
-                <MockupAnalytics />
-              </BrowserFrame>
+              <InteractiveDemo />
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* "Real student state" strip — Beta 11.0 (2026-05-03). Concrete dashboard
+          preview directly under hero. Bridges promise → proof so the visitor
+          doesn't have to imagine what the product will tell them. */}
+      <section className="py-5 sm:py-6 bg-secondary/40 border-y border-border/40">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center gap-3 sm:gap-5 text-sm">
+          <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground flex-shrink-0">
+            Mid-session check
+          </span>
+          <div className="flex items-center gap-2 flex-wrap justify-center">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-red-500/40 bg-red-500/10 text-xs">
+              <span className="font-mono font-semibold text-red-700 dark:text-red-400">Unit 4</span>
+              <span className="text-foreground/60">·</span>
+              <span className="font-bold text-red-700 dark:text-red-400">41%</span>
+              <span className="text-red-600">❌</span>
+            </span>
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-amber-500/40 bg-amber-500/10 text-xs">
+              <span className="font-mono font-semibold text-amber-700 dark:text-amber-400">Unit 5</span>
+              <span className="text-foreground/60">·</span>
+              <span className="font-bold text-amber-700 dark:text-amber-400">63%</span>
+              <span className="text-amber-600">⚠️</span>
+            </span>
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-emerald-500/40 bg-emerald-500/10 text-xs">
+              <span className="font-mono font-semibold text-emerald-700 dark:text-emerald-400">Unit 6</span>
+              <span className="text-foreground/60">·</span>
+              <span className="font-bold text-emerald-700 dark:text-emerald-400">88%</span>
+              <span className="text-emerald-600">✓</span>
+            </span>
+          </div>
+          <span className="text-xs text-muted-foreground italic sm:ml-auto">
+            This is what you&apos;ll see in 5 minutes.
+          </span>
+        </div>
+      </section>
+
+      {/* 3-min diagnostic CTA — added 2026-05-02 LATE per ChatGPT design plan.
+          Above-fold action: progress bar + 5 question pips + outcome CTA. */}
+      <section className="py-12 sm:py-14 border-y border-border/40 bg-secondary/15">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <p className="text-xs font-semibold uppercase tracking-wider text-blue-500 mb-3">3-Minute Diagnostic</p>
+          <h2 className="text-3xl sm:text-4xl font-bold mb-4 tracking-tight leading-[1.1]">
+            We&apos;ll show you exactly{" "}
+            <span className="text-foreground/60">what you know</span>,{" "}
+            <span className="text-foreground/60">what you don&apos;t</span>, and{" "}
+            <span className="text-blue-600 dark:text-blue-400">what to fix next.</span>
+          </h2>
+          <p className="text-muted-foreground text-base mb-7 max-w-xl mx-auto">
+            No fluff. No signup. 3 minutes from &ldquo;I don&apos;t know what to study&rdquo; to a personalized plan.
+          </p>
+          <div className="max-w-md mx-auto mb-7">
+            <div className="flex justify-between text-xs text-muted-foreground mb-2">
+              <span className="font-mono">Q 2 / 5</span>
+              <span className="font-mono">2:14 left</span>
+            </div>
+            <div className="h-2 rounded-full bg-secondary/50 overflow-hidden mb-3">
+              <div className="h-full bg-blue-500 w-[42%] transition-all" />
+            </div>
+            <div className="flex gap-1.5">
+              {[true, true, false, false, false].map((on, i) => (
+                <div
+                  key={i}
+                  className={`flex-1 h-9 rounded-md flex items-center justify-center text-xs font-mono transition-colors ${
+                    on
+                      ? "bg-blue-500/20 border border-blue-500/40 text-blue-700 dark:text-blue-300"
+                      : "bg-secondary/30 border border-border/30 text-muted-foreground/60"
+                  }`}
+                >
+                  Q{i + 1}
+                </div>
+              ))}
+            </div>
+          </div>
+          <Link href="/journey">
+            <Button size="lg" className="gap-2 text-base h-12 px-8">
+              Start the diagnostic <ArrowRight className="h-5 w-5" />
+            </Button>
+          </Link>
         </div>
       </section>
 
@@ -282,18 +390,20 @@ export default async function LandingPage() {
       <section id="courses" className="py-8 px-4 scroll-mt-20">
         <FadeIn>
         <div className={`max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-2 ${moduleCards.length <= 3 ? "lg:grid-cols-3" : "lg:grid-cols-4"} gap-4`}>
-          {moduleCards.map((m: { href: string; color: string; icon: typeof BookOpen; label: string; count: string; desc: string; cta: string; badge?: string }) => (
-            <Link key={m.href} href={m.href} className={`relative p-5 rounded-2xl border border-${m.color}-500/30 bg-${m.color}-500/5 hover:bg-${m.color}-500/10 transition-colors block`}>
-              {m.badge && (
-                <span className={`absolute -top-2.5 right-4 px-2.5 py-0.5 rounded-full bg-${m.color}-600 text-white text-[10px] font-semibold`}>{m.badge}</span>
-              )}
+          {moduleCards.map((m) => (
+            <Link
+              key={m.href}
+              href={m.href}
+              data-testid={`module-card-${m.label.toLowerCase().replace(/\s+/g, "-")}`}
+              className={`relative p-5 rounded-2xl border ${m.classes.card} transition-colors block`}
+            >
               <div className="flex items-center gap-2 mb-2">
-                <m.icon className={`h-4 w-4 text-${m.color}-400`} />
-                <span className={`text-xs font-semibold text-${m.color}-400 uppercase tracking-wide`}>{m.label}</span>
+                <m.icon className={`h-4 w-4 ${m.classes.icon}`} />
+                <span className={`text-xs font-semibold ${m.classes.label} uppercase tracking-wide`}>{m.label}</span>
               </div>
               <p className="text-sm font-bold mb-1">{m.desc}</p>
-              <p className={`text-xs text-${m.color}-400 font-medium mb-3`}>{m.count}</p>
-              <span className={`text-xs font-medium text-${m.color}-400 flex items-center gap-1`}>
+              <p className={`text-xs ${m.classes.count} font-medium mb-3`}>{m.count}</p>
+              <span className={`text-xs font-medium ${m.classes.count} flex items-center gap-1`}>
                 {m.cta} <ArrowRight className="h-3 w-3" />
               </span>
             </Link>
@@ -308,7 +418,7 @@ export default async function LandingPage() {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
             {[
               { icon: "🎯", stat: `${courseCount} courses covered`, sub: examLabel },
-              ...(clepOn ? [{ icon: "💰", stat: "$1,200+ saved per CLEP exam", sub: "Skip courses, keep the credit" }] : [{ icon: "📚", stat: "Exam-aligned AI", sub: "Questions match real exam formats" }]),
+              { icon: "📚", stat: "Exam-aligned questions", sub: "Match real exam formats" },
               { icon: "🔥", stat: "8 engagement features", sub: "Stay motivated daily" },
             ].map(({ icon, stat, sub }) => (
               <div key={stat} className="flex flex-col items-center gap-1">
@@ -321,72 +431,12 @@ export default async function LandingPage() {
         </div>
       </section>
 
-      {/* Meet Sage — AI differentiator */}
-      <section className="py-24 bg-gradient-to-b from-blue-950/20 to-transparent">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-500 text-sm font-medium mb-6">
-            <Sparkles className="h-4 w-4" /> Study Smarter. Score Higher.
-          </div>
-          <h2 className="text-4xl font-bold mb-4">Meet Sage 🌿</h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-12">
-            Sage is your personal Sage Live Tutor — available 24/7, never judges, and always explains in a way that clicks.
+      {/* Sage — single sentence, no character bio. */}
+      <section className="py-10 sm:py-14 bg-secondary/10">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <p className="text-base sm:text-lg text-foreground/80 leading-relaxed">
+            <span className="font-semibold text-foreground">Sage</span> explains your wrong answers, drills your weak units, and quizzes you back to make sure you actually got it.
           </p>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[
-              {
-                icon: MessageSquare,
-                title: "Ask Sage Anything",
-                desc: "Get step-by-step explanations of any concept — then Sage quizzes you back with 3 targeted questions to lock in what you just learned.",
-                color: "text-blue-500",
-                bg: "bg-blue-500/10",
-              },
-              {
-                icon: Zap,
-                title: "Practice Agent",
-                desc: "The practice engine auto-generates exam-aligned questions, tracks every answer, and targets your weakest units to maximize improvement.",
-                color: "text-yellow-600 dark:text-yellow-700 dark:text-yellow-400",
-                bg: "bg-yellow-500/10",
-              },
-              // NEW 2026-04-25: Sage Coach was missing from landing surface — only
-              // mentioned on /about. Real differentiator (voice oral practice) was
-              // invisible to 92% of new users (last-48-users.mjs funnel).
-              {
-                icon: Sparkles,
-                title: "Sage Coach (Voice)",
-                desc: "Talk through what you know in plain English. Sage Coach listens, scores your understanding, and tells you exactly what to study next — like a private tutor on call.",
-                color: "text-violet-600 dark:text-violet-700 dark:text-violet-400",
-                bg: "bg-violet-500/10",
-              },
-              {
-                icon: BarChart3,
-                title: "Progress Agent",
-                desc: "Mastery scores update after every question. See unit-by-unit heatmaps and get a personalized study plan targeting your weak areas.",
-                color: "text-emerald-700 dark:text-emerald-700 dark:text-emerald-400",
-                bg: "bg-emerald-500/10",
-              },
-            ].map((a) => (
-              <div key={a.title} className="p-6 rounded-xl border border-border/40 bg-card/50 card-glow text-left">
-                <div className={`w-12 h-12 rounded-lg ${a.bg} flex items-center justify-center mb-4`}>
-                  <a.icon className={`h-6 w-6 ${a.color}`} />
-                </div>
-                <h3 className="font-semibold mb-2 text-base">{a.title}</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">{a.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Interactive MCQ Demo */}
-      <section className="py-16 px-4">
-        <div className="max-w-2xl mx-auto">
-          <p className="text-center text-sm text-muted-foreground mb-2 font-medium uppercase tracking-wide">
-            Try it yourself — no sign-up needed
-          </p>
-          <p className="text-center text-xs text-muted-foreground mb-6">
-            Answer a real AP World History question and see how Sage explains it
-          </p>
-          <InteractiveDemo />
         </div>
       </section>
 
@@ -394,7 +444,7 @@ export default async function LandingPage() {
       <section className="py-16 px-4">
         <div className="max-w-2xl mx-auto">
           <p className="text-center text-sm text-muted-foreground mb-4 font-medium uppercase tracking-wide">
-            This is Sage — your 24/7 AI study tutor
+            This is Sage — your 24/7 study tutor
           </p>
           <div className="rounded-2xl border border-border/40 bg-card/60 overflow-hidden shadow-xl">
             {/* Window chrome */}
@@ -495,7 +545,7 @@ export default async function LandingPage() {
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-xs text-blue-500 font-medium">
             <Sparkles className="h-3.5 w-3.5" /> What makes us different
           </div>
-          <h2 className="text-2xl font-bold">Most Sage Live Tutors explain. Sage tests you back.</h2>
+          <h2 className="text-2xl sm:text-3xl font-bold tracking-tight">Most Sage Live Tutors explain. Sage tests you back.</h2>
           <p className="text-muted-foreground">
             After every answer, Sage offers a quick 3-question comprehension check — optional, instant, and built around exactly what it just taught you.
             Your score builds your Comprehension % on the Analytics page. Active recall at zero extra effort.
@@ -503,22 +553,70 @@ export default async function LandingPage() {
         </div>
       </section>
 
+      {/* Day 1 → Day 7 timeline — added 2026-05-02 LATE per ChatGPT plan.
+          Replaces feature-icon framing with a concrete time-to-readiness flow. */}
+      <section className="py-20 sm:py-24 bg-secondary/20 border-y border-border/30">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-14">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight leading-[1.05] mb-3">
+              7 days from{" "}
+              <span className="text-foreground/60">&ldquo;I don&apos;t know what to study&rdquo;</span>
+              <br className="hidden sm:block" /> to{" "}
+              <span className="text-blue-600 dark:text-blue-400">&ldquo;I&apos;m ready.&rdquo;</span>
+            </h2>
+            <p className="text-muted-foreground text-base sm:text-lg">
+              No magic. Just the steps in order.
+            </p>
+          </div>
+          <ol className="relative border-l-2 border-blue-500/30 ml-3 sm:ml-6 space-y-10">
+            {[
+              { day: "Day 1", title: "You take the diagnostic", desc: "5 minutes. We see the units you can't actually do.", color: "blue" },
+              { day: "Day 2", title: "Your weak units surface", desc: "Specific topics. Not \"study harder.\"", color: "blue" },
+              { day: "Day 3", title: "You practice — only what matters", desc: "No re-doing what you've already mastered.", color: "blue" },
+              { day: "Day 5", title: "Timed exam simulation", desc: "Real exam pressure. Real readiness number.", color: "amber" },
+              { day: "Day 7", title: "You're ready", desc: "Or we tell you exactly what's still off.", color: "emerald" },
+            ].map((step) => {
+              const dotColor =
+                step.color === "emerald"
+                  ? "bg-emerald-500 border-emerald-500/40"
+                  : step.color === "amber"
+                  ? "bg-amber-500 border-amber-500/40"
+                  : "bg-blue-500 border-blue-500/40";
+              const labelColor =
+                step.color === "emerald"
+                  ? "text-emerald-700 dark:text-emerald-400"
+                  : step.color === "amber"
+                  ? "text-amber-700 dark:text-amber-400"
+                  : "text-blue-600 dark:text-blue-400";
+              return (
+                <li key={step.day} className="ml-6 sm:ml-10 relative">
+                  <span className={`absolute -left-[31px] sm:-left-[45px] top-1.5 w-4 h-4 rounded-full ring-4 ring-background ${dotColor}`} />
+                  <p className={`text-xs font-semibold uppercase tracking-wider mb-1 ${labelColor}`}>{step.day}</p>
+                  <h3 className="text-lg sm:text-xl font-bold mb-1.5 tracking-tight">{step.title}</h3>
+                  <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">{step.desc}</p>
+                </li>
+              );
+            })}
+          </ol>
+        </div>
+      </section>
+
       {/* Features — alternating text + product mockups */}
       <section id="how-it-works" className="py-20 scroll-mt-20">
         <div className="max-w-6xl mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-3">Everything You Need to Score Higher</h2>
+            <h2 className="text-4xl lg:text-5xl font-bold mb-3 tracking-tight leading-[1.05]">Everything You Need to Score Higher</h2>
             <p className="text-muted-foreground text-lg max-w-2xl mx-auto">Built around how {examLabel} exams actually work — not generic quiz apps.</p>
           </div>
 
           <div className="space-y-24">
-            {/* Row 1: text left, study plan right */}
+            {/* Row 1: text left, study plan right (5/7 split) */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
               <div className="space-y-4">
                 <div className="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center">
                   <Target className="h-5 w-5 text-blue-500" />
                 </div>
-                <h3 className="text-2xl font-bold">Your AI builds a study plan around your weak areas</h3>
+                <h3 className="text-2xl font-bold">Sage builds a study plan around your weak areas</h3>
                 <p className="text-muted-foreground leading-relaxed">
                   After your first few practice sessions, Sage identifies which units need work and creates a prioritized weekly plan. It updates as you improve &mdash; so you never waste time on what you already know.
                 </p>
@@ -530,7 +628,7 @@ export default async function LandingPage() {
               </div>
             </div>
 
-            {/* Row 2: practice left, text right (flipped) */}
+            {/* Row 2: practice left, text right (flipped, 7/5 split) */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
               <div className="lg:order-2 space-y-4">
                 <div className="w-10 h-10 rounded-lg bg-emerald-500/20 flex items-center justify-center">
@@ -548,7 +646,7 @@ export default async function LandingPage() {
               </div>
             </div>
 
-            {/* Row 3: text left, analytics right */}
+            {/* Row 3: text left, analytics right (5/7 split, slight reverse offset) */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
               <div className="space-y-4">
                 <div className="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center">
@@ -566,72 +664,74 @@ export default async function LandingPage() {
               </div>
             </div>
           </div>
-
-          {/* Engagement row — compact */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-16">
-            {[
-              { emoji: "🔥", label: "Daily Streaks" },
-              { emoji: "📅", label: "Exam Countdown" },
-              { emoji: "🎯", label: "Daily Goals" },
-              { emoji: "🃏", label: "Spaced Repetition" },
-            ].map((f) => (
-              <div key={f.label} className="flex items-center gap-2 p-3 rounded-lg border border-border/40 bg-card/50">
-                <span className="text-lg">{f.emoji}</span>
-                <span className="text-xs font-medium">{f.label}</span>
-              </div>
-            ))}
-          </div>
         </div>
       </section>
 
       {/* Product Showcase — full workflow */}
       <ProductShowcase />
 
-      {/* Why StudentNest — Comparison Table */}
-      <section className="py-16 bg-secondary/20">
-        <div className="max-w-3xl mx-auto px-4">
-          <div className="text-center mb-8 space-y-3">
-            <h2 className="text-2xl font-bold mb-2">Why StudentNest Prep?</h2>
-            <p className="text-sm text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-              ChatGPT gives random answers. StudentNest Prep gives structured, exam-aligned practice with mastery tracking — that&apos;s the difference between studying and actually improving. Premium prep courses charge $200–500. Private tutors cost $50–150/hr. StudentNest starts at $0 and does what both do: explains mistakes, tracks progress, and builds a plan around your weak areas.
-            </p>
+      {/* Differentiation — single honest line, no table */}
+      <section className="py-10 sm:py-14 lg:pb-20">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-3">
+          <p className="text-lg sm:text-xl text-foreground/80 leading-relaxed">
+            ChatGPT will give you the answer.{" "}
+            <span className="text-foreground font-semibold">We make you work for it.</span>
+          </p>
+          <p className="text-sm text-muted-foreground italic">Different tools.</p>
+        </div>
+      </section>
+
+      {/* Multi-Q tension — "You're not ready" — added 2026-05-02 LATE.
+          5 question pips, 3 wrong, confidence drops to 40%. Slightly
+          uncomfortable on purpose: catch overconfidence early. */}
+      <section className="py-16 sm:py-20 bg-red-500/5 border-y border-red-500/15">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <p className="text-xs font-semibold uppercase tracking-wider text-red-600 dark:text-red-400 mb-2">
+            Most students think they&apos;re ready
+          </p>
+          <h2 className="text-3xl sm:text-4xl font-bold mb-3 tracking-tight">
+            Until this happens.
+          </h2>
+          <p className="text-muted-foreground mb-9 max-w-xl mx-auto">
+            5 quick questions. Confidence drops fast.
+          </p>
+          <div className="grid grid-cols-5 gap-2 sm:gap-3 max-w-2xl mx-auto mb-8">
+            {[
+              { num: 1, status: "right" as const },
+              { num: 2, status: "wrong" as const },
+              { num: 3, status: "right" as const },
+              { num: 4, status: "wrong" as const },
+              { num: 5, status: "wrong" as const },
+            ].map((q) => (
+              <div
+                key={q.num}
+                className={`aspect-square rounded-2xl border-2 flex flex-col items-center justify-center gap-1 ${
+                  q.status === "right"
+                    ? "border-emerald-500/50 bg-emerald-500/10"
+                    : "border-red-500/50 bg-red-500/10"
+                }`}
+              >
+                <span className="text-[10px] sm:text-xs font-mono text-muted-foreground">Q{q.num}</span>
+                {q.status === "right" ? (
+                  <CheckCircle className="h-5 w-5 sm:h-6 sm:w-6 text-emerald-700 dark:text-emerald-400" />
+                ) : (
+                  <XCircle className="h-5 w-5 sm:h-6 sm:w-6 text-red-600 dark:text-red-400" />
+                )}
+              </div>
+            ))}
           </div>
-          <div className="rounded-xl border border-border/40 overflow-hidden">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="bg-secondary/60 text-muted-foreground">
-                  <th className="text-left p-3 font-medium">Feature</th>
-                  <th className="text-center p-3 font-medium text-blue-500">StudentNest Prep</th>
-                  <th className="text-center p-3 font-medium">ChatGPT / AI</th>
-                  <th className="text-center p-3 font-medium">Private Tutor</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border/30">
-                {[
-                  ["AI study plan by unit", true, false, false],
-                  ["Exam-aligned questions", true, false, "varies"],
-                  ["Instant feedback + explanations", true, true, "slow"],
-                  ["Mastery tracking by topic", true, false, false],
-                  ...(clepOn ? [["CLEP college credit prep", true, false, "rare"]] : []),
-                  ["Available 24/7", true, true, false],
-                  ["Cost", "$9.99/mo", "Free–$20/mo", "$50–150/hr"],
-                ].map(([feature, sn, ai, tutor], i) => (
-                  <tr key={i} className="hover:bg-secondary/30">
-                    <td className="p-3 text-foreground/90">{feature as string}</td>
-                    <td className="p-3 text-center">
-                      {sn === true ? <CheckCircle className="h-4 w-4 text-emerald-700 dark:text-emerald-400 mx-auto" /> : <span className="text-xs text-emerald-700 dark:text-emerald-400 font-medium">{sn as string}</span>}
-                    </td>
-                    <td className="p-3 text-center">
-                      {ai === true ? <CheckCircle className="h-4 w-4 text-muted-foreground/50 mx-auto" /> : ai === false ? <span className="text-muted-foreground/40">—</span> : <span className="text-xs text-muted-foreground">{ai as string}</span>}
-                    </td>
-                    <td className="p-3 text-center">
-                      {tutor === true ? <CheckCircle className="h-4 w-4 text-muted-foreground/50 mx-auto" /> : tutor === false ? <span className="text-muted-foreground/40">—</span> : <span className="text-xs text-muted-foreground">{tutor as string}</span>}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div className="max-w-sm mx-auto">
+            <div className="flex justify-between text-xs mb-1.5">
+              <span className="text-muted-foreground">Confidence</span>
+              <span className="text-red-600 dark:text-red-400 font-semibold">40%</span>
+            </div>
+            <div className="h-3 rounded-full bg-secondary/50 overflow-hidden">
+              <div className="h-full bg-gradient-to-r from-emerald-500 via-yellow-500 to-red-500 w-2/5" />
+            </div>
           </div>
+          <p className="text-sm text-muted-foreground mt-9 italic max-w-md mx-auto">
+            We catch this early — so you don&apos;t walk into the exam thinking you knew it.
+          </p>
         </div>
       </section>
 
@@ -640,18 +740,20 @@ export default async function LandingPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
-              <h2 className="text-4xl font-bold mb-4">Complete Curriculum Coverage</h2>
+              <h2 className="text-4xl lg:text-5xl font-bold mb-4 tracking-tight leading-[1.05]">Curriculum Coverage</h2>
               <p className="text-muted-foreground text-lg mb-8">
-                Every unit across 10 AP courses, SAT, and ACT — hundreds of exam-aligned questions per unit, free for every student.
+                {visibleCourses.length === courses.length
+                  ? "Every unit across 10 AP courses, SAT, and ACT — hundreds of exam-aligned questions per unit, free for every student."
+                  : `${visibleCourses.length} courses available today — hundreds of vetted, College-Board-grade questions per course. We're rebuilding the rest with stricter quality validators; they'll come back online individually as each passes our 7-gate audit.`}
               </p>
-              <Link href="/register?track=ap">
+              <Link href="/register?track=ap" prefetch={false}>
                 <Button size="lg" className="gap-2">
                   Start Learning Free <ArrowRight className="h-5 w-5" />
                 </Button>
               </Link>
             </div>
             <div className="space-y-2">
-              {courses.map((course) => (
+              {visibleCourses.map((course) => (
                 <div
                   key={course.name}
                   className="flex items-center gap-3 p-3.5 rounded-lg bg-card/50 border border-border/40"
@@ -681,7 +783,7 @@ export default async function LandingPage() {
               Pass CLEP exams and skip introductory college courses. One exam. One passing score. Up to $2,400 in tuition savings.
             </p>
             <p className="text-sm text-muted-foreground/70 mt-2 max-w-xl mx-auto">
-              CLEP® exams cost $93 each. StudentNest Prep prepares you with the same AI-powered practice and tutoring used for AP — optimized for CLEP content.
+              CLEP® exams cost $93 each. StudentNest Prep prepares you with the same exam-aligned practice and Sage tutoring used for AP — optimized for CLEP content.
             </p>
           </div>
 
@@ -737,12 +839,12 @@ export default async function LandingPage() {
           </div>
 
           <div className="text-center flex flex-col sm:flex-row gap-3 justify-center">
-            <Link href="/register?track=clep">
+            <Link href="/register?track=clep" prefetch={false}>
               <Button size="lg" className="gap-2 bg-emerald-700 hover:bg-emerald-800 text-white">
                 Start CLEP Prep Free <ArrowRight className="h-5 w-5" />
               </Button>
             </Link>
-            <Link href="/about">
+            <Link href="/about" prefetch={false}>
               <Button size="lg" variant="outline" className="gap-2 border-emerald-500/30 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-500/10">
                 Learn More About CLEP
               </Button>
@@ -751,7 +853,7 @@ export default async function LandingPage() {
 
           <p className="text-center text-[11px] text-muted-foreground/50 mt-6">
             CLEP® is a registered trademark of College Board, which is not affiliated with, and does not endorse, this product.
-            All practice questions are original AI-generated content — not reproduced from any official exam.
+            All practice questions are original StudentNest Prep content — not reproduced from any official exam.
           </p>
         </div>
       </section>}
@@ -791,7 +893,7 @@ export default async function LandingPage() {
           </div>
 
           <div className="text-center flex flex-col sm:flex-row gap-3 justify-center">
-            <Link href="/register?module=dsst">
+            <Link href="/register?module=dsst" prefetch={false}>
               <Button size="lg" className="gap-2 bg-orange-600 hover:bg-orange-700 text-white">
                 Start DSST Prep Free <ArrowRight className="h-5 w-5" />
               </Button>
@@ -805,7 +907,7 @@ export default async function LandingPage() {
 
           <p className="text-center text-[11px] text-muted-foreground/50 mt-6">
             DSST® is a registered trademark of Prometric, which is not affiliated with, and does not endorse, this product.
-            All practice questions are original AI-generated content.
+            All practice questions are original StudentNest Prep content.
           </p>
         </div>
       </section>}
@@ -814,7 +916,7 @@ export default async function LandingPage() {
       <section className="py-20 px-4">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-10">
-            <h2 className="text-3xl font-bold mb-2">What Do You Actually Get?</h2>
+            <h2 className="text-3xl sm:text-4xl font-bold mb-2 tracking-tight">What Do You Actually Get?</h2>
             <p className="text-muted-foreground text-sm">Free is genuinely useful. Premium unlocks the full engine — pick your track.</p>
           </div>
           <div className={`grid ${clepOn ? "sm:grid-cols-3" : "sm:grid-cols-2"} gap-4`}>
@@ -844,7 +946,7 @@ export default async function LandingPage() {
                 </div>
               ))}
               <div className="pt-3">
-                <Link href="/register?track=ap">
+                <Link href="/register?track=ap" prefetch={false}>
                   <Button variant="outline" className="w-full">Start Free</Button>
                 </Link>
               </div>
@@ -864,9 +966,9 @@ export default async function LandingPage() {
               {[
                 "Everything in Free, plus:",
                 "Unlimited Sage Live Tutor chats",
-                "FRQ with AI rubric scoring",
+                "FRQ scored against the official College Board rubric",
                 "Personalized AP study plan",
-                "Streaming AI responses",
+                "Streaming Sage responses",
               ].map((item) => (
                 <div key={item} className="flex items-center gap-2 text-sm text-foreground/80">
                   <CheckCircle className="h-4 w-4 text-blue-500 flex-shrink-0" />
@@ -874,7 +976,7 @@ export default async function LandingPage() {
                 </div>
               ))}
               <div className="pt-3">
-                <Link href="/register?track=ap">
+                <Link href="/register?track=ap" prefetch={false}>
                   <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white">Upgrade AP Premium</Button>
                 </Link>
               </div>
@@ -896,7 +998,7 @@ export default async function LandingPage() {
                 "All 34 CLEP courses (earn college credit)",
                 "Unlimited Sage Live Tutor chats",
                 "Personalized CLEP study plan",
-                "Streaming AI responses",
+                "Streaming Sage responses",
                 "Save $1,200+ per exam passed",
               ].map((item) => (
                 <div key={item} className="flex items-center gap-2 text-sm text-foreground/80">
@@ -905,88 +1007,90 @@ export default async function LandingPage() {
                 </div>
               ))}
               <div className="pt-3">
-                <Link href="/register?track=clep">
+                <Link href="/register?track=clep" prefetch={false}>
                   <Button className="w-full bg-emerald-700 hover:bg-emerald-800 text-white">Upgrade CLEP Premium</Button>
                 </Link>
               </div>
             </div>}
           </div>
           <p className="text-center text-xs text-muted-foreground mt-5">
-            <Link href="/pricing" className="text-blue-500 hover:underline">See full pricing details ←’</Link>
+            <Link href="/pricing" prefetch={false} className="text-blue-500 hover:underline">See full pricing details ←’</Link>
           </p>
         </div>
       </section>
 
-      {/* Testimonials — 3 cards */}
-      <section className="py-24 lg:py-32">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-2">Student Feedback</h2>
-            <p className="text-muted-foreground text-sm">Real results from students using StudentNest Prep</p>
-          </div>
-          <div className={`grid ${visibleTestimonials.length === 3 ? "md:grid-cols-3" : "md:grid-cols-2"} gap-6`}>
-            {visibleTestimonials.map((t) => (
-              <FadeIn key={t.name}>
-                <div className="p-6 rounded-xl border border-border/40 bg-card/50 card-glow space-y-4 h-full">
-                  <div className="flex items-center justify-between">
-                    <div className="flex gap-0.5">
-                      {[...Array(t.stars)].map((_, i) => (
-                        <Star key={i} className="h-4 w-4 text-yellow-700 dark:text-yellow-400 fill-yellow-400" />
-                      ))}
-                      {[...Array(5 - t.stars)].map((_, i) => (
-                        <Star key={`e${i}`} className="h-4 w-4 text-muted-foreground/30" />
-                      ))}
-                    </div>
-                    <span className="flex items-center gap-1 text-[10px] text-emerald-700 dark:text-emerald-400">
-                      <CheckCircle className="h-3 w-3" /> Verified
-                    </span>
-                  </div>
-                  <blockquote className="text-sm text-foreground/90 italic leading-relaxed">
-                    &ldquo;{t.quote}&rdquo;
-                  </blockquote>
-                  <div className="flex flex-wrap gap-2">
-                    <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-500 border border-blue-500/20">{t.metric}</span>
-                    <span className="text-[11px] px-2 py-0.5 rounded-full bg-secondary/60 text-muted-foreground">{t.timeline}</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className={`w-9 h-9 rounded-full ${t.avatarColor} flex items-center justify-center text-xs font-bold flex-shrink-0`}>
-                      {t.initials}
-                    </div>
-                    <div>
-                      <p className="text-sm font-semibold">{t.name}</p>
-                      <p className="text-xs text-muted-foreground">{t.location} · {t.context}</p>
-                    </div>
-                  </div>
-                </div>
-              </FadeIn>
-            ))}
+      {/* Honesty section — replaces fake testimonials 2026-05-02.
+          Per ChatGPT's brutal feedback: manufactured testimonials read as
+          marketing copy. Replaced with what we can actually defend: a
+          transparent statement of what's been built + audited. */}
+      <section className="py-20 lg:py-24">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="rounded-2xl border border-border/40 bg-card/40 p-8 lg:p-10 space-y-5">
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-blue-500">What we've actually built — not what we promise</p>
+            <h2 className="text-2xl sm:text-3xl font-bold leading-tight">Honest about quality, because we got it wrong before.</h2>
+            <p className="text-foreground/80 leading-relaxed">
+              Earlier this year we shipped questions with arithmetic errors and answer-key bugs.
+              Students were marked wrong on questions where they reasoned correctly. We pulled them.
+            </p>
+            <p className="text-foreground/80 leading-relaxed">
+              The bank you see today went through 7 deterministic checks (math, structure, distractor
+              integrity, primary-source attribution, figure presence) plus two cross-family LLM judges.
+              Anything that fails any check stays unapproved.
+              <span className="block mt-1 text-muted-foreground italic">
+                That&apos;s why some courses aren&apos;t live yet.
+              </span>
+            </p>
+            <p className="text-foreground/80 leading-relaxed">
+              When we ship a course, you can practice it. When we can&apos;t stand behind a course&apos;s
+              quality, we hide it instead of pretending. That&apos;s the deal.
+            </p>
+            <div className="pt-2">
+              <Link href="/about" prefetch={false} className="text-blue-500 hover:underline text-sm font-medium">
+                See the full quality methodology →
+              </Link>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* For Parents */}
-      <section id="parents" className="py-16 bg-secondary/20 scroll-mt-20">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-10">
-            <p className="text-xs font-semibold uppercase tracking-wider text-blue-500 mb-2">For Parents</p>
-            <h2 className="text-3xl font-bold mb-3">You want to see your child succeed. So do we.</h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-              A typical AP student needs 8–12 weeks of focused practice before exam day. With a private tutor at $50/hr twice a week, that&apos;s $800–$1,200. StudentNest Prep Premium covers the same period for about $20 total. Your child gets adaptive practice and AI explanations, and you get visibility into their actual progress: which units they&apos;ve mastered, where they&apos;re struggling, how many days they&apos;ve studied this week, and whether their accuracy is trending up.
+      {/* For Parents — one sentence, no marketing grid */}
+      <section id="parents" className="py-12 sm:py-16 bg-secondary/20 scroll-mt-20">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <p className="text-xs font-semibold uppercase tracking-wider text-blue-500 mb-3">For Parents</p>
+          <p className="text-base sm:text-lg text-foreground/80 leading-relaxed">
+            A private tutor at $50/hr × 24 hours runs $1,200. Our $20 covers the same period.
+            <span className="block mt-2 text-muted-foreground italic">Same calculation. Less marketing.</span>
+          </p>
+        </div>
+      </section>
+
+      {/* Product loop diagram — added 2026-05-02 LATE per ChatGPT plan.
+          Visual loop: Answer → Wrong → Learn why → Retry → Improve. */}
+      <section className="py-16 sm:py-20">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight leading-[1.05] mb-3">
+              The loop that fixes weak areas
+            </h2>
+            <p className="text-muted-foreground text-base sm:text-lg">
+              Every wrong answer triggers this. Every time.
             </p>
           </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-5 gap-3 sm:gap-2 items-center">
             {[
-              { icon: BarChart3, title: "Track Progress", desc: "See mastery scores by unit, accuracy trends, and study streaks — all in real time." },
-              { icon: Target, title: "Identify Weak Areas", desc: "Know exactly which topics need work, so study time is never wasted." },
-              { icon: GraduationCap, title: "Curriculum-Aligned", desc: clepOn ? "Every question aligns with College Board AP standards and official CLEP exam outlines." : "Every question aligns with College Board AP standards and official exam outlines." },
-              { icon: Clock, title: "Affordable Prep", desc: "$9.99/mo — less than one hour of private tutoring. Free tier available for every student." },
-            ].map((item) => (
-              <div key={item.title} className="p-5 rounded-xl border border-border/40 bg-card/50 text-center space-y-2">
-                <div className="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center mx-auto">
-                  <item.icon className="h-5 w-5 text-blue-500" />
+              { label: "Answer", classes: "bg-blue-500/10 border-blue-500/30 text-blue-700 dark:text-blue-400" },
+              { label: "Wrong", classes: "bg-red-500/10 border-red-500/40 text-red-700 dark:text-red-400" },
+              { label: "Learn why", classes: "bg-amber-500/10 border-amber-500/30 text-amber-700 dark:text-amber-400" },
+              { label: "Retry", classes: "bg-violet-500/10 border-violet-500/30 text-violet-700 dark:text-violet-400" },
+              { label: "Improve", classes: "bg-emerald-500/10 border-emerald-500/30 text-emerald-700 dark:text-emerald-400" },
+            ].map((step, i, arr) => (
+              <div key={step.label} className="flex flex-col sm:flex-row items-center gap-3 sm:gap-2">
+                <div className={`w-full p-4 sm:p-5 rounded-xl border-2 text-center font-bold text-sm sm:text-base ${step.classes}`}>
+                  {step.label}
                 </div>
-                <p className="font-semibold text-sm">{item.title}</p>
-                <p className="text-xs text-muted-foreground leading-relaxed">{item.desc}</p>
+                {i < arr.length - 1 && (
+                  <ArrowRight className="h-5 w-5 text-muted-foreground/60 rotate-90 sm:rotate-0 flex-shrink-0" />
+                )}
               </div>
             ))}
           </div>
@@ -999,7 +1103,7 @@ export default async function LandingPage() {
       {/* Final CTA */}
       <section className="py-24 lg:py-32 bg-gradient-to-b from-blue-950/30 to-background">
         <div className="max-w-3xl mx-auto px-4 text-center">
-          <h2 className="text-4xl font-bold mb-4">Ready to prepare for the exam that changes everything?</h2>
+          <h2 className="text-4xl lg:text-5xl font-bold mb-4 tracking-tight leading-[1.05]">Stop guessing what to study.<br /><span className="text-blue-600 dark:text-blue-400">Start fixing what you don't know.</span></h2>
           <p className="text-muted-foreground text-lg mb-8">
             {clepOn || dsstOn
               ? <>Whether you&apos;re a high schooler aiming for a 5, or a college student saving thousands{clepOn && <> with CLEP</>}{dsstOn && <>{clepOn ? " and" : " with"} DSST</>} — StudentNest is free to start, and Sage is ready to teach.</>
@@ -1007,13 +1111,13 @@ export default async function LandingPage() {
             }
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/register?track=ap">
+            <Link href="/register?track=ap" prefetch={false}>
               <Button size="lg" className="gap-2 text-base px-10 h-12 bg-blue-600 hover:bg-blue-700 text-white">
-                Start AP/SAT/ACT Prep Free
+                Find my weak areas
               </Button>
             </Link>
             {clepOn && (
-              <Link href="/register?track=clep">
+              <Link href="/register?track=clep" prefetch={false}>
                 <Button size="lg" variant="outline" className="text-base px-10 h-12 border-emerald-500/40 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-500/10">
                   Start CLEP Prep Free
                 </Button>
@@ -1022,7 +1126,7 @@ export default async function LandingPage() {
           </div>
           <p className="mt-3 text-sm text-muted-foreground">
             Free forever · Premium from $6.67/mo (annual) or $9.99/mo ·{" "}
-            <Link href="/pricing" className="text-blue-500 hover:underline">See full pricing</Link>
+            <Link href="/pricing" prefetch={false} className="text-blue-500 hover:underline">See full pricing</Link>
           </p>
         </div>
       </section>
@@ -1038,7 +1142,7 @@ export default async function LandingPage() {
                 <span className="font-semibold"><span className="gradient-text">Student</span><span className="text-foreground/80 font-medium">Nest</span><span className="text-blue-600 dark:text-blue-700 dark:text-blue-400 font-normal text-[0.6em] ml-1">Prep</span></span>
               </div>
               <p className="text-xs text-muted-foreground leading-relaxed">
-                AI-powered exam prep for {examLabel}. Free to start.
+                StudentNest Prep — exam-aligned practice for {examLabel}. Free to start.
               </p>
               <div className="flex items-center gap-1 text-xs text-emerald-700 dark:text-emerald-400">
                 <Shield className="h-3.5 w-3.5" /> No credit card required
@@ -1048,28 +1152,29 @@ export default async function LandingPage() {
             <div>
               <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">Exam Prep</p>
               <div className="space-y-2 text-sm">
-                <Link href="/ap-prep" className="block text-muted-foreground hover:text-foreground transition-colors">AP Courses</Link>
-                <Link href="/sat-prep" className="block text-muted-foreground hover:text-foreground transition-colors">SAT Prep</Link>
-                <Link href="/act-prep" className="block text-muted-foreground hover:text-foreground transition-colors">ACT Prep</Link>
-                {clepOn && <Link href="/clep-prep" className="block text-muted-foreground hover:text-foreground transition-colors">CLEP Prep</Link>}
-                {dsstOn && <Link href="/dsst-prep" className="block text-muted-foreground hover:text-foreground transition-colors">DSST Prep</Link>}
+                <Link href="/ap-prep" prefetch={false} className="block text-muted-foreground hover:text-foreground transition-colors">AP Courses</Link>
+                <Link href="/sat-prep" prefetch={false} className="block text-muted-foreground hover:text-foreground transition-colors">SAT Prep</Link>
+                <Link href="/act-prep" prefetch={false} className="block text-muted-foreground hover:text-foreground transition-colors">ACT Prep</Link>
+                <a data-preplion-intentional="footer-handoff" href="https://preplion.ai" target="_blank" rel="noopener noreferrer" className="block text-muted-foreground hover:text-foreground transition-colors text-xs pt-1.5 border-t border-border/20 mt-1.5">
+                  CLEP &amp; DSST? <span data-preplion-intentional>→ PrepLion ↗</span>
+                </a>
               </div>
             </div>
             {/* Col 3: Product */}
             <div>
               <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">Product</p>
               <div className="space-y-2 text-sm">
-                <Link href="/register" className="block text-muted-foreground hover:text-foreground transition-colors">Sign Up Free</Link>
-                <Link href="/login" className="block text-muted-foreground hover:text-foreground transition-colors">Log In</Link>
-                <Link href="/pricing" className="block text-muted-foreground hover:text-foreground transition-colors">Pricing</Link>
+                <Link href="/register" prefetch={false} className="block text-muted-foreground hover:text-foreground transition-colors">Sign Up Free</Link>
+                <Link href="/login" prefetch={false} className="block text-muted-foreground hover:text-foreground transition-colors">Log In</Link>
+                <Link href="/pricing" prefetch={false} className="block text-muted-foreground hover:text-foreground transition-colors">Pricing</Link>
               </div>
             </div>
             {/* Col 4: Company */}
             <div>
               <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">Company</p>
               <div className="space-y-2 text-sm">
-                <Link href="/about" className="block text-muted-foreground hover:text-foreground transition-colors">About</Link>
-                <Link href="/contact" className="block text-muted-foreground hover:text-foreground transition-colors">Contact</Link>
+                <Link href="/about" prefetch={false} className="block text-muted-foreground hover:text-foreground transition-colors">About</Link>
+                <Link href="/contact" prefetch={false} className="block text-muted-foreground hover:text-foreground transition-colors">Contact</Link>
                 <Link href="/blog" className="block text-muted-foreground hover:text-foreground transition-colors">Blog</Link>
                 <Link href="/faq" className="block text-muted-foreground hover:text-foreground transition-colors">FAQ</Link>
                 <Link href="/terms" className="block text-muted-foreground hover:text-foreground transition-colors">Terms</Link>

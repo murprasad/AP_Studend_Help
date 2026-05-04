@@ -44,7 +44,7 @@ const HAS_CRON_SECRET = !!process.env.CRON_SECRET;
 //   - persona-a-* (auth + landing; covered by smoke tests in deploy-staging)
 //   - billing-*, paywall-accuracy (covered by smoke tests for auth status)
 const DEPLOY_GATE = process.env.GATE_MODE === "deploy";
-const DEPLOY_GATE_PUBLIC = /(public-paths|public-entry-points|persona-c-api-smoke)\.spec\.ts/;
+const DEPLOY_GATE_PUBLIC = /(public-paths|public-entry-points|persona-c-api-smoke|runtime-errors-landing|link-walk-2026-05-03|fmea-top5-2026-05-03)\.spec\.ts/;
 const DEPLOY_GATE_AUTHED = /(journey-rail|journey-rail-fmea|journey-rail-96|frq-submit-reveal-echo)\.spec\.ts/;
 
 export default defineConfig({
@@ -93,7 +93,7 @@ export default defineConfig({
       use: { ...devices["Desktop Chrome"] },
       testMatch: DEPLOY_GATE
         ? DEPLOY_GATE_PUBLIC
-        : /(public-paths|public-entry-points|persona-a-landing-ctas|persona-a-register-tracks|persona-a-login|persona-a-auth-misc|persona-a-mobile|persona-a-mobile-ipad|persona-c-crawler-anonymous|persona-c-broken-links|persona-c-console-errors|persona-c-api-smoke|persona-c-security-headers|persona-c-headers-audit|persona-c-content-audit)\.spec\.ts/,
+        : /(public-paths|public-entry-points|persona-a-landing-ctas|persona-a-register-tracks|persona-a-login|persona-a-auth-misc|persona-a-mobile|persona-a-mobile-ipad|persona-c-crawler-anonymous|persona-c-broken-links|persona-c-console-errors|persona-c-api-smoke|persona-c-security-headers|persona-c-headers-audit|persona-c-content-audit|landing-redesign-2026-05-02|clep-dsst-removal-2026-05-03|critical-paths-2026-05-03|runtime-errors-landing|link-walk-2026-05-03|fmea-top5-2026-05-03|backlog-suite-2026-05-03)\.spec\.ts/,
     },
     ...(HAS_CRON_SECRET
       ? [
@@ -107,7 +107,7 @@ export default defineConfig({
             // New authed specs drop in without config changes.
             testMatch: DEPLOY_GATE
               ? DEPLOY_GATE_AUTHED
-              : /(authed-flows|nawal-nudge|flashcards-due-card|quality-audit-cron|onboarding-plan-choice|first-time-user-fmea|first-time-user-real|billing-page-consistency|paywall-accuracy|billing-flicker|a11y-scan|persona-b-sidebar-walk|journey-1-revenue|journey-2-mock-exam|journey-3-sage-tutor|journey-4-diagnostic|journey-5-parent-payment|frq-submit-reveal-echo|journey-rail|journey-rail-fmea|journey-rail-96|routing-gaps|next-step-engine)\.spec\.ts/,
+              : /(authed-flows|nawal-nudge|flashcards-due-card|quality-audit-cron|onboarding-plan-choice|first-time-user-fmea|first-time-user-real|billing-page-consistency|paywall-accuracy|billing-flicker|a11y-scan|persona-b-sidebar-walk|journey-1-revenue|journey-2-mock-exam|journey-3-sage-tutor|journey-4-diagnostic|journey-5-parent-payment|frq-submit-reveal-echo|journey-rail|journey-rail-fmea|journey-rail-96|routing-gaps|next-step-engine|sidebar-multi-track-2026-05-03|backlog-suite-2026-05-03)\.spec\.ts/,
             dependencies: ["setup"],
           },
         ]

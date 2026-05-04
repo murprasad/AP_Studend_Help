@@ -11,13 +11,20 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { TrendingUp, Info, ArrowRight } from "lucide-react";
 import { VISIBLE_AP_COURSES } from "@/lib/courses";
+import { getVisibleCourses } from "@/lib/settings";
 
 // The /how-hard-is/[slug] route only pre-renders courses that exist in
 // VISIBLE_AP_COURSES. AP_ROWS below includes national CB reference rows
 // (e.g. AP Chinese, AP Spanish, AP English Language) that we DON'T yet
 // have per-course pages for — we still show the row for data honesty,
-// but only link when the page exists. This guards the broken-link audit.
-const VISIBLE_SLUGS = new Set(
+// but only link when the page exists.
+//
+// 2026-05-02 — additionally filtered by visible_courses SiteSetting:
+// rows for courses that aren't in our active allowlist still display
+// (national pass-rate data is public + useful), but their CTA link is
+// suppressed so we don't send users to a "rebuilding" page. This is
+// computed at request time inside the page component, not here.
+const HOW_HARD_IS_PAGES = new Set(
   VISIBLE_AP_COURSES.map((c) => c.toLowerCase().replace(/_/g, "-")),
 );
 
@@ -107,7 +114,20 @@ const jsonLd = [
   },
 ];
 
-export default function PassRatesPage() {
+export default async function PassRatesPage() {
+  // Bank-quality visibility filter (added 2026-05-02). Suppress the
+  // "Try this course" CTA for rows whose course isn't in the active
+  // allowlist — keeps the page useful as SEO/national-data reference
+  // without misdirecting students into hidden courses.
+  const allowlist = await getVisibleCourses().catch(() => "all" as const);
+  const visibleSlugSet = allowlist === "all"
+    ? HOW_HARD_IS_PAGES
+    : new Set(
+        Array.from(HOW_HARD_IS_PAGES).filter((slug) => {
+          const enumKey = slug.toUpperCase().replace(/-/g, "_");
+          return allowlist.includes(enumKey);
+        }),
+      );
   return (
     <div className="max-w-4xl mx-auto px-4 py-12 space-y-10">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
@@ -145,7 +165,7 @@ export default function PassRatesPage() {
                   <td className="px-4 py-2.5 text-right tabular-nums">{r.threePlus}</td>
                   <td className="px-4 py-2.5 text-right tabular-nums text-muted-foreground">{r.fiveRate}</td>
                   <td className="px-4 py-2.5 text-right">
-                    {VISIBLE_SLUGS.has(r.slug) ? (
+                    {visibleSlugSet.has(r.slug) ? (
                       <Link href={`/how-hard-is/${r.slug}`} className="text-xs text-blue-500 hover:underline inline-flex items-center gap-1">
                         How hard? <ArrowRight className="h-3 w-3" />
                       </Link>

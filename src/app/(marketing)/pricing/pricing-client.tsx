@@ -14,9 +14,9 @@ const ALL_MODULE_CONFIGS = {
       "Everything in Free, plus:",
       "Unlimited practice — no daily limits",
       "FRQ / SAQ / DBQ / LEQ scored against the official College Board rubric",
-      "Unlimited AI explanations — ask Sage anything",
+      "Unlimited Sage explanations — ask anything",
       "Personalized AP study plan that adapts weekly",
-      "Faster AI responses (streaming)",
+      "Faster Sage responses (streaming)",
       "Cancel anytime · 7-day money-back guarantee",
     ],
   },
@@ -26,10 +26,10 @@ const ALL_MODULE_CONFIGS = {
     features: [
       "Everything in Free, plus:",
       "Unlimited practice — no daily limits",
-      "Unlimited AI explanations — ask Sage anything",
+      "Unlimited Sage explanations — ask anything",
       "Personalized SAT study plan targeting weak areas",
       "Advanced analytics with score prediction",
-      "Faster AI responses (streaming)",
+      "Faster Sage responses (streaming)",
       "Cancel anytime · 7-day money-back guarantee",
     ],
   },
@@ -39,10 +39,10 @@ const ALL_MODULE_CONFIGS = {
     features: [
       "Everything in Free, plus:",
       "Unlimited practice — no daily limits",
-      "Unlimited AI explanations — ask Sage anything",
+      "Unlimited Sage explanations — ask anything",
       "Personalized ACT study plan by section",
       "Section-by-section composite tracking",
-      "Faster AI responses (streaming)",
+      "Faster Sage responses (streaming)",
       "Cancel anytime · 7-day money-back guarantee",
     ],
   },
@@ -52,9 +52,9 @@ const ALL_MODULE_CONFIGS = {
     features: [
       "Everything in Free, plus:",
       "Full prep for all 34 CLEP exams",
-      "Unlimited AI explanations — ask Sage anything",
+      "Unlimited Sage explanations — ask anything",
       "Personalized CLEP study plan (6–12 weeks)",
-      "Faster AI responses (streaming)",
+      "Faster Sage responses (streaming)",
       "Save $1,200+ per exam passed in tuition",
       "Cancel anytime · 7-day money-back guarantee",
     ],
@@ -65,9 +65,9 @@ const ALL_MODULE_CONFIGS = {
     features: [
       "Everything in Free, plus:",
       "Full prep for all 22 DSST exams",
-      "Unlimited AI explanations — ask Sage anything",
+      "Unlimited Sage explanations — ask anything",
       "Personalized DSST study plan",
-      "Faster AI responses (streaming)",
+      "Faster Sage responses (streaming)",
       "Save $1,000+ per exam passed in tuition",
       "Cancel anytime · 7-day money-back guarantee",
     ],
@@ -282,15 +282,16 @@ export default function PricingClient({ clepEnabled, dsstEnabled }: PricingClien
       <div className="mt-16 max-w-3xl mx-auto">
         <h2 className="text-2xl font-bold text-center mb-2">How We Compare</h2>
         <p className="text-sm text-muted-foreground text-center mb-6">Save $500+ compared to traditional prep courses</p>
-        <div className="rounded-xl border border-border/40 overflow-hidden">
-          <table className="w-full text-sm">
+        <div className="rounded-xl border border-border/40 overflow-x-auto">
+          <p className="sm:hidden text-[11px] text-muted-foreground/70 italic px-3 pt-2">Swipe → to compare</p>
+          <table className="w-full text-sm min-w-[480px]">
             <thead>
               <tr className="bg-secondary/60 text-muted-foreground">
                 <th className="text-left p-3 font-medium"></th>
                 <th className="text-center p-3 font-medium text-blue-500">StudentNest Prep</th>
                 <th className="text-center p-3 font-medium">Prep Course</th>
                 <th className="text-center p-3 font-medium">Private Tutor</th>
-                <th className="text-center p-3 font-medium">General AI</th>
+                <th className="text-center p-3 font-medium">General chatbots</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border/30">
@@ -298,8 +299,8 @@ export default function PricingClient({ clepEnabled, dsstEnabled }: PricingClien
                 ["Price", "$0–9.99/mo", "$200–500", "$50–150/hr", "Free–$20/mo"],
                 ["Exam-Aligned Questions", "✅", "✅", "✅", "Not exam-format"],
                 ["Mastery Tracking", "✅", "Partial", "âŒ", "âŒ"],
-                ["Personalized Study Plan", "✅ AI-generated", "Static", "✅", "âŒ"],
-                ["Instant AI Explanations", "✅ 24/7", "âŒ", "Scheduled", "✅ General-purpose"],
+                ["Personalized Study Plan", "✅ adapts weekly", "Static", "✅", "âŒ"],
+                ["Instant Sage Explanations", "✅ 24/7", "âŒ", "Scheduled", "✅ General-purpose"],
                 ["Score Prediction", "✅", "Partial", "âŒ", "âŒ"],
               ].map(([feature, ...values]) => (
                 <tr key={feature} className="hover:bg-secondary/20">
@@ -323,7 +324,7 @@ export default function PricingClient({ clepEnabled, dsstEnabled }: PricingClien
             { q: "Can I cancel anytime?", a: "Yes. Cancel from your billing page and you'll keep Premium access until the end of your billing period." },
             { q: "Can I pay annually?", a: "Yes — $79.99/year saves you 33% compared to monthly billing ($6.67/mo). Same all-access Premium." },
             { q: "What is your refund policy?", a: "We offer a 7-day money-back guarantee on new Premium subscriptions. If you're not satisfied within 7 days of your first payment, email contact@studentnest.ai and we'll issue a full refund — no questions asked. After 7 days, subscriptions are non-refundable but you can cancel anytime and keep access until the end of your billing period." },
-            { q: "What happens when I hit the free AI limit?", a: "Free users can start 3 new Sage Live Tutor conversations per day. Your existing conversations are never deleted." },
+            { q: "What happens when I hit the free Sage limit?", a: "Free users can start 3 new Sage Live Tutor conversations per day. Your existing conversations are never deleted." },
             { q: "Is there a student discount?", a: "We keep the free tier generous so every student can prepare for their exams. Premium is $9.99/month or $79.99/year — one all-access subscription." },
             { q: "Which payment methods are accepted?", a: "All major credit and debit cards via Stripe. Your payment info is never stored on our servers." },
           ].map(({ q, a }) => (

@@ -172,7 +172,7 @@ export default function AiTutorPage() {
             setLimitReached(true);
           } else {
             toast({
-              title: "AI Unavailable",
+              title: "Sage Unavailable",
               description: data.error || "Could not reach the Sage Live Tutor. Please try again.",
               variant: "destructive",
             });

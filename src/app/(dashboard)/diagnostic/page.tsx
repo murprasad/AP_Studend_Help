@@ -159,7 +159,7 @@ export default function DiagnosticPage() {
               {[
                 { icon: ClipboardList, title: "10-15 Questions", desc: "One per unit, MCQ format" },
                 { icon: Target, title: "Unit Scores", desc: "Strength per unit revealed" },
-                { icon: TrendingUp, title: "Study Plan", desc: "AI recommends what to focus on" },
+                { icon: TrendingUp, title: "Study Plan", desc: "Sage recommends what to focus on" },
               ].map((item) => (
                 <div key={item.title} className="flex flex-col items-center gap-2 p-4 rounded-lg bg-secondary/30">
                   <item.icon className="h-6 w-6 text-blue-500" />
@@ -383,7 +383,7 @@ export default function DiagnosticPage() {
             >
           <Card className="border-blue-500/20 bg-blue-500/5">
             <CardContent className="p-6">
-              <p className="text-sm text-muted-foreground mb-1 font-medium">AI Recommendation</p>
+              <p className="text-sm text-muted-foreground mb-1 font-medium">Sage's recommendation</p>
               <p className="text-sm leading-relaxed">{result.recommendation}</p>
             </CardContent>
           </Card>

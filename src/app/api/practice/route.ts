@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { SessionType, ApUnit, Difficulty, ApCourse, QuestionType, SubTier } from "@prisma/client";
 import { VALID_AP_COURSES, getUnitsForCourse, COURSE_REGISTRY, getCourseTrack } from "@/lib/courses";
 import { generateQuestion } from "@/lib/ai";
-import { isPremiumRestrictionEnabled, getSetting } from "@/lib/settings";
+import { isPremiumRestrictionEnabled, getSetting, isCourseVisible } from "@/lib/settings";
 import { rateLimit } from "@/lib/rate-limit";
 import { isPremiumForTrack, isAnyPremium, hasAnyPremium, type ModuleSub } from "@/lib/tiers";
 import { FREE_LIMITS, LOCK_COPY } from "@/lib/tier-limits";
@@ -35,6 +35,24 @@ export async function POST(req: NextRequest) {
     const userTrack = session.user.track ?? "ap";
     const moduleSubs: ModuleSub[] = (session.user as { moduleSubs?: ModuleSub[] }).moduleSubs ?? [];
     const isAdmin = (session.user as { role?: string }).role === "ADMIN";
+
+    // Bank-quality visibility gate (2026-05-02). When the visible_courses
+    // SiteSetting is populated, reject practice creation for any course
+    // not in the allowlist. Admin role bypasses — admins can practice
+    // anything to validate question quality.
+    if (!isAdmin) {
+      const visible = await isCourseVisible(course as string);
+      if (!visible) {
+        return NextResponse.json(
+          {
+            error: "Course temporarily unavailable",
+            detail:
+              "We're rebuilding this course's question bank to meet College Board quality standards. Please pick another course for now.",
+          },
+          { status: 400 },
+        );
+      }
+    }
     // Entitlement model (Beta 7.1, 2026-04-25): Premium is ALL-ACCESS.
     // Any active module subscription unlocks practice on every course —
     // matches the "$9.99 = everything" promise on /pricing and the rest

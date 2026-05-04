@@ -6,48 +6,58 @@ import { BrowserFrame } from "@/components/landing/browser-frame";
 import { MockupAnalytics } from "@/components/landing/mockup-analytics";
 import { MockupStudyPlan } from "@/components/landing/mockup-study-plan";
 import { MockupPractice } from "@/components/landing/mockup-practice";
+import { getVisibleCourses } from "@/lib/settings";
 
 export const metadata: Metadata = {
-  title: "ACT Prep — AI Practice for All 4 Sections | StudentNest Prep",
-  description: "Boost your ACT score with AI-powered practice across Math, English, Science, and Reading. Section-specific tutoring and score tracking. Free to start.",
+  title: "ACT Prep — Practice for All 4 Sections | StudentNest Prep",
+  description: "Boost your ACT score with exam-aligned practice across Math, English, Science, and Reading. Section-specific tutoring and score tracking. Free to start.",
   openGraph: {
     title: "ACT Prep | StudentNest Prep",
-    description: "AI-powered ACT prep. All 4 sections. Section-specific Sage Live Tutor. Free to start.",
+    description: "Exam-aligned ACT prep. All 4 sections. Section-specific Sage Live Tutor. Free to start.",
     url: "https://studentnest.ai/act-prep",
   },
 };
 
+// Each entry tagged with its ApCourse enum so the server can filter by
+// the visible_courses SiteSetting (added 2026-05-02).
 const courses = [
-  { name: "ACT Math", units: 5, desc: "Pre-algebra through trigonometry — 5 choices per question" },
-  { name: "ACT English", units: 3, desc: "Grammar, punctuation, sentence structure, rhetorical skills" },
-  { name: "ACT Science", units: 3, desc: "Data interpretation, research summaries, conflicting viewpoints" },
-  { name: "ACT Reading", units: 4, desc: "Literary, social science, humanities, natural science passages" },
+  { enum: "ACT_MATH",    name: "ACT Math",    units: 5, desc: "Pre-algebra through trigonometry — 5 choices per question" },
+  { enum: "ACT_ENGLISH", name: "ACT English", units: 3, desc: "Grammar, punctuation, sentence structure, rhetorical skills" },
+  { enum: "ACT_SCIENCE", name: "ACT Science", units: 3, desc: "Data interpretation, research summaries, conflicting viewpoints" },
+  { enum: "ACT_READING", name: "ACT Reading", units: 4, desc: "Literary, social science, humanities, natural science passages" },
 ];
 
-const jsonLd = {
-  "@context": "https://schema.org",
-  "@type": "ItemList",
-  name: "ACT Prep Courses",
-  description: "All 4 ACT sections with AI-powered practice and tutoring",
-  numberOfItems: 4,
-  itemListElement: courses.map((c, i) => ({
-    "@type": "ListItem",
-    position: i + 1,
-    item: {
-      "@type": "Course",
-      name: c.name,
-      description: `AI-powered ${c.name} prep: ${c.desc}. ${c.units} units with mastery tracking.`,
-      provider: { "@type": "Organization", name: "StudentNest Prep", url: "https://studentnest.ai" },
-      isAccessibleForFree: true,
-      offers: [
-        { "@type": "Offer", price: "0", priceCurrency: "USD", name: "Free" },
-        { "@type": "Offer", price: "9.99", priceCurrency: "USD", name: "ACT Premium", billingIncrement: "P1M" },
-      ],
-    },
-  })),
-};
+function buildJsonLd(visible: typeof courses) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: "ACT Prep Courses",
+    description: visible.length > 0 ? `${visible.length} ACT sections with exam-aligned practice` : "Rebuilding ACT question banks",
+    numberOfItems: visible.length,
+    itemListElement: visible.map((c, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      item: {
+        "@type": "Course",
+        name: c.name,
+        description: `${c.name} prep: ${c.desc}. ${c.units} units with mastery tracking.`,
+        provider: { "@type": "Organization", name: "StudentNest Prep", url: "https://studentnest.ai" },
+        isAccessibleForFree: true,
+        offers: [
+          { "@type": "Offer", price: "0", priceCurrency: "USD", name: "Free" },
+          { "@type": "Offer", price: "9.99", priceCurrency: "USD", name: "ACT Premium", billingIncrement: "P1M" },
+        ],
+      },
+    })),
+  };
+}
 
-export default function ActPrepPage() {
+export default async function ActPrepPage() {
+  const allowlist = await getVisibleCourses().catch(() => "all" as const);
+  const visibleCourses = allowlist === "all"
+    ? courses
+    : courses.filter((c) => allowlist.includes(c.enum));
+  const jsonLd = buildJsonLd(visibleCourses);
   return (
     <div className="max-w-5xl mx-auto px-4 py-16 space-y-16">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
@@ -89,7 +99,7 @@ export default function ActPrepPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
           <div className="space-y-3">
             <div className="w-10 h-10 rounded-lg bg-violet-500/20 flex items-center justify-center"><Target className="h-5 w-5 text-violet-700 dark:text-violet-400" /></div>
-            <h2 className="text-2xl font-bold">AI builds a section-by-section study plan</h2>
+            <h2 className="text-2xl font-bold">Sage builds a section-by-section study plan</h2>
             <p className="text-muted-foreground leading-relaxed">Quick diagnostic across all 4 sections. Sage identifies which sections need the most work and builds a plan for maximum score gain.</p>
           </div>
           <BrowserFrame title="StudentNest Prep · ACT Study Plan" className="shadow-xl"><MockupStudyPlan variant="act" /></BrowserFrame>
@@ -98,7 +108,7 @@ export default function ActPrepPage() {
           <div className="lg:order-2 space-y-3">
             <div className="w-10 h-10 rounded-lg bg-violet-500/20 flex items-center justify-center"><Brain className="h-5 w-5 text-violet-700 dark:text-violet-400" /></div>
             <h2 className="text-2xl font-bold">Real ACT format — including 5-choice Math</h2>
-            <p className="text-muted-foreground leading-relaxed">Section-specific questions with real ACT format (A–E for Math). Instant AI explanations for every answer, every mistake.</p>
+            <p className="text-muted-foreground leading-relaxed">Section-specific questions with real ACT format (A–E for Math). Instant Sage explanations for every answer, every mistake.</p>
           </div>
           <div className="lg:order-1"><BrowserFrame title="StudentNest Prep · ACT Practice" className="shadow-xl"><MockupPractice variant="act" /></BrowserFrame></div>
         </div>
@@ -150,19 +160,32 @@ export default function ActPrepPage() {
 
       {/* Course List */}
       <div>
-        <h2 className="text-2xl font-bold mb-6 text-center">All 4 ACT Sections Covered</h2>
-        <div className="grid sm:grid-cols-2 gap-4">
-          {courses.map((c) => (
-            <div key={c.name} className="p-5 rounded-xl border border-violet-500/20 bg-violet-500/5 space-y-2">
-              <div className="flex items-center gap-2">
-                <CheckCircle className="h-5 w-5 text-violet-700 dark:text-violet-400" />
-                <p className="font-semibold">{c.name}</p>
-                <span className="ml-auto text-xs text-muted-foreground">{c.units} units</span>
+        <h2 className="text-2xl font-bold mb-6 text-center">
+          {visibleCourses.length === 0
+            ? "Rebuilding ACT Question Banks"
+            : `${visibleCourses.length} ACT Section${visibleCourses.length === 1 ? "" : "s"} Available`}
+        </h2>
+        {visibleCourses.length === 0 ? (
+          <div className="p-6 rounded-xl border border-violet-500/20 bg-violet-500/5 text-center">
+            <p className="text-sm text-muted-foreground">
+              We&apos;re rebuilding our ACT question banks with stricter quality validators.
+              ACT sections come back online individually as each passes our 7-gate audit.
+            </p>
+          </div>
+        ) : (
+          <div className="grid sm:grid-cols-2 gap-4">
+            {visibleCourses.map((c) => (
+              <div key={c.name} className="p-5 rounded-xl border border-violet-500/20 bg-violet-500/5 space-y-2">
+                <div className="flex items-center gap-2">
+                  <CheckCircle className="h-5 w-5 text-violet-700 dark:text-violet-400" />
+                  <p className="font-semibold">{c.name}</p>
+                  <span className="ml-auto text-xs text-muted-foreground">{c.units} units</span>
+                </div>
+                <p className="text-sm text-muted-foreground">{c.desc}</p>
               </div>
-              <p className="text-sm text-muted-foreground">{c.desc}</p>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Free vs Premium */}
@@ -178,7 +201,7 @@ export default function ActPrepPage() {
           <p className="font-bold text-violet-700 dark:text-violet-400">ACT Premium</p>
           <p className="text-2xl font-bold">$9.99<span className="text-sm font-normal text-muted-foreground">/mo</span></p>
           <p className="text-xs text-green-700 dark:text-green-400 font-medium">or $79.99/yr — save 33%</p>
-          {["Everything in Free", "Unlimited Sage Live Tutor chats", "Personalized ACT study plan", "Advanced section analytics", "Streaming AI"].map((f) => (
+          {["Everything in Free", "Unlimited Sage Live Tutor chats", "Personalized ACT study plan", "Advanced section analytics", "Streaming Sage responses"].map((f) => (
             <div key={f} className="flex items-center gap-2 text-sm"><CheckCircle className="h-4 w-4 text-violet-700 dark:text-violet-400" />{f}</div>
           ))}
           <form action="/api/checkout?plan=monthly&module=act" method="POST" className="pt-2">

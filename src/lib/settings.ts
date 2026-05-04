@@ -63,6 +63,39 @@ export async function isDsstEnabled(): Promise<boolean> {
   return val === "true";
 }
 
+/**
+ * Bank-quality-driven course visibility (added 2026-05-02).
+ *
+ * Returns the JSON-array of course enum values currently visible to
+ * users. Empty array OR unset OR "all" means "no restriction — show
+ * every course in COURSE_REGISTRY." Set explicitly via
+ * setSetting("visible_courses", JSON.stringify([...])) when the bank
+ * is in mid-rebuild and we want to surface only courses with enough
+ * vetted approved questions.
+ *
+ * Why string JSON, not a separate column? Same shape as every other
+ * SiteSetting (one TTL-cached read on each request); no schema
+ * migration required for a feature whose lifetime is "until the
+ * bank rebuild is done."
+ */
+export async function getVisibleCourses(): Promise<string[] | "all"> {
+  const raw = await getSetting("visible_courses", "");
+  if (!raw || raw === "all") return "all";
+  try {
+    const arr = JSON.parse(raw);
+    if (Array.isArray(arr) && arr.every((s) => typeof s === "string")) return arr;
+    return "all";
+  } catch {
+    return "all";
+  }
+}
+
+export async function isCourseVisible(course: string): Promise<boolean> {
+  const visible = await getVisibleCourses();
+  if (visible === "all") return true;
+  return visible.includes(course);
+}
+
 /** Returns true if the Analytics page is enabled. Defaults to true. */
 export async function isAnalyticsEnabled(): Promise<boolean> {
   return (await getSetting("analytics_enabled", "true")) === "true";

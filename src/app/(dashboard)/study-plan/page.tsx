@@ -210,7 +210,7 @@ export default function StudyPlanPage() {
         <div>
           <h1 className="text-3xl font-bold">Study Plan</h1>
           <p className="text-muted-foreground mt-1">
-            AI-personalized plan based on your performance
+            Personalized plan based on your performance
           </p>
         </div>
         <Button onClick={generatePlan} disabled={generating} variant="outline" className="gap-2">
