@@ -102,7 +102,9 @@ export function validateFigure(
     return null;
   }
 
-  const s = (stimulus ?? "").trim();
+  // Defensive: Flash sometimes outputs non-string stimulus (object, number, bool).
+  // Coerce to string before processing — same fix pattern as stimulus-validator.ts.
+  const s = (typeof stimulus === "string" ? stimulus : (stimulus ? JSON.stringify(stimulus) : "")).trim();
   if (s.length === 0) {
     return `${stimulusType} stimulus is empty — required for this question type`;
   }
