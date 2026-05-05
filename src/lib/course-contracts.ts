@@ -199,6 +199,20 @@ const COURSE_DEFAULTS: Partial<Record<ApCourse, Omit<QuestionContract, "course">
     generatorNotes:
       "AP English Language anchors every MCQ to a published non-fiction prose passage (essay, speech, memoir, journalism). Distractors test rhetorical-analysis errors: misreading tone, misidentifying rhetorical strategy, confusing audience purpose. Open the stimulus with a byline ('From The New Yorker, by [Author], ©YEAR' or 'From [Title], a memoir by [Author] (©YEAR)'). Real published-style content only.",
   },
+  // AP Computer Science A: Java code-tracing MCQs. Many questions show
+  // a method or class snippet and ask what gets returned/printed. Recall
+  // questions (e.g. "what is encapsulation") don't need a stimulus, so
+  // requiresStimulus is permissive — code-trace topics override at the
+  // generator side via the generatorNotes guidance.
+  AP_COMPUTER_SCIENCE_A: {
+    expectedOptionCount: 4,
+    requiresStimulus: false,
+    cognitiveLevel: "Application",
+    minExplanationChars: 150,
+    forbiddenPatterns: ["(A)", "(B)", "(C)", "(D)"],
+    generatorNotes:
+      "AP Computer Science A uses Java syntax (NOT pseudocode like AP CSP). For code-tracing questions, the stimulus must contain the actual Java method/class snippet in a fenced code block. Distractors test specific Java errors: off-by-one in array indexing, post-vs-pre increment, integer division truncation, reference vs value semantics, null pointer on uninitialized objects. Do NOT use Python/JavaScript/pseudocode.",
+  },
   AP_ENGLISH_LITERATURE: {
     expectedOptionCount: 4,
     requiresStimulus: true,
