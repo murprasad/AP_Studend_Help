@@ -110,6 +110,8 @@ jobs:
         with:
           name: cf-deploy-staging-validated
           path: .cf-deploy
+          # v4 excludes dotfiles/dotdirs by default; .cf-deploy is hidden
+          include-hidden-files: true
           retention-days: 1
 
   promote:
