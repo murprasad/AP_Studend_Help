@@ -30,9 +30,34 @@ interface Props {
   course: string;
 }
 
+// Per-family scoring copy. AP scale 1-5 (target 4), SAT scale 400-1600
+// (target ~1400+), ACT scale 1-36 (target ~30+). The card was hard-coded
+// for AP — bug surfaced when an ACT student saw "projected AP score"
+// + "gap to a 4" on /dashboard.
+function getExamCopy(course: string): { scoreLabel: string; targetPhrase: string } {
+  if (course.startsWith("ACT_")) {
+    return {
+      scoreLabel: "projected ACT score",
+      targetPhrase: "the sections closing the gap to a 30+",
+    };
+  }
+  if (course.startsWith("SAT_")) {
+    return {
+      scoreLabel: "projected SAT score",
+      targetPhrase: "the sections closing the gap to a 1400+",
+    };
+  }
+  // AP_*, default fallback
+  return {
+    scoreLabel: "projected AP score",
+    targetPhrase: "the units closing the gap to a 4",
+  };
+}
+
 export function DiagnosticPromptCard({ course }: Props) {
   const [show, setShow] = useState(false);
   const [responseCount, setResponseCount] = useState(0);
+  const { scoreLabel, targetPhrase } = getExamCopy(course);
 
   useEffect(() => {
     let cancelled = false;
@@ -65,8 +90,7 @@ export function DiagnosticPromptCard({ course }: Props) {
               </p>
               <p className="text-sm font-semibold leading-snug mt-0.5">
                 You&apos;ve answered {responseCount}+ questions. A 10-minute
-                diagnostic reveals your projected AP score and the units
-                closing the gap to a 4.
+                diagnostic reveals your {scoreLabel} and {targetPhrase}.
               </p>
             </div>
             <div className="flex items-center gap-2 text-xs text-muted-foreground">
