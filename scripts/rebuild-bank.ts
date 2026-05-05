@@ -398,8 +398,13 @@ function runGates(q: any, contract: ReturnType<typeof getContract>, course: ApCo
   if (stimErr) return { passed: false, failedGate: "stimulus", detail: stimErr };
   const figErr = validateFigure(q.stimulus, contract.requiredStimulusType ?? null);
   if (figErr) return { passed: false, failedGate: "figure", detail: figErr };
-  const attrErr = validateAttribution(q.stimulus, q.explanation);
-  if (attrErr) return { passed: false, failedGate: "attribution", detail: attrErr };
+  // Attribution validator is AP-history-flavored (known-author allowlist,
+  // CB-document specificity). Skip for readingPassage — ACT/SAT/AP English
+  // contemporary-prose authors aren't on the AP-history list.
+  if (contract.requiredStimulusType !== "readingPassage") {
+    const attrErr = validateAttribution(q.stimulus, q.explanation);
+    if (attrErr) return { passed: false, failedGate: "attribution", detail: attrErr };
+  }
   return { passed: true };
 }
 
