@@ -1,0 +1,66 @@
+name: Rebuild Single Course
+
+# Focused single-course fill. Use when one course needs an extra push
+# (e.g. ACT_READING stuck below 200) and you don't want to wait for the
+# full nightly expand-banks queue.
+#
+# Trigger:
+#   gh workflow run rebuild-course.yml -f course=ACT_READING -f target=200 -f budget=3
+
+on:
+  workflow_dispatch:
+    inputs:
+      course:
+        description: 'Course code (e.g. ACT_READING, AP_PHYSICS_C_ELECTRICITY_MAGNETISM)'
+        required: true
+      target:
+        description: 'Approved-question target'
+        required: false
+        default: '200'
+      budget:
+        description: 'USD budget cap'
+        required: false
+        default: '3'
+
+env:
+  NODE_VERSION: '20'
+
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install
+        run: npm ci --legacy-peer-deps
+
+      - name: Generate Prisma client
+        run: npx prisma generate
+
+      - name: Rebuild course
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          npx tsx scripts/rebuild-bank.ts \
+            --course=${{ github.event.inputs.course }} \
+            --target=${{ github.event.inputs.target || 200 }} \
+            --budget=${{ github.event.inputs.budget || 3 }}
+
+      - name: Upload artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rebuild-${{ github.event.inputs.course }}-${{ github.run_id }}
+          path: |
+            data/rebuild-runs/
+            data/audit-samples/
+          retention-days: 30
