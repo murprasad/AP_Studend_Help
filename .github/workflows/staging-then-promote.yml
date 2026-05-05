@@ -1,0 +1,175 @@
+name: Staging then Promote
+
+# Replaces the local `npm run pages:deploy:staging` + `npm run pages:promote`
+# manual workflow. Runs on GitHub-hosted runners — fully machine-independent.
+#
+# Trigger forms:
+#   gh workflow run staging-then-promote.yml                    # full deploy
+#   gh workflow run staging-then-promote.yml -f mode=staging    # staging only
+#   gh workflow run staging-then-promote.yml -f mode=promote    # promote (assumes recent staging passed)
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'Deploy mode'
+        required: true
+        default: 'full'
+        type: choice
+        options:
+          - full          # staging gate then promote on green
+          - staging       # staging gate only, no promote
+          - promote       # promote only (no rebuild — uses last green staging artifact)
+
+env:
+  NODE_VERSION: '20'
+
+jobs:
+  staging:
+    if: github.event.inputs.mode != 'promote'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    outputs:
+      staging-passed: ${{ steps.gate.outputs.passed }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install
+        run: npm ci --legacy-peer-deps
+
+      - name: Pre-release check
+        run: node scripts/pre-release-check.js
+
+      - name: Vitest
+        run: npx vitest run
+
+      - name: Build
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: npm run pages:build
+
+      - name: Deploy to staging branch alias
+        id: deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          STAGING_MSG="staging-deploy-$(date -u +%Y-%m-%d-%H-%M-%S)"
+          npx wrangler pages deploy .cf-deploy \
+            --project-name=studentnest \
+            --branch=staging \
+            --commit-dirty=true \
+            --commit-message="$STAGING_MSG"
+          echo "url=https://staging.studentnest.pages.dev" >> $GITHUB_OUTPUT
+
+      - name: Wait for CF Pages propagation
+        run: sleep 15
+
+      - name: Smoke tests against staging
+        env:
+          E2E_BASE_URL: ${{ steps.deploy.outputs.url }}
+        run: node scripts/smoke-tests.js --base-url ${{ steps.deploy.outputs.url }}
+
+      - name: Functional tests against staging
+        env:
+          E2E_BASE_URL: ${{ steps.deploy.outputs.url }}
+        run: node scripts/functional-tests.js
+
+      - name: Integration tests against staging
+        env:
+          E2E_BASE_URL: ${{ steps.deploy.outputs.url }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: node scripts/integration-tests.js
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Playwright E2E (deploy-gate subset)
+        env:
+          E2E_BASE_URL: ${{ steps.deploy.outputs.url }}
+          GATE_MODE: deploy
+        run: npx playwright test
+        continue-on-error: true
+
+      - name: Triage Playwright failures vs allowlist
+        id: gate
+        run: |
+          if node scripts/check-playwright-failures.mjs test-results.json; then
+            echo "passed=true" >> $GITHUB_OUTPUT
+          else
+            echo "passed=false" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+
+      - name: Upload .cf-deploy artifact (for promote job to reuse)
+        uses: actions/upload-artifact@v4
+        with:
+          name: cf-deploy-staging-validated
+          path: .cf-deploy
+          retention-days: 1
+
+  promote:
+    if: |
+      always() && github.event.inputs.mode != 'staging' && (
+        needs.staging.result == 'success' ||
+        github.event.inputs.mode == 'promote'
+      )
+    needs: [staging]
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install
+        run: npm ci --legacy-peer-deps
+
+      - name: Pre-release check (final guard)
+        run: node scripts/pre-release-check.js
+
+      - name: Vitest (final guard)
+        run: npx vitest run
+
+      - name: Restore staging-validated artifact (if available)
+        if: github.event.inputs.mode != 'promote'
+        uses: actions/download-artifact@v4
+        with:
+          name: cf-deploy-staging-validated
+          path: .cf-deploy
+
+      - name: Rebuild .cf-deploy if no artifact
+        if: github.event.inputs.mode == 'promote'
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: npm run pages:build
+
+      - name: Deploy to production
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          PROMOTE_MSG="prod-promote-$(date -u +%Y-%m-%d-%H-%M-%S)"
+          npx wrangler pages deploy .cf-deploy \
+            --project-name=studentnest \
+            --branch=main \
+            --commit-dirty=true \
+            --commit-message="$PROMOTE_MSG"
+
+      - name: Smoke against prod
+        run: node scripts/smoke-tests.js
+
+      - name: Send deploy email
+        if: always()
+        env:
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+        run: |
+          STATUS="success"
+          if [ "${{ job.status }}" != "success" ]; then STATUS="failed"; fi
+          node scripts/send-deploy-email.js --status=$STATUS

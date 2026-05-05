@@ -1,0 +1,64 @@
+name: Expand StudentNest Banks
+
+# Runs the full course-queue rebuild that previously needed a detached
+# Node process on your laptop. Hosted on GitHub-hosted runner — survives
+# laptop sleep, reboots, travel.
+#
+# Trigger:
+#   Manual: gh workflow run expand-banks.yml
+#   Cron:   nightly at 02:00 UTC (off-peak for both US east + west)
+
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: 'Approved-question target per course'
+        required: false
+        default: '200'
+      budget:
+        description: 'Per-course USD budget'
+        required: false
+        default: '5'
+  schedule:
+    - cron: '0 2 * * *'  # 02:00 UTC nightly
+
+env:
+  NODE_VERSION: '20'
+
+jobs:
+  expand:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350  # leave 10 min headroom under GitHub's 6h cap
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install
+        run: npm ci --legacy-peer-deps
+
+      - name: Generate Prisma client
+        run: npx prisma generate
+
+      - name: Run StudentNest expansion queue
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          TARGET=${{ github.event.inputs.target || 200 }}
+          node scripts/expand-studentnest-banks.mjs --target=$TARGET
+
+      - name: Upload run log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: expand-banks-log-${{ github.run_id }}
+          path: |
+            data/expand-studentnest.log
+            data/rebuild-runs/
+          retention-days: 30
