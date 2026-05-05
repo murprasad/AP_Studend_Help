@@ -186,6 +186,29 @@ const COURSE_DEFAULTS: Partial<Record<ApCourse, Omit<QuestionContract, "course">
   ACT_ENGLISH: ACT_DEFAULT,
   ACT_READING: { ...ACT_DEFAULT, requiresStimulus: true, requiredStimulusType: "readingPassage" },
   ACT_SCIENCE: { ...ACT_DEFAULT, requiresStimulus: true, requiredStimulusType: "table" },
+  // AP English: rhetorical-analysis (Lang) and literary-analysis (Lit) MCQs.
+  // Both anchor every question to a published passage — same pattern as
+  // ACT Reading / SAT R&W, just with the AP-style 4-option format.
+  AP_ENGLISH_LANGUAGE: {
+    expectedOptionCount: 4,
+    requiresStimulus: true,
+    requiredStimulusType: "readingPassage",
+    cognitiveLevel: "Analysis",
+    minExplanationChars: 150,
+    forbiddenPatterns: ["(A)", "(B)", "(C)", "(D)"],
+    generatorNotes:
+      "AP English Language anchors every MCQ to a published non-fiction prose passage (essay, speech, memoir, journalism). Distractors test rhetorical-analysis errors: misreading tone, misidentifying rhetorical strategy, confusing audience purpose. Open the stimulus with a byline ('From The New Yorker, by [Author], ©YEAR' or 'From [Title], a memoir by [Author] (©YEAR)'). Real published-style content only.",
+  },
+  AP_ENGLISH_LITERATURE: {
+    expectedOptionCount: 4,
+    requiresStimulus: true,
+    requiredStimulusType: "readingPassage",
+    cognitiveLevel: "Analysis",
+    minExplanationChars: 150,
+    forbiddenPatterns: ["(A)", "(B)", "(C)", "(D)"],
+    generatorNotes:
+      "AP English Literature anchors every MCQ to a published prose excerpt (novel, short story) or a complete poem. Distractors test literary-analysis errors: misreading figurative language, misidentifying speaker/narrator, confusing literal vs. symbolic meaning. Open the stimulus with a byline ('From the novel [Title] by [Author] (©YEAR)' or 'The Poem [Title] by [Author] (©YEAR)'). Poetry passages may be shorter (~200 words / 12-30 lines) — for those, accept stimulus length as low as 600 chars. Real published-style content only.",
+  },
 };
 
 // ── Topic-level overrides ─────────────────────────────────────────────────────
