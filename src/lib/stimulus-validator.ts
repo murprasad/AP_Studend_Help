@@ -39,8 +39,8 @@
 
 export type StimulusRequirement = {
   required: boolean;
-  type?: "primarySource" | "graph" | "table" | "diagram" | "image" | "scenario";
-  minChars?: number; // default 40 for stimulus, 100 for primary source
+  type?: "primarySource" | "readingPassage" | "graph" | "table" | "diagram" | "image" | "scenario";
+  minChars?: number; // default 40 for stimulus, 100 for primary source, 1500 for reading passage
 };
 
 const SYNTHESIZED_OPENERS = [
@@ -115,7 +115,9 @@ export function validateStimulus(
   // number, boolean). Coerce to string before processing.
   const stim = (typeof stimulus === "string" ? stimulus : (stimulus ? JSON.stringify(stimulus) : "")).trim();
   const minChars = requirement.minChars
-    ?? (requirement.type === "primarySource" ? 100 : 40);
+    ?? (requirement.type === "primarySource" ? 100
+        : requirement.type === "readingPassage" ? 1500
+        : 40);
 
   // Reference check runs first — if the question text references a
   // stimulus, the stimulus must exist regardless of spec requirement.
@@ -137,6 +139,20 @@ export function validateStimulus(
     if (!looksLikePrimarySource(stim)) {
       return `Stimulus does not look like a primary source — needs at least 2 of: long quoted passage, em-dash attribution, date attribution, or "written/published/signed/delivered" provenance language.`;
     }
+  }
+
+  if (requirement.type === "readingPassage") {
+    // ACT Reading / SAT R&W: contemporary prose excerpts (literary
+    // narrative, social science, humanities, natural science) — NOT
+    // historical primary sources. Real passages are 700-900 words with
+    // a byline (©YEAR, "by [Name]", italic title). They should not be
+    // fabricated openers ("Imagine a student...").
+    if (isSynthesizedStimulus(stim)) {
+      return `Stimulus opens with a synthesized scenario (e.g. "Imagine...") but spec requires a published reading passage. Anchor to a real excerpt with a byline.`;
+    }
+    // We do NOT require em-dash / quoted-passage primary-source signals
+    // here — those are AP-history patterns, not ACT/SAT reading patterns.
+    return null;
   }
 
   if (requirement.type === "scenario") {

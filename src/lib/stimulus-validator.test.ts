@@ -97,3 +97,49 @@ describe("validateStimulus — not required (recall MCQ)", () => {
     expect(validateStimulus(q, undefined, req)).toBeNull();
   });
 });
+
+describe("validateStimulus — readingPassage (ACT/SAT)", () => {
+  const req = { required: true, type: "readingPassage" as const };
+
+  // ~1700 chars of plausible ACT-style literary narrative
+  const goodPassage = `Passage A: Literary Narrative. From the novel *The Quiet Edge* by Marisol Reyes (©2018).\n\n` +
+    `When Cara stepped onto the porch at dawn, the boards groaned in the way she had once found unsettling and now found reassuring, ` +
+    `like a familiar greeting from someone who had long ago given up trying to be polite. The fog had not yet lifted from the inlet, ` +
+    `and so the world beyond the railing was nothing but pale gauze and the suggestion of trees. She set her cup on the table — ` +
+    `the same table her grandfather had built one summer between fishing seasons, badly, with a list to the left that her grandmother ` +
+    `had refused to fix as a matter of principle — and she sat. The fog moved as if breathing. Somewhere out in it, an osprey called, ` +
+    `and Cara remembered being seven and asking her father why the bird sounded so much like a small dog being scolded. He had laughed, ` +
+    `which she had taken as approval, and ever since she had heard ospreys as confirmation that the world was secretly funnier than it ` +
+    `let on. The fog began to thin. The water below the porch was still glass. From inside, the kettle began its second whistle. ` +
+    `Cara did not move. She was, she realized, waiting for something she could not name, which she had been doing, in one form or ` +
+    `another, since the previous September. The previous September was a country she did not visit lightly. She had moved to the ` +
+    `inlet to be far from it; she had bought the house on the porch's strength alone. There were six rooms inside, all of them ` +
+    `imperfect, and on most days she found this a relief. Today, sitting in the fog, she only found it familiar.`;
+
+  it("approves a real ACT-style passage with byline", () => {
+    const q = "Based on the passage, what does Cara most likely associate with the porch?";
+    expect(validateStimulus(q, goodPassage, req)).toBeNull();
+  });
+
+  it("rejects synthesized 'Imagine a student' opener even on reading passage", () => {
+    const q = "What is the main idea of the passage?";
+    const stim = "Imagine a student walking through a forest, noticing the leaves change color and pondering the passage of time. " + "x".repeat(2000);
+    const err = validateStimulus(q, stim, req);
+    expect(err).toContain("synthesized scenario");
+  });
+
+  it("rejects a too-short stub passage", () => {
+    const q = "Based on the passage, which is true?";
+    const stim = "From the novel by Jane Doe (2018). Cara walked outside.";
+    const err = validateStimulus(q, stim, req);
+    expect(err).toMatch(/too short/);
+  });
+
+  it("does NOT require em-dash / quoted-passage primary-source signals", () => {
+    // This passage has none of the AP-history signals (em-dash attribution,
+    // year-comma footer, "written/published/signed/delivered"). A real ACT
+    // passage often won't. The new validator branch must accept it.
+    const q = "What does the narrator suggest about the inlet?";
+    expect(validateStimulus(q, goodPassage, req)).toBeNull();
+  });
+});

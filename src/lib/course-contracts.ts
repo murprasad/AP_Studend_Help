@@ -23,7 +23,7 @@
 import { ApCourse, ApUnit } from "@prisma/client";
 
 export type CognitiveLevel = "Recall" | "Application" | "Analysis" | "Evaluation";
-export type StimulusType = "primarySource" | "graph" | "table" | "diagram" | "image" | "scenario";
+export type StimulusType = "primarySource" | "readingPassage" | "graph" | "table" | "diagram" | "image" | "scenario";
 
 export type QuestionContract = {
   /** Course this contract applies to. */
@@ -181,10 +181,10 @@ const COURSE_DEFAULTS: Partial<Record<ApCourse, Omit<QuestionContract, "course">
   AP_MACROECONOMICS: AP_BEHAVIORAL_DEFAULT,
   AP_MICROECONOMICS: AP_BEHAVIORAL_DEFAULT,
   SAT_MATH: SAT_DEFAULT,
-  SAT_READING_WRITING: { ...SAT_DEFAULT, requiresStimulus: true, requiredStimulusType: "primarySource" },
+  SAT_READING_WRITING: { ...SAT_DEFAULT, requiresStimulus: true, requiredStimulusType: "readingPassage" },
   ACT_MATH: ACT_MATH_DEFAULT,
   ACT_ENGLISH: ACT_DEFAULT,
-  ACT_READING: { ...ACT_DEFAULT, requiresStimulus: true, requiredStimulusType: "primarySource" },
+  ACT_READING: { ...ACT_DEFAULT, requiresStimulus: true, requiredStimulusType: "readingPassage" },
   ACT_SCIENCE: { ...ACT_DEFAULT, requiresStimulus: true, requiredStimulusType: "table" },
 };
 
