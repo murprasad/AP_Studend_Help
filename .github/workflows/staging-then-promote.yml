@@ -105,14 +105,8 @@ jobs:
             exit 1
           fi
 
-      - name: Upload .cf-deploy artifact (for promote job to reuse)
-        uses: actions/upload-artifact@v4
-        with:
-          name: cf-deploy-staging-validated
-          path: .cf-deploy
-          # v4 excludes dotfiles/dotdirs by default; .cf-deploy is hidden
-          include-hidden-files: true
-          retention-days: 1
+      # No artifact upload — promote rebuilds from source. Cross-runner
+      # artifact reuse was broken due to absolute paths in the bundle.
 
   promote:
     if: |
@@ -139,15 +133,11 @@ jobs:
       - name: Vitest (final guard)
         run: npx vitest run
 
-      - name: Restore staging-validated artifact (if available)
-        if: github.event.inputs.mode != 'promote'
-        uses: actions/download-artifact@v4
-        with:
-          name: cf-deploy-staging-validated
-          path: .cf-deploy
-
-      - name: Rebuild .cf-deploy if no artifact
-        if: github.event.inputs.mode == 'promote'
+      # Always rebuild in promote. The cross-job artifact reuse was broken
+      # because prepare-cf-deploy.js bakes absolute paths into the bundle,
+      # and those paths don't resolve on a different runner's filesystem.
+      # Rebuild costs ~5 min but is the correct fix.
+      - name: Build .cf-deploy
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: npm run pages:build
