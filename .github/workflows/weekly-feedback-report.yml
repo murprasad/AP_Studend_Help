@@ -1,0 +1,54 @@
+name: Weekly Negative-Feedback Report
+
+# Runs weekly to surface what users are unhappy with. Outputs the
+# thumbs-down feedback from the past 7 days as a workflow artifact +
+# emails contact@preplion.ai if there's anything substantive.
+#
+# Manual trigger:
+#   gh workflow run weekly-feedback-report.yml
+#   gh workflow run weekly-feedback-report.yml -f hours=72  # custom window
+
+on:
+  workflow_dispatch:
+    inputs:
+      hours:
+        description: 'Hours back to scan'
+        required: false
+        default: '168'
+  schedule:
+    # Every Monday at 14:00 UTC (~10am ET / 7am PT).
+    - cron: '0 14 * * 1'
+
+env:
+  NODE_VERSION: '20'
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install
+        run: npm ci --legacy-peer-deps
+
+      - name: Run feedback report
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          HOURS="${{ github.event.inputs.hours || 168 }}"
+          mkdir -p data/feedback-reports
+          node scripts/recent-negative-feedback.mjs $HOURS | tee data/feedback-reports/weekly-${{ github.run_id }}.txt
+
+      - name: Upload report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: weekly-feedback-${{ github.run_id }}
+          path: data/feedback-reports/
+          include-hidden-files: true
+          retention-days: 90
