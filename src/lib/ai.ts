@@ -258,6 +258,53 @@ NUMERIC UNIQUENESS REQUIREMENT (MANDATORY — violation = rejection):
 - Explanation: 100-450 chars (40-80 words). Name correct answer in 1 sentence + WHY in 1-2 sentences.
 - DO NOT include letter references in explanation ("A is correct", "B is wrong"). Reference the CONTENT directly: "The titration reaches equivalence when..." not "B is correct because..."`;
 
+  // 2026-05-08 quality sweep — concrete failure classes observed in prod
+  // (AP_CALCULUS_BC + AP_PHYSICS_1 walkthroughs and 565-question deterministic
+  // sweep across both products). Each rule below corresponds to a real bug
+  // class that the deterministic gates AND LLM judge will reject. We surface
+  // them in the prompt so the generator stops *producing* them in the first
+  // place — gates are the backstop, not the front line.
+  const qualityLessonsSection = `
+LESSONS FROM QUALITY SWEEP (HARD GATE — every rule below = automatic rejection):
+
+(L1) NEVER include the word "Correct" / "Incorrect" / "Wrong" / "Right" inside an option's text.
+  * WRONG: "C) 4 - Correct"   * WRONG: "B) 245 N (incorrect)"
+  * RIGHT: "C) 4"               RIGHT: "B) 245 N"
+  This is a direct answer leak — the gate will reject the question.
+
+(L2) NEVER let the stimulus reveal the correct numeric answer.
+  * WRONG: stimulus contains "= 245 N" when option B = 245 N is the correct answer.
+  * RIGHT: stimulus gives raw inputs (mass, density, volume) and asks the student to compute.
+  If you must show an equation in the stimulus, leave it UN-EVALUATED.
+
+(L3) LABEL-MISMATCH check (the most common class — caused "Predicted Score = 1" bug).
+  Before returning, RE-DERIVE the answer from scratch using the stimulus values:
+  1. Solve the problem yourself, step-by-step, in the explanation.
+  2. Take the final numeric/categorical result.
+  3. Find which option (A/B/C/D/E) holds that exact value.
+  4. Set "correctAnswer" to THAT letter — not the letter you intended at the start.
+  If the math in your explanation arrives at 490 N but you wrote correctAnswer="A"
+  and option A is "245 N", the question is broken. The LLM judge will reject it.
+
+(L4) LaTeX must always use backslashes. NEVER write bare "int", "sum", "frac", "rac",
+  "infty", "sqrt", "prod", "lim" — these don't render. Always: \\int, \\sum, \\frac,
+  \\infty, \\sqrt, \\prod, \\lim. Display math: $$ ... $$. Inline: $ ... $.
+
+(L5) NEVER include LLM-monologue or planning fragments in the explanation.
+  Banned: "is not needed, just", "actually wait", "let me reconsider", "hmm",
+  "on second thought", "I think the answer is", "you'd compute it as follows".
+  Speak as a teacher, not as a model thinking aloud.
+
+(L6) Vary the scenario — duplicate-content prevention.
+  If you're generating a polar-area, projectile-motion, titration, or any
+  textbook-classic question, change the NUMBERS, change the SETUP (different
+  function, different angle, different concentration), and change the framing
+  (find area / find volume / find avg value). Do not produce the same canonical
+  problem with cosmetic re-wording. The contentHash check will reject it.
+
+(L7) Stem must be a real question — never a fragment, never a "Which of the following"
+  with no following clause, never a definition cut mid-sentence.`;
+
   // Visual fidelity — students gain confidence when prep MCQs match the visual
   // structure of the real exam. We can't ship raster images yet, but we CAN
   // demand markdown tables, KaTeX, ASCII diagrams, and code blocks that all
@@ -462,7 +509,7 @@ ${config.examAlignmentNotes ? `EXAM CONTENT WEIGHTS:\n${config.examAlignmentNote
 
 ${unitHeader}
 
-${config.examAlignmentNotes}${difficultySection}${skillsSection}${stimulusSection}${stimulusRequiredSection}${visualFormatSection}${distractorSection}${ambiguityGuardSection}${numericUniquenessSection}${wordCountSection}${structuralCapsSection}${difficultyContractSection}${answerDistributionSection}${satFormatSection}${actFormatSection}${clepSection}
+${config.examAlignmentNotes}${difficultySection}${skillsSection}${stimulusSection}${stimulusRequiredSection}${visualFormatSection}${distractorSection}${ambiguityGuardSection}${numericUniquenessSection}${wordCountSection}${structuralCapsSection}${qualityLessonsSection}${difficultyContractSection}${answerDistributionSection}${satFormatSection}${actFormatSection}${clepSection}
 
 GENERATION TASK:
 ${generationInstruction}
