@@ -1,0 +1,87 @@
+name: Audit and Clean Question Bank
+
+# One-shot quality cleanup. Runs the sweep-leaks-and-audit script
+# (which uses validateAnswerNumericMatch + validateExplanationMath +
+# all other deterministic gates) against the live DB, optionally
+# auto-unapproving broken questions. Also produces a recent-negative-
+# feedback report.
+#
+# Trigger:
+#   gh workflow run audit-and-clean.yml -f mode=dry          # read-only audit
+#   gh workflow run audit-and-clean.yml -f mode=unapprove    # mark broken Qs unapproved
+#
+# Output: ZIP artifact with sweep report + feedback report.
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'dry (read-only) or unapprove (writes isApproved=false)'
+        required: true
+        default: 'dry'
+        type: choice
+        options:
+          - dry
+          - unapprove
+      feedback_hours:
+        description: 'Hours back to scan for negative feedback'
+        required: false
+        default: '24'
+
+env:
+  NODE_VERSION: '20'
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install
+        run: npm ci --legacy-peer-deps
+
+      - name: Diagnose + ensure mathjs (workflow-history bug — sometimes missing after ci)
+        run: |
+          if [ ! -d node_modules/mathjs ]; then
+            echo "::warning::node_modules/mathjs missing after npm ci — installing explicitly"
+            npm install mathjs@^15.2.0 --no-save --legacy-peer-deps
+          else
+            echo "node_modules/mathjs present (version $(node -p "require('./node_modules/mathjs/package.json').version"))"
+          fi
+
+      - name: Generate Prisma client
+        run: npx prisma generate
+
+      - name: Run sweep + audit (writes only when mode=unapprove)
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          if [ "${{ github.event.inputs.mode }}" = "unapprove" ]; then
+            npx tsx scripts/sweep-leaks-and-audit-full.ts --unapprove
+          else
+            npx tsx scripts/sweep-leaks-and-audit-full.ts
+          fi
+
+      - name: Recent negative feedback report
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          HOURS="${{ github.event.inputs.feedback_hours }}"
+          if [ -z "$HOURS" ]; then HOURS=24; fi
+          node scripts/recent-negative-feedback.mjs $HOURS | tee data/feedback-reports/last-${HOURS}h-summary.txt
+
+      - name: Upload artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: audit-and-clean-${{ github.run_id }}
+          path: |
+            data/sweep-reports/
+            data/feedback-reports/
+          retention-days: 30
+          include-hidden-files: true

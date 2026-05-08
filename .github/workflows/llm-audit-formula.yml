@@ -1,0 +1,73 @@
+name: LLM Formula-MCQ Audit
+
+# Catches the bug class that deterministic validators miss: stored
+# correctAnswer disagrees with explanation rationale on FORMULA / SYMBOLIC
+# MCQs (no single number to mismatch-check).
+#
+# Used for math-family CLEP courses where formula answers are common.
+#
+# Trigger:
+#   gh workflow run llm-audit-formula.yml -f course=CLEP_COLLEGE_ALGEBRA -f mode=dry
+#   gh workflow run llm-audit-formula.yml -f course=ALL_MATH -f mode=unapprove -f limit=100
+
+on:
+  workflow_dispatch:
+    inputs:
+      course:
+        description: 'Course code or "ALL_MATH" for the math-family bundle'
+        required: true
+        default: 'AP_CALCULUS_AB'
+      mode:
+        description: 'dry (read-only) or unapprove (writes isApproved=false)'
+        required: true
+        default: 'dry'
+        type: choice
+        options:
+          - dry
+          - unapprove
+      limit:
+        description: 'Max questions per course (0 = all). Cost ~$0.005/question.'
+        required: false
+        default: '0'
+
+env:
+  NODE_VERSION: '20'
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install
+        run: npm ci --legacy-peer-deps
+
+      - name: Run LLM audit
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          MODE_FLAG=""
+          if [ "${{ github.event.inputs.mode }}" = "dry" ]; then MODE_FLAG="--dry"; fi
+          LIMIT_FLAG=""
+          if [ "${{ github.event.inputs.limit }}" != "0" ]; then
+            LIMIT_FLAG="--limit=${{ github.event.inputs.limit }}"
+          fi
+          node scripts/llm-audit-formula-mcq.mjs \
+            --course=${{ github.event.inputs.course }} \
+            $MODE_FLAG \
+            $LIMIT_FLAG
+
+      - name: Upload artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: llm-audit-${{ github.run_id }}
+          path: data/llm-audit-runs/
+          include-hidden-files: true
+          retention-days: 30
