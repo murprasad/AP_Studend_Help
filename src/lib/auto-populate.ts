@@ -15,6 +15,13 @@ import { prisma } from "./prisma";
 import { COURSE_REGISTRY, VALID_AP_COURSES } from "./courses";
 import { buildQuestionPrompt } from "./ai";
 import { callAIWithCascade, validateQuestion } from "./ai-providers";
+// Deterministic gates + LLM judge — wired in 2026-05-07 to mirror PrepLion's
+// PR #18/#20. Stops bad questions reaching isApproved=true. Same 4-class
+// audit as scripts/sweep-leaks-and-audit.ts and scripts/llm-audit-formula-mcq.mjs.
+import { validateMcqStructure } from "./options";
+import { validateAnswerNumericMatch, validateExplanationMath } from "./math-validator";
+import { validateDistractorIntegrity } from "./distractor-leak-validator";
+import { judgeMcq } from "./llm-judge";
 import { getWikipediaSummary } from "./edu-apis";
 
 /** Minimum approved questions to maintain per unit. */
@@ -154,7 +161,9 @@ export async function runAutoPopulate(
       try {
         const q = await generateOneQuestion(course, unit, unitName, difficulty, topic, questionType);
         if (q) {
-          // CLEP quality heuristic: scenario-based check for MCQs
+          // CLEP quality heuristic: scenario-based check (vestigial — CLEP
+          // is now on PrepLion; kept harmless for any leftover StudentNest
+          // CLEP rows).
           const isCLEPCourse = (course as string).startsWith("CLEP_");
           let shouldAutoApprove = true;
           if (isCLEPCourse && questionType === QuestionType.MCQ) {
@@ -165,6 +174,48 @@ export async function runAutoPopulate(
             shouldAutoApprove = isScenarioBased && explanationQuality;
             if (!shouldAutoApprove) {
               console.log(`[auto-populate] ${course}/${unit}: flagged for review (not scenario-based or weak explanation)`);
+            }
+          }
+
+          // Deterministic gates (2026-05-07): catch correctAnswer-mismatch,
+          // distractor leaks, structural breakage, math-derivation errors.
+          // Applied to ALL MCQs (AP/SAT/ACT and any leftover CLEP).
+          if (shouldAutoApprove && questionType === QuestionType.MCQ) {
+            const opts = Array.isArray(q.options) ? q.options : [];
+            const ca = String(q.correctAnswer ?? "");
+            const structErr = validateMcqStructure(opts, ca);
+            const matchErr = validateAnswerNumericMatch(opts, ca, q.explanation ?? null);
+            const mathErr = validateExplanationMath(q.explanation ?? null);
+            const leakErr = validateDistractorIntegrity(opts, ca);
+            const gateFailures: string[] = [];
+            if (structErr) gateFailures.push(`structural: ${structErr}`);
+            if (matchErr) gateFailures.push(`answer-match: ${matchErr}`);
+            if (mathErr) gateFailures.push(`math: ${mathErr}`);
+            if (leakErr) gateFailures.push(`distractor: ${leakErr}`);
+            if (gateFailures.length > 0) {
+              shouldAutoApprove = false;
+              console.log(`[auto-populate] ${course}/${unit}: GATE_FAIL — ${gateFailures.join("; ")}`);
+            }
+          }
+
+          // LLM judge (2026-05-07): final gate. Catches LETTER_MISMATCH /
+          // CONTRADICTION / LABEL_MISMATCH that deterministic gates miss
+          // on symbolic/formula MCQs. Fail-open: judge unavailable doesn't
+          // block (deterministic gate verdict still applies).
+          if (shouldAutoApprove && questionType === QuestionType.MCQ) {
+            const opts = Array.isArray(q.options) ? q.options : [];
+            const ca = String(q.correctAnswer ?? "");
+            const judgeRes = await judgeMcq({
+              questionText: q.questionText,
+              options: opts,
+              correctAnswer: ca,
+              explanation: q.explanation,
+            });
+            if (!judgeRes.ok) {
+              shouldAutoApprove = false;
+              console.log(`[auto-populate] ${course}/${unit}: LLM_JUDGE_FAIL [${judgeRes.verdict}] — ${judgeRes.reason}`);
+            } else if (judgeRes.fallback) {
+              console.log(`[auto-populate] ${course}/${unit}: LLM judge unavailable (${judgeRes.reason}) — relying on deterministic gates`);
             }
           }
 
