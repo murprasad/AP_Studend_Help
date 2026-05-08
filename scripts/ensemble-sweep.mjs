@@ -42,25 +42,38 @@ const UNAPPROVE = !!args.unapprove;
 const COURSE = args.course ?? null;
 const LIMIT = args.limit ? parseInt(args.limit, 10) : null;
 const CONCURRENCY = args.concurrency ? parseInt(args.concurrency, 10) : 3;
+const INCLUDE_UNAPPROVED = !!args["include-unapproved"]; // bidirectional re-score
 const TIMEOUT_MS = 25_000;
 
-console.log(`Mode: ${UNAPPROVE ? "WRITE (will unapprove failures)" : "DRY (read-only)"}`);
-console.log(`Filter: course=${COURSE ?? "ALL"}, limit=${LIMIT ?? "none"}, concurrency=${CONCURRENCY}`);
+console.log(`Mode: ${UNAPPROVE ? "WRITE (bidirectional: approve passes, unapprove fails)" : "DRY (read-only)"}`);
+console.log(`Filter: course=${COURSE ?? "ALL"}, limit=${LIMIT ?? "none"}, concurrency=${CONCURRENCY}, includeUnapproved=${INCLUDE_UNAPPROVED}`);
 
 function buildPrompt(q, opts) {
-  const optsStr = opts.map((o, i) => `${String.fromCharCode(65 + i)}) ${o}`).join("\n");
-  return `Audit this MCQ. Return JSON only with keys "verdict" and "reason".
+  // Strip any leading "X) " prefix from each option — they're stored that
+  // way for legacy reasons and the UI strips at render. We re-prefix
+  // canonically so the judge sees "A) ..." once, never "A) A) ...".
+  const stripPrefix = (s) => String(s).replace(/^[A-E]\s*\)\s*/, "");
+  const optsStr = opts.map((o, i) => `${String.fromCharCode(65 + i)}) ${stripPrefix(o)}`).join("\n");
+  return `You are auditing a StudentNest practice question against real College Board (AP/SAT/ACT) exam standards. Return JSON only with keys "verdict" and "reason".
 
 verdict must be exactly "PASS" or "FAIL".
 
-FAIL if ANY of these are true:
+FAIL if ANY of these CORRECTNESS bugs are present:
 - The stored correctAnswer letter does NOT hold the value the explanation derives.
-- The explanation contradicts itself.
-- The explanation describes a distractor by letter (e.g. "Option B...") but that letter's text doesn't match the description.
-- An option contains the word "Correct", "Incorrect", "Wrong", or "Right" (answer leak).
-- The stimulus reveals the correct numeric answer.
-- LaTeX uses bare "int", "sum", "frac", "rac", "infty" without backslashes.
+- The explanation contradicts itself (one sentence picks A, another picks B).
+- The explanation describes a distractor by letter (e.g. "Option B incorrectly multiplies...") but that letter's actual text doesn't match the description.
+- An OPTION's TEXT contains the word "Correct", "Incorrect", "Wrong", or "Right" (e.g. "B) 245 - Correct"). NOT FAIL: the explanation saying "the correct answer is B" — that is normal teaching content, not a leak.
+- The stimulus reveals the correct numeric answer (e.g. stimulus shows "= 245" when correct option is 245).
+- LaTeX uses bare "int", "sum", "frac", "rac", "infty" without backslashes IN THE STORED TEXT (not the JSON-encoded version of backslashes).
 - The explanation includes LLM monologue ("hmm", "let me reconsider", "is not needed, just").
+
+FAIL also if the question doesn't match real CB exam STYLE/RIGOR (HARD requirement):
+- Stem reads more like a textbook paragraph than an exam item.
+- Distractors are not all CB-grade plausible (an option is obviously wrong, or doesn't represent a real student misconception).
+- Stimulus omits the CB-style scaffold (no source quote+attribution for history, no table/chart for AP Stats / ACT Science, no described diagram for AP Physics, no passage for SAT R/W).
+- Source attribution is fabricated, vague, or missing year.
+- Difficulty doesn't match the apparent rigor (HARD-tagged but is just longer recall).
+- Stem uses ambiguous superlatives ("primary", "main", "best") without textual justification.
 
 Otherwise PASS.
 
@@ -82,28 +95,28 @@ function extractJson(text) {
   try { return JSON.parse(m[0]); } catch { return null; }
 }
 
-async function callOpenAI(prompt) {
-  const key = process.env.OPENAI_API_KEY;
-  if (!key) return { model: "gpt-4o", vote: "ABSTAIN", reason: "no key" };
+async function callGroq(prompt) {
+  const key = process.env.GROQ_API_KEY;
+  if (!key) return { model: "groq-llama-3.3-70b", vote: "ABSTAIN", reason: "no key" };
   try {
-    const res = await fetch("https://api.openai.com/v1/chat/completions", {
+    const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
       method: "POST",
       headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
       body: JSON.stringify({
-        model: "gpt-4o",
+        model: "llama-3.3-70b-versatile",
         messages: [{ role: "user", content: prompt }],
         response_format: { type: "json_object" },
-        max_tokens: 200,
+        max_tokens: 400,
       }),
       signal: AbortSignal.timeout(TIMEOUT_MS),
     });
-    if (!res.ok) return { model: "gpt-4o", vote: "ABSTAIN", reason: `http ${res.status}` };
+    if (!res.ok) return { model: "groq-llama-3.3-70b", vote: "ABSTAIN", reason: `http ${res.status}` };
     const data = await res.json();
     const parsed = JSON.parse(data?.choices?.[0]?.message?.content ?? "{}");
     const v = parsed?.verdict === "PASS" ? "PASS" : parsed?.verdict === "FAIL" ? "FAIL" : "ABSTAIN";
-    return { model: "gpt-4o", vote: v, reason: typeof parsed?.reason === "string" ? parsed.reason.slice(0, 200) : undefined };
+    return { model: "groq-llama-3.3-70b", vote: v, reason: typeof parsed?.reason === "string" ? parsed.reason.slice(0, 200) : undefined };
   } catch (e) {
-    return { model: "gpt-4o", vote: "ABSTAIN", reason: e.message?.slice(0, 80) ?? "err" };
+    return { model: "groq-llama-3.3-70b", vote: "ABSTAIN", reason: e.message?.slice(0, 80) ?? "err" };
   }
 }
 
@@ -116,7 +129,7 @@ async function callAnthropic(prompt) {
       headers: { "x-api-key": key, "anthropic-version": "2023-06-01", "Content-Type": "application/json" },
       body: JSON.stringify({
         model: "claude-sonnet-4-6",
-        max_tokens: 200,
+        max_tokens: 600,
         messages: [{ role: "user", content: prompt }],
       }),
       signal: AbortSignal.timeout(TIMEOUT_MS),
@@ -134,55 +147,69 @@ async function callAnthropic(prompt) {
 
 async function callGemini(prompt) {
   const key = process.env.GOOGLE_AI_API_KEY;
-  if (!key) return { model: "gemini-1.5-pro", vote: "ABSTAIN", reason: "no key" };
+  if (!key) return { model: "gemini-2.5-flash", vote: "ABSTAIN", reason: "no key" };
   try {
     const res = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=${key}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${key}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           contents: [{ parts: [{ text: prompt }] }],
-          generationConfig: { responseMimeType: "application/json", maxOutputTokens: 200 },
+          generationConfig: { responseMimeType: "application/json", maxOutputTokens: 600, thinkingConfig: { thinkingBudget: 0 } },
         }),
         signal: AbortSignal.timeout(TIMEOUT_MS),
       }
     );
-    if (!res.ok) return { model: "gemini-1.5-pro", vote: "ABSTAIN", reason: `http ${res.status}` };
+    if (!res.ok) return { model: "gemini-2.5-flash", vote: "ABSTAIN", reason: `http ${res.status}` };
     const data = await res.json();
     const parsed = extractJson(data?.candidates?.[0]?.content?.parts?.[0]?.text ?? "");
-    if (!parsed) return { model: "gemini-1.5-pro", vote: "ABSTAIN", reason: "no json" };
+    if (!parsed) return { model: "gemini-2.5-flash", vote: "ABSTAIN", reason: "no json" };
     const v = parsed?.verdict === "PASS" ? "PASS" : parsed?.verdict === "FAIL" ? "FAIL" : "ABSTAIN";
-    return { model: "gemini-1.5-pro", vote: v, reason: typeof parsed?.reason === "string" ? parsed.reason.slice(0, 200) : undefined };
+    return { model: "gemini-2.5-flash", vote: v, reason: typeof parsed?.reason === "string" ? parsed.reason.slice(0, 200) : undefined };
   } catch (e) {
-    return { model: "gemini-1.5-pro", vote: "ABSTAIN", reason: e.message?.slice(0, 80) ?? "err" };
+    return { model: "gemini-2.5-flash", vote: "ABSTAIN", reason: e.message?.slice(0, 80) ?? "err" };
   }
 }
 
 async function judgeOne(q) {
   const opts = Array.isArray(q.options) ? q.options.map(String) : [];
   const prompt = buildPrompt(q, opts);
-  const votes = await Promise.all([callOpenAI(prompt), callAnthropic(prompt), callGemini(prompt)]);
+  const votes = await Promise.all([callGroq(prompt), callAnthropic(prompt), callGemini(prompt)]);
   const pass = votes.filter((v) => v.vote === "PASS").length;
   const fail = votes.filter((v) => v.vote === "FAIL").length;
   let verdict;
   if (fail >= 2) verdict = "FAIL";
   else if (pass >= 2) verdict = "PASS";
   else verdict = "NO_QUORUM";
-  return { id: q.id, course: q.course, verdict, votes };
+  return { id: q.id, course: q.course, wasApproved: q.isApproved, verdict, votes };
 }
 
-// Pull
-const filterClause = COURSE ? sql`AND course::text = ${COURSE}` : sql``;
-const limitClause = LIMIT ? sql`LIMIT ${LIMIT}` : sql``;
-const qs = await sql`
-  SELECT id, course::text AS course, "questionText", options, "correctAnswer", explanation
-  FROM questions
-  WHERE "isApproved" = true AND "questionType" = 'MCQ'
-  ${filterClause}
-  ORDER BY "createdAt" DESC
-  ${limitClause}
-`;
+// Pull. Branch the query because neon-serverless doesn't support nested
+// sql`` fragments. INCLUDE_UNAPPROVED toggles whether unapproved Qs are
+// re-scored (used for "rescue good Qs that earlier sweeps over-removed").
+let qs;
+if (INCLUDE_UNAPPROVED) {
+  if (COURSE && LIMIT) {
+    qs = await sql`SELECT id, course::text AS course, "questionText", options, "correctAnswer", explanation, "isApproved" FROM questions WHERE "questionType" = 'MCQ' AND course::text = ${COURSE} ORDER BY "createdAt" DESC LIMIT ${LIMIT}`;
+  } else if (COURSE) {
+    qs = await sql`SELECT id, course::text AS course, "questionText", options, "correctAnswer", explanation, "isApproved" FROM questions WHERE "questionType" = 'MCQ' AND course::text = ${COURSE} ORDER BY "createdAt" DESC`;
+  } else if (LIMIT) {
+    qs = await sql`SELECT id, course::text AS course, "questionText", options, "correctAnswer", explanation, "isApproved" FROM questions WHERE "questionType" = 'MCQ' ORDER BY "createdAt" DESC LIMIT ${LIMIT}`;
+  } else {
+    qs = await sql`SELECT id, course::text AS course, "questionText", options, "correctAnswer", explanation, "isApproved" FROM questions WHERE "questionType" = 'MCQ' ORDER BY "createdAt" DESC`;
+  }
+} else {
+  if (COURSE && LIMIT) {
+    qs = await sql`SELECT id, course::text AS course, "questionText", options, "correctAnswer", explanation, "isApproved" FROM questions WHERE "isApproved" = true AND "questionType" = 'MCQ' AND course::text = ${COURSE} ORDER BY "createdAt" DESC LIMIT ${LIMIT}`;
+  } else if (COURSE) {
+    qs = await sql`SELECT id, course::text AS course, "questionText", options, "correctAnswer", explanation, "isApproved" FROM questions WHERE "isApproved" = true AND "questionType" = 'MCQ' AND course::text = ${COURSE} ORDER BY "createdAt" DESC`;
+  } else if (LIMIT) {
+    qs = await sql`SELECT id, course::text AS course, "questionText", options, "correctAnswer", explanation, "isApproved" FROM questions WHERE "isApproved" = true AND "questionType" = 'MCQ' ORDER BY "createdAt" DESC LIMIT ${LIMIT}`;
+  } else {
+    qs = await sql`SELECT id, course::text AS course, "questionText", options, "correctAnswer", explanation, "isApproved" FROM questions WHERE "isApproved" = true AND "questionType" = 'MCQ' ORDER BY "createdAt" DESC`;
+  }
+}
 console.log(`Loaded ${qs.length} approved MCQs.\n`);
 
 const results = [];
@@ -240,13 +267,19 @@ writeFileSync(outFile, JSON.stringify({
 }, null, 2));
 console.log(`\nArtifact: ${outFile}`);
 
-if (UNAPPROVE && failedIds.length > 0) {
-  console.log(`\nUnapproving ${failedIds.length} questions...`);
+if (UNAPPROVE) {
+  // Bidirectional: approved+FAIL → unapprove; unapproved+PASS → approve.
+  const toUnapprove = results.filter((r) => r.verdict === "FAIL" && r.wasApproved).map((r) => r.id);
+  const toApprove = results.filter((r) => r.verdict === "PASS" && !r.wasApproved).map((r) => r.id);
+  console.log(`\nWrites: -${toUnapprove.length} unapprove (approved→FAIL), +${toApprove.length} approve (unapproved→PASS)`);
   const CHUNK = 100;
-  for (let i = 0; i < failedIds.length; i += CHUNK) {
-    const slice = failedIds.slice(i, i + CHUNK);
+  for (let i = 0; i < toUnapprove.length; i += CHUNK) {
+    const slice = toUnapprove.slice(i, i + CHUNK);
     await sql`UPDATE questions SET "isApproved" = false WHERE id = ANY(${slice})`;
-    console.log(`  unapproved ${Math.min(i + CHUNK, failedIds.length)}/${failedIds.length}`);
   }
-  console.log("✓ Done.");
+  for (let i = 0; i < toApprove.length; i += CHUNK) {
+    const slice = toApprove.slice(i, i + CHUNK);
+    await sql`UPDATE questions SET "isApproved" = true WHERE id = ANY(${slice})`;
+  }
+  console.log("✓ Writes done.");
 }

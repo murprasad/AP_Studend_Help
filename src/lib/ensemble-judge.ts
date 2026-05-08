@@ -53,21 +53,31 @@ export interface EnsembleResult {
 const TIMEOUT_MS = 25_000;
 
 function buildPrompt(q: McqInput): string {
+  // Strip any legacy "X) " prefix from stored options — UI strips at render.
+  const stripPrefix = (s: string) => s.replace(/^[A-E]\s*\)\s*/, "");
   const optsStr = q.options
-    .map((o, i) => `${String.fromCharCode(65 + i)}) ${o}`)
+    .map((o, i) => `${String.fromCharCode(65 + i)}) ${stripPrefix(o)}`)
     .join("\n");
-  return `Audit this MCQ. Return JSON only with keys "verdict" and "reason".
+  return `You are auditing a StudentNest practice question against real College Board (AP/SAT/ACT) exam standards. Return JSON only with keys "verdict" and "reason".
 
 verdict must be exactly "PASS" or "FAIL".
 
-FAIL if ANY of these are true:
+FAIL if ANY of these CORRECTNESS bugs are present:
 - The stored correctAnswer letter does NOT hold the value the explanation derives.
 - The explanation contradicts itself.
-- The explanation describes a distractor by letter (e.g. "Option B...") but that letter's text doesn't match the description.
-- An option contains the word "Correct", "Incorrect", "Wrong", or "Right" (answer leak).
-- The stimulus reveals the correct numeric answer (e.g. stimulus shows "= 245" when correct option = 245).
+- The explanation describes a distractor by letter (e.g. "Option B incorrectly multiplies...") but that letter's actual text doesn't match the description.
+- An OPTION's TEXT contains the word "Correct"/"Incorrect"/"Wrong"/"Right" (e.g. "B) 245 - Correct"). NOT FAIL: the explanation saying "the correct answer is B" — that is normal teaching content.
+- The stimulus reveals the correct numeric answer.
 - LaTeX uses bare "int", "sum", "frac", "rac", "infty" without backslashes.
 - The explanation includes LLM monologue ("hmm", "let me reconsider", "is not needed, just").
+
+FAIL also if the question doesn't match real CB exam STYLE/RIGOR (HARD requirement):
+- Stem reads more like a textbook paragraph than an exam item.
+- Distractors are not all CB-grade plausible (an option is obviously wrong, or doesn't represent a real student misconception).
+- Stimulus omits the CB-style scaffold (no source quote+attribution for history, no table/chart for AP Stats / ACT Science, no described diagram for AP Physics, no passage for SAT R/W).
+- Source attribution is fabricated, vague, or missing year.
+- Difficulty doesn't match the apparent rigor (HARD-tagged but is just longer recall).
+- Stem uses ambiguous superlatives ("primary", "main", "best") without textual justification.
 
 Otherwise PASS.
 
