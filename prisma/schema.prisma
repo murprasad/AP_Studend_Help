@@ -37,6 +37,8 @@ model User {
   onboardingCompletedAt DateTime?             // null = send to /onboarding on next login
   dailyQuizOptIn    Boolean   @default(false)    // opt-in for the "Daily Quiz Email" feature; flipped via Settings toggle
   dailyQuizTz       String?                      // IANA tz (e.g. "America/Chicago"); null = UTC default at 7:30
+  signupUserAgent   String?                      // 2026-05-08: UA at register for mobile-vs-web bounce analysis
+  signupReferer     String?                      // 2026-05-08: HTTP Referer at register
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
 
@@ -450,6 +452,7 @@ model PracticeSession {
   completedAt  DateTime?
   score        Float?
   apScoreEstimate Int?
+  userAgent      String?                  // 2026-05-08: UA at session-create
 
   user      User               @relation(fields: [userId], references: [id], onDelete: Cascade)
   questions SessionQuestion[]

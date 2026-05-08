@@ -39,6 +39,12 @@ export async function POST(req: NextRequest) {
 
     const passwordHash = hashSync(data.password, 12);
 
+    // Capture UA + Referer at register so we can later answer "was this
+    // user mobile or web?" without GA dashboard access. Truncate to safe
+    // lengths — UA strings can be ~500 chars on modern Chrome.
+    const signupUserAgent = (req.headers.get("user-agent") ?? "").slice(0, 500) || null;
+    const signupReferer = (req.headers.get("referer") ?? "").slice(0, 500) || null;
+
     const user = await prisma.user.create({
       data: {
         email: data.email.toLowerCase(),
@@ -48,6 +54,8 @@ export async function POST(req: NextRequest) {
         gradeLevel: data.gradeLevel,
         school: data.school || null,
         track: data.track ?? "ap",
+        signupUserAgent,
+        signupReferer,
       },
     });
 
