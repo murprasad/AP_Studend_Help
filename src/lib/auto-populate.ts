@@ -22,6 +22,7 @@ import { validateMcqStructure } from "./options";
 import { validateAnswerNumericMatch, validateExplanationMath } from "./math-validator";
 import { validateDistractorIntegrity } from "./distractor-leak-validator";
 import { judgeMcq } from "./llm-judge";
+import { ensembleJudgeMcq } from "./ensemble-judge";
 import { getWikipediaSummary } from "./edu-apis";
 
 /** Minimum approved questions to maintain per unit. */
@@ -198,10 +199,9 @@ export async function runAutoPopulate(
             }
           }
 
-          // LLM judge (2026-05-07): final gate. Catches LETTER_MISMATCH /
-          // CONTRADICTION / LABEL_MISMATCH that deterministic gates miss
-          // on symbolic/formula MCQs. Fail-open: judge unavailable doesn't
-          // block (deterministic gate verdict still applies).
+          // LLM judge (2026-05-07): single-model GPT-4o gate. Catches
+          // LETTER_MISMATCH / CONTRADICTION / LABEL_MISMATCH on symbolic
+          // MCQs. Fail-open on infra errors.
           if (shouldAutoApprove && questionType === QuestionType.MCQ) {
             const opts = Array.isArray(q.options) ? q.options : [];
             const ca = String(q.correctAnswer ?? "");
@@ -216,6 +216,28 @@ export async function runAutoPopulate(
               console.log(`[auto-populate] ${course}/${unit}: LLM_JUDGE_FAIL [${judgeRes.verdict}] — ${judgeRes.reason}`);
             } else if (judgeRes.fallback) {
               console.log(`[auto-populate] ${course}/${unit}: LLM judge unavailable (${judgeRes.reason}) — relying on deterministic gates`);
+            }
+          }
+
+          // Ensemble judge (Beta 9.9, 2026-05-08): 3-model 2-of-3 quorum
+          // (GPT-4o + Claude Sonnet + Gemini Pro). Eliminates single-model
+          // blind spots — same hallucination across two model families is
+          // unlikely. Per user 2026-05-08: every Q must pass this gate.
+          // Fail-open if quorum can't form (infra issue, not quality).
+          if (shouldAutoApprove && questionType === QuestionType.MCQ) {
+            const opts = Array.isArray(q.options) ? q.options : [];
+            const ca = String(q.correctAnswer ?? "");
+            const ens = await ensembleJudgeMcq({
+              questionText: q.questionText,
+              options: opts,
+              correctAnswer: ca,
+              explanation: q.explanation,
+            });
+            if (!ens.ok) {
+              shouldAutoApprove = false;
+              console.log(`[auto-populate] ${course}/${unit}: ENSEMBLE_FAIL — ${ens.reason}`);
+            } else if (ens.fallback) {
+              console.log(`[auto-populate] ${course}/${unit}: ensemble no-quorum (${ens.reason}) — relying on prior gates`);
             }
           }
 
