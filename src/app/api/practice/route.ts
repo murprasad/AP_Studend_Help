@@ -379,6 +379,9 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // Capture UA at session-create (added 2026-05-08 for device-class analysis).
+    const sessionUserAgent = (req.headers.get("user-agent") ?? "").slice(0, 500) || null;
+
     // Create the session (two steps to avoid implicit transactions,
     // which are not supported by the Neon HTTP adapter)
     const practiceSession = await prisma.practiceSession.create({
@@ -387,6 +390,7 @@ export async function POST(req: NextRequest) {
         course: course as ApCourse,
         sessionType: sessionType as SessionType,
         totalQuestions: selectedQuestions.length,
+        userAgent: sessionUserAgent,
       },
     });
 
