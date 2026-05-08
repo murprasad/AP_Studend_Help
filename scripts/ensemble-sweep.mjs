@@ -61,16 +61,17 @@ verdict must be exactly "PASS" or "FAIL".
 FAIL if ANY of these CORRECTNESS bugs are present:
 - The stored correctAnswer letter does NOT hold the value the explanation derives.
 - The explanation contradicts itself (one sentence picks A, another picks B).
-- The explanation describes a distractor by letter (e.g. "Option B incorrectly multiplies...") but that letter's actual text doesn't match the description.
-- An OPTION's TEXT contains the word "Correct", "Incorrect", "Wrong", or "Right" (e.g. "B) 245 - Correct"). NOT FAIL: the explanation saying "the correct answer is B" — that is normal teaching content, not a leak.
+- The explanation references DISTRACTORS by letter ("Option B is incorrect because...", "A is wrong because...", "C is tempting but wrong"). Real CB explanations describe the CONTENT directly, not by letter. Saying "the correct answer is B" once is fine; enumerating distractor flaws by letter is FAIL.
+- An OPTION's TEXT contains the word "Correct", "Incorrect", "Wrong", or "Right" (e.g. "B) 245 - Correct").
 - The stimulus reveals the correct numeric answer (e.g. stimulus shows "= 245" when correct option is 245).
 - LaTeX uses bare "int", "sum", "frac", "rac", "infty" without backslashes IN THE STORED TEXT (not the JSON-encoded version of backslashes).
 - The explanation includes LLM monologue ("hmm", "let me reconsider", "is not needed, just").
 
 FAIL also if the question doesn't match real CB exam STYLE/RIGOR (HARD requirement):
+- **Passage-based exam without a passage** = automatic FAIL. AP Lit, AP Lang, SAT R/W, ACT Reading, ACT English, AP US History, AP World History, AP European History, AP Government, AP Psychology MCQs are ALWAYS based on a stimulus (passage, source quote+attribution, scenario, data, chart, diagram). If the stem is abstract trivia with NO stimulus on these courses, FAIL — not a real CB item.
 - Stem reads more like a textbook paragraph than an exam item.
 - Distractors are not all CB-grade plausible (an option is obviously wrong, or doesn't represent a real student misconception).
-- Stimulus omits the CB-style scaffold (no source quote+attribution for history, no table/chart for AP Stats / ACT Science, no described diagram for AP Physics, no passage for SAT R/W).
+- Stimulus omits the CB-style scaffold (no source quote+attribution for history, no table/chart for AP Stats / ACT Science, no described diagram for AP Physics, no passage for SAT R/W, no described code for AP CSP).
 - Source attribution is fabricated, vague, or missing year.
 - Difficulty doesn't match the apparent rigor (HARD-tagged but is just longer recall).
 - Stem uses ambiguous superlatives ("primary", "main", "best") without textual justification.
