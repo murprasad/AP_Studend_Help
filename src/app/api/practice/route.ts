@@ -164,7 +164,7 @@ export async function POST(req: NextRequest) {
     const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
     const fortyEightHoursAgo = sevenDaysAgo; // Variable name preserved for downstream readability; semantics widened.
     const allQuestionIds = allQuestions.map((q) => q.id);
-    const [correctResponses, recentResponses] = await Promise.all([
+    const [correctResponses, recentResponses, sameSessionResponses] = await Promise.all([
       prisma.studentResponse.findMany({
         where: { userId: session.user.id, isCorrect: true, questionId: { in: allQuestionIds } },
         select: { questionId: true },
@@ -173,16 +173,46 @@ export async function POST(req: NextRequest) {
         where: { userId: session.user.id, questionId: { in: allQuestionIds }, answeredAt: { gte: fortyEightHoursAgo } },
         select: { questionId: true },
       }),
+      // 2026-05-08 — same-content dedup against questions answered in the
+      // last 30 min (covers a single journey session). The DB has dupes
+      // (same questionText, different id, contentHash=null) — e.g. 43
+      // identical polar-area Qs in AP_CALCULUS_BC. Without this filter,
+      // step-3 diagnostic shows the same question the student just
+      // answered in step-1 warm-up, with a different id slipping past
+      // the questionId-based dedup.
+      prisma.studentResponse.findMany({
+        where: {
+          userId: session.user.id,
+          answeredAt: { gte: new Date(Date.now() - 30 * 60 * 1000) },
+        },
+        select: { question: { select: { questionText: true } } },
+      }),
     ]);
 
     const correctlyAnsweredIds = new Set(correctResponses.map((r) => r.questionId));
     const recentlySeenIds = new Set(recentResponses.map((r) => r.questionId));
+    // Same-session content-text dedup: build a set of normalized question
+    // texts answered in the last 30 min, exclude any allQuestions whose
+    // questionText normalizes to the same value.
+    const normalize = (s: string) => (s || "").toLowerCase().replace(/\s+/g, " ").trim();
+    const recentlySeenTexts = new Set(
+      sameSessionResponses
+        .map((r) => normalize(r.question?.questionText ?? ""))
+        .filter((t) => t.length > 0),
+    );
 
     // Three-tier priority pool: never seen > recently seen (not mastered) > seen correct
+    // Plus same-text dedup so students don't see the same question twice in
+    // a single journey (different id, identical text — old DB has many such pairs).
     let freshQuestions = allQuestions.filter((q) =>
-      !correctlyAnsweredIds.has(q.id) && !recentlySeenIds.has(q.id)
+      !correctlyAnsweredIds.has(q.id) &&
+      !recentlySeenIds.has(q.id) &&
+      !recentlySeenTexts.has(normalize(q.questionText)),
     );
-    const seenCorrectQuestions = allQuestions.filter((q) => correctlyAnsweredIds.has(q.id));
+    const seenCorrectQuestions = allQuestions.filter((q) =>
+      correctlyAnsweredIds.has(q.id) &&
+      !recentlySeenTexts.has(normalize(q.questionText)),
+    );
 
     // Fetch student's mastery scores for adaptive topic targeting
     const masteryData = await prisma.masteryScore.findMany({
