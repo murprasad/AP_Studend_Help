@@ -1,0 +1,87 @@
+{
+  "schema_version": "1.0",
+  "course": "SAT_READING_WRITING",
+  "last_updated": "2026-05-09",
+  "source_count": 8,
+  "calibration": {
+    "coverage_strategy": "wide_not_deep",
+    "coverage_strategy_note": "Real test-takers report this exam covers breadth over depth. Stay at college 101 level on each topic.",
+    "topic_weights": {
+      "_default": 1,
+      "english": 1.45,
+      "math": 1.5,
+      "r_w": 1.45
+    },
+    "wording_style": {
+      "tricky_wording_fraction": 0.08,
+      "guidance": "Realistic exam-style indirection. Always single-correct-answer."
+    },
+    "difficulty_distribution": {
+      "easy": 0.15,
+      "medium": 0.5,
+      "hard": 0.35,
+      "rationale": "avg pass score 1483 — harder test"
+    },
+    "subtopic_struggle_signals": [
+      {
+        "topic": "inferences",
+        "note": "these really make your brain work at 110%, and help you get out of the comfort zone"
+      },
+      {
+        "topic": "command of evidence",
+        "note": "these really make your brain work at 110%, and help you get out of the comfort zone"
+      },
+      {
+        "topic": "words in context",
+        "note": "these really make your brain work at 110%, and help you get out of the comfort zone"
+      }
+    ],
+    "perceived_authenticity_bar": {
+      "competitors": [
+        "A Song of Ice and Fire series",
+        "The Godfather",
+        "cough drops",
+        "James Lu's SAT desmos video"
+      ],
+      "note": "Students compare us to these — match the register."
+    }
+  },
+  "generator_prompt_injection": "REAL TEST-TAKER INSIGHTS (sourced from r/Sat, updated 2026-05-09):\n- Coverage: Real test-takers report this exam covers breadth over depth. Stay at college 101 level on each topic.\n- High-emphasis topics (per real students): math, english, r w.\n- Students struggle most with: inferences, command of evidence, words in context. Generate proportionally more on these.\n- Wording style: ~9% of items should use realistic exam-style indirection (NOT unfair ambiguity).\n- Difficulty target: 15% easy / 50% medium / 35% hard. avg pass score 1483 — harder test.\n- Authenticity bar: students compare us to A Song of Ice and Fire series, The Godfather, cough drops. Match that register.",
+  "popup_tips": [
+    {
+      "tip_id": "dc600862",
+      "text": "English has been my weaker point.",
+      "source_attribution": "From a recent SAT READING WRITING test-taker",
+      "first_seen": "2026-05-09",
+      "topic_filter": []
+    },
+    {
+      "tip_id": "260bf363",
+      "text": "I'm quite capable in terms of mathematics throughout my school years",
+      "source_attribution": "From a recent SAT READING WRITING test-taker",
+      "first_seen": "2026-05-09",
+      "topic_filter": []
+    },
+    {
+      "tip_id": "be57f2bc",
+      "text": "reading a lot of English literature helps",
+      "source_attribution": "From a recent SAT READING WRITING test-taker",
+      "first_seen": "2026-05-09",
+      "topic_filter": []
+    },
+    {
+      "tip_id": "fe941629",
+      "text": "these really make your brain work at 110%, and help you get out of the comfort zone",
+      "source_attribution": "From a recent SAT READING WRITING test-taker",
+      "first_seen": "2026-05-09",
+      "topic_filter": []
+    },
+    {
+      "tip_id": "8ea9a0da",
+      "text": "I had the worst stomach pain and diarrhea of my life. I was already nervous",
+      "source_attribution": "From a recent SAT READING WRITING test-taker",
+      "first_seen": "2026-05-09",
+      "topic_filter": []
+    }
+  ]
+}

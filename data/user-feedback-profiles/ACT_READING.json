@@ -1,0 +1,53 @@
+{
+  "schema_version": "1.0",
+  "course": "ACT_READING",
+  "last_updated": "2026-05-09",
+  "source_count": 3,
+  "calibration": {
+    "coverage_strategy": "wide_not_deep",
+    "coverage_strategy_note": "Real test-takers report this exam covers breadth over depth. Stay at college 101 level on each topic.",
+    "topic_weights": {
+      "_default": 1
+    },
+    "wording_style": {
+      "tricky_wording_fraction": 0,
+      "guidance": "Realistic exam-style indirection. Always single-correct-answer."
+    },
+    "difficulty_distribution": {
+      "easy": 0.3,
+      "medium": 0.5,
+      "hard": 0.2,
+      "rationale": "avg pass score 29 suggests easier test"
+    },
+    "subtopic_struggle_signals": [
+      {
+        "topic": "reading",
+        "note": "a TWENTY TWO on the actual act??? like what???"
+      }
+    ],
+    "perceived_authenticity_bar": {
+      "competitors": [
+        "ACT class",
+        "practice tests"
+      ],
+      "note": "Students compare us to these — match the register."
+    }
+  },
+  "generator_prompt_injection": "REAL TEST-TAKER INSIGHTS (sourced from r/ACT, updated 2026-05-09):\n- Coverage: Real test-takers report this exam covers breadth over depth. Stay at college 101 level on each topic.\n- Students struggle most with: reading. Generate proportionally more on these.\n- Wording style: ~0% of items should use realistic exam-style indirection (NOT unfair ambiguity).\n- Difficulty target: 30% easy / 50% medium / 20% hard. avg pass score 29 suggests easier test.\n- Authenticity bar: students compare us to ACT class, practice tests. Match that register.",
+  "popup_tips": [
+    {
+      "tip_id": "bc4fbb24",
+      "text": "a TWENTY TWO on the actual act??? like what???",
+      "source_attribution": "From a recent ACT READING test-taker",
+      "first_seen": "2026-05-09",
+      "topic_filter": []
+    },
+    {
+      "tip_id": "767160c5",
+      "text": "ineffective for actual test score",
+      "source_attribution": "From a recent ACT READING test-taker",
+      "first_seen": "2026-05-09",
+      "topic_filter": []
+    }
+  ]
+}

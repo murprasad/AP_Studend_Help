@@ -1,0 +1,51 @@
+{
+  "schema_version": "1.0",
+  "course": "AP_PHYSICS_1",
+  "last_updated": "2026-05-09",
+  "source_count": 1,
+  "calibration": {
+    "coverage_strategy": "wide_not_deep",
+    "coverage_strategy_note": "Real test-takers report this exam covers breadth over depth. Stay at college 101 level on each topic.",
+    "topic_weights": {
+      "_default": 1,
+      "physics": 1.5
+    },
+    "wording_style": {
+      "tricky_wording_fraction": 0,
+      "guidance": "Realistic exam-style indirection. Always single-correct-answer."
+    },
+    "difficulty_distribution": {
+      "easy": 0.2,
+      "medium": 0.55,
+      "hard": 0.25,
+      "rationale": "default — no pass-score data yet"
+    },
+    "subtopic_struggle_signals": [
+      {
+        "topic": "physics",
+        "note": "that’s a problem for the weekend"
+      }
+    ],
+    "perceived_authenticity_bar": {
+      "competitors": [],
+      "note": "Students compare us to these — match the register."
+    }
+  },
+  "generator_prompt_injection": "REAL TEST-TAKER INSIGHTS (sourced from r/APStudents, updated 2026-05-09):\n- Coverage: Real test-takers report this exam covers breadth over depth. Stay at college 101 level on each topic.\n- High-emphasis topics (per real students): physics.\n- Students struggle most with: physics. Generate proportionally more on these.\n- Wording style: ~0% of items should use realistic exam-style indirection (NOT unfair ambiguity).\n- Difficulty target: 20% easy / 55% medium / 25% hard. default — no pass-score data yet.\n",
+  "popup_tips": [
+    {
+      "tip_id": "f810f88e",
+      "text": "i don’t even care abt physics anymore",
+      "source_attribution": "From a recent AP PHYSICS 1 test-taker",
+      "first_seen": "2026-05-09",
+      "topic_filter": []
+    },
+    {
+      "tip_id": "18c48bd6",
+      "text": "that’s a problem for the weekend",
+      "source_attribution": "From a recent AP PHYSICS 1 test-taker",
+      "first_seen": "2026-05-09",
+      "topic_filter": []
+    }
+  ]
+}

@@ -1,0 +1,93 @@
+{
+  "course": "ACT_SCIENCE",
+  "insights": [
+    {
+      "ingested_at": "2026-05-09T16:36:30.820Z",
+      "source_type": "reddit",
+      "source_url": "https://reddit.com/r/ACT/comments/1snk83e/thank_goodness_i_never_have_to_take_this_again/",
+      "source_excerpt": "Ignore the science score, I didn’t retake it, so it’s not in the composite. At the college I’m going to, there is an academic scholarship, with 34-36 with a 4.0+ GPA being the highest bracket. Now I have both!!! ",
+      "post_title": "THANK GOODNESS I NEVER HAVE TO TAKE THIS AGAIN",
+      "post_flair": "",
+      "post_score": 60,
+      "test_outcome": "pass",
+      "test_score": 34,
+      "study_hours_to_pass": null,
+      "extracted_insights": [
+        {
+          "type": "difficulty_calibration",
+          "evidence": "Now I have both!!!",
+          "min_pass_score": 34
+        },
+        {
+          "type": "test_outcome_signal",
+          "value": "relieved",
+          "evidence": "THANK GOODNESS I NEVER HAVE TO TAKE THIS AGAIN"
+        },
+        {
+          "type": "scholarship_signal",
+          "value": "academic scholarship",
+          "evidence": "there is an academic scholarship, with 34-36 with a 4.0+ GPA being the highest bracket"
+        }
+      ]
+    },
+    {
+      "ingested_at": "2026-05-09T16:36:42.071Z",
+      "source_type": "reddit",
+      "source_url": "https://reddit.com/r/ACT/comments/1ssckx2/im_legit_shocked_should_i_retake_bc_of_science/",
+      "source_excerpt": "This was my first time taking the ACT after switching over from the SAT and I actually thought I got cooked and was going to have to retake in the summer. But I was wondering how much do colleges/universities care about the science score? Should I retake to improve it? I’m likely planning on majoring in something stem related",
+      "post_title": "I’m legit shocked. Should I retake bc of science?",
+      "post_flair": "",
+      "post_score": 46,
+      "test_outcome": "unknown",
+      "test_score": null,
+      "study_hours_to_pass": null,
+      "extracted_insights": [
+        {
+          "type": "topic_emphasis",
+          "topic": "science",
+          "weight_signal": "high",
+          "evidence": "how much do colleges/universities care about the science score?"
+        },
+        {
+          "type": "subtopic_struggle_signal",
+          "topics": [
+            "science"
+          ],
+          "evidence": "Should I retake to improve it?"
+        }
+      ]
+    },
+    {
+      "ingested_at": "2026-05-09T16:36:47.075Z",
+      "source_type": "reddit",
+      "source_url": "https://reddit.com/r/ACT/comments/1t2lulb/my_second_attempt_as_a_freshman/",
+      "source_excerpt": "Pissed about science but otherwise i’m pretty happy. I also got a 9 on writing but that’s not shown here. I’m taking it again in June because I want a 36 before sophomore year.",
+      "post_title": "My second attempt as a Freshman",
+      "post_flair": "General",
+      "post_score": 43,
+      "test_outcome": "in_progress",
+      "test_score": null,
+      "study_hours_to_pass": null,
+      "extracted_insights": [
+        {
+          "type": "subtopic_struggle_signal",
+          "topics": [
+            "science"
+          ],
+          "evidence": "Pissed about science"
+        },
+        {
+          "type": "difficulty_calibration",
+          "evidence": "I want a 36 before sophomore year",
+          "min_pass_score": 36
+        },
+        {
+          "type": "topic_emphasis",
+          "topic": "writing",
+          "weight_signal": "high",
+          "evidence": "I also got a 9 on writing"
+        }
+      ]
+    }
+  ]
+}

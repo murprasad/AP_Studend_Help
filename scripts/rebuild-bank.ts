@@ -581,9 +581,15 @@ async function main() {
   const failureLog: { idx: number; gate: string; detail: string }[] = [];
   const created: string[] = [];
 
+  // Hard cap on total attempts — protects against infinite loops where gen
+  // errors `continue` without incrementing consecutiveFails. Budget cap can
+  // miss this case if gen is short-circuiting on 429/503 (no charge).
+  // Cap = 5 × target so a +200 target gets ~1000 attempts; +1 target gets ~5.
+  const ATTEMPT_CAP = Math.max(50, target * 5);
   while (currentCount + approved < target) {
     if (totalCost >= budget) { log(`✗ Budget cap $${budget} reached. Stopping.`); break; }
     if (consecutiveFails >= 20) { log(`✗ 20 consecutive rejections — stopping (something is systematically wrong).`); break; }
+    if (attempts >= ATTEMPT_CAP) { log(`✗ Attempt cap ${ATTEMPT_CAP} reached. Stopping.`); break; }
     attempts++;
     const pick = await pickLeastCoveredTopic(course);
     if (!pick) { log(`✗ No topics for ${course}`); break; }

@@ -1,0 +1,269 @@
+{
+  "course": "SAT_READING_WRITING",
+  "insights": [
+    {
+      "ingested_at": "2026-05-09T16:35:59.737Z",
+      "source_type": "reddit",
+      "source_url": "https://reddit.com/r/Sat/comments/1t26eu4/how_are_colleges_so_selective_for_the_sat_if_the/",
+      "source_excerpt": "Iv been looking at a lot of colleges lately, and a lot of colleges have decently high SAT averages. A few of my friends at school say that 1410 is low, and I should retake it again. But when you take a look at the national average, its only 1050. How are they able to fill up schools  if the average is so low? 1410 puts my in the 93rd percentile, which seems crazy high because thats only a 88% on the SAT. I know it may be a dumb question but I was just curios.   \n",
+      "post_title": "How are colleges so selective for the SAT if the national average is so low?",
+      "post_flair": "",
+      "post_score": 552,
+      "test_outcome": "unknown",
+      "test_score": 1410,
+      "study_hours_to_pass": null,
+      "extracted_insights": [
+        {
+          "type": "topic_emphasis",
+          "topic": "SAT scores",
+          "weight_signal": "high",
+          "evidence": "1410 puts my in the 93rd percentile"
+        },
+        {
+          "type": "difficulty_calibration",
+          "evidence": "the national average is only 1050",
+          "min_pass_score": null
+        }
+      ]
+    },
+    {
+      "ingested_at": "2026-05-09T16:36:02.529Z",
+      "source_type": "reddit",
+      "source_url": "https://reddit.com/r/Sat/comments/1sqya0l/my_third_attempt_nonnative_english_speaker/",
+      "source_excerpt": " First two tries:\n\nRw: 670; M: 740\n\nRw: 660; M: 740\n\nFor some reason I had too much fear when entering those exams, and it became even worse for the second one.\n\nI got extremely depressed after the second attempt. Even the first one hadn't been up to my expectations, and somehow I got even worse.\n\nOverall, what contributed to my success for the third time was an intense preparation, less anxiety, better sleep before the exam, and the fact that the March SAT was way easier than the previous ones (June and November 2025)\n\nI've always been quite capable in terms of mathematics throughout my schoo",
+      "post_title": "My third attempt, non-native English speaker",
+      "post_flair": "",
+      "post_score": 447,
+      "test_outcome": "pass",
+      "test_score": 1410,
+      "study_hours_to_pass": null,
+      "extracted_insights": [
+        {
+          "type": "topic_emphasis",
+          "topic": "English",
+          "weight_signal": "high",
+          "evidence": "English has been my weaker point."
+        },
+        {
+          "type": "topic_emphasis",
+          "topic": "Math",
+          "weight_signal": "low",
+          "evidence": "I'm quite capable in terms of mathematics throughout my school years"
+        },
+        {
+          "type": "prep_resource_signal",
+          "resources_that_worked": [
+            "A Song of Ice and Fire series",
+            "The Godfather"
+          ],
+          "implication": "reading a lot of English literature helps"
+        },
+        {
+          "type": "subtopic_struggle_signal",
+          "topics": [
+            "Inferences",
+            "Command of Evidence",
+            "Words in context"
+          ],
+          "evidence": "these really make your brain work at 110%, and help you get out of the comfort zone"
+        },
+        {
+          "type": "difficulty_calibration",
+          "evidence": "the SAT Math is honestly not that hard",
+          "min_pass_score": null
+        }
+      ]
+    },
+    {
+      "ingested_at": "2026-05-09T16:36:17.358Z",
+      "source_type": "reddit",
+      "source_url": "https://reddit.com/r/Sat/comments/1snpntt/genuinely_shaking/",
+      "source_excerpt": "Crazy story but during the 1st RW portion I had the worst stomach pain and diarrhea of my life. I was already nervous so I ate like 6 cough drops in 10 min and had to pause the section early to shit myself out. \n\nAnyways this was one of my last chances to take the SAT, glad I got it, might start preparing for AP tests next. ",
+      "post_title": "Genuinely Shaking",
+      "post_flair": "",
+      "post_score": 176,
+      "test_outcome": "pass",
+      "test_score": null,
+      "study_hours_to_pass": null,
+      "extracted_insights": [
+        {
+          "type": "subtopic_struggle_signal",
+          "topics": [
+            "stomach issues",
+            "nervousness"
+          ],
+          "evidence": "I had the worst stomach pain and diarrhea of my life. I was already nervous"
+        },
+        {
+          "type": "prep_resource_signal",
+          "resources_that_worked": [
+            "cough drops"
+          ],
+          "implication": "ineffective for calming nerves"
+        }
+      ]
+    },
+    {
+      "ingested_at": "2026-05-09T16:36:24.849Z",
+      "source_type": "reddit",
+      "source_url": "https://reddit.com/r/Sat/comments/1son36z/1570_first_sat_i_ever_took/",
+      "source_excerpt": "So confused how I got a 1570, studied for a few days maximum and its the first SAT I ever took, I don't understand how everyone struggles with the SAT because its genuinely an easy test or maybe march was just a easier exam.",
+      "post_title": "1570 first SAT I ever took",
+      "post_flair": "",
+      "post_score": 151,
+      "test_outcome": "pass",
+      "test_score": 1570,
+      "study_hours_to_pass": null,
+      "extracted_insights": [
+        {
+          "type": "wording_style",
+          "value": "clean",
+          "evidence": "its genuinely an easy test"
+        },
+        {
+          "type": "difficulty_calibration",
+          "evidence": "I don't understand how everyone struggles with the SAT",
+          "min_pass_score": null
+        },
+        {
+          "type": "coverage_strategy",
+          "value": "wide_not_deep",
+          "evidence": "studied for a few days maximum"
+        }
+      ]
+    },
+    {
+      "ingested_at": "2026-05-09T16:36:34.844Z",
+      "source_type": "reddit",
+      "source_url": "https://reddit.com/r/Sat/comments/1ssmb8x/last_minute_may_2_sat_guide/",
+      "source_excerpt": "Hello everybody, I'm an international student taking the SAT on May 2. I have prepared extensively, and feel that I have adequate knowledge to help the scramblers out(veterans, feel free to add to this)  \nSo, let's start off with R&amp;W:  \nConsists of a bunch of subcategories I'm not going to go into. I do have some advice. For Information and Ideas questions, when looking for the correct answers, ALWAYS make sure that the content in the option matches what is mentioned in the text. Only rarely does the SAT need you to make an assumption for the same. For vocabulary in context questions, if y",
+      "post_title": "Last minute May 2 SAT guide",
+      "post_flair": "",
+      "post_score": 102,
+      "test_outcome": "pass",
+      "test_score": 1580,
+      "study_hours_to_pass": null,
+      "extracted_insights": [
+        {
+          "type": "topic_emphasis",
+          "topic": "R&W",
+          "weight_signal": "high",
+          "evidence": "So, let's start off with R&amp;W:"
+        },
+        {
+          "type": "topic_emphasis",
+          "topic": "Math",
+          "weight_signal": "high",
+          "evidence": "Mathematics:"
+        },
+        {
+          "type": "coverage_strategy",
+          "value": "balanced",
+          "evidence": "For Information and Ideas questions, when looking for the correct answers, ALWAYS make sure that the content in the option matches what is mentioned in the text."
+        },
+        {
+          "type": "prep_resource_signal",
+          "resources_that_worked": [
+            "James Lu's SAT desmos video"
+          ],
+          "implication": "Helpful in getting familiar with the Desmos interface"
+        },
+        {
+          "type": "difficulty_calibration",
+          "evidence": "A low score on the SAT isn't the end of the world. You can always retake it, and work on your shortcomings. Alleviating the stress alone will boost your score by 20-30 points.",
+          "min_pass_score": null
+        },
+        {
+          "type": "wording_style",
+          "value": "moderate_tricky",
+          "evidence": "For vocabulary in context questions, if you do not know the meaning of a word, do not panic. College Board doesn't expect you to be grammar pandits."
+        }
+      ]
+    },
+    {
+      "ingested_at": "2026-05-09T16:36:39.461Z",
+      "source_type": "reddit",
+      "source_url": "https://reddit.com/r/Sat/comments/1snikw4/school_day_results_are_we_serious/",
+      "source_excerpt": "genuinely studied so hard for this. student in texas aiming for ivys, idk what to do. tried so much to improve rw but its tough. my last one was in november and i got a 1370 (660 rw 710 math). \n\nwas hoping for at least a 1540\n\nany help for rw is appreciated. im retaking in june (weekend sat)",
+      "post_title": "school day results. are we serious",
+      "post_flair": "",
+      "post_score": 84,
+      "test_outcome": "fail",
+      "test_score": 1370,
+      "study_hours_to_pass": null,
+      "extracted_insights": [
+        {
+          "type": "subtopic_struggle_signal",
+          "topics": [
+            "Reading and Writing"
+          ],
+          "evidence": "tried so much to improve rw but its tough"
+        },
+        {
+          "type": "difficulty_calibration",
+          "evidence": "was hoping for at least a 1540",
+          "min_pass_score": 1540
+        }
+      ]
+    },
+    {
+      "ingested_at": "2026-05-09T16:36:41.747Z",
+      "source_type": "reddit",
+      "source_url": "https://reddit.com/r/Sat/comments/1t52agp/i_finally_got_my_first_score/",
+      "source_excerpt": "I’m overall pretty happy! My math score could be a lot higher, though. I actually ran into a desmos issue on the test where it froze and didn’t let me put in any functions for like 10 minutes, but I didn’t tell them in time for anything to be done about it. Doesn’t matter, I get another try.\n\nThe reading score is about 40 above my practice scores at least! (The math is 80 below both my practice scores, but it’s all good 😢)\n\nIt took weirdly long for them to give me this, so I’m just grateful I have it now.",
+      "post_title": "I finally got my first score!",
+      "post_flair": "",
+      "post_score": 84,
+      "test_outcome": "unknown",
+      "test_score": null,
+      "study_hours_to_pass": null,
+      "extracted_insights": [
+        {
+          "type": "subtopic_struggle_signal",
+          "topics": [
+            "math"
+          ],
+          "evidence": "My math score could be a lot higher, though."
+        },
+        {
+          "type": "difficulty_calibration",
+          "evidence": "The math is 80 below both my practice scores, but it’s all good",
+          "min_pass_score": null
+        },
+        {
+          "type": "prep_resource_signal",
+          "resources_that_worked": [
+            "practice scores"
+          ],
+          "implication": "The test-taker found their practice scores to be helpful in gauging their performance."
+        }
+      ]
+    },
+    {
+      "ingested_at": "2026-05-09T16:36:50.641Z",
+      "source_type": "reddit",
+      "source_url": "https://reddit.com/r/Sat/comments/1sw1a3t/i_am_confused/",
+      "source_excerpt": "This is my SAT Pratice test 6 score. I got 8 wrong in RW and 3 wrong in math but my RW score is 550 why?",
+      "post_title": "İ am confused",
+      "post_flair": "",
+      "post_score": 71,
+      "test_outcome": "unknown",
+      "test_score": 550,
+      "study_hours_to_pass": null,
+      "extracted_insights": [
+        {
+          "type": "subtopic_struggle_signal",
+          "topics": [
+            "Reading and Writing (RW)"
+          ],
+          "evidence": "I got 8 wrong in RW and 3 wrong in math but my RW score is 550 why?"
+        },
+        {
+          "type": "difficulty_calibration",
+          "evidence": "I got 8 wrong in RW",
+          "min_pass_score": null
+        }
+      ]
+    }
+  ]
+}

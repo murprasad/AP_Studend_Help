@@ -6,6 +6,8 @@ import { useEffect, useState, useRef } from "react";
 import { Sidebar } from "@/components/layout/sidebar";
 import { SageChat } from "@/components/layout/sage-chat";
 import { BottomNav } from "@/components/layout/bottom-nav";
+import { LoginTipModal } from "@/components/feedback/login-tip-modal";
+import { useCourse } from "@/hooks/use-course";
 import { Sparkles, Menu, LayoutDashboard } from "lucide-react";
 import Link from "next/link";
 import { ExamModeContext, useExamModeState } from "@/hooks/use-exam-mode";
@@ -225,6 +227,8 @@ export default function DashboardLayout({
 
   return (
     <ExamModeContext.Provider value={examModeState}>
+      {/* Real Student Tip popup — fires on every login, dismissable. */}
+      <DashboardTipModalWrapper />
       <div className="flex h-screen bg-background overflow-hidden">
         {/* Exam mode top bar — slim bar with exit button, now visible on
             BOTH desktop and mobile (was hidden lg:flex; flipped 2026-04-22
@@ -296,4 +300,11 @@ export default function DashboardLayout({
       </div>
     </ExamModeContext.Provider>
   );
+}
+
+/** Tiny wrapper so we can use useCourse() inside the dashboard layout. */
+function DashboardTipModalWrapper() {
+  const [course] = useCourse();
+  if (!course) return null;
+  return <LoginTipModal course={course} />;
 }

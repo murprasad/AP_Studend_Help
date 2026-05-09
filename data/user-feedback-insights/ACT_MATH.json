@@ -1,0 +1,255 @@
+{
+  "course": "ACT_MATH",
+  "insights": [
+    {
+      "ingested_at": "2026-05-09T16:36:07.324Z",
+      "source_type": "reddit",
+      "source_url": "https://reddit.com/r/ACT/comments/1t318o6/so_glad_i_took_this_test_instead_of_the_dumb/",
+      "source_excerpt": "I literally studied for the sat and friggin bombed it so bad in August I cancelled and then in November I got a 1470 n was like I swear I’m not this stupid also they desmoproofed ts and I abused Desmos. Then I switched to act cuz I heard it from my sis and I took a practice test and it felt mad easy I barely studied for this and I’m so proud thank god it’s over.",
+      "post_title": "So glad I took this test instead of the dumb friggin sat again",
+      "post_flair": "",
+      "post_score": 208,
+      "test_outcome": "pass",
+      "test_score": null,
+      "study_hours_to_pass": null,
+      "extracted_insights": [
+        {
+          "type": "coverage_strategy",
+          "value": "wide_not_deep",
+          "evidence": "I barely studied for this"
+        },
+        {
+          "type": "difficulty_calibration",
+          "evidence": "it felt mad easy",
+          "min_pass_score": null
+        },
+        {
+          "type": "prep_resource_signal",
+          "resources_that_worked": [
+            "Desmos",
+            "practice test"
+          ],
+          "implication": "abuse of Desmos and a practice test helped"
+        }
+      ]
+    },
+    {
+      "ingested_at": "2026-05-09T16:36:09.869Z",
+      "source_type": "reddit",
+      "source_url": "https://reddit.com/r/ACT/comments/1t6xmji/how_tf_did_i_pull_this_off_april_act/",
+      "source_excerpt": "I’m actually shedding tears bro. I can’t believe it. I’ve never even gotten above a 34 in all my ACT math practice tests. I can’t believe I did it. This was form j01 and I want to just thank everyone and everything for this score. This was my first ACT ever.",
+      "post_title": "HOW TF DID I PULL THIS OFF?!??? APRIL ACT",
+      "post_flair": "",
+      "post_score": 122,
+      "test_outcome": "pass",
+      "test_score": null,
+      "study_hours_to_pass": null,
+      "extracted_insights": [
+        {
+          "type": "subtopic_struggle_signal",
+          "topics": [
+            "math"
+          ],
+          "evidence": "I’ve never even gotten above a 34 in all my ACT math practice tests"
+        },
+        {
+          "type": "prep_resource_signal",
+          "resources_that_worked": [
+            "practice tests"
+          ],
+          "implication": "effective for improvement"
+        },
+        {
+          "type": "difficulty_calibration",
+          "evidence": "I’ve never even gotten above a 34 in all my ACT math practice tests",
+          "min_pass_score": null
+        }
+      ]
+    },
+    {
+      "ingested_at": "2026-05-09T16:36:14.913Z",
+      "source_type": "reddit",
+      "source_url": "https://reddit.com/r/ACT/comments/1skr3fh/parents_are_gonna_be_upset_at_my_score/",
+      "source_excerpt": "I know this is a good score and this is my first real ACT though I've taken 3 School practice ACTs and my last score was a 26. The problem is, I'm Asian so me and my cousins get compared FOR EVERYTHING. So far they've gotten 36's and 35's but I got a 28... (Amazing imo)\n\nNgl I slacked on prep and kinda exaggerated how much I did to prepare so my parents are gonna send me to a Hagwon AHHHHHHHHHHHHHH ",
+      "post_title": "Parents are gonna be upset at my score...",
+      "post_flair": "",
+      "post_score": 98,
+      "test_outcome": "pass",
+      "test_score": 28,
+      "study_hours_to_pass": null,
+      "extracted_insights": [
+        {
+          "type": "topic_emphasis",
+          "topic": "preparation",
+          "weight_signal": "low",
+          "evidence": "I slacked on prep"
+        },
+        {
+          "type": "subtopic_struggle_signal",
+          "topics": [
+            "pressure from family"
+          ],
+          "evidence": "my cousins get compared FOR EVERYTHING"
+        },
+        {
+          "type": "coverage_strategy",
+          "value": "balanced",
+          "evidence": "I've taken 3 School practice ACTs and my last score was a 26"
+        },
+        {
+          "type": "wording_style",
+          "value": "clean",
+          "evidence": "I know this is a good score"
+        },
+        {
+          "type": "prep_resource_signal",
+          "resources_that_worked": [
+            "practice ACTs"
+          ],
+          "implication": "not enough"
+        },
+        {
+          "type": "difficulty_calibration",
+          "evidence": "I got a 28... (Amazing imo)",
+          "min_pass_score": null
+        }
+      ]
+    },
+    {
+      "ingested_at": "2026-05-09T16:36:26.285Z",
+      "source_type": "reddit",
+      "source_url": "https://reddit.com/r/ACT/comments/1sp5h9w/act_8th_grade/",
+      "source_excerpt": "I took the ACT in this year in 8th grade and I just have a few questions\n\n1.I’m scared I just got lucky or something so if this is my best score ever could I use this when I eventually apply for Colleges.\n\n2.I am taking Geometry rn and will take Alg2 next year, should I try to skip to a different class like Precal,trig, or calc because of my 36 in math. I want to learn, not just do good in my math classes so I don’t want to miss out on important stuff in the case that I do skip over a class. Because it was kind of easier to skip over math in like 6th and 7th grade.\n\n3.Is it feasible that I get",
+      "post_title": "ACT 8th Grade",
+      "post_flair": "",
+      "post_score": 66,
+      "test_outcome": "pass",
+      "test_score": 36,
+      "study_hours_to_pass": null,
+      "extracted_insights": [
+        {
+          "type": "topic_emphasis",
+          "topic": "math",
+          "weight_signal": "high",
+          "evidence": "I got a 36 in math"
+        },
+        {
+          "type": "coverage_strategy",
+          "value": "deep_narrow",
+          "evidence": "I want to learn, not just do good in my math classes"
+        },
+        {
+          "type": "subtopic_struggle_signal",
+          "topics": [
+            "ELA"
+          ],
+          "evidence": "could I get my score up to a high 30’s in ELA"
+        },
+        {
+          "type": "difficulty_calibration",
+          "evidence": "I didn’t really study too much for this",
+          "min_pass_score": null
+        }
+      ]
+    },
+    {
+      "ingested_at": "2026-05-09T16:36:28.605Z",
+      "source_type": "reddit",
+      "source_url": "https://reddit.com/r/ACT/comments/1sn93fv/how_is_this_possible_when_i_crashed_out_in_math/",
+      "source_excerpt": "I didn't really practice at all for ACT, only SAT (already have the score I need, but I had paid for ACT so why not). Turns out the math section is very different.   \nSo I wasted time on a bunch of math questions with notation that I didn't understand.   \nAnd ended up literally spamming through the last 5-6 questions with 20 seconds left, and even the ones I spent time on I probably got some wrong.  \nI expected to score in the upper 20's at best (I was fairly confident in reading/writing).",
+      "post_title": "How is this possible when I crashed out in math?",
+      "post_flair": "",
+      "post_score": 66,
+      "test_outcome": "unknown",
+      "test_score": null,
+      "study_hours_to_pass": null,
+      "extracted_insights": [
+        {
+          "type": "subtopic_struggle_signal",
+          "topics": [
+            "math notation"
+          ],
+          "evidence": "notation that I didn't understand"
+        },
+        {
+          "type": "coverage_strategy",
+          "value": "wide_not_deep",
+          "evidence": "I didn't really practice at all for ACT, only SAT"
+        },
+        {
+          "type": "difficulty_calibration",
+          "evidence": "I expected to score in the upper 20's at best",
+          "min_pass_score": null
+        },
+        {
+          "type": "wording_style",
+          "value": "moderate_tricky",
+          "evidence": "math questions with notation that I didn't understand"
+        }
+      ]
+    },
+    {
+      "ingested_at": "2026-05-09T16:36:39.868Z",
+      "source_type": "reddit",
+      "source_url": "https://reddit.com/r/ACT/comments/1suup16/im_literally_gonna_sob_how_do_i_fix_this_dream/",
+      "source_excerpt": "i obviously know that i need to lock in on math, but i don’t know how! i’m a junior in algebra 2 and struggling tremendously, and i don’t have the money to do test prep over $300 :( my standardized test scores weigh me down so much but i genuinely don’t know what to do. i also dropped 2 points in reading + science but gained 5 in english!\n\nthis is so embarrassing for me to admit, but i struggle with visualizing numbers. not even joking— i can’t memorize or visualize basic addition or subtraction problems if they aren’t “perfect”  (EX: 8+4, 7+5, etc. vs 5+5, 2+2), data tables only make sense if",
+      "post_title": "i’m literally gonna sob how do i fix this? dream score is a 32 ☹️",
+      "post_flair": "",
+      "post_score": 50,
+      "test_outcome": "unknown",
+      "test_score": 32,
+      "study_hours_to_pass": null,
+      "extracted_insights": [
+        {
+          "type": "subtopic_struggle_signal",
+          "topics": [
+            "math",
+            "visualizing numbers",
+            "graphs"
+          ],
+          "evidence": "i struggle with visualizing numbers. not even joking— i can’t memorize or visualize basic addition or subtraction problems if they aren’t “perfect”"
+        },
+        {
+          "type": "topic_emphasis",
+          "topic": "math",
+          "weight_signal": "high",
+          "evidence": "i obviously know that i need to lock in on math"
+        },
+        {
+          "type": "prep_resource_signal",
+          "resources_that_worked": [],
+          "implication": "can't afford test prep over $300"
+        }
+      ]
+    },
+    {
+      "ingested_at": "2026-05-09T16:36:44.844Z",
+      "source_type": "reddit",
+      "source_url": "https://reddit.com/r/ACT/comments/1sildjh/official_april_1112_2026_act_us_discussion_thread/",
+      "source_excerpt": "Feel free to use this space as a place to discuss all iterations of the April 2026 ACT. You can use this space for Saturday OR Sunday for US testers.\n\nDiscussions of the test are allowed by r/ACT's rules, but participating in such discussion may violate the terms to which you agreed when you registered for the ACT.\n\nPlease remember that cheating is strictly against r/ACT's rules, and any attempts to solicit or offer cheating help will be met with permanent bans.\n\nOnline scores are due to be released on April 16th and paper scores are due to be released on April 21st.\n\nThe next test will be Jun",
+      "post_title": "Official April 11/12, 2026 ACT US Discussion Thread",
+      "post_flair": "",
+      "post_score": 46,
+      "test_outcome": "in_progress",
+      "test_score": null,
+      "study_hours_to_pass": null,
+      "extracted_insights": [
+        {
+          "type": "coverage_strategy",
+          "value": "balanced",
+          "evidence": "Feel free to use this space as a place to discuss all iterations of the April 2026 ACT."
+        },
+        {
+          "type": "wording_style",
+          "value": "clean",
+          "evidence": "The next test will be June 13th."
+        },
+        {
+          "type": "difficulty_calibration",
+          "evidence": "Congratulations on getting through the exam. You survived!",
+          "min_pass_score": null
+        }
+      ]
+    }
+  ]
+}

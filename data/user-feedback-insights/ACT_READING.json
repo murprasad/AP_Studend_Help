@@ -1,0 +1,96 @@
+{
+  "course": "ACT_READING",
+  "insights": [
+    {
+      "ingested_at": "2026-05-09T16:36:05.069Z",
+      "source_type": "reddit",
+      "source_url": "https://reddit.com/r/ACT/comments/1t7clkc/i_missed_one_question_on_the_act_and_now_my/",
+      "source_excerpt": "They don't care about my perfect math because I'm asian, that's what I'm supposed to be good at. Neither do they care about English because they claim grammar is easy. \n\nI feel like crying. ",
+      "post_title": "I missed one question on the ACT and now my parents are mad at me",
+      "post_flair": "Reading",
+      "post_score": 344,
+      "test_outcome": "unknown",
+      "test_score": null,
+      "study_hours_to_pass": null,
+      "extracted_insights": [
+        {
+          "type": "subtopic_struggle_signal",
+          "topics": [
+            "Reading"
+          ],
+          "evidence": "I missed one question on the ACT"
+        },
+        {
+          "type": "topic_emphasis",
+          "topic": "Math",
+          "weight_signal": "low",
+          "evidence": "They don't care about my perfect math"
+        },
+        {
+          "type": "topic_emphasis",
+          "topic": "English",
+          "weight_signal": "low",
+          "evidence": "Neither do they care about English because they claim grammar is easy"
+        }
+      ]
+    },
+    {
+      "ingested_at": "2026-05-09T16:36:33.149Z",
+      "source_type": "reddit",
+      "source_url": "https://reddit.com/r/ACT/comments/1sve2j2/how_is_this_possible_upset_with_score/",
+      "source_excerpt": "i js got my score back and im really upset. i didn’t expect to get in the high thirties, but i was predicting a 31-33. to preface this, i paid 400 dollars for an ACT class and did some practice tests before the test but nothing too major. i also got a 31 on my pre-act. however, i am appalled by my act score cuz i got a 35 on the reading section of the pre act (which is a perfect score on the pre act since it goes up to a 35), but somehow, a TWENTY TWO on the actual act??? like what??? and for my pre act score it was a 24 for science and now somehow its a 30??? idk, i just think the act for me ",
+      "post_title": "how is this possible- upset with score",
+      "post_flair": "",
+      "post_score": 57,
+      "test_outcome": "fail",
+      "test_score": 22,
+      "study_hours_to_pass": null,
+      "extracted_insights": [
+        {
+          "type": "subtopic_struggle_signal",
+          "topics": [
+            "Reading"
+          ],
+          "evidence": "a TWENTY TWO on the actual act??? like what???"
+        },
+        {
+          "type": "difficulty_calibration",
+          "evidence": "i also got a 31 on my pre-act. however, i am appalled by my act score",
+          "min_pass_score": null
+        },
+        {
+          "type": "prep_resource_signal",
+          "resources_that_worked": [
+            "ACT class",
+            "practice tests"
+          ],
+          "implication": "ineffective for actual test score"
+        }
+      ]
+    },
+    {
+      "ingested_at": "2026-05-09T16:36:49.125Z",
+      "source_type": "reddit",
+      "source_url": "https://reddit.com/r/ACT/comments/1t1qemx/not_familiar_with_act_is_there_a_big_distinction/",
+      "source_excerpt": "This was my first ACT ever and was administered by my school. I never studied for it an ounce and I'm really shocked that I somehow I got a 35. I don't know a lot about the ACT, so should I retake? I hear a lot of distinction between a 35 and 36 but I seriously am not familiar with this test. Guidance would be appreciated. ",
+      "post_title": "Not familiar with ACT, is there a big distinction between 35 and 36",
+      "post_flair": "",
+      "post_score": 42,
+      "test_outcome": "pass",
+      "test_score": 35,
+      "study_hours_to_pass": null,
+      "extracted_insights": [
+        {
+          "type": "difficulty_calibration",
+          "evidence": "I got a 35. I hear a lot of distinction between a 35 and 36",
+          "min_pass_score": null
+        },
+        {
+          "type": "coverage_strategy",
+          "value": "unknown",
+          "evidence": "I never studied for it an ounce"
+        }
+      ]
+    }
+  ]
+}

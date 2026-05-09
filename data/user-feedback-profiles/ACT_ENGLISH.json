@@ -1,0 +1,86 @@
+{
+  "schema_version": "1.0",
+  "course": "ACT_ENGLISH",
+  "last_updated": "2026-05-09",
+  "source_count": 4,
+  "calibration": {
+    "coverage_strategy": "balanced",
+    "coverage_strategy_note": "Balanced coverage — neither overly wide nor deep.",
+    "topic_weights": {
+      "_default": 1,
+      "writing": 1.5,
+      "english": 1.45,
+      "math": 1.3,
+      "reading": 1.15,
+      "science": 1.15
+    },
+    "wording_style": {
+      "tricky_wording_fraction": 0,
+      "guidance": "Realistic exam-style indirection. Always single-correct-answer."
+    },
+    "difficulty_distribution": {
+      "easy": 0.3,
+      "medium": 0.5,
+      "hard": 0.2,
+      "rationale": "avg pass score 21 suggests easier test"
+    },
+    "subtopic_struggle_signals": [
+      {
+        "topic": "math",
+        "note": "This was like one of my worst sections. This was for sure my worst section."
+      },
+      {
+        "topic": "science",
+        "note": "This was like one of my worst sections. This was for sure my worst section."
+      }
+    ],
+    "perceived_authenticity_bar": {
+      "competitors": [
+        "ACT",
+        "Erica Meltzer ACT English book",
+        "PrepPros Enhanced ACT Math prep book",
+        "College Panda ACT Mat",
+        "For the Love of ACT Science"
+      ],
+      "note": "Students compare us to these — match the register."
+    }
+  },
+  "generator_prompt_injection": "REAL TEST-TAKER INSIGHTS (sourced from r/ACT, updated 2026-05-09):\n- Coverage: Balanced coverage — neither overly wide nor deep.\n- High-emphasis topics (per real students): writing, english, math, reading, science.\n- Students struggle most with: math, science. Generate proportionally more on these.\n- Wording style: ~0% of items should use realistic exam-style indirection (NOT unfair ambiguity).\n- Difficulty target: 30% easy / 50% medium / 20% hard. avg pass score 21 suggests easier test.\n- Authenticity bar: students compare us to ACT, Erica Meltzer ACT English book, PrepPros Enhanced ACT Math prep book. Match that register.",
+  "popup_tips": [
+    {
+      "tip_id": "fba288ca",
+      "text": "I have always loved to write since elementary school",
+      "source_attribution": "From a recent ACT ENGLISH test-taker",
+      "first_seen": "2026-05-09",
+      "topic_filter": []
+    },
+    {
+      "tip_id": "83c079df",
+      "text": "recommended to friends",
+      "source_attribution": "From a recent ACT ENGLISH test-taker",
+      "first_seen": "2026-05-09",
+      "topic_filter": []
+    },
+    {
+      "tip_id": "d0c2fade",
+      "text": "I didn’t try much on the writing",
+      "source_attribution": "From a recent ACT ENGLISH test-taker",
+      "first_seen": "2026-05-09",
+      "topic_filter": []
+    },
+    {
+      "tip_id": "dad92f37",
+      "text": "This was easily my best section.",
+      "source_attribution": "From a recent ACT ENGLISH test-taker",
+      "first_seen": "2026-05-09",
+      "topic_filter": []
+    },
+    {
+      "tip_id": "f57ba265",
+      "text": "These resources were effective in improving test scores.",
+      "source_attribution": "From a recent ACT ENGLISH test-taker",
+      "first_seen": "2026-05-09",
+      "topic_filter": []
+    }
+  ]
+}
