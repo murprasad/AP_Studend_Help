@@ -46,6 +46,7 @@ jobs:
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GOOGLE_AI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
@@ -54,6 +55,13 @@ jobs:
             --course=${{ github.event.inputs.course }} \
             --target=${{ github.event.inputs.target || 200 }} \
             --budget=${{ github.event.inputs.budget || 3 }}
+
+      - name: Auto-promote course to visible if approved >= 200
+        if: success()
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          node scripts/auto-update-visibility.mjs --apply --only=${{ github.event.inputs.course }}
 
       - name: Upload artifacts
         if: always()
