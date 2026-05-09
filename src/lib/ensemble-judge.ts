@@ -37,7 +37,7 @@ interface McqInput {
 type Vote = "PASS" | "FAIL" | "ABSTAIN";
 
 interface ModelVote {
-  model: "gpt-4o" | "claude-sonnet-4-6" | "gemini-1.5-pro";
+  model: "groq-llama-3.3-70b" | "claude-sonnet-4-6" | "gemini-2.5-flash";
   vote: Vote;
   reason?: string;
 }
@@ -53,21 +53,31 @@ export interface EnsembleResult {
 const TIMEOUT_MS = 25_000;
 
 function buildPrompt(q: McqInput): string {
+  // Strip any legacy "X) " prefix from stored options — UI strips at render.
+  const stripPrefix = (s: string) => s.replace(/^[A-E]\s*\)\s*/, "");
   const optsStr = q.options
-    .map((o, i) => `${String.fromCharCode(65 + i)}) ${o}`)
+    .map((o, i) => `${String.fromCharCode(65 + i)}) ${stripPrefix(o)}`)
     .join("\n");
-  return `Audit this MCQ. Return JSON only with keys "verdict" and "reason".
+  return `You are auditing a StudentNest practice question against real College Board (AP/SAT/ACT) exam standards. Return JSON only with keys "verdict" and "reason".
 
 verdict must be exactly "PASS" or "FAIL".
 
-FAIL if ANY of these are true:
+FAIL if ANY of these CORRECTNESS bugs are present:
 - The stored correctAnswer letter does NOT hold the value the explanation derives.
 - The explanation contradicts itself.
-- The explanation describes a distractor by letter (e.g. "Option B...") but that letter's text doesn't match the description.
-- An option contains the word "Correct", "Incorrect", "Wrong", or "Right" (answer leak).
-- The stimulus reveals the correct numeric answer (e.g. stimulus shows "= 245" when correct option = 245).
+- The explanation describes a distractor by letter (e.g. "Option B incorrectly multiplies...") but that letter's actual text doesn't match the description.
+- An OPTION's TEXT contains the word "Correct"/"Incorrect"/"Wrong"/"Right" (e.g. "B) 245 - Correct"). NOT FAIL: the explanation saying "the correct answer is B" — that is normal teaching content.
+- The stimulus reveals the correct numeric answer.
 - LaTeX uses bare "int", "sum", "frac", "rac", "infty" without backslashes.
 - The explanation includes LLM monologue ("hmm", "let me reconsider", "is not needed, just").
+
+FAIL also if the question doesn't match real CB exam STYLE/RIGOR (HARD requirement):
+- Stem reads more like a textbook paragraph than an exam item.
+- Distractors are not all CB-grade plausible (an option is obviously wrong, or doesn't represent a real student misconception).
+- Stimulus omits the CB-style scaffold (no source quote+attribution for history, no table/chart for AP Stats / ACT Science, no described diagram for AP Physics, no passage for SAT R/W).
+- Source attribution is fabricated, vague, or missing year.
+- Difficulty doesn't match the apparent rigor (HARD-tagged but is just longer recall).
+- Stem uses ambiguous superlatives ("primary", "main", "best") without textual justification.
 
 Otherwise PASS.
 
@@ -83,29 +93,28 @@ Explanation: ${q.explanation || "(no explanation)"}
 Return JSON only: {"verdict":"PASS"|"FAIL","reason":"<short>"}`;
 }
 
-async function callOpenAI(prompt: string): Promise<ModelVote> {
-  const key = process.env.OPENAI_API_KEY;
-  if (!key) return { model: "gpt-4o", vote: "ABSTAIN", reason: "no key" };
+async function callGroq(prompt: string): Promise<ModelVote> {
+  const key = process.env.GROQ_API_KEY;
+  if (!key) return { model: "groq-llama-3.3-70b" as ModelVote["model"], vote: "ABSTAIN", reason: "no key" };
   try {
-    const res = await fetch("https://api.openai.com/v1/chat/completions", {
+    const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
       method: "POST",
       headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
       body: JSON.stringify({
-        model: "gpt-4o",
+        model: "llama-3.3-70b-versatile",
         messages: [{ role: "user", content: prompt }],
         response_format: { type: "json_object" },
-        max_tokens: 200,
+        max_tokens: 400,
       }),
       signal: AbortSignal.timeout(TIMEOUT_MS),
     });
-    if (!res.ok) return { model: "gpt-4o", vote: "ABSTAIN", reason: `http ${res.status}` };
+    if (!res.ok) return { model: "groq-llama-3.3-70b" as ModelVote["model"], vote: "ABSTAIN", reason: `http ${res.status}` };
     const data = await res.json();
-    const content = data?.choices?.[0]?.message?.content;
-    const parsed = JSON.parse(content);
+    const parsed = JSON.parse(data?.choices?.[0]?.message?.content ?? "{}");
     const v = parsed?.verdict === "PASS" ? "PASS" : parsed?.verdict === "FAIL" ? "FAIL" : "ABSTAIN";
-    return { model: "gpt-4o", vote: v, reason: typeof parsed?.reason === "string" ? parsed.reason.slice(0, 200) : undefined };
+    return { model: "groq-llama-3.3-70b" as ModelVote["model"], vote: v, reason: typeof parsed?.reason === "string" ? parsed.reason.slice(0, 200) : undefined };
   } catch (e) {
-    return { model: "gpt-4o", vote: "ABSTAIN", reason: e instanceof Error ? e.message.slice(0, 80) : "err" };
+    return { model: "groq-llama-3.3-70b" as ModelVote["model"], vote: "ABSTAIN", reason: e instanceof Error ? e.message.slice(0, 80) : "err" };
   }
 }
 
@@ -122,7 +131,7 @@ async function callAnthropic(prompt: string): Promise<ModelVote> {
       },
       body: JSON.stringify({
         model: "claude-sonnet-4-6",
-        max_tokens: 200,
+        max_tokens: 600,
         messages: [{ role: "user", content: prompt }],
       }),
       signal: AbortSignal.timeout(TIMEOUT_MS),
@@ -143,30 +152,30 @@ async function callAnthropic(prompt: string): Promise<ModelVote> {
 
 async function callGemini(prompt: string): Promise<ModelVote> {
   const key = process.env.GOOGLE_AI_API_KEY;
-  if (!key) return { model: "gemini-1.5-pro", vote: "ABSTAIN", reason: "no key" };
+  if (!key) return { model: "gemini-2.5-flash", vote: "ABSTAIN", reason: "no key" };
   try {
     const res = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=${key}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${key}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           contents: [{ parts: [{ text: prompt }] }],
-          generationConfig: { responseMimeType: "application/json", maxOutputTokens: 200 },
+          generationConfig: { responseMimeType: "application/json", maxOutputTokens: 600, thinkingConfig: { thinkingBudget: 0 } },
         }),
         signal: AbortSignal.timeout(TIMEOUT_MS),
       }
     );
-    if (!res.ok) return { model: "gemini-1.5-pro", vote: "ABSTAIN", reason: `http ${res.status}` };
+    if (!res.ok) return { model: "gemini-2.5-flash", vote: "ABSTAIN", reason: `http ${res.status}` };
     const data = await res.json();
     const text = data?.candidates?.[0]?.content?.parts?.[0]?.text ?? "";
     const m = text.match(/\{[\s\S]*\}/);
-    if (!m) return { model: "gemini-1.5-pro", vote: "ABSTAIN", reason: "no json" };
+    if (!m) return { model: "gemini-2.5-flash", vote: "ABSTAIN", reason: "no json" };
     const parsed = JSON.parse(m[0]);
     const v = parsed?.verdict === "PASS" ? "PASS" : parsed?.verdict === "FAIL" ? "FAIL" : "ABSTAIN";
-    return { model: "gemini-1.5-pro", vote: v, reason: typeof parsed?.reason === "string" ? parsed.reason.slice(0, 200) : undefined };
+    return { model: "gemini-2.5-flash", vote: v, reason: typeof parsed?.reason === "string" ? parsed.reason.slice(0, 200) : undefined };
   } catch (e) {
-    return { model: "gemini-1.5-pro", vote: "ABSTAIN", reason: e instanceof Error ? e.message.slice(0, 80) : "err" };
+    return { model: "gemini-2.5-flash", vote: "ABSTAIN", reason: e instanceof Error ? e.message.slice(0, 80) : "err" };
   }
 }
 
@@ -175,7 +184,7 @@ async function callGemini(prompt: string): Promise<ModelVote> {
  */
 export async function ensembleJudgeMcq(q: McqInput): Promise<EnsembleResult> {
   const prompt = buildPrompt(q);
-  const votes = await Promise.all([callOpenAI(prompt), callAnthropic(prompt), callGemini(prompt)]);
+  const votes = await Promise.all([callGroq(prompt), callAnthropic(prompt), callGemini(prompt)]);
   const pass = votes.filter((v) => v.vote === "PASS").length;
   const fail = votes.filter((v) => v.vote === "FAIL").length;
 
