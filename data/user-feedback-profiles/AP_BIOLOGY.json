@@ -36,20 +36,5 @@
     }
   },
   "generator_prompt_injection": "REAL TEST-TAKER INSIGHTS (sourced from r/APStudents, updated 2026-05-09):\n- Coverage: Real test-takers report this exam covers breadth over depth. Stay at college 101 level on each topic.\n- High-emphasis topics (per real students): medicine.\n- Students struggle most with: science, medicine. Generate proportionally more on these.\n- Wording style: ~0% of items should use realistic exam-style indirection (NOT unfair ambiguity).\n- Difficulty target: 20% easy / 55% medium / 25% hard. default — no pass-score data yet.\n",
-  "popup_tips": [
-    {
-      "tip_id": "8512b01a",
-      "text": "I really wanna work as a gynecologist",
-      "source_attribution": "From a recent AP BIOLOGY test-taker",
-      "first_seen": "2026-05-09",
-      "topic_filter": []
-    },
-    {
-      "tip_id": "28e9ce55",
-      "text": "Am I cooked (my family can’t afford for me to try again)",
-      "source_attribution": "From a recent AP BIOLOGY test-taker",
-      "first_seen": "2026-05-09",
-      "topic_filter": []
-    }
-  ]
+  "popup_tips": []
 }

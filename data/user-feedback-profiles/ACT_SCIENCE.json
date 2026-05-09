@@ -33,27 +33,5 @@
     }
   },
   "generator_prompt_injection": "REAL TEST-TAKER INSIGHTS (sourced from r/ACT, updated 2026-05-09):\n- Coverage: Real test-takers report this exam covers breadth over depth. Stay at college 101 level on each topic.\n- High-emphasis topics (per real students): science, writing.\n- Students struggle most with: science. Generate proportionally more on these.\n- Wording style: ~0% of items should use realistic exam-style indirection (NOT unfair ambiguity).\n- Difficulty target: 30% easy / 50% medium / 20% hard. avg pass score 34 suggests easier test.\n",
-  "popup_tips": [
-    {
-      "tip_id": "3695eb84",
-      "text": "how much do colleges/universities care about the science score?",
-      "source_attribution": "From a recent ACT SCIENCE test-taker",
-      "first_seen": "2026-05-09",
-      "topic_filter": []
-    },
-    {
-      "tip_id": "a661a86a",
-      "text": "Should I retake to improve it?",
-      "source_attribution": "From a recent ACT SCIENCE test-taker",
-      "first_seen": "2026-05-09",
-      "topic_filter": []
-    },
-    {
-      "tip_id": "53f2951b",
-      "text": "I also got a 9 on writing",
-      "source_attribution": "From a recent ACT SCIENCE test-taker",
-      "first_seen": "2026-05-09",
-      "topic_filter": []
-    }
-  ]
+  "popup_tips": []
 }

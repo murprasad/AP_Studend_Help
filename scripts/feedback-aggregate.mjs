@@ -86,6 +86,31 @@ for (const file of courseFiles) {
     if (t.length < 3) return true;
     return NOISE_BLOCKLIST.some((b) => t.includes(b));
   }
+  // Filter for popup_tips: only show CONSTRUCTIVE tips, not frustration vents.
+  // Real test-taker frustration ("i don't even care abt physics anymore",
+  // "Am I cooked", "lifesaver when it comes to anatomy") makes for bad UX.
+  function isConstructiveTip(text) {
+    const t = text.toLowerCase();
+    // Negative venting / drama signals
+    const VENT_RX = [
+      /don'?t.*care/, /am i cooked/, /i'?m so cooked/, /screwed/,
+      /family.*can'?t.*afford/, /worst.*of my life/, /i hate/, /this sucks/,
+      /diarrhea/, /stomach pain/, /headphones.*garbage/, /so bad/,
+      /never.*above.*\d+/, /majority.*cheat/, /everyone.*cheat/,
+      /\bwtf\b/, /\bfml\b/, /\bcooked\b/, /\bcope\b/,
+      /that'?s a problem for/, /problem for the weekend/,
+      /i guessed on like \d+/, /i unfortunately did not study/,
+      /effective for (improvement|prep|cram|quick review|studying)/i,  // generic non-tip
+      /helped to pass/i, /helped pass the exam/i, /helpful for/i,  // generic non-tip
+      /useful for studying/i, /effective prep in short time/i,
+    ];
+    if (VENT_RX.some((rx) => rx.test(t))) return false;
+    // Tip should mention content (a topic, action verb, or guidance)
+    // Reject if it's ALL feeling-words and no substance
+    const SUBSTANCE_HINT = /(focus|study|important|topic|chapter|formula|concept|memorize|practice|review|equation|theorem|process|cycle|interpret|read|graph|table|passage|definition|skill|method|technique|exam|test|question|section|unit|covers|tested|appears)/i;
+    if (!SUBSTANCE_HINT.test(t)) return false;
+    return true;
+  }
   let droppedTopics = 0;
   filtered = filtered.map((r) => ({
     ...r,
@@ -145,11 +170,14 @@ for (const file of courseFiles) {
             prepResources.set(r, (prepResources.get(r) ?? 0) + passerWeight);
           }
           if (ins.implication) {
-            popupTipPool.push({
-              text: ins.implication.slice(0, 200),
-              source_attribution: `From a recent ${course.replace(/_/g, " ")} test-taker`,
-              category: "prep_resource",
-            });
+            const tipText = ins.implication.slice(0, 200);
+            if (tipText.length > 20 && isConstructiveTip(tipText)) {
+              popupTipPool.push({
+                text: tipText,
+                source_attribution: `From a recent ${course.replace(/_/g, " ")} test-taker`,
+                category: "prep_resource",
+              });
+            }
           }
           break;
         }
@@ -158,7 +186,7 @@ for (const file of courseFiles) {
       // Build pop-up tips from evidence-bearing insights
       if (ins.evidence && (ins.type === "topic_emphasis" || ins.type === "subtopic_struggle_signal" || ins.type === "wording_style")) {
         const tipText = ins.evidence.slice(0, 200);
-        if (tipText.length > 20) {
+        if (tipText.length > 20 && isConstructiveTip(tipText)) {
           popupTipPool.push({
             text: tipText,
             source_attribution: `From a recent ${course.replace(/_/g, " ")} test-taker`,
