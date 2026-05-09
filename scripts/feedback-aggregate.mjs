@@ -60,20 +60,57 @@ for (const file of courseFiles) {
   const passScores = [];
   const popupTipPool = [];
 
-  // Quality filter: only keep insights from posts with confirmed test_outcome.
-  // "unknown" outcomes are usually off-topic posts (cheating discussions,
-  // admissions chatter, general anxiety) that got mis-classified.
-  const filtered = insights.filter((r) => r.test_outcome === "pass" || r.test_outcome === "fail");
-  if (filtered.length === 0) {
-    console.log(`  ${course}: 0 confirmed-outcome insights — skipping (had ${insights.length} raw)`);
-    continue;
+  // Quality filter 1 (revised 2026-05-09): keep ALL records but weight by
+  // outcome confidence. Earlier strict pass/fail-only filter was dropping
+  // legitimate math-content posts where the LLM couldn't determine outcome
+  // (e.g. "anyone know how to solve depth-under-water problems?" → struggle
+  // signal for SAT_MATH). Now: confirmed pass/fail get full weight, others
+  // get half-weight in aggregation.
+  let filtered = insights.slice();
+  if (insights.length === 0) continue;
+
+  // Quality filter 2 (added 2026-05-09): drop topic_emphasis insights whose
+  // topic word is off-domain noise. SAT_MATH ingests pulled "test security",
+  // "academic integrity", "scandal" etc. from cheating-related threads —
+  // these polluted the topic_weights even after outcome-filtering.
+  const NOISE_BLOCKLIST = [
+    "test_security", "academic_integrity", "cheating", "integrity", "scandal",
+    "admissions", "anxiety", "career", "scholarship", "reapplication",
+    "retake_strategy", "stress_management", "stress", "performance_vs_practice",
+    "actual_test_performance", "overall_sat_performance", "overallsatperformance",
+    "timed_tests", "test_anxiety", "test_pressure", "family_pressure",
+    "comparison", "luck", "guessing"
+  ];
+  function isNoise(topic) {
+    const t = (topic ?? "").toLowerCase().replace(/\s+/g, "_").replace(/[^a-z0-9_]/g, "");
+    if (t.length < 3) return true;
+    return NOISE_BLOCKLIST.some((b) => t.includes(b));
   }
-  if (filtered.length < insights.length) {
-    console.log(`  ${course}: filtered ${insights.length - filtered.length} low-confidence posts (off-topic / unknown outcome)`);
-  }
+  let droppedTopics = 0;
+  filtered = filtered.map((r) => ({
+    ...r,
+    extracted_insights: (r.extracted_insights ?? []).filter((ins) => {
+      if (ins.type === "topic_emphasis") {
+        if (isNoise(ins.topic)) { droppedTopics++; return false; }
+      }
+      if (ins.type === "subtopic_struggle_signal") {
+        // Drop entire insight if ALL its topics are noise; otherwise filter inline
+        const cleanTopics = (ins.topics ?? []).filter((t) => !isNoise(t));
+        if (cleanTopics.length === 0) { droppedTopics++; return false; }
+        ins.topics = cleanTopics;
+      }
+      return true;
+    }),
+  }));
+  if (droppedTopics > 0) console.log(`  ${course}: dropped ${droppedTopics} off-domain noise insights`);
 
   for (const record of filtered) {
-    const passerWeight = record.test_outcome === "pass" ? 2.0 : 1.0;
+    // Weighting: passers (highest signal — they actually know the test) >
+    // failers (still tested) >> unknown/in_progress (lower confidence).
+    const passerWeight =
+      record.test_outcome === "pass" ? 2.0 :
+      record.test_outcome === "fail" ? 1.0 :
+      0.5; // unknown / in_progress
     if (typeof record.test_score === "number") passScores.push(record.test_score);
 
     for (const ins of record.extracted_insights ?? []) {

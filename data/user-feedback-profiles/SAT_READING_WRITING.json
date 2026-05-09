@@ -8,9 +8,9 @@
     "coverage_strategy_note": "Real test-takers report this exam covers breadth over depth. Stay at college 101 level on each topic.",
     "topic_weights": {
       "_default": 1,
+      "sat_scores": 1.1125,
       "english": 1.45,
-      "math": 1.5,
-      "r_w": 1.45
+      "math": 1.5
     },
     "wording_style": {
       "tricky_wording_fraction": 0.08,
@@ -20,7 +20,7 @@
       "easy": 0.15,
       "medium": 0.5,
       "hard": 0.35,
-      "rationale": "avg pass score 1483 — harder test"
+      "rationale": "avg pass score 1315 — harder test"
     },
     "subtopic_struggle_signals": [
       {
@@ -41,13 +41,21 @@
         "A Song of Ice and Fire series",
         "The Godfather",
         "cough drops",
-        "James Lu's SAT desmos video"
+        "James Lu's SAT desmos video",
+        "practice scores"
       ],
       "note": "Students compare us to these — match the register."
     }
   },
-  "generator_prompt_injection": "REAL TEST-TAKER INSIGHTS (sourced from r/Sat, updated 2026-05-09):\n- Coverage: Real test-takers report this exam covers breadth over depth. Stay at college 101 level on each topic.\n- High-emphasis topics (per real students): math, english, r w.\n- Students struggle most with: inferences, command of evidence, words in context. Generate proportionally more on these.\n- Wording style: ~9% of items should use realistic exam-style indirection (NOT unfair ambiguity).\n- Difficulty target: 15% easy / 50% medium / 35% hard. avg pass score 1483 — harder test.\n- Authenticity bar: students compare us to A Song of Ice and Fire series, The Godfather, cough drops. Match that register.",
+  "generator_prompt_injection": "REAL TEST-TAKER INSIGHTS (sourced from r/Sat, updated 2026-05-09):\n- Coverage: Real test-takers report this exam covers breadth over depth. Stay at college 101 level on each topic.\n- High-emphasis topics (per real students): math, english, sat scores.\n- Students struggle most with: inferences, command of evidence, words in context. Generate proportionally more on these.\n- Wording style: ~9% of items should use realistic exam-style indirection (NOT unfair ambiguity).\n- Difficulty target: 15% easy / 50% medium / 35% hard. avg pass score 1315 — harder test.\n- Authenticity bar: students compare us to A Song of Ice and Fire series, The Godfather, cough drops. Match that register.",
   "popup_tips": [
+    {
+      "tip_id": "a1a76859",
+      "text": "1410 puts my in the 93rd percentile",
+      "source_attribution": "From a recent SAT READING WRITING test-taker",
+      "first_seen": "2026-05-09",
+      "topic_filter": []
+    },
     {
       "tip_id": "dc600862",
       "text": "English has been my weaker point.",
@@ -72,13 +80,6 @@
     {
       "tip_id": "fe941629",
       "text": "these really make your brain work at 110%, and help you get out of the comfort zone",
-      "source_attribution": "From a recent SAT READING WRITING test-taker",
-      "first_seen": "2026-05-09",
-      "topic_filter": []
-    },
-    {
-      "tip_id": "8ea9a0da",
-      "text": "I had the worst stomach pain and diarrhea of my life. I was already nervous",
       "source_attribution": "From a recent SAT READING WRITING test-taker",
       "first_seen": "2026-05-09",
       "topic_filter": []

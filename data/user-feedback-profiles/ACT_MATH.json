@@ -8,11 +8,11 @@
     "coverage_strategy_note": "Real test-takers report this exam covers breadth over depth. Stay at college 101 level on each topic.",
     "topic_weights": {
       "_default": 1,
-      "preparation": 1.2,
+      "preparation": 1.16,
       "math": 1.5
     },
     "wording_style": {
-      "tricky_wording_fraction": 0.05,
+      "tricky_wording_fraction": 0.06,
       "guidance": "Realistic exam-style indirection. Always single-correct-answer."
     },
     "difficulty_distribution": {
@@ -45,7 +45,7 @@
       "note": "Students compare us to these — match the register."
     }
   },
-  "generator_prompt_injection": "REAL TEST-TAKER INSIGHTS (sourced from r/ACT, updated 2026-05-09):\n- Coverage: Real test-takers report this exam covers breadth over depth. Stay at college 101 level on each topic.\n- High-emphasis topics (per real students): math, preparation.\n- Students struggle most with: math, pressure from family, ela. Generate proportionally more on these.\n- Wording style: ~5% of items should use realistic exam-style indirection (NOT unfair ambiguity).\n- Difficulty target: 30% easy / 50% medium / 20% hard. avg pass score 32 suggests easier test.\n- Authenticity bar: students compare us to Desmos, practice test, practice tests. Match that register.",
+  "generator_prompt_injection": "REAL TEST-TAKER INSIGHTS (sourced from r/ACT, updated 2026-05-09):\n- Coverage: Real test-takers report this exam covers breadth over depth. Stay at college 101 level on each topic.\n- High-emphasis topics (per real students): math, preparation.\n- Students struggle most with: math, pressure from family, ela. Generate proportionally more on these.\n- Wording style: ~6% of items should use realistic exam-style indirection (NOT unfair ambiguity).\n- Difficulty target: 30% easy / 50% medium / 20% hard. avg pass score 32 suggests easier test.\n- Authenticity bar: students compare us to Desmos, practice test, practice tests. Match that register.",
   "popup_tips": [
     {
       "tip_id": "2138dfa6",
