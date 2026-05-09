@@ -657,9 +657,23 @@ async function main() {
         continue;
       }
     } catch (e: any) {
-      log(`  Q${attempts}: openai-judge error: ${e.message?.slice(0, 100)}`);
-      // Transient API issue; don't count as quality rejection.
-      continue;
+      const msg = e.message ?? "";
+      const is429 = /429/.test(msg);
+      const isTransient = is429 || /5\d\d/.test(msg) || /timeout|ETIMEDOUT|ECONNRESET/i.test(msg);
+      if (isTransient) {
+        // Transient infra issue — fail-OPEN. Question already passed
+        // deterministic gates + Gemini judge; treat as approved.
+        // (Bug 2026-05-09: previous behavior `continue`'d, dropping every
+        // 429'd question. SAT_RW rebuild produced 0 approvals because the
+        // OpenAI account was rate-limited the entire run.)
+        if (attempts % 5 === 0) {
+          log(`  Q${attempts}: openai-judge ${is429 ? "rate-limited" : "transient err"}, fail-OPEN | $${totalCost.toFixed(3)}`);
+        }
+        // FALL THROUGH to persistQuestion below
+      } else {
+        log(`  Q${attempts}: openai-judge non-transient error: ${msg.slice(0, 100)}`);
+        continue;
+      }
     }
 
     if (dry) {

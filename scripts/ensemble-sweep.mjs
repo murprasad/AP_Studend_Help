@@ -270,12 +270,63 @@ console.log(`\nArtifact: ${outFile}`);
 
 if (UNAPPROVE) {
   // Bidirectional: approved+FAIL → unapprove; unapproved+PASS → approve.
-  const toUnapprove = results.filter((r) => r.verdict === "FAIL" && r.wasApproved).map((r) => r.id);
+  // SAFETY (per feedback_no_unapprove_below_200.md, 2026-05-09):
+  //   - Approves are always allowed (raises count).
+  //   - Unapproves require:
+  //       (a) per-course current approved >= 200 AND
+  //       (b) post-unapprove approved >= 200 (cap if needed).
+  //   This protects the student-facing visibility floor.
+  const allUnapprove = results.filter((r) => r.verdict === "FAIL" && r.wasApproved);
   const toApprove = results.filter((r) => r.verdict === "PASS" && !r.wasApproved).map((r) => r.id);
-  console.log(`\nWrites: -${toUnapprove.length} unapprove (approved→FAIL), +${toApprove.length} approve (unapproved→PASS)`);
+
+  // Group failed-to-unapprove by course
+  const byCourse = {};
+  for (const r of allUnapprove) {
+    if (!byCourse[r.course]) byCourse[r.course] = [];
+    byCourse[r.course].push(r.id);
+  }
+
+  // For each course in the failed-to-unapprove set, fetch live approved count
+  // (approves from THIS run also raise the count — pre-apply approves first
+  // mentally by adding the count of toApprove for the same course)
+  const approvesByCourse = {};
+  for (const r of results) {
+    if (r.verdict === "PASS" && !r.wasApproved) {
+      approvesByCourse[r.course] = (approvesByCourse[r.course] || 0) + 1;
+    }
+  }
+
+  const finalUnapproveIds = [];
+  const skipReasons = [];
+  for (const [course, ids] of Object.entries(byCourse)) {
+    const r = await sql`
+      SELECT COUNT(*)::int AS c FROM questions
+      WHERE course::text = ${course} AND "isApproved" = true AND "questionType" = 'MCQ'
+    `;
+    const currentApproved = r[0]?.c ?? 0;
+    const projectedAfterApproves = currentApproved + (approvesByCourse[course] || 0);
+    if (projectedAfterApproves < 200) {
+      skipReasons.push(`${course}: currently ${currentApproved} approved (+${approvesByCourse[course]||0} from this run = ${projectedAfterApproves}), below 200 minimum — SKIPPING all ${ids.length} unapproves`);
+      continue;
+    }
+    const maxAllowed = projectedAfterApproves - 200;
+    if (ids.length > maxAllowed) {
+      skipReasons.push(`${course}: ${ids.length} would-fail but cap at ${maxAllowed} (keep ≥200 after writes)`);
+      finalUnapproveIds.push(...ids.slice(0, maxAllowed));
+    } else {
+      finalUnapproveIds.push(...ids);
+    }
+  }
+
+  if (skipReasons.length > 0) {
+    console.log("\n══ 200-floor SAFETY GATE applied ══");
+    for (const s of skipReasons) console.log(`  ${s}`);
+  }
+
+  console.log(`\nWrites: -${finalUnapproveIds.length} unapprove (after 200-floor gate; ${allUnapprove.length} total failed), +${toApprove.length} approve (unapproved→PASS)`);
   const CHUNK = 100;
-  for (let i = 0; i < toUnapprove.length; i += CHUNK) {
-    const slice = toUnapprove.slice(i, i + CHUNK);
+  for (let i = 0; i < finalUnapproveIds.length; i += CHUNK) {
+    const slice = finalUnapproveIds.slice(i, i + CHUNK);
     await sql`UPDATE questions SET "isApproved" = false WHERE id = ANY(${slice})`;
   }
   for (let i = 0; i < toApprove.length; i += CHUNK) {
