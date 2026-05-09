@@ -165,23 +165,18 @@ export function buildQuestionPrompt(
   const typeFormat = config.questionTypeFormats?.[questionType];
 
   // 2026-05-09 — User-feedback loop: load per-course calibration profile
-  // built from real test-taker insights (Reddit, forums, etc.) and inject
-  // as a prompt section. See project_feedback_loop_standard_spec.md.
-  // Profile path: data/user-feedback-profiles/<course>.json
-  // Fail silently if profile missing — feature is additive, not load-bearing.
+  // built from real test-taker insights. Uses static accessor (src/lib/
+  // feedback-profiles.ts) so JSON files are bundled into the CF Workers
+  // deploy (fs.readFileSync at runtime doesn't work on Workers).
   let userFeedbackSection = "";
   try {
-    const fs = require("node:fs");
-    const path = require("node:path");
-    const profilePath = path.join(process.cwd(), "data", "user-feedback-profiles", `${course}.json`);
-    if (fs.existsSync(profilePath)) {
-      const profile = JSON.parse(fs.readFileSync(profilePath, "utf-8"));
-      if (profile?.generator_prompt_injection) {
-        userFeedbackSection = `\n\n${profile.generator_prompt_injection}`;
-      }
+    const { getFeedbackProfile } = require("./feedback-profiles");
+    const profile = getFeedbackProfile(course);
+    if (profile?.generator_prompt_injection) {
+      userFeedbackSection = `\n\n${profile.generator_prompt_injection}`;
     }
   } catch {
-    // missing profile / parse error — continue without
+    // accessor missing / no profile — continue without
   }
 
   const unitHeader = [

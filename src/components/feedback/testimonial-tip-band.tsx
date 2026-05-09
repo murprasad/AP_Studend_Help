@@ -4,11 +4,10 @@
  * Renders 3-5 random "Real Student Tips" from across courses as social
  * proof on the marketing landing pages. No auth required.
  *
- * Per project_feedback_loop_standard_spec.md and user 2026-05-09: "show
- * on landing page too" — drives conversion via authentic test-taker voice.
+ * Reads via static accessor (src/lib/feedback-profiles.ts) — works at
+ * build time on CF Workers (fs.readFileSync at runtime does not).
  */
-import { readdirSync, readFileSync, existsSync } from "node:fs";
-import { join } from "node:path";
+import { getAllPopupTips } from "@/lib/feedback-profiles";
 
 interface PopupTip {
   tip_id: string;
@@ -16,39 +15,16 @@ interface PopupTip {
   source_attribution: string;
 }
 
-function loadAllTips(): PopupTip[] {
-  try {
-    const profilesDir = join(process.cwd(), "data", "user-feedback-profiles");
-    if (!existsSync(profilesDir)) return [];
-    const files = readdirSync(profilesDir).filter((f) => f.endsWith(".json"));
-    const all: PopupTip[] = [];
-    for (const f of files) {
-      try {
-        const profile = JSON.parse(readFileSync(join(profilesDir, f), "utf-8"));
-        const tips: PopupTip[] = profile?.popup_tips ?? [];
-        for (const t of tips) all.push(t);
-      } catch {
-        // skip bad file
-      }
-    }
-    return all;
-  } catch {
-    return [];
-  }
-}
-
 interface Props {
   count?: number;
 }
 
 export function TestimonialTipBand({ count = 4 }: Props) {
-  const all = loadAllTips();
+  const all = getAllPopupTips();
   if (all.length === 0) return null;
 
-  // Pick `count` random tips, deduped by tip_id
   const seen = new Set<string>();
   const picked: PopupTip[] = [];
-  // Shuffle by hashing through Date.now()-derived index for SSR variety
   const shuffled = [...all].sort(() => Math.random() - 0.5);
   for (const t of shuffled) {
     if (seen.has(t.tip_id)) continue;
