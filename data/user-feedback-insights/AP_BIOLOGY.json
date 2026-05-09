@@ -1,0 +1,33 @@
+{
+  "course": "AP_BIOLOGY",
+  "insights": [
+    {
+      "ingested_at": "2026-05-09T16:36:17.033Z",
+      "source_type": "reddit",
+      "source_url": "https://reddit.com/r/ACT/comments/1stujxf/am_i_cooked_my_family_cant_afford_for_me_to_try/",
+      "source_excerpt": "I really wanna work as a gynecologist and don’t know if this will set me back ",
+      "post_title": "Am I cooked (my family can’t afford for me to try again)",
+      "post_flair": "General",
+      "post_score": 95,
+      "test_outcome": "unknown",
+      "test_score": null,
+      "study_hours_to_pass": null,
+      "extracted_insights": [
+        {
+          "type": "topic_emphasis",
+          "topic": "medicine",
+          "weight_signal": "high",
+          "evidence": "I really wanna work as a gynecologist"
+        },
+        {
+          "type": "subtopic_struggle_signal",
+          "topics": [
+            "science",
+            "medicine"
+          ],
+          "evidence": "Am I cooked (my family can’t afford for me to try again)"
+        }
+      ]
+    }
+  ]
+}

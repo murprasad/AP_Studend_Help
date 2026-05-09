@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "course": "ACT_SCIENCE",
+  "last_updated": "2026-05-09",
+  "source_count": 3,
+  "calibration": {
+    "coverage_strategy": "wide_not_deep",
+    "coverage_strategy_note": "Real test-takers report this exam covers breadth over depth. Stay at college 101 level on each topic.",
+    "topic_weights": {
+      "_default": 1
+    },
+    "wording_style": {
+      "tricky_wording_fraction": 0,
+      "guidance": "Realistic exam-style indirection. Always single-correct-answer."
+    },
+    "difficulty_distribution": {
+      "easy": 0.3,
+      "medium": 0.5,
+      "hard": 0.2,
+      "rationale": "avg pass score 34 suggests easier test"
+    },
+    "subtopic_struggle_signals": [],
+    "perceived_authenticity_bar": {
+      "competitors": [],
+      "note": "Students compare us to these — match the register."
+    }
+  },
+  "generator_prompt_injection": "REAL TEST-TAKER INSIGHTS (sourced from r/ACT, updated 2026-05-09):\n- Coverage: Real test-takers report this exam covers breadth over depth. Stay at college 101 level on each topic.\n- Wording style: ~0% of items should use realistic exam-style indirection (NOT unfair ambiguity).\n- Difficulty target: 30% easy / 50% medium / 20% hard. avg pass score 34 suggests easier test.\n",
+  "popup_tips": []
+}

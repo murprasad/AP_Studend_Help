@@ -1,0 +1,83 @@
+{
+  "schema_version": "1.0",
+  "course": "SAT_MATH",
+  "last_updated": "2026-05-09",
+  "source_count": 11,
+  "calibration": {
+    "coverage_strategy": "wide_not_deep",
+    "coverage_strategy_note": "Real test-takers report this exam covers breadth over depth. Stay at college 101 level on each topic.",
+    "topic_weights": {
+      "_default": 1
+    },
+    "wording_style": {
+      "tricky_wording_fraction": 0,
+      "guidance": "Realistic exam-style indirection. Always single-correct-answer."
+    },
+    "difficulty_distribution": {
+      "easy": 0.15,
+      "medium": 0.5,
+      "hard": 0.35,
+      "rationale": "avg pass score 1410 — harder test"
+    },
+    "subtopic_struggle_signals": [
+      {
+        "topic": "test security",
+        "note": "majority everyone has high scores from cheating"
+      },
+      {
+        "topic": "academic integrity",
+        "note": "majority everyone has high scores from cheating"
+      },
+      {
+        "topic": "sat prep",
+        "note": "My school has no SAT prep, but that is not an excuse."
+      }
+    ],
+    "perceived_authenticity_bar": {
+      "competitors": [
+        "Desmos",
+        "SAT class",
+        "practice tests"
+      ],
+      "note": "Students compare us to these — match the register."
+    }
+  },
+  "generator_prompt_injection": "REAL TEST-TAKER INSIGHTS (sourced from r/Sat, updated 2026-05-09):\n- Coverage: Real test-takers report this exam covers breadth over depth. Stay at college 101 level on each topic.\n- Students struggle most with: test security, academic integrity, sat prep. Generate proportionally more on these.\n- Wording style: ~0% of items should use realistic exam-style indirection (NOT unfair ambiguity).\n- Difficulty target: 15% easy / 50% medium / 35% hard. avg pass score 1410 — harder test.\n- Authenticity bar: students compare us to Desmos, SAT class, practice tests. Match that register.",
+  "popup_tips": [
+    {
+      "tip_id": "f8c428a4",
+      "text": "Helpful for math prep",
+      "source_attribution": "From a recent SAT MATH test-taker",
+      "first_seen": "2026-05-09",
+      "topic_filter": []
+    },
+    {
+      "tip_id": "86ff9a6d",
+      "text": "majority everyone has high scores from cheating",
+      "source_attribution": "From a recent SAT MATH test-taker",
+      "first_seen": "2026-05-09",
+      "topic_filter": []
+    },
+    {
+      "tip_id": "fbd0bb65",
+      "text": "lack of access to tutors and teacher support",
+      "source_attribution": "From a recent SAT MATH test-taker",
+      "first_seen": "2026-05-09",
+      "topic_filter": []
+    },
+    {
+      "tip_id": "50bdfe82",
+      "text": "My school has no SAT prep, but that is not an excuse.",
+      "source_attribution": "From a recent SAT MATH test-taker",
+      "first_seen": "2026-05-09",
+      "topic_filter": []
+    },
+    {
+      "tip_id": "c1d30564",
+      "text": "retaking the test",
+      "source_attribution": "From a recent SAT MATH test-taker",
+      "first_seen": "2026-05-09",
+      "topic_filter": []
+    }
+  ]
+}

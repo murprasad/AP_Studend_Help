@@ -1,0 +1,335 @@
+{
+  "course": "SAT_MATH",
+  "insights": [
+    {
+      "ingested_at": "2026-05-09T16:36:05.172Z",
+      "source_type": "reddit",
+      "source_url": "https://reddit.com/r/Sat/comments/1t2okyg/im_the_lebron_of_sat_math/",
+      "source_excerpt": "took this 8 times took may for 1560+ but in desmos we trust\n\nlmk if u have any questions",
+      "post_title": "im the LeBron of sat math",
+      "post_flair": "",
+      "post_score": 364,
+      "test_outcome": "pass",
+      "test_score": 1560,
+      "study_hours_to_pass": null,
+      "extracted_insights": [
+        {
+          "type": "prep_resource_signal",
+          "resources_that_worked": [
+            "Desmos"
+          ],
+          "implication": "Helpful for math prep"
+        },
+        {
+          "type": "difficulty_calibration",
+          "evidence": "took this 8 times",
+          "min_pass_score": null
+        }
+      ]
+    },
+    {
+      "ingested_at": "2026-05-09T16:36:07.398Z",
+      "source_type": "reddit",
+      "source_url": "https://reddit.com/r/Sat/comments/1swyiw5/found_a_guy_lurking_in_the_subreddit_looking_for/",
+      "source_excerpt": "Stay away from this guy, mods, please ban him from this sub. Everybody, do not engage with people peddling such hope, they're merely there to poach your money. I need not remind you that it is ILLEGAL to cheat on the SAT using such software, and your uni apps will SIGNIFICANTLY be affected if caught. Anyway, most of these purported software applications are fraud.",
+      "post_title": "Found a guy lurking in the subreddit looking for the gullible",
+      "post_flair": "",
+      "post_score": 309,
+      "test_outcome": "unknown",
+      "test_score": null,
+      "study_hours_to_pass": null,
+      "extracted_insights": [
+        {
+          "type": "topic_emphasis",
+          "topic": "cheating",
+          "weight_signal": "high",
+          "evidence": "it is ILLEGAL to cheat on the SAT using such software"
+        },
+        {
+          "type": "prep_resource_signal",
+          "resources_that_worked": null,
+          "implication": "beware of fraudulent software"
+        }
+      ]
+    },
+    {
+      "ingested_at": "2026-05-09T16:36:12.656Z",
+      "source_type": "reddit",
+      "source_url": "https://reddit.com/r/Sat/comments/1sr90qw/how_i_felt_after_taking_the_school_day_sat/",
+      "source_excerpt": "I'm getting into Harvard with this score, right?\n\nEdit for clarification: The 420 likely isn't my actual score, just an \"estimate\" based on how I thought I did after the exam. Since I took the SAT on the 17th, my score won't be available until May. Nevertheless, I already know that I screwed up bad 😭",
+      "post_title": "How I felt after taking the School Day SAT",
+      "post_flair": "",
+      "post_score": 226,
+      "test_outcome": "in_progress",
+      "test_score": null,
+      "study_hours_to_pass": null,
+      "extracted_insights": [
+        {
+          "type": "subtopic_struggle_signal",
+          "topics": [
+            "overallSATperformance"
+          ],
+          "evidence": "I already know that I screwed up bad"
+        },
+        {
+          "type": "difficulty_calibration",
+          "evidence": "I already know that I screwed up bad",
+          "min_pass_score": null
+        }
+      ]
+    },
+    {
+      "ingested_at": "2026-05-09T16:36:15.160Z",
+      "source_type": "reddit",
+      "source_url": "https://reddit.com/r/Sat/comments/1syri0n/majority_of_grade_cheated_school_sat/",
+      "source_excerpt": "So recently my schools SAT scores just dropped and majority everyone has high scores from cheating. I’m frustrated because they’re just not being secretive at all about it and bragging about the college they’ll get into because of their scores. I’ve been hung up on it because so many people cheated and it’s not like I can report the whole grade level. But what stings more is how low my scores are compared to theres I just don’t know what to do either since I’ll be so busy this summer.\n\nedit: for anyone wondering how for context my school is in the ghetto so cheating on things is the norm. Also",
+      "post_title": "Majority of Grade cheated school sat",
+      "post_flair": "",
+      "post_score": 200,
+      "test_outcome": "fail",
+      "test_score": null,
+      "study_hours_to_pass": null,
+      "extracted_insights": [
+        {
+          "type": "subtopic_struggle_signal",
+          "topics": [
+            "test security",
+            "academic integrity"
+          ],
+          "evidence": "majority everyone has high scores from cheating"
+        },
+        {
+          "type": "difficulty_calibration",
+          "evidence": "my scores are compared to theirs",
+          "min_pass_score": null
+        },
+        {
+          "type": "prep_resource_signal",
+          "resources_that_worked": [],
+          "implication": "lack of access to tutors and teacher support"
+        }
+      ]
+    },
+    {
+      "ingested_at": "2026-05-09T16:36:19.810Z",
+      "source_type": "reddit",
+      "source_url": "https://reddit.com/r/Sat/comments/1soip6y/there_goes_harvard/",
+      "source_excerpt": "before anybody ask, yes I’m planning to take it again I’m already signed up for a SAT class. My school has no SAT prep, but that is not an excuse. I should’ve studied beforehand just wanted to receive anybody’s opinion based on this I definitely cried when I saw this, but I know I can retake it in June not to mention my school’s gonna do it again in fall.",
+      "post_title": "There goes Harvard",
+      "post_flair": "",
+      "post_score": 160,
+      "test_outcome": "fail",
+      "test_score": null,
+      "study_hours_to_pass": null,
+      "extracted_insights": [
+        {
+          "type": "subtopic_struggle_signal",
+          "topics": [
+            "SAT prep",
+            "timed tests"
+          ],
+          "evidence": "My school has no SAT prep, but that is not an excuse."
+        },
+        {
+          "type": "coverage_strategy",
+          "value": "balanced",
+          "evidence": "I should’ve studied beforehand"
+        },
+        {
+          "type": "prep_resource_signal",
+          "resources_that_worked": [
+            "SAT class"
+          ],
+          "implication": "retaking the test"
+        }
+      ]
+    },
+    {
+      "ingested_at": "2026-05-09T16:36:22.203Z",
+      "source_type": "reddit",
+      "source_url": "https://reddit.com/r/Sat/comments/1t4xu7o/i_cant_do_as_well_on_tests/",
+      "source_excerpt": "AHHH so I always get above 1500 most of the time on the practice test, but for some reason I keep getting less than that on the actual one. For the last one I got 1440 Is there a reason for this? Ik it’s something like stress or smth idk",
+      "post_title": "I can’t do as well on tests",
+      "post_flair": "",
+      "post_score": 153,
+      "test_outcome": "fail",
+      "test_score": 1440,
+      "study_hours_to_pass": null,
+      "extracted_insights": [
+        {
+          "type": "subtopic_struggle_signal",
+          "topics": [
+            "stress management"
+          ],
+          "evidence": "I always get above 1500 most of the time on the practice test, but for some reason I keep getting less than that on the actual one"
+        },
+        {
+          "type": "difficulty_calibration",
+          "evidence": "I always get above 1500 most of the time on the practice test, but for some reason I keep getting less than that on the actual one",
+          "min_pass_score": 1500
+        }
+      ]
+    },
+    {
+      "ingested_at": "2026-05-09T16:36:27.689Z",
+      "source_type": "reddit",
+      "source_url": "https://reddit.com/r/Sat/comments/1sw278j/desmos_should_not_be_a_thing_for_standardized/",
+      "source_excerpt": "I genuinely think adding desmos to college-admission tests like the SAT and ACT is the dumbest shit ever. Students are not learning how to do math, but rather, learning how to use a graphing calculator. \n\nLets say for instance, there is a equation: 4 + 5x = 192 - 9x.\n\nStudents dont have to learn algebra, but they can just copy and paste the question on a graphing calculator and get the answer. Then what is the point of having a math section? Is it even credible? \n\nAll of the calculation type questions DO NOT require a calculator either. Do you really HAVE to use a calculator to do a quick arit",
+      "post_title": "DESMOS should NOT be a thing for standardized testing such as SAT/ACT",
+      "post_flair": "",
+      "post_score": 131,
+      "test_outcome": "unknown",
+      "test_score": null,
+      "study_hours_to_pass": null,
+      "extracted_insights": [
+        {
+          "type": "topic_emphasis",
+          "topic": "algebra",
+          "weight_signal": "high",
+          "evidence": "Students dont have to learn algebra, but they can just copy and paste the question on a graphing calculator and get the answer."
+        },
+        {
+          "type": "subtopic_struggle_signal",
+          "topics": [
+            "equation solving"
+          ],
+          "evidence": "Lets say for instance, there is a equation: 4 + 5x = 192 - 9x."
+        },
+        {
+          "type": "wording_style",
+          "value": "moderate_tricky",
+          "evidence": "Do you really HAVE to use a calculator to do a quick arithmetic question like 11 * 14?"
+        },
+        {
+          "type": "coverage_strategy",
+          "value": "deep_narrow",
+          "evidence": "All of the calculation type questions DO NOT require a calculator either."
+        },
+        {
+          "type": "prep_resource_signal",
+          "resources_that_worked": [
+            "graphing calculator"
+          ],
+          "implication": "over-reliance on technology"
+        }
+      ]
+    },
+    {
+      "ingested_at": "2026-05-09T16:36:30.242Z",
+      "source_type": "reddit",
+      "source_url": "https://reddit.com/r/Sat/comments/1sobs1e/genuine_disappointment_in_my_sat_score_what_do_i/",
+      "source_excerpt": "I studied for hours and hours on end got 1350 and 1400 on 2 practice tests. Then I got my score back and scored a 1130 ",
+      "post_title": "Genuine disappointment in my sat score. What do I do?",
+      "post_flair": "",
+      "post_score": 118,
+      "test_outcome": "fail",
+      "test_score": 1130,
+      "study_hours_to_pass": null,
+      "extracted_insights": [
+        {
+          "type": "subtopic_struggle_signal",
+          "topics": [
+            "Actual test performance vs practice test performance"
+          ],
+          "evidence": "scored a 1130"
+        },
+        {
+          "type": "prep_resource_signal",
+          "resources_that_worked": [
+            "practice tests"
+          ],
+          "implication": "ineffective for actual test performance"
+        },
+        {
+          "type": "difficulty_calibration",
+          "evidence": "got 1350 and 1400 on 2 practice tests. Then I got my score back and scored a 1130",
+          "min_pass_score": null
+        }
+      ]
+    },
+    {
+      "ingested_at": "2026-05-09T16:36:32.153Z",
+      "source_type": "reddit",
+      "source_url": "https://reddit.com/r/Sat/comments/1sqfxdw/sat_act_actual_chud_test/",
+      "source_excerpt": "After I got my ACT score, I thought college was no longer an option. Thankfully, on my first try on the SAT, with no studying and showing up to the testing center half naked, I managed to get a 1510!",
+      "post_title": "SAT &gt; ACT (Actual Chud Test)",
+      "post_flair": "",
+      "post_score": 101,
+      "test_outcome": "pass",
+      "test_score": 1510,
+      "study_hours_to_pass": null,
+      "extracted_insights": [
+        {
+          "type": "coverage_strategy",
+          "value": "wide_not_deep",
+          "evidence": "with no studying"
+        },
+        {
+          "type": "difficulty_calibration",
+          "evidence": "I managed to get a 1510!",
+          "min_pass_score": null
+        }
+      ]
+    },
+    {
+      "ingested_at": "2026-05-09T16:36:43.962Z",
+      "source_type": "reddit",
+      "source_url": "https://reddit.com/r/Sat/comments/1szfr6j/so_close_to_an_800_on_math_but_this_ruined_it/",
+      "source_excerpt": "isn't depth under the water supposed to be negative?",
+      "post_title": "so close to an 800 on math but this ruined it 💔",
+      "post_flair": "",
+      "post_score": 82,
+      "test_outcome": "unknown",
+      "test_score": 800,
+      "study_hours_to_pass": null,
+      "extracted_insights": [
+        {
+          "type": "subtopic_struggle_signal",
+          "topics": [
+            "depth under water",
+            "negative numbers"
+          ],
+          "evidence": "isn't depth under the water supposed to be negative?"
+        }
+      ]
+    },
+    {
+      "ingested_at": "2026-05-09T16:36:56.525Z",
+      "source_type": "reddit",
+      "source_url": "https://reddit.com/r/ACT/comments/1sw27mr/desmos_should_not_be_a_thing_for_standardized/",
+      "source_excerpt": "I genuinely think adding desmos to college-admission tests like the SAT and ACT is the dumbest shit ever. Students are not learning how to do math, but rather, learning how to use a graphing calculator.\n\nLets say for instance, there is a equation: 4 + 5x = 192 - 9x.\n\nStudents dont have to learn algebra, but they can just copy and paste the question on a graphing calculator and get the answer. Then what is the point of having a math section? Is it even credible?\n\nAll of the calculation type questions DO NOT require a calculator either. Do you really HAVE to use a calculator to do a quick arithm",
+      "post_title": "DESMOS should NOT be a thing for standardized testing such as SAT/ACT",
+      "post_flair": "",
+      "post_score": 37,
+      "test_outcome": "unknown",
+      "test_score": null,
+      "study_hours_to_pass": null,
+      "extracted_insights": [
+        {
+          "type": "topic_emphasis",
+          "topic": "algebra",
+          "weight_signal": "high",
+          "evidence": "Students dont have to learn algebra, but they can just copy and paste the question on a graphing calculator and get the answer."
+        },
+        {
+          "type": "wording_style",
+          "value": "moderate_tricky",
+          "evidence": "Students dont have to learn algebra, but they can just copy and paste the question on a graphing calculator and get the answer."
+        },
+        {
+          "type": "subtopic_struggle_signal",
+          "topics": [
+            "graphing calculator usage",
+            "algebra"
+          ],
+          "evidence": "Students are not learning how to do math, but rather, learning how to use a graphing calculator."
+        },
+        {
+          "type": "prep_resource_signal",
+          "resources_that_worked": [],
+          "implication": "Desmos should not be allowed for standardized testing"
+        }
+      ]
+    }
+  ]
+}

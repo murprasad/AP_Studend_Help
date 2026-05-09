@@ -27,6 +27,7 @@ import { MockupAnalytics } from "@/components/landing/mockup-analytics";
 import { MockupStudyPlan } from "@/components/landing/mockup-study-plan";
 import { MockupPractice } from "@/components/landing/mockup-practice";
 import { ProductShowcase } from "@/components/landing/product-showcase";
+import { TestimonialTipBand } from "@/components/feedback/testimonial-tip-band";
 import { FadeIn } from "@/components/landing/fade-in";
 import { LandingFaq } from "@/components/landing/faq";
 import { SageChat } from "@/components/layout/sage-chat";
@@ -669,6 +670,9 @@ export default async function LandingPage() {
 
       {/* Product Showcase — full workflow */}
       <ProductShowcase />
+
+      {/* Real Student Tips — social proof from actual test-takers (Phase 4 user-feedback loop) */}
+      <TestimonialTipBand count={4} />
 
       {/* Differentiation — single honest line, no table */}
       <section className="py-10 sm:py-14 lg:pb-20">

@@ -1,0 +1,160 @@
+{
+  "course": "ACT_ENGLISH",
+  "insights": [
+    {
+      "ingested_at": "2026-05-09T16:36:19.138Z",
+      "source_type": "reddit",
+      "source_url": "https://reddit.com/r/ACT/comments/1t7axsx/i_still_cant_believe_this_score_is_real/",
+      "source_excerpt": "After deciding to take the ACT on a whim (I had already done SAT, but my friends highly recommended the ACT), somehow this happened!! I also don’t know anyone else irl who took the writing section, so I’m not sure if the twelve is a big deal. But I have always loved to write since elementary school, and I became so frustrated with the advent of Chat GPT and other AI writing tools. It was so liberating to finally have my writing fairly compared against other people, with none of us receiving outside help. I have recommended ACT to all of my friends that are currently struggling with the SAT. I ",
+      "post_title": "I still can’t believe this score is real!!",
+      "post_flair": "",
+      "post_score": 77,
+      "test_outcome": "pass",
+      "test_score": 12,
+      "study_hours_to_pass": null,
+      "extracted_insights": [
+        {
+          "type": "topic_emphasis",
+          "topic": "writing",
+          "weight_signal": "high",
+          "evidence": "I have always loved to write since elementary school"
+        },
+        {
+          "type": "coverage_strategy",
+          "value": "balanced",
+          "evidence": "I had already done SAT, but my friends highly recommended the ACT"
+        },
+        {
+          "type": "prep_resource_signal",
+          "resources_that_worked": [
+            "ACT"
+          ],
+          "implication": "recommended to friends"
+        }
+      ]
+    },
+    {
+      "ingested_at": "2026-05-09T16:36:21.265Z",
+      "source_type": "reddit",
+      "source_url": "https://reddit.com/r/ACT/comments/1sydgfz/actually_pretty_happy_w_this_score/",
+      "source_excerpt": "My state is in 50th in education, with the avg ACT score being a 17 there. I’m actually pleased with it, i didn’t try much on the writing as you can see so I got the score I earned! Is this decent for any scholarships? ",
+      "post_title": "Actually pretty happy w this score!",
+      "post_flair": "",
+      "post_score": 72,
+      "test_outcome": "pass",
+      "test_score": 17,
+      "study_hours_to_pass": null,
+      "extracted_insights": [
+        {
+          "type": "topic_emphasis",
+          "topic": "writing",
+          "weight_signal": "low",
+          "evidence": "I didn’t try much on the writing"
+        },
+        {
+          "type": "difficulty_calibration",
+          "evidence": "My state is in 50th in education, with the avg ACT score being a 17 there",
+          "min_pass_score": null
+        }
+      ]
+    },
+    {
+      "ingested_at": "2026-05-09T16:36:51.826Z",
+      "source_type": "reddit",
+      "source_url": "https://reddit.com/r/ACT/comments/1ssqge7/ultimate_guide_for_34/",
+      "source_excerpt": "Guide to 34+ on the ACT.\n\nFirst of all, I would like to start off by saying this subreddit helped me so much in getting my dream score of a 35. My first run, I got a 31, and with a month of prep, I managed to get a 35. I want to share my tips and advice with you all so you too can achieve your dream score.\n\nBefore we start, I wanna point out that this is not an EXACT method to getting a 34+, everyone has their own method and system to achieve this score. This is just what worked for me, but I do believe that if you follow this method, your score will grow.\n\nImma break this down based on each s",
+      "post_title": "ULTIMATE GUIDE FOR 34+!",
+      "post_flair": "Books/Resources",
+      "post_score": 38,
+      "test_outcome": "pass",
+      "test_score": 35,
+      "study_hours_to_pass": null,
+      "extracted_insights": [
+        {
+          "type": "topic_emphasis",
+          "topic": "English",
+          "weight_signal": "high",
+          "evidence": "This was easily my best section."
+        },
+        {
+          "type": "prep_resource_signal",
+          "resources_that_worked": [
+            "Erica Meltzer ACT English book",
+            "PrepPros Enhanced ACT Math prep book",
+            "College Panda ACT Mat",
+            "For the Love of ACT Science"
+          ],
+          "implication": "These resources were effective in improving test scores."
+        },
+        {
+          "type": "topic_emphasis",
+          "topic": "Math",
+          "weight_signal": "medium",
+          "evidence": "This was like one of my worst sections."
+        },
+        {
+          "type": "topic_emphasis",
+          "topic": "Reading",
+          "weight_signal": "low",
+          "evidence": "This section, a no-prep book, can help you."
+        },
+        {
+          "type": "topic_emphasis",
+          "topic": "Science",
+          "weight_signal": "low",
+          "evidence": "This was for sure my worst section."
+        },
+        {
+          "type": "difficulty_calibration",
+          "evidence": "I want to share my tips and advice with you all so you too can achieve your dream score.",
+          "min_pass_score": 34
+        },
+        {
+          "type": "subtopic_struggle_signal",
+          "topics": [
+            "Math",
+            "Science"
+          ],
+          "evidence": "This was like one of my worst sections. This was for sure my worst section."
+        }
+      ]
+    },
+    {
+      "ingested_at": "2026-05-09T16:36:54.094Z",
+      "source_type": "reddit",
+      "source_url": "https://reddit.com/r/ACT/comments/1sz0fak/is_there_hope_for_me_if_i_have_a_bad_gpa_but_an/",
+      "source_excerpt": "i plan to go to a local school with around an 85% acceptance rate. i was only one question off from a 36 on english and reading and i had a panic attack during the math section so i kind of fumbled it. i know this score is decent, but my gpa is absolutely horrendous (around a 0.8 for sophomore year and raised to about a 1.9 in junior year) so i'm not sure if it's enough to make up for that. i seriously think i could do better on the act but is it worth it?",
+      "post_title": "is there hope for me if i have a bad gpa but an alright score? should i retake?",
+      "post_flair": "",
+      "post_score": 39,
+      "test_outcome": "unknown",
+      "test_score": 35,
+      "study_hours_to_pass": null,
+      "extracted_insights": [
+        {
+          "type": "subtopic_struggle_signal",
+          "topics": [
+            "math"
+          ],
+          "evidence": "i kind of fumbled it"
+        },
+        {
+          "type": "difficulty_calibration",
+          "evidence": "i was only one question off from a 36 on english and reading",
+          "min_pass_score": null
+        },
+        {
+          "type": "topic_emphasis",
+          "topic": "gpa",
+          "weight_signal": "high",
+          "evidence": "my gpa is absolutely horrendous"
+        },
+        {
+          "type": "prep_resource_signal",
+          "resources_that_worked": [],
+          "implication": "considering retaking"
+        }
+      ]
+    }
+  ]
+}

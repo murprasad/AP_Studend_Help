@@ -1,0 +1,70 @@
+name: Weekly Reddit Feedback Scrape
+
+# Phase 3 of the user-feedback loop. Scrapes 3 SN-relevant subreddits
+# weekly and updates per-course calibration profiles.
+# Auto-merges the resulting PR (per user 2026-05-09: no manual review).
+
+on:
+  schedule:
+    - cron: '0 6 * * 1'  # Mondays 06:00 UTC
+  workflow_dispatch:
+    inputs:
+      period:
+        description: 'Time period (week|month)'
+        required: false
+        default: 'week'
+      limit:
+        description: 'Max posts per sub'
+        required: false
+        default: '40'
+
+env:
+  NODE_VERSION: '20'
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+      - name: Install
+        run: npm ci --legacy-peer-deps
+      - name: Scrape APStudents + Sat + ACT
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+        run: |
+          for sub in APStudents Sat ACT; do
+            node scripts/feedback-reddit-scrape.mjs \
+              --sub=$sub \
+              --period=${{ github.event.inputs.period || 'week' }} \
+              --limit=${{ github.event.inputs.limit || '40' }} || true
+          done
+      - name: Re-aggregate profiles
+        run: |
+          node scripts/feedback-aggregate.mjs
+      - name: Open auto-merge PR with profile updates
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -e
+          BR="auto/feedback-$(date -u +%Y-%m-%d)"
+          git config user.name "feedback-bot"
+          git config user.email "noreply+feedback@studentnest.ai"
+          git checkout -b "$BR"
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "No profile changes — skipping PR"
+            exit 0
+          fi
+          git add data/user-feedback-insights data/user-feedback-profiles
+          git commit -m "Weekly Reddit feedback ingest $(date -u +%Y-%m-%d)"
+          git push -u origin "$BR"
+          gh pr create --title "Weekly Reddit feedback ingest $(date -u +%Y-%m-%d)" \
+            --body "Auto-generated weekly profile updates from r/APStudents, r/Sat, r/ACT. Per spec: auto-merge enabled." \
+            --base main
+          gh pr merge --squash --delete-branch --auto || gh pr merge --squash --delete-branch

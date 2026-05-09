@@ -1,0 +1,32 @@
+{
+  "course": "AP_PHYSICS_1",
+  "insights": [
+    {
+      "ingested_at": "2026-05-09T16:36:10.521Z",
+      "source_type": "reddit",
+      "source_url": "https://reddit.com/r/Sat/comments/1t0cykf/im_so_happy/",
+      "source_excerpt": "Now I don’t have to pay for the new tomodachi life-instead, my dad has to cover the cost LOL\n\nSo happy rn i don’t even care abt physics anymore that’s a problem for the weekend",
+      "post_title": "I’m so happy!!!",
+      "post_flair": "",
+      "post_score": 290,
+      "test_outcome": "pass",
+      "test_score": null,
+      "study_hours_to_pass": null,
+      "extracted_insights": [
+        {
+          "type": "topic_emphasis",
+          "topic": "physics",
+          "weight_signal": "low",
+          "evidence": "i don’t even care abt physics anymore"
+        },
+        {
+          "type": "subtopic_struggle_signal",
+          "topics": [
+            "physics"
+          ],
+          "evidence": "that’s a problem for the weekend"
+        }
+      ]
+    }
+  ]
+}

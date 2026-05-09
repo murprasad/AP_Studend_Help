@@ -28,6 +28,7 @@ env:
 jobs:
   rebuild:
     runs-on: ubuntu-latest
+    timeout-minutes: 90
     timeout-minutes: 350
     steps:
       - uses: actions/checkout@v4

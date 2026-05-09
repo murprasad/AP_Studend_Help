@@ -164,6 +164,26 @@ export function buildQuestionPrompt(
   const unitMeta = config.units[unit];
   const typeFormat = config.questionTypeFormats?.[questionType];
 
+  // 2026-05-09 — User-feedback loop: load per-course calibration profile
+  // built from real test-taker insights (Reddit, forums, etc.) and inject
+  // as a prompt section. See project_feedback_loop_standard_spec.md.
+  // Profile path: data/user-feedback-profiles/<course>.json
+  // Fail silently if profile missing — feature is additive, not load-bearing.
+  let userFeedbackSection = "";
+  try {
+    const fs = require("node:fs");
+    const path = require("node:path");
+    const profilePath = path.join(process.cwd(), "data", "user-feedback-profiles", `${course}.json`);
+    if (fs.existsSync(profilePath)) {
+      const profile = JSON.parse(fs.readFileSync(profilePath, "utf-8"));
+      if (profile?.generator_prompt_injection) {
+        userFeedbackSection = `\n\n${profile.generator_prompt_injection}`;
+      }
+    }
+  } catch {
+    // missing profile / parse error — continue without
+  }
+
   const unitHeader = [
     `Unit: ${unitName}${unitMeta?.timePeriod ? ` (${unitMeta.timePeriod})` : ""}`,
     unitMeta?.keyThemes?.length ? `Key Themes for this unit: ${unitMeta.keyThemes.join(", ")}` : "",
@@ -509,7 +529,7 @@ ${config.examAlignmentNotes ? `EXAM CONTENT WEIGHTS:\n${config.examAlignmentNote
 
 ${unitHeader}
 
-${config.examAlignmentNotes}${difficultySection}${skillsSection}${stimulusSection}${stimulusRequiredSection}${visualFormatSection}${distractorSection}${ambiguityGuardSection}${numericUniquenessSection}${wordCountSection}${structuralCapsSection}${qualityLessonsSection}${difficultyContractSection}${answerDistributionSection}${satFormatSection}${actFormatSection}${clepSection}
+${config.examAlignmentNotes}${difficultySection}${skillsSection}${stimulusSection}${stimulusRequiredSection}${visualFormatSection}${distractorSection}${ambiguityGuardSection}${numericUniquenessSection}${wordCountSection}${structuralCapsSection}${qualityLessonsSection}${userFeedbackSection}${difficultyContractSection}${answerDistributionSection}${satFormatSection}${actFormatSection}${clepSection}
 
 GENERATION TASK:
 ${generationInstruction}

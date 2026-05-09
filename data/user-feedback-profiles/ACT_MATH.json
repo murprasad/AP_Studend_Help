@@ -1,0 +1,86 @@
+{
+  "schema_version": "1.0",
+  "course": "ACT_MATH",
+  "last_updated": "2026-05-09",
+  "source_count": 7,
+  "calibration": {
+    "coverage_strategy": "wide_not_deep",
+    "coverage_strategy_note": "Real test-takers report this exam covers breadth over depth. Stay at college 101 level on each topic.",
+    "topic_weights": {
+      "_default": 1,
+      "preparation": 1.2,
+      "math": 1.5
+    },
+    "wording_style": {
+      "tricky_wording_fraction": 0.05,
+      "guidance": "Realistic exam-style indirection. Always single-correct-answer."
+    },
+    "difficulty_distribution": {
+      "easy": 0.3,
+      "medium": 0.5,
+      "hard": 0.2,
+      "rationale": "avg pass score 32 suggests easier test"
+    },
+    "subtopic_struggle_signals": [
+      {
+        "topic": "math",
+        "note": "I’ve never even gotten above a 34 in all my ACT math practice tests"
+      },
+      {
+        "topic": "pressure from family",
+        "note": "my cousins get compared FOR EVERYTHING"
+      },
+      {
+        "topic": "ela",
+        "note": "could I get my score up to a high 30’s in ELA"
+      }
+    ],
+    "perceived_authenticity_bar": {
+      "competitors": [
+        "Desmos",
+        "practice test",
+        "practice tests",
+        "practice ACTs"
+      ],
+      "note": "Students compare us to these — match the register."
+    }
+  },
+  "generator_prompt_injection": "REAL TEST-TAKER INSIGHTS (sourced from r/ACT, updated 2026-05-09):\n- Coverage: Real test-takers report this exam covers breadth over depth. Stay at college 101 level on each topic.\n- High-emphasis topics (per real students): math, preparation.\n- Students struggle most with: math, pressure from family, ela. Generate proportionally more on these.\n- Wording style: ~5% of items should use realistic exam-style indirection (NOT unfair ambiguity).\n- Difficulty target: 30% easy / 50% medium / 20% hard. avg pass score 32 suggests easier test.\n- Authenticity bar: students compare us to Desmos, practice test, practice tests. Match that register.",
+  "popup_tips": [
+    {
+      "tip_id": "2138dfa6",
+      "text": "abuse of Desmos and a practice test helped",
+      "source_attribution": "From a recent ACT MATH test-taker",
+      "first_seen": "2026-05-09",
+      "topic_filter": []
+    },
+    {
+      "tip_id": "ed4b9138",
+      "text": "I’ve never even gotten above a 34 in all my ACT math practice tests",
+      "source_attribution": "From a recent ACT MATH test-taker",
+      "first_seen": "2026-05-09",
+      "topic_filter": []
+    },
+    {
+      "tip_id": "8771cc7b",
+      "text": "effective for improvement",
+      "source_attribution": "From a recent ACT MATH test-taker",
+      "first_seen": "2026-05-09",
+      "topic_filter": []
+    },
+    {
+      "tip_id": "a593a532",
+      "text": "my cousins get compared FOR EVERYTHING",
+      "source_attribution": "From a recent ACT MATH test-taker",
+      "first_seen": "2026-05-09",
+      "topic_filter": []
+    },
+    {
+      "tip_id": "7e65062d",
+      "text": "I know this is a good score",
+      "source_attribution": "From a recent ACT MATH test-taker",
+      "first_seen": "2026-05-09",
+      "topic_filter": []
+    }
+  ]
+}
