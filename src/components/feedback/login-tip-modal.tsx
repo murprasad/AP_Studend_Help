@@ -21,10 +21,19 @@ interface Props {
   course: string;
 }
 
+// 2026-05-09 — Tips DISABLED per user request. Raw Reddit-quote tips
+// were context-stripped fragments ("Lets say for instance...", "beware
+// of fraudulent software", "Effective for passing the exam"). Re-enable
+// after a manual review gate is built so each tip is hand-approved
+// before going live. Profile JSONs + template-tip generator stay in
+// place for future use.
+const TIPS_ENABLED = false;
+
 const STORAGE_KEY_DISABLE = "real_student_tip_disabled";
 const STORAGE_KEY_SEEN = "real_student_tip_seen_v1";
 
 export function LoginTipModal({ course }: Props) {
+  if (!TIPS_ENABLED) return null;
   const [tip, setTip] = useState<PopupTip | null>(null);
   const [open, setOpen] = useState(false);
 

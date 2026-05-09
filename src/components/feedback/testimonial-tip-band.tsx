@@ -9,6 +9,11 @@
  */
 import { getAllPopupTips } from "@/lib/feedback-profiles";
 
+// 2026-05-09 — DISABLED per user request. Raw-quote tips were
+// context-stripped fragments ("Lets say for instance...", "Effective
+// for passing the exam"). Re-enable after manual review gate built.
+const TIPS_ENABLED = false;
+
 interface PopupTip {
   tip_id: string;
   text: string;
@@ -20,6 +25,7 @@ interface Props {
 }
 
 export function TestimonialTipBand({ count = 4 }: Props) {
+  if (!TIPS_ENABLED) return null;
   const all = getAllPopupTips();
   if (all.length === 0) return null;
 
