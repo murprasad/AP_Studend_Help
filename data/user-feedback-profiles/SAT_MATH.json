@@ -7,42 +7,44 @@
     "coverage_strategy": "wide_not_deep",
     "coverage_strategy_note": "Real test-takers report this exam covers breadth over depth. Stay at college 101 level on each topic.",
     "topic_weights": {
-      "_default": 1
+      "_default": 1,
+      "algebra": 1.5
     },
     "wording_style": {
-      "tricky_wording_fraction": 0,
+      "tricky_wording_fraction": 0.12,
       "guidance": "Realistic exam-style indirection. Always single-correct-answer."
     },
     "difficulty_distribution": {
       "easy": 0.15,
       "medium": 0.5,
       "hard": 0.35,
-      "rationale": "avg pass score 1410 — harder test"
+      "rationale": "avg pass score 1288 — harder test"
     },
     "subtopic_struggle_signals": [
       {
-        "topic": "test security",
-        "note": "majority everyone has high scores from cheating"
-      },
-      {
-        "topic": "academic integrity",
-        "note": "majority everyone has high scores from cheating"
-      },
-      {
         "topic": "sat prep",
         "note": "My school has no SAT prep, but that is not an excuse."
+      },
+      {
+        "topic": "equation solving",
+        "note": "Lets say for instance, there is a equation: 4 + 5x = 192 - 9x."
+      },
+      {
+        "topic": "depth under water",
+        "note": "isn't depth under the water supposed to be negative?"
       }
     ],
     "perceived_authenticity_bar": {
       "competitors": [
         "Desmos",
         "SAT class",
-        "practice tests"
+        "practice tests",
+        "graphing calculator"
       ],
       "note": "Students compare us to these — match the register."
     }
   },
-  "generator_prompt_injection": "REAL TEST-TAKER INSIGHTS (sourced from r/Sat, updated 2026-05-09):\n- Coverage: Real test-takers report this exam covers breadth over depth. Stay at college 101 level on each topic.\n- Students struggle most with: test security, academic integrity, sat prep. Generate proportionally more on these.\n- Wording style: ~0% of items should use realistic exam-style indirection (NOT unfair ambiguity).\n- Difficulty target: 15% easy / 50% medium / 35% hard. avg pass score 1410 — harder test.\n- Authenticity bar: students compare us to Desmos, SAT class, practice tests. Match that register.",
+  "generator_prompt_injection": "REAL TEST-TAKER INSIGHTS (sourced from r/Sat, updated 2026-05-09):\n- Coverage: Real test-takers report this exam covers breadth over depth. Stay at college 101 level on each topic.\n- High-emphasis topics (per real students): algebra.\n- Students struggle most with: sat prep, equation solving, depth under water. Generate proportionally more on these.\n- Wording style: ~12% of items should use realistic exam-style indirection (NOT unfair ambiguity).\n- Difficulty target: 15% easy / 50% medium / 35% hard. avg pass score 1288 — harder test.\n- Authenticity bar: students compare us to Desmos, SAT class, practice tests. Match that register.",
   "popup_tips": [
     {
       "tip_id": "f8c428a4",
@@ -52,8 +54,8 @@
       "topic_filter": []
     },
     {
-      "tip_id": "86ff9a6d",
-      "text": "majority everyone has high scores from cheating",
+      "tip_id": "97e63ffe",
+      "text": "beware of fraudulent software",
       "source_attribution": "From a recent SAT MATH test-taker",
       "first_seen": "2026-05-09",
       "topic_filter": []

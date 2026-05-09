@@ -8,7 +8,7 @@
     "coverage_strategy_note": "Real test-takers report this exam covers breadth over depth. Stay at college 101 level on each topic.",
     "topic_weights": {
       "_default": 1,
-      "medicine": 1.5
+      "medicine": 1.45
     },
     "wording_style": {
       "tricky_wording_fraction": 0,

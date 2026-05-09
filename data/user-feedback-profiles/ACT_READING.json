@@ -7,7 +7,9 @@
     "coverage_strategy": "wide_not_deep",
     "coverage_strategy_note": "Real test-takers report this exam covers breadth over depth. Stay at college 101 level on each topic.",
     "topic_weights": {
-      "_default": 1
+      "_default": 1,
+      "math": 1.15,
+      "english": 1.15
     },
     "wording_style": {
       "tricky_wording_fraction": 0,
@@ -22,7 +24,7 @@
     "subtopic_struggle_signals": [
       {
         "topic": "reading",
-        "note": "a TWENTY TWO on the actual act??? like what???"
+        "note": "I missed one question on the ACT"
       }
     ],
     "perceived_authenticity_bar": {
@@ -33,8 +35,29 @@
       "note": "Students compare us to these — match the register."
     }
   },
-  "generator_prompt_injection": "REAL TEST-TAKER INSIGHTS (sourced from r/ACT, updated 2026-05-09):\n- Coverage: Real test-takers report this exam covers breadth over depth. Stay at college 101 level on each topic.\n- Students struggle most with: reading. Generate proportionally more on these.\n- Wording style: ~0% of items should use realistic exam-style indirection (NOT unfair ambiguity).\n- Difficulty target: 30% easy / 50% medium / 20% hard. avg pass score 29 suggests easier test.\n- Authenticity bar: students compare us to ACT class, practice tests. Match that register.",
+  "generator_prompt_injection": "REAL TEST-TAKER INSIGHTS (sourced from r/ACT, updated 2026-05-09):\n- Coverage: Real test-takers report this exam covers breadth over depth. Stay at college 101 level on each topic.\n- High-emphasis topics (per real students): math, english.\n- Students struggle most with: reading. Generate proportionally more on these.\n- Wording style: ~0% of items should use realistic exam-style indirection (NOT unfair ambiguity).\n- Difficulty target: 30% easy / 50% medium / 20% hard. avg pass score 29 suggests easier test.\n- Authenticity bar: students compare us to ACT class, practice tests. Match that register.",
   "popup_tips": [
+    {
+      "tip_id": "7f307288",
+      "text": "I missed one question on the ACT",
+      "source_attribution": "From a recent ACT READING test-taker",
+      "first_seen": "2026-05-09",
+      "topic_filter": []
+    },
+    {
+      "tip_id": "8f6ac3cc",
+      "text": "They don't care about my perfect math",
+      "source_attribution": "From a recent ACT READING test-taker",
+      "first_seen": "2026-05-09",
+      "topic_filter": []
+    },
+    {
+      "tip_id": "2bc47104",
+      "text": "Neither do they care about English because they claim grammar is easy",
+      "source_attribution": "From a recent ACT READING test-taker",
+      "first_seen": "2026-05-09",
+      "topic_filter": []
+    },
     {
       "tip_id": "bc4fbb24",
       "text": "a TWENTY TWO on the actual act??? like what???",

@@ -12,7 +12,8 @@
       "english": 1.45,
       "math": 1.3,
       "reading": 1.15,
-      "science": 1.15
+      "science": 1.15,
+      "gpa": 1.1125
     },
     "wording_style": {
       "tricky_wording_fraction": 0,
@@ -22,7 +23,7 @@
       "easy": 0.3,
       "medium": 0.5,
       "hard": 0.2,
-      "rationale": "avg pass score 21 suggests easier test"
+      "rationale": "avg pass score 25 suggests easier test"
     },
     "subtopic_struggle_signals": [
       {
@@ -45,7 +46,7 @@
       "note": "Students compare us to these — match the register."
     }
   },
-  "generator_prompt_injection": "REAL TEST-TAKER INSIGHTS (sourced from r/ACT, updated 2026-05-09):\n- Coverage: Balanced coverage — neither overly wide nor deep.\n- High-emphasis topics (per real students): writing, english, math, reading, science.\n- Students struggle most with: math, science. Generate proportionally more on these.\n- Wording style: ~0% of items should use realistic exam-style indirection (NOT unfair ambiguity).\n- Difficulty target: 30% easy / 50% medium / 20% hard. avg pass score 21 suggests easier test.\n- Authenticity bar: students compare us to ACT, Erica Meltzer ACT English book, PrepPros Enhanced ACT Math prep book. Match that register.",
+  "generator_prompt_injection": "REAL TEST-TAKER INSIGHTS (sourced from r/ACT, updated 2026-05-09):\n- Coverage: Balanced coverage — neither overly wide nor deep.\n- High-emphasis topics (per real students): writing, english, math, reading, science.\n- Students struggle most with: math, science. Generate proportionally more on these.\n- Wording style: ~0% of items should use realistic exam-style indirection (NOT unfair ambiguity).\n- Difficulty target: 30% easy / 50% medium / 20% hard. avg pass score 25 suggests easier test.\n- Authenticity bar: students compare us to ACT, Erica Meltzer ACT English book, PrepPros Enhanced ACT Math prep book. Match that register.",
   "popup_tips": [
     {
       "tip_id": "fba288ca",
