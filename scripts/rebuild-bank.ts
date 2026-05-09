@@ -125,6 +125,40 @@ async function callGemini(model: string, prompt: string, maxTokens: number) {
   throw new Error(`${lastErr} (exhausted retries)`);
 }
 
+// ── Groq fallback for gen (when Gemini is rate-limited) ──────────────────────
+// 2026-05-09: Gemini 2.5-flash account hit sustained 429s. Groq llama-3.3-70b
+// is free and CF-compat, so use it as the gen fallback. Quality is similar
+// for MCQ generation; the deterministic gates + ensemble judge filter the
+// rest. Per-call cost ~$0.00025 (vs Gemini Flash $0.00006), still cheap.
+async function callGroqGen(prompt: string, maxTokens: number) {
+  const key = process.env.GROQ_API_KEY;
+  if (!key) throw new Error("GROQ_API_KEY not set");
+  const url = "https://api.groq.com/openai/v1/chat/completions";
+  const body = {
+    model: "llama-3.3-70b-versatile",
+    messages: [{ role: "user", content: prompt }],
+    response_format: { type: "json_object" },
+    max_tokens: Math.max(maxTokens, 2048),
+    temperature: 0.7,
+  };
+  const res = await fetch(url, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+    signal: AbortSignal.timeout(60000),
+  });
+  if (!res.ok) {
+    const t = await res.text();
+    throw new Error(`groq HTTP ${res.status}: ${t.slice(0, 300)}`);
+  }
+  const json = await res.json();
+  return {
+    text: json?.choices?.[0]?.message?.content ?? "",
+    inputTokens: json?.usage?.prompt_tokens ?? 0,
+    outputTokens: json?.usage?.completion_tokens ?? 0,
+  };
+}
+
 // ── Per-course CED loaders ────────────────────────────────────────────────────
 
 const CED_PATHS: Partial<Record<ApCourse, string>> = {
@@ -578,6 +612,7 @@ async function main() {
 
   let approved = 0, attempts = 0, totalCost = 0;
   let consecutiveFails = 0;
+  let consecutiveGenErrors = 0;
   const failureLog: { idx: number; gate: string; detail: string }[] = [];
   const created: string[] = [];
 
@@ -589,6 +624,7 @@ async function main() {
   while (currentCount + approved < target) {
     if (totalCost >= budget) { log(`✗ Budget cap $${budget} reached. Stopping.`); break; }
     if (consecutiveFails >= 20) { log(`✗ 20 consecutive rejections — stopping (something is systematically wrong).`); break; }
+    if (consecutiveGenErrors >= 8) { log(`✗ 8 consecutive gen API errors — generator unavailable. Stopping.`); break; }
     if (attempts >= ATTEMPT_CAP) { log(`✗ Attempt cap ${ATTEMPT_CAP} reached. Stopping.`); break; }
     attempts++;
     const pick = await pickLeastCoveredTopic(course);
@@ -599,19 +635,41 @@ async function main() {
 
     let candidate: any;
     let genCost = 0;
+    let genModelUsed = GENERATOR_MODEL;
     try {
       const avoid = await getRecentStems(course, 5);
       const prompt = buildGenPrompt(course, unit, topic, contract, cedExcerpt, avoid);
-      const r = await callGemini(GENERATOR_MODEL, prompt, 1500);
-      genCost = costFor(GENERATOR_MODEL, r.inputTokens, r.outputTokens);
+      // Try Gemini first (preferred for quality + cost)
+      let r;
+      try {
+        r = await callGemini(GENERATOR_MODEL, prompt, 1500);
+        genCost = costFor(GENERATOR_MODEL, r.inputTokens, r.outputTokens);
+      } catch (gemErr: any) {
+        // Gemini failed (likely 429 rate-limit). Fall back to Groq.
+        // Per 2026-05-09 postmortem: Gemini account hit sustained 429s.
+        // Groq llama-3.3-70b is free and CF-compat; quality similar for
+        // MCQ gen, deterministic gates + ensemble judge filter the rest.
+        const msg = gemErr.message ?? "";
+        if (/429|503|502|504|timeout/i.test(msg) || /exhausted retries/i.test(msg)) {
+          log(`  Q${attempts}: Gemini ${msg.slice(0, 60)} — falling back to Groq`);
+          r = await callGroqGen(prompt, 1500);
+          // Groq llama-3.3-70b pricing: ~$0.0006/1M input, $0.00079/1M output
+          genCost = (r.inputTokens / 1_000_000) * 0.6 + (r.outputTokens / 1_000_000) * 0.79;
+          genModelUsed = "groq-llama-3.3-70b";
+        } else {
+          throw gemErr; // non-transient — don't fall back, fail
+        }
+      }
       totalCost += genCost;
       candidate = JSON.parse(r.text);
     } catch (e: any) {
-      log(`  Q${attempts}: gen error: ${e.message?.slice(0, 100)}`);
-      // Gen errors are transient API issues (503/429/parse-fail), NOT
-      // quality rejections. Don't count toward consecutiveFails brake.
+      log(`  Q${attempts}: gen error (both providers): ${e.message?.slice(0, 100)}`);
+      // Both Gemini AND Groq failed — that's a real outage. Brake.
+      consecutiveGenErrors++;
       continue;
     }
+    // Successful gen — reset the gen-error brake
+    consecutiveGenErrors = 0;
 
     const det = runGates(candidate, contract, course, topic);
     if (!det.passed) {
