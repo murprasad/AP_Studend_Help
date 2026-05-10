@@ -224,6 +224,9 @@ export async function runAutoPopulate(
           // blind spots — same hallucination across two model families is
           // unlikely. Per user 2026-05-08: every Q must pass this gate.
           // Fail-open if quorum can't form (infra issue, not quality).
+          // 2026-05-10: track whether ensemble actually voted PASS (vs fail-OPEN
+          // due to no quorum). Only quorum-PASS marks pipelineVetted=true.
+          let ensembleQuorumPassed = false;
           if (shouldAutoApprove && questionType === QuestionType.MCQ) {
             const opts = Array.isArray(q.options) ? q.options : [];
             const ca = String(q.correctAnswer ?? "");
@@ -237,7 +240,13 @@ export async function runAutoPopulate(
               shouldAutoApprove = false;
               console.log(`[auto-populate] ${course}/${unit}: ENSEMBLE_FAIL — ${ens.reason}`);
             } else if (ens.fallback) {
-              console.log(`[auto-populate] ${course}/${unit}: ensemble no-quorum (${ens.reason}) — relying on prior gates`);
+              // No-quorum (fail-OPEN) — question still saved (existing
+              // gates pass) but NOT marked pipelineVetted. Per audit on
+              // 2026-05-10, fail-OPEN questions had high bug rate.
+              console.log(`[auto-populate] ${course}/${unit}: ensemble no-quorum (${ens.reason}) — saved but NOT pipelineVetted`);
+            } else {
+              // Real PASS verdict from quorum
+              ensembleQuorumPassed = true;
             }
           }
 
@@ -257,6 +266,11 @@ export async function runAutoPopulate(
               explanation: q.explanation,
               isAiGenerated: true,
               isApproved: shouldAutoApprove,
+              // 2026-05-10: pipelineVetted=true ONLY if ensemble reached
+              // QUORUM-PASS (not fail-OPEN). Per audit findings, fail-OPEN
+              // questions had a 33% bug rate. Conservative marking keeps
+              // the gold tier trustworthy.
+              pipelineVetted: shouldAutoApprove && ensembleQuorumPassed,
               bloomLevel: q.bloomLevel ?? null,
               apSkill: q.apSkill ?? null,
             },
