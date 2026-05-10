@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { RotateCcw, Loader2, CheckCircle, XCircle } from "lucide-react";
 import { ApCourse } from "@prisma/client";
 import { optionLetter, cleanOptionText } from "@/lib/options";
+import { QuestionContent } from "@/components/question/question-content";
 
 interface ReviewQuestion {
   id: string;
@@ -224,7 +225,8 @@ export function DailyReviewCard({ course }: Props) {
                 >
                   {isAnswered && letter === q.correctAnswer && <CheckCircle className="h-3.5 w-3.5 flex-shrink-0" />}
                   {isAnswered && letter === selectedAnswer && letter !== q.correctAnswer && <XCircle className="h-3.5 w-3.5 flex-shrink-0" />}
-                  <span>{cleanText}</span>
+                  {/* 2026-05-10 fix: render LaTeX in options */}
+                  <span className="[&_p]:m-0"><QuestionContent content={cleanText} /></span>
                 </button>
               );
             })}
