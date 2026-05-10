@@ -18,10 +18,31 @@ import type { TutorSections } from "./section-parser";
 
 let mermaidInit = false;
 
+// 2026-05-10 — normalize one-line mermaid into multi-line so the parser
+// accepts it. The generator (Gemini) sometimes emits whole graph specs
+// on a single line ("xychart-beta title '...' x-axis [...] y-axis ...
+// line [...]") which mermaid.parse rejects. Insert line breaks before
+// known keywords. Idempotent — already-multi-line specs unchanged.
+function normalizeMermaid(code: string): string {
+  let c = code.trim();
+  if (c.includes("\n")) return c; // already multi-line, trust it
+  const keywords = [
+    "title ", "x-axis ", "y-axis ", "line ", "bar ", "section ",
+    "subgraph ", "end ", "click ", "style ", "linkStyle ",
+  ];
+  // Insert \n before each keyword (except if already at start)
+  for (const kw of keywords) {
+    c = c.replace(new RegExp("(?<!^)\\s+(" + kw + ")", "g"), "\n  $1");
+  }
+  // First line should remain the chart-type declaration (e.g. xychart-beta)
+  return c;
+}
+
 function MermaidBlock({ code }: { code: string }) {
   const ref = useRef<HTMLDivElement>(null);
   const idRef = useRef(`mermaid-${Math.random().toString(36).slice(2)}`);
   const [state, setState] = useState<"pending" | "ok" | "fallback">("pending");
+  const normalizedCode = normalizeMermaid(code);
 
   useEffect(() => {
     let cancelled = false;
@@ -40,13 +61,13 @@ function MermaidBlock({ code }: { code: string }) {
           mermaidInit = true;
         }
         try {
-          await mermaid.parse(code);
+          await mermaid.parse(normalizedCode);
         } catch {
           if (!cancelled) setState("fallback");
           return;
         }
         try {
-          const { svg } = await mermaid.render(idRef.current, code);
+          const { svg } = await mermaid.render(idRef.current, normalizedCode);
           if (!cancelled && ref.current) {
             ref.current.innerHTML = svg;
             setState("ok");
@@ -59,14 +80,15 @@ function MermaidBlock({ code }: { code: string }) {
       }
     })();
     return () => { cancelled = true; };
-  }, [code]);
+  }, [normalizedCode]);
 
   if (state === "fallback") {
-    return (
-      <pre className="text-xs text-muted-foreground p-3 bg-secondary/50 rounded-lg overflow-x-auto border border-border/40 whitespace-pre-wrap">
-        <code>{code}</code>
-      </pre>
-    );
+    // 2026-05-10: silently drop unrenderable mermaid blocks rather than
+    // showing raw graph spec to students. Mermaid spec leaking as text
+    // ("xychart-beta title '...' line [...]") is worse UX than just
+    // omitting the visual aid entirely. The text question/options carry
+    // the actual problem statement; the graph is supplemental.
+    return null;
   }
   return <div ref={ref} className={`overflow-x-auto ${state === "pending" ? "hidden" : ""}`} />;
 }
