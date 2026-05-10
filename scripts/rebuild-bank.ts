@@ -686,9 +686,24 @@ async function main() {
       judgeCost = costFor(JUDGE_MODEL, judgeResult.tokens.in, judgeResult.tokens.out);
       totalCost += judgeCost;
     } catch (e: any) {
-      log(`  Q${attempts}: judge error: ${e.message?.slice(0, 100)}`);
-      // Judge errors are transient API issues, NOT rejections.
-      continue;
+      const msg = e.message ?? "";
+      const isTransient = /429|5\d\d/.test(msg) || /timeout|ETIMEDOUT|ECONNRESET/i.test(msg);
+      if (isTransient) {
+        // 2026-05-10 fix: Gemini judge 429s (sustained rate-limit on
+        // the account) were silently dropping every Groq-generated
+        // question. Fail-OPEN here — deterministic gates + openai-judge
+        // (also fail-open) + ensemble (in src/lib/ensemble-judge) all
+        // backstop quality. Gemini judge is one layer; missing it on
+        // an infra outage shouldn't block gen.
+        if (attempts % 5 === 0) {
+          log(`  Q${attempts}: Gemini judge ${msg.includes("429") ? "rate-limited" : "transient err"}, fail-OPEN`);
+        }
+        judgeResult = { approved: true, tokens: { in: 0, out: 0 } };
+        // FALL THROUGH — proceed to openai-judge step
+      } else {
+        log(`  Q${attempts}: judge non-transient error: ${msg.slice(0, 100)}`);
+        continue;
+      }
     }
     if (!judgeResult.approved) {
       consecutiveFails++;
