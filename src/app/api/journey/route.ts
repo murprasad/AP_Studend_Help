@@ -123,9 +123,22 @@ export async function POST(req: Request) {
     //      next /dashboard navigation works without a JWT refresh.
     if (nextStep >= 5) {
       try {
+        // 2026-05-10 fix: also persist the picked course to
+        // freeTrialCourse so the user's choice survives across devices /
+        // cookie clears. Real user impact: superayden7@gmail.com signed
+        // up + onboarded with freeTrialCourse=null because the journey
+        // route only set onboardingCompletedAt. Cron emails (daily-quiz,
+        // onboarding-bounce) all rely on freeTrialCourse to pick the
+        // user's course; null means generic "exam" fallback in emails.
+        //
+        // Course source: existing.course (stored on userJourney at
+        // action="start", line 89). Always present at this point.
         await prisma.user.update({
           where: { id: userId },
-          data: { onboardingCompletedAt: new Date() },
+          data: {
+            onboardingCompletedAt: new Date(),
+            ...(existing.course ? { freeTrialCourse: existing.course as never } : {}),
+          },
         });
       } catch { /* non-fatal — journey is already advanced */ }
       const res = NextResponse.json({ journey });
