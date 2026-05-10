@@ -420,6 +420,12 @@ model Question {
   explanation  String       @db.Text
   isAiGenerated Boolean     @default(false)
   isApproved   Boolean      @default(true)
+  // 2026-05-10 — Quality tier flags (per feedback_serve_only_vetted_to_students.md).
+  // pipelineVetted = passed full Beta 9.10.6 chain (gates + judge + ensemble).
+  // auditPassed = human/persona audit confirmed CB-grade quality.
+  // Practice route prefers gold (both true) > silver (pipelineVetted) > bronze (legacy approved).
+  pipelineVetted Boolean   @default(false)
+  auditPassed    Boolean   @default(false)
   modelUsed          String?
   generatedForTier   SubTier   @default(FREE)
   contentHash        String?   @unique  // SHA-256 of normalized questionText — prevents duplicates

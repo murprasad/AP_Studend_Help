@@ -268,6 +268,21 @@ writeFileSync(outFile, JSON.stringify({
 }, null, 2));
 console.log(`\nArtifact: ${outFile}`);
 
+// 2026-05-10: mark PASS-verdict questions as pipelineVetted=true so the
+// practice route's tier-preference (gold > silver > bronze) can serve
+// them. Per feedback_serve_only_vetted_to_students.md.
+if (UNAPPROVE) {
+  const toMarkVetted = results.filter((r) => r.verdict === "PASS").map((r) => r.id);
+  if (toMarkVetted.length > 0) {
+    console.log(`\nMarking ${toMarkVetted.length} questions as pipelineVetted=true (PASS verdict)`);
+    const CHUNK = 100;
+    for (let i = 0; i < toMarkVetted.length; i += CHUNK) {
+      const slice = toMarkVetted.slice(i, i + CHUNK);
+      await sql`UPDATE questions SET "pipelineVetted" = true WHERE id = ANY(${slice})`;
+    }
+  }
+}
+
 if (UNAPPROVE) {
   // Bidirectional: approved+FAIL → unapprove; unapproved+PASS → approve.
   // SAFETY (per feedback_no_unapprove_below_200.md, 2026-05-09):
