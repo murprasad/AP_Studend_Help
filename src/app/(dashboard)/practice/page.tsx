@@ -112,18 +112,17 @@ function ExplanationDisplay({ text, small = false }: { text: string; small?: boo
   const [expanded, setExpanded] = useState(false);
   const cleaned = (text || "").trim();
   const PREVIEW_CHARS = 280;
-  const isLong = cleaned.length > PREVIEW_CHARS + 50; // +50 buffer so we don't truncate trivial overruns
+  const isLong = cleaned.length > PREVIEW_CHARS + 50;
 
+  // 2026-05-10 fix: render LaTeX in explanation (was plain text, leaking $...$)
   if (!isLong) {
     return (
-      <p className={`${small ? "text-xs" : "text-sm"} text-muted-foreground leading-relaxed`}>
-        {cleaned}
-      </p>
+      <div className={`${small ? "text-xs" : "text-sm"} text-muted-foreground leading-relaxed [&_p]:m-0`}>
+        <MarkdownContent content={cleaned} useMermaid={false} />
+      </div>
     );
   }
 
-  // Truncate at the nearest sentence boundary near PREVIEW_CHARS so we
-  // don't cut mid-sentence.
   const slice = cleaned.slice(0, PREVIEW_CHARS);
   const lastSentenceEnd = Math.max(slice.lastIndexOf(". "), slice.lastIndexOf("! "), slice.lastIndexOf("? "));
   const previewEnd = lastSentenceEnd > 100 ? lastSentenceEnd + 1 : PREVIEW_CHARS;
@@ -131,7 +130,9 @@ function ExplanationDisplay({ text, small = false }: { text: string; small?: boo
 
   return (
     <div className={`${small ? "text-xs" : "text-sm"} text-muted-foreground leading-relaxed space-y-1`}>
-      <p>{expanded ? cleaned : preview + (expanded ? "" : "…")}</p>
+      <div className="[&_p]:m-0">
+        <MarkdownContent content={expanded ? cleaned : preview + (expanded ? "" : "…")} useMermaid={false} />
+      </div>
       <button
         type="button"
         onClick={() => setExpanded((v) => !v)}
@@ -1191,7 +1192,12 @@ export default function PracticePage() {
                     className={`w-full text-left p-4 rounded-lg transition-all min-h-[48px] flex items-start gap-3 ${optionClass}`}
                   >
                     <span className="font-bold text-sm w-6 flex-shrink-0">({letter})</span>
-                    <span className="text-sm leading-relaxed flex-1">{cleanText}</span>
+                    {/* 2026-05-10 fix: options contain LaTeX (e.g., $95\%$, $\frac{1}{2}$).
+                        Previously rendered as plain text — LaTeX leaked as literal $ to user.
+                        MarkdownContent processes KaTeX + GFM. */}
+                    <span className="text-sm leading-relaxed flex-1 [&_p]:m-0">
+                      <MarkdownContent content={cleanText} useMermaid={false} />
+                    </span>
                   </button>
                 );
               })}

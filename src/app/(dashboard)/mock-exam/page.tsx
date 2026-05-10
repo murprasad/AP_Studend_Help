@@ -708,7 +708,10 @@ export default function MockExamPage() {
                     className={`w-full text-left p-4 rounded-lg transition-all min-h-[48px] flex items-start gap-3 ${cls}`}
                   >
                     <span className="font-bold text-sm w-6 flex-shrink-0">({letter})</span>
-                    <span className="text-sm leading-relaxed flex-1">{cleanText}</span>
+                    {/* 2026-05-10 fix: render LaTeX in options */}
+                    <span className="text-sm leading-relaxed flex-1 [&_p]:m-0">
+                      <QuestionContent content={cleanText} />
+                    </span>
                   </button>
                 );
               })}
