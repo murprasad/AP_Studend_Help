@@ -426,6 +426,16 @@ model Question {
   // Practice route prefers gold (both true) > silver (pipelineVetted) > bronze (legacy approved).
   pipelineVetted Boolean   @default(false)
   auditPassed    Boolean   @default(false)
+  // 2026-05-10 — Source provenance (per feedback_expansion_uses_same_pipeline.md
+  // + project_question_quality_architecture_v1.md).
+  // For OpenStax-derived: sourceBook = "biology-ap-courses", sourceLicense = "CC BY 4.0".
+  // For AI-generated from CB CED reference only: sourceBook = null.
+  // Required field at render time: attribution caption when sourceLicense is set.
+  sourceBook     String?  // e.g., "biology-ap-courses"
+  sourceUrl      String?  // canonical URL back to the source
+  sourcePage     Int?     // page number in the source PDF
+  sourceLicense  String?  // e.g., "CC BY 4.0"
+  sourceChapter  String?  // human-readable chapter label
   modelUsed          String?
   generatedForTier   SubTier   @default(FREE)
   contentHash        String?   @unique  // SHA-256 of normalized questionText — prevents duplicates
