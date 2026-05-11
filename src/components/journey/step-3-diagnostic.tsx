@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Loader2, Check, X, ArrowRight } from "lucide-react";
 import { QuestionContent } from "@/components/question/question-content";
 import { optionLetter, cleanOptionText, lettersEqual } from "@/lib/options";
+import { useToast } from "@/hooks/use-toast";
 
 interface Q {
   id: string;
@@ -36,6 +37,7 @@ interface Props {
 }
 
 export function Step3Diagnostic({ course, onComplete }: Props) {
+  const { toast } = useToast();
   const [phase, setPhase] = useState<"loading" | "qa" | "submitting" | "error">("loading");
   const [error, setError] = useState<string | null>(null);
   const [sessionId, setSessionId] = useState<string | null>(null);
@@ -168,6 +170,11 @@ export function Step3Diagnostic({ course, onComplete }: Props) {
       const clientScore =
         clientPct >= 80 ? 5 : clientPct >= 65 ? 4 : clientPct >= 50 ? 3 : clientPct >= 35 ? 2 : 1;
       console.warn("[step-3-diagnostic] /api/diagnostic/complete failed after retries; using client-computed score", lastErr);
+      toast({
+        title: "Couldn't save your full diagnostic",
+        description: "Your score is computed locally. Detailed unit breakdown unavailable — please re-take if you want full insights.",
+        variant: "destructive",
+      });
       onComplete({
         diagnosticId: sessionId ?? "",
         weakestUnit: null,
