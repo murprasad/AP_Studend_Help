@@ -103,38 +103,77 @@ export function Step3Diagnostic({ course, onComplete }: Props) {
   const next = async () => {
     if (idx + 1 >= questions.length) {
       setPhase("submitting");
-      try {
-        const res = await fetch("/api/diagnostic/complete", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ sessionId }),
-        });
-        const d = await res.json();
-        const unitScores: Record<string, number> = d.diagnostic?.unitScores ?? d.unitScores ?? {};
-        const entries = Object.entries(unitScores);
-        let weakestUnit: string | null = null;
-        let weakestPct = Infinity;
-        for (const [unit, pct] of entries) {
-          if (typeof pct === "number" && pct < weakestPct) {
-            weakestPct = pct;
-            weakestUnit = unit;
+      // Retry with backoff. The previous version silently called onComplete
+      // with null fields on failure, which surfaced downstream as
+      // "Predicted Score = 1" / empty state and made users bounce (see
+      // mbaled58@gmail.com 2026-05-11, Ayden Qin earlier — both lost their
+      // diagnostic results to a single CF Worker hiccup).
+      const MAX_ATTEMPTS = 3;
+      let lastErr: unknown = null;
+      for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+        try {
+          const res = await fetch("/api/diagnostic/complete", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ sessionId }),
+          });
+          if (!res.ok) {
+            lastErr = new Error(`HTTP ${res.status}`);
+            if (attempt < MAX_ATTEMPTS) {
+              await new Promise((r) => setTimeout(r, 1000 * attempt));
+              continue;
+            }
+            throw lastErr;
+          }
+          const d = await res.json();
+          const unitScores: Record<string, number> = d.diagnostic?.unitScores ?? d.unitScores ?? {};
+          const entries = Object.entries(unitScores);
+          let weakestUnit: string | null = null;
+          let weakestPct = Infinity;
+          for (const [unit, pct] of entries) {
+            if (typeof pct === "number" && pct < weakestPct) {
+              weakestPct = pct;
+              weakestUnit = unit;
+            }
+          }
+          // Two paths to compute mean — prefer server unitScores if present;
+          // fall back to client-tracked correctCount (so we never advance
+          // to Step 4 with predictedScore=null even if server response is
+          // partial).
+          const meanPct = entries.length
+            ? Math.round(entries.reduce((s, [, p]) => s + (typeof p === "number" ? p : 0), 0) / entries.length)
+            : Math.round((correctCount / Math.max(1, questions.length)) * 100);
+          const predictedScore =
+            meanPct >= 80 ? 5 : meanPct >= 65 ? 4 : meanPct >= 50 ? 3 : meanPct >= 35 ? 2 : 1;
+
+          onComplete({
+            diagnosticId: d.diagnostic?.id ?? d.id ?? sessionId ?? "",
+            weakestUnit,
+            weakestUnitName: weakestUnit,
+            predictedScore,
+          });
+          return;
+        } catch (e) {
+          lastErr = e;
+          if (attempt < MAX_ATTEMPTS) {
+            await new Promise((r) => setTimeout(r, 1000 * attempt));
           }
         }
-        const meanPct = entries.length
-          ? Math.round(entries.reduce((s, [, p]) => s + (typeof p === "number" ? p : 0), 0) / entries.length)
-          : Math.round((correctCount / Math.max(1, questions.length)) * 100);
-        const predictedScore =
-          meanPct >= 80 ? 5 : meanPct >= 65 ? 4 : meanPct >= 50 ? 3 : meanPct >= 35 ? 2 : 1;
-
-        onComplete({
-          diagnosticId: d.diagnostic?.id ?? d.id ?? sessionId ?? "",
-          weakestUnit,
-          weakestUnitName: weakestUnit, // raw unit code for now; orchestrator can pretty-print
-          predictedScore,
-        });
-      } catch {
-        onComplete({ diagnosticId: sessionId ?? "", weakestUnit: null, weakestUnitName: null, predictedScore: null });
       }
+      // All 3 attempts failed. Fall back to CLIENT-side computed score
+      // (we have correctCount and questions.length in local state), then
+      // advance. NEVER pass predictedScore: null — that surfaces as
+      // "Predicted Score = 1" and breaks the journey.
+      const clientPct = Math.round((correctCount / Math.max(1, questions.length)) * 100);
+      const clientScore =
+        clientPct >= 80 ? 5 : clientPct >= 65 ? 4 : clientPct >= 50 ? 3 : clientPct >= 35 ? 2 : 1;
+      console.warn("[step-3-diagnostic] /api/diagnostic/complete failed after retries; using client-computed score", lastErr);
+      onComplete({
+        diagnosticId: sessionId ?? "",
+        weakestUnit: null,
+        weakestUnitName: null,
+        predictedScore: clientScore,
+      });
       return;
     }
     setIdx(idx + 1);
