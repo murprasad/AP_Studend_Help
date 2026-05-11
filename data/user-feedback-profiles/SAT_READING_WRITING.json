@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "course": "SAT_READING_WRITING",
-  "last_updated": "2026-05-09",
+  "last_updated": "2026-05-11",
   "source_count": 8,
   "calibration": {
     "coverage_strategy": "wide_not_deep",
@@ -47,34 +47,34 @@
       "note": "Students compare us to these — match the register."
     }
   },
-  "generator_prompt_injection": "REAL TEST-TAKER INSIGHTS (sourced from r/Sat, updated 2026-05-09):\n- Coverage: Real test-takers report this exam covers breadth over depth. Stay at college 101 level on each topic.\n- High-emphasis topics (per real students): math, english, sat scores.\n- Students struggle most with: inferences, command of evidence, words in context. Generate proportionally more on these.\n- Wording style: ~9% of items should use realistic exam-style indirection (NOT unfair ambiguity).\n- Difficulty target: 15% easy / 50% medium / 35% hard. avg pass score 1315 — harder test.\n- Authenticity bar: students compare us to A Song of Ice and Fire series, The Godfather, cough drops. Match that register.",
+  "generator_prompt_injection": "REAL TEST-TAKER INSIGHTS (sourced from r/Sat, updated 2026-05-11):\n- Coverage: Real test-takers report this exam covers breadth over depth. Stay at college 101 level on each topic.\n- High-emphasis topics (per real students): math, english, sat scores.\n- Students struggle most with: inferences, command of evidence, words in context. Generate proportionally more on these.\n- Wording style: ~9% of items should use realistic exam-style indirection (NOT unfair ambiguity).\n- Difficulty target: 15% easy / 50% medium / 35% hard. avg pass score 1315 — harder test.\n- Authenticity bar: students compare us to A Song of Ice and Fire series, The Godfather, cough drops. Match that register.",
   "popup_tips": [
     {
       "tip_id": "be57f2bc",
       "text": "reading a lot of English literature helps",
       "source_attribution": "From a recent SAT READING WRITING test-taker",
-      "first_seen": "2026-05-09",
+      "first_seen": "2026-05-11",
       "topic_filter": []
     },
     {
       "tip_id": "db0a4c2d",
       "text": "its genuinely an easy test",
       "source_attribution": "From a recent SAT READING WRITING test-taker",
-      "first_seen": "2026-05-09",
+      "first_seen": "2026-05-11",
       "topic_filter": []
     },
     {
       "tip_id": "8e66cbb1",
       "text": "For vocabulary in context questions, if you do not know the meaning of a word, do not panic. College Board doesn't expect you to be grammar pandits.",
       "source_attribution": "From a recent SAT READING WRITING test-taker",
-      "first_seen": "2026-05-09",
+      "first_seen": "2026-05-11",
       "topic_filter": []
     },
     {
       "tip_id": "117f7c96",
       "text": "The test-taker found their practice scores to be helpful in gauging their performance.",
       "source_attribution": "From a recent SAT READING WRITING test-taker",
-      "first_seen": "2026-05-09",
+      "first_seen": "2026-05-11",
       "topic_filter": []
     }
   ]

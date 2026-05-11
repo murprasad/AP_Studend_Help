@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "course": "AP_PHYSICS_1",
-  "last_updated": "2026-05-09",
+  "last_updated": "2026-05-11",
   "source_count": 1,
   "calibration": {
     "coverage_strategy": "wide_not_deep",
@@ -31,6 +31,6 @@
       "note": "Students compare us to these — match the register."
     }
   },
-  "generator_prompt_injection": "REAL TEST-TAKER INSIGHTS (sourced from r/APStudents, updated 2026-05-09):\n- Coverage: Real test-takers report this exam covers breadth over depth. Stay at college 101 level on each topic.\n- High-emphasis topics (per real students): physics.\n- Students struggle most with: physics. Generate proportionally more on these.\n- Wording style: ~0% of items should use realistic exam-style indirection (NOT unfair ambiguity).\n- Difficulty target: 20% easy / 55% medium / 25% hard. default — no pass-score data yet.\n",
+  "generator_prompt_injection": "REAL TEST-TAKER INSIGHTS (sourced from r/APStudents, updated 2026-05-11):\n- Coverage: Real test-takers report this exam covers breadth over depth. Stay at college 101 level on each topic.\n- High-emphasis topics (per real students): physics.\n- Students struggle most with: physics. Generate proportionally more on these.\n- Wording style: ~0% of items should use realistic exam-style indirection (NOT unfair ambiguity).\n- Difficulty target: 20% easy / 55% medium / 25% hard. default — no pass-score data yet.\n",
   "popup_tips": []
 }

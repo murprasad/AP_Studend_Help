@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "course": "SAT_MATH",
-  "last_updated": "2026-05-09",
+  "last_updated": "2026-05-11",
   "source_count": 11,
   "calibration": {
     "coverage_strategy": "wide_not_deep",
@@ -44,41 +44,41 @@
       "note": "Students compare us to these — match the register."
     }
   },
-  "generator_prompt_injection": "REAL TEST-TAKER INSIGHTS (sourced from r/Sat, updated 2026-05-09):\n- Coverage: Real test-takers report this exam covers breadth over depth. Stay at college 101 level on each topic.\n- High-emphasis topics (per real students): algebra.\n- Students struggle most with: sat prep, equation solving, depth under water. Generate proportionally more on these.\n- Wording style: ~12% of items should use realistic exam-style indirection (NOT unfair ambiguity).\n- Difficulty target: 15% easy / 50% medium / 35% hard. avg pass score 1288 — harder test.\n- Authenticity bar: students compare us to Desmos, SAT class, practice tests. Match that register.",
+  "generator_prompt_injection": "REAL TEST-TAKER INSIGHTS (sourced from r/Sat, updated 2026-05-11):\n- Coverage: Real test-takers report this exam covers breadth over depth. Stay at college 101 level on each topic.\n- High-emphasis topics (per real students): algebra.\n- Students struggle most with: sat prep, equation solving, depth under water. Generate proportionally more on these.\n- Wording style: ~12% of items should use realistic exam-style indirection (NOT unfair ambiguity).\n- Difficulty target: 15% easy / 50% medium / 35% hard. avg pass score 1288 — harder test.\n- Authenticity bar: students compare us to Desmos, SAT class, practice tests. Match that register.",
   "popup_tips": [
     {
       "tip_id": "9e404a7f",
       "text": "Students dont have to learn algebra, but they can just copy and paste the question on a graphing calculator and get the answer.",
       "source_attribution": "From a recent SAT MATH test-taker",
-      "first_seen": "2026-05-09",
+      "first_seen": "2026-05-11",
       "topic_filter": []
     },
     {
       "tip_id": "1417521a",
       "text": "Lets say for instance, there is a equation: 4 + 5x = 192 - 9x.",
       "source_attribution": "From a recent SAT MATH test-taker",
-      "first_seen": "2026-05-09",
+      "first_seen": "2026-05-11",
       "topic_filter": []
     },
     {
       "tip_id": "7e1a0f45",
       "text": "Do you really HAVE to use a calculator to do a quick arithmetic question like 11 * 14?",
       "source_attribution": "From a recent SAT MATH test-taker",
-      "first_seen": "2026-05-09",
+      "first_seen": "2026-05-11",
       "topic_filter": []
     },
     {
       "tip_id": "229209f9",
       "text": "ineffective for actual test performance",
       "source_attribution": "From a recent SAT MATH test-taker",
-      "first_seen": "2026-05-09",
+      "first_seen": "2026-05-11",
       "topic_filter": []
     },
     {
       "tip_id": "1f58edd1",
       "text": "Students are not learning how to do math, but rather, learning how to use a graphing calculator.",
       "source_attribution": "From a recent SAT MATH test-taker",
-      "first_seen": "2026-05-09",
+      "first_seen": "2026-05-11",
       "topic_filter": []
     }
   ]
