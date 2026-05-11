@@ -1,11 +1,31 @@
 {
   "cookies": [
     {
-      "name": "__Secure-next-auth.session-token",
-      "value": "eyJhbGciOiJkaXIiLCJlbmMiOiJBMjU2R0NNIn0..sBFPQ_f8Bml_A61X.9wFbJzbnmTdLOGrQwFir3w4HPhPLzkA8QDGAd4odpeleentE58tGFv1hORAibzZJn3t_W7A4FMe9d5S1f2KMSzL9kmvEU8y01-7YX5a59ffDPpO3SIeBIYKFQkZYQFvfwkvbnw3YDOZeNH032LQzKY5oJPIynftkyi4YC4dpd2Wu5LYJAkz2GIgxCKEfOBWkSx6_grFcA7s7ZHK8PD7U-iVnCHjtw1n6N5EeyyN5aRHNlCqHCR-8N_Aew75ixZArA0RIt3U7KAEkm7jdBFk6Dws0WYLY300Pm-3vwlYqsZm-kWgxDLCEdJ3--7XmpTOI7SwV2JwWGKKoC-njvg8HVDraL1Y2P-gtfLTK6_TC8WOz_RMfQrMXQoLwmRQ3hPTkmgxQFp4kJTb7wJuFkEnc5T_B_NXXUCIFdUQ.orxnCwcaJbPQayu7XMT2Xg",
+      "name": "__Host-next-auth.csrf-token",
+      "value": "46928939dbcb50664e891ab5d1f30b84dff9c26860bba39e7183bd91fe8f637c%7C6cfa49468d30158e768c75ee5bd3f00e6d0244be7ec2a5452684742a3a261c22",
       "domain": "staging.studentnest.pages.dev",
       "path": "/",
       "expires": -1,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "__Secure-next-auth.callback-url",
+      "value": "https%3A%2F%2Fstaging.studentnest.pages.dev",
+      "domain": "staging.studentnest.pages.dev",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "__Secure-next-auth.session-token",
+      "value": "eyJhbGciOiJkaXIiLCJlbmMiOiJBMjU2R0NNIn0..MnsMZRtxPYhHZ7O_.AWz12qAD6PaC7wTx7CWK3qcQccpiNFqhAQZ5-zNMk_wnqNpMtAqfmAfePGkPgoExG50Fk00UnFyEhiOEb6-c23-NnUN819eYYg37oVRG0hOIeC3vg1skSBOoG4CCbG8Puz-LeNM_OCI7oYK4HbEzrT0VTMWif1mVbZ7BuUfNmm9fQVK07oKUtPlzR-Hrr_-woVYDM5uOVfd_6ufCyTifDpWelAm36ZMduECNXkaXNFOl8D1LcrNSXJYJZFD3f45Sgm0pZruEvUtQXmrV5FVcm1bsaO6RE-sJULou3qR3kSljawVKYhC3vmkcspvhg_K0FHNCKow1U67pp-9P8M4tc-dxb_HLBqNY_1n0MDc_kLkQgqQTlQ19szPiLSlnFu1ifxCAyBvVOEQKPGKIjG24GgFAHI7QJXOBHCE.3yPJzwiEQg6nwIu7Fk15vw",
+      "domain": "staging.studentnest.pages.dev",
+      "path": "/",
+      "expires": 1781128223.091613,
       "httpOnly": true,
       "secure": true,
       "sameSite": "Lax"
@@ -16,8 +36,16 @@
       "origin": "https://staging.studentnest.pages.dev",
       "localStorage": [
         {
+          "name": "nextauth.message",
+          "value": "{\"event\":\"session\",\"data\":{\"trigger\":\"getSession\"},\"timestamp\":1778536223}"
+        },
+        {
           "name": "ap_selected_course",
           "value": "AP_WORLD_HISTORY"
+        },
+        {
+          "name": "journey_status_v1",
+          "value": "exited"
         },
         {
           "name": "onboarding_completed",
