@@ -45,6 +45,12 @@
     { "file": "persona-c-crawler-anonymous", "title": "Persona C: anonymous crawler finds no broken pages" },
     { "file": "persona-b-sidebar-walk", "title": "/billing — loads" },
     { "file": "authed-flows", "title": "locked value visible to free user (Block 5)" },
-    { "file": "journey-rail-96", "title": "Dashboard ?focus=primary-action scrolls + pulses target" }
+    { "file": "journey-rail-96", "title": "Dashboard ?focus=primary-action scrolls + pulses target" },
+    { "file": "journey-rail-fmea", "title": "Step 0 — copy is coherent" },
+    { "file": "journey-rail", "title": "Step 0 — course pick screen renders with default AP World History" },
+    { "file": "link-walk-2026-05-03", "title": "Landing (/): every internal <a href> returns < 400" },
+    { "file": "link-walk-2026-05-03", "title": "Landing → Footer: About" },
+    { "file": "runtime-errors-landing", "title": "scrolling top→bottom triggers no React errors" },
+    { "file": "runtime-errors-landing", "title": "clicking the InteractiveDemo wrong answer triggers no runtime error" }
   ]
 }
