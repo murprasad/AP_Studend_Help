@@ -26,6 +26,7 @@ import { useExamMode } from "@/hooks/use-exam-mode";
 import { useSearchParams } from "next/navigation";
 import { hapticSuccess, hapticError } from "@/lib/haptics";
 import { FirstSessionCelebration } from "@/components/practice/first-session-celebration";
+import { ReportQuestionModal } from "@/components/practice/report-question-modal";
 import { SessionLimitHitCard } from "@/components/practice/session-limit-hit-card";
 import { useFirstAnswerReward } from "@/components/practice/first-answer-reward-modal";
 import { CrossModuleNudge } from "@/components/practice/cross-module-nudge";
@@ -1110,6 +1111,9 @@ export default function PracticePage() {
 
             <div className="text-base font-medium leading-relaxed">
               <MarkdownContent content={currentQuestion.questionText} useMermaid={false} />
+            </div>
+            <div className="flex justify-end -mt-2">
+              <ReportQuestionModal questionId={currentQuestion.id} />
             </div>
 
             {/* Open-ended response for FRQ/SAQ/DBQ/LEQ/CODING */}

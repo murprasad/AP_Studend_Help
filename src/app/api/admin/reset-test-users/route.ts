@@ -123,6 +123,13 @@ async function resetUser(email: string) {
   // per-course FRQ free-attempt cap stays consumed across resets, blocking
   // re-test of the FRQ flow.
   totalDeleted += (await prisma.frqAttempt.deleteMany({ where: { userId: uid } })).count;
+  // 2026-05-11 — user_journeys row was NOT being reset. User reported:
+  // murprasad+std stuck on Step 5 after admin reset because /api/journey
+  // returned the old completed row (currentStep=5, completedAt set), and
+  // the journey page short-circuited to Step 5 instead of starting fresh
+  // at Step 0. Reset must delete the journey row so the user gets a clean
+  // start-of-journey on next login.
+  totalDeleted += (await prisma.userJourney.deleteMany({ where: { userId: uid } })).count;
 
   // SessionQuestion — delete via sessions
   const sessions = await prisma.practiceSession.findMany({ where: { userId: uid }, select: { id: true } });
