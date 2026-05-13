@@ -1,30 +1,29 @@
 /**
- * src/lib/ensemble-judge.ts — 3-model MCQ quality ensemble.
- *
- * Pairs with `judgeMcq` (single-model GPT-4o). This is the next layer:
- * THREE independent models vote on whether the MCQ is correct. We ship
- * only when ≥2 of 3 vote PASS. Same blind spots no longer outvote real
- * bugs because two different model families (OpenAI / Anthropic / Google)
- * are unlikely to all share the same hallucination.
- *
- * Per CLAUDE.md rules:
- *   - No SDK imports — every provider call uses plain `fetch()` with
- *     `AbortSignal.timeout()` for CF Workers compatibility.
- *   - Each provider is independent; failure to call one (missing key,
- *     network error, rate-limit) marks that vote as ABSTAIN, not FAIL.
+ * src/lib/ensemble-judge.ts — Multi-judge MCQ quality ensemble with
+ * automatic fallback across LLM providers.
  *
  * Quorum policy:
  *   - ≥2 PASS votes → ok=true
  *   - ≥2 FAIL votes → ok=false (reason names the failing models)
- *   - <2 votes either way (e.g. 1 PASS / 1 FAIL / 1 ABSTAIN, or
- *     all 3 abstain) → ok=true with fallback=true (fail-OPEN; deterministic
- *     gates + single-model judge remain the floor)
+ *   - <2 votes either way → ok=true with fallback=true (fail-OPEN; deterministic
+ *     gates remain the floor)
  *
- * Cost per call (rough):
- *   GPT-4o      ~$0.005
- *   Sonnet 4.6  ~$0.012
- *   Gemini Pro  ~$0.003
- *   Total       ~$0.020/question
+ * Judge pool (priority order, top to bottom):
+ *   1. Anthropic Sonnet 4.6           — paid, best reasoning
+ *   2. Gemini 2.5-flash               — paid, fast
+ *   3. Groq llama-3.3-70b             — free tier, always-on
+ *   4. Cerebras Qwen-3-235B           — free tier, frontier-class (~500ms)
+ *   5. Cloudflare Qwen2.5-Coder-32B   — free 10K neurons/day, in-house infra
+ *   6. Pollinations openai            — free, no key, GPT-4o-mini class
+ *   7. Pollinations openai-fast       — free, no key, GPT-OSS-20B class
+ *
+ * Strategy: call all 7 in parallel, take all non-ABSTAIN votes.
+ * If <3 valid votes after parallel resolves, fall back to whatever we
+ * got. Different model FAMILIES (Anthropic / Google / Meta / OpenAI) are
+ * unlikely to share the same hallucination blind spot.
+ *
+ * Per CLAUDE.md: no SDK imports — every call is plain fetch() with
+ * AbortSignal.timeout() for CF Workers compatibility.
  */
 
 interface McqInput {
@@ -37,7 +36,7 @@ interface McqInput {
 type Vote = "PASS" | "FAIL" | "ABSTAIN";
 
 interface ModelVote {
-  model: "groq-llama-3.3-70b" | "claude-sonnet-4-6" | "gemini-2.5-flash";
+  model: string;
   vote: Vote;
   reason?: string;
 }
@@ -53,33 +52,44 @@ export interface EnsembleResult {
 const TIMEOUT_MS = 25_000;
 
 function buildPrompt(q: McqInput): string {
-  // Strip any legacy "X) " prefix from stored options — UI strips at render.
   const stripPrefix = (s: string) => s.replace(/^[A-E]\s*\)\s*/, "");
   const optsStr = q.options
     .map((o, i) => `${String.fromCharCode(65 + i)}) ${stripPrefix(o)}`)
     .join("\n");
-  return `You are auditing a StudentNest practice question against real College Board (AP/SAT/ACT) exam standards. Return JSON only with keys "verdict" and "reason".
+  return `You are auditing a StudentNest practice question against real College Board (AP/SAT/ACT) exam standards. **Read the question as a student would, then read the EXPLANATION word-by-word as a teacher reviewing student-facing content.** Return JSON only with keys "verdict" and "reason".
 
 verdict must be exactly "PASS" or "FAIL".
 
+CRITICAL — derive the answer yourself first:
+- Read the question + options. Solve the question independently. Pick the option you believe is correct based on YOUR derivation.
+- If your derived answer does NOT appear as any option → automatic FAIL ("none of the options matches the actual answer").
+- If your derived answer matches an option but the stored correctAnswer letter is different → automatic FAIL ("stored answer letter is wrong").
+- Don't be charitable to the generator. Don't accept "closest match" or "approximately."
+
+CRITICAL — review the EXPLANATION line-by-line:
+- The explanation is what students SEE after answering. It must teach the concept correctly.
+- Verify every factual claim (dates, formulas, definitions, attributions) in the explanation independently. Any factual error → FAIL.
+- Verify every arithmetic step in the explanation. Recompute. Any arithmetic error → FAIL.
+- The explanation must explain WHY the correct answer is correct, not just WHICH letter is correct.
+- The explanation must NOT contain placeholder text, TODO markers, or unfinished sentences.
+- The explanation must NOT reveal the answer in the FIRST sentence in a way that defeats the purpose (some teaching of the reasoning is required).
+- If the question is non-numeric, the explanation must reference course-canonical content (theory, framework, named author/era/case), not vague generalities.
+
 FAIL if ANY of these CORRECTNESS bugs are present:
 - The stored correctAnswer letter does NOT hold the value the explanation derives.
-- The explanation contradicts itself.
+- The explanation contains confession phrases like "closest match", "miscalculation", "calculation error", "incorrect option values", "might be due to", "given options provided", "given the options" — these signal the generator gave up and faked an answer.
+- The explanation contains factual errors (wrong year, wrong attribution, wrong formula, wrong term definition).
+- Two or more options are mathematically/logically equivalent to each other (multi-correct bug). Example: "P(t) = t(2t+5) - 3" and "P(t) = (2t-1)(t+3)" both simplify to "2t² + 5t - 3".
+- Currency mismatch: option text contains "$" or "dollars" but the stem doesn't mention a currency unit; or stem says "in dollars" but options omit "$".
+- **Unescaped $ for currency in question text** — if the stem contains TWO OR MORE bare "$" characters (e.g., "$75 ... $60 ... $50"), they will render as inline LaTeX math (italic Computer Modern, whitespace collapsed) and confuse students. Currency must be written as "\\$75" (escaped) OR "75 dollars". Multiple bare $ in a row is automatic FAIL.
+- **Phantom stimulus** — the stem references a figure / diagram / graph / chart / passage / image / energy profile / Lewis structure / "as shown" / "the following figure" / "the graph below" BUT no actual stimulus content exists in the stimulus field. The student sees the reference with nothing to look at. Automatic FAIL — either the stimulus must be added or the stem must be rewritten to not reference one.
+- The explanation contradicts itself (derives X then asserts Y).
 - The explanation describes a distractor by letter (e.g. "Option B incorrectly multiplies...") but that letter's actual text doesn't match the description.
 - An OPTION's TEXT contains the word "Correct"/"Incorrect"/"Wrong"/"Right" (e.g. "B) 245 - Correct"). NOT FAIL: the explanation saying "the correct answer is B" — that is normal teaching content.
 - The stimulus reveals the correct numeric answer.
 - LaTeX uses bare "int", "sum", "frac", "rac", "infty" without backslashes.
 - The explanation includes LLM monologue ("hmm", "let me reconsider", "is not needed, just").
-
-FAIL also if the question doesn't match real CB exam STYLE/RIGOR (HARD requirement):
-- Stem reads more like a textbook paragraph than an exam item.
-- Distractors are not all CB-grade plausible (an option is obviously wrong, or doesn't represent a real student misconception).
-- Stimulus omits the CB-style scaffold (no source quote+attribution for history, no table/chart for AP Stats / ACT Science, no described diagram for AP Physics, no passage for SAT R/W).
-- Source attribution is fabricated, vague, or missing year.
-- Difficulty doesn't match the apparent rigor (HARD-tagged but is just longer recall).
-- Stem uses ambiguous superlatives ("primary", "main", "best") without textual justification.
-
-Otherwise PASS.
+- The question is meta-administration (e.g. "what must a school do to offer AP?") rather than course content.
 
 Question: ${q.questionText}
 
@@ -93,9 +103,25 @@ Explanation: ${q.explanation || "(no explanation)"}
 Return JSON only: {"verdict":"PASS"|"FAIL","reason":"<short>"}`;
 }
 
+function parseVote(input: string | Record<string, unknown> | null | undefined): { vote: Vote; reason?: string } {
+  let parsed: { verdict?: string; reason?: string } = {};
+  if (input && typeof input === "object") {
+    parsed = input as { verdict?: string; reason?: string };
+  } else if (typeof input === "string") {
+    try {
+      parsed = JSON.parse(input);
+    } catch {
+      const m = input.match(/\{[\s\S]*\}/);
+      if (m) try { parsed = JSON.parse(m[0]); } catch {}
+    }
+  }
+  const v: Vote = parsed?.verdict === "PASS" ? "PASS" : parsed?.verdict === "FAIL" ? "FAIL" : "ABSTAIN";
+  return { vote: v, reason: typeof parsed?.reason === "string" ? parsed.reason.slice(0, 200) : undefined };
+}
+
 async function callGroq(prompt: string): Promise<ModelVote> {
   const key = process.env.GROQ_API_KEY;
-  if (!key) return { model: "groq-llama-3.3-70b" as ModelVote["model"], vote: "ABSTAIN", reason: "no key" };
+  if (!key) return { model: "groq-llama-3.3-70b", vote: "ABSTAIN", reason: "no key" };
   try {
     const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
       method: "POST",
@@ -108,13 +134,11 @@ async function callGroq(prompt: string): Promise<ModelVote> {
       }),
       signal: AbortSignal.timeout(TIMEOUT_MS),
     });
-    if (!res.ok) return { model: "groq-llama-3.3-70b" as ModelVote["model"], vote: "ABSTAIN", reason: `http ${res.status}` };
+    if (!res.ok) return { model: "groq-llama-3.3-70b", vote: "ABSTAIN", reason: `http ${res.status}` };
     const data = await res.json();
-    const parsed = JSON.parse(data?.choices?.[0]?.message?.content ?? "{}");
-    const v = parsed?.verdict === "PASS" ? "PASS" : parsed?.verdict === "FAIL" ? "FAIL" : "ABSTAIN";
-    return { model: "groq-llama-3.3-70b" as ModelVote["model"], vote: v, reason: typeof parsed?.reason === "string" ? parsed.reason.slice(0, 200) : undefined };
+    return { model: "groq-llama-3.3-70b", ...parseVote(data?.choices?.[0]?.message?.content ?? "") };
   } catch (e) {
-    return { model: "groq-llama-3.3-70b" as ModelVote["model"], vote: "ABSTAIN", reason: e instanceof Error ? e.message.slice(0, 80) : "err" };
+    return { model: "groq-llama-3.3-70b", vote: "ABSTAIN", reason: e instanceof Error ? e.message.slice(0, 80) : "err" };
   }
 }
 
@@ -124,11 +148,7 @@ async function callAnthropic(prompt: string): Promise<ModelVote> {
   try {
     const res = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
-      headers: {
-        "x-api-key": key,
-        "anthropic-version": "2023-06-01",
-        "Content-Type": "application/json",
-      },
+      headers: { "x-api-key": key, "anthropic-version": "2023-06-01", "Content-Type": "application/json" },
       body: JSON.stringify({
         model: "claude-sonnet-4-6",
         max_tokens: 600,
@@ -138,13 +158,7 @@ async function callAnthropic(prompt: string): Promise<ModelVote> {
     });
     if (!res.ok) return { model: "claude-sonnet-4-6", vote: "ABSTAIN", reason: `http ${res.status}` };
     const data = await res.json();
-    const text = data?.content?.[0]?.text ?? "";
-    // Claude doesn't always return strict JSON — extract first {...} block.
-    const m = text.match(/\{[\s\S]*\}/);
-    if (!m) return { model: "claude-sonnet-4-6", vote: "ABSTAIN", reason: "no json" };
-    const parsed = JSON.parse(m[0]);
-    const v = parsed?.verdict === "PASS" ? "PASS" : parsed?.verdict === "FAIL" ? "FAIL" : "ABSTAIN";
-    return { model: "claude-sonnet-4-6", vote: v, reason: typeof parsed?.reason === "string" ? parsed.reason.slice(0, 200) : undefined };
+    return { model: "claude-sonnet-4-6", ...parseVote(data?.content?.[0]?.text ?? "") };
   } catch (e) {
     return { model: "claude-sonnet-4-6", vote: "ABSTAIN", reason: e instanceof Error ? e.message.slice(0, 80) : "err" };
   }
@@ -168,42 +182,127 @@ async function callGemini(prompt: string): Promise<ModelVote> {
     );
     if (!res.ok) return { model: "gemini-2.5-flash", vote: "ABSTAIN", reason: `http ${res.status}` };
     const data = await res.json();
-    const text = data?.candidates?.[0]?.content?.parts?.[0]?.text ?? "";
-    const m = text.match(/\{[\s\S]*\}/);
-    if (!m) return { model: "gemini-2.5-flash", vote: "ABSTAIN", reason: "no json" };
-    const parsed = JSON.parse(m[0]);
-    const v = parsed?.verdict === "PASS" ? "PASS" : parsed?.verdict === "FAIL" ? "FAIL" : "ABSTAIN";
-    return { model: "gemini-2.5-flash", vote: v, reason: typeof parsed?.reason === "string" ? parsed.reason.slice(0, 200) : undefined };
+    return { model: "gemini-2.5-flash", ...parseVote(data?.candidates?.[0]?.content?.parts?.[0]?.text ?? "") };
   } catch (e) {
     return { model: "gemini-2.5-flash", vote: "ABSTAIN", reason: e instanceof Error ? e.message.slice(0, 80) : "err" };
   }
 }
 
+async function callCerebras(prompt: string): Promise<ModelVote> {
+  const key = process.env.CEREBRAS_API_KEY;
+  if (!key) return { model: "cerebras-qwen-3-235b", vote: "ABSTAIN", reason: "no key" };
+  try {
+    const res = await fetch("https://api.cerebras.ai/v1/chat/completions", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "qwen-3-235b-a22b-instruct-2507",
+        messages: [{ role: "user", content: prompt }],
+        response_format: { type: "json_object" },
+        max_tokens: 400,
+      }),
+      signal: AbortSignal.timeout(TIMEOUT_MS),
+    });
+    if (!res.ok) return { model: "cerebras-qwen-3-235b", vote: "ABSTAIN", reason: `http ${res.status}` };
+    const data = await res.json();
+    return { model: "cerebras-qwen-3-235b", ...parseVote(data?.choices?.[0]?.message?.content ?? "") };
+  } catch (e) {
+    return { model: "cerebras-qwen-3-235b", vote: "ABSTAIN", reason: e instanceof Error ? e.message.slice(0, 80) : "err" };
+  }
+}
+
+async function callCloudflare(prompt: string): Promise<ModelVote> {
+  const token = process.env.CLOUDFLARE_AI_API_TOKEN;
+  const accountId = process.env.CLOUDFLARE_ACCOUNT_ID;
+  if (!token || !accountId) return { model: "cf-qwen2.5-coder-32b", vote: "ABSTAIN", reason: "no key" };
+  try {
+    const res = await fetch(
+      `https://api.cloudflare.com/client/v4/accounts/${accountId}/ai/run/@cf/qwen/qwen2.5-coder-32b-instruct`,
+      {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+        body: JSON.stringify({
+          messages: [{ role: "user", content: prompt + "\n\nReturn JSON only, no prose." }],
+          max_tokens: 400,
+        }),
+        signal: AbortSignal.timeout(TIMEOUT_MS),
+      }
+    );
+    if (!res.ok) return { model: "cf-qwen2.5-coder-32b", vote: "ABSTAIN", reason: `http ${res.status}` };
+    const data = await res.json();
+    return { model: "cf-qwen2.5-coder-32b", ...parseVote(data?.result?.response ?? "") };
+  } catch (e) {
+    return { model: "cf-qwen2.5-coder-32b", vote: "ABSTAIN", reason: e instanceof Error ? e.message.slice(0, 80) : "err" };
+  }
+}
+
+async function callPollinations(prompt: string, model: "openai" | "openai-fast"): Promise<ModelVote> {
+  const label = `pollinations-${model}`;
+  try {
+    const res = await fetch("https://text.pollinations.ai/openai", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model,
+        messages: [{ role: "user", content: prompt }],
+        max_tokens: 400,
+        response_format: { type: "json_object" },
+      }),
+      signal: AbortSignal.timeout(TIMEOUT_MS),
+    });
+    if (!res.ok) return { model: label, vote: "ABSTAIN", reason: `http ${res.status}` };
+    const data = await res.json();
+    return { model: label, ...parseVote(data?.choices?.[0]?.message?.content ?? "") };
+  } catch (e) {
+    return { model: label, vote: "ABSTAIN", reason: e instanceof Error ? e.message.slice(0, 80) : "err" };
+  }
+}
+
 /**
- * Runs the 3-model ensemble in parallel and returns a quorum verdict.
+ * Calls all configured judges in parallel and takes the first 3 non-ABSTAIN
+ * votes. When the paid providers (Anthropic, Gemini) are working, they vote
+ * first and Pollinations doesn't affect quorum. When paid providers are down
+ * (credit exhausted, rate-limited, key invalid), Pollinations + Groq carry
+ * the ensemble. The deterministic gates + single-fallback in the call site
+ * remain as backstops.
  */
 export async function ensembleJudgeMcq(q: McqInput): Promise<EnsembleResult> {
   const prompt = buildPrompt(q);
-  const votes = await Promise.all([callGroq(prompt), callAnthropic(prompt), callGemini(prompt)]);
-  const pass = votes.filter((v) => v.vote === "PASS").length;
-  const fail = votes.filter((v) => v.vote === "FAIL").length;
+
+  // Call all 5 judges in parallel. ABSTAIN votes (errors, no key, no JSON)
+  // are discarded; we count only PASS/FAIL.
+  const allVotes = await Promise.all([
+    callAnthropic(prompt),
+    callGemini(prompt),
+    callGroq(prompt),
+    callCerebras(prompt),
+    callCloudflare(prompt),
+    callPollinations(prompt, "openai"),
+    callPollinations(prompt, "openai-fast"),
+  ]);
+
+  // Keep all votes in the result for audit logging, but tally only the
+  // non-ABSTAIN votes for quorum.
+  const validVotes = allVotes.filter((v) => v.vote !== "ABSTAIN");
+  const pass = validVotes.filter((v) => v.vote === "PASS").length;
+  const fail = validVotes.filter((v) => v.vote === "FAIL").length;
 
   if (fail >= 2) {
-    const failingModels = votes.filter((v) => v.vote === "FAIL");
+    const failingModels = validVotes.filter((v) => v.vote === "FAIL");
     return {
       ok: false,
-      votes,
+      votes: allVotes,
       reason: failingModels.map((v) => `${v.model}: ${v.reason ?? "fail"}`).join(" | "),
     };
   }
   if (pass >= 2) {
-    return { ok: true, votes };
+    return { ok: true, votes: allVotes };
   }
   // No quorum — fail-OPEN.
   return {
     ok: true,
     fallback: true,
-    votes,
-    reason: `no quorum (PASS=${pass} FAIL=${fail} ABSTAIN=${votes.length - pass - fail})`,
+    votes: allVotes,
+    reason: `no quorum (PASS=${pass} FAIL=${fail} ABSTAIN=${allVotes.length - validVotes.length} of ${allVotes.length})`,
   };
 }

@@ -58,14 +58,35 @@ function buildPrompt(q, opts) {
 
 verdict must be exactly "PASS" or "FAIL".
 
+CRITICAL — derive the answer yourself first:
+- Read the question + options. Solve the question independently. Pick the option you believe is correct based on YOUR derivation.
+- If your derived answer does NOT appear as any option → automatic FAIL ("none of the options matches the actual answer").
+- If your derived answer matches an option but the stored correctAnswer letter is different → automatic FAIL ("stored answer letter is wrong").
+- Don't be charitable to the generator. Don't accept "closest match" or "approximately."
+
+CRITICAL — review the EXPLANATION line-by-line:
+- The explanation is what students SEE after answering. It must teach the concept correctly.
+- Verify every factual claim (dates, formulas, definitions, attributions) in the explanation independently. Any factual error → FAIL.
+- Verify every arithmetic step in the explanation. Recompute. Any arithmetic error → FAIL.
+- The explanation must explain WHY the correct answer is correct, not just WHICH letter is correct.
+- The explanation must NOT contain placeholder text, TODO markers, or unfinished sentences.
+- If the question is non-numeric, the explanation must reference course-canonical content (theory, framework, named author/era/case), not vague generalities.
+
 FAIL if ANY of these CORRECTNESS bugs are present:
 - The stored correctAnswer letter does NOT hold the value the explanation derives.
+- The explanation contains confession phrases like "closest match", "miscalculation", "calculation error", "incorrect option values", "might be due to", "given options provided", "given the options" — these signal the generator gave up and faked an answer.
+- The explanation contains factual errors (wrong year, wrong attribution, wrong formula, wrong term definition).
+- Two or more options are mathematically/logically equivalent to each other (multi-correct bug).
+- Currency mismatch: option text contains "$" or "dollars" but the stem doesn't mention a currency unit; or stem says "in dollars" but options omit "$".
+- **Unescaped $ for currency in question text** — TWO OR MORE bare "$" chars in the stem (e.g., "$75 ... $60 ... $50") will render as garbled italic LaTeX math. Currency must be "\\$75" or "75 dollars". Multiple bare $ = automatic FAIL.
+- **Phantom stimulus** — stem references a figure / diagram / graph / energy profile / "as shown" / "the following figure" / "the graph below" but no actual stimulus content is provided. Automatic FAIL.
 - The explanation contradicts itself (one sentence picks A, another picks B).
 - The explanation references DISTRACTORS by letter ("Option B is incorrect because...", "A is wrong because...", "C is tempting but wrong"). Real CB explanations describe the CONTENT directly, not by letter. Saying "the correct answer is B" once is fine; enumerating distractor flaws by letter is FAIL.
 - An OPTION's TEXT contains the word "Correct", "Incorrect", "Wrong", or "Right" (e.g. "B) 245 - Correct").
 - The stimulus reveals the correct numeric answer (e.g. stimulus shows "= 245" when correct option is 245).
 - LaTeX uses bare "int", "sum", "frac", "rac", "infty" without backslashes IN THE STORED TEXT (not the JSON-encoded version of backslashes).
 - The explanation includes LLM monologue ("hmm", "let me reconsider", "is not needed, just").
+- The question is meta-administration (e.g. "what must a school do to offer this exam?") rather than course content.
 
 FAIL also if the question doesn't match real CB exam STYLE/RIGOR (HARD requirement):
 - **Passage-based exam without a passage** = automatic FAIL. AP Lit, AP Lang, SAT R/W, ACT Reading, ACT English, AP US History, AP World History, AP European History, AP Government, AP Psychology MCQs are ALWAYS based on a stimulus (passage, source quote+attribution, scenario, data, chart, diagram). If the stem is abstract trivia with NO stimulus on these courses, FAIL — not a real CB item.
@@ -173,12 +194,100 @@ async function callGemini(prompt) {
   }
 }
 
+async function callCerebras(prompt) {
+  const key = process.env.CEREBRAS_API_KEY;
+  if (!key) return { model: "cerebras-qwen-3-235b", vote: "ABSTAIN", reason: "no key" };
+  try {
+    const res = await fetch("https://api.cerebras.ai/v1/chat/completions", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ model: "qwen-3-235b-a22b-instruct-2507", messages: [{ role: "user", content: prompt }], response_format: { type: "json_object" }, max_tokens: 400 }),
+      signal: AbortSignal.timeout(TIMEOUT_MS),
+    });
+    if (!res.ok) return { model: "cerebras-qwen-3-235b", vote: "ABSTAIN", reason: `http ${res.status}` };
+    const data = await res.json();
+    const text = data?.choices?.[0]?.message?.content ?? "";
+    let parsed = {};
+    try { parsed = JSON.parse(text); } catch { const m = text.match(/\{[\s\S]*\}/); if (m) try { parsed = JSON.parse(m[0]); } catch {} }
+    const v = parsed?.verdict === "PASS" ? "PASS" : parsed?.verdict === "FAIL" ? "FAIL" : "ABSTAIN";
+    return { model: "cerebras-qwen-3-235b", vote: v, reason: typeof parsed?.reason === "string" ? parsed.reason.slice(0, 200) : undefined };
+  } catch (e) { return { model: "cerebras-qwen-3-235b", vote: "ABSTAIN", reason: e?.message?.slice(0, 80) ?? "err" }; }
+}
+
+async function callCloudflare(prompt) {
+  const token = process.env.CLOUDFLARE_AI_API_TOKEN;
+  const accountId = process.env.CLOUDFLARE_ACCOUNT_ID;
+  if (!token || !accountId) return { model: "cf-qwen2.5-coder-32b", vote: "ABSTAIN", reason: "no key" };
+  try {
+    const res = await fetch(`https://api.cloudflare.com/client/v4/accounts/${accountId}/ai/run/@cf/qwen/qwen2.5-coder-32b-instruct`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ messages: [{ role: "user", content: prompt + "\n\nReturn JSON only, no prose." }], max_tokens: 400 }),
+      signal: AbortSignal.timeout(TIMEOUT_MS),
+    });
+    if (!res.ok) return { model: "cf-qwen2.5-coder-32b", vote: "ABSTAIN", reason: `http ${res.status}` };
+    const data = await res.json();
+    const raw = data?.result?.response;
+    let parsed = {};
+    if (raw && typeof raw === "object") parsed = raw;
+    else if (typeof raw === "string") {
+      try { parsed = JSON.parse(raw); } catch { const m = raw.match(/\{[\s\S]*\}/); if (m) try { parsed = JSON.parse(m[0]); } catch {} }
+    }
+    const v = parsed?.verdict === "PASS" ? "PASS" : parsed?.verdict === "FAIL" ? "FAIL" : "ABSTAIN";
+    return { model: "cf-qwen2.5-coder-32b", vote: v, reason: typeof parsed?.reason === "string" ? parsed.reason.slice(0, 200) : undefined };
+  } catch (e) { return { model: "cf-qwen2.5-coder-32b", vote: "ABSTAIN", reason: e?.message?.slice(0, 80) ?? "err" }; }
+}
+
+async function callPollinations(prompt, model) {
+  const label = `pollinations-${model}`;
+  try {
+    const res = await fetch("https://text.pollinations.ai/openai", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model,
+        messages: [{ role: "user", content: prompt }],
+        max_tokens: 400,
+        response_format: { type: "json_object" },
+      }),
+      signal: AbortSignal.timeout(TIMEOUT_MS),
+    });
+    if (!res.ok) return { model: label, vote: "ABSTAIN", reason: `http ${res.status}` };
+    const data = await res.json();
+    const text = data?.choices?.[0]?.message?.content ?? "";
+    let parsed = {};
+    try { parsed = JSON.parse(text); } catch {
+      const m = text.match(/\{[\s\S]*\}/);
+      if (m) try { parsed = JSON.parse(m[0]); } catch {}
+    }
+    const v = parsed?.verdict === "PASS" ? "PASS" : parsed?.verdict === "FAIL" ? "FAIL" : "ABSTAIN";
+    return { model: label, vote: v, reason: typeof parsed?.reason === "string" ? parsed.reason.slice(0, 200) : undefined };
+  } catch (e) {
+    return { model: label, vote: "ABSTAIN", reason: e?.message?.slice(0, 80) ?? "err" };
+  }
+}
+
+// 2026-05-12: 5-judge pool with automatic fallback. Paid judges (Anthropic,
+// Gemini) are called alongside free judges (Groq, Pollinations openai +
+// openai-fast). ABSTAIN votes (no key, http err, no json) are discarded.
+// Different model families (Anthropic / Google / Meta / OpenAI) provide
+// the same blind-spot diversity as the original triad even when paid
+// providers are offline. Quorum unchanged: ≥2 PASS or ≥2 FAIL.
 async function judgeOne(q) {
   const opts = Array.isArray(q.options) ? q.options.map(String) : [];
   const prompt = buildPrompt(q, opts);
-  const votes = await Promise.all([callGroq(prompt), callAnthropic(prompt), callGemini(prompt)]);
-  const pass = votes.filter((v) => v.vote === "PASS").length;
-  const fail = votes.filter((v) => v.vote === "FAIL").length;
+  const votes = await Promise.all([
+    callAnthropic(prompt),
+    callGemini(prompt),
+    callGroq(prompt),
+    callCerebras(prompt),
+    callCloudflare(prompt),
+    callPollinations(prompt, "openai"),
+    callPollinations(prompt, "openai-fast"),
+  ]);
+  const valid = votes.filter((v) => v.vote !== "ABSTAIN");
+  const pass = valid.filter((v) => v.vote === "PASS").length;
+  const fail = valid.filter((v) => v.vote === "FAIL").length;
   let verdict;
   if (fail >= 2) verdict = "FAIL";
   else if (pass >= 2) verdict = "PASS";
