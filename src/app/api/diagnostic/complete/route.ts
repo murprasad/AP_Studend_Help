@@ -12,8 +12,25 @@ export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions)
   if (!session?.user?.id) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
 
-  const { sessionId, answers, course = "AP_WORLD_HISTORY" } = await req.json()
-  if (!sessionId || !answers) return NextResponse.json({ error: "Missing fields" }, { status: 400 })
+  // 2026-05-13 — the original contract required `answers` in the body, but
+  // step-3-diagnostic.tsx and other callers have always passed only
+  // { sessionId }. That mismatch made this endpoint return 400 "Missing
+  // fields" on every call, triggering the 3-retry fallback in the client
+  // and the "Couldn't save your full diagnostic" toast.
+  //
+  // Real-user impact: every fresh diagnostic since the Beta 9.5 journey
+  // shipped surfaced predictedScore=1 + no weakest unit. Saranya class of
+  // bounce.
+  //
+  // Fix: pull the answers from student_responses (already written per-Q
+  // during the carousel via /api/practice/[sessionId]). The DB is the
+  // authoritative source — no reason to demand them in the body. `course`
+  // can still be provided in the body for backwards compatibility but
+  // defaults to whatever the session was created against.
+  const body = await req.json().catch(() => ({}))
+  const sessionId: string | undefined = body?.sessionId
+  if (!sessionId) return NextResponse.json({ error: "Missing sessionId" }, { status: 400 })
+  const course: string = body?.course ?? "AP_WORLD_HISTORY"
 
   // Verify session belongs to user
   const diagSession = await prisma.practiceSession.findFirst({
@@ -21,21 +38,27 @@ export async function POST(req: NextRequest) {
   })
   if (!diagSession) return NextResponse.json({ error: "Session not found" }, { status: 404 })
 
-  // Get questions for this session
-  const sessionQuestions = await prisma.sessionQuestion.findMany({
-    where: { sessionId },
-    include: { question: { select: { id: true, unit: true, correctAnswer: true } } },
-    orderBy: { order: "asc" },
-  })
+  // Get questions for this session + per-Q responses from this user.
+  const [sessionQuestions, responses] = await Promise.all([
+    prisma.sessionQuestion.findMany({
+      where: { sessionId },
+      include: { question: { select: { id: true, unit: true, correctAnswer: true } } },
+      orderBy: { order: "asc" },
+    }),
+    prisma.studentResponse.findMany({
+      where: { sessionId, userId: session.user.id },
+      select: { questionId: true, isCorrect: true },
+    }),
+  ])
+  const responseByQ = new Map(responses.map((r) => [r.questionId, r.isCorrect]))
 
-  // Calculate unit scores
+  // Calculate unit scores using DB-recorded isCorrect (server is authority).
   const unitResults: Record<string, { correct: number; total: number }> = {}
   for (const sq of sessionQuestions) {
     const unit = sq.question.unit
     if (!unitResults[unit]) unitResults[unit] = { correct: 0, total: 0 }
     unitResults[unit].total++
-    const userAnswer = answers[sq.questionId]
-    if (userAnswer && userAnswer === sq.question.correctAnswer) {
+    if (responseByQ.get(sq.questionId) === true) {
       unitResults[unit].correct++
     }
   }

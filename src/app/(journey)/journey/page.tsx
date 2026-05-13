@@ -54,6 +54,22 @@ interface FrqRow {
   totalPoints: number | null;
 }
 
+// 2026-05-13 — mirror of useCourse's storage write path (src/hooks/use-course.ts).
+// Kept inline rather than importing useCourse because this page already has its
+// own course state machine driven by the user_journeys DB row; useCourse would
+// fight it. We just need to sync the chosen course outward so /dashboard reads
+// the right value when the journey finishes.
+const COURSE_STORAGE_KEY = "ap_selected_course";
+const COURSE_CHANGE_EVENT = "ap-course-change";
+function writeCourseToBrowserStorage(course: string) {
+  if (typeof window === "undefined") return;
+  try {
+    localStorage.setItem(COURSE_STORAGE_KEY, course);
+    document.cookie = `${COURSE_STORAGE_KEY}=${course}; path=/; max-age=31536000; SameSite=Lax`;
+    window.dispatchEvent(new CustomEvent(COURSE_CHANGE_EVENT, { detail: course }));
+  } catch { /* storage not available */ }
+}
+
 export default function JourneyPage() {
   const router = useRouter();
   const { update: updateSession } = useSession();
@@ -95,6 +111,12 @@ export default function JourneyPage() {
         }
         setCourse(j.course);
         setMustPickCourse(false);
+        // 2026-05-13 — sync course into localStorage + cookie so when the
+        // journey finishes (or user navigates to /dashboard mid-flight), the
+        // dashboard's useCourse hook sees the right course. Before this,
+        // users completed the journey on AP X but landed on /dashboard
+        // showing the default AP_WORLD_HISTORY and had to re-pick.
+        writeCourseToBrowserStorage(j.course);
         setWeakestUnit(j.weakestUnit);
         // Resume at saved step (with transition for steps that need one)
         if (j.currentStep === 0) setMode("step0");
@@ -155,6 +177,11 @@ export default function JourneyPage() {
   // ── Step 0 → start journey ─────────────────────────────────────────────────
   const handleStart = useCallback(async (chosenCourse: string) => {
     setCourse(chosenCourse);
+    // 2026-05-13 — persist the chosen course to localStorage + cookie so the
+    // dashboard's useCourse hook sees it after the journey completes. Issue
+    // user reported: after picking AP X in Step 0, the post-journey dashboard
+    // defaulted to AP_WORLD_HISTORY and the user had to re-pick.
+    writeCourseToBrowserStorage(chosenCourse);
     await apiPost("start", { course: chosenCourse });
     await apiPost("advance", { step: 1 });
     setMode("step1");
