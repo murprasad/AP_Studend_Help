@@ -64,4 +64,29 @@ test.describe("CLEP/DSST removal — handoff to PrepLion", () => {
     expect(navHrefs.some((h) => h.includes("/clep-prep"))).toBe(false);
     expect(navHrefs.some((h) => h.includes("/dsst-prep"))).toBe(false);
   });
+
+  // 2026-05-13 user report: "When I sign-up using StudentNest, it still shows
+  // CLEP and DSST courses." Root cause was VISIBLE_AP_COURSES inheriting all
+  // keys from COURSE_REGISTRY (which still contains CLEP/DSST entries as
+  // vestigial DB references) — the only filter was `hidden: true`, which
+  // wasn't set on those courses. Fix: explicit prefix exclusion in
+  // src/lib/courses.ts. This test pins it.
+  test("Landing readiness picker shows ZERO CLEP/DSST/ACCUPLACER courses", async ({ page }) => {
+    await page.goto("/");
+    // The readiness picker is the hero-readiness-picker component. Find any
+    // visible text containing the forbidden prefixes.
+    const bodyText = await page.locator("body").innerText();
+    expect(bodyText, "CLEP course names must not appear on landing page").not.toMatch(/\bCLEP[\s_]/);
+    expect(bodyText, "DSST course names must not appear on landing page").not.toMatch(/\bDSST[\s_]/);
+    // CLEP appears in the legal footer disclaimer ("CLEP® is a trademark...");
+    // narrow the regex to course-name shape with separator to avoid that match.
+  });
+
+  test("/how-hard-is and /am-i-ready slugs do not include CLEP/DSST courses", async ({ request }) => {
+    // 404 on a CLEP slug (would be a 200 if the page leaked through generateStaticParams)
+    const r1 = await request.get("/how-hard-is/clep-college-algebra", { maxRedirects: 0 });
+    expect([301, 308, 404]).toContain(r1.status());
+    const r2 = await request.get("/am-i-ready/dsst-personal-finance", { maxRedirects: 0 });
+    expect([301, 308, 404]).toContain(r2.status());
+  });
 });

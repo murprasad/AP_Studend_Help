@@ -6293,17 +6293,29 @@ Topics: antebellum America (20%), secession/early war (20%), major campaigns (20
 export const VALID_AP_COURSES = Object.keys(COURSE_REGISTRY) as ApCourse[];
 
 /**
- * Courses visible to NON-ADMIN users. Hides any course where `hidden: true`
- * is set in its CourseConfig. ADMIN callers should use VALID_AP_COURSES
- * directly so they can QA hidden courses before flipping them public.
+ * Courses visible to NON-ADMIN users. Filters by:
+ *   1. `hidden: true` in CourseConfig (per-course flag)
+ *   2. Product-split prefix exclusion (2026-05-13): StudentNest is AP/SAT/ACT
+ *      only. CLEP_*, DSST_*, ACCUPLACER live in PrepLion. Their registry entries
+ *      remain here as vestigial (referenced by legacy DB rows) but must never
+ *      appear in user-facing pickers, sidebars, marketing pages, or signup.
+ *      See memory: project_studentnest_vs_preplion_product_split.md.
+ *
+ * ADMIN callers should use VALID_AP_COURSES directly so they can QA hidden
+ * courses before flipping them public.
  *
  * Use this for: sidebar, landing picker, am-i-ready marketing, how-hard-is
- * generateStaticParams, study-plan picker — anywhere a non-admin user sees
- * a course catalog.
+ * generateStaticParams, study-plan picker, journey course-pick — anywhere
+ * a non-admin user sees a course catalog.
  */
-export const VISIBLE_AP_COURSES = VALID_AP_COURSES.filter(
-  (c) => !COURSE_REGISTRY[c].hidden,
-);
+const NON_STUDENTNEST_PREFIXES = ["CLEP_", "DSST_", "ACCUPLACER"] as const;
+export const VISIBLE_AP_COURSES = VALID_AP_COURSES.filter((c) => {
+  if (COURSE_REGISTRY[c].hidden) return false;
+  for (const p of NON_STUDENTNEST_PREFIXES) {
+    if (c.startsWith(p)) return false;
+  }
+  return true;
+});
 
 /**
  * Role-aware course list. Returns all courses for ADMIN; filtered to visible
