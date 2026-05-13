@@ -40,7 +40,11 @@ test.describe("Journey Rail Beta 9.6", () => {
   test("Exit-intent modal — opens, captures reason + feedback, redirects", async ({ page, request, baseURL }) => {
     if (!baseURL) test.skip();
     await page.goto("/journey");
-    await expect(page.getByRole("heading", { name: /Welcome to StudentNest/i })).toBeVisible({ timeout: 15000 });
+    // 2026-05-13 — Step 0 now mounts in picker mode for fresh users.
+    // Pick a course to reach the summary view (where Exit lives).
+    await expect(page.getByRole("heading", { name: /Pick your course/i })).toBeVisible({ timeout: 15000 });
+    await page.locator("button", { hasText: /AP World History/i }).first().click();
+    await expect(page.getByRole("heading", { name: /Welcome to StudentNest/i })).toBeVisible({ timeout: 5000 });
 
     // Click Exit in the journey shell
     await page.getByRole("button", { name: /Exit/i }).click();
@@ -69,7 +73,10 @@ test.describe("Journey Rail Beta 9.6", () => {
 
   test("Exit-intent modal — Skip closes without feedback", async ({ page }) => {
     await page.goto("/journey");
-    await expect(page.getByRole("heading", { name: /Welcome to StudentNest/i })).toBeVisible({ timeout: 15000 });
+    // Pick a course to reach the summary view (where Exit lives)
+    await expect(page.getByRole("heading", { name: /Pick your course/i })).toBeVisible({ timeout: 15000 });
+    await page.locator("button", { hasText: /AP World History/i }).first().click();
+    await expect(page.getByRole("heading", { name: /Welcome to StudentNest/i })).toBeVisible({ timeout: 5000 });
     await page.getByRole("button", { name: /Exit/i }).click();
     await expect(page.getByRole("heading", { name: /Before you go/i })).toBeVisible({ timeout: 5000 });
     await page.getByRole("button", { name: /^Skip$/i }).click();

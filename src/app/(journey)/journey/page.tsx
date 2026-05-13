@@ -57,16 +57,26 @@ interface FrqRow {
 export default function JourneyPage() {
   const router = useRouter();
   const { update: updateSession } = useSession();
+  const { data: sessionData } = useSession();
   const [mode, setMode] = useState<Mode>("loading");
-  // Default course: "AP_CHEMISTRY" rather than the legacy AP_WORLD_HISTORY
-  // since the latter was hidden 2026-05-02 by the bank-quality visibility
-  // filter. Step 0 (course pick) overrides this with the user's actual
-  // pick from the dropdown — this default only matters during the
-  // brief loading window before Step 0 renders.
-  const [course, setCourse] = useState<string>("AP_CHEMISTRY");
+  // 2026-05-13 — Track-aware default. Saranya (Grade 11, AP track) was getting
+  // silently defaulted to AP_CHEMISTRY because the previous hardcoded literal
+  // looked like she had "chosen" it before Step 0 even rendered. She bounced
+  // after 4 silent practice sessions in 80s, never answered a question.
+  //
+  // Now: derive default from user's track (ap→world history, sat→math,
+  // act→math), but Step 0 still requires an explicit confirmation tap and
+  // shows the pick UI rather than a pre-filled "Your course" card.
+  const userTrack = sessionData?.user?.track ?? "ap";
+  const trackDefault = userTrack === "sat" ? "SAT_MATH" : userTrack === "act" ? "ACT_MATH" : "AP_WORLD_HISTORY";
+  const [course, setCourse] = useState<string>(trackDefault);
   const [weakestUnit, setWeakestUnit] = useState<string | null>(null);
   const [predictedScore, setPredictedScore] = useState<number | null>(null);
   const [prefetchedFrq, setPrefetchedFrq] = useState<FrqRow | null>(null);
+  // 2026-05-13 — true for never-started-or-exited users; tells Step 0 to
+  // require an explicit pick instead of presenting a pre-filled "Your course"
+  // card the user might tap through.
+  const [mustPickCourse, setMustPickCourse] = useState<boolean>(true);
   const prefetchedRef = useRef<{ frq?: boolean }>({});
 
   // ── Boot: load journey state ───────────────────────────────────────────────
@@ -78,11 +88,13 @@ export default function JourneyPage() {
         if (cancelled) return;
         const j: Journey | null = d?.journey ?? null;
         if (!j || j.currentStep === 99) {
-          // No journey or user-exited — start at step 0
+          // No journey or user-exited — start at step 0, force explicit pick
+          setMustPickCourse(true);
           setMode("step0");
           return;
         }
         setCourse(j.course);
+        setMustPickCourse(false);
         setWeakestUnit(j.weakestUnit);
         // Resume at saved step (with transition for steps that need one)
         if (j.currentStep === 0) setMode("step0");
@@ -224,7 +236,7 @@ export default function JourneyPage() {
   if (mode === "step0") {
     return (
       <JourneyShell step={0} totalSteps={5}>
-        <Step0CoursePick defaultCourse={course} onStart={handleStart} />
+        <Step0CoursePick defaultCourse={course} mustPick={mustPickCourse} onStart={handleStart} />
       </JourneyShell>
     );
   }

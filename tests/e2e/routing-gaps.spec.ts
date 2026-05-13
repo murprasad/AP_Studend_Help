@@ -184,11 +184,14 @@ test.describe("G5 — authed user with no UserJourney row", () => {
 
     await page.goto("/journey", { waitUntil: "networkidle", timeout: 20000 });
 
-    // Step 0 renders the JourneyShell + Step0CoursePick component, which
-    // shows "Welcome to StudentNest" as the H1. Assert that specific
-    // heading + the "Start my plan" button so we know the page is
-    // FUNCTIONAL, not just rendering an empty shell.
-    await expect(page.getByRole("heading", { name: /Welcome to StudentNest/i })).toBeVisible({ timeout: 15000 });
+    // 2026-05-13 — Step 0 now mounts in picker mode for fresh users
+    // (Saranya fix). Assert the picker heading + a visible course tile to
+    // confirm the page is FUNCTIONAL — then pick a course and verify the
+    // summary card with "Welcome to StudentNest" + "Start my plan" renders.
+    await expect(page.getByRole("heading", { name: /Pick your course/i })).toBeVisible({ timeout: 15000 });
+    await expect(page.getByText(/AP World History/i).first()).toBeVisible({ timeout: 5000 });
+    await page.locator("button", { hasText: /AP World History/i }).first().click();
+    await expect(page.getByRole("heading", { name: /Welcome to StudentNest/i })).toBeVisible({ timeout: 5000 });
     await expect(page.getByRole("button", { name: /Start my plan/i })).toBeVisible({ timeout: 5000 });
   });
 });

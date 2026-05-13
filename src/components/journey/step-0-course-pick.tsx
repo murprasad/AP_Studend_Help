@@ -3,7 +3,13 @@
 /**
  * Step 0 — Course pick (Beta 9.5).
  *
- * Default: AP_WORLD_HISTORY. User can change before starting.
+ * 2026-05-13 — `mustPick` forces an explicit tap-to-select for users who
+ * have never started or have exited the journey. Earlier behaviour
+ * presented a pre-filled "Your course: AP Chemistry" card that one user
+ * (Saranya R., Grade 11) tapped through, was dropped into a hard chem
+ * MEDIUM question, and bounced after 4 silent practice sessions. We now
+ * mount in picker mode for new users and disable "Start my plan" until
+ * the user has affirmatively chosen a course.
  */
 
 import { useState } from "react";
@@ -14,18 +20,22 @@ import type { ApCourse } from "@prisma/client";
 
 interface Props {
   defaultCourse: string;
+  /** If true, force the picker UI on mount and require an explicit tap before "Start" enables. */
+  mustPick?: boolean;
   onStart: (course: string) => void | Promise<void>;
 }
 
-export function Step0CoursePick({ defaultCourse, onStart }: Props) {
+export function Step0CoursePick({ defaultCourse, mustPick = false, onStart }: Props) {
   const [course, setCourse] = useState<string>(defaultCourse);
-  const [picking, setPicking] = useState(false);
+  const [picking, setPicking] = useState(mustPick);
+  const [hasUserPicked, setHasUserPicked] = useState(!mustPick);
   const [submitting, setSubmitting] = useState(false);
 
   // Only AP courses for now — SAT/ACT/CLEP/DSST coming as journey expands
   const apCourses = VISIBLE_AP_COURSES;
 
   const handleStart = async () => {
+    if (!hasUserPicked) return;
     setSubmitting(true);
     await onStart(course);
   };
@@ -35,31 +45,35 @@ export function Step0CoursePick({ defaultCourse, onStart }: Props) {
       <div className="space-y-4">
         <h1 className="text-2xl font-bold text-center">Pick your course</h1>
         <p className="text-sm text-muted-foreground text-center">
-          You can switch courses anytime later.
+          {mustPick && !hasUserPicked
+            ? "Choose which AP course you want to start with. You can switch anytime later."
+            : "You can switch courses anytime later."}
         </p>
         <div className="grid gap-2 max-h-[60vh] overflow-y-auto">
           {apCourses.map((c) => (
             <button
               key={c}
               type="button"
-              onClick={() => { setCourse(c); setPicking(false); }}
+              onClick={() => { setCourse(c); setHasUserPicked(true); setPicking(false); }}
               className={`text-left rounded-xl border p-4 transition-all ${
-                course === c
+                hasUserPicked && course === c
                   ? "border-blue-500 bg-blue-500/10"
-                  : "border-border/40 hover:bg-accent"
+                  : "border-border/40 hover:bg-accent active:bg-accent"
               }`}
             >
               <p className="font-medium text-sm">{COURSE_REGISTRY[c as ApCourse]?.name ?? c}</p>
             </button>
           ))}
         </div>
-        <Button
-          variant="outline"
-          onClick={() => setPicking(false)}
-          className="w-full"
-        >
-          Back
-        </Button>
+        {hasUserPicked && (
+          <Button
+            variant="outline"
+            onClick={() => setPicking(false)}
+            className="w-full"
+          >
+            Back
+          </Button>
+        )}
       </div>
     );
   }
@@ -92,7 +106,7 @@ export function Step0CoursePick({ defaultCourse, onStart }: Props) {
         size="lg"
         className="rounded-full gap-2 px-8"
         onClick={handleStart}
-        disabled={submitting}
+        disabled={submitting || !hasUserPicked}
       >
         {submitting ? "Starting…" : "Start my plan"}
         <ArrowRight className="h-4 w-4" />

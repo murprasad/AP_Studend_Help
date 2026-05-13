@@ -54,34 +54,39 @@ test.describe("Journey Mode rail (Beta 9.5)", () => {
     expect(d.journey).toBeNull();
   });
 
-  test("Step 0 — course pick screen renders with default AP World History", async ({ page, context }) => {
+  test("Step 0 — picker screen renders first, no pre-selected default course", async ({ page, context }) => {
     // Drop the local "exited" flag set by auth.setup so the dashboard
     // redirect actually fires.
     await context.addInitScript(() => {
       try { localStorage.removeItem("journey_status_v1"); } catch { /* ignore */ }
     });
 
+    // 2026-05-13 — Step 0 now mounts in picker mode for fresh users (post
+    // Saranya bounce fix). Previously the picker was behind a "Your course"
+    // summary card with a pre-filled default; that let users tap-through
+    // without consciously choosing. New contract: picker first, then
+    // confirmation summary after explicit tap.
     await page.goto("/journey");
-    await expect(page.getByRole("heading", { name: /Welcome to StudentNest/i })).toBeVisible({ timeout: 15000 });
+    await expect(page.getByRole("heading", { name: /Pick your course/i })).toBeVisible({ timeout: 15000 });
+    // Several AP options should be visible
+    await expect(page.getByText(/AP Biology/i).first()).toBeVisible();
     await expect(page.getByText(/AP World History/i).first()).toBeVisible();
-    await expect(page.getByRole("button", { name: /Start my plan/i })).toBeVisible();
-    await expect(page.getByText(/Change course/i)).toBeVisible();
   });
 
-  test("Step 0 — Change course button opens picker, lets user select another course", async ({ page, context }) => {
+  test("Step 0 — tapping a course transitions to summary view with Start my plan enabled", async ({ page, context }) => {
     await context.addInitScript(() => {
       try { localStorage.removeItem("journey_status_v1"); } catch { /* ignore */ }
     });
 
     await page.goto("/journey");
-    await page.getByText(/Change course/i).click();
-    await expect(page.getByRole("heading", { name: /Pick your course/i })).toBeVisible({ timeout: 5000 });
-    // The list should show several AP options
-    await expect(page.getByText(/AP Biology/i).first()).toBeVisible();
+    await expect(page.getByRole("heading", { name: /Pick your course/i })).toBeVisible({ timeout: 15000 });
     // Pick AP Biology
-    await page.getByText(/AP Biology/i).first().click();
-    // Back on Step 0, the chosen course is now AP Biology
+    await page.locator("button", { hasText: "AP Biology" }).first().click();
+    // Summary view: chosen course shown, Welcome heading + Start button visible
+    await expect(page.getByRole("heading", { name: /Welcome to StudentNest/i })).toBeVisible({ timeout: 5000 });
     await expect(page.getByText(/AP Biology/i).first()).toBeVisible();
+    await expect(page.getByRole("button", { name: /Start my plan/i })).toBeEnabled();
+    await expect(page.getByText(/Change course/i)).toBeVisible();
   });
 
   test("Exit button — redirects to dashboard + persists exited state", async ({ page, context }) => {
@@ -90,7 +95,10 @@ test.describe("Journey Mode rail (Beta 9.5)", () => {
     });
 
     await page.goto("/journey");
-    await expect(page.getByRole("heading", { name: /Welcome to StudentNest/i })).toBeVisible({ timeout: 15000 });
+    // Pick a course first to get past the new picker-first screen
+    await expect(page.getByRole("heading", { name: /Pick your course/i })).toBeVisible({ timeout: 15000 });
+    await page.locator("button", { hasText: "AP World History" }).first().click();
+    await expect(page.getByRole("heading", { name: /Welcome to StudentNest/i })).toBeVisible({ timeout: 5000 });
     // Beta 9.6 — Exit now opens an exit-intent modal first. Click Skip
     // to dismiss without feedback (preserves the original "redirects"
     // contract this test asserts).
@@ -101,14 +109,22 @@ test.describe("Journey Mode rail (Beta 9.5)", () => {
     expect(page.url()).toContain("/dashboard");
   });
 
-  test("Step 1 — clicking 'Start my plan' advances + shows (A)(B)(C)(D) labeled answers", async ({ page, context }) => {
+  test("Step 1 — Start my plan → interstitial → Start → (A)(B)(C)(D) labeled answers", async ({ page, context }) => {
     await context.addInitScript(() => {
       try { localStorage.removeItem("journey_status_v1"); } catch { /* ignore */ }
     });
 
     await page.goto("/journey");
-    await expect(page.getByRole("button", { name: /Start my plan/i })).toBeVisible({ timeout: 15000 });
+    // Pick a course first to clear the new picker
+    await expect(page.getByRole("heading", { name: /Pick your course/i })).toBeVisible({ timeout: 15000 });
+    await page.locator("button", { hasText: "AP World History" }).first().click();
     await page.getByRole("button", { name: /Start my plan/i }).click();
+
+    // 2026-05-13 — Step 1 now shows an interstitial before /api/practice
+    // fires. Saranya was being dumped straight into a chem MEDIUM question
+    // 3 seconds after signup; the interstitial sets expectations.
+    await expect(page.getByText(/quick questions to see where/i)).toBeVisible({ timeout: 10000 });
+    await page.getByRole("button", { name: /^Start$/ }).click();
 
     // Step 1 progress label
     await expect(page.getByText(/Step 1.*Warm.?up/i).first()).toBeVisible({ timeout: 25000 });

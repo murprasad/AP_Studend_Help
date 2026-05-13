@@ -36,7 +36,14 @@ interface Props {
 }
 
 export function Step1Mcq({ course, questionCount = 3, unit = null, label = "Warm-up", onComplete }: Props) {
-  const [loading, setLoading] = useState(true);
+  // 2026-05-13 — `started` gates the /api/practice POST. Previously this
+  // effect fired immediately on mount, dumping a fresh signup straight into
+  // a real exam-grade question (the Saranya bounce). Now an interstitial
+  // explains what's about to happen and the student taps "Start" to begin.
+  // Step 4 (targeted practice after the score reveal) skips the interstitial
+  // because the user already knows what they're doing — see prop default.
+  const [started, setStarted] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [questions, setQuestions] = useState<Q[]>([]);
@@ -47,7 +54,9 @@ export function Step1Mcq({ course, questionCount = 3, unit = null, label = "Warm
   const [correctCount, setCorrectCount] = useState(0);
 
   useEffect(() => {
+    if (!started) return;
     let cancelled = false;
+    setLoading(true);
     fetch("/api/practice", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -79,7 +88,7 @@ export function Step1Mcq({ course, questionCount = 3, unit = null, label = "Warm
         }
       });
     return () => { cancelled = true; };
-  }, [course, questionCount, unit]);
+  }, [started, course, questionCount, unit]);
 
   const submit = async (letter: string) => {
     // 2026-05-01 — caller now passes the canonical letter (from
@@ -124,6 +133,32 @@ export function Step1Mcq({ course, questionCount = 3, unit = null, label = "Warm
     setSelected(null);
     setFeedback(null);
   };
+
+  if (!started) {
+    return (
+      <div className="max-w-md mx-auto py-12 px-4 text-center space-y-6">
+        <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+          {label}
+        </p>
+        <h1 className="text-2xl font-bold leading-tight">
+          {questionCount} quick {questionCount === 1 ? "question" : "questions"} to see where you&apos;re at
+        </h1>
+        <ul className="text-sm text-muted-foreground text-left space-y-2 max-w-sm mx-auto">
+          <li className="flex gap-2"><span aria-hidden>·</span><span>No score &mdash; this is a warm-up.</span></li>
+          <li className="flex gap-2"><span aria-hidden>·</span><span>You&apos;ll see the answer + a short explanation after each one.</span></li>
+          <li className="flex gap-2"><span aria-hidden>·</span><span>Takes about 90 seconds.</span></li>
+        </ul>
+        <Button
+          size="lg"
+          className="rounded-full gap-2 px-8"
+          onClick={() => setStarted(true)}
+        >
+          Start
+          <ArrowRight className="h-4 w-4" />
+        </Button>
+      </div>
+    );
+  }
 
   if (loading) {
     return (

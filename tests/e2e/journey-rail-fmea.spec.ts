@@ -46,9 +46,19 @@ test.describe("Journey FMEA — every screen renders + copy is coherent", () => 
   });
 
   // ── Step 0: course pick ────────────────────────────────────────────────────
-  test("Step 0 — copy is coherent (welcome + course label + ETA + course details)", async ({ page }) => {
+  // 2026-05-13 — Step 0 now mounts in picker mode for fresh users (Saranya
+  // fix). The summary card with "Welcome to StudentNest" only appears AFTER
+  // the user has explicitly tapped a course. Tests now have a `pickCourse`
+  // prelude that mirrors how real users now reach the summary view.
+  async function pickAndOpenSummary(page: import("@playwright/test").Page, course: RegExp = /AP World History/i) {
     await page.goto("/journey");
-    await expect(page.getByRole("heading", { name: /Welcome to StudentNest/i })).toBeVisible({ timeout: 15000 });
+    await expect(page.getByRole("heading", { name: /Pick your course/i })).toBeVisible({ timeout: 15000 });
+    await page.locator("button", { hasText: course }).first().click();
+    await expect(page.getByRole("heading", { name: /Welcome to StudentNest/i })).toBeVisible({ timeout: 5000 });
+  }
+
+  test("Step 0 — copy is coherent (welcome + course label + ETA + course details)", async ({ page }) => {
+    await pickAndOpenSummary(page);
     // Subtitle clearly sets expectation
     await expect(page.getByText(/5-step guided plan to see your projected AP score/i)).toBeVisible();
     // Time anchor + step breakdown — use .first() since "15 minutes" appears
@@ -58,7 +68,7 @@ test.describe("Journey FMEA — every screen renders + copy is coherent", () => 
     await expect(page.getByText(/1 FRQ/i).first()).toBeVisible();
     await expect(page.getByText(/diagnostic/i).first()).toBeVisible();
     await expect(page.getByText(/5 targeted MCQs/i).first()).toBeVisible();
-    // Default course shown + Change affordance
+    // Chosen course shown + Change affordance
     await expect(page.getByText(/Your course/i)).toBeVisible();
     await expect(page.getByText(/AP World History/i).first()).toBeVisible();
     await expect(page.getByText(/Change course/i)).toBeVisible();
@@ -67,8 +77,7 @@ test.describe("Journey FMEA — every screen renders + copy is coherent", () => 
   });
 
   test("Step 0 — Exit affordance present + working", async ({ page }) => {
-    await page.goto("/journey");
-    await expect(page.getByRole("heading", { name: /Welcome to StudentNest/i })).toBeVisible({ timeout: 15000 });
+    await pickAndOpenSummary(page);
     // Top-bar progress + step counter
     await expect(page.getByText(/Step 0 of 5/i)).toBeVisible();
     // Beta 9.6 — Exit is a button that opens an exit-intent modal first
@@ -83,7 +92,7 @@ test.describe("Journey FMEA — every screen renders + copy is coherent", () => 
   });
 
   test("Step 0 — Change course → picker → Back returns to Step 0 with selection", async ({ page }) => {
-    await page.goto("/journey");
+    await pickAndOpenSummary(page);
     await page.getByText(/Change course/i).click();
     await expect(page.getByRole("heading", { name: /Pick your course/i })).toBeVisible({ timeout: 5000 });
     await expect(page.getByText(/switch courses anytime later/i)).toBeVisible();
@@ -94,8 +103,11 @@ test.describe("Journey FMEA — every screen renders + copy is coherent", () => 
 
   // ── Step 1: 3 MCQ warm-up ──────────────────────────────────────────────────
   test("Step 1 — copy + structure (label, progress counter, (A)(B)(C)(D) labels)", async ({ page }) => {
-    await page.goto("/journey");
+    await pickAndOpenSummary(page);
     await page.getByRole("button", { name: /Start my plan/i }).click();
+    // 2026-05-13 interstitial — explicit Start gate before /api/practice fires
+    await expect(page.getByText(/quick questions to see where/i)).toBeVisible({ timeout: 10000 });
+    await page.getByRole("button", { name: /^Start$/ }).click();
 
     // Step counter in top bar
     await expect(page.getByText(/Step 1 of 5/i)).toBeVisible({ timeout: 25000 });
@@ -108,8 +120,10 @@ test.describe("Journey FMEA — every screen renders + copy is coherent", () => 
   });
 
   test("Step 1 — answer a question → feedback panel + Next button appears", async ({ page }) => {
-    await page.goto("/journey");
+    await pickAndOpenSummary(page);
     await page.getByRole("button", { name: /Start my plan/i }).click();
+    await expect(page.getByText(/quick questions to see where/i)).toBeVisible({ timeout: 10000 });
+    await page.getByRole("button", { name: /^Start$/ }).click();
     await expect(page.getByText(/Question 1 of 3/i)).toBeVisible({ timeout: 25000 });
 
     // Click first answer (any letter — we don't need it correct)
