@@ -31,6 +31,14 @@ interface McqInput {
   options: string[];
   correctAnswer: string;
   explanation: string | null | undefined;
+  /**
+   * 2026-05-13 — optional course id. When set, the ensemble looks up the
+   * per-course overrides in expansion-pipeline-config.ts (e.g. TEAS_SCIENCE
+   * demands ≥3 PASS + paid-judge co-sign). When unset (every current call
+   * site for AP/SAT/ACT/CLEP), the default ≥2 PASS quorum applies. Forward-
+   * wired ahead of the TEAS + PSAT vertical builds.
+   */
+  courseId?: string;
 }
 
 type Vote = "PASS" | "FAIL" | "ABSTAIN";
@@ -266,8 +274,17 @@ async function callPollinations(prompt: string, model: "openai" | "openai-fast")
  * the ensemble. The deterministic gates + single-fallback in the call site
  * remain as backstops.
  */
+// Paid-judge model identifiers (must match the `model` field set inside
+// each call function). Used by the per-course config to enforce paid-judge
+// co-sign on stricter verticals (TEAS_SCIENCE A&P, future GRE Quant).
+const PAID_JUDGE_MODELS = new Set(["claude-sonnet-4-6", "gemini-2.5-flash"]);
+
 export async function ensembleJudgeMcq(q: McqInput): Promise<EnsembleResult> {
   const prompt = buildPrompt(q);
+  // Lazy-import the config so the default code path (no courseId) has zero
+  // runtime overhead beyond the function call. Existing callers are unchanged.
+  const { getExpansionConfig } = await import("./expansion-pipeline-config");
+  const cfg = q.courseId ? getExpansionConfig(q.courseId) : { minPassQuorum: 2, requirePaidJudgeInQuorum: false, requireSourceCitation: false };
 
   // Call all 5 judges in parallel. ABSTAIN votes (errors, no key, no JSON)
   // are discarded; we count only PASS/FAIL.
@@ -284,18 +301,33 @@ export async function ensembleJudgeMcq(q: McqInput): Promise<EnsembleResult> {
   // Keep all votes in the result for audit logging, but tally only the
   // non-ABSTAIN votes for quorum.
   const validVotes = allVotes.filter((v) => v.vote !== "ABSTAIN");
-  const pass = validVotes.filter((v) => v.vote === "PASS").length;
-  const fail = validVotes.filter((v) => v.vote === "FAIL").length;
+  const passingVotes = validVotes.filter((v) => v.vote === "PASS");
+  const failingVotes = validVotes.filter((v) => v.vote === "FAIL");
+  const pass = passingVotes.length;
+  const fail = failingVotes.length;
 
   if (fail >= 2) {
-    const failingModels = validVotes.filter((v) => v.vote === "FAIL");
     return {
       ok: false,
       votes: allVotes,
-      reason: failingModels.map((v) => `${v.model}: ${v.reason ?? "fail"}`).join(" | "),
+      reason: failingVotes.map((v) => `${v.model}: ${v.reason ?? "fail"}`).join(" | "),
     };
   }
-  if (pass >= 2) {
+  // Stricter quorum for TEAS_SCIENCE and future high-stakes courses:
+  //   - minPassQuorum default 2 (current behaviour unchanged)
+  //   - requirePaidJudgeInQuorum: at least one Anthropic/Gemini PASS vote
+  // Defaults preserved for every existing AP/SAT/ACT/CLEP course.
+  if (pass >= cfg.minPassQuorum) {
+    if (cfg.requirePaidJudgeInQuorum) {
+      const hasPaid = passingVotes.some((v) => PAID_JUDGE_MODELS.has(v.model));
+      if (!hasPaid) {
+        return {
+          ok: false,
+          votes: allVotes,
+          reason: `paid-judge co-sign required for ${q.courseId ?? "this course"} but no paid judge in PASS quorum`,
+        };
+      }
+    }
     return { ok: true, votes: allVotes };
   }
   // No quorum — fail-OPEN.
