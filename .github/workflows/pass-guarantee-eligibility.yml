@@ -1,0 +1,44 @@
+name: Hourly Pass Guarantee Eligibility Sweep
+
+on:
+  schedule:
+    # Every hour at :15 (offset from stripe-reconcile so they don't pile up).
+    # NurseHub-derived Batch 2 — flips User.passGuaranteeEligible when a paid
+    # user crosses the threshold (best-of-3 mock avg >=75 + mastery coverage).
+    - cron: '15 * * * *'
+  workflow_dispatch:
+
+jobs:
+  pass-guarantee-eligibility:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Hit /api/cron/pass-guarantee-eligibility
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          response=$(curl -s -w "\n%{http_code}" \
+            -X POST \
+            https://studentnest.ai/api/cron/pass-guarantee-eligibility \
+            -H "Authorization: Bearer ${CRON_SECRET}" \
+            -H "Content-Type: application/json" \
+            -d '{}' \
+            --max-time 90)
+          body=$(echo "$response" | head -n -1)
+          status=$(echo "$response" | tail -n 1)
+
+          echo "Status: $status"
+          echo "Body: $body"
+
+          if [ "$status" = "401" ]; then
+            echo "::warning::CRON_SECRET mismatch — skipping until GH Actions + CF secrets re-sync."
+            exit 0
+          fi
+          if [ "$status" != "200" ]; then
+            echo "::error::Status $status"; exit 1
+          fi
+
+          scanned=$(echo "$body" | grep -o '"scanned":[0-9]*' | grep -o '[0-9]*' || echo 0)
+          newly=$(echo "$body" | grep -o '"newlyEligible":\[[^]]*\]' | grep -o '"userId"' | wc -l || echo 0)
+          echo "## Pass Guarantee eligibility" >> $GITHUB_STEP_SUMMARY
+          echo "- Scanned: $scanned candidates" >> $GITHUB_STEP_SUMMARY
+          echo "- Newly eligible: $newly" >> $GITHUB_STEP_SUMMARY
