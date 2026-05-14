@@ -59,7 +59,7 @@ export function PassGuaranteeBadge({
       >
         <div className="flex items-start gap-3">
           <ShieldCheck className="h-5 w-5 flex-shrink-0 text-emerald-700 dark:text-emerald-400" aria-hidden />
-          <div>
+          <div className="flex-1">
             <p className="text-sm font-semibold text-emerald-900 dark:text-emerald-100">
               You qualify for the Pass Guarantee
             </p>
@@ -69,6 +69,14 @@ export function PassGuaranteeBadge({
                 Read the terms
               </Link>
             </p>
+            <div className="mt-2.5">
+              <Link
+                href="/pass-guarantee/claim"
+                className="inline-flex items-center gap-1 rounded-md bg-emerald-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-emerald-700"
+              >
+                Start your claim →
+              </Link>
+            </div>
           </div>
         </div>
       </div>
