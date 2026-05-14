@@ -95,6 +95,7 @@ async function makeSessionToken(user: {
       track: "ap",
       moduleSubs: [],
       onboardingCompletedAt: new Date().toISOString(),
+      passGuaranteeEligible: false,
       iat: Math.floor(Date.now() / 1000),
       exp: Math.floor(Date.now() / 1000) + 30 * 24 * 60 * 60,
       jti: crypto.randomUUID(),

@@ -187,7 +187,7 @@ export const authOptions: NextAuthOptions = {
       if (account?.provider === "google") {
         const dbUser = await prisma.user.findUnique({
           where: { email: token.email! },
-          select: { id: true, role: true, subscriptionTier: true, track: true, onboardingCompletedAt: true },
+          select: { id: true, role: true, subscriptionTier: true, track: true, onboardingCompletedAt: true, passGuaranteeEligible: true },
         });
         if (dbUser) {
           token.id = dbUser.id;
@@ -196,6 +196,7 @@ export const authOptions: NextAuthOptions = {
           token.subscriptionTier = isAdmin ? "PREMIUM" : dbUser.subscriptionTier;
           token.track = dbUser.track ?? "ap";
           token.onboardingCompletedAt = dbUser.onboardingCompletedAt?.toISOString() ?? null;
+          token.passGuaranteeEligible = dbUser.passGuaranteeEligible ?? false;
           token.moduleSubs = isAdmin ? ADMIN_MODULE_SUBS : await fetchModuleSubs(dbUser.id);
         }
         return token;
@@ -207,11 +208,12 @@ export const authOptions: NextAuthOptions = {
         const isAdmin = token.role === "ADMIN";
         const dbUser = await prisma.user.findUnique({
           where: { id: user.id },
-          select: { subscriptionTier: true, track: true, onboardingCompletedAt: true },
+          select: { subscriptionTier: true, track: true, onboardingCompletedAt: true, passGuaranteeEligible: true },
         });
         token.subscriptionTier = isAdmin ? "PREMIUM" : (dbUser?.subscriptionTier ?? "FREE");
         token.track = dbUser?.track ?? "ap";
         token.onboardingCompletedAt = dbUser?.onboardingCompletedAt?.toISOString() ?? null;
+        token.passGuaranteeEligible = dbUser?.passGuaranteeEligible ?? false;
         token.moduleSubs = isAdmin ? ADMIN_MODULE_SUBS : await fetchModuleSubs(user.id);
       } else if (token.id) {
         // Only refresh from DB on explicit update trigger (track change, subscription update,
@@ -221,12 +223,13 @@ export const authOptions: NextAuthOptions = {
           const isAdmin = token.role === "ADMIN";
           const dbUser = await prisma.user.findUnique({
             where: { id: token.id as string },
-            select: { subscriptionTier: true, track: true, onboardingCompletedAt: true },
+            select: { subscriptionTier: true, track: true, onboardingCompletedAt: true, passGuaranteeEligible: true },
           });
           if (dbUser) {
             token.subscriptionTier = isAdmin ? "PREMIUM" : dbUser.subscriptionTier;
             token.track = dbUser.track ?? "ap";
             token.onboardingCompletedAt = dbUser.onboardingCompletedAt?.toISOString() ?? null;
+            token.passGuaranteeEligible = dbUser.passGuaranteeEligible ?? false;
           }
           token.moduleSubs = isAdmin ? ADMIN_MODULE_SUBS : await fetchModuleSubs(token.id as string);
         }
@@ -241,6 +244,7 @@ export const authOptions: NextAuthOptions = {
         session.user.subscriptionTier = token.subscriptionTier as string;
         session.user.track = (token.track as string) ?? "ap";
         session.user.onboardingCompletedAt = (token.onboardingCompletedAt as string | null) ?? null;
+        session.user.passGuaranteeEligible = (token.passGuaranteeEligible as boolean) ?? false;
         session.user.moduleSubs = (token.moduleSubs as Array<{ module: string; status: string }>) ?? [];
       }
       return session;
@@ -258,6 +262,7 @@ declare module "next-auth" {
       subscriptionTier: string;
       track: string;
       onboardingCompletedAt: string | null;
+      passGuaranteeEligible: boolean;
       moduleSubs: Array<{ module: string; status: string }>;
     };
   }
@@ -270,6 +275,7 @@ declare module "next-auth/jwt" {
     subscriptionTier: string;
     track: string;
     onboardingCompletedAt: string | null;
+    passGuaranteeEligible: boolean;
     moduleSubs: Array<{ module: string; status: string }>;
   }
 }

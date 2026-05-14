@@ -48,6 +48,7 @@ import { PostJourneyHero } from "@/components/dashboard/post-journey-hero";
 import { useJourneyForcing } from "@/hooks/use-journey-forcing";
 import type { ApCourse } from "@prisma/client";
 import { useDashboardFocus } from "@/hooks/use-dashboard-focus";
+import { PassGuaranteeBadge } from "@/components/marketing/pass-guarantee-badge";
 
 function DashboardSkeleton() {
   return (
@@ -128,6 +129,10 @@ export function DashboardView() {
 }
 
 function DashboardBody({ course, impressionId }: { course: string; impressionId: string | null }) {
+  const { data: sessionData } = useSession();
+  // 2026-05-14 NurseHub Batch 2 — Pass Guarantee qualified banner. Renders
+  // only when the eligibility cron has flipped User.passGuaranteeEligible.
+  const passGuaranteeEligible = sessionData?.user?.passGuaranteeEligible === true;
   // Beta 9.3.3 (2026-04-30) — when JourneyHeroCard is forcing a single
   // next-step (any state except mature), suppress competing surfaces so
   // the brand-new user sees ONE welcome + ONE start, not 4 stacked
@@ -180,6 +185,14 @@ function DashboardBody({ course, impressionId }: { course: string; impressionId:
 
   return (
     <div className="space-y-4 max-w-2xl mx-auto px-0 sm:px-2 py-2">
+      {/* 2026-05-14 NurseHub Batch 2 — Pass Guarantee qualifier banner.
+          Renders only when the user has crossed the eligibility threshold
+          (≥80% study plan + ≥3 mocks @≥75 + paid subscription). Tap routes
+          to the claim flow (Batch 3). */}
+      {passGuaranteeEligible && (
+        <PassGuaranteeBadge variant="banner" examLabel="AP" />
+      )}
+
       {/* Beta 9.1.2 — personalized greeting + plan badge. */}
       <GreetingCard />
 

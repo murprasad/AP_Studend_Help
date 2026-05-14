@@ -39,6 +39,19 @@ model User {
   dailyQuizTz       String?                      // IANA tz (e.g. "America/Chicago"); null = UTC default at 7:30
   signupUserAgent   String?                      // 2026-05-08: UA at register for mobile-vs-web bounce analysis
   signupReferer     String?                      // 2026-05-08: HTTP Referer at register
+  // 2026-05-14 NurseHub Batch 2 — Pass Guarantee eligibility flags.
+  // `passGuaranteeEligible` is flipped to true by the eligibility cron
+  // (src/app/api/cron/pass-guarantee-eligibility/route.ts) when the user meets
+  // all three criteria from docs/cross-product-learnings-from-nursehub.md §1:
+  //   1. ≥80% of generated study plan complete
+  //   2. ≥3 full-length mock exams with ≥75 average score
+  //   3. Active paid subscription
+  // All fields default to null/false so every existing user is unaffected.
+  passGuaranteeEligible      Boolean   @default(false)
+  passGuaranteeEligibleAt    DateTime?
+  passGuaranteeClaimedAt     DateTime?
+  passGuaranteeRefundCents   Int?
+  passGuaranteeRefundedAt    DateTime?
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
 

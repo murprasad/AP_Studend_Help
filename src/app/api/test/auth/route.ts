@@ -215,7 +215,7 @@ export async function POST(req: NextRequest) {
       // Find or create test user
       let user = await prisma.user.findUnique({
         where: { email: TEST_EMAIL },
-        select: { id: true, role: true, subscriptionTier: true, track: true, onboardingCompletedAt: true, createdAt: true },
+        select: { id: true, role: true, subscriptionTier: true, track: true, onboardingCompletedAt: true, passGuaranteeEligible: true, createdAt: true },
       });
 
       if (!user) {
@@ -242,7 +242,7 @@ export async function POST(req: NextRequest) {
             // "≥30 min old" threshold without affecting other logic.
             createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000),
           },
-          select: { id: true, role: true, subscriptionTier: true, track: true, onboardingCompletedAt: true, createdAt: true },
+          select: { id: true, role: true, subscriptionTier: true, track: true, onboardingCompletedAt: true, passGuaranteeEligible: true, createdAt: true },
         });
       } else {
         // Existing test user — always ensure they're onboarded AND
@@ -292,6 +292,7 @@ export async function POST(req: NextRequest) {
           track: user.track ?? "ap",
           moduleSubs,
           onboardingCompletedAt: user.onboardingCompletedAt?.toISOString() ?? null,
+          passGuaranteeEligible: user.passGuaranteeEligible ?? false,
         },
         secret,
         // Extended 2026-04-24: previous 5-min expiry caused every authed
