@@ -1,10 +1,31 @@
 # TEAS 7 Build Plan
 
 **Target:** PrepLion (CLEP/CAA/TEAS market — adult learners / career changers).
-**Pricing tier:** $14.99/mo (mid between $9.99 CLEP and $19.99 GRE).
-**Wall clock:** 3–4 weeks.
-**Hard cost:** ~$120 ($35 ATI Study Manual + ~$80 Gemini gen + ~$5 paid-judge co-sign for Science).
+**Pricing tier:** $14.99/mo (50% under NurseHub's $29.99/mo — see `docs/competitor-analysis-nursehub-2026-05-13.md`).
+**Wall clock:** ~1 month (3-4 weeks core build + 3-4 extra days for new question types per NurseHub competitive analysis).
+**Hard cost (one-time):** ~$120 ($35 ATI Study Manual + ~$80 Gemini gen + ~$5 paid-judge co-sign for Science).
+**Recurring cost:** ~$500/mo nursing-educator retainer (Layer 6 made permanent per NurseHub-competitive analysis) + ~$2/user pass-guarantee reserve.
 **Sequence:** After PSAT.
+
+---
+
+## Competitive position (NurseHub analysis 2026-05-13)
+
+| Dimension | NurseHub | Us |
+|---|---|---|
+| Price | $29.99/mo | **$14.99/mo (50% under)** |
+| Bank size | 3,930 Qs | **2,000 v1 / 3,500+ by month 3** |
+| Adaptive | No | **Yes — Sage + mastery routing** |
+| Mobile native | No | **Yes — PWA + offline practice** |
+| AI tutor | No (human-only 24/7) | **Yes — Sage 24/7** |
+| Video library | 30+ hours | No (defer to v2 if data demands) |
+| Pass guarantee | Yes (refund + retake fee) | **Yes — match with tighter completion criteria** |
+| Subject-matter authority | Leigh, 25y RN | **Nursing-educator on retainer + OpenStax A&P 2e citations per Q** |
+| Cross-exam progress | No (TEAS/HESI separate logins) | **Yes — unified PL account** |
+| Question types covered | MCQ + Multi-Select + Fill-Blank + Hot Spot + Ordered Response | **MCQ + Multi-Select + Fill-Blank v1; Hot Spot + Ordered Response v2** |
+
+See `docs/cross-product-learnings-from-nursehub.md` for the broader strategic
+implications and items that ripple to StudentNest + the rest of PrepLion.
 
 ---
 
@@ -135,6 +156,31 @@ This is the highest-confidence layer and the cheapest insurance against shared-L
 ---
 
 ## Schema additions
+
+### New question types (per NurseHub competitive analysis 2026-05-13)
+
+TEAS 7 includes 4 non-MCQ question types. NurseHub teaches all four; ATI's
+free practice tests include them. Our current MCQ-only schema is a
+hard blocker.
+
+```prisma
+enum QuestionType {
+  // ... existing values ...
+  MULTI_SELECT      // NEW v1 — "select all that apply", scored as all-or-nothing
+  FILL_IN_BLANK     // NEW v1 — no options shown, free-text or numeric input
+  HOT_SPOT          // NEW v2 — clickable image regions (needs authoring tooling)
+  ORDERED_RESPONSE  // NEW v2 — drag-and-drop sequencing
+}
+```
+
+Per-type rendering components needed:
+- `<MultiSelectQuestion>` — checkboxes with all-correct gating
+- `<FillInBlankQuestion>` — text input with normalized comparison (case + whitespace + acceptable variants)
+- Hot Spot + Ordered Response deferred to v2; document in copy that we
+  cover them but suggest students take ATI's free practice for these
+  formats in v1.
+
+### Course enums
 
 ```prisma
 enum ApCourse {
