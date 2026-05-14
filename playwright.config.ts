@@ -93,7 +93,7 @@ export default defineConfig({
       use: { ...devices["Desktop Chrome"] },
       testMatch: DEPLOY_GATE
         ? DEPLOY_GATE_PUBLIC
-        : /(public-paths|public-entry-points|persona-a-landing-ctas|persona-a-register-tracks|persona-a-login|persona-a-auth-misc|persona-a-mobile|persona-a-mobile-ipad|persona-c-crawler-anonymous|persona-c-broken-links|persona-c-console-errors|persona-c-api-smoke|persona-c-security-headers|persona-c-headers-audit|persona-c-content-audit|landing-redesign-2026-05-02|clep-dsst-removal-2026-05-03|critical-paths-2026-05-03|runtime-errors-landing|link-walk-2026-05-03|fmea-top5-2026-05-03|backlog-suite-2026-05-03|pass-guarantee-badge)\.spec\.ts/,
+        : /(public-paths|public-entry-points|persona-a-landing-ctas|persona-a-register-tracks|persona-a-login|persona-a-auth-misc|persona-a-mobile|persona-a-mobile-ipad|persona-c-crawler-anonymous|persona-c-broken-links|persona-c-console-errors|persona-c-api-smoke|persona-c-security-headers|persona-c-headers-audit|persona-c-content-audit|landing-redesign-2026-05-02|clep-dsst-removal-2026-05-03|critical-paths-2026-05-03|runtime-errors-landing|link-walk-2026-05-03|fmea-top5-2026-05-03|backlog-suite-2026-05-03|pass-guarantee-badge|register-per-plan-urls)\.spec\.ts/,
     },
     ...(HAS_CRON_SECRET
       ? [
