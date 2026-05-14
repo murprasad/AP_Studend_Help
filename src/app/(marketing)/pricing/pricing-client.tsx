@@ -5,6 +5,7 @@ import Link from "next/link";
 import { CheckCircle, Zap, Crown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { getExamLabel, getCourseCount } from "@/lib/exam-label";
+import { PassGuaranteeBadge } from "@/components/marketing/pass-guarantee-badge";
 
 const ALL_MODULE_CONFIGS = {
   ap: {
@@ -313,6 +314,13 @@ export default function PricingClient({ clepEnabled, dsstEnabled }: PricingClien
             </tbody>
           </table>
         </div>
+      </div>
+
+      {/* Pass Guarantee — 2026-05-13 from NurseHub competitive analysis.
+          Highest-impact conversion lever (their primary moat). UI ships now;
+          eligibility schema + refund cron in Batch 2. */}
+      <div className="mt-16 max-w-3xl mx-auto px-4">
+        <PassGuaranteeBadge variant="card" examLabel="AP/SAT/ACT" />
       </div>
 
       {/* FAQ */}

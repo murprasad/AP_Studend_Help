@@ -145,6 +145,24 @@ const STAGING_BRANCH = process.env.STAGING_BRANCH || "staging";
     console.log(`(Playwright reported failures but all were on the chronic-flaky allowlist; gate continues.)\n`);
   }
 
+  // 5b. Lighthouse budget check (NurseHub-derived 2026-05-13, NurseHub
+  // ships 2-3s LCP on WordPress; we ship sub-1s on Next.js + CF Pages —
+  // this gate locks in that structural advantage). Warn-only until we
+  // have a stable baseline, then flip to blocking by setting
+  // ENFORCE_LIGHTHOUSE_BUDGET=1.
+  console.log(`\n⚡ Lighthouse budget check against staging…\n`);
+  try {
+    await run("node", ["scripts/lighthouse-budget-check.js", stagingUrl], { env });
+    console.log(`✅ Lighthouse budget gate PASSED.`);
+  } catch (e) {
+    if (process.env.ENFORCE_LIGHTHOUSE_BUDGET === "1") {
+      console.error(`❌ Lighthouse budget gate FAILED and ENFORCE_LIGHTHOUSE_BUDGET=1 — blocking deploy.`);
+      throw e;
+    } else {
+      console.warn(`⚠️  Lighthouse budget gate FAILED but ENFORCE_LIGHTHOUSE_BUDGET≠1 — warning only, gate continues. Set ENFORCE_LIGHTHOUSE_BUDGET=1 once baseline is stable to enforce.`);
+    }
+  }
+
   // 6. Green light. Print promote command but do NOT auto-promote.
   // Beta 9 (2026-04-29) — write a marker so promote can skip rebuild
   // when commit + workdir state match. Saves 5-7 min per release.
