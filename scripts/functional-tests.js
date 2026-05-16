@@ -29,7 +29,9 @@
 
 const BASE_URL = (() => {
   const idx = process.argv.indexOf("--base-url");
-  return idx !== -1 ? process.argv[idx + 1] : "https://studentnest.ai";
+  if (idx !== -1) return process.argv[idx + 1];
+  if (process.env.E2E_BASE_URL) return process.env.E2E_BASE_URL;
+  return "https://studentnest.ai";
 })();
 
 const CRON_SECRET = process.env.CRON_SECRET;
