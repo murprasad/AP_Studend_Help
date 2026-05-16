@@ -64,6 +64,9 @@ export function MarketingHeader() {
             <Link href="/act-prep" className="hidden sm:block text-sm text-muted-foreground hover:text-foreground transition-colors">
               ACT Prep
             </Link>
+            <Link href="/psat-prep" className="hidden lg:block text-sm text-muted-foreground hover:text-foreground transition-colors">
+              PSAT Prep
+            </Link>
             <Link href="/am-i-ready" className="hidden md:block text-sm font-medium text-primary hover:text-primary/80 transition-colors">
               Am I Ready?
             </Link>

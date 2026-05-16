@@ -33,6 +33,11 @@ const PLAN_TO_MODULE: Record<string, { module: string; label: string; descriptio
     label: "ACT Premium",
     description: "Sign up for StudentNest ACT Premium — all 4 sections, unlimited Sage, section-by-section composite tracking.",
   },
+  psat: {
+    module: "psat",
+    label: "PSAT Premium",
+    description: "Sign up for StudentNest PSAT Premium — Math + Reading & Writing prep, National Merit Selection Index tracking, unlimited Sage.",
+  },
 };
 
 interface Props {

@@ -2328,6 +2328,79 @@ CED units are skill bands, not content domains. FRQs score against a unified
     stimulusQualityGuidance: "GOOD: A 1-2 paragraph excerpt from a literary, historical, scientific, or social science passage. The question must be fully answerable from the passage alone. Attribute the passage (e.g., 'The following passage is adapted from...'). AVOID: Passages shorter than 40 words, passages requiring outside knowledge, or stimuli that are a single isolated sentence without context.",
   },
 
+  // ── PSAT Math ──────────────────────────────────────────────────────────────
+  // PSAT/NMSQT — taken in October by 10th + 11th graders. Same College Board
+  // adaptive format as SAT but easier difficulty cap (score scale 320-1520
+  // vs SAT 400-1600). 44 Math questions / 70 min. Derive bank from SAT
+  // EASY+MEDIUM questions; skip SAT HARD which exceeds PSAT difficulty cap.
+  // Per project_expansion_plan_2026-05-14_LOCKED.md.
+  PSAT_MATH: {
+    name: "PSAT Math",
+    shortName: "PSAT Math",
+    examSecsPerQuestion: 95,
+    mockExam: { mcqCount: 44, mcqTimeMinutes: 70 },
+    enrichWithEduAPIs: true,
+    units: {
+      PSAT_MATH_1_ALGEBRA: { name: "Algebra", keyThemes: ["linear equations", "systems of equations", "inequalities", "linear functions", "slope", "word problems with variables"] },
+      PSAT_MATH_2_ADVANCED_MATH: { name: "Advanced Math", keyThemes: ["quadratics", "polynomials", "exponential functions", "function notation"] },
+      PSAT_MATH_3_PROBLEM_SOLVING: { name: "Problem-Solving and Data Analysis", keyThemes: ["ratios", "proportions", "percentages", "statistics", "unit conversion", "linear vs exponential growth"] },
+      PSAT_MATH_4_GEOMETRY_TRIG: { name: "Geometry and Trigonometry", keyThemes: ["area", "volume", "coordinate geometry", "Pythagorean theorem", "similarity"] },
+    },
+    suggestedTutorQuestions: [
+      "How do I solve a system of linear equations?",
+      "How do I interpret a scatterplot on the PSAT?",
+      "What math topics show up most on the PSAT?",
+    ],
+    curriculumContext: "PSAT/NMSQT Math covers algebra, advanced math, problem-solving/data analysis, and geometry/trigonometry — the same skill domains as the SAT but with a lower difficulty ceiling (no HARD questions; PSAT caps at MEDIUM SAT-equivalent).",
+    tutorResources: "• Khan Academy Official SAT Practice (khanacademy.org/sat) — same content covers PSAT\n• College Board Bluebook (bluebook.collegeboard.org)",
+    examAlignmentNotes: "PSAT score range 160–760 per section (combined 320–1520). National Merit Scholarship qualifier; juniors taking PSAT/NMSQT compete for scholarships based on Selection Index.",
+    stimulusRequirement: "Include a relevant word problem or data table when appropriate.",
+    stimulusDescription: "word problem context, table, or graph description, or null",
+    explanationGuidance: "show step-by-step solution and identify the math concept tested",
+    skillCodes: ["Algebra", "Advanced Math", "Problem-Solving & Data Analysis", "Geometry & Trigonometry"],
+    difficultyRubric: {
+      EASY: "Single-concept, one or two-step problem. PSAT score range 160–500 (per section). 70%+ correct. Same content as SAT EASY.",
+      MEDIUM: "Multi-step problem or word problem requiring setup. PSAT score range 500–700 (per section). 45–60% correct. Same content as SAT MEDIUM.",
+      HARD: "PSAT does NOT include SAT-HARD difficulty. The hardest PSAT items map to SAT MEDIUM-HARD. Cap difficulty here.",
+    },
+    distractorTaxonomy: "(1) SIGN ERROR TRAP; (2) FORMULA CONFUSION TRAP; (3) PARTIAL-SOLVE TRAP — same as SAT but tuned to PSAT difficulty.",
+    stimulusQualityGuidance: "GOOD: Concrete word problem with named variables and a real-world scenario. AVOID: Pure symbol manipulation without real-world context, and AVOID SAT-HARD-level multi-concept problems (those exceed PSAT difficulty cap).",
+  },
+
+  // ── PSAT Reading & Writing ─────────────────────────────────────────────────
+  PSAT_READING_WRITING: {
+    name: "PSAT Reading & Writing",
+    shortName: "PSAT R&W",
+    examSecsPerQuestion: 78,
+    mockExam: { mcqCount: 54, mcqTimeMinutes: 70 },
+    enrichWithEduAPIs: true,
+    units: {
+      PSAT_RW_1_CRAFT_STRUCTURE: { name: "Craft and Structure", keyThemes: ["vocabulary in context", "text structure", "author's purpose", "point of view", "word choice impact"] },
+      PSAT_RW_2_INFO_IDEAS: { name: "Information and Ideas", keyThemes: ["central ideas", "supporting evidence", "inferences", "textual evidence", "summary"] },
+      PSAT_RW_3_STANDARD_ENGLISH: { name: "Standard English Conventions", keyThemes: ["punctuation", "sentence boundaries", "subject-verb agreement", "modifiers", "verb tense consistency"] },
+      PSAT_RW_4_EXPRESSION_IDEAS: { name: "Expression of Ideas", keyThemes: ["transitions", "logical organization", "precise language", "concision and clarity"] },
+    },
+    suggestedTutorQuestions: [
+      "How do I identify the main idea of a passage?",
+      "What grammar rules show up on the PSAT?",
+      "How do I answer vocabulary-in-context questions?",
+    ],
+    curriculumContext: "PSAT Reading & Writing tests comprehension, vocabulary, grammar, and writing — same skill domains as SAT R&W with lower difficulty cap.",
+    tutorResources: "• Khan Academy Official SAT Practice (khanacademy.org/sat)\n• College Board Bluebook",
+    examAlignmentNotes: "Each question is paired with a short passage. Same evidence-based format as SAT but capped at SAT MEDIUM difficulty.",
+    stimulusRequirement: "ALWAYS include a passage excerpt as stimulus — every PSAT Reading & Writing question requires one.",
+    stimulusDescription: "1-2 paragraph passage excerpt from literary, historical, scientific, or social science text",
+    explanationGuidance: "cite specific evidence from the passage and explain why each distractor is wrong",
+    skillCodes: ["Craft & Structure", "Information & Ideas", "Standard English Conventions", "Expression of Ideas"],
+    difficultyRubric: {
+      EASY: "Short (1-3 sentence) literary or informational excerpt with a direct vocabulary-in-context or main-idea question. Same as SAT EASY.",
+      MEDIUM: "Moderate-length excerpt (4-6 sentences) requiring inference or transition selection. Same as SAT MEDIUM.",
+      HARD: "PSAT does NOT include SAT-HARD rhetorical analysis. Hardest PSAT items map to SAT MEDIUM. Cap difficulty here.",
+    },
+    distractorTaxonomy: "(1) LITERAL RESTATEMENT TRAP; (2) OUT-OF-SCOPE INFERENCE TRAP; (3) OPPOSITE-RELATIONSHIP TRAP — same as SAT, capped to PSAT difficulty.",
+    stimulusQualityGuidance: "GOOD: 1-2 paragraph excerpt fully answerable from the passage alone. AVOID: SAT-HARD nuanced rhetoric questions; passages requiring outside knowledge.",
+  },
+
   // ── ACT Math ──────────────────────────────────────────────────────────────
   ACT_MATH: {
     name: "ACT Math",
