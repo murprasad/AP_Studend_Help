@@ -27,6 +27,8 @@
  *  judgment is the LAST layer never the first."
  */
 
+import { validateRenderHazards } from "./render-hazard-validator";
+
 export interface QuestionCandidate {
   questionText?: string;
   options?: string[] | string;
@@ -82,7 +84,20 @@ function parseOptions(options: string[] | string | undefined): string[] {
   return [];
 }
 
-/** Expected option count for a given course. */
+/**
+ * Expected option count for a given course.
+ *
+ * B4 (2026-05-17): verified against College Board official sample pages.
+ * Per https://clep.collegeboard.org/prepare-for-an-exam/practice-questions-study-guides/sample-questions-biology
+ * and -college-algebra and -college-composition: standard CLEP MCQs use
+ * "five suggested answers or completions" (A-E). Format unchanged through
+ * 2020 digital transition.
+ *
+ * Exceptions:
+ *   - DSST: 4 options (A-D)
+ *   - CLEP College Math / Spanish / French / German listening: 4 options
+ *     (mixed item types include numeric-entry and listening — not standard MCQs)
+ */
 export function expectedOptionCount(course: string | undefined): number {
   if (!course) return 5; // default to CLEP standard
   if (course.startsWith("DSST_")) return 4;
@@ -212,6 +227,14 @@ export function runDeterministicGates(q: QuestionCandidate): GateResult {
       gate: "topic-unit-mismatch",
       reason: `topic "${q.topic}" doesn't match expected keywords for unit ${q.unit}`,
     };
+  }
+
+  // 6. Render hazards — unescaped currency $ (renders as LaTeX) and
+  // phantom-stimulus references ("the figure above" with empty stimulus).
+  // B3 (2026-05-17).
+  const hazard = validateRenderHazards(q.questionText, q.stimulus);
+  if (hazard) {
+    return { ok: false, gate: "render-hazard", reason: hazard };
   }
 
   return { ok: true };
