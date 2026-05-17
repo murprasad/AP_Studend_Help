@@ -56,10 +56,16 @@ export default withAuth(
     // onboardingCompletedAt=null → bounces them back to /practice/quickstart.
     // The user lands on the loading screen and never advances.
     const isFromQuickstart = req.nextUrl.searchParams.get("quickstart") === "1";
+    // #53 (2026-05-17) — ADMIN role bypasses the student funnel entirely.
+    // Fresh-device mobile admins with no localStorage / no bridge cookie
+    // were getting bounced /dashboard → /journey on every request and the
+    // dashboard layout's own redirect kicked them back, creating a loop.
+    const isAdminUser = token?.role === "ADMIN";
     if (
       token &&
       !isOnboardingRoute &&
       !isAdminRoute &&
+      !isAdminUser &&
       !recentlyOnboarded &&
       !isFromQuickstart &&
       // onboardingCompletedAt is null for new users, ISO string for completed

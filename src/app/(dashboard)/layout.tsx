@@ -51,6 +51,10 @@ export default function DashboardLayout({
   // (still works for users who deep-link to it manually).
   useEffect(() => {
     if (status !== "authenticated") return;
+    // #53 (2026-05-17) — ADMIN role is internal staff, not a student in
+    // the funnel. On a fresh mobile device with no localStorage, an admin
+    // whose onboardingCompletedAt is null would loop /dashboard ⇄ /journey.
+    if (session?.user?.role === "ADMIN") return;
     if (pathname === "/onboarding") return;
     if (pathname.startsWith("/practice/quickstart")) return;
     // Beta 9.0.1 hotfix — exempt /practice (with or without subpath) when
@@ -123,6 +127,9 @@ export default function DashboardLayout({
   const JOURNEY_LOCAL_KEY = "journey_status_v1"; // values: "in_progress" | "done" | "exited"
   useEffect(() => {
     if (status !== "authenticated") return;
+    // #53 (2026-05-17) — same admin bypass for the journey rail. Admins
+    // never go through the student journey; they get the standard dash.
+    if (session?.user?.role === "ADMIN") return;
     // Don't redirect away from non-dashboard pages — only act on /dashboard
     if (pathname !== "/dashboard") return;
 
