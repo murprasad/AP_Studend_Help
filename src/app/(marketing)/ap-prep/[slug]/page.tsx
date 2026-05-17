@@ -6,6 +6,7 @@ import { COURSE_REGISTRY } from "@/lib/courses";
 import { ApCourse, ApUnit } from "@prisma/client";
 import { CheckCircle, ArrowRight, Clock, GraduationCap, BookOpen, Sparkles, FileText, Calculator } from "lucide-react";
 import { FadeIn } from "@/components/landing/fade-in";
+import { PassGuaranteeBadge } from "@/components/marketing/pass-guarantee-badge";
 
 // ── Slug → ApCourse mapping ───────────────────────────────────────────────
 const SLUG_MAP: Record<string, ApCourse> = {
@@ -228,6 +229,11 @@ export default function ApSubjectPage({ params }: { params: { slug: string } }) 
             Practice every unit with exam-aligned questions matched to the official College Board format. Free to start.
           </p>
         </div>
+      </FadeIn>
+
+      {/* 2026-05-17 — Pass Guarantee per course-page (research recommendation M3). */}
+      <FadeIn>
+        <PassGuaranteeBadge variant="card" examLabel="AP" />
       </FadeIn>
 
       {/* Quick facts */}
