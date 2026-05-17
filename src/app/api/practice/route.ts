@@ -370,13 +370,18 @@ export async function POST(req: NextRequest) {
       ? `Only ${freshQuestions.length} questions in the bank — you may see repeats soon.`
       : null;
 
-    // Build scoring pool: never-seen first, then recently-seen-not-mastered, then mastered
+    // F4 (2026-05-17): exclude recently-seen-in-last-24h questions from
+    // fallback UNLESS pool would otherwise be empty. Old behavior allowed
+    // them to repeat across consecutive sessions (anti-SM-2). Mirror of PL fix.
     const recentlySeenNotMastered = allQuestions.filter(
       (q) => recentlySeenIds.has(q.id) && !correctlyAnsweredIds.has(q.id)
     );
-    const pool = freshQuestions.length >= questionCount
+    const primaryPool = freshQuestions.length >= questionCount
       ? freshQuestions
-      : [...freshQuestions, ...recentlySeenNotMastered, ...seenCorrectQuestions];
+      : [...freshQuestions, ...seenCorrectQuestions];
+    const pool = primaryPool.length >= questionCount
+      ? primaryPool
+      : [...primaryPool, ...recentlySeenNotMastered];
 
     const scored = pool.map((q) => {
       let priority = Math.random();
