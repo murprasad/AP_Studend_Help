@@ -232,7 +232,7 @@ export default function DashboardLayout({
 
   return (
     <ExamModeContext.Provider value={examModeState}>
-      <div className="flex h-screen bg-background overflow-hidden">
+      <div className="flex h-[100dvh] bg-background overflow-hidden">
         {/* Exam mode top bar — slim bar with exit button, now visible on
             BOTH desktop and mobile (was hidden lg:flex; flipped 2026-04-22
             because mobile users were left with no in-app escape hatch back
@@ -283,7 +283,11 @@ export default function DashboardLayout({
           "flex-1 min-w-0 overflow-y-auto overflow-x-hidden",
           // Exam mode: 10-tall top bar now on all breakpoints.
           // Non-exam: mobile has 14-tall header, desktop has none.
-          inExamMode ? "pt-10" : "pt-14 lg:pt-0"
+          inExamMode ? "pt-10" : "pt-14 lg:pt-0",
+          // Mobile: leave room for the 14-tall bottom nav. Desktop has no
+          // bottom nav so no padding needed past lg. Includes safe-area
+          // inset for iPhone home indicator.
+          !inExamMode && !onOnboarding && "pb-[calc(3.5rem+env(safe-area-inset-bottom))] lg:pb-0"
         )}>
           <div className={cn(
             "px-4 py-4 sm:px-6 sm:py-6 mx-auto",

@@ -67,8 +67,8 @@ function DialogContent({
       <div
         className={cn(
           "fixed left-[50%] top-[50%] z-50 translate-x-[-50%] translate-y-[-50%]",
-          "w-full max-w-lg bg-card border border-border rounded-xl shadow-xl p-6",
-          "max-h-[90vh] overflow-y-auto",
+          "w-[calc(100%-1rem)] max-w-lg bg-card border border-border rounded-xl shadow-xl",
+          "p-4 sm:p-6 max-h-[calc(100dvh-2rem)] overflow-y-auto",
           className
         )}
       >
@@ -76,9 +76,9 @@ function DialogContent({
           <button
             onClick={() => setOpen(false)}
             aria-label="Close"
-            className="absolute right-4 top-4 text-muted-foreground hover:text-foreground transition-colors"
+            className="absolute right-2 top-2 p-2 min-h-[44px] min-w-[44px] inline-flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors rounded-md"
           >
-            <X className="h-4 w-4" />
+            <X className="h-5 w-5" />
           </button>
         )}
         {children}
