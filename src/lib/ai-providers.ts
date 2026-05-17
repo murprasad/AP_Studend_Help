@@ -737,6 +737,32 @@ export async function validateQuestion(
   course?: string,
   generatorModel?: string,
 ): Promise<ValidationResult> {
+  // F5 (2026-05-17): deterministic pre-LLM gates. Catches the bug class
+  // we've actually seen in production (letter-mismatch, confession phrases,
+  // option-count, duplicate options, prefix-dup) BEFORE spending an LLM call.
+  // Per feedback_validator_must_be_deterministic.md.
+  try {
+    const { runDeterministicGates } = await import("./deterministic-question-gates");
+    let parsedCand: Record<string, unknown> = {};
+    try { parsedCand = JSON.parse(questionJson); } catch {}
+    const candForGate = {
+      questionText: typeof parsedCand.questionText === "string" ? parsedCand.questionText : "",
+      options: parsedCand.options as string[] | string | undefined,
+      correctAnswer: typeof parsedCand.correctAnswer === "string" ? parsedCand.correctAnswer : "",
+      explanation: typeof parsedCand.explanation === "string" ? parsedCand.explanation : "",
+      topic: typeof parsedCand.topic === "string" ? parsedCand.topic : undefined,
+      unit: typeof parsedCand.unit === "string" ? parsedCand.unit : undefined,
+      course,
+    };
+    const gateResult = runDeterministicGates(candForGate);
+    if (!gateResult.ok) {
+      console.warn(`[validateQuestion] Deterministic gate "${gateResult.gate}" FAIL: ${gateResult.reason}`);
+      return { approved: false, reason: `${gateResult.gate}: ${gateResult.reason}` };
+    }
+  } catch (e) {
+    console.warn(`[validateQuestion] Gate runner error (falling through to LLM): ${(e as Error).message}`);
+  }
+
   const difficultySection = difficulty && difficultyRubricEntry
     ? `\n6. Difficulty calibration — The question matches the ${difficulty} difficulty standard: "${difficultyRubricEntry}"`
     : "";
