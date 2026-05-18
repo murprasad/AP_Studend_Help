@@ -114,10 +114,25 @@ export async function GET(req: NextRequest) {
       ...c,
       explanation: sanitizeFlashcardExplanation(c.explanation),
     });
+    // 2026-05-18: filter out passage-reference flashcards that lost their
+    // passage context (e.g. "The discussion in lines 21-28 primarily serves to"
+    // with no passage on the front). User-reported on ACT Reading. These
+    // were generated from passage-MCQs and don't work as flashcards.
+    const PASSAGE_REF_RE = /\blines?\s+\d+|\bthe (passage|excerpt|author|narrator)\b|\bin (the )?passage\b|\bin lines?\s/i;
+    const hasOrphanedPassageRef = (front: string): boolean => {
+      if (!front || front.length > 400) return false; // long fronts probably include the passage
+      return PASSAGE_REF_RE.test(front);
+    };
+    const dueClean = dueCards
+      .filter(c => !hasOrphanedPassageRef(c.card.front))
+      .map((c) => clean({ ...c.card, sm2: c.sm2, isNew: false }));
+    const newClean = newCards
+      .filter(c => !hasOrphanedPassageRef(c.front))
+      .map((c) => clean({ ...c, sm2: { easeFactor: 2.5, interval: 1, repetitions: 0 }, isNew: true }));
     return NextResponse.json({
       cards: [
-        ...dueCards.map((c) => clean({ ...c.card, sm2: c.sm2, isNew: false })),
-        ...newCards.map((c) => clean({ ...c, sm2: { easeFactor: 2.5, interval: 1, repetitions: 0 }, isNew: true })),
+        ...dueClean,
+        ...newClean,
       ],
       counts: {
         dueReturned: dueCards.length,
