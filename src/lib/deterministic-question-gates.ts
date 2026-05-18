@@ -54,6 +54,22 @@ const FOUR_CHOICE_COURSES = new Set([
   "CLEP_GERMAN",
 ]);
 
+/**
+ * 2026-05-17 — Hint-in-option patterns. CB style says options must be bare
+ * answer values; explanation goes in the explanation field. Caught on PL
+ * Psych courses (170+ offenders) and mirrored here. B6.
+ */
+const HINT_IN_OPTION_PATTERNS = [
+  /\([^)]{25,}\)/,
+  / — | -- /,
+  /,\s*because\s/i,
+  /,\s*which\s+is\s/i,
+  /,\s*which\s+refers\s+to\s/i,
+  /,\s*also\s+called\s/i,
+  /\bi\.e\.\,/i,
+  /\be\.g\.\,/i,
+];
+
 const CONFESSION_PHRASES = [
   "closest match",
   "miscalculation",
@@ -191,6 +207,19 @@ export function runDeterministicGates(q: QuestionCandidate): GateResult {
       return { ok: false, gate: "options-duplicate", reason: `duplicate option value: "${o.slice(0, 30)}"` };
     }
     seen.add(norm);
+  }
+  // 2d. Hint-in-option (CB style violation — B6, 2026-05-17).
+  for (const o of opts) {
+    const stripped = String(o).replace(/^[A-E]\)\s*/, "");
+    for (const re of HINT_IN_OPTION_PATTERNS) {
+      if (re.test(stripped)) {
+        return {
+          ok: false,
+          gate: "option-contains-hint",
+          reason: `option contains hint/explanation pattern (${re.source}): "${stripped.slice(0, 60)}..."`,
+        };
+      }
+    }
   }
   // 2c. correctAnswer letter must point to a valid option index
   const correctIndex = q.correctAnswer.charCodeAt(0) - 65;
