@@ -13,6 +13,7 @@ import { formatTime } from "@/lib/utils";
 import { optionLetter, cleanOptionText } from "@/lib/options";
 import { ApCourse } from "@prisma/client";
 import { getCourseTrack, getMockExamConfig } from "@/lib/courses";
+import { getExamCopy } from "@/lib/exam-copy";
 import { isPremiumForTrack, type ModuleSub } from "@/lib/tiers";
 import { QuestionContent } from "@/components/question/question-content";
 import {
@@ -110,7 +111,10 @@ export default function MockExamPage() {
   const quickInfo = useMemo(() => getMockExamConfig(course as ApCourse, "quick"), [course]);
   const selectedInfo = mode === "full" ? fullInfo : quickInfo;
   const isClep = getCourseTrack(course as ApCourse) === "clep";
-  const trackLabel = isClep ? "CLEP" : "AP";
+  // 2026-05-18: family-aware labels via exam-copy helper. trackLabel was only
+  // "AP" or "CLEP" — ACT/SAT users got AP language in the mock-exam UI.
+  const examCopy = getExamCopy(course);
+  const trackLabel = examCopy.examName; // "AP" | "SAT" | "ACT" | "CLEP" | "DSST"
 
   // Timer
   useEffect(() => {
@@ -397,15 +401,18 @@ export default function MockExamPage() {
         {/* Beta 9.0.8 — honest framing: the timed Start button runs the MCQ
             section only. SAQ/DBQ/LEQ are practiced via /frq-practice (linked
             from the Real-AP-exam card above). Multi-section simulation is
-            on the roadmap (Task #42). */}
-        <Card className="border-amber-500/30 bg-amber-500/5">
-          <CardContent className="p-4 text-sm">
-            <p className="font-medium mb-1">Heads up: the timed Start runs the MCQ section only.</p>
-            <p className="text-xs text-muted-foreground">
-              SAQ, DBQ, and LEQ practice are at <Link href={`/frq-practice?course=${course}`} className="text-blue-700 dark:text-blue-400 hover:underline">FRQ Practice</Link> with the official CB rubric. Full multi-section timed simulation (MCQ → SAQ → DBQ → LEQ) is in development.
-            </p>
-          </CardContent>
-        </Card>
+            on the roadmap (Task #42).
+            2026-05-18 — only show for AP (SAT/ACT have no FRQ). */}
+        {examCopy.hasFreeResponse && (
+          <Card className="border-amber-500/30 bg-amber-500/5">
+            <CardContent className="p-4 text-sm">
+              <p className="font-medium mb-1">Heads up: the timed Start runs the MCQ section only.</p>
+              <p className="text-xs text-muted-foreground">
+                SAQ, DBQ, and LEQ practice are at <Link href={`/frq-practice?course=${course}`} className="text-blue-700 dark:text-blue-400 hover:underline">FRQ Practice</Link> with the official CB rubric. Full multi-section timed simulation (MCQ → SAQ → DBQ → LEQ) is in development.
+              </p>
+            </CardContent>
+          </Card>
+        )}
 
         <Card className="card-glow">
           <CardHeader>
@@ -486,8 +493,10 @@ export default function MockExamPage() {
               </div>
               <div className="p-4 rounded-lg bg-secondary/50 text-center">
                 <p className="text-sm text-muted-foreground mb-1">Result</p>
-                <p className="text-2xl font-bold text-yellow-700 dark:text-yellow-400">{isClep ? "Pass/Fail" : "1–5"}</p>
-                <p className="text-xs text-muted-foreground">{isClep ? "CLEP Score" : "AP Score"}</p>
+                <p className="text-2xl font-bold text-yellow-700 dark:text-yellow-400">
+                  {isClep ? "Pass/Fail" : `${examCopy.scoreScale.min}–${examCopy.scoreScale.max}`}
+                </p>
+                <p className="text-xs text-muted-foreground">{examCopy.scoreLabel}</p>
               </div>
             </div>
 
@@ -539,11 +548,13 @@ export default function MockExamPage() {
 
         <Card className="card-glow">
           <CardContent className="p-6 text-center">
-            <p className="text-sm text-muted-foreground mb-2">Estimated {trackLabel} Score</p>
+            <p className="text-sm text-muted-foreground mb-2">Estimated {examCopy.scoreLabel}</p>
             <p className={`text-8xl font-bold ${scoreColors[result.apScoreEstimate] || "text-foreground"}`}>
               {result.apScoreEstimate}
             </p>
-            <p className="text-muted-foreground mt-2 mb-6">{isClep ? "out of 80 (pass: 50+)" : "out of 5"}</p>
+            <p className="text-muted-foreground mt-2 mb-6">
+              {isClep ? "out of 80 (pass: 50+)" : `out of ${examCopy.scoreScale.max}`}
+            </p>
             <p className="text-base font-medium">
               {scoreMessages[result.apScoreEstimate] || "Keep practicing!"}
             </p>
@@ -603,7 +614,7 @@ export default function MockExamPage() {
             <CardContent className="p-6 text-center space-y-4">
               <p className="text-xs uppercase tracking-wider text-muted-foreground">Halfway preview</p>
               <div>
-                <p className="text-[11px] text-muted-foreground mb-1">Projected AP Score</p>
+                <p className="text-[11px] text-muted-foreground mb-1">Projected {examCopy.scoreLabel}</p>
                 <p className={`text-7xl font-bold leading-none ${passing ? "text-blue-500" : "text-red-500"}`}>
                   {projected}
                 </p>

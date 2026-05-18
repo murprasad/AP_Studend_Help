@@ -18,6 +18,7 @@ import {
 } from "recharts";
 import { getMasteryLabel, getMasteryColor, getMasteryBg, formatTime, AP_COURSES } from "@/lib/utils";
 import { useCourse } from "@/hooks/use-course";
+import { getExamCopy } from "@/lib/exam-copy";
 import {
   BarChart3,
   Target,
@@ -529,8 +530,10 @@ export default function AnalyticsPage() {
         </Card>
       )}
 
-      {/* Estimated AP Score (mock-exam-derived — shown once user has a real mock result) */}
-      {stats?.estimatedApScore && (
+      {/* Estimated score (mock-exam-derived — shown once user has a real mock result).
+          2026-05-18 — only show for AP. For SAT/ACT the 1-5 mock estimate is meaningless;
+          the SAT/ACT estimation pipeline (proper 200-1600 / 1-36 scale) is on the roadmap. */}
+      {stats?.estimatedApScore && getExamCopy(course).family === "AP" && (
         <Card className="card-glow border-blue-500/30 bg-blue-500/5">
           <CardContent className="p-5 flex items-center gap-6">
             <div className="w-16 h-16 rounded-full bg-blue-500/20 flex items-center justify-center flex-shrink-0">

@@ -317,6 +317,11 @@ export function computeNextStep(inputs: NextStepInputs): NextStep {
   const responseInCourse = signal.responseCountInCourse;
   const hasFrqInCourse = signal.hasFrqAttemptInCourse;
   const hasDiagInCourse = signal.hasDiagnosticInCourse;
+  // 2026-05-18 — SAT/ACT exams are MCQ-only; never recommend FRQ for them.
+  // Treat hasFrqInCourse as effectively true for SAT/ACT so the engine skips
+  // the first_frq / mcq_fresh states and falls through to diagnostic/weakest/keep-going.
+  const courseHasFrq = !course.startsWith("SAT_") && !course.startsWith("ACT_");
+  const effectiveHasFrqInCourse = courseHasFrq ? hasFrqInCourse : true;
 
   if (responseInCourse === 0) {
     return {
@@ -335,7 +340,7 @@ export function computeNextStep(inputs: NextStepInputs): NextStep {
     };
   }
 
-  if (responseInCourse > 0 && responseInCourse < 5 && !hasFrqInCourse) {
+  if (responseInCourse > 0 && responseInCourse < 5 && !effectiveHasFrqInCourse) {
     return {
       kind: "mcq_fresh",
       eyebrow: "Keep going",
@@ -352,7 +357,7 @@ export function computeNextStep(inputs: NextStepInputs): NextStep {
     };
   }
 
-  if (!hasFrqInCourse) {
+  if (!effectiveHasFrqInCourse) {
     return {
       kind: "first_frq",
       eyebrow: "Next: try a real FRQ",

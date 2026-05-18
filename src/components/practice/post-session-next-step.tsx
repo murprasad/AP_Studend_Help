@@ -105,13 +105,17 @@ export function PostSessionNextStep({ course, source }: Props) {
         const hasFrqHere = sig.hasFrqAttemptInCourse ?? sig.hasFrqAttempt;
         const hasDiagHere = sig.hasDiagnosticInCourse ?? sig.hasDiagnostic;
 
+        // 2026-05-18 — SAT/ACT have no FRQ component; skip try-frq state
+        // entirely for those tracks. CLEP/DSST aren't on this product.
+        const courseHasFrq = !course.startsWith("SAT_") && !course.startsWith("ACT_");
+
         if (
           typeof sig.answeredToday === "number" &&
           typeof sig.capLimit === "number" &&
           sig.answeredToday >= sig.capLimit
         ) {
           setState({ kind: "capped" });
-        } else if (!hasFrqHere) {
+        } else if (courseHasFrq && !hasFrqHere) {
           setState({ kind: "try-frq" });
         } else if (!hasDiagHere) {
           setState({ kind: "take-diagnostic" });

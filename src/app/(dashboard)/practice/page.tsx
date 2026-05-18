@@ -1291,7 +1291,12 @@ export default function PracticePage() {
                       {feedback.isCorrect ? (() => {
                         // Beta 8.10 v2 — competence reinforcement on every
                         // correct answer. Tone shifts up by streak count.
-                        let streak = 1;
+                        // 2026-05-18: bug fix — `results` already contains the
+                        // current answer at render time (setResults runs in the
+                        // same batch as setFeedback), so initial streak must be
+                        // 0 not 1; the loop counts the current answer. Was
+                        // showing "2 in a row" on first correct.
+                        let streak = 0;
                         for (let i = results.length - 1; i >= 0; i--) {
                           if (results[i].correct) streak++;
                           else break;
@@ -1299,7 +1304,7 @@ export default function PracticePage() {
                         if (streak >= 4) return `Correct! On fire — ${streak} in a row`;
                         if (streak === 3) return "Correct! 3 in a row — on a roll";
                         if (streak === 2) return "Correct! Nice — 2 in a row";
-                        if (results.length === 0) return "Correct! Strong start";
+                        if (results.length <= 1) return "Correct! Strong start";
                         return "Correct!";
                       })()
                         : selectedAnswer === "__IDK__"
