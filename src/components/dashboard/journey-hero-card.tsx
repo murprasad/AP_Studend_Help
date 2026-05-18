@@ -27,6 +27,7 @@ import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Sparkles, ArrowRight, Target, ScrollText, TrendingUp, Zap, Lock } from "lucide-react";
+import { getExamCopy } from "@/lib/exam-copy";
 import { FREE_LIMITS } from "@/lib/tier-limits";
 import { JourneyHeroCardEngine } from "./journey-hero-card-engine";
 
@@ -443,10 +444,15 @@ export function JourneyHeroCard({ course }: Props) {
                 You&apos;ve unlocked your score
               </p>
               <p className="text-base font-semibold leading-snug">
-                Want your projected AP score?
+                Want your {getExamCopy(course).projectedScoreLabel}?
               </p>
               <p className="text-xs text-muted-foreground">
-                10 minutes, then you&apos;ll see exactly where you stand on a 1–5 scale and which units to fix first.
+                10 minutes, then you&apos;ll see exactly where you stand on {(() => {
+                  const ec = getExamCopy(course);
+                  return ec.family === "AP"
+                    ? "a 1–5 scale"
+                    : `the ${ec.scoreScale.min}–${ec.scoreScale.max} ${ec.scoreLabel} scale`;
+                })()} and which {getExamCopy(course).unitTerm} to fix first.
               </p>
               <Link href={`/diagnostic?course=${course}&src=journey_hero`}>
                 <Button size="sm" className="rounded-full mt-1 gap-2 bg-amber-600 hover:bg-amber-700 text-white">

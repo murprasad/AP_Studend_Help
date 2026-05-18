@@ -29,6 +29,7 @@
  */
 
 import { FREE_LIMITS } from "@/lib/tier-limits";
+import { getExamCopy } from "@/lib/exam-copy";
 
 export type NextStepKind =
   // Routing fallbacks (middleware should normally pre-empt these)
@@ -375,11 +376,18 @@ export function computeNextStep(inputs: NextStepInputs): NextStep {
   }
 
   if (!hasDiagInCourse) {
+    // 2026-05-18 — family-aware copy: SAT/ACT users see "projected SAT/ACT
+    // score" and the right score scale instead of hardcoded "AP 1–5".
+    const ec = getExamCopy(course);
+    const scaleDesc = ec.family === "AP"
+      ? "a 1–5 scale"
+      : `the ${ec.scoreScale.min}–${ec.scoreScale.max} ${ec.scoreLabel} scale`;
+    const unitWord = ec.unitTerm === "units" ? "units" : ec.unitTerm;
     return {
       kind: "first_diagnostic",
       eyebrow: "You've unlocked your score",
-      headline: "Want your projected AP score?",
-      body: "10 minutes, then you'll see exactly where you stand on a 1–5 scale and which units to fix first.",
+      headline: `Want your ${ec.projectedScoreLabel}?`,
+      body: `10 minutes, then you'll see exactly where you stand on ${scaleDesc} and which ${unitWord} to fix first.`,
       primaryCta: {
         label: "Take 10-min Diagnostic",
         href: `/diagnostic?course=${course}&src=next_step_engine`,

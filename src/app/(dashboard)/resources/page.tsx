@@ -12,6 +12,7 @@ import {
 import { COURSE_REGISTRY } from "@/lib/courses";
 import { useCourse } from "@/hooks/use-course";
 import { AP_COURSES } from "@/lib/utils";
+import { getExamCopy } from "@/lib/exam-copy";
 import { CourseSelectorInline } from "@/components/layout/course-selector-inline";
 import { ApCourse, ApUnit } from "@prisma/client";
 import {
@@ -83,7 +84,7 @@ export default function ResourcesPage() {
       <div>
         <h1 className="text-3xl font-bold">Study Resources</h1>
         <p className="text-muted-foreground mt-1">
-          Curated {AP_COURSES[course]} resources from the best educational platforms
+          Curated {AP_COURSES[course] || COURSE_REGISTRY[course]?.shortName || COURSE_REGISTRY[course]?.name} resources from the best educational platforms
         </p>
       </div>
 
@@ -490,8 +491,69 @@ export default function ResourcesPage() {
                 ))}
               </div>
             </>
+          ) : getExamCopy(course).family === "SAT" || course.startsWith("PSAT_") ? (
+            <>
+              {/* SAT/PSAT video resources */}
+              <div className="grid md:grid-cols-2 gap-4 mb-4">
+                <a href="https://www.khanacademy.org/test-prep/sat" target="_blank" rel="noopener noreferrer">
+                  <Card className="card-glow border-green-500/20 hover:border-green-500/40 transition-colors cursor-pointer">
+                    <CardContent className="p-4 flex items-center gap-4">
+                      <Play className="h-10 w-10 text-green-400" />
+                      <div>
+                        <p className="font-bold">Khan Academy SAT</p>
+                        <p className="text-xs text-muted-foreground">Official Khan/College Board partnership — full SAT prep, free</p>
+                      </div>
+                      <ExternalLink className="h-4 w-4 text-muted-foreground ml-auto" />
+                    </CardContent>
+                  </Card>
+                </a>
+                <a href="https://satsuite.collegeboard.org/digital/digital-practice-preparation/practice-tests/bluebook" target="_blank" rel="noopener noreferrer">
+                  <Card className="card-glow border-blue-500/20 hover:border-blue-500/40 transition-colors cursor-pointer">
+                    <CardContent className="p-4 flex items-center gap-4">
+                      <Youtube className="h-10 w-10 text-blue-700 dark:text-blue-400" />
+                      <div>
+                        <p className="font-bold">Bluebook (Official)</p>
+                        <p className="text-xs text-muted-foreground">College Board&apos;s official digital SAT practice app</p>
+                      </div>
+                      <ExternalLink className="h-4 w-4 text-muted-foreground ml-auto" />
+                    </CardContent>
+                  </Card>
+                </a>
+              </div>
+            </>
+          ) : getExamCopy(course).family === "ACT" ? (
+            <>
+              {/* ACT video resources */}
+              <div className="grid md:grid-cols-2 gap-4 mb-4">
+                <a href="https://www.act.org/content/act/en/products-and-services/the-act/test-preparation.html" target="_blank" rel="noopener noreferrer">
+                  <Card className="card-glow border-red-500/20 hover:border-red-500/40 transition-colors cursor-pointer">
+                    <CardContent className="p-4 flex items-center gap-4">
+                      <Youtube className="h-10 w-10 text-red-700 dark:text-red-400" />
+                      <div>
+                        <p className="font-bold">Official ACT Prep</p>
+                        <p className="text-xs text-muted-foreground">Free practice tests + ACT Online Prep from the test maker</p>
+                      </div>
+                      <ExternalLink className="h-4 w-4 text-muted-foreground ml-auto" />
+                    </CardContent>
+                  </Card>
+                </a>
+                <a href="https://www.khanacademy.org/test-prep" target="_blank" rel="noopener noreferrer">
+                  <Card className="card-glow border-green-500/20 hover:border-green-500/40 transition-colors cursor-pointer">
+                    <CardContent className="p-4 flex items-center gap-4">
+                      <Play className="h-10 w-10 text-green-400" />
+                      <div>
+                        <p className="font-bold">Khan Academy Test Prep</p>
+                        <p className="text-xs text-muted-foreground">Free general math/reading review applicable to ACT</p>
+                      </div>
+                      <ExternalLink className="h-4 w-4 text-muted-foreground ml-auto" />
+                    </CardContent>
+                  </Card>
+                </a>
+              </div>
+            </>
           ) : (
             <>
+              {/* AP video resources */}
               <div className="grid md:grid-cols-2 gap-4 mb-4">
                 <a href="https://www.youtube.com/@heimlershistory" target="_blank" rel="noopener noreferrer">
                   <Card className="card-glow border-red-500/20 hover:border-red-500/40 transition-colors cursor-pointer">

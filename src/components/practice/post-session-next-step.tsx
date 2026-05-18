@@ -32,6 +32,7 @@ import {
   ScrollText, Telescope, Target, Trophy, ArrowRight, Crown, Zap,
 } from "lucide-react";
 import { JourneyHeroCardEngine } from "@/components/dashboard/journey-hero-card-engine";
+import { getExamCopy } from "@/lib/exam-copy";
 
 interface Props {
   course: string;
@@ -173,13 +174,14 @@ export function PostSessionNextStep({ course, source }: Props) {
 
   // ── Take diagnostic ────────────────────────────────────────────────────────
   if (state.kind === "take-diagnostic") {
+    const ec = getExamCopy(course);
     return (
       <Hero
         accent="indigo"
         icon={<Telescope className="h-5 w-5 text-indigo-700 dark:text-indigo-400" />}
         eyebrow="Your next step"
         title="Take the 10-min Diagnostic"
-        subtitle="Get your projected AP score + your weakest unit so every session counts."
+        subtitle={`Get your ${ec.projectedScoreLabel} + your weakest ${ec.unitTerm === "units" ? "unit" : ec.unitTerm.replace(/s$/, "")} so every session counts.`}
         href={`/diagnostic?course=${course}&src=${source}_diag_unlock`}
         cta="Start 10-min Diagnostic"
       />
@@ -203,13 +205,14 @@ export function PostSessionNextStep({ course, source }: Props) {
 
   // ── Mock exam ──────────────────────────────────────────────────────────────
   if (state.kind === "mock-exam") {
+    const ec = getExamCopy(course);
     return (
       <Hero
         accent="purple"
         icon={<Trophy className="h-5 w-5 text-purple-700 dark:text-purple-400" />}
         eyebrow="Your next step"
         title="Take a Mock Exam — full readiness check"
-        subtitle="Real AP exam structure, scored against the official rubric. No surprises on test day."
+        subtitle={`Real ${ec.examName} exam structure${ec.hasFreeResponse ? ", scored against the official rubric" : " and pacing"}. No surprises on test day.`}
         href={`/mock-exam?course=${course}&src=${source}_mock_invite`}
         cta="Start Mock Exam"
       />
