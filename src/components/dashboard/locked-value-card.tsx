@@ -25,6 +25,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Lock, Check, Loader2, ArrowRight } from "lucide-react";
 import Link from "next/link";
+import { useCourse } from "@/hooks/use-course";
+import { getExamCopy } from "@/lib/exam-copy";
 
 interface LimitsResponse {
   tier: "FREE" | "PREMIUM";
@@ -37,6 +39,8 @@ interface LimitsResponse {
 }
 
 export function LockedValueCard() {
+  const [course] = useCourse();
+  const examHasFrq = getExamCopy(course).hasFreeResponse;
   const [data, setData] = useState<LimitsResponse | null>(null);
   const [open, setOpen] = useState(false);
   const [email, setEmail] = useState("");
@@ -133,10 +137,13 @@ export function LockedValueCard() {
               {data.usage && ` — simulate test day, not just Q1–${data.usage.mockExam.previewQuestions}`}
             </span>
           </li>
-          <li className="flex gap-2">
-            <Lock className="h-3.5 w-3.5 text-muted-foreground/70 mt-0.5 shrink-0" />
-            <span><span className="font-medium text-foreground">FRQ practice</span> — colleges grade written answers</span>
-          </li>
+          {/* 2026-05-18: FRQ feature only applies to AP exams. SAT/ACT students don't need it. */}
+          {examHasFrq && (
+            <li className="flex gap-2">
+              <Lock className="h-3.5 w-3.5 text-muted-foreground/70 mt-0.5 shrink-0" />
+              <span><span className="font-medium text-foreground">FRQ practice</span> — colleges grade written answers</span>
+            </li>
+          )}
           <li className="flex gap-2">
             <Lock className="h-3.5 w-3.5 text-muted-foreground/70 mt-0.5 shrink-0" />
             <span><span className="font-medium text-foreground">Full analytics</span> — see exactly what to fix, not just where you&apos;re weak</span>

@@ -12,6 +12,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Loader2, ArrowRight, Sparkles } from "lucide-react";
 import { FrqPracticeCard } from "@/components/practice/frq-practice-card";
+import { getExamCopy } from "@/lib/exam-copy";
 
 interface FrqRow {
   id: string;
@@ -39,8 +40,16 @@ export function Step2Frq({ course, prefetchedFrq, onComplete }: Props) {
   const [error, setError] = useState<string | null>(null);
   const [revealed, setRevealed] = useState(false);
 
+  // 2026-05-18: SAT/ACT have no FRQ — auto-skip this step. The parent journey
+  // will move straight to Step 3 (diagnostic) for non-FRQ exam families.
+  const examHasFrq = getExamCopy(course).hasFreeResponse;
+  useEffect(() => {
+    if (!examHasFrq) onComplete("");
+  }, [examHasFrq, onComplete]);
+
   useEffect(() => {
     if (frq) return;
+    if (!examHasFrq) return; // skip API call for non-FRQ exams
     let cancelled = false;
     fetch(`/api/frq?course=${course}&limit=1`, { cache: "no-store" })
       .then((r) => r.json())
@@ -61,7 +70,10 @@ export function Step2Frq({ course, prefetchedFrq, onComplete }: Props) {
         }
       });
     return () => { cancelled = true; };
-  }, [course, frq]);
+  }, [course, frq, examHasFrq]);
+
+  // For non-FRQ exams, render nothing — the auto-skip useEffect calls onComplete("").
+  if (!examHasFrq) return null;
 
   if (loading) {
     return (

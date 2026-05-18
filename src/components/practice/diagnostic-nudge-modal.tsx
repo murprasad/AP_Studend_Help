@@ -22,6 +22,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Sparkles, TrendingUp } from "lucide-react";
+import { getExamCopy } from "@/lib/exam-copy";
 
 const STORAGE_KEY = "diagnostic_nudge_last_shown";
 const THRESHOLDS = [5, 10] as const;
@@ -111,12 +112,19 @@ export function DiagnosticNudgeModal({ course }: Props) {
             </div>
           </div>
           <DialogTitle className="text-center text-xl">
-            Want to see your predicted AP score?
+            Want to see your {getExamCopy(course).projectedScoreLabel}?
           </DialogTitle>
           <DialogDescription className="text-center pt-1">
-            You've answered <strong>{responseCount} question{responseCount === 1 ? "" : "s"}</strong>.
-            A 10-minute diagnostic reveals your current score range and
-            the units closing the gap between you and a <strong>3+</strong>.
+            {(() => {
+              const ec = getExamCopy(course);
+              return (
+                <>
+                  You&apos;ve answered <strong>{responseCount} question{responseCount === 1 ? "" : "s"}</strong>.
+                  A 10-minute diagnostic reveals your current score range and
+                  {ec.family === "AP" ? <> the units closing the gap between you and a <strong>3+</strong>.</> : <> {ec.gapPhrase}.</>}
+                </>
+              );
+            })()}
           </DialogDescription>
         </DialogHeader>
 

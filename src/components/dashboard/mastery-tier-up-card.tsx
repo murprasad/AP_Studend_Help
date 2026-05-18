@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Trophy, TrendingUp, Sparkles } from "lucide-react";
 import { useCourse } from "@/hooks/use-course";
+import { getExamCopy } from "@/lib/exam-copy";
 
 interface TierUp {
   id: string;
@@ -141,7 +142,7 @@ export function MasteryTierUpCard() {
               <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                 <TrendingUp className="h-3.5 w-3.5 text-emerald-700 dark:text-emerald-400" />
                 <span>
-                  +{tierUp.projectedScoreDelta.toFixed(1)} AP score projected from this unit
+                  +{tierUp.projectedScoreDelta.toFixed(1)} {getExamCopy(course).scoreLabel} projected from this unit
                   {tierUp.projectedPassPercentDelta > 0 &&
                     ` · +${tierUp.projectedPassPercentDelta.toFixed(1)} pp pass% over next 24h pace`}
                 </span>

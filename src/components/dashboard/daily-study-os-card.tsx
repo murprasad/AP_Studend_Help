@@ -31,6 +31,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, ArrowRight, Sparkles, CheckCircle2, Circle } from "lucide-react";
 import { fetchCached } from "@/lib/dashboard-cache";
+import { getExamCopy } from "@/lib/exam-copy";
 
 interface Props {
   course: string;
@@ -154,7 +155,8 @@ export function DailyStudyOSCard({ course }: Props) {
       done: false,
     });
   }
-  if (hasFrqs && recentAccuracy >= 60) {
+  // 2026-05-18: FRQ task only applies to AP exams (SAT/ACT have no FRQ).
+  if (getExamCopy(course).hasFreeResponse && hasFrqs && recentAccuracy >= 60) {
     items.push({
       label: "Write 1 FRQ",
       detail: "Official CB prompt with rubric",

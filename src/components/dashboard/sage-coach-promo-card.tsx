@@ -27,6 +27,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Mic, Lock, ArrowRight, Sparkles } from "lucide-react";
 import { fetchCached } from "@/lib/dashboard-cache";
+import { getExamCopy } from "@/lib/exam-copy";
 
 interface Props {
   course: string;
@@ -69,6 +70,9 @@ export function SageCoachPromoCard({ course }: Props) {
 
   // Don't render until we know the basics. Avoids a flash-of-card when
   // it shouldn't be there.
+  // 2026-05-18: SAT/ACT have no FRQ — never show this card (the FRQ-grader
+  // pitch doesn't apply). Defense-in-depth on top of the hasFrqs API probe.
+  if (!getExamCopy(course).hasFreeResponse) return null;
   if (hasFrqs === null || isPremium === null) return null;
   if (!hasFrqs) return null;
 

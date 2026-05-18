@@ -18,6 +18,7 @@ import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ScrollText, ArrowRight, ShieldCheck, Lock } from "lucide-react";
+import { getExamCopy } from "@/lib/exam-copy";
 
 interface Props {
   course: string;
@@ -57,6 +58,8 @@ export function FrqTasteNudge({ course }: Props) {
     return () => { cancelled = true; };
   }, [course]);
 
+  // 2026-05-18: SAT/ACT have no FRQ — never show this nudge.
+  if (!getExamCopy(course).hasFreeResponse) return null;
   if (state.kind === "loading" || state.kind === "hidden") return null;
 
   if (state.kind === "free-locked") {

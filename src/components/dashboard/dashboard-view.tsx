@@ -27,6 +27,7 @@ import { useEffect, useRef, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useCourse } from "@/hooks/use-course";
+import { getExamCopy } from "@/lib/exam-copy";
 import { MasteryTierUpCard } from "@/components/dashboard/mastery-tier-up-card";
 import { ResumeCard } from "@/components/dashboard/resume-card";
 import { PrimaryActionStrip } from "@/components/dashboard/primary-action-strip";
@@ -190,7 +191,7 @@ function DashboardBody({ course, impressionId }: { course: string; impressionId:
           (≥80% study plan + ≥3 mocks @≥75 + paid subscription). Tap routes
           to the claim flow (Batch 3). */}
       {passGuaranteeEligible && (
-        <PassGuaranteeBadge variant="banner" examLabel="AP" />
+        <PassGuaranteeBadge variant="banner" examLabel={getExamCopy(course).examName} />
       )}
 
       {/* Beta 9.1.2 — personalized greeting + plan badge. */}

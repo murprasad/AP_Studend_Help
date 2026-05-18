@@ -26,6 +26,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowRight, Clock, Loader2, TrendingUp } from "lucide-react";
 import { fetchCachedWithStatus } from "@/lib/dashboard-cache";
+import { getExamCopy } from "@/lib/exam-copy";
 
 interface Props {
   course: string;
@@ -261,7 +262,7 @@ export function PrimaryActionStrip({ course, impressionId }: Props) {
     // The unit-focused practice is surfaced separately by WeaknessFocusCard.
     title = "See Your Predicted Score";
     buttonLabel = "SEE MY SCORE →";
-    subtitle = weakestUnit ? weakestUnit.unitName : "Your predicted AP score";
+    subtitle = weakestUnit ? weakestUnit.unitName : `Your ${getExamCopy(course).projectedScoreLabel}`;
     detail = weakestUnit
       ? `Biggest gap: ${weakestUnit.missRatePct}% miss rate. See score, then fix it.`
       : "Based on what you've answered so far";

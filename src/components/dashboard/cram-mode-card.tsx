@@ -32,6 +32,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Flame, Calendar, ArrowRight, Target, PenLine, Mic } from "lucide-react";
 import { fetchCached } from "@/lib/dashboard-cache";
+import { getExamCopy } from "@/lib/exam-copy";
 
 interface Props {
   course: string;
@@ -184,7 +185,8 @@ export function CramModeCard({ course }: Props) {
             </Link>
           )}
 
-          {hasFrqs && (
+          {/* 2026-05-18: FRQ task only for AP exams (SAT/ACT have no FRQ). */}
+          {getExamCopy(course).hasFreeResponse && hasFrqs && (
             <Link
               href={`/frq-practice?course=${course}`}
               className="flex items-center justify-between p-2.5 rounded-lg bg-secondary/40 hover:bg-accent transition-colors group"

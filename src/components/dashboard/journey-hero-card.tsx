@@ -156,11 +156,17 @@ export function JourneyHeroCard({ course }: Props) {
       }
 
       // FREE: onboarding journey states (per-course)
+      // 2026-05-18: SAT/ACT have no FRQ — treat hasFrqForJourney as true so
+      // those state transitions are skipped (mcq-fresh → mcq-done-pre-frq).
+      // The journey jumps straight to diagnostic/weakest-unit for non-FRQ exams.
+      const examFamilyHasFrq = getExamCopy(course).hasFreeResponse;
+      const effectiveHasFrq = examFamilyHasFrq ? hasFrqForJourney : true;
+
       if (responseCountForJourney === 0) {
         setState({ kind: "brand-new" });
-      } else if (responseCountForJourney > 0 && responseCountForJourney < 5 && !hasFrqForJourney) {
+      } else if (responseCountForJourney > 0 && responseCountForJourney < 5 && !effectiveHasFrq) {
         setState({ kind: "mcq-fresh", count: responseCountForJourney });
-      } else if (!hasFrqForJourney) {
+      } else if (!effectiveHasFrq) {
         setState({ kind: "mcq-done-pre-frq" });
       } else if (!hasDiagForJourney) {
         setState({ kind: "frq-done-pre-diag" });
