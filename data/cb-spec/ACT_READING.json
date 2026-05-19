@@ -1,0 +1,49 @@
+{
+  "course": "ACT_READING",
+  "source": {
+    "pdf": "data/raw/act/Preparing-for-the-ACT.pdf",
+    "url": "https://www.act.org/the-act/testprep",
+    "version": "QU00002.CJ22893 (2025-2026)",
+    "accessed_date": "2026-05-19"
+  },
+  "exam": {
+    "num_questions": 36,
+    "num_questions_scored": 27,
+    "time_minutes": 40,
+    "time_per_q_seconds": 67,
+    "num_options": 4,
+    "calculator_allowed": false,
+    "audio_required": false,
+    "native_language_stems": false,
+    "distinctive_formats": ["linked_stimulus", "passage_with_visual"],
+    "vocabulary_cues": [
+      "According to the passage",
+      "As it is used in line X, the word Y most nearly means",
+      "The passage as a whole can best be described as",
+      "It can reasonably be inferred from the passage"
+    ],
+    "off_scope_keywords": []
+  },
+  "topic_weights": {
+    "KEY_IDEAS_DETAILS": 0.48,
+    "CRAFT_STRUCTURE": 0.295,
+    "INTEGRATION_KNOWLEDGE_IDEAS": 0.225
+  },
+  "unit_to_topic_weight_key": {
+    "ACT_READ_1_KEY_IDEAS": "KEY_IDEAS_DETAILS",
+    "ACT_READ_2_CRAFT_STRUCTURE": "CRAFT_STRUCTURE",
+    "ACT_READ_3_INTEGRATION": "INTEGRATION_KNOWLEDGE_IDEAS"
+  },
+  "topic_areas": {
+    "KEY_IDEAS_DETAILS": ["determine central ideas and themes", "summarize information accurately", "logical inferences and conclusions", "sequential, comparative, cause-effect relationships"],
+    "CRAFT_STRUCTURE": ["determine word and phrase meanings", "analyze author's word choice rhetorically", "analyze text structure", "author's purpose and perspective", "characters' points of view", "differentiate perspectives and sources"],
+    "INTEGRATION_KNOWLEDGE_IDEAS": ["authors' claims", "facts vs opinions", "make connections between different texts", "analyze how authors construct arguments", "evaluate reasoning and evidence"]
+  },
+  "passage_types": ["Literary Narrative", "Informational (single)", "Informational (paired Passage A + Passage B)", "Passage accompanied by graph/figure/table"],
+  "sample_stems": [
+    "The point of view from which the passage is told is best described as that of a:",
+    "The passage as a whole can best be described as an exploration of the:",
+    "As it is used in line 80, the word abandon most nearly means: F. uninhibitedness G. relinquishment H. retreat J. denial",
+    "Compared to Passage A, Passage B focuses more on:"
+  ]
+}

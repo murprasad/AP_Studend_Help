@@ -1,0 +1,49 @@
+{
+  "course": "ACT_ENGLISH",
+  "source": {
+    "pdf": "data/raw/act/Preparing-for-the-ACT.pdf",
+    "url": "https://www.act.org/the-act/testprep",
+    "version": "QU00002.CJ22893 (2025-2026)",
+    "accessed_date": "2026-05-19",
+    "format_note": "ACT redesigned 2025-2026: all sections now 4-option A-D/F-J (was 4-opt for E/R/S + 5-opt for Math previously)"
+  },
+  "exam": {
+    "num_questions": 50,
+    "num_questions_scored": 40,
+    "time_minutes": 35,
+    "time_per_q_seconds": 42,
+    "num_options": 4,
+    "calculator_allowed": false,
+    "audio_required": false,
+    "native_language_stems": false,
+    "distinctive_formats": ["linked_stimulus", "no_change_option"],
+    "vocabulary_cues": [
+      "No Change",
+      "Which choice makes the sentence most grammatically acceptable",
+      "Which choice most effectively maintains the essay's tone",
+      "Which choice is least redundant in context"
+    ],
+    "off_scope_keywords": []
+  },
+  "topic_weights": {
+    "PRODUCTION_OF_WRITING": 0.405,
+    "KNOWLEDGE_OF_LANGUAGE": 0.205,
+    "CONVENTIONS_OF_STANDARD_ENGLISH": 0.405
+  },
+  "unit_to_topic_weight_key": {
+    "ACT_ENG_1_PRODUCTION": "PRODUCTION_OF_WRITING",
+    "ACT_ENG_2_KNOWLEDGE": "KNOWLEDGE_OF_LANGUAGE",
+    "ACT_ENG_3_CONVENTIONS": "CONVENTIONS_OF_STANDARD_ENGLISH"
+  },
+  "topic_areas": {
+    "PRODUCTION_OF_WRITING": ["topic development", "purposes of parts of texts", "relevance of material", "organization, unity, cohesion", "logical organization", "effective introduction and conclusion"],
+    "KNOWLEDGE_OF_LANGUAGE": ["precise word choice", "concise word choice", "consistency in style and tone", "audience awareness"],
+    "CONVENTIONS_OF_STANDARD_ENGLISH": ["sentence structure and formation", "punctuation", "usage", "syntax (parallelism, coordination, subordination)", "sentence boundaries (comma splice, run-ons, fragments)", "concord/agreement (pronoun reference, case shift, subject-verb, verb tense)", "diction, modifiers, idiom", "active/passive voice", "logical comparison", "logical agreement"]
+  },
+  "sample_stems": [
+    "Which choice makes the sentence most grammatically acceptable? A. No Change B. Years ago, C. When D. Delete the underlined portion.",
+    "Which choice most effectively maintains the essay's tone?",
+    "Given that all the choices are accurate, which one provides the best transition from the preceding paragraph to this paragraph?",
+    "Which choice is least redundant in context?"
+  ]
+}

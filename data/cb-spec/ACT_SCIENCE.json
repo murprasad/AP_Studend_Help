@@ -1,0 +1,56 @@
+{
+  "course": "ACT_SCIENCE",
+  "source": {
+    "pdf": "data/raw/act/Preparing-for-the-ACT.pdf",
+    "url": "https://www.act.org/the-act/testprep",
+    "version": "QU00002.CJ22893 (2025-2026)",
+    "accessed_date": "2026-05-19",
+    "format_note": "Science is OPTIONAL in 2025-2026 redesign. Schools may require it. All MCQs are 4-option."
+  },
+  "exam": {
+    "num_questions": 40,
+    "num_questions_scored": 34,
+    "time_minutes": 40,
+    "time_per_q_seconds": 60,
+    "num_options": 4,
+    "calculator_allowed": false,
+    "audio_required": false,
+    "native_language_stems": false,
+    "distinctive_formats": ["linked_stimulus_with_data", "research_summaries", "conflicting_viewpoints"],
+    "vocabulary_cues": [
+      "Based on Table X",
+      "Based on Figure X",
+      "Which of the following observations",
+      "A student claimed that ...",
+      "Which of Students 1 and 4, if either, implied"
+    ],
+    "off_scope_keywords": []
+  },
+  "topic_weights": {
+    "INTERPRETATION_OF_DATA": 0.44,
+    "SCIENTIFIC_INVESTIGATION": 0.25,
+    "EVALUATION_OF_MODELS_INFERENCES_RESULTS": 0.31
+  },
+  "passage_format_weights": {
+    "DATA_REPRESENTATION": 0.29,
+    "RESEARCH_SUMMARIES": 0.53,
+    "CONFLICTING_VIEWPOINTS": 0.195
+  },
+  "unit_to_topic_weight_key": {
+    "ACT_SCI_1_DATA_INTERPRETATION": "INTERPRETATION_OF_DATA",
+    "ACT_SCI_2_SCIENTIFIC_INVESTIGATION": "SCIENTIFIC_INVESTIGATION",
+    "ACT_SCI_3_EVALUATION": "EVALUATION_OF_MODELS_INFERENCES_RESULTS"
+  },
+  "topic_areas": {
+    "INTERPRETATION_OF_DATA": ["manipulate and analyze scientific data", "tables, graphs, diagrams", "recognize trends in data", "translate tabular data into graphs", "interpolate and extrapolate", "reason mathematically"],
+    "SCIENTIFIC_INVESTIGATION": ["experimental tools and procedures", "experimental design", "identify controls and variables", "compare, extend, modify experiments", "predict results of additional trials"],
+    "EVALUATION_OF_MODELS_INFERENCES_RESULTS": ["judge validity of scientific information", "formulate conclusions and predictions", "evaluate explanations for scientific phenomena based on new findings"]
+  },
+  "content_disciplines": ["biology", "chemistry", "earth/space sciences (geology, astronomy, meteorology)", "physics"],
+  "sample_stems": [
+    "Based on Table 2, which of the following ratios best represents the number of times Behavior 2 was displayed in Habitat X compared to Habitat Y?",
+    "A student claimed that anoles are endotherms. Which of the following explains why this claim is incorrect?",
+    "Based on the description of the icebergs that are calved along the coastline of Antarctica, do the icebergs sink or float?",
+    "Which of Students 2, 3, and 4 agree(s) with Student 1 that some form of melting occurs on the ice shelf surface?"
+  ]
+}

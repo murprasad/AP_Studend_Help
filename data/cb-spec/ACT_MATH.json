@@ -1,0 +1,58 @@
+{
+  "course": "ACT_MATH",
+  "source": {
+    "pdf": "data/raw/act/Preparing-for-the-ACT.pdf",
+    "url": "https://www.act.org/the-act/testprep",
+    "version": "QU00002.CJ22893 (2025-2026)",
+    "accessed_date": "2026-05-19",
+    "format_note": "ACT 2025-2026 redesigned format: Math is now 4-option A-D/F-J (PREVIOUS FORMAT WAS 5-option A-E/F-K). Bank Qs created before this change may have 5 options and need migration."
+  },
+  "exam": {
+    "num_questions": 45,
+    "num_questions_scored": 41,
+    "time_minutes": 50,
+    "time_per_q_seconds": 67,
+    "num_options": 4,
+    "calculator_allowed": true,
+    "calculator_type": "scientific_nongraphing",
+    "audio_required": false,
+    "native_language_stems": false,
+    "distinctive_formats": [],
+    "vocabulary_cues": [
+      "What is the value of",
+      "Which of the following expressions is equivalent to",
+      "Based on the table",
+      "If ... then x = ?"
+    ],
+    "off_scope_keywords": ["differential equations", "linear algebra advanced"]
+  },
+  "topic_weights": {
+    "PREPARING_FOR_HIGHER_MATH_NUMBER_QUANTITY": 0.11,
+    "PREPARING_FOR_HIGHER_MATH_ALGEBRA": 0.185,
+    "PREPARING_FOR_HIGHER_MATH_FUNCTIONS": 0.185,
+    "PREPARING_FOR_HIGHER_MATH_GEOMETRY": 0.185,
+    "PREPARING_FOR_HIGHER_MATH_STATISTICS_PROBABILITY": 0.135,
+    "INTEGRATING_ESSENTIAL_SKILLS": 0.20
+  },
+  "unit_to_topic_weight_key": {
+    "ACT_MATH_1_NUMBER_QUANTITY": "PREPARING_FOR_HIGHER_MATH_NUMBER_QUANTITY",
+    "ACT_MATH_2_ALGEBRA": "PREPARING_FOR_HIGHER_MATH_ALGEBRA",
+    "ACT_MATH_3_FUNCTIONS": "PREPARING_FOR_HIGHER_MATH_FUNCTIONS",
+    "ACT_MATH_4_GEOMETRY": "PREPARING_FOR_HIGHER_MATH_GEOMETRY",
+    "ACT_MATH_5_STATISTICS_PROBABILITY": "PREPARING_FOR_HIGHER_MATH_STATISTICS_PROBABILITY"
+  },
+  "topic_areas": {
+    "PREPARING_FOR_HIGHER_MATH_NUMBER_QUANTITY": ["real and complex number systems", "expressions with integer and rational exponents", "vectors and matrices"],
+    "PREPARING_FOR_HIGHER_MATH_ALGEBRA": ["solve, graph, and model multiple types of expressions", "linear, polynomial, radical, exponential relationships", "systems of equations", "matrix equations", "real-world applications"],
+    "PREPARING_FOR_HIGHER_MATH_FUNCTIONS": ["function definition, notation, representation", "linear, radical, piecewise, polynomial, exponential, logarithmic functions", "manipulating and translating functions", "interpreting and using important features of graphs"],
+    "PREPARING_FOR_HIGHER_MATH_GEOMETRY": ["shapes and solids", "congruence and similarity", "surface area and volume", "composite objects", "missing values in triangles, circles", "trigonometric ratios", "equations of conic sections"],
+    "PREPARING_FOR_HIGHER_MATH_STATISTICS_PROBABILITY": ["center and spread of distributions", "data collection methods", "bivariate data relationships", "probabilities and sample spaces"],
+    "INTEGRATING_ESSENTIAL_SKILLS": ["rates and percentages", "proportional relationships", "area, surface area, volume", "average and median", "expressing numbers in different ways", "non-routine multi-step problems"]
+  },
+  "function_types_in_scope": ["linear", "polynomial", "radical", "exponential", "logarithmic", "piecewise"],
+  "sample_stems": [
+    "Cameron took 4 tests, and his scores were 100, 60, 80, and 30. Cameron took another test scored x. The mean of the 5 tests is 72. What is the value of x? A. 54 B. 67.5 C. 68.4 D. 90",
+    "Which of the following expressions is equivalent to x^2 − x − 30? A. (x+3)(x-10) B. (x+6)(x-5) C. (x-6)(x+5) D. (x-15)(x-15)",
+    "Which of the following matrices is equal to 5[-4 2 / 0 -5]? F. [-20 -15] G. [-10/-25] H. [1 7/5 0] J. [-20 10/0 -25]"
+  ]
+}
