@@ -1,0 +1,128 @@
+{
+  "course": "AP_BIOLOGY",
+  "source": {
+    "pdf_ced": "data/raw/ced/biology-ced.pdf",
+    "pdf_frqs": [
+      "data/raw/ap-biology/ap25-frq-biology.pdf",
+      "data/raw/ap-biology/ap24-frq-biology.pdf",
+      "data/raw/ap-biology/ap23-frq-biology.pdf",
+      "data/raw/ap-biology/ap22-frq-biology.pdf",
+      "data/raw/ap-biology/ap21-frq-biology.pdf",
+      "data/raw/ap-biology/ap19-frq-biology.pdf"
+    ],
+    "released_exam": "data/raw/released-exams/ap-biology-2013.pdf",
+    "url": "https://apcentral.collegeboard.org/courses/ap-biology",
+    "version": "2025 FRQ + CED",
+    "accessed_date": "2026-05-19"
+  },
+  "exam": {
+    "total_time_minutes": 180,
+    "structure": [
+      {
+        "section": "I_MCQ",
+        "num_questions": 60,
+        "time_minutes": 90,
+        "num_options": 4,
+        "score_weight": 0.50,
+        "format": "Multiple-choice questions including standalone and stimulus-based linked sets. Calculator allowed. Reference info (formulas, equations) available."
+      },
+      {
+        "section": "II_FRQ",
+        "num_questions": 6,
+        "time_minutes": 90,
+        "score_weight": 0.50,
+        "format": "2 Long FRQs (8-10 points each, 25 min suggested) + 4 Short FRQs (4 points each, 10 min suggested). Paragraph-form answers required (outlines/bullets/diagrams alone NOT acceptable). Diagrams may supplement only.",
+        "frq_structure": {
+          "long_frq_1": "Interpreting and Evaluating Experimental Results (data analysis, modify experiment, justify hypothesis)",
+          "long_frq_2": "Interpreting and Evaluating Experimental Results with Graphing (construct/interpret graph, predict effect)",
+          "short_frq_3": "Scientific Investigation (identify control, state null hypothesis, justify claim)",
+          "short_frq_4": "Conceptual Analysis (describe genetic evidence, explain evolutionary mechanism)",
+          "short_frq_5": "Analyze a Model or Visual Representation (interpret diagram, explain regulation)",
+          "short_frq_6": "Analyze Data (identify pattern, support hypothesis with data)"
+        }
+      }
+    ],
+    "calculator_allowed": true,
+    "calculator_type": "handheld_or_in_app",
+    "reference_info_provided": "equations and formulas accessible throughout the exam",
+    "audio_required": false,
+    "native_language_stems": false,
+    "distinctive_formats": [
+      "experimental_data_table",
+      "bar_graph_with_error_bars_SEx",
+      "scatterplot",
+      "diagram_pathway_signaling",
+      "western_blot_image",
+      "siRNA_knockdown_experiment",
+      "linked_stimulus_mcq_set",
+      "claim_evidence_justify"
+    ]
+  },
+  "unit_weights_mcq": {
+    "UNIT_1_CHEMISTRY_OF_LIFE": 0.095,
+    "UNIT_2_CELL_STRUCTURE_FUNCTION": 0.115,
+    "UNIT_3_CELLULAR_ENERGETICS": 0.140,
+    "UNIT_4_CELL_COMMUNICATION_CELL_CYCLE": 0.125,
+    "UNIT_5_HEREDITY": 0.095,
+    "UNIT_6_GENE_EXPRESSION_REGULATION": 0.140,
+    "UNIT_7_NATURAL_SELECTION": 0.165,
+    "UNIT_8_ECOLOGY": 0.125
+  },
+  "unit_to_topic_weight_key": {
+    "AP_BIO_1_CHEMISTRY_OF_LIFE": "UNIT_1_CHEMISTRY_OF_LIFE",
+    "AP_BIO_2_CELL_STRUCTURE_FUNCTION": "UNIT_2_CELL_STRUCTURE_FUNCTION",
+    "AP_BIO_3_CELLULAR_ENERGETICS": "UNIT_3_CELLULAR_ENERGETICS",
+    "AP_BIO_4_CELL_COMMUNICATION_CELL_CYCLE": "UNIT_4_CELL_COMMUNICATION_CELL_CYCLE",
+    "AP_BIO_5_HEREDITY": "UNIT_5_HEREDITY",
+    "AP_BIO_6_GENE_EXPRESSION_REGULATION": "UNIT_6_GENE_EXPRESSION_REGULATION",
+    "AP_BIO_7_NATURAL_SELECTION": "UNIT_7_NATURAL_SELECTION",
+    "AP_BIO_8_ECOLOGY": "UNIT_8_ECOLOGY"
+  },
+  "science_practices": [
+    "1. Concept Explanation (describe biological concepts and processes)",
+    "2. Visual Representations (analyze visual diagrams, models, representations)",
+    "3. Questions and Methods (analyze scientific questions and methods, identify variables, identify control)",
+    "4. Representing and Describing Data (construct/interpret graphs, tables, data displays)",
+    "5. Statistical Tests and Data Analysis (chi-square, error bars, mean ± SE)",
+    "6. Argumentation (justify claim with evidence, support hypothesis)"
+  ],
+  "course_themes": [
+    "Big Idea 1 — Evolution",
+    "Big Idea 2 — Energetics",
+    "Big Idea 3 — Information Storage and Transmission",
+    "Big Idea 4 — Systems Interactions"
+  ],
+  "vocabulary_cues": [
+    "Describe the function of X",
+    "Identify the dependent/independent variable in the experiments",
+    "Justify why the researchers included the control",
+    "Based on Figure X, describe the effect on Y when",
+    "Calculate the difference in",
+    "Using data from Figure X, support the researchers' claim",
+    "Justify the researchers' claim based on your understanding of",
+    "Construct an appropriate type of graph that represents the data",
+    "Predict the effect of this mutation on",
+    "State the null hypothesis",
+    "Use evidence from the information provided to support the scientists' claim",
+    "Explain how X could affect Y in such a way that Z"
+  ],
+  "frq_command_terms": [
+    "Describe (give factual description)",
+    "Identify (point out specific feature)",
+    "Justify (provide reasoning with evidence)",
+    "Explain (provide reasoning for cause-effect or mechanism)",
+    "Predict (state expected outcome based on principle)",
+    "Support (use evidence to back a claim)",
+    "Calculate (perform numeric operation, show units)",
+    "State (concise factual answer)",
+    "Construct (build a graph, diagram, or representation)"
+  ],
+  "sample_stems_frq": [
+    "FRQ1 Long: Protein transport to ER via SR vs Sec62. Includes Figure 1 (bar graph of relative protein content with error bars), Figure 2 (3 proteins transport %). Parts A-D, subparts i/ii/iii covering: ribosome function, dependent variable ID, control justification, effect description, IV ID, calculation (495-234=261 nucleotides = 87 amino acid difference), support claim with data, justify amino-terminus signal.",
+    "FRQ2 Long: Moth pheromone signaling. G protein-coupled receptor DopEcR + 20E. Table 1 + Figure 1 signaling pathway. Parts A-D: polarity of membrane portion, construct graph from Table 1, identify activity affected, treatment group with >50% oriented, predict mutation effect, support claim with evidence, explain inhibitor as pesticide.",
+    "FRQ3 Short: Buffelgrass invasive species + saguaro cactus. Keystone species removal, control group ID, null hypothesis, justify wildfire claim.",
+    "FRQ4 Short: Isthmus of Panama formation + evolution. Genetic evidence of evolution, divergent evolution explain, predict resource availability effect, justify prediction.",
+    "FRQ5 Short: Enzymatic pathway A→intermediates→B with feedback loop. Active site characteristic, feedback inhibition explain, identify product, pH effect on enzyme 3.",
+    "FRQ6 Short: ald gene + meiosis. Western blot + bar graph of metaphase cells. Identify genotype at ~12%, describe protein production difference, support haploinsufficiency hypothesis, explain phenotype differences despite same protein."
+  ]
+}

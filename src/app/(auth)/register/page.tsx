@@ -57,13 +57,21 @@ export default function RegisterPage() {
   const [registerError, setRegisterError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Read module or track from URL param
+    // Read module/track + preselected course from URL params.
+    // ?course= comes in from the Am-I-Ready funnel and /<course-slug> CTAs;
+    // we persist it to localStorage so onboarding can use it as the
+    // freeTrialCourse seed. (Pre-fix: register silently dropped ?course=
+    // and onboarding fell back to the default AP_CALCULUS_AB.)
     try {
       const params = new URLSearchParams(window.location.search);
       const module = params.get("module") || params.get("track") || "ap";
       setUserModule(module);
       if (module === "clep") {
         setIsClepTrack(true);
+      }
+      const preselectedCourse = params.get("course");
+      if (preselectedCourse) {
+        localStorage.setItem("sn_preselected_course", preselectedCourse);
       }
     } catch { /* ignore */ }
 

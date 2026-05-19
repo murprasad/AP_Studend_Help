@@ -49,17 +49,37 @@ const COURSES_BY_TRACK: Record<string, TrackCourses> = {
   },
 };
 
+// Lightweight check that a string from localStorage looks like a real
+// ApCourse enum value before we trust it. The Prisma enum isn't safely
+// introspectable on the client, so we just guard against the obvious
+// "junk in localStorage" cases — must be SHOUTY_SNAKE_CASE with a known
+// prefix. Practice route validates against the real enum anyway.
+function looksLikeApCourse(s: string | null): s is ApCourse {
+  if (!s || typeof s !== "string") return false;
+  return /^(AP|SAT|ACT|PSAT|CLEP|DSST)_[A-Z0-9_]+$/.test(s);
+}
+
 export default function QuickstartPage() {
   const router = useRouter();
   const [, setCourse] = useCourse();
   const [picked, setPicked] = useState<ApCourse | null>(null);
   const [browseOpen, setBrowseOpen] = useState(false);
   const [track, setTrack] = useState<string>("ap"); // default before user fetch
+  const [preselected, setPreselected] = useState<ApCourse | null>(null);
   const startedRef = useRef(false);
 
-  // Fetch user track to pick the right course catalog.
+  // Fetch user track to pick the right course catalog. Also read any
+  // ?course= the user landed with at /register (saved to localStorage by
+  // the register page). Honors funnels like /ap-prep, Am-I-Ready, and
+  // /<course-slug> CTAs so students don't get bounced to AP_WORLD_HISTORY
+  // when they explicitly asked for AP_ENVIRONMENTAL_SCIENCE.
   useEffect(() => {
     let cancelled = false;
+    try {
+      const stored = localStorage.getItem("sn_preselected_course");
+      if (looksLikeApCourse(stored)) setPreselected(stored);
+    } catch { /* ignore */ }
+
     fetch("/api/user", { cache: "no-store" })
       .then((r) => (r.ok ? r.json() : null))
       .then((d: { user?: { track?: string } } | null) => {
@@ -71,8 +91,22 @@ export default function QuickstartPage() {
   }, []);
 
   const catalog = COURSES_BY_TRACK[track] ?? COURSES_BY_TRACK.ap;
-  const RECOMMENDED = catalog.recommended;
-  const OTHERS = catalog.others;
+  // If the user landed with a preselected course, swap it into the
+  // recommended slot. If it's already in the catalog, just reuse the
+  // existing label/topics; otherwise render a minimal card with the
+  // enum value pretty-printed. setCourse() in startSession() validates
+  // against the real Prisma enum server-side.
+  const preselectedInCatalog = preselected
+    ? [catalog.recommended, ...catalog.others].find((c) => c.course === preselected)
+    : null;
+  const RECOMMENDED = preselected
+    ? preselectedInCatalog ?? {
+        course: preselected,
+        label: preselected.replace(/_/g, " ").replace(/\bAp\b/i, "AP").replace(/\bSat\b/i, "SAT").replace(/\bAct\b/i, "ACT"),
+        topics: "You picked this on the previous page",
+      }
+    : catalog.recommended;
+  const OTHERS = catalog.others.filter((c) => c.course !== RECOMMENDED.course);
 
   // setCourse() pushes to localStorage + cookie + dispatches an event the
   // practice page subscribes to. Then router.push to the existing

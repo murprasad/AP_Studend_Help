@@ -1,0 +1,128 @@
+{
+  "course": "AP_US_HISTORY",
+  "source": {
+    "pdf_ced": "data/raw/ced/us-history-ced.pdf",
+    "pdf_frqs": [
+      "data/raw/ap-us-history/ap25-frq-us-history-set-1.pdf",
+      "data/raw/ap-us-history/ap25-frq-us-history-set-2.pdf",
+      "data/raw/ap-us-history/ap24-frq-us-history-set-1.pdf",
+      "data/raw/ap-us-history/ap24-frq-us-history-set-2.pdf",
+      "data/raw/ap-us-history/ap23-frq-us-history-set-1.pdf",
+      "data/raw/ap-us-history/ap23-frq-us-history-set-2.pdf"
+    ],
+    "released_exam": "data/raw/released-exams/ap-united-states-history-ced-practice-exam.pdf",
+    "url": "https://apcentral.collegeboard.org/courses/ap-united-states-history",
+    "version": "2025 FRQ set 1 + CED",
+    "accessed_date": "2026-05-19"
+  },
+  "exam": {
+    "total_time_minutes": 195,
+    "structure": [
+      {
+        "section": "I_PART_A_MCQ",
+        "num_questions": 55,
+        "time_minutes": 55,
+        "num_options": 4,
+        "score_weight": 0.40,
+        "format": "MCQ in sets of 2-5 questions tied to a primary or secondary source (text, image, map, chart, cartoon)"
+      },
+      {
+        "section": "I_PART_B_SAQ",
+        "num_questions": 3,
+        "time_minutes": 40,
+        "score_weight": 0.20,
+        "format": "Short-Answer Questions, each with parts A, B, C. Answer Q1 + Q2 mandatory; choose Q3 OR Q4. Q1 typically stimulus-based, Q2 secondary-source-based, Q3/Q4 no stimulus. ~13 min per SAQ.",
+        "rubric_constraints": "Complete sentences required; outlines/bulleted lists not acceptable"
+      },
+      {
+        "section": "II_PART_A_DBQ",
+        "num_questions": 1,
+        "time_minutes": 60,
+        "score_weight": 0.25,
+        "format": "Document-Based Question with 7 documents. 15 min reading + 45 min writing.",
+        "rubric_dimensions": ["thesis/claim", "broader historical context", "uses at least 4 documents", "1+ additional outside specific evidence", "2+ document source analysis (POV/purpose/situation/audience)", "complex understanding"]
+      },
+      {
+        "section": "II_PART_B_LEQ",
+        "num_questions": 1,
+        "time_minutes": 40,
+        "score_weight": 0.15,
+        "format": "Long Essay Question. Choose 1 of 3 options, each focused on a different time-period window. Suggested 40 min writing.",
+        "rubric_dimensions": ["thesis/claim", "broader historical context", "2+ specific relevant evidence pieces", "historical reasoning (comparison/causation/continuity-change)", "complex understanding"]
+      }
+    ],
+    "calculator_allowed": false,
+    "audio_required": false,
+    "native_language_stems": false,
+    "distinctive_formats": [
+      "linked_stimulus_mcq_set",
+      "primary_source_excerpt",
+      "secondary_source_historian_excerpt",
+      "image_map_cartoon_chart_stimulus",
+      "SAQ_three_part_A_B_C",
+      "DBQ_7_document_synthesis",
+      "LEQ_three_option_choice"
+    ],
+    "scoring_scale": "1-5 with 3 passing (used by colleges for credit)"
+  },
+  "period_weights_mcq": {
+    "PERIOD_1_1491_1607": 0.05,
+    "PERIOD_2_1607_1754": 0.10,
+    "PERIOD_3_1754_1800": 0.12,
+    "PERIOD_4_1800_1848": 0.10,
+    "PERIOD_5_1844_1877": 0.13,
+    "PERIOD_6_1865_1898": 0.13,
+    "PERIOD_7_1890_1945": 0.17,
+    "PERIOD_8_1945_1980": 0.15,
+    "PERIOD_9_1980_PRESENT": 0.05
+  },
+  "unit_to_topic_weight_key": {
+    "AP_USH_1_PERIOD_1_1491_1607": "PERIOD_1_1491_1607",
+    "AP_USH_2_PERIOD_2_1607_1754": "PERIOD_2_1607_1754",
+    "AP_USH_3_PERIOD_3_1754_1800": "PERIOD_3_1754_1800",
+    "AP_USH_4_PERIOD_4_1800_1848": "PERIOD_4_1800_1848",
+    "AP_USH_5_PERIOD_5_1844_1877": "PERIOD_5_1844_1877",
+    "AP_USH_6_PERIOD_6_1865_1898": "PERIOD_6_1865_1898",
+    "AP_USH_7_PERIOD_7_1890_1945": "PERIOD_7_1890_1945",
+    "AP_USH_8_PERIOD_8_1945_1980": "PERIOD_8_1945_1980",
+    "AP_USH_9_PERIOD_9_1980_PRESENT": "PERIOD_9_1980_PRESENT"
+  },
+  "historical_reasoning_skills": [
+    "Contextualization (broader historical context)",
+    "Comparison (similarities/differences across time/place/groups)",
+    "Causation (cause-effect relationships)",
+    "Continuity and Change over Time (CCOT)",
+    "Sourcing — Point of View, Purpose, Historical Situation, Audience",
+    "Argument Development (defensible thesis with line of reasoning)",
+    "Evidence Use (specific historical evidence beyond documents)"
+  ],
+  "course_themes": [
+    "American and National Identity (NAT)",
+    "Work, Exchange, and Technology (WXT)",
+    "Geography and the Environment (GEO)",
+    "Migration and Settlement (MIG)",
+    "Politics and Power (PCE)",
+    "America in the World (WOR)",
+    "American and Regional Culture (ARC)",
+    "Social Structures (SOC)"
+  ],
+  "saq_format_template": "A. Briefly describe one X. B. Briefly explain one Y. C. Briefly explain how Z. (each part = 1 point, complete sentences required)",
+  "vocabulary_cues": [
+    "Briefly describe one major difference between X's and Y's historical interpretations",
+    "Briefly explain how one event or development from [period] not directly mentioned in the excerpts could be used to support X's argument",
+    "Briefly describe one purpose of",
+    "Briefly explain one development from [period] that contributed to",
+    "Evaluate the extent to which [topic] changed from [year] to [year]",
+    "Evaluate how [group/movement/policy] responded to [event] from [year] to [year]",
+    "Which of the following best describes the historical situation in which the passage was written?",
+    "Which of the following developments in the period [year]-[year] most directly led to the political situation referred to in the excerpt?"
+  ],
+  "sample_stems_frq": [
+    "SAQ stimulus pair: Historian Wilentz (2005) vs historian Bouton (2007) on early US democracy 1789-1820 — A. describe one difference, B. support Wilentz, C. support Bouton",
+    "SAQ primary source: Daniel Webster Senate speech 1830 — A. purpose of promoting union ideas, B. one 1820-1848 development, C. comparable 1848-1865 debate",
+    "DBQ: Evaluate the extent to which the role of the federal government in the United States economy changed from 1932 to 1980. (7 documents — WPA letter, War Food Admin pamphlet, Interstate Highway photo, JFK State of Union, Goldwater speech, César Chávez statement, Marjorie Holt 1976)",
+    "LEQ option: Evaluate how Native American societies adapted to the presence of European colonists in North America from 1500 to 1754",
+    "LEQ option: Evaluate how different reform movements in the United States responded to industrialization from 1820 to 1900",
+    "LEQ option: Evaluate how United States foreign policy responded to changes in the world from 1890 to 1930"
+  ]
+}

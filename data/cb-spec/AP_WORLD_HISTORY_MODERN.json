@@ -1,0 +1,125 @@
+{
+  "course": "AP_WORLD_HISTORY_MODERN",
+  "source": {
+    "pdf_ced": "data/raw/ced/world-history-modern-ced.pdf",
+    "pdf_frqs": [
+      "data/raw/ap-world-history/ap25-frq-world-history-modern-set-1.pdf",
+      "data/raw/ap-world-history/ap25-frq-world-history-modern-set-2.pdf",
+      "data/raw/ap-world-history/ap24-frq-world-history-set-1.pdf",
+      "data/raw/ap-world-history/ap24-frq-world-history-set-2.pdf",
+      "data/raw/ap-world-history/ap23-frq-world-history-modern-set-1.pdf",
+      "data/raw/ap-world-history/ap23-frq-world-history-modern-set-2.pdf"
+    ],
+    "url": "https://apcentral.collegeboard.org/courses/ap-world-history",
+    "version": "2025 FRQ set 1",
+    "accessed_date": "2026-05-19"
+  },
+  "exam": {
+    "total_time_minutes": 195,
+    "structure": [
+      {
+        "section": "I_PART_A_MCQ",
+        "num_questions": 55,
+        "time_minutes": 55,
+        "num_options": 4,
+        "score_weight": 0.40,
+        "format": "MCQ in linked sets of 2-5 tied to a primary/secondary source (text, image, map, chart)"
+      },
+      {
+        "section": "I_PART_B_SAQ",
+        "num_questions": 3,
+        "time_minutes": 40,
+        "score_weight": 0.20,
+        "format": "Short-Answer Questions, parts A/B/C. Q1+Q2 mandatory; choose Q3 OR Q4. ~13 min per SAQ."
+      },
+      {
+        "section": "II_PART_A_DBQ",
+        "num_questions": 1,
+        "time_minutes": 60,
+        "score_weight": 0.25,
+        "format": "Document-Based Question, 7 documents. 15 min reading + 45 min writing. Map may be provided as reference (NOT counted as document)."
+      },
+      {
+        "section": "II_PART_B_LEQ",
+        "num_questions": 1,
+        "time_minutes": 40,
+        "score_weight": 0.15,
+        "format": "Long Essay Question. Choose 1 of 3 options across different period windows."
+      }
+    ],
+    "calculator_allowed": false,
+    "audio_required": false,
+    "native_language_stems": false,
+    "distinctive_formats": [
+      "linked_stimulus_mcq_set",
+      "primary_source_global_perspective",
+      "secondary_source_historian_excerpt",
+      "image_map_chart_cartoon_stimulus",
+      "SAQ_three_part_A_B_C",
+      "DBQ_7_documents_with_optional_reference_map",
+      "LEQ_three_option_choice_different_periods"
+    ],
+    "geographic_coverage": "Global — must avoid Europe-centric framing; CB explicitly emphasizes Africa, Asia, Americas, and global comparative perspective"
+  },
+  "period_weights_mcq": {
+    "PERIOD_1_GLOBAL_TAPESTRY_1200_1450": 0.083,
+    "PERIOD_2_NETWORKS_OF_EXCHANGE_1200_1450": 0.083,
+    "PERIOD_3_LAND_BASED_EMPIRES_1450_1750": 0.083,
+    "PERIOD_4_TRANSOCEANIC_CONNECTIONS_1450_1750": 0.083,
+    "PERIOD_5_REVOLUTIONS_1750_1900": 0.125,
+    "PERIOD_6_INDUSTRIALIZATION_1750_1900": 0.125,
+    "PERIOD_7_GLOBAL_CONFLICT_1900_PRESENT": 0.139,
+    "PERIOD_8_COLD_WAR_DECOLONIZATION_1900_PRESENT": 0.139,
+    "PERIOD_9_GLOBALIZATION_1900_PRESENT": 0.139
+  },
+  "unit_to_topic_weight_key": {
+    "AP_WHM_1_GLOBAL_TAPESTRY": "PERIOD_1_GLOBAL_TAPESTRY_1200_1450",
+    "AP_WHM_2_NETWORKS_OF_EXCHANGE": "PERIOD_2_NETWORKS_OF_EXCHANGE_1200_1450",
+    "AP_WHM_3_LAND_BASED_EMPIRES": "PERIOD_3_LAND_BASED_EMPIRES_1450_1750",
+    "AP_WHM_4_TRANSOCEANIC_CONNECTIONS": "PERIOD_4_TRANSOCEANIC_CONNECTIONS_1450_1750",
+    "AP_WHM_5_REVOLUTIONS": "PERIOD_5_REVOLUTIONS_1750_1900",
+    "AP_WHM_6_INDUSTRIALIZATION": "PERIOD_6_INDUSTRIALIZATION_1750_1900",
+    "AP_WHM_7_GLOBAL_CONFLICT": "PERIOD_7_GLOBAL_CONFLICT_1900_PRESENT",
+    "AP_WHM_8_COLD_WAR_DECOLONIZATION": "PERIOD_8_COLD_WAR_DECOLONIZATION_1900_PRESENT",
+    "AP_WHM_9_GLOBALIZATION": "PERIOD_9_GLOBALIZATION_1900_PRESENT"
+  },
+  "historical_reasoning_skills": [
+    "Contextualization (broader global historical context)",
+    "Comparison (across regions, civilizations, time periods)",
+    "Causation (cause and effect)",
+    "Continuity and Change over Time (CCOT)",
+    "Sourcing — POV, Purpose, Historical Situation, Audience",
+    "Argument Development",
+    "Evidence Use"
+  ],
+  "course_themes": [
+    "Humans and the Environment (ENV)",
+    "Cultural Developments and Interactions (CDI)",
+    "Governance (GOV)",
+    "Economic Systems (ECN)",
+    "Social Interactions and Organization (SIO)",
+    "Technology and Innovation (TEC)"
+  ],
+  "vocabulary_cues": [
+    "Identify one claim that the author makes",
+    "Describe one economic/political/social change in [region] that occurred as a result of",
+    "Explain one reason why [group] [verb] as suggested by the author",
+    "Identify one technological/military/economic factor that contributed to",
+    "Identify one likely audience for the claims",
+    "Explain how one ideology or set of ideas likely influenced",
+    "Explain one way that [group] used X to do Y",
+    "Evaluate the extent to which X affected Y during the period circa [year] to [year]",
+    "Develop an argument that evaluates the extent to which"
+  ],
+  "saq_format_template": "A. Identify/Describe one X. B. Describe/Explain one Y. C. Explain how/why Z.",
+  "sample_stems_frq": [
+    "SAQ secondary source: Jack Weatherford (1988) on Africa & discovery of America — A. claim, B. economic change in Americas, C. why American Indians victims",
+    "SAQ primary source: Louise Otto-Peters 1849 German women's newspaper — A. audience, B. 19th c context, C. ideology",
+    "SAQ no stimulus: Muslim empires 1300-1600 (Ottoman/Safavid/Mughal) — A. tech/military factor, B. economic policy, C. tolerance reason",
+    "SAQ no stimulus: Revolutions 1750-1900 — A. factor causing outbreak, B. ideology used, C. challenge faced",
+    "DBQ: Evaluate the extent to which new transportation and/or communication technologies affected African societies during the period circa 1850 to 1960. (7 docs: Sierra Leone hut tax letter, S. Africa mining photo, Gold Coast telegrams, P&O Egypt brochure, TB report S. Africa, Gold Coast railway history, Toyin Falola Nigeria memoir)",
+    "LEQ 2: Buddhism/Hinduism/Confucianism shaping Asian societies 1200-1450",
+    "LEQ 3: Economic rivalries primary motivation for European imperial expansion 1450-1750",
+    "LEQ 4: Medical/scientific discoveries benefits 20th century"
+  ]
+}
