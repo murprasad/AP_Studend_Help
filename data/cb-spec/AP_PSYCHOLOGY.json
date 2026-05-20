@@ -1,0 +1,82 @@
+{
+  "course": "AP_PSYCHOLOGY",
+  "source": {
+    "pdf_ced": "data/raw/ced/psychology-ced.pdf",
+    "pdf_frqs": [
+      "data/raw/ap-psychology/ap25-frq-psychology-set-1.pdf",
+      "data/raw/ap-psychology/ap25-frq-psychology-set-2.pdf",
+      "data/raw/ap-psychology/ap24-frq-psychology-set-1.pdf",
+      "data/raw/ap-psychology/ap24-frq-psychology-set-2.pdf",
+      "data/raw/ap-psychology/ap23-frq-psychology-set-1.pdf",
+      "data/raw/ap-psychology/ap23-frq-psychology-set-2.pdf"
+    ],
+    "released_exam": "data/raw/released-exams/ap-psychology-practice-exam-2012.pdf",
+    "url": "https://apcentral.collegeboard.org/courses/ap-psychology",
+    "version": "CED 2024-25 redesign (5 units)",
+    "accessed_date": "2026-05-19",
+    "redesign_note": "AP Psychology redesigned for 2024-25 admin onwards: 5 units (vs prior 9), Article Analysis Q + Evidence-Based Q format"
+  },
+  "exam": {
+    "total_time_minutes": 130,
+    "structure": [
+      {
+        "section": "I_MCQ",
+        "num_questions": 75,
+        "time_minutes": 70,
+        "num_options": 4,
+        "score_weight": 0.6667,
+        "format": "75 standalone and linked-set MCQs covering all 5 units + research methods scenarios"
+      },
+      {
+        "section": "II_FRQ",
+        "num_questions": 2,
+        "time_minutes": 60,
+        "score_weight": 0.3333,
+        "format": "2 FRQs: (1) Article Analysis Question (AAQ) — interpret a research scenario; (2) Evidence-Based Question (EBQ) — argument supported by 3 provided sources. ~30 min each."
+      }
+    ],
+    "calculator_allowed": false,
+    "audio_required": false,
+    "native_language_stems": false,
+    "distinctive_formats": [
+      "AAQ_research_scenario_with_data",
+      "EBQ_three_source_synthesis",
+      "linked_stimulus_mcq",
+      "research_methods_scenario"
+    ]
+  },
+  "unit_weights_mcq": {
+    "UNIT_1_BIOLOGICAL_BASES": 0.16,
+    "UNIT_2_COGNITION": 0.21,
+    "UNIT_3_DEVELOPMENT_AND_LEARNING": 0.21,
+    "UNIT_4_SOCIAL_PSYCHOLOGY_AND_PERSONALITY": 0.21,
+    "UNIT_5_MENTAL_AND_PHYSICAL_HEALTH": 0.21
+  },
+  "unit_to_topic_weight_key": {
+    "AP_PSY_1_BIOLOGICAL_BASES": "UNIT_1_BIOLOGICAL_BASES",
+    "AP_PSY_2_COGNITION": "UNIT_2_COGNITION",
+    "AP_PSY_3_DEVELOPMENT_AND_LEARNING": "UNIT_3_DEVELOPMENT_AND_LEARNING",
+    "AP_PSY_4_SOCIAL_PSYCHOLOGY_AND_PERSONALITY": "UNIT_4_SOCIAL_PSYCHOLOGY_AND_PERSONALITY",
+    "AP_PSY_5_MENTAL_AND_PHYSICAL_HEALTH": "UNIT_5_MENTAL_AND_PHYSICAL_HEALTH"
+  },
+  "science_practices": [
+    "1. Concept Understanding (define + describe)",
+    "2. Data Analysis (interpret graphs, tables, study results)",
+    "3. Scientific Investigation (design + critique research)",
+    "4. Argumentation (claim + evidence + reasoning, especially for EBQ)"
+  ],
+  "vocabulary_cues": [
+    "Which of the following best illustrates",
+    "According to [theorist]",
+    "The study described above provides evidence for",
+    "Identify the dependent/independent variable",
+    "Which of the following research methods would most likely",
+    "Develop a defensible claim and support it using EVIDENCE from the sources",
+    "Explain how psychological concept X applies to scenario Y"
+  ],
+  "canonical_theorists_in_scope": [
+    "Sigmund Freud", "Jean Piaget", "Erik Erikson", "Lev Vygotsky", "Lawrence Kohlberg",
+    "B.F. Skinner", "Ivan Pavlov", "Albert Bandura", "Solomon Asch", "Stanley Milgram",
+    "Philip Zimbardo", "Carl Rogers", "Abraham Maslow", "Howard Gardner", "Mary Ainsworth"
+  ]
+}

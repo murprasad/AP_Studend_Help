@@ -1,0 +1,92 @@
+{
+  "course": "AP_CALCULUS_AB",
+  "source": {
+    "pdf_ced": "data/raw/ced/calculus-ab-ced.pdf",
+    "pdf_frqs": [
+      "data/raw/ap-calculus-ab/ap25-frq-calculus-ab.pdf",
+      "data/raw/ap-calculus-ab/ap24-frq-calculus-ab.pdf",
+      "data/raw/ap-calculus-ab/ap23-frq-calculus-ab.pdf",
+      "data/raw/ap-calculus-ab/ap22-frq-calculus-ab.pdf",
+      "data/raw/ap-calculus-ab/ap21-frq-calculus-ab.pdf",
+      "data/raw/ap-calculus-ab/ap19-frq-calculus-ab.pdf"
+    ],
+    "released_exam": "data/raw/released-exams/ap-calculus-ab-2012.pdf",
+    "url": "https://apcentral.collegeboard.org/courses/ap-calculus-ab",
+    "version": "CED 2024",
+    "accessed_date": "2026-05-19"
+  },
+  "exam": {
+    "total_time_minutes": 195,
+    "structure": [
+      {
+        "section": "I_PART_A_MCQ",
+        "num_questions": 30,
+        "time_minutes": 60,
+        "num_options": 4,
+        "calculator_allowed": false,
+        "score_weight": 0.333,
+        "format": "30 MCQs WITHOUT calculator, 2 min/Q"
+      },
+      {
+        "section": "I_PART_B_MCQ",
+        "num_questions": 15,
+        "time_minutes": 45,
+        "num_options": 4,
+        "calculator_allowed": true,
+        "score_weight": 0.167,
+        "format": "15 MCQs WITH graphing calculator (TI-84 Plus CE), 3 min/Q"
+      },
+      {
+        "section": "II_PART_A_FRQ",
+        "num_questions": 2,
+        "time_minutes": 30,
+        "calculator_allowed": true,
+        "score_weight": 0.167,
+        "format": "2 FRQs WITH graphing calculator"
+      },
+      {
+        "section": "II_PART_B_FRQ",
+        "num_questions": 4,
+        "time_minutes": 60,
+        "calculator_allowed": false,
+        "score_weight": 0.333,
+        "format": "4 FRQs WITHOUT calculator"
+      }
+    ],
+    "calculator_split": "Section I+II have BOTH calc and no-calc parts. Real exam STRICTLY enforces — calculator removed/disabled between parts.",
+    "audio_required": false,
+    "native_language_stems": false,
+    "distinctive_formats": [
+      "split_calc_no_calc_sections",
+      "FRQ_with_graphing_calculator",
+      "FRQ_table_of_values",
+      "FRQ_curve_with_areas_volumes"
+    ]
+  },
+  "unit_weights_mcq": {
+    "UNIT_1_LIMITS_AND_CONTINUITY": 0.115,
+    "UNIT_2_DIFFERENTIATION_DEFINITION_AND_BASIC_RULES": 0.115,
+    "UNIT_3_DIFFERENTIATION_COMPOSITE_IMPLICIT_INVERSE": 0.10,
+    "UNIT_4_CONTEXTUAL_APPLICATIONS_OF_DIFFERENTIATION": 0.115,
+    "UNIT_5_ANALYTICAL_APPLICATIONS_OF_DIFFERENTIATION": 0.18,
+    "UNIT_6_INTEGRATION_AND_ACCUMULATION_OF_CHANGE": 0.18,
+    "UNIT_7_DIFFERENTIAL_EQUATIONS": 0.075,
+    "UNIT_8_APPLICATIONS_OF_INTEGRATION": 0.115
+  },
+  "unit_to_topic_weight_key": {
+    "AP_CALC_AB_1_LIMITS_AND_CONTINUITY": "UNIT_1_LIMITS_AND_CONTINUITY",
+    "AP_CALC_AB_2_DIFFERENTIATION_DEFINITION_AND_BASIC_RULES": "UNIT_2_DIFFERENTIATION_DEFINITION_AND_BASIC_RULES",
+    "AP_CALC_AB_3_DIFFERENTIATION_COMPOSITE_IMPLICIT_INVERSE": "UNIT_3_DIFFERENTIATION_COMPOSITE_IMPLICIT_INVERSE",
+    "AP_CALC_AB_4_CONTEXTUAL_APPLICATIONS_OF_DIFFERENTIATION": "UNIT_4_CONTEXTUAL_APPLICATIONS_OF_DIFFERENTIATION",
+    "AP_CALC_AB_5_ANALYTICAL_APPLICATIONS_OF_DIFFERENTIATION": "UNIT_5_ANALYTICAL_APPLICATIONS_OF_DIFFERENTIATION",
+    "AP_CALC_AB_6_INTEGRATION_AND_ACCUMULATION_OF_CHANGE": "UNIT_6_INTEGRATION_AND_ACCUMULATION_OF_CHANGE",
+    "AP_CALC_AB_7_DIFFERENTIAL_EQUATIONS": "UNIT_7_DIFFERENTIAL_EQUATIONS",
+    "AP_CALC_AB_8_APPLICATIONS_OF_INTEGRATION": "UNIT_8_APPLICATIONS_OF_INTEGRATION"
+  },
+  "mathematical_practices": [
+    "1. Implementing Mathematical Processes (algebra, derivatives, integrals)",
+    "2. Connecting Representations (graphical, tabular, analytical, verbal)",
+    "3. Justification (state theorems, identify conditions, use definitions)",
+    "4. Communication and Notation (proper notation, units, language)"
+  ]
+}

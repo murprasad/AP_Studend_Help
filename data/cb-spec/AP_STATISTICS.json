@@ -1,0 +1,84 @@
+{
+  "course": "AP_STATISTICS",
+  "source": {
+    "pdf_ced": "data/raw/ced/statistics-ced.pdf",
+    "pdf_frqs": [
+      "data/raw/ap-statistics/ap25-frq-statistics.pdf",
+      "data/raw/ap-statistics/ap24-frq-statistics.pdf",
+      "data/raw/ap-statistics/ap23-frq-statistics.pdf",
+      "data/raw/ap-statistics/ap22-frq-statistics.pdf",
+      "data/raw/ap-statistics/ap21-frq-statistics.pdf"
+    ],
+    "released_exam": "data/raw/released-exams/ap-statistics-2012.pdf",
+    "url": "https://apcentral.collegeboard.org/courses/ap-statistics",
+    "version": "CED 2020 (revised)",
+    "accessed_date": "2026-05-19"
+  },
+  "exam": {
+    "total_time_minutes": 180,
+    "structure": [
+      {
+        "section": "I_MCQ",
+        "num_questions": 40,
+        "time_minutes": 90,
+        "num_options": 5,
+        "score_weight": 0.50,
+        "format": "40 MCQs, 5 options A-E (AP Stats is one of the few AP exams that uses 5 options). Calculator allowed all. 2.25 min/Q."
+      },
+      {
+        "section": "II_PART_A_FRQ",
+        "num_questions": 5,
+        "time_minutes": 65,
+        "score_weight": 0.375,
+        "format": "5 short FRQs (12-13 min each)"
+      },
+      {
+        "section": "II_PART_B_FRQ_INVESTIGATIVE",
+        "num_questions": 1,
+        "time_minutes": 25,
+        "score_weight": 0.125,
+        "format": "1 Investigative Task FRQ (25 min, novel/extended scenario)"
+      }
+    ],
+    "calculator_allowed": true,
+    "calculator_type": "graphing_calculator_required",
+    "audio_required": false,
+    "native_language_stems": false,
+    "distinctive_formats": [
+      "data_table_with_summary_stats",
+      "boxplot_histogram_dotplot",
+      "scatterplot_with_residuals",
+      "two_way_table_chi_square",
+      "investigative_task_novel_situation"
+    ],
+    "options_note": "5-option MCQ format is RARE for AP — most APs use 4-option. Stats uses 5 to better capture students' common misconceptions across the 4 distractors."
+  },
+  "unit_weights_mcq": {
+    "UNIT_1_EXPLORING_ONE_VARIABLE_DATA": 0.18,
+    "UNIT_2_EXPLORING_TWO_VARIABLE_DATA": 0.06,
+    "UNIT_3_COLLECTING_DATA": 0.135,
+    "UNIT_4_PROBABILITY_RANDOM_VARIABLES_DISTRIBUTIONS": 0.115,
+    "UNIT_5_SAMPLING_DISTRIBUTIONS": 0.115,
+    "UNIT_6_INFERENCE_PROPORTIONS": 0.155,
+    "UNIT_7_INFERENCE_MEANS": 0.155,
+    "UNIT_8_INFERENCE_CHI_SQUARE": 0.05,
+    "UNIT_9_INFERENCE_REGRESSION": 0.05
+  },
+  "unit_to_topic_weight_key": {
+    "AP_STATS_1_EXPLORING_ONE_VARIABLE_DATA": "UNIT_1_EXPLORING_ONE_VARIABLE_DATA",
+    "AP_STATS_2_EXPLORING_TWO_VARIABLE_DATA": "UNIT_2_EXPLORING_TWO_VARIABLE_DATA",
+    "AP_STATS_3_COLLECTING_DATA": "UNIT_3_COLLECTING_DATA",
+    "AP_STATS_4_PROBABILITY_RANDOM_VARIABLES_DISTRIBUTIONS": "UNIT_4_PROBABILITY_RANDOM_VARIABLES_DISTRIBUTIONS",
+    "AP_STATS_5_SAMPLING_DISTRIBUTIONS": "UNIT_5_SAMPLING_DISTRIBUTIONS",
+    "AP_STATS_6_INFERENCE_PROPORTIONS": "UNIT_6_INFERENCE_PROPORTIONS",
+    "AP_STATS_7_INFERENCE_MEANS": "UNIT_7_INFERENCE_MEANS",
+    "AP_STATS_8_INFERENCE_CHI_SQUARE": "UNIT_8_INFERENCE_CHI_SQUARE",
+    "AP_STATS_9_INFERENCE_REGRESSION": "UNIT_9_INFERENCE_REGRESSION"
+  },
+  "skills": [
+    "1. Selecting Statistical Methods (pick right test, identify conditions)",
+    "2. Data Analysis (describe distributions, compute and interpret statistics)",
+    "3. Using Probability and Simulation (model with random variables)",
+    "4. Statistical Argumentation (state hypotheses, interpret p-values, draw conclusions)"
+  ]
+}

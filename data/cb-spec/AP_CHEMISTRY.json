@@ -1,0 +1,81 @@
+{
+  "course": "AP_CHEMISTRY",
+  "source": {
+    "pdf_ced": "data/raw/ced/chemistry-ced.pdf",
+    "pdf_frqs": [
+      "data/raw/ap-chemistry/ap25-frq-chemistry.pdf",
+      "data/raw/ap-chemistry/ap24-frq-chemistry.pdf",
+      "data/raw/ap-chemistry/ap23-frq-chemistry.pdf",
+      "data/raw/ap-chemistry/ap21-frq-chemistry.pdf",
+      "data/raw/ap-chemistry/ap19-frq-chemistry.pdf"
+    ],
+    "url": "https://apcentral.collegeboard.org/courses/ap-chemistry",
+    "version": "CED 2020 (revised)",
+    "accessed_date": "2026-05-19"
+  },
+  "exam": {
+    "total_time_minutes": 195,
+    "structure": [
+      {
+        "section": "I_MCQ",
+        "num_questions": 60,
+        "time_minutes": 90,
+        "num_options": 4,
+        "score_weight": 0.50,
+        "format": "60 MCQs, 4 options A-D, calculator NOT allowed (periodic table + formula sheet provided). 1.5 min/Q."
+      },
+      {
+        "section": "II_FRQ",
+        "num_questions": 7,
+        "time_minutes": 105,
+        "score_weight": 0.50,
+        "format": "3 long FRQs (10 points each, ~23 min) + 4 short FRQs (4 points each, ~9 min). Calculator allowed. Periodic table + formula sheet provided."
+      }
+    ],
+    "calculator_allowed": "FRQ_only",
+    "calculator_split": "Section I (MCQ) NO calc; Section II (FRQ) WITH 4-function/scientific/graphing calc",
+    "reference_materials": ["periodic table", "formula and constants sheet"],
+    "audio_required": false,
+    "native_language_stems": false,
+    "distinctive_formats": [
+      "particulate_diagram",
+      "lewis_structure",
+      "graph_concentration_vs_time",
+      "graph_ph_titration_curve",
+      "table_thermodynamic_data",
+      "lab_design_question"
+    ]
+  },
+  "unit_weights_mcq": {
+    "UNIT_1_ATOMIC_STRUCTURE_AND_PROPERTIES": 0.085,
+    "UNIT_2_COMPOUND_STRUCTURE_AND_PROPERTIES": 0.075,
+    "UNIT_3_PROPERTIES_OF_SUBSTANCES_AND_MIXTURES": 0.075,
+    "UNIT_4_CHEMICAL_REACTIONS": 0.075,
+    "UNIT_5_KINETICS": 0.085,
+    "UNIT_6_THERMODYNAMICS": 0.115,
+    "UNIT_7_EQUILIBRIUM": 0.135,
+    "UNIT_8_ACIDS_AND_BASES": 0.115,
+    "UNIT_9_APPLICATIONS_OF_THERMODYNAMICS": 0.085,
+    "UNIT_10_STOICHIOMETRY_AND_REACTION_KINETICS": 0.165
+  },
+  "unit_to_topic_weight_key": {
+    "AP_CHEM_1_ATOMIC_STRUCTURE_AND_PROPERTIES": "UNIT_1_ATOMIC_STRUCTURE_AND_PROPERTIES",
+    "AP_CHEM_2_COMPOUND_STRUCTURE_AND_PROPERTIES": "UNIT_2_COMPOUND_STRUCTURE_AND_PROPERTIES",
+    "AP_CHEM_3_PROPERTIES_OF_SUBSTANCES_AND_MIXTURES": "UNIT_3_PROPERTIES_OF_SUBSTANCES_AND_MIXTURES",
+    "AP_CHEM_4_CHEMICAL_REACTIONS": "UNIT_4_CHEMICAL_REACTIONS",
+    "AP_CHEM_5_KINETICS": "UNIT_5_KINETICS",
+    "AP_CHEM_6_THERMODYNAMICS": "UNIT_6_THERMODYNAMICS",
+    "AP_CHEM_7_EQUILIBRIUM": "UNIT_7_EQUILIBRIUM",
+    "AP_CHEM_8_ACIDS_AND_BASES": "UNIT_8_ACIDS_AND_BASES",
+    "AP_CHEM_9_APPLICATIONS_OF_THERMODYNAMICS": "UNIT_9_APPLICATIONS_OF_THERMODYNAMICS",
+    "AP_CHEM_10_STOICHIOMETRY_AND_REACTION_KINETICS": "UNIT_10_STOICHIOMETRY_AND_REACTION_KINETICS"
+  },
+  "science_practices": [
+    "1. Models and Representations (particulate, Lewis, energy diagrams)",
+    "2. Question and Method (experimental design, control variables)",
+    "3. Representing Data and Phenomena (graphs, tables)",
+    "4. Model Analysis (predict outcomes, explain phenomena)",
+    "5. Mathematical Routines (stoichiometry, equilibrium constants, ICE tables)",
+    "6. Argumentation (claim + evidence + reasoning)"
+  ]
+}
