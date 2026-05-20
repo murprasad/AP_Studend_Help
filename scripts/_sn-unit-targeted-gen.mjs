@@ -113,8 +113,8 @@ async function generateForCourseUnit({ course, unit, count, options }) {
       const id = crypto.randomUUID();
       try {
         await sql`
-          INSERT INTO questions (id, course, unit, topic, "questionText", options, "correctAnswer", explanation, "isApproved", "modelUsed", "contentHash", "questionType", "createdAt", "updatedAt")
-          VALUES (${id}, ${course}::"ApCourse", ${unit}::"ApUnit", ${q.topic || unit}, ${q.questionText}, ${JSON.stringify(q.options)}::jsonb, ${q.correctAnswer}, ${q.explanation || ""}, true, ${"sn-rebalance-2026-05-19:groq-llama-3.3-70b"}, ${hash}, ${"MCQ"}, NOW(), NOW())
+          INSERT INTO questions (id, course, unit, topic, "questionText", options, "correctAnswer", explanation, "isApproved", "modelUsed", "contentHash", "questionType", difficulty, "createdAt", "updatedAt")
+          VALUES (${id}, ${course}::"ApCourse", ${unit}::"ApUnit", ${q.topic || unit}, ${q.questionText}, ${JSON.stringify(q.options)}::jsonb, ${q.correctAnswer}, ${q.explanation || ""}, true, ${"sn-rebalance-2026-05-19:groq-llama-3.3-70b"}, ${hash}, ${"MCQ"}::"QuestionType", ${"MEDIUM"}::"Difficulty", NOW(), NOW())
         `;
         ok++;
       } catch (e) {
