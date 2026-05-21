@@ -143,9 +143,27 @@ export default function RegisterPage() {
           description: friendly,
           variant: "destructive",
         });
-      } else {
+        setIsLoading(false);
+        return;
+      }
+
+      // Auto-sign-in immediately (email-verify is auto-set on register, so the
+      // credentials provider can authorize without "Continue to Login").
+      // Middleware will route to /journey if onboardingCompletedAt is null.
+      // (Ported from PrepLion 2026-05-21 — Papouti-class friction fix.)
+      const signInResult = await signIn("credentials", {
+        email: data.email,
+        password: data.password,
+        redirect: false,
+      });
+
+      if (signInResult?.error) {
+        // Fallback to legacy success screen if auto-signin fails
         setRegisteredEmail(data.email);
         setSuccess(true);
+        toast({ title: "Account created", description: "Please log in to continue." });
+      } else {
+        router.push("/journey");
       }
     } catch {
       const generic = "We couldn't reach the server. Check your internet and try again.";

@@ -59,29 +59,27 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    // Create email verification token
-    const token = crypto.randomBytes(32).toString("hex");
-    await prisma.verificationToken.create({
-      data: {
-        userId: user.id,
-        token,
-        expires: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours
-      },
+    // Email verification is no longer a login gate (auth.ts); auto-verify on
+    // registration so the user is signed in immediately. Welcome email still
+    // sent best-effort (ported from PrepLion 2026-05-20).
+    await prisma.user.update({
+      where: { id: user.id },
+      data: { emailVerified: new Date() },
     });
 
-    if (process.env.NODE_ENV === "development") {
-      // Local dev only: auto-verify so developers can log in immediately
-      await prisma.user.update({
-        where: { id: user.id },
-        data: { emailVerified: new Date() },
-      });
-      console.log(`[DEV] Auto-verified email for ${user.email}. Token: ${token}`);
-    } else {
-      // Production: send real verification email via Resend
-      await sendVerificationEmail(user.email, user.firstName, token);
+    if (process.env.NODE_ENV !== "development") {
+      try {
+        const token = crypto.randomBytes(32).toString("hex");
+        await prisma.verificationToken.create({
+          data: { userId: user.id, token, expires: new Date(Date.now() + 24 * 60 * 60 * 1000) },
+        });
+        await sendVerificationEmail(user.email, user.firstName, token);
+      } catch (e) {
+        console.warn("[Register] Welcome email failed (non-blocking):", e instanceof Error ? e.message : e);
+      }
     }
 
-    return NextResponse.json({ success: true, message: "Account created. Please check your email." });
+    return NextResponse.json({ success: true, message: "Account created." });
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json({ error: error.errors[0].message }, { status: 400 });

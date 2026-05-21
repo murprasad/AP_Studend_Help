@@ -101,10 +101,6 @@ export const authOptions: NextAuthOptions = {
           throw new Error("This account uses Google login. Please sign in with Google.");
         }
 
-        if (!user.emailVerified) {
-          throw new Error("Please verify your email before logging in");
-        }
-
         const isPasswordValid = compareSync(
           credentials.password,
           user.passwordHash
