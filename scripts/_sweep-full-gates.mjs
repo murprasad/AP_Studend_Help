@@ -43,10 +43,15 @@ const USER_VISIBLE_GATES = new Set([
   "structure",
   "options-count",
   "options-duplicate",
+  "options-permutation-equivalent",   // v2 (2026-05-21)
   "options-mixed-types",
   "option-contains-hint",
   "correctAnswer-index",
   "explanation-letter-mismatch",
+  "explanation-self-contradiction",    // v2
+  "explanation-numeric-mismatch",      // v2
+  "options-length-skewed",             // v2
+  "stem-missing-stimulus",             // v2
   "confession-phrase",
 ]);
 
@@ -109,14 +114,34 @@ if (failures.length > 0) {
   failures.slice(0, 10).forEach((x) => console.log(`  ${x.id} [${x.course}] gate=${x.gate}\n    ${x.reason}`));
 }
 
+// High-precision gates (>95% precision based on manual spot-check) — safe to auto-unapprove.
+// Review-only gates (50-80% precision) — flag but don't auto-unapprove.
+const HIGH_PRECISION_GATES = new Set([
+  "structure",
+  "options-count",
+  "options-duplicate",
+  "options-permutation-equivalent",
+  "options-mixed-types",
+  "option-contains-hint",
+  "correctAnswer-index",
+  "explanation-letter-mismatch",
+  "explanation-self-contradiction",
+  "confession-phrase",
+]);
+
 if (!APPLY) {
-  console.log("\n(dry-run — no DB changes. Use --apply to unapprove.)");
+  console.log("\n(dry-run — no DB changes. Use --apply to unapprove high-precision gates only.)");
+  console.log(`Would unapprove ${failures.filter(f => HIGH_PRECISION_GATES.has(f.gate)).length} (high-precision); flag ${failures.filter(f => !HIGH_PRECISION_GATES.has(f.gate)).length} (review-only) without unapproving.`);
   process.exit(0);
 }
 
-let updated = 0;
+let unapproved = 0, flagged = 0;
 for (const x of failures) {
-  await sql`UPDATE questions SET "isApproved" = false, "updatedAt" = NOW() WHERE id = ${x.id}`;
-  updated++;
+  if (HIGH_PRECISION_GATES.has(x.gate)) {
+    await sql`UPDATE questions SET "isApproved" = false, "updatedAt" = NOW() WHERE id = ${x.id}`;
+    unapproved++;
+  } else {
+    flagged++;
+  }
 }
-console.log(`\nUnapproved: ${updated} / ${failures.length}`);
+console.log(`\nUnapproved: ${unapproved} (high-precision gates) | Flagged-not-unapproved: ${flagged} (review-only gates)`);
