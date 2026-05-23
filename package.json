@@ -19,6 +19,7 @@
     "release:check": "node scripts/pre-release-check.js",
     "test:unit": "vitest run",
     "test:unit:watch": "vitest",
+    "quality:sweep": "node scripts/_quality-sweep-all.mjs --apply --quiet",
     "test:unit:coverage": "vitest run --coverage",
     "smoke-tests": "node scripts/smoke-tests.js",
     "integration-tests": "node scripts/integration-tests.js",
