@@ -22,9 +22,10 @@ const APPLY = process.argv.includes("--apply");
 const QUIET = process.argv.includes("--quiet");
 
 const sweeps = [
-  { name: "letter-mismatch", cmd: ["node", "scripts/_sweep-letter-mismatch.mjs", ...(APPLY ? ["--apply"] : [])] },
-  { name: "full-gates",      cmd: ["node", "scripts/_sweep-full-gates.mjs",     ...(APPLY ? ["--apply"] : [])] },
-  { name: "cas-recompute",   cmd: ["npx", "tsx", "scripts/_cas-sweep.mjs",      ...(APPLY ? ["--apply"] : [])] },
+  { name: "letter-mismatch",  cmd: ["node", "scripts/_sweep-letter-mismatch.mjs",      ...(APPLY ? ["--apply"] : [])] },
+  { name: "full-gates",       cmd: ["node", "scripts/_sweep-full-gates.mjs",           ...(APPLY ? ["--apply"] : [])] },
+  { name: "cas-recompute",    cmd: ["npx", "tsx", "scripts/_cas-sweep.mjs",            ...(APPLY ? ["--apply"] : [])] },
+  { name: "distractor",       cmd: ["node", "scripts/_distractor-plausibility-sweep.mjs", ...(APPLY ? ["--apply"] : [])] },
 ];
 
 function run(name, cmd) {
