@@ -65,10 +65,18 @@ export default function RegisterPage() {
     try {
       const params = new URLSearchParams(window.location.search);
       const module = params.get("module") || params.get("track") || "ap";
-      setUserModule(module);
+      // 2026-05-23 — CLEP is a separate product on PrepLion.ai. SN does not
+      // offer CLEP. User report: Saanvi Reddy signed up on SN with track=clep
+      // (likely from a stale CLEP link), abandoned because there's no CLEP
+      // content here. Redirect to PrepLion immediately instead of leaving
+      // the user stuck. Course param carries through.
       if (module === "clep") {
-        setIsClepTrack(true);
+        const preselected = params.get("course") || "";
+        const courseParam = preselected ? `?course=${encodeURIComponent(preselected)}` : "";
+        window.location.href = `https://preplion.ai/register${courseParam}`;
+        return;
       }
+      setUserModule(module);
       const preselectedCourse = params.get("course");
       if (preselectedCourse) {
         localStorage.setItem("sn_preselected_course", preselectedCourse);
