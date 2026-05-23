@@ -1,0 +1,1491 @@
+{
+  "source": "ACT.org practice tests (PDF extract)",
+  "fetched": "2026-05-23",
+  "questions": [
+    {
+      "q": 1,
+      "stem": "At a college track meet, there are 3 jumping events: high jump, long jump, and triple jump. The Venn diagram below shows the distribution of the number of athletes competing in each jumping event. How many athletes are competing in both high jump and triple jump but not long jump?",
+      "options": [
+        "A. 3",
+        "B. 4",
+        "C. 10",
+        "D. 19"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 2,
+      "stem": "A function, f, is defined by the equation f(x) = x² + 5. What is f(3) + 1?",
+      "options": [
+        "F. 9",
+        "G. 11",
+        "H. 12",
+        "J. 15"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 3,
+      "stem": "Given b = 40 and c = −16, b + c is equal to the product of −4 and what number?",
+      "options": [
+        "A. −14",
+        "B. −6",
+        "C. 6",
+        "D. 14"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 4,
+      "stem": "It takes Collin 24 minutes to walk to school in the morning. What fraction of his 24-hour day is spent walking to school in the morning?",
+      "options": [
+        "F. 1/1,440",
+        "G. 1/60",
+        "H. 1/24",
+        "J. 1/12"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 5,
+      "stem": "A certain triangle has interior angle measures of (6x)°, (2x)°, and x°. What is the value of x?",
+      "options": [
+        "A. 9",
+        "B. 12",
+        "C. 20",
+        "D. 57"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 6,
+      "stem": "Which of the following matrices is equal to 6[−5 3; 0 −4]?",
+      "options": [
+        "F. [−30 −6]",
+        "G. [1 9; 6 2]",
+        "H. [−5/6 1/2; 0 −2/3]",
+        "J. [−30 18; 0 −24]"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 7,
+      "stem": "For circle O shown, A, B, C, and D are on circle O; A and B are as far apart as possible; C is halfway between A and B along circle O; and D is halfway between C and B along circle O. What percent of the area enclosed by circle O is enclosed by OC, OD, and minor arc CD?",
+      "options": [
+        "A. 12.5%",
+        "B. 25%",
+        "C. 50%",
+        "D. 100%"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 8,
+      "stem": "An object is launched vertically at 30 meters per second from a 55-meter-tall platform. The height, h(t) meters, of the object t seconds after launch is modeled by h(t) = −4.9t² + 30t + 55. What will be the height, in meters, of the object 3 seconds after launch?",
+      "options": [
+        "F. 44.1",
+        "G. 100.9",
+        "H. 145",
+        "J. 189.1"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 9,
+      "stem": "Given the function f(x) = 4x² − 14x + 12, which of the following expressions is equivalent to f(x)?",
+      "options": [
+        "A. (−2x + 4)(2x + 3)",
+        "B. (2x − 4)(2x − 3)",
+        "C. (2x − 4)(2x + 3)",
+        "D. (2x − 3)(2x + 4)"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 10,
+      "stem": "Which of the following is equivalent to (6x + 3y) − (y − 2x)?",
+      "options": [
+        "F. 4x + 2y",
+        "G. 5x + y",
+        "H. 5x + 5y",
+        "J. 8x + 2y"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 11,
+      "stem": "Bryce owns an apartment building. He charges $325 per month for each 1-bedroom apartment and $410 per month for each 2-bedroom apartment. Bryce charged a total of $4,905 in rent for 13 apartments this month. How many 1-bedroom apartments did Bryce charge for this month?",
+      "options": [
+        "A. 5",
+        "B. 6",
+        "C. 7",
+        "D. 8"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 12,
+      "stem": "A restaurant surveyed its customers to determine whether or not they like hamburgers and whether or not they like turkey burgers. To the nearest 1%, what percent of the customers who responded to the survey like hamburgers?",
+      "options": [
+        "F. 31%",
+        "G. 50%",
+        "H. 63%",
+        "J. 71%"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 13,
+      "stem": "For what value of n does the quadratic equation x² − 4x + n = 0 have solutions of x = 7 and x = −3?",
+      "options": [
+        "A. −21",
+        "B. −4",
+        "C. 4",
+        "D. 10"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 14,
+      "stem": "The lengths of corresponding sides of 2 similar right triangles are in the ratio 4:5. The hypotenuse of the smaller triangle is 20 inches long. How many inches long is the hypotenuse of the larger triangle?",
+      "options": [
+        "F. 9",
+        "G. 20",
+        "H. 21",
+        "J. 25"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 15,
+      "stem": "What is the amplitude of the graph of function f(x) = 1/2 cos(3x + π), shown in the standard (x,y) coordinate plane?",
+      "options": [
+        "A. 1/3",
+        "B. 1/2",
+        "C. 2",
+        "D. 3"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 16,
+      "stem": "A circle in the standard (x,y) coordinate plane has its center at (3,−4) and passes through (0,0). Which of the following is an equation for that circle?",
+      "options": [
+        "F. x² + y² = 5",
+        "G. (x − 3)² + (y + 4)² = 25",
+        "H. (x + 3)² + (y − 4)² = 7",
+        "J. (x + 3)² + (y − 4)² = 25"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 17,
+      "stem": "√112 + √63 + √175 = ?",
+      "options": [
+        "A. 7√12",
+        "B. 7√50",
+        "C. 12√7",
+        "D. 60√7"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 18,
+      "stem": "The sum of 3 positive integers is 180, and the ratio of the integers is 5:3:2. What is the value of the smallest of the integers?",
+      "options": [
+        "F. 18",
+        "G. 36",
+        "H. 54",
+        "J. 90"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 19,
+      "stem": "Jeremy reaches into a box in the closet. The box contains 10 gloves that make up 5 matching pairs. He picks 1 glove at random and puts it on. Then he picks another glove at random. What is the probability that he has picked a matching pair?",
+      "options": [
+        "A. 1/9",
+        "B. 1/5",
+        "C. 4/9",
+        "D. 1/2"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 20,
+      "stem": "During an event, a store gave a free T-shirt to every 24th customer that entered the store and a free gift certificate to every 60th customer that entered the store. Given that 500 customers entered the store during the event, how many customers received both a free T-shirt and a free gift certificate?",
+      "options": [
+        "F. 2",
+        "G. 4",
+        "H. 12",
+        "J. 24"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 21,
+      "stem": "Cameron's bookshelf has 3 books with a rating of 10, 5 books with a rating of 100, and 2 books with a rating of 70. There are no other books on the bookshelf. What is the expected value, to the nearest whole number, of the rating of a book randomly selected from Cameron's bookshelf?",
+      "options": [
+        "A. 18",
+        "B. 60",
+        "C. 67",
+        "D. 85"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 22,
+      "stem": "The 1st term of a certain sequence is −10, and the 2nd term is 1. Each subsequent term is obtained by adding the 2 immediately preceding terms. What is the 5th term of this sequence?",
+      "options": [
+        "F. −23",
+        "G. −17",
+        "H. 19",
+        "J. 34"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 23,
+      "stem": "Which of the following values is the y-value of the solution to the given system of equations? −4y − 3 = x and 2x − 22 = 6y",
+      "options": [
+        "A. y = −2 1/2",
+        "B. y = −2",
+        "C. y = −3/4",
+        "D. y = 5"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 24,
+      "stem": "Some values of the function g are given in the table. One of the following equations defines g. Which one?",
+      "options": [
+        "F. g(x) = −2x − 8",
+        "G. g(x) = −x − 8",
+        "H. g(x) = x² + 2",
+        "J. g(x) = 2x² − 8"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 25,
+      "stem": "The vertex angle of an isosceles triangle is 40°. What is the measure of a base angle?",
+      "options": [
+        "A. 40°",
+        "B. 70°",
+        "C. 100°",
+        "D. 140°"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 26,
+      "stem": "Equilateral triangle ABC is inscribed in circle O. What is the degree measure of minor arc BC?",
+      "options": [
+        "F. 60°",
+        "G. 90°",
+        "H. 120°",
+        "J. 180°"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 27,
+      "stem": "A scale model, where 1 coordinate unit represents 1 mile, is drawn in the standard (x,y) coordinate plane. Angelo's house is at (4,−3), Ella's house is at (4,7), Troy's house is at (−2,7), and Yoko's house is at (−2,−3). Which of the following is closest to the area, in square miles, of the rectangle whose vertices are the real locations of the 4 houses?",
+      "options": [
+        "A. 32",
+        "B. 36",
+        "C. 60",
+        "D. 100"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 28,
+      "stem": "Let the function f be defined as f(x) = −9x². In the standard (x,y) coordinate plane, the graph of y = f(x) undergoes a transformation such that the result is the graph of y = f(x) − 4. Under this transformation the graph of y = f(x) is:",
+      "options": [
+        "F. shifted downward 4 coordinate units.",
+        "G. shifted left 4 coordinate units.",
+        "H. stretched horizontally by a factor of 4.",
+        "J. stretched vertically by a factor of 4."
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 29,
+      "stem": "Which of the following expressions equals the height, in feet, of the tree shown?",
+      "options": [
+        "A. 18 tan 40°",
+        "B. 18 sin 40°",
+        "C. 18 cos 40°",
+        "D. tan 40° / 18"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 30,
+      "stem": "As shown, the number line between 0 and 8 is divided into 6 segments of equal length by points A through E. Which of the following statements about √8 is true?",
+      "options": [
+        "F. √8 is at C.",
+        "G. √8 is at D.",
+        "H. √8 is between A and B.",
+        "J. √8 is between B and C."
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 31,
+      "stem": "Jon often flies his kite. He can only fly his kite on days with wind. He does not fly his kite on every day with wind. For any given day, let Event A be that there is wind and let Event B be that Deon flies his kite. Which of the following values can P(A and B) be?",
+      "options": [
+        "A) 0",
+        "B) 0.5",
+        "C) 1",
+        "D) 1.5"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 32,
+      "stem": "Whenever −3x³ + 12x / (x³ − x² − 6x) is defined, it is equivalent to:",
+      "options": [
+        "F) −2",
+        "G) 1/(x + 3)",
+        "H) (6 − 3x)/(x + 3)",
+        "J) (6 − 3x)/(x − 3)"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 33,
+      "stem": "The roots of a polynomial equation are 0, 2, and −5. Which of the following is a factored form of the equation?",
+      "options": [
+        "A) (x − 2)(x + 5) = 0",
+        "B) x(x − 2)(x + 5) = 0",
+        "C) x(x + 2)(x − 5) = 0",
+        "D) (x − 2)(x + 5) = x"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 34,
+      "stem": "If (3x − y)/(x + y) = 5/8, then x/y = ?",
+      "options": [
+        "F) 2/19",
+        "G) 13/19",
+        "H) 5/8",
+        "J) 13/7"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 35,
+      "stem": "Let the slope of 3x + 2y = 5 be m₁, and the slope of 6x + 4y = 7 be m₂. Which of the following is true?",
+      "options": [
+        "A) m₁ = m₂",
+        "B) m₁ = 2m₂",
+        "C) 2m₁ = m₂",
+        "D) 7m₁ = 5m₂"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 36,
+      "stem": "The piecewise functions f and g are given. f(x) = {−x² for x < 0; 1 − x for x ≥ 0}; g(x) = {|x| + 7 for x ≤ −1; x − 3 for x > −1}. What is the value of f(g(−1))?",
+      "options": [
+        "F) −16",
+        "G) −7",
+        "H) −5",
+        "J) −1"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 37,
+      "stem": "Let f be defined by f(x) = 4x + 7. Let g be defined by g(x) = −2x² + 11x + 1. The graphs of y = f(x) and y = g(x) intersect at one of the following (x,y) points. Which one?",
+      "options": [
+        "A) (−2,−1)",
+        "B) (1½,13)",
+        "C) (2,1½)",
+        "D) (13,−1)"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 38,
+      "stem": "A tourism organization randomly selected 100 tourists finishing their summer visit to Spain. The organization asked them how many cities they had toured in the country. The table shows the results. Based on these data, for the population of tourists that visited Spain during the summer, what is the best estimate of the mean number of cities toured? (Number of cities: 1, 2, 3; Number of tourists: 10, 40, 50)",
+      "options": [
+        "F) 0.8",
+        "G) 2",
+        "H) 2.4",
+        "J) 3"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 39,
+      "stem": "Given that i is the imaginary unit, which of the following numbers is equal to (7 + 4i)²?",
+      "options": [
+        "A) 33",
+        "B) 65",
+        "C) 14 + 8i",
+        "D) 33 + 56i"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 40,
+      "stem": "The product of 2 complex numbers, x and y, is a real number that is irrational. Which of the following statements cannot be true?",
+      "options": [
+        "F) Both x and y are rational.",
+        "G) Both x and y are imaginary.",
+        "H) The product of x and y is √2.",
+        "J) The product of x and y is negative."
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 41,
+      "stem": "The real solution of the equation 3eˣ = 12 is:",
+      "options": [
+        "A) ln 4",
+        "B) 3 ln 12",
+        "C) 4e",
+        "D) (ln 12)/3"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 42,
+      "stem": "The figure shows △ABC, a right isosceles triangle, inscribed in a circle with center O and radius 10 cm. What is the length, in centimeters, of arc AB shown as the thick curved line?",
+      "options": [
+        "F) 20π",
+        "G) 15π",
+        "H) 10π",
+        "J) 5π"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 43,
+      "stem": "It took Sam x minutes to bike the d miles from home to work. Returning home on the same route, it took Sam y minutes. On the way home his average speed was 2 times his average speed on the way to work. Which of the following equations gives y in terms of x?",
+      "options": [
+        "A) y = x/2",
+        "B) y = x − 2",
+        "C) y = x + 2",
+        "D) y = 2x"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 44,
+      "stem": "The hyperbolas x²/9 − y²/4 = 1 and y²/36 − x²/25 = 1 are graphed in the standard (x,y) coordinate plane. Which of the following equations is an ellipse that intersects all 4 vertices of the hyperbolas?",
+      "options": [
+        "F) x²/9 + y²/36 = 1",
+        "G) x²/25 + y²/4 = 1",
+        "H) x²/25 + y²/9 = 1",
+        "J) (x − 9)² + (y − 36)² = 1"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 45,
+      "stem": "Given that f(x) = ³√(2x − 1), which of the following expressions is the inverse function, f⁻¹(x)?",
+      "options": [
+        "A) 1/(³√(2x − 1))",
+        "B) ³√((x + 1)/2)",
+        "C) (x³ + 1)/2",
+        "D) (2x − 1)³"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 46,
+      "stem": "Cameron took 4 tests, and his scores were as follows: 100, 60, 80, and 30. Cameron took another test that was scored x. The mean score of the 5 tests he took is 72. What is the value of x?",
+      "options": [
+        "A. 54",
+        "B. 67.5",
+        "C. 68.4",
+        "D. 90"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 47,
+      "stem": "In the Venn diagram below, circles S, C, and P represent farms raising sheep, cows, and pigs, respectively. How many of the 47 farms represented in the diagram do not raise cows?",
+      "options": [
+        "F. 15",
+        "G. 17",
+        "H. 18",
+        "J. 19"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 48,
+      "stem": "Marco designs a spinner wheel that has exactly 4 sections: red, blue, green, and yellow. He wants the spinner wheel to have a 25% chance of landing on each section. He spins the wheel 500 times. The results of the spins are shown in this table. Based on the results in this table, one of the following changes would be the best fix. Which one?",
+      "options": [
+        "A. He should decrease the area of the red section by increasing the area of the blue section.",
+        "B. He should increase the area of the red section by decreasing the area of the blue section.",
+        "C. He should increase the area of the red section by decreasing the area of any of the other three sections.",
+        "D. He should decrease the area of the blue section, and then it does not matter which section's area is increased."
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 49,
+      "stem": "In triangle ABC, ∠A and ∠C are congruent, and the measure of ∠B is 143.6°. What is the measure of ∠A?",
+      "options": [
+        "F. 18.2°",
+        "G. 36.4°",
+        "H. 71.8°",
+        "J. 143.6°"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 50,
+      "stem": "Which of the following expressions is equivalent to x² − x − 30?",
+      "options": [
+        "A. (x + 3)(x − 10)",
+        "B. (x + 6)(x − 5)",
+        "C. (x − 6)(x + 5)",
+        "D. (x − 15)(x − 15)"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 51,
+      "stem": "Which of the following matrices is equal to 5[-4 2; 0 -5]?",
+      "options": [
+        "F. [-20 -15; 0 0]",
+        "G. [-10 0; 0 -25]",
+        "H. [1 7; 5 0]",
+        "J. [-20 10; 0 -25]"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 52,
+      "stem": "Lavonne purchased some tickets and snack vouchers for an upcoming event and gave them to the members of her work group. Each member of her work group received the same number of tickets and the same number of snack vouchers. The total number of tickets she gave to her group was 30, and the total number of snack vouchers was 75. Which of the following could be the number of members in Lavonne's work group?",
+      "options": [
+        "A. 10",
+        "B. 15",
+        "C. 25",
+        "D. 30"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 53,
+      "stem": "The initial speed, in miles per hour, of a certain car that skids to a stop can be estimated by multiplying the length of the skid, in feet, by 35 and then taking the square root of the product. According to this method, what is the estimated initial speed, in miles per hour, of the car when it makes a 108-foot skid?",
+      "options": [
+        "F. √143",
+        "G. 7√105",
+        "H. 6√105",
+        "J. 210√3"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 54,
+      "stem": "If 6y = 5x − 1, then x = ?",
+      "options": [
+        "A. (6/5)y − 1",
+        "B. (6/5)y + 1",
+        "C. (6y − 1)/5",
+        "D. (6y + 1)/5"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 55,
+      "stem": "A boat is traveling at a speed of 30 miles per hour. What is the boat's speed in feet per second? (Note: 1 mile = 5,280 feet)",
+      "options": [
+        "F. 20",
+        "G. 30",
+        "H. 44",
+        "J. 176"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 56,
+      "stem": "An object is launched vertically at 30 meters per second from a 55-meter-tall platform. The height, h(t) meters, of the object t seconds after launch is modeled by h(t) = −4.9t² + 30t + 55. What will be the height, in meters, of the object 3 seconds after launch?",
+      "options": [
+        "A. 44.1",
+        "B. 100.9",
+        "C. 145",
+        "D. 189.1"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 57,
+      "stem": "The whole numbers 1 through 30 were each written on separate pieces of paper. Those 30 pieces of paper were put into a jar. One piece of paper will be randomly drawn from this jar. What is the probability that this piece of paper will have a prime number written on it?",
+      "options": [
+        "F. 1/30",
+        "G. 1/20",
+        "H. 1/10",
+        "J. 10/30"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 58,
+      "stem": "For an angle with measure α in a right triangle, sin α = 5/13 and tan α = 5/12. What is the value of cos α?",
+      "options": [
+        "A. 12/13",
+        "B. 12/√194",
+        "C. 12/√119",
+        "D. 13/12"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 59,
+      "stem": "Which of the following values, if any, is the y-value of the solution set to the system of equations below? 2x − y = 7; −4x + 2y = 2",
+      "options": [
+        "F. 2",
+        "G. 5",
+        "H. 9",
+        "J. There is no such value for y."
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 60,
+      "stem": "Which of the following expressions is equivalent to (y + 7)³?",
+      "options": [
+        "A. y³ + 21y² + 147y + 343",
+        "B. y³ + 14y + 343",
+        "C. y³ + 14y + 49",
+        "D. y³ + 343"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 61,
+      "stem": "The sum of 3 positive integers is 180, and the ratio of the integers is 5:3:2. What is the value of the smallest of the integers?",
+      "options": [
+        "F. 18",
+        "G. 36",
+        "H. 54",
+        "J. 90"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 62,
+      "stem": "Which of the following expressions is equivalent to (x² − y²) − (6x² + 4xy − y²)?",
+      "options": [
+        "A. −5x² − 4xy",
+        "B. −5x² + 4xy − 2y²",
+        "C. 7x² + 4xy − 2y²",
+        "D. 7x² + 4xy + 2y²"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 63,
+      "stem": "Given i = √−1, what is √9 + √−16?",
+      "options": [
+        "F. 7i",
+        "G. i√7",
+        "H. 3 − 4i",
+        "J. 3 + 4i"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 64,
+      "stem": "The first 5 terms of an arithmetic sequence are 7, 21, 35, 49, and 63. Let tₙ represent the nth term of the sequence. What is the value of t₂₅?",
+      "options": [
+        "A. 175",
+        "B. 343",
+        "C. 357",
+        "D. 371"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 65,
+      "stem": "At a certain time of day, a flagpole casts a 9.0-foot-long shadow and a nearby 4.0-foot-tall fence post casts a 2.4-foot-long shadow. Given that both the flagpole and the fence post are vertical and on level ground, what is the height, in feet, of the flagpole?",
+      "options": [
+        "F. 5.4",
+        "G. 10.6",
+        "H. 15.0",
+        "J. 15.4"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 66,
+      "stem": "In rectangle ABCD shown, segments BE and CE partition the rectangle into 3 triangles. Given DE = 7 centimeters, BE = 26 centimeters, and CE = 25 centimeters, what is the length, in centimeters, of BC?",
+      "options": [
+        "A. 10",
+        "B. 15",
+        "C. 17",
+        "D. 24"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 67,
+      "stem": "In a particular cleaning solution, the ratio of concentrated solution to water is 3:40. How many cups of concentrated solution should be added to 5 gallons of water to make the cleaning solution in the given ratio? (Note: 4 cups = 1 quart; 4 quarts = 1 gallon)",
+      "options": [
+        "F. 12",
+        "G. 6",
+        "H. 1 1/2",
+        "J. 3/8"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 68,
+      "stem": "Let f(t) = 7e^(3t) + 1. Which of the following numbers is closest to the value of f(5)?",
+      "options": [
+        "A. −2 × 10⁻¹",
+        "B. 3 × 10²",
+        "C. 2 × 10⁷",
+        "D. 6 × 10⁷"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 69,
+      "stem": "Which of the following expresses 40° in radians?",
+      "options": [
+        "F. (2/9)π",
+        "G. (2π)/9",
+        "H. (9π)/2",
+        "J. 7,200/π"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 70,
+      "stem": "Let the function f be defined as f(x) = −9x². In the standard (x,y) coordinate plane, the graph of y = f(x) undergoes a transformation such that the result is the graph of y = f(x) − 4. Under this transformation the graph of y = f(x) is:",
+      "options": [
+        "A. shifted downward 4 coordinate units.",
+        "B. shifted left 4 coordinate units.",
+        "C. stretched horizontally by a factor of 4.",
+        "D. stretched vertically by a factor of 4."
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 71,
+      "stem": "For all positive values of a, b, c, and d, when (1/2)ab² + c = d, which of the following expressions is equal to b?",
+      "options": [
+        "F. √[a(d − c)/2]",
+        "G. √[2(d − c)/a]",
+        "H. √[(2d − c)/a]",
+        "J. √[(d − c)/(2a)]"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 72,
+      "stem": "They divided the vehicles into categories: cars, trucks, and other. They noted the color of each as white, black, red, or other, as shown in the table. What is the probability that a randomly selected truck is black?",
+      "options": [
+        "A) 31/178",
+        "B) 31/479",
+        "C) 31/1,430",
+        "D) 479/1,430"
+      ],
+      "correctAnswer": "B"
+    },
+    {
+      "q": 73,
+      "stem": "A regular hexagon is inscribed in a circle with diameter 18 inches, as shown. What is the perimeter, in inches, of the hexagon?",
+      "options": [
+        "F) 54",
+        "G) 108",
+        "H) 27√3",
+        "J) 54√3"
+      ],
+      "correctAnswer": "F"
+    },
+    {
+      "q": 74,
+      "stem": "Tanya earns $34,000 in her 1st year at a job. She is given a raise of the same dollar amount each year, resulting in her earning $38,080 in the 4th year at the job. What is the total of Tanya's earnings during her 4 years at the job?",
+      "options": [
+        "A) $136,000",
+        "B) $140,080",
+        "C) $144,160",
+        "D) $152,320"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 75,
+      "stem": "In the standard (x,y) coordinate plane, how many points are both 5 coordinate units from the origin and also 2 coordinate units from the line y = 0?",
+      "options": [
+        "F) 0",
+        "G) 1",
+        "H) 2",
+        "J) 4"
+      ],
+      "correctAnswer": "J"
+    },
+    {
+      "q": 76,
+      "stem": "In △ABC, if the measure of ∠A is less than the measure of ∠B, and the measure of ∠B is less than the measure of ∠C, what is the correct ordering of the side lengths, from least to greatest?",
+      "options": [
+        "A) AB < BC < AC",
+        "B) AB < AC < BC",
+        "C) BC < AC < AB",
+        "D) BC < AB < AC"
+      ],
+      "correctAnswer": "B"
+    },
+    {
+      "q": 77,
+      "stem": "Lajuan sells exactly 4 kinds of pies in his bakery: apple, pecan, coconut cream, and peach. Of the pies he sold on Thursday, 1/4 were apple, 1/2 were pecan, 24 were coconut cream, and 8 were peach. How many total pies did Lajuan sell on Thursday?",
+      "options": [
+        "F) 40",
+        "G) 42",
+        "H) 56",
+        "J) 128"
+      ],
+      "correctAnswer": "F"
+    },
+    {
+      "q": 78,
+      "stem": "In a certain quadrilateral, 2 opposite angles each measure (3x + 5)°. The other 2 opposite angles each measure (x + 3)°. What is the value of x?",
+      "options": [
+        "A) 1",
+        "B) 9",
+        "C) 43",
+        "D) 88"
+      ],
+      "correctAnswer": "B"
+    },
+    {
+      "q": 79,
+      "stem": "The first 4 terms of a sequence are shown in the table. The sequence is defined by a₁ = 2 and aₙ = aₙ₋₁ + (n - 1)² for n ≥ 2. What is the sixth term, a₆, of this sequence?",
+      "options": [
+        "F) 68",
+        "G) 57",
+        "H) 41",
+        "J) 32"
+      ],
+      "correctAnswer": "G"
+    },
+    {
+      "q": 80,
+      "stem": "On the real number line, how many integers are between -65/6 and 75/2?",
+      "options": [
+        "A) 8",
+        "B) 28",
+        "C) 48",
+        "D) 140"
+      ],
+      "correctAnswer": "C"
+    },
+    {
+      "q": 81,
+      "stem": "During a particular experiment, 2 events, A and B, can each occur. Events A and B are mutually exclusive during this experiment. Which of the following probabilities is 0?",
+      "options": [
+        "F) P(A)",
+        "G) P(B)",
+        "H) P(A or B)",
+        "J) P(A and B)"
+      ],
+      "correctAnswer": "J"
+    },
+    {
+      "q": 82,
+      "stem": "The polynomial function defined by p(x) = x³ + x² - 8x - 12 has (x - 3) as one of its linear factors. What are all and only the zeros of p?",
+      "options": [
+        "A) -3 and -2",
+        "B) -3 and 2",
+        "C) -2 and 3",
+        "D) 2 and 3"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 83,
+      "stem": "Jonathan rode his bike every day for 18 days. The table shows each of the distances he rode. The table also shows the number of days he rode each of those distances. What is the median daily distance, in miles, that Jonathan rode his bike for the 18 days?",
+      "options": [
+        "F) 3",
+        "G) 3.5",
+        "H) 4",
+        "J) 4.5"
+      ],
+      "correctAnswer": "H"
+    },
+    {
+      "q": 84,
+      "stem": "A tourism organization randomly selected 100 tourists finishing their summer visit to Spain. The organization asked them how many cities they had toured in the country. The table shows the results. Based on these data, for the population of tourists that visited Spain during the summer, what is the best estimate of the mean number of cities toured?",
+      "options": [
+        "A) 0.8",
+        "B) 2",
+        "C) 2.4",
+        "D) 3"
+      ],
+      "correctAnswer": "C"
+    },
+    {
+      "q": 85,
+      "stem": "Given the equation ⁴√x = y, where y is a real number, what must be true of x? x is:",
+      "options": [
+        "F) an even real number.",
+        "G) a rational number.",
+        "H) an integer.",
+        "J) a nonnegative real number."
+      ],
+      "correctAnswer": "J"
+    },
+    {
+      "q": 86,
+      "stem": "Given that 1 ≤ m ≤ 4, 4 ≤ n ≤ 6, and 8 ≤ p ≤ 10, what is the greatest possible value for (m/n)(1/p)?",
+      "options": [
+        "A) 3/20",
+        "B) 1/15",
+        "C) 1/10",
+        "D) 1/8"
+      ],
+      "correctAnswer": "D"
+    },
+    {
+      "q": 87,
+      "stem": "Which of the following datasets has the largest standard deviation?",
+      "options": [
+        "F) 0, 0, 10, 10",
+        "G) 0, 1, 9, 10",
+        "H) 2, 3, 5, 7",
+        "J) 5, 5, 5, 5"
+      ],
+      "correctAnswer": "F"
+    },
+    {
+      "q": 88,
+      "stem": "Michael has a cylindrical fish tank, shown, that has an inside diameter of 18 inches. When he put colored gravel in his fish tank, the water level of the tank rose 2 inches. What is the volume of the gravel in cubic inches?",
+      "options": [
+        "A) 18π",
+        "B) 36π",
+        "C) 162π",
+        "D) 648π"
+      ],
+      "correctAnswer": "C"
+    },
+    {
+      "q": 89,
+      "stem": "The table gives values of f(x), g(x), and h(x) for all positive integers x ≤ 5. Given h(f(g(a))) = 1 where a is a positive integer less than or equal to 5, what is the value of a?",
+      "options": [
+        "F) 2",
+        "G) 3",
+        "H) 4",
+        "J) 5"
+      ],
+      "correctAnswer": "G"
+    },
+    {
+      "q": 90,
+      "stem": "Each time Coin C is tossed, it lands faceup or facedown. The probability of landing faceup is 3 times the probability of landing facedown. In a certain game, the player wins $1.00 when Coin C lands faceup and the player wins $2.00 when Coin C lands facedown. To the nearest cent, what is the expected value of each toss of Coin C in this game?",
+      "options": [
+        "A) $1.25",
+        "B) $1.33",
+        "C) $1.50",
+        "D) $1.67"
+      ],
+      "correctAnswer": "A"
+    },
+    {
+      "q": 91,
+      "stem": "At a college track meet, there are 3 jumping events: high jump, long jump, and triple jump. The Venn diagram below shows the distribution of the number of athletes competing in each jumping event. How many athletes are competing in both high jump and triple jump but not long jump?",
+      "options": [
+        "A) 3",
+        "B) 4",
+        "C) 10",
+        "D) 19"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 92,
+      "stem": "A function, f, is defined by the equation f(x) = x² + 5. What is f(3) + 1?",
+      "options": [
+        "F) 9",
+        "G) 11",
+        "H) 12",
+        "J) 15"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 93,
+      "stem": "Given b = 40 and c = −16, b + c is equal to the product of −4 and what number?",
+      "options": [
+        "A) −14",
+        "B) −6",
+        "C) 6",
+        "D) 14"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 94,
+      "stem": "It takes Collin 24 minutes to walk to school in the morning. What fraction of his 24‑hour day is spent walking to school in the morning?",
+      "options": [
+        "F) 1/1,440",
+        "G) 1/60",
+        "H) 1/24",
+        "J) 1/12"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 95,
+      "stem": "A certain triangle has interior angle measures of (6x)°, (2x)°, and x°. What is the value of x?",
+      "options": [
+        "A) 9",
+        "B) 12",
+        "C) 20",
+        "D) 57"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 96,
+      "stem": "Which of the following matrices is equal to 6[−5 3; 0 −4]?",
+      "options": [
+        "F) [−30 −6]",
+        "G) [1 9; 6 2]",
+        "H) [−5/6 1/2; 0 −2/3]",
+        "J) [−30 18; 0 −24]"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 97,
+      "stem": "For circle O shown, A, B, C, and D are on circle O; A and B are as far apart as possible; C is halfway between A and B along circle O; and D is halfway between C and B along circle O. What percent of the area enclosed by circle O is enclosed by OC, OD, and minor arc CD?",
+      "options": [
+        "A) 12.5%",
+        "B) 25%",
+        "C) 50%",
+        "D) 100%"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 98,
+      "stem": "An object is launched vertically at 30 meters per second from a 55‑meter‑tall platform. The height, h(t) meters, of the object t seconds after launch is modeled by h(t) = −4.9t² + 30t + 55. What will be the height, in meters, of the object 3 seconds after launch?",
+      "options": [
+        "F) 44.1",
+        "G) 100.9",
+        "H) 145",
+        "J) 189.1"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 99,
+      "stem": "Given the function f(x) = 4x² − 14x + 12, which of the following expressions is equivalent to f(x)?",
+      "options": [
+        "A) (−2x + 4)(2x + 3)",
+        "B) (2x − 4)(2x − 3)",
+        "C) (2x − 4)(2x + 3)",
+        "D) (2x − 3)(2x + 4)"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 100,
+      "stem": "Which of the following is equivalent to (6x + 3y) − (y − 2x)?",
+      "options": [
+        "F) 4x + 2y",
+        "G) 5x + y",
+        "H) 5x + 5y",
+        "J) 8x + 2y"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 101,
+      "stem": "Bryce owns an apartment building. He charges $325 per month for each 1‑bedroom apartment and $410 per month for each 2‑bedroom apartment. Bryce charged a total of $4,905 in rent for 13 apartments this month. How many 1‑bedroom apartments did Bryce charge for this month?",
+      "options": [
+        "A) 5",
+        "B) 6",
+        "C) 7",
+        "D) 8"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 102,
+      "stem": "A restaurant surveyed its customers to determine whether or not they like hamburgers and whether or not they like turkey burgers. The table shows the results of the survey. To the nearest 1%, what percent of the customers who responded to the survey like hamburgers?",
+      "options": [
+        "F) 31%",
+        "G) 50%",
+        "H) 63%",
+        "J) 71%"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 103,
+      "stem": "For what value of n does the quadratic equation x² − 4x + n = 0 have solutions of x = 7 and x = −3?",
+      "options": [
+        "A) −21",
+        "B) −4",
+        "C) 4",
+        "D) 10"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 104,
+      "stem": "The lengths of corresponding sides of 2 similar right triangles are in the ratio 4:5. The hypotenuse of the smaller triangle is 20 inches long. How many inches long is the hypotenuse of the larger triangle?",
+      "options": [
+        "F) 9",
+        "G) 20",
+        "H) 21",
+        "J) 25"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 105,
+      "stem": "What is the amplitude of the graph of function f(x) = 1/2 cos(3x + π), shown in the standard (x,y) coordinate plane?",
+      "options": [
+        "A) 1/3",
+        "B) 1/2",
+        "C) 2",
+        "D) 3"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 106,
+      "stem": "A circle in the standard (x,y) coordinate plane has its center at (3,−4) and passes through (0,0). Which of the following is an equation for that circle?",
+      "options": [
+        "F) x² + y² = 5",
+        "G) (x − 3)² + (y + 4)² = 25",
+        "H) (x + 3)² + (y − 4)² = 7",
+        "J) (x + 3)² + (y − 4)² = 25"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 107,
+      "stem": "√112 + √63 + √175 = ?",
+      "options": [
+        "A) 7√12",
+        "B) 7√50",
+        "C) 12√7",
+        "D) 60√7"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 108,
+      "stem": "The sum of 3 positive integers is 180, and the ratio of the integers is 5:3:2. What is the value of the smallest of the integers?",
+      "options": [
+        "F) 18",
+        "G) 36",
+        "H) 54",
+        "J) 90"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 109,
+      "stem": "Jeremy reaches into a box in the closet. The box contains 10 gloves that make up 5 matching pairs. He picks 1 glove at random and puts it on. Then he picks another glove at random. What is the probability that he has picked a matching pair?",
+      "options": [
+        "A) 1/9",
+        "B) 1/5",
+        "C) 4/9",
+        "D) 1/2"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 110,
+      "stem": "During an event, a store gave a free T‑shirt to every 24th customer that entered the store and a free gift certificate to every 60th customer that entered the store. Given that 500 customers entered the store during the event, how many customers received both a free T‑shirt and a free gift certificate?",
+      "options": [
+        "F) 2",
+        "G) 4",
+        "H) 12",
+        "J) 24"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 111,
+      "stem": "Cameron's bookshelf has 3 books with a rating of 10, 5 books with a rating of 100, and 2 books with a rating of 70. There are no other books on the bookshelf. What is the expected value, to the nearest whole number, of the rating of a book randomly selected from Cameron's bookshelf?",
+      "options": [
+        "A) 18",
+        "B) 60",
+        "C) 67",
+        "D) 85"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 112,
+      "stem": "The 1st term of a certain sequence is −10, and the 2nd term is 1. Each subsequent term is obtained by adding the 2 immediately preceding terms. What is the 5th term of this sequence?",
+      "options": [
+        "F) −23",
+        "G) −17",
+        "H) 19",
+        "J) 34"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 113,
+      "stem": "Which of the following values is the y‑value of the solution to the given system of equations? −4y − 3 = x and 2x − 22 = 6y",
+      "options": [
+        "A) y = −2 1/2",
+        "B) y = −2",
+        "C) y = −3/4",
+        "D) y = 5"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 114,
+      "stem": "Some values of the function g are given in the table. One of the following equations defines g. Which one? [Table: x values −2, 0, 1, 2, 3 with g(x) values 0, −8, −6, 0, 10]",
+      "options": [
+        "F) g(x) = −2x − 8",
+        "G) g(x) = −x − 8",
+        "H) g(x) = x² + 2",
+        "J) g(x) = 2x² − 8"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 115,
+      "stem": "The vertex angle of an isosceles triangle is 40°. What is the measure of a base angle?",
+      "options": [
+        "A) 40°",
+        "B) 70°",
+        "C) 100°",
+        "D) 140°"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 116,
+      "stem": "Equilateral triangle ABC is inscribed in circle O. What is the degree measure of minor arc BC?",
+      "options": [
+        "F) 60°",
+        "G) 90°",
+        "H) 120°",
+        "J) 180°"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 117,
+      "stem": "A scale model, where 1 coordinate unit represents 1 mile, is drawn in the standard (x,y) coordinate plane. Angelo's house is at (4,−3), Ella's house is at (4,7), Troy's house is at (−2,7), and Yoko's house is at (−2,−3). Which of the following is closest to the area, in square miles, of the rectangle whose vertices are the real locations of the 4 houses?",
+      "options": [
+        "A) 32",
+        "B) 36",
+        "C) 60",
+        "D) 100"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 118,
+      "stem": "Let the function f be defined as f(x) = −9x². In the standard (x,y) coordinate plane, the graph of y = f(x) undergoes a transformation such that the result is the graph of y = f(x) − 4. Under this transformation the graph of y = f(x) is:",
+      "options": [
+        "F) shifted downward 4 coordinate units.",
+        "G) shifted left 4 coordinate units.",
+        "H) stretched horizontally by a factor of 4.",
+        "J) stretched vertically by a factor of 4."
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 119,
+      "stem": "Which of the following expressions equals the height, in feet, of the tree shown? [Right triangle with 40° angle and 18 feet base]",
+      "options": [
+        "A) 18 tan 40°",
+        "B) 18 sin 40°",
+        "C) 18 cos 40°",
+        "D) tan 40° / 18"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 120,
+      "stem": "As shown, the number line between 0 and 8 is divided into 6 segments of equal length by points A through E. Which of the following statements about √8 is true?",
+      "options": [
+        "F) √8 is at C.",
+        "G) √8 is at D.",
+        "H) √8 is between A and B.",
+        "J) √8 is between B and C."
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 121,
+      "stem": "For any given day, let Event A be that there is wind and let Event B be that Deon flies his kite. He can only fly his kite on days with wind. He does not fly his kite on every day with wind. Which of the following values can P(A and B) be?",
+      "options": [
+        "A) 0",
+        "B) 0.5",
+        "C) 1",
+        "D) 1.5"
+      ],
+      "correctAnswer": "B"
+    },
+    {
+      "q": 122,
+      "stem": "Whenever (-3x^3 + 12x)/(x^3 - x^2 - 6x) is defined, it is equivalent to:",
+      "options": [
+        "F) -2",
+        "G) 1/(x + 3)",
+        "H) (6 - 3x)/(x + 3)",
+        "J) (6 - 3x)/(x - 3)"
+      ],
+      "correctAnswer": "H"
+    },
+    {
+      "q": 123,
+      "stem": "The roots of a polynomial equation are 0, 2, and -5. Which of the following is a factored form of the equation?",
+      "options": [
+        "A) (x - 2)(x + 5) = 0",
+        "B) x(x - 2)(x + 5) = 0",
+        "C) x(x + 2)(x - 5) = 0",
+        "D) (x - 2)(x + 5) = x"
+      ],
+      "correctAnswer": "B"
+    },
+    {
+      "q": 124,
+      "stem": "If (3x - y)/(x + y) = 5/8, then x/y = ?",
+      "options": [
+        "F) 2/19",
+        "G) 13/19",
+        "H) 5/8",
+        "J) 13/7"
+      ],
+      "correctAnswer": "G"
+    },
+    {
+      "q": 125,
+      "stem": "Let the slope of 3x + 2y = 5 be m1, and the slope of 6x + 4y = 7 be m2. Which of the following is true?",
+      "options": [
+        "A) m1 = m2",
+        "B) m1 = 2m2",
+        "C) 2m1 = m2",
+        "D) 7m1 = 5m2"
+      ],
+      "correctAnswer": "A"
+    },
+    {
+      "q": 126,
+      "stem": "The piecewise functions f and g are given. f(x) = {-x^2 for x < 0; 1 - x for x ≥ 0}, g(x) = {|x| + 7 for x ≤ -1; x - 3 for x > -1}. What is the value of f(g(-1))?",
+      "options": [
+        "F) -16",
+        "G) -7",
+        "H) -5",
+        "J) -1"
+      ],
+      "correctAnswer": "H"
+    },
+    {
+      "q": 127,
+      "stem": "Let f be defined by f(x) = 4x + 7. Let g be defined by g(x) = -2x^2 + 11x + 1. The graphs of y = f(x) and y = g(x) intersect at one of the following (x,y) points. Which one?",
+      "options": [
+        "A) (-2, -1)",
+        "B) (1.5, 13)",
+        "C) (2, 1.5)",
+        "D) (13, -1)"
+      ],
+      "correctAnswer": "B"
+    },
+    {
+      "q": 128,
+      "stem": "A tourism organization randomly selected 100 tourists finishing their summer visit to Spain. The organization asked them how many cities they had toured in the country. Based on these data, for the population of tourists that visited Spain during the summer, what is the best estimate of the mean number of cities toured? (Number of cities: 1, 2, 3; Number of tourists: 10, 40, 50)",
+      "options": [
+        "F) 0.8",
+        "G) 2",
+        "H) 2.4",
+        "J) 3"
+      ],
+      "correctAnswer": "H"
+    },
+    {
+      "q": 129,
+      "stem": "Given that i is the imaginary unit, which of the following numbers is equal to (7 + 4i)^2?",
+      "options": [
+        "A) 33",
+        "B) 65",
+        "C) 14 + 8i",
+        "D) 33 + 56i"
+      ],
+      "correctAnswer": "D"
+    },
+    {
+      "q": 130,
+      "stem": "The product of 2 complex numbers, x and y, is a real number that is irrational. Which of the following statements cannot be true?",
+      "options": [
+        "F) Both x and y are rational.",
+        "G) Both x and y are imaginary.",
+        "H) The product of x and y is √2.",
+        "J) The product of x and y is negative."
+      ],
+      "correctAnswer": "F"
+    },
+    {
+      "q": 131,
+      "stem": "The real solution of the equation 3e^x = 12 is:",
+      "options": [
+        "A) ln 4",
+        "B) 3 ln 12",
+        "C) 4e",
+        "D) ln 12 / 3"
+      ],
+      "correctAnswer": "A"
+    },
+    {
+      "q": 132,
+      "stem": "The figure shows triangle ABC, a right isosceles triangle, inscribed in a circle with center O and radius 10 cm. What is the length, in centimeters, of arc AB?",
+      "options": [
+        "F) 20π",
+        "G) 15π",
+        "H) 10π",
+        "J) 5π"
+      ],
+      "correctAnswer": "J"
+    },
+    {
+      "q": 133,
+      "stem": "It took Sam x minutes to bike the d miles from home to work. Returning home on the same route, it took Sam y minutes. On the way home his average speed was 2 times his average speed on the way to work. Which of the following equations gives y in terms of x?",
+      "options": [
+        "A) y = x/2",
+        "B) y = x - 2",
+        "C) y = x + 2",
+        "D) y = 2x"
+      ],
+      "correctAnswer": "A"
+    },
+    {
+      "q": 134,
+      "stem": "The hyperbolas x^2/9 - y^2/4 = 1 and y^2/36 - x^2/25 = 1 are graphed in the standard (x,y) coordinate plane. Which of the following equations is an ellipse that intersects all 4 vertices of the hyperbolas?",
+      "options": [
+        "F) x^2/9 + y^2/36 = 1",
+        "G) x^2/25 + y^2/4 = 1",
+        "H) x^2/25 + y^2/9 = 1",
+        "J) (x - 9)^2 + (y - 36)^2 = 1"
+      ],
+      "correctAnswer": "H"
+    },
+    {
+      "q": 135,
+      "stem": "Given that f(x) = ∛(2x - 1), which of the following expressions is the inverse function, f^(-1)(x)?",
+      "options": [
+        "A) 1/(∛(2x - 1))",
+        "B) ∛((x + 1)/2)",
+        "C) (x^3 + 1)/2",
+        "D) (2x - 1)^3"
+      ],
+      "correctAnswer": "C"
+    }
+  ]
+}

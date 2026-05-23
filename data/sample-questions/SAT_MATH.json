@@ -1,0 +1,1249 @@
+{
+  "source": "CB SAT digital practice tests",
+  "questions": [
+    {
+      "q": 1,
+      "stem": "A group of students voted on five after-school activities. The bar graph shows the number of students who voted for each of the five activities. How many students chose activity 3?",
+      "options": [
+        "A) 25",
+        "B) 39",
+        "C) 48",
+        "D) 50"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 2,
+      "stem": "What percentage of 300 is 75?",
+      "options": [
+        "A) 25%",
+        "B) 50%",
+        "C) 75%",
+        "D) 225%"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 3,
+      "stem": "x²/25 = 36. What is a solution to the given equation?",
+      "options": [
+        "A) 6",
+        "B) 30",
+        "C) 450",
+        "D) 900"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 4,
+      "stem": "3 more than 8 times a number x is equal to 83. Which equation represents this situation?",
+      "options": [
+        "A) 3 + 8x = 83",
+        "B) x + 8 = 83 + 3",
+        "C) x = 3 + 8 + 83",
+        "D) x = 8 + 3 + 83"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 5,
+      "stem": "Hana deposited a fixed amount into her bank account each month. The function f(t) = 100 + 25t gives the amount, in dollars, in Hana's bank account after t monthly deposits. What is the best interpretation of 25 in this context?",
+      "options": [
+        "A) With each monthly deposit, the amount in Hana's bank account increased by $25.",
+        "B) Before Hana made any monthly deposits, the amount in her bank account was $25.",
+        "C) After 1 monthly deposit, the amount in Hana's bank account was $25.",
+        "D) Hana made a total of 25 monthly deposits."
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 6,
+      "stem": "For the linear function f, the table shows three values of x and their corresponding values of f(x):\n\nx | f(x)\n0 | 29\n1 | 32\n2 | 35\n\nWhich equation defines f(x)?",
+      "options": [
+        "A) f(x) = 3x + 29",
+        "B) f(x) = 29x + 32",
+        "C) f(x) = 35x + 29",
+        "D) f(x) = 32x + 35"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 7,
+      "stem": "Right triangles PQR and STU are similar, where P corresponds to S. If the measure of angle Q is 18°, what is the measure of angle S?",
+      "options": [
+        "A) 18°",
+        "B) 72°",
+        "C) 82°",
+        "D) 162°"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 8,
+      "stem": "The scatterplot shows the relationship between two variables, x and y. Which of the following equations is the most appropriate linear model for the data shown?",
+      "options": [
+        "A) y = 0.9 + 9.4x",
+        "B) y = 0.9 − 9.4x",
+        "C) y = 9.4 + 0.9x",
+        "D) y = 9.4 − 0.9x"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 9,
+      "stem": "The given equation describes the relationship between the number of birds, b, and the number of reptiles, r, that can be cared for at a pet care business on a given day: 2.5b + 5r = 80. If the business cares for 16 reptiles on a given day, how many birds can it care for on this day?",
+      "options": [
+        "A) 0",
+        "B) 5",
+        "C) 40",
+        "D) 80"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 10,
+      "stem": "What is an equation of the graph shown?",
+      "options": [
+        "A) y = −2x − 8",
+        "B) y = −x − 8",
+        "C) y = −x − 8",
+        "D) y = 2x − 8"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 11,
+      "stem": "Line t in the xy-plane has a slope of −1/3 and passes through the point (9, 10). Which equation defines line t?",
+      "options": [
+        "A) y = 1/3x − 3",
+        "B) y = 9x + 10",
+        "C) y = −x/3 + 10",
+        "D) y = −x/3 + 13"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 12,
+      "stem": "The function f(x) = 206(1.034)^x models the value, in dollars, of a certain bank account by the end of each year from 1957 through 1972, where x is the number of years after 1957. Which of the following is the best interpretation of \"f(5) is approximately equal to 243\" in this context?",
+      "options": [
+        "A) The value of the bank account is estimated to be approximately 5 dollars greater in 1962 than in 1957.",
+        "B) The value of the bank account is estimated to be approximately 243 dollars in 1962.",
+        "C) The value, in dollars, of the bank account is estimated to be approximately 5 times greater in 1962 than in 1957.",
+        "D) The value of the bank account is estimated to increase by approximately 243 dollars every 5 years between 1957 and 1972."
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 13,
+      "stem": "For a certain rectangular region, the ratio of its length to its width is 35 to 10. If the width of the rectangular region increases by 7 units, how must the length change to maintain this ratio?",
+      "options": [
+        "A) It must decrease by 24.5 units.",
+        "B) It must increase by 24.5 units.",
+        "C) It must decrease by 7 units.",
+        "D) It must increase by 7 units."
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 14,
+      "stem": "Square P has a side length of x inches. Square Q has a perimeter that is 176 inches greater than the perimeter of square P. The function f gives the area of square Q, in square inches. Which of the following defines f?",
+      "options": [
+        "A) f(x) = (x + 44)²",
+        "B) f(x) = (x + 176)²",
+        "C) f(x) = (176x + 44)²",
+        "D) f(x) = (176x + 176)²"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 15,
+      "stem": "The given equation relates the distinct positive real numbers w, x, and y: 14x = 2w/7y + 19. Which equation correctly expresses w in terms of x and y?",
+      "options": [
+        "A) w = x/y − 19",
+        "B) w = 28x/14y − 19",
+        "C) w = 2(x/y − 19)",
+        "D) w = 14y(28x/14y − 19)"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 16,
+      "stem": "A right triangle has sides of length 2√2, 6√2, and √80 units. What is the area of the triangle, in square units?",
+      "options": [
+        "A) 8√2 + √80",
+        "B) 12",
+        "C) 24√80",
+        "D) 24"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 17,
+      "stem": "The expression 4x² + bx − 45, where b is a constant, can be rewritten as (hx + k)(x + j), where h, k, and j are integer constants. Which of the following must be an integer?",
+      "options": [
+        "A) b/h",
+        "B) b/k",
+        "C) 45/h",
+        "D) 45/k"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 18,
+      "stem": "In the given system of equations, a is a constant. The graphs of the equations in the given system intersect at exactly one point, (x, y), in the xy-plane. What is the value of x?\n\ny = 2x² − 21x + 64\ny = 3x + a",
+      "options": [
+        "A) −8",
+        "B) −6",
+        "C) 6",
+        "D) 8"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 19,
+      "stem": "An isosceles right triangle has a hypotenuse of length 5√8 inches. What is the perimeter, in inches, of this triangle?",
+      "options": [
+        "A) 29√2",
+        "B) 58√2",
+        "C) 58 + 58√2",
+        "D) 58 + 116√2"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 20,
+      "stem": "In the xy-plane, a parabola has vertex (9, −14) and intersects the x-axis at two points. If the equation of the parabola is written in the form y = ax² + bx + c, where a, b, and c are constants, which of the following could be the value of a + b + c?",
+      "options": [
+        "A) −23",
+        "B) −19",
+        "C) −14",
+        "D) −12"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 21,
+      "stem": "The line graph shows the estimated number of chipmunks in a state park on April 1 of each year from 1989 to 1999. Based on the line graph, in which year was the estimated number of chipmunks in the state park the greatest?",
+      "options": [
+        "A) 1989",
+        "B) 1994",
+        "C) 1995",
+        "D) 1998"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 22,
+      "stem": "A fish swam a distance of 5,104 yards. How far did the fish swim, in miles? (1 mile = 1,760 yards)",
+      "options": [
+        "A) 0.3",
+        "B) 2.9",
+        "C) 3,344",
+        "D) 6,864"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 23,
+      "stem": "Which expression is equivalent to 12x³ − 5x?",
+      "options": [
+        "A) 7x⁶",
+        "B) 17x³",
+        "C) 7x³",
+        "D) 17x⁶"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 24,
+      "stem": "x/y + y/5 = 18 and y = x. What is the solution (x, y) to the given system of equations?",
+      "options": [
+        "A) (15, 3)",
+        "B) (16, 2)",
+        "C) (17, 1)",
+        "D) (18, 0)"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 25,
+      "stem": "The point (8, 2) in the xy-plane is a solution to which of the following systems of inequalities?",
+      "options": [
+        "A) x > 0, y > 0",
+        "B) x > 0, y < 0",
+        "C) x < 0, y > 0",
+        "D) x < 0, y < 0"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 26,
+      "stem": "h(x) = x² − 3. Which table gives three values of x and their corresponding values of h(x) for the given function h?",
+      "options": [
+        "A) x: 1, 2, 3; h(x): 4, 5, 6",
+        "B) x: 1, 2, 3; h(x): −2, 1, 6",
+        "C) x: 1, 2, 3; h(x): −1, 1, 3",
+        "D) x: 1, 2, 3; h(x): −2, 1, 3"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 27,
+      "stem": "The function f is defined by f(x) = 270(0.1)ˣ. What is the value of f(0)?",
+      "options": [
+        "A) 0",
+        "B) 1",
+        "C) 27",
+        "D) 270"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 28,
+      "stem": "To estimate the proportion of a population that has a certain characteristic, a random sample was selected from the population. Based on the sample, it is estimated that the proportion of the population that has the characteristic is 0.49, with an associated margin of error of 0.04. Based on this estimate and margin of error, which of the following is the most appropriate conclusion about the proportion of the population that has the characteristic?",
+      "options": [
+        "A) It is plausible that the proportion is between 0.45 and 0.53.",
+        "B) It is plausible that the proportion is less than 0.45.",
+        "C) The proportion is exactly 0.49.",
+        "D) It is plausible that the proportion is greater than 0.53."
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 29,
+      "stem": "A moving truck can tow a trailer if the combined weight of the trailer and the boxes it contains is no more than 4,600 pounds. What is the maximum number of boxes this truck can tow in a trailer with a weight of 500 pounds if each box weighs 120 pounds?",
+      "options": [
+        "A) 34",
+        "B) 35",
+        "C) 38",
+        "D) 39"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 30,
+      "stem": "−4x² − 7x = −36. What is the positive solution to the given equation?",
+      "options": [
+        "A) 7/4",
+        "B) 9/4",
+        "C) 4",
+        "D) 7"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 31,
+      "stem": "A proposal for a new library was included on an election ballot. A radio show stated that 3 times as many people voted in favor of the proposal as people who voted against it. A social media post reported that 15,000 more people voted in favor of the proposal than voted against it. Based on these data, how many people voted against the proposal?",
+      "options": [
+        "A) 7,500",
+        "B) 15,000",
+        "C) 22,500",
+        "D) 45,000"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 32,
+      "stem": "In the figure, lines m and n are parallel. If x = 6k + 13 and y = 8k − 29, what is the value of z?",
+      "options": [
+        "A) 3",
+        "B) 21",
+        "C) 41",
+        "D) 139"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 33,
+      "stem": "−3x + 21px = 84. In the given equation, p is a constant. The equation has no solution. What is the value of p?",
+      "options": [
+        "A) 0",
+        "B) 1/7",
+        "C) 4/3",
+        "D) 4"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 34,
+      "stem": "f(x) = (x − 10)(x + 13). The function f is defined by the given equation. For what value of x does f(x) reach its minimum?",
+      "options": [
+        "A) −130",
+        "B) −13",
+        "C) −3/2",
+        "D) 3/2"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 35,
+      "stem": "The function f(x) = (1/9)(x − 7)² + 3 gives a metal ball's height above the ground f(x), in inches, x seconds after it started moving on a track, where 0 ≤ x ≤ 10. Which of the following is the best interpretation of the vertex of the graph of y = f(x) in the xy-plane?",
+      "options": [
+        "A) The metal ball's minimum height was 3 inches above the ground.",
+        "B) The metal ball's minimum height was 7 inches above the ground.",
+        "C) The metal ball's height was 3 inches above the ground when it started moving.",
+        "D) The metal ball's height was 7 inches above the ground when it started moving."
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 36,
+      "stem": "If a new graph of three linear equations is created using the system of equations shown and the equation x + 4y = −16, how many solutions (x, y) will the resulting system of three equations have?",
+      "options": [
+        "A) Zero",
+        "B) Exactly one",
+        "C) Exactly two",
+        "D) Infinitely many"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 37,
+      "stem": "The function f gives the value, in dollars, of a certain piece of equipment after x months of use: f(x) = 5,470(0.64)^(x/12). If the value of the equipment decreases each year by p% of its value the preceding year, what is the value of p?",
+      "options": [
+        "A) 4",
+        "B) 5",
+        "C) 36",
+        "D) 64"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 38,
+      "stem": "The dot plot represents the 15 values in data set A. Data set B is created by adding 56 to each of the values in data set A. Which of the following correctly compares the medians and the ranges of data sets A and B?",
+      "options": [
+        "A) The median of data set B is equal to the median of data set A, and the range of data set B is equal to the range of data set A.",
+        "B) The median of data set B is equal to the median of data set A, and the range of data set B is greater than the range of data set A.",
+        "C) The median of data set B is greater than the median of data set A, and the range of data set B is equal to the range of data set A.",
+        "D) The median of data set B is greater than the median of data set A, and the range of data set B is greater than the range of data set A."
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 39,
+      "stem": "The equation x² + (y − 1)² = 49 represents circle A. Circle B is obtained by shifting circle A down 2 units in the xy-plane. Which of the following equations represents circle B?",
+      "options": [
+        "A) (x − 2)² + (y − 1)² = 49",
+        "B) x² + (y − 3)² = 49",
+        "C) (x + 2)² + (y − 1)² = 49",
+        "D) x² + (y + 1)² = 49"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 40,
+      "stem": "Two identical rectangular prisms each have a height of 90 centimeters (cm). The base of each prism is a square, and the surface area of each prism is K cm². If the prisms are glued together along a square base, the resulting prism has a surface area of (92/47)K cm². What is the side length, in cm, of each square base?",
+      "options": [
+        "A) 4",
+        "B) 8",
+        "C) 9",
+        "D) 16"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 41,
+      "stem": "The graph of a system of a linear equation and a nonlinear equation is shown. What is the solution (x, y) to this system?",
+      "options": [
+        "A) (0, 0)",
+        "B) (0, 4)",
+        "C) (4, 5)",
+        "D) (5, 0)"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 42,
+      "stem": "On the first day of a semester, a film club has 90 members. Each day after the first day of the semester, 10 new members join the film club. If no members leave the film club, how many total members will the film club have 4 days after the first day of the semester?",
+      "options": [
+        "A) 400",
+        "B) 130",
+        "C) 94",
+        "D) 90"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 43,
+      "stem": "s + 7r = 27\nr = 3\n\nWhat is the solution (r, s) to the given system of equations?",
+      "options": [
+        "A) (6, 3)",
+        "B) (3, 6)",
+        "C) (3, 27)",
+        "D) (27, 3)"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 44,
+      "stem": "The table shows selected values from function f.\n\nx | f(x)\n−1 | 16\n0 | 17\n1 | 18\n2 | 19\n\nWhich of the following is the best description of function f?",
+      "options": [
+        "A) Decreasing linear",
+        "B) Increasing linear",
+        "C) Decreasing exponential",
+        "D) Increasing exponential"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 45,
+      "stem": "In the figure, line m is parallel to line n, and line k intersects both lines. Which of the following statements is true?",
+      "options": [
+        "A) The value of x is less than 145.",
+        "B) The value of x is greater than 145.",
+        "C) The value of x is equal to 145.",
+        "D) The value of x cannot be determined."
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 46,
+      "stem": "The equation x + y = 1,440 represents the number of minutes of daylight (between sunrise and sunset), x, and the number of minutes of non-daylight, y, on a particular day in Oak Park, Illinois. If this day has 670 minutes of daylight, how many minutes of non-daylight does it have?",
+      "options": [
+        "A) 670",
+        "B) 770",
+        "C) 1,373",
+        "D) 1,440"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 47,
+      "stem": "Scott selected 20 employees at random from all 400 employees at a company. He found that 16 of the employees in this sample are enrolled in exactly three professional development courses this year. Based on Scott's findings, which of the following is the best estimate of the number of employees at the company who are enrolled in exactly three professional development courses this year?",
+      "options": [
+        "A) 4",
+        "B) 320",
+        "C) 380",
+        "D) 384"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 48,
+      "stem": "If 4x − 28 = −24, what is the value of x − 7?",
+      "options": [
+        "A) −24",
+        "B) −22",
+        "C) −6",
+        "D) −1"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 49,
+      "stem": "For a snowstorm in a certain town, the minimum rate of snowfall recorded was 0.6 inches per hour, and the maximum rate of snowfall recorded was 1.8 inches per hour. Which inequality is true for all values of s, where s represents a rate of snowfall, in inches per hour, recorded for this snowstorm?",
+      "options": [
+        "A) s ≥ 2.4",
+        "B) s ≥ 1.8",
+        "C) 0 ≤ s ≤ 0.6",
+        "D) 0.6 ≤ s ≤ 1.8"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 50,
+      "stem": "A right circular cylinder has a base diameter of 22 centimeters and a height of 6 centimeters. What is the volume, in cubic centimeters, of the cylinder?",
+      "options": [
+        "A) 132π",
+        "B) 264π",
+        "C) 726π",
+        "D) 2,904π"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 51,
+      "stem": "The graph of the rational function f is shown, where y = f(x) and x ≥ 0. Which of the following is the graph of y = f(x) + 5, where x ≥ 0?",
+      "options": [
+        "A) [Graph A]",
+        "B) [Graph B]",
+        "C) [Graph C]",
+        "D) [Graph D]"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 52,
+      "stem": "At a particular track meet, the ratio of coaches to athletes is 1 to 26. If there are x coaches at the track meet, which of the following expressions represents the number of athletes at the track meet?",
+      "options": [
+        "A) x/26",
+        "B) 26x",
+        "C) x + 26",
+        "D) 26/x"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 53,
+      "stem": "Kaylani used fabric measuring 5 yards in length to make each suit for a men's choir. The relationship between the number of suits that Kaylani made, x, and the total length of fabric that she purchased y, in yards, is represented by the equation y − 5x = 6. What is the best interpretation of 6 in this context?",
+      "options": [
+        "A) Kaylani made 6 suits.",
+        "B) Kaylani purchased a total of 6 yards of fabric.",
+        "C) Kaylani used a total of 6 yards of fabric to make the suits.",
+        "D) Kaylani purchased 6 yards more fabric than she used to make the suits."
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 54,
+      "stem": "What is the value of tan(92π/3)?",
+      "options": [
+        "A) −3",
+        "B) −√3/3",
+        "C) √3/3",
+        "D) √3"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 55,
+      "stem": "(x + 4)² + (y − 19)² = 121\n\nThe graph of the given equation is a circle in the xy-plane. The point (a, b) lies on the circle. Which of the following is a possible value for a?",
+      "options": [
+        "A) −16",
+        "B) −14",
+        "C) 11",
+        "D) 19"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 56,
+      "stem": "A right rectangular prism has a height of 9 inches. The length of the prism's base is x inches, which is 7 inches more than the width of the prism's base. Which function V gives the volume of the prism, in cubic inches, in terms of the length of the prism's base?",
+      "options": [
+        "A) V(x) = x(x + 9)(x + 7)",
+        "B) V(x) = x(x + 9)(x − 7)",
+        "C) V(x) = 9x(x + 7)",
+        "D) V(x) = 9x(x − 7)"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 57,
+      "stem": "Which of the following functions has(have) a minimum value at −3?\n\nI. f(x) = −6(3)^x − 3\nII. g(x) = −3(6)^x",
+      "options": [
+        "A) I only",
+        "B) II only",
+        "C) I and II",
+        "D) Neither I nor II"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 58,
+      "stem": "The result of increasing the quantity x by 400% is 60. What is the value of x?",
+      "options": [
+        "A) 12",
+        "B) 15",
+        "C) 240",
+        "D) 340"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 59,
+      "stem": "The function f is defined by f(x) = ax² + bx + c, where a, b, and c are constants. The graph of y = f(x) in the xy-plane passes through the points (7, 0) and (−3, 0). If a is an integer greater than 1, which of the following could be the value of a + b?",
+      "options": [
+        "A) −6",
+        "B) −3",
+        "C) 4",
+        "D) 5"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 60,
+      "stem": "What is 20% of 440?",
+      "options": [
+        "A) 44",
+        "B) 88",
+        "C) 880",
+        "D) 1,760"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 61,
+      "stem": "Argon is placed inside a container with a constant volume. The graph shows the estimated pressure y, in pounds per square inch (psi), of the argon when its temperature is x kelvins. What is the estimated pressure of the argon, in psi, when the temperature is 600 kelvins?",
+      "options": [
+        "A) 6",
+        "B) 12",
+        "C) 300",
+        "D) 600"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 62,
+      "stem": "The function f is defined by f (x) = 4x − 3. What is the value of f (10) ?",
+      "options": [
+        "A) −30",
+        "B) 37",
+        "C) 40",
+        "D) 43"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 63,
+      "stem": "Which expression is equivalent to 16x3y2 + 14xy ?",
+      "options": [
+        "A) 2xy(8xy + 7)",
+        "B) 2xy(8x2y + 7)",
+        "C) 14xy(2x2y + 1)",
+        "D) 14xy(8x2y + 1)"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 64,
+      "stem": "A veterinarian recommends that each day a certain rabbit should eat 25 calories per pound of the rabbit's weight, plus an additional 11 calories. Which equation represents this situation, where c is the total number of calories the veterinarian recommends the rabbit should eat each day if the rabbit's weight is x pounds?",
+      "options": [
+        "A) c = 25x",
+        "B) c = 36x",
+        "C) c = 11x + 25",
+        "D) c = 25x + 11"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 65,
+      "stem": "Line r in the xy-plane has a slope of 4 and passes through the point (0, 6). Which equation defines line r ?",
+      "options": [
+        "A) y = −6x + 4",
+        "B) y = 6x + 4",
+        "C) y = 4x − 6",
+        "D) y = 4x + 6"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 66,
+      "stem": "A competitive diver dives from a platform into the water. The graph shown gives the height above the water y, in meters, of the diver x seconds after diving from the platform. What is the best interpretation of the x-intercept of the graph?",
+      "options": [
+        "A) The diver reaches a maximum height above the water at 1.6 seconds.",
+        "B) The diver hits the water at 1.6 seconds.",
+        "C) The diver reaches a maximum height above the water at 0.2 seconds.",
+        "D) The diver hits the water at 0.2 seconds."
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 67,
+      "stem": "The kinetic energy, in joules, of an object with mass 9 kilograms traveling at a speed of v meters per second is given by the function K, where K(v) = 9/2 v2. Which of the following is the best interpretation of K(34) = 5,202 in this context?",
+      "options": [
+        "A) The object traveling at 34 meters per second has a kinetic energy of 5,202 joules.",
+        "B) The object traveling at 340 meters per second has a kinetic energy of 5,202 joules.",
+        "C) The object traveling at 5,202 meters per second has a kinetic energy of 34 joules.",
+        "D) The object traveling at 23,409 meters per second has a kinetic energy of 34 joules."
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 68,
+      "stem": "The scatterplot shows the relationship between two variables x and y. A line of best fit for the data is also shown. For how many of the 10 data points is the actual y-value greater than the y-value predicted by the line of best fit?",
+      "options": [
+        "A) 3",
+        "B) 4",
+        "C) 6",
+        "D) 7"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 69,
+      "stem": "At a movie theater, there are a total of 350 customers. Each customer is located in either theater A, theater B, or theater C. If one of these customers is selected at random, the probability of selecting a customer who is located in theater A is 0.48, and the probability of selecting a customer who is located in theater B is 0.24. How many customers are located in theater C?",
+      "options": [
+        "A) 28",
+        "B) 40",
+        "C) 84",
+        "D) 98"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 70,
+      "stem": "Rectangles ABCD and EFGH are similar. The length of each side of EFGH is 6 times the length of the corresponding side of ABCD. The area of ABCD is 54 square units. What is the area, in square units, of EFGH?",
+      "options": [
+        "A) 9",
+        "B) 36",
+        "C) 324",
+        "D) 1,944"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 71,
+      "stem": "Which expression is equivalent to 42a^k + 42ak, where k > 0 ?",
+      "options": [
+        "A) 84a^k",
+        "B) 84ak^2/k",
+        "C) 42a(k + 1)/k",
+        "D) 42a(k2 + 1)/k"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 72,
+      "stem": "Which quadratic equation has no real solutions?",
+      "options": [
+        "A) x2 + 14x − 49 = 0",
+        "B) x2 − 14x + 49 = 0",
+        "C) 5x2 − 14x − 49 = 0",
+        "D) 5x2 − 14x + 49 = 0"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 73,
+      "stem": "A population is predicted to increase by 4% every n months. What is the value of n?",
+      "options": [
+        "A) 8",
+        "B) 12",
+        "C) 18",
+        "D) 72"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 74,
+      "stem": "A circle in the xy-plane has its center at (−1, 1). Line t is tangent to this circle at the point (5, −4). Which of the following points also lies on line t?",
+      "options": [
+        "A) (0, 6)",
+        "B) (4, 7)",
+        "C) (10, 2)",
+        "D) (11, 1)"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 75,
+      "stem": "p + 3 + 8 = 10\n\nWhat value of p is the solution to the given equation?",
+      "options": [
+        "A) −1",
+        "B) 5",
+        "C) 15",
+        "D) 21"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 76,
+      "stem": "The scatterplot shows the relationship between two variables, x and y.\n\nWhich of the following graphs shows the most appropriate model for the data?",
+      "options": [
+        "A) [Graph A]",
+        "B) [Graph B]",
+        "C) [Graph C]",
+        "D) [Graph D]"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 77,
+      "stem": "k − 53 = 912\n\nWhat is the positive solution to the given equation?",
+      "options": [
+        "A) 144",
+        "B) 72",
+        "C) 38",
+        "D) 12"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 78,
+      "stem": "During a portion of a flight, a small airplane's cruising speed varied between 150 miles per hour and 170 miles per hour. Which inequality best represents this situation, where s is the cruising speed, in miles per hour, during this portion of the flight?",
+      "options": [
+        "A) s ≤ 20",
+        "B) s ≤ 150",
+        "C) s ≤ 170",
+        "D) 150 ≤ s ≤ 170"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 79,
+      "stem": "An object was launched upward from a platform. The graph shown models the height above ground, y, in meters, of the object x seconds after it was launched. For which of the following intervals of time was the height of the object increasing for the entire interval?",
+      "options": [
+        "A) From x = 0 to x = 2",
+        "B) From x = 0 to x = 4",
+        "C) From x = 2 to x = 3",
+        "D) From x = 3 to x = 4"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 80,
+      "stem": "f(x) = x + b\n\nFor the linear function f, b is a constant. When x = 0, f(x) = 30. What is the value of b?",
+      "options": [
+        "A) −30",
+        "B) −1/30",
+        "C) 1/30",
+        "D) 30"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 81,
+      "stem": "P(t) = 1,800(1.02)^t\n\nThe function P gives the estimated number of marine mammals in a certain area, where t is the number of years since a study began. What is the best interpretation of P(0) = 1,800 in this context?",
+      "options": [
+        "A) The estimated number of marine mammals in the area was 102 when the study began.",
+        "B) The estimated number of marine mammals in the area was 1,800 when the study began.",
+        "C) The estimated number of marine mammals in the area increased by 102 each year during the study.",
+        "D) The estimated number of marine mammals in the area increased by 1,800 each year during the study."
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 82,
+      "stem": "A manager is responsible for ordering supplies for a shaved ice shop. The shop's inventory starts with 4,500 paper cups, and the manager estimates that 70 of these paper cups are used each day. Based on this estimate, in how many days will the supply of paper cups reach 1,700?",
+      "options": [
+        "A) 20",
+        "B) 40",
+        "C) 60",
+        "D) 80"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 83,
+      "stem": "y > 4x + 8\n\nFor which of the following tables are all the values of x and their corresponding values of y solutions to the given inequality?",
+      "options": [
+        "A) x: 2, 4, 6; y: 19, 30, 41",
+        "B) x: 2, 4, 6; y: 8, 16, 24",
+        "C) x: 2, 4, 6; y: 13, 18, 23",
+        "D) x: 2, 4, 6; y: 13, 21, 29"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 84,
+      "stem": "Which expression is equivalent to (x + 11)(x + 5)(x^2 + 52)?",
+      "options": [
+        "A) x^2 + 23x − 144",
+        "B) x^2 + 23x + 964",
+        "C) x^4 + 12x + 121",
+        "D) x^4 + x + 146"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 85,
+      "stem": "The graph models the number of active projects a company was working on x months after the end of November 2012, where 0 ≤ x ≤ 6. According to the model, what is the predicted number of active projects the company was working on at the end of November 2012?",
+      "options": [
+        "A) 0",
+        "B) 5",
+        "C) 8",
+        "D) 9"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 86,
+      "stem": "The relationship between two variables, x and y, is linear. For every increase in the value of x by 1, the value of y increases by 8. When the value of x is 2, the value of y is 18. Which equation represents this relationship?",
+      "options": [
+        "A) y = 2x + 18",
+        "B) y = 2x + 8",
+        "C) y = 8x + 2",
+        "D) y = 3x + 26"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 87,
+      "stem": "P = 19 − N/C\n\nThe given equation relates the positive numbers P, N, and C. Which equation correctly expresses C in terms of P and N?",
+      "options": [
+        "A) C = (P + 19)/N",
+        "B) C = (P − 19)/N",
+        "C) C = N/(19 + P)",
+        "D) C = N/(19 − P)"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 88,
+      "stem": "w^2 + 12w − 40 = 0\n\nWhich of the following is a solution to the given equation?",
+      "options": [
+        "A) −6 − 2√19",
+        "B) −2√19",
+        "C) √19",
+        "D) −6 + 2√19"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 89,
+      "stem": "The table shown summarizes the number of employees at each of the 17 restaurants in a town.\n\nNumber of employees | Number of restaurants\n2 to 7 | 2\n8 to 13 | 4\n14 to 19 | 2\n20 to 25 | 7\n26 to 31 | 2\n\nWhich of the following could be the median number of employees for the restaurants in this town?",
+      "options": [
+        "A) 2",
+        "B) 9",
+        "C) 15",
+        "D) 21"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 90,
+      "stem": "In 2008, Zinah earned 14% more than in 2007, and in 2009 Zinah earned 4% more than in 2008. If Zinah earned y times as much in 2009 as in 2007, what is the value of y?",
+      "options": [
+        "A) 0.5600",
+        "B) 1.0056",
+        "C) 1.1800",
+        "D) 1.1856"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 91,
+      "stem": "The function f is defined by f(x) = 8x. For what value of x does f(x) = 72?",
+      "options": [
+        "A) 8",
+        "B) 9",
+        "C) 64",
+        "D) 80"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 92,
+      "stem": "In the figure, two lines intersect at a point. Angle 1 and angle 2 are vertical angles. The measure of angle 1 is 72°. What is the measure of angle 2?",
+      "options": [
+        "A) 72°",
+        "B) 108°",
+        "C) 144°",
+        "D) 288°"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 93,
+      "stem": "On a street with 7 houses, 2 houses are blue. If a house from this street is selected at random, what is the probability of selecting a house that is blue?",
+      "options": [
+        "A) 1/7",
+        "B) 2/7",
+        "C) 5/7",
+        "D) 7/7"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 94,
+      "stem": "The graph of function f is shown, where y = f(x). Which of the following describes function f?",
+      "options": [
+        "A) Increasing linear",
+        "B) Decreasing linear",
+        "C) Increasing exponential",
+        "D) Decreasing exponential"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 95,
+      "stem": "The graph of the function f is shown, where y = f(x). What is the y-intercept of the graph?",
+      "options": [
+        "A) (0, −1)",
+        "B) (0, −4)",
+        "C) (0, 1)",
+        "D) (0, 4)"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 96,
+      "stem": "Which expression is equivalent to 5x^5 − 6x^4 + 8x^3?",
+      "options": [
+        "A) x^3(5x^2 − 6)",
+        "B) x^3(5x^2 − 6x + 8)",
+        "C) x^3(8 · 5x^2 − 6x + 1)",
+        "D) x^3(6x^2 − 6x + 8 + 1)"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 97,
+      "stem": "The ratio of the length of line segment XY to the length of line segment ZV is 6 to 1. If the length of line segment XY is 102 inches, what is the length, in inches, of line segment ZV?",
+      "options": [
+        "A) 17",
+        "B) 96",
+        "C) 102",
+        "D) 612"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 98,
+      "stem": "Which equation has the same solution as the given equation 7(2x − 3) = 63?",
+      "options": [
+        "A) 2x − 3 = 9",
+        "B) 2x − 3 = 56",
+        "C) 2x − 21 = 63",
+        "D) 2x − 21 = 78"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 99,
+      "stem": "The function f defined by f(t) = 14t + 9 gives the estimated length, in inches, of a vine plant t months after Tavon purchased it. Which of the following is the best interpretation of 9 in this context?",
+      "options": [
+        "A) Tavon will keep the vine plant for 9 months.",
+        "B) The vine plant is expected to grow 9 inches each month.",
+        "C) The vine plant is expected to grow to a maximum length of 9 inches.",
+        "D) The estimated length of the vine plant was 9 inches when Tavon purchased it."
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 100,
+      "stem": "What is a positive solution to the given equation (x + 2)(x − 5)(x + 9) = 0?",
+      "options": [
+        "A) 3",
+        "B) 4",
+        "C) 5",
+        "D) 18"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 101,
+      "stem": "What is the median of the data set shown: 4, 10, 18, 4, 4, 5, 6, 5?",
+      "options": [
+        "A) 4",
+        "B) 5",
+        "C) 7",
+        "D) 14"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 102,
+      "stem": "A right circular cylinder has a volume of 432 cubic centimeters. The area of the base of the cylinder is 24 square centimeters. What is the height, in centimeters, of the cylinder?",
+      "options": [
+        "A) 18",
+        "B) 24",
+        "C) 216",
+        "D) 10,368"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 103,
+      "stem": "How many distinct real solutions does the given equation x = −8x^12 have?",
+      "options": [
+        "A) Exactly one",
+        "B) Exactly two",
+        "C) Infinitely many",
+        "D) Zero"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 104,
+      "stem": "Line k is defined by y = (7/8)x + 1. Line j is perpendicular to line k in the xy-plane. What is the slope of line j?",
+      "options": [
+        "A) −8",
+        "B) −1/7",
+        "C) 1/8",
+        "D) 8"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 105,
+      "stem": "At the time that an article was first featured on the home page of a news website, there were 40 comments on the article. An exponential model estimates that at the end of each hour after the article was first featured on the home page, the number of comments on the article had increased by 190% of the number of comments on the article at the end of the previous hour. Which of the following equations best represents this model, where C is the estimated number of comments on the article t hours after the article was first featured on the home page and t ≤ 4?",
+      "options": [
+        "A) C = 40(1.19)^t",
+        "B) C = 40(1.9)^t",
+        "C) C = 40(19)^t",
+        "D) C = 40(2.9)^t"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 106,
+      "stem": "The table shows three values of x and their corresponding values of g(x), where g(x) = f(x)/(x + 3) and f is a linear function. What is the y-intercept of the graph of y = f(x) in the xy-plane?",
+      "options": [
+        "A) (0, 36)",
+        "B) (0, 12)",
+        "C) (0, 4)",
+        "D) (0, −9)"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 107,
+      "stem": "Right triangle ABC is shown. What is the value of tan A?",
+      "options": [
+        "A) 3/54",
+        "B) 1/3",
+        "C) √3",
+        "D) 27√3"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 108,
+      "stem": "The table shows the linear relationship between the number of cars, c, on a commuter train and the maximum number of passengers and crew, p, that the train can carry. Which equation represents the linear relationship between c and p?\n\nNumber of cars: 3, 5, 10\nMaximum number of passengers and crew: 174, 284, 559",
+      "options": [
+        "A) c - p = -55 - 9",
+        "B) c - p = 55 - 9",
+        "C) p - c = 55 - 9",
+        "D) p - c = 55 + 9"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 109,
+      "stem": "In triangle ABC, angle B is a right angle. The length of side AB is 10√37 and the length of side BC is 24√37. What is the length of side AC?",
+      "options": [
+        "A) 14√37",
+        "B) 26√37",
+        "C) 34√37",
+        "D) 34√37"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 110,
+      "stem": "f(x) = (1.84)^x\n\nThe function f is defined by the given equation. The equation can be rewritten as f(x) = 1 + p/100)^x, where p is a constant. Which of the following is closest to the value of p?",
+      "options": [
+        "A) 16",
+        "B) 21",
+        "C) 46",
+        "D) 96"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 111,
+      "stem": "The function f is defined by f(x) = ax + b, where a and b are constants. In the xy-plane, the graph of y = f(x) passes through the point (-24, 0), and f(24) < 0. Which of the following must be true?",
+      "options": [
+        "A) f(0) = 24",
+        "B) f(0) = -24",
+        "C) a > b",
+        "D) a < b"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 112,
+      "stem": "In the xy-plane, a circle has center C with coordinates (h, k). Points A and B lie on the circle. Point A has coordinates (h + 1, k + √102), and ∠ACB is a right angle. What is the length of AB?",
+      "options": [
+        "A) √206",
+        "B) 2√102",
+        "C) √(103·2)",
+        "D) √(103·3)"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 113,
+      "stem": "The scatterplot shows the relationship between two variables, x and y, for data set E. A line of best fit is shown. Data set F is created by multiplying the y-coordinate of each data point from data set E by 3.9. Which of the following could be an equation of a line of best fit for data set F?",
+      "options": [
+        "A) y = 46.8 + 5.9x",
+        "B) y = 46.8 + 1.5x",
+        "C) y = 12 + 5.9x",
+        "D) y = 12 + 1.5x"
+      ],
+      "correctAnswer": "?"
+    }
+  ],
+  "fetched": "2026-05-23"
+}

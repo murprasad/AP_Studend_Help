@@ -135,13 +135,21 @@ if (!APPLY) {
   process.exit(0);
 }
 
+// 2026-05-23 — Per user mandate ("don't assume questions are good"),
+// unapprove ALL failures, not just high-precision. The review-only gates
+// (numeric-mismatch, length-skewed) have ~10-20% false positives but the
+// trade-off favors aggressive culling for quality protection. Pass
+// --high-precision-only to revert to old behavior.
+const STRICT_ALL = !args["high-precision-only"];
+
 let unapproved = 0, flagged = 0;
 for (const x of failures) {
-  if (HIGH_PRECISION_GATES.has(x.gate)) {
+  const shouldUnapprove = STRICT_ALL || HIGH_PRECISION_GATES.has(x.gate);
+  if (shouldUnapprove) {
     await sql`UPDATE questions SET "isApproved" = false, "updatedAt" = NOW() WHERE id = ${x.id}`;
     unapproved++;
   } else {
     flagged++;
   }
 }
-console.log(`\nUnapproved: ${unapproved} (high-precision gates) | Flagged-not-unapproved: ${flagged} (review-only gates)`);
+console.log(`\nUnapproved: ${unapproved} | Flagged-only: ${flagged}${STRICT_ALL ? " (strict mode — all failures unapproved)" : " (high-precision only)"}`);

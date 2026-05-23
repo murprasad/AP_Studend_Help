@@ -1,0 +1,1326 @@
+{
+  "source": "ACT.org practice tests (PDF extract)",
+  "fetched": "2026-05-23",
+  "questions": [
+    {
+      "q": 1,
+      "stem": "According to Table 2, at 1 atm, what is the BP of the alkane with the chemical formula C₅H₁₀?",
+      "options": [
+        "A. −130°C",
+        "B. −93°C",
+        "C. 36°C",
+        "D. 49°C"
+      ],
+      "correctAnswer": "D"
+    },
+    {
+      "q": 2,
+      "stem": "For the n-alkanes listed in Table 1, as the number of carbon atoms per molecule increases, the BP at 1 atm:",
+      "options": [
+        "F. increases only.",
+        "G. decreases only.",
+        "H. increases and then decreases.",
+        "J. decreases and then increases."
+      ],
+      "correctAnswer": "F"
+    },
+    {
+      "q": 3,
+      "stem": "At 1 atm, how many of the cycloalkanes listed in Table 2 have an MP above the MP of ice?",
+      "options": [
+        "A. 1",
+        "B. 3",
+        "C. 4",
+        "D. 7"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 4,
+      "stem": "Based on Tables 1 and 2, what is the name of the n-alkane shown in Figure 1, and what is the name of the cycloalkane shown in Figure 1?",
+      "options": [
+        "F. n-alkane: propane; Cycloalkane: cyclopropane",
+        "G. n-alkane: propane; Cycloalkane: cyclobutane",
+        "H. n-alkane: butane; Cycloalkane: cyclopropane",
+        "J. n-alkane: butane; Cycloalkane: cyclobutane"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 5,
+      "stem": "Based on Table 2, in a molecule of any given cycloalkane, the number of hydrogen atoms is always equal to:",
+      "options": [
+        "A. half the number of carbon atoms.",
+        "B. the number of carbon atoms.",
+        "C. twice the number of carbon atoms.",
+        "D. four times the number of carbon atoms."
+      ],
+      "correctAnswer": "C"
+    },
+    {
+      "q": 6,
+      "stem": "Relative to the center of the protostar, does gravity more likely accelerate gas particles inward or outward, and does RP more likely accelerate gas particles inward or outward?",
+      "options": [
+        "F. Gravity: inward; RP: inward",
+        "G. Gravity: inward; RP: outward",
+        "H. Gravity: outward; RP: inward",
+        "J. Gravity: outward; RP: outward"
+      ],
+      "correctAnswer": "G"
+    },
+    {
+      "q": 7,
+      "stem": "Based on Scientist 2's argument, do gas particles more likely accrete near the equator or near the poles of a protostar with a disk?",
+      "options": [
+        "A. Near the equator, because the effect of RP is increased there.",
+        "B. Near the equator, because the effect of RP is reduced there.",
+        "C. Near the poles, because the effect of RP is increased there.",
+        "D. Near the poles, because the effect of RP is reduced there."
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 8,
+      "stem": "One of the most massive stars known is Eta Carinae, which has an approximate mass of 120 M S. Based on the arguments of Scientists 1, 2, and 3, respectively, what is the minimum number of stars, each formed entirely by accretion, that would have been required to form Eta Carinae?",
+      "options": [
+        "F. Scientist 1: 5, Scientist 2: 3, Scientist 3: 1",
+        "G. Scientist 1: 5, Scientist 2: 4, Scientist 3: 2",
+        "H. Scientist 1: 6, Scientist 2: 3, Scientist 3: 1",
+        "J. Scientist 1: 6, Scientist 2: 4, Scientist 3: 2"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 9,
+      "stem": "When the effect of RP overcomes that of gravity, a star is said to have \"emerged from its envelope,\" because that is the first time the star is directly observable from outside the cloud. An observation of which of the following stars emerging from its envelope would support Scientist 2's argument but weaken Scientist 1's argument?",
+      "options": [
+        "A. A 15 M S star",
+        "B. A 20 M S star",
+        "C. A 30 M S star",
+        "D. A 50 M S star"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 10,
+      "stem": "Scientists 2 and 3 agree that a disk forms around a protostar as a result of the protostar's:",
+      "options": [
+        "F. motion.",
+        "G. emission of radiation.",
+        "H. location within a star cluster.",
+        "J. merger with another star."
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 11,
+      "stem": "Which of the scientists, if any, would be likely to agree that the Sun could have formed entirely by accretion?",
+      "options": [
+        "A. Scientist 1 only",
+        "B. Scientist 3 only",
+        "C. Scientists 1, 2, and 3",
+        "D. None of the scientists"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 12,
+      "stem": "Which of the following pie charts best represents the seedling mortality results for Group 4?",
+      "options": [
+        "F. [pie chart option 1]",
+        "G. [pie chart option 2]",
+        "H. [pie chart option 3]",
+        "J. [pie chart option 4]"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 13,
+      "stem": "The pots in which group were most likely covered by the greatest number of layers of the plastic mesh?",
+      "options": [
+        "A. Group 1",
+        "B. Group 2",
+        "C. Group 3",
+        "D. Group 4"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 14,
+      "stem": "Based on the results of the study, approximately what percent of the seedlings that received a sunlight intensity of 10% survived to 10 weeks?",
+      "options": [
+        "F. 8%",
+        "G. 18%",
+        "H. 92%",
+        "J. Cannot be determined from the given information"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 15,
+      "stem": "Suppose that as the plant dry mass increases, the leaf area ratio (a measure of the leaf area per gram of plant mass) decreases. Based on the results of the study, the plants in which group most likely had the lowest leaf area ratio?",
+      "options": [
+        "A. Group 1",
+        "B. Group 2",
+        "C. Group 3",
+        "D. Group 4"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 16,
+      "stem": "The effect of what abiotic factor was examined in the study?",
+      "options": [
+        "F. Average dry mass",
+        "G. Average precipitation",
+        "H. Seedling mortality",
+        "J. Sunlight intensity"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 17,
+      "stem": "Based on the results of the study, what was the dry mass of an individual seedling in Group 2?",
+      "options": [
+        "A. 0.18 g",
+        "B. 0.58 g",
+        "C. 2.7 g",
+        "D. Cannot be determined from the given information"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 18,
+      "stem": "In each trial, the flasks were most likely shaken to:",
+      "options": [
+        "F. increase the concentration of B and of MB in the solution.",
+        "G. decrease the concentration of B and of MB in the solution.",
+        "H. maximize the contact between the Congo red and the particles of B and of MB.",
+        "J. minimize the contact between the Congo red and the particles of B and of MB."
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 19,
+      "stem": "Suppose that, in an additional trial of Experiment 3, a shaking time of 100 min had been tested. The % CR removed by MB in this trial would most likely have been between:",
+      "options": [
+        "A. 10% and 20%.",
+        "B. 20% and 30%.",
+        "C. 70% and 80%.",
+        "D. 80% and 90%."
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 20,
+      "stem": "In Experiment 2, the % CR removed by B from the neutral Congo red solution was closest to which of the following?",
+      "options": [
+        "F. 10%",
+        "G. 20%",
+        "H. 90%",
+        "J. 100%"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 21,
+      "stem": "Based on the results of Experiments 2 and 3, the % CR removed would likely be greatest for which of the following combinations of pH and shaking time?",
+      "options": [
+        "A. pH: 5.0, Shaking time: 60 min",
+        "B. pH: 5.0, Shaking time: 240 min",
+        "C. pH: 10.0, Shaking time: 60 min",
+        "D. pH: 10.0, Shaking time: 240 min"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 22,
+      "stem": "Based on Figure 2 and additional information in the passage, how many trials were performed in Experiment 2?",
+      "options": [
+        "F. Two; in each trial, the % CR removed was determined for either B or MB at each of 6 pH values.",
+        "G. Six; in each trial, the % CR removed was determined for both B and MB at 1 of 6 pH values.",
+        "H. Twelve; in each trial, the % CR removed was determined for either B or MB at 1 of 6 pH values.",
+        "J. Eighteen; in each trial, the % CR removed was determined for either B, MB, or Congo red at 1 of 6 pH values."
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 23,
+      "stem": "The concentration of Congo red that remained in the solution when the shaking ended was approximately:",
+      "options": [
+        "A. 0 mg/L.",
+        "B. 100 mg/L.",
+        "C. 200 mg/L.",
+        "D. 300 mg/L."
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 24,
+      "stem": "Which student would be most likely to agree that while the rod was partially submerged, the scale was supporting the entire weight of the rod?",
+      "options": [
+        "F. Student 1",
+        "G. Student 2",
+        "H. Student 3",
+        "J. Student 4"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 25,
+      "stem": "Within a fluid, pressure increases as depth increases. This fact weakens the response(s) given by which student(s)?",
+      "options": [
+        "A. Student 1 only",
+        "B. Students 1 and 2 only",
+        "C. Students 3 and 4 only",
+        "D. Students 2, 3, and 4 only"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 26,
+      "stem": "Suppose that it were determined that the magnitude of B was 1.37 N. Based on Student 2's argument, how much weight would the teacher's hand have been supporting?",
+      "options": [
+        "F. 1.37 N",
+        "G. 3.63 N",
+        "H. 5.00 N",
+        "J. 6.37 N"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 27,
+      "stem": "Suppose that the teacher had held the rod above the water such that no portion of the rod was ever submerged. Based on Student 1's response, how much weight would the teacher's hand have been supporting, 0.00 N or 5.00 N?",
+      "options": [
+        "A. 0.00 N; the teacher's hand would not have been supporting any weight, because the buoyant force would have been 5.00 N.",
+        "B. 0.00 N; the teacher's hand would not have been supporting any weight, because the buoyant force would have been zero.",
+        "C. 5.00 N; the teacher's hand would have been supporting the entire weight of the rod, because the buoyant force would have been 5.00 N.",
+        "D. 5.00 N; the teacher's hand would have been supporting the entire weight of the rod, because the buoyant force would have been zero."
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 28,
+      "stem": "In regard to B, which of the following statements summarizes the responses given by Students 1 and 3?",
+      "options": [
+        "F. Student 1 claimed that B is equal in magnitude to the weight of the displaced water, whereas Student 3 claimed that B is equal in magnitude to the weight of the rod.",
+        "G. Student 1 claimed that B is equal in magnitude to the weight of the rod, whereas Student 3 claimed that B is equal in magnitude to the weight of the displaced water.",
+        "H. Students 1 and 3 both claimed that B is equal in magnitude to the weight of the displaced water.",
+        "J. Students 1 and 3 both claimed that B is equal in magnitude to the weight of the rod."
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 29,
+      "stem": "Consider the \"before\" portion of Figure 1, and assume that the scale was on a lab bench. If the scale itself had a weight of 45.80 N, what total force must the lab bench have been exerting on the underside of the scale?",
+      "options": [
+        "A. 35.80 N",
+        "B. 40.80 N",
+        "C. 50.80 N",
+        "D. 55.80 N"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 30,
+      "stem": "For the batch of jam prepared with 1.0% Pectin Z by mass, as storage time increased, the TMA concentration:",
+      "options": [
+        "F. increased only.",
+        "G. decreased only.",
+        "H. increased and then decreased.",
+        "J. decreased and then increased."
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 31,
+      "stem": "Suppose the scientists had also prepared a batch of jam using 0.5% Pectin Y. Based on the results of the experiment, at a storage time of 3 months, the TMA concentration would most likely have been between:",
+      "options": [
+        "A. 21 mg/100 g and 26 mg/100 g.",
+        "B. 26 mg/100 g and 28 mg/100 g.",
+        "C. 28 mg/100 g and 32 mg/100 g.",
+        "D. 32 mg/100 g and 34 mg/100 g."
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 32,
+      "stem": "Which of the following variables was not an independent variable in the experiment?",
+      "options": [
+        "F. Pectin concentration",
+        "G. Storage time",
+        "H. TMA concentration",
+        "J. Type of pectin"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 33,
+      "stem": "Suppose that the experiment had been repeated, except that the jars had been stored at 30°C. Would the TMA concentrations in this new experiment more likely have been less than or greater than the corresponding TMA concentrations listed in Table 1? The TMA concentrations in the new experiment would most likely have been:",
+      "options": [
+        "A. less, because more TMA would have broken down at the higher temperature.",
+        "B. less, because more TMA would have broken down at the lower temperature.",
+        "C. greater, because less TMA would have broken down at the higher temperature.",
+        "D. greater, because less TMA would have broken down at the lower temperature."
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 34,
+      "stem": "Assume that, in the recipe the scientists used, 100 g of jam was produced for every 70 g of blackberries. If no TMA broke down as the jam was prepared, what mass of TMA would have been found in 100 g of jam before the jars were placed in boiling water?",
+      "options": [
+        "F. 70 mg",
+        "G. 140 mg",
+        "H. 200 mg",
+        "J. 280 mg"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 35,
+      "stem": "A total of how many jars were prepared in the experiment?",
+      "options": [
+        "A. 12",
+        "B. 36",
+        "C. 48",
+        "D. 54"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 36,
+      "stem": "Allele A and Allele B can best be described as:",
+      "options": [
+        "F) different versions of the same gene.",
+        "G) different versions of different genes.",
+        "H) identical versions of the same gene.",
+        "J) identical versions of different genes."
+      ],
+      "correctAnswer": "F"
+    },
+    {
+      "q": 37,
+      "stem": "Suppose that another population of amoebas with an initial Allele A frequency of 0.5 and an initial size of 10,000 had been included in the computer simulation. Based on Figure 1, the frequency of Allele B in G2 for that population would most likely have been closest to which of the following?",
+      "options": [
+        "A) 0.0",
+        "B) 0.5",
+        "C) 0.8",
+        "D) 1.0"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 38,
+      "stem": "According to Figure 2, Allele B was absent from which of P5−P8 in G2?",
+      "options": [
+        "F) P5",
+        "G) P6",
+        "H) P7",
+        "J) P8"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 39,
+      "stem": "Based on Figures 1 and 2, is the effect of genetic drift on allele frequency greater in a relatively large population or in a relatively small population?",
+      "options": [
+        "A) Relatively large; each of P1−P4 experienced greater fluctuations in the frequency of Allele A than did each of P5−P8.",
+        "B) Relatively large; each of P5−P8 experienced greater fluctuations in the frequency of Allele A than did each of P1−P4.",
+        "C) Relatively small; each of P1−P4 experienced greater fluctuations in the frequency of Allele A than did each of P5−P8.",
+        "D) Relatively small; each of P5−P8 experienced greater fluctuations in the frequency of Allele A than did each of P1−P4."
+      ],
+      "correctAnswer": "D"
+    },
+    {
+      "q": 40,
+      "stem": "Based on Figure 1, in the initial generation of each of P1−P4, how many amoebas had the genotype AA, and how many amoebas had the genotype BB?",
+      "options": [
+        "F) Amoebas with genotype AA: 5,000 Amoebas with genotype BB: 5,000",
+        "G) Amoebas with genotype AA: 5,000 Amoebas with genotype BB: 10,000",
+        "H) Amoebas with genotype AA: 10,000 Amoebas with genotype BB: 5,000",
+        "J) Amoebas with genotype AA: 10,000 Amoebas with genotype BB: 10,000"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 41,
+      "stem": "Based on Table 2, which of the following ratios best represents the number of times Behavior 2 was displayed in Habitat X compared to the number of times Behavior 2 was displayed in Habitat Y?",
+      "options": [
+        "A) 1:2",
+        "B) 1:8",
+        "C) 4:5",
+        "D) 5:6"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 42,
+      "stem": "Which of the following observations for brown anoles was(were) the same in both Habitats Y and Z?\n1. Average perching height\n2. The number of times Behavior 4 was displayed\n3. Average display time for Behavior 5",
+      "options": [
+        "A) 1 only",
+        "B) 3 only",
+        "C) 1 and 2 only",
+        "D) 2 and 3 only"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 43,
+      "stem": "Based on Table 3, how many display times were measured for Behavior 5 in Habitat Z?",
+      "options": [
+        "A) 2",
+        "B) 4",
+        "C) 12",
+        "D) Cannot be determined from the given information"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 44,
+      "stem": "Based on Figure 1, for green anoles, the difference in average perching height between Habitat X and Habitat Y was closest to which of the following?",
+      "options": [
+        "A) 0.0 m",
+        "B) 0.3 m",
+        "C) 0.7 m",
+        "D) 1.0 m"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 45,
+      "stem": "A student claimed that anoles are endotherms. Which of the following explains why this claim is incorrect? Anoles are:",
+      "options": [
+        "A) amphibians and primarily generate heat from internal metabolic processes to maintain body temperature.",
+        "B) amphibians and primarily absorb heat from the surrounding environment to maintain body temperature.",
+        "C) reptiles and primarily generate heat from internal metabolic processes to maintain body temperature.",
+        "D) reptiles and primarily absorb heat from the surrounding environment to maintain body temperature."
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 46,
+      "stem": "Which of the following diagrams best shows the location of the basal cavity as described by Student 3?",
+      "options": [
+        "A) [Diagram F]",
+        "B) [Diagram G]",
+        "C) [Diagram H]",
+        "D) [Diagram J]"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 47,
+      "stem": "Suppose that the air temperature along the Antarctic coastline is never warmer than −10°C and that the atmospheric pressure is always 1.0 atmosphere. Does this information support the description given by Student 1?",
+      "options": [
+        "A) Yes, because ice cannot melt at those temperatures.",
+        "B) Yes, because ice can melt at those temperatures.",
+        "C) No, because ice cannot melt at those temperatures.",
+        "D) No, because ice can melt at those temperatures."
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 48,
+      "stem": "Based on the description of the icebergs that are calved along the coastline of Antarctica, do the icebergs sink or float?",
+      "options": [
+        "F) Sink; they are more dense than ocean water.",
+        "G) Sink; they are less dense than ocean water.",
+        "H) Float; they are more dense than ocean water.",
+        "J) Float; they are less dense than ocean water."
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 49,
+      "stem": "Which of Students 1 and 4, if either, implied that the processes involved in iceberg calving will take more than one year to result in the formation of an iceberg?",
+      "options": [
+        "A) Student 1 only",
+        "B) Student 4 only",
+        "C) Both Student 1 and Student 4",
+        "D) Neither Student 1 nor Student 4"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 50,
+      "stem": "In regard to the season(s) involved in iceberg calving, how does Student 2's description differ from Student 3's description? Student 2 indicated that:",
+      "options": [
+        "F) summer and winter are involved in calving, whereas Student 3 indicated that only summer is involved in calving.",
+        "G) summer and winter are involved in calving, whereas Student 3 indicated that only winter is involved in calving.",
+        "H) only summer is involved in calving, whereas Student 3 indicated that summer and winter are involved in calving.",
+        "J) only winter is involved in calving, whereas Student 3 indicated that only summer is involved in calving."
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 51,
+      "stem": "Which of Students 2, 3, and 4 agree(s) with Student 1 that some form of melting occurs on the ice shelf surface?",
+      "options": [
+        "A) Student 2 only",
+        "B) Students 2 and 3 only",
+        "C) Students 2 and 4 only",
+        "D) Students 3 and 4 only"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 52,
+      "stem": "Which of the following statements about the relationship between the number of A. percula per tank and the average SGR is consistent with the results of Experiment 2? On average, as the number of A. percula per tank increased, the average SGR:",
+      "options": [
+        "F) increased only.",
+        "G) decreased only.",
+        "H) remained the same.",
+        "J) varied with no general trend."
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 53,
+      "stem": "Which of the following statements about the percent protein in each diet and the average SGR is consistent with the data shown in the table and the results of Experiment 1? The diet that resulted in the:",
+      "options": [
+        "A) highest average SGR also had the highest percent protein.",
+        "B) highest average SGR had the lowest percent protein.",
+        "C) lowest average SGR had the highest percent protein.",
+        "D) lowest average SGR also had the lowest percent protein."
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 54,
+      "stem": "Based on the results of Experiment 1, if Experiment 2 were repeated except that all the A. percula were fed Diet R, would the average SGRs more likely have been lower or higher for each group?",
+      "options": [
+        "F) Lower; on average, A. percula fed Diet R had an SGR 0.05 percent/day less than those fed Diet T.",
+        "G) Lower; on average, A. percula fed Diet R had an SGR 0.10 percent/day less than those fed Diet T.",
+        "H) Higher; on average, A. percula fed Diet R had an SGR 0.05 percent/day greater than those fed Diet T.",
+        "J) Higher; on average, A. percula fed Diet R had an SGR 0.10 percent/day greater than those fed Diet T."
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 55,
+      "stem": "Suppose that, in the experiments, 1 g of food were added to each tank at each feeding. A total of how many grams of food would have been placed into an individual tank each day?",
+      "options": [
+        "A) 1 g",
+        "B) 3 g",
+        "C) 12 g",
+        "D) 36 g"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 56,
+      "stem": "How many A. percula were placed in each of the tanks in Experiment 1?",
+      "options": [
+        "F) 1",
+        "G) 4",
+        "H) 10",
+        "J) 12"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 57,
+      "stem": "Which of the following was a dependent variable in Experiment 1?",
+      "options": [
+        "A) Volume of seawater in each tank",
+        "B) Specific growth rate",
+        "C) Diet fed to the A. percula",
+        "D) Stocking density of the A. percula"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 58,
+      "stem": "Which of the samples in Experiment 1 was most likely intended as a control for the concentration of vitamin C present in the unheated tomatoes?",
+      "options": [
+        "F) Sample 1",
+        "G) Sample 2",
+        "H) Sample 3",
+        "J) Sample 4"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 59,
+      "stem": "Based on the results of Experiment 2, which of the following incubation times would most likely have produced a tomato mixture with a lycopene concentration between 5 mg/g tomato and 6 mg/g tomato?",
+      "options": [
+        "A) 0 min",
+        "B) 0.2 min",
+        "C) 2 min",
+        "D) 20 min"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 60,
+      "stem": "A student claimed that heating tomatoes decreases the concentration of nutrients present. This claim is consistent with the results shown for which of vitamin C and lycopene, if either?",
+      "options": [
+        "F) Vitamin C only",
+        "G) Lycopene only",
+        "H) Both vitamin C and lycopene",
+        "J) Neither vitamin C nor lycopene"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 61,
+      "stem": "Assume that, in the experiments, the water bath contained pure water at standard atmospheric pressure (1 atmosphere; atm). While the bags containing the samples were being incubated, was the water in the water bath most likely boiling?",
+      "options": [
+        "A) Yes; the incubation temperature was less than the boiling point of water at 1 atm.",
+        "B) Yes; the incubation temperature was greater than the boiling point of water at 1 atm.",
+        "C) No; the incubation temperature was less than the boiling point of water at 1 atm.",
+        "D) No; the incubation temperature was greater than the boiling point of water at 1 atm."
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 62,
+      "stem": "In Experiment 1, how many of the samples had a vitamin C concentration of less than 1.0 μmol/g tomato?",
+      "options": [
+        "F. 0",
+        "G. 1",
+        "H. 3",
+        "J. 4"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 63,
+      "stem": "Consider the following procedures performed in Experiment 2 for Sample 2.\n1. The sample was frozen.\n2. The sample was incubated in the water bath.\n3. The sample and solvent mixture was filtered.\nThese procedures were performed in what order?",
+      "options": [
+        "A. 1, 2, 3",
+        "B. 1, 3, 2",
+        "C. 2, 1, 3",
+        "D. 2, 3, 1"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 64,
+      "stem": "A linear region of a graph is a range of data that can be approximated with a straight line. Based on Figure 1, for Alloy Q initially at a temperature of 550°C, which of the following ranges of F best represents a linear region?",
+      "options": [
+        "F. Between 0 and 10 × 10 7",
+        "G. Between 10 × 10 7 and 20 × 10 7",
+        "H. Between 20 × 10 7 and 30 × 10 7",
+        "J. Between 30 × 10 7 and 40 × 10 7"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 65,
+      "stem": "Consider the 2 trends shown for Alloy Q initially at the temperatures of 280°C and 550°C, from F = 40 × 10 7 through F = 48 × 10 7. If these lines were to continue along the same trend, at which of the following values of F would the average crystal lengths most likely be the same?",
+      "options": [
+        "A. F = 50 × 10 7",
+        "B. F = 60 × 10 7",
+        "C. F = 70 × 10 7",
+        "D. F = 80 × 10 7"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 66,
+      "stem": "Based on Figure 1, which of the following combinations of values for initial temperature and F would produce the shortest average crystal length in an ingot of Alloy Q? The smallest L would be produced with a temperature of:",
+      "options": [
+        "F. 280°C and F = 10 × 10 7",
+        "G. 280°C and F = 40 × 10 7",
+        "H. 550°C and F = 10 × 10 7",
+        "J. 550°C and F = 40 × 10 7"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 67,
+      "stem": "The following table lists the mass of silicon in 50 g samples of 4 different alloys, one of which is Alloy Q. Given the composition of Alloy Q, which sample is most likely Alloy Q?",
+      "options": [
+        "A. Sample W",
+        "B. Sample X",
+        "C. Sample Y",
+        "D. Sample Z"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 68,
+      "stem": "Based on Table 1, if an ingot of Alloy Q had a mass of 200 g, that ingot would contain what mass of Mg?",
+      "options": [
+        "F. 0.22 g",
+        "G. 0.44 g",
+        "H. 2.2 g",
+        "J. 4.4 g"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 69,
+      "stem": "Based on the results of the studies, from which of the 5 leachates was the greatest percent of DOC adsorbed by CM1, CM2, and CM3, respectively?",
+      "options": [
+        "A. CM1: maple, CM2: maple, CM3: rhododendron",
+        "B. CM1: oak, CM2: pine, CM3: magnolia",
+        "C. CM1: pine, CM2: magnolia, CM3: rhododendron",
+        "D. CM1: pine, CM2: magnolia, CM3: magnolia"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 70,
+      "stem": "Based on the results of Study 3, the percent of leachate DOC adsorbed by CM3, averaged across the 5 types of leaves, is closest to which of the following?",
+      "options": [
+        "F. 10%",
+        "G. 20%",
+        "H. 30%",
+        "J. 40%"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 71,
+      "stem": "Is the statement \"CM2 adsorbed a greater percent of the DOC in the maple leachate than did CM3\" supported by the results of Studies 2 and 3?",
+      "options": [
+        "A. Yes; CM2 adsorbed 35% of the leachate DOC, whereas CM3 adsorbed 7%.",
+        "B. Yes; CM2 adsorbed 55% of the leachate DOC, whereas CM3 adsorbed 17%.",
+        "C. No; CM2 adsorbed 7% of the leachate DOC, whereas CM3 adsorbed 35%.",
+        "D. No; CM2 adsorbed 17% of the leachate DOC, whereas CM3 adsorbed 55%."
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 72,
+      "stem": "Based on the results of the studies, which of the 3 clay minerals, if any, reduced the DOC in the oak leachate by more than 50%?",
+      "options": [
+        "F. CM1 only",
+        "G. CM2 only",
+        "H. CM1 and CM3 only",
+        "J. None of the 3 clay minerals"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 73,
+      "stem": "Is a mixture of any one of the leachates and any one of the clay minerals properly considered a solution?",
+      "options": [
+        "A. Yes, because the clay mineral particles are dissolved in the leachate.",
+        "B. Yes, because the clay mineral particles are not dissolved in the leachate.",
+        "C. No, because the clay mineral particles are dissolved in the leachate.",
+        "D. No, because the clay mineral particles are not dissolved in the leachate."
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 74,
+      "stem": "In lake water, DOC is broken down into simpler compounds by electromagnetic energy in the visible wavelength range. What action was taken in the studies to prevent this process from occurring?",
+      "options": [
+        "F. Each mixture of leaves and filtered lake water was placed in the dark.",
+        "G. Each mixture of filtrate and clay mineral was placed in the dark.",
+        "H. Each mixture of leaves and lake water was filtered.",
+        "J. Each mixture of leachate and clay mineral was filtered."
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 75,
+      "stem": "Consider the current shown on the ammeter in Figure 1. Based on the results of Experiment 2, when this current was measured, what was the relative intensity of the light?",
+      "options": [
+        "A. 100%",
+        "B. 50%",
+        "C. 25%",
+        "D. 12.5%"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 76,
+      "stem": "What aspect of the experimental setup was held constant in Experiment 2 but not in Experiment 1?",
+      "options": [
+        "F. Color of light",
+        "G. Light source",
+        "H. Type of metal plate",
+        "J. Distance between metal plate and electrode"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 77,
+      "stem": "Based on Figure 1, are the particles ejected from the metal plate moving toward the electrode or away from the electrode, and are those particles positively charged or negatively charged?",
+      "options": [
+        "A. Toward; positively charged",
+        "B. Toward; negatively charged",
+        "C. Away from; positively charged",
+        "D. Away from; negatively charged"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 78,
+      "stem": "Based on the equation in the passage and the results of Experiment 1, what was the value of M for the metal plate used in the setup?",
+      "options": [
+        "F. 2.14 eV",
+        "G. 2.20 eV",
+        "H. 2.31 eV",
+        "J. 2.42 eV"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 79,
+      "stem": "The cutoff frequency for a particular metal is the lowest frequency of light at which electrons are ejected from the metal. Based on the results of Experiment 1, the cutoff frequency for the metal plate was:",
+      "options": [
+        "A. less than 4.4 × 10 14 Hz.",
+        "B. between 4.4 × 10 14 Hz and 5.2 × 10 14 Hz.",
+        "C. between 5.2 × 10 14 Hz and 5.6 × 10 14 Hz.",
+        "D. greater than 5.6 × 10 14 Hz."
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 80,
+      "stem": "The relationship between E and the frequency of light is given by the equation: E = hf where h is Planck's constant and f is the frequency of light. Based on the data for green light in Table 1, which of the following expressions could be used to determine the value of h?",
+      "options": [
+        "F. 5.6 × 10 14 Hz / 0.11 eV",
+        "G. 0.11 eV / 5.6 × 10 14 Hz",
+        "H. 5.6 × 10 14 Hz / 2.31 eV",
+        "J. 2.31 eV / 5.6 × 10 14 Hz"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 81,
+      "stem": "According to Table 2, at 1 atm, what is the BP of the alkane with the chemical formula C₅H₁₀?",
+      "options": [
+        "A. −130°C",
+        "B. −93°C",
+        "C. 36°C",
+        "D. 49°C"
+      ],
+      "correctAnswer": "D"
+    },
+    {
+      "q": 82,
+      "stem": "For the n-alkanes listed in Table 1, as the number of carbon atoms per molecule increases, the BP at 1 atm:",
+      "options": [
+        "F. increases only.",
+        "G. decreases only.",
+        "H. increases and then decreases.",
+        "J. decreases and then increases."
+      ],
+      "correctAnswer": "F"
+    },
+    {
+      "q": 83,
+      "stem": "At 1 atm, how many of the cycloalkanes listed in Table 2 have an MP above the MP of ice?",
+      "options": [
+        "A. 1",
+        "B. 3",
+        "C. 4",
+        "D. 7"
+      ],
+      "correctAnswer": "B"
+    },
+    {
+      "q": 84,
+      "stem": "Based on Tables 1 and 2, what is the name of the n-alkane shown in Figure 1, and what is the name of the cycloalkane shown in Figure 1?",
+      "options": [
+        "F. n-alkane: propane; Cycloalkane: cyclopropane",
+        "G. n-alkane: propane; Cycloalkane: cyclobutane",
+        "H. n-alkane: butane; Cycloalkane: cyclopropane",
+        "J. n-alkane: butane; Cycloalkane: cyclobutane"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 85,
+      "stem": "Based on Table 2, in a molecule of any given cycloalkane, the number of hydrogen atoms is always equal to:",
+      "options": [
+        "A. half the number of carbon atoms.",
+        "B. the number of carbon atoms.",
+        "C. twice the number of carbon atoms.",
+        "D. four times the number of carbon atoms."
+      ],
+      "correctAnswer": "C"
+    },
+    {
+      "q": 86,
+      "stem": "Relative to the center of the protostar, does gravity more likely accelerate gas particles inward or outward, and does RP more likely accelerate gas particles inward or outward?",
+      "options": [
+        "F. Gravity: inward; RP: inward",
+        "G. Gravity: inward; RP: outward",
+        "H. Gravity: outward; RP: inward",
+        "J. Gravity: outward; RP: outward"
+      ],
+      "correctAnswer": "G"
+    },
+    {
+      "q": 87,
+      "stem": "Based on Scientist 2's argument, do gas particles more likely accrete near the equator or near the poles of a protostar with a disk?",
+      "options": [
+        "A) Near the equator, because the effect of RP is increased there.",
+        "B) Near the equator, because the effect of RP is reduced there.",
+        "C) Near the poles, because the effect of RP is increased there.",
+        "D) Near the poles, because the effect of RP is reduced there."
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 88,
+      "stem": "One of the most massive stars known is Eta Carinae, which has an approximate mass of 120 M S. Based on the arguments of Scientists 1, 2, and 3, respectively, what is the minimum number of stars, each formed entirely by accretion, that would have been required to form Eta Carinae?",
+      "options": [
+        "F) Scientist 1: 5, Scientist 2: 3, Scientist 3: 1",
+        "G) Scientist 1: 5, Scientist 2: 4, Scientist 3: 2",
+        "H) Scientist 1: 6, Scientist 2: 3, Scientist 3: 1",
+        "J) Scientist 1: 6, Scientist 2: 4, Scientist 3: 2"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 89,
+      "stem": "When the effect of RP overcomes that of gravity, a star is said to have \"emerged from its envelope,\" because that is the first time the star is directly observable from outside the cloud. An observation of which of the following stars emerging from its envelope would support Scientist 2's argument but weaken Scientist 1's argument?",
+      "options": [
+        "A) A 15 M S star",
+        "B) A 20 M S star",
+        "C) A 30 M S star",
+        "D) A 50 M S star"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 90,
+      "stem": "Scientists 2 and 3 agree that a disk forms around a protostar as a result of the protostar's:",
+      "options": [
+        "F) motion.",
+        "G) emission of radiation.",
+        "H) location within a star cluster.",
+        "J) merger with another star."
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 91,
+      "stem": "Which of the scientists, if any, would be likely to agree that the Sun could have formed entirely by accretion?",
+      "options": [
+        "A) Scientist 1 only",
+        "B) Scientist 3 only",
+        "C) Scientists 1, 2, and 3",
+        "D) None of the scientists"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 92,
+      "stem": "Which of the following pie charts best represents the seedling mortality results for Group 4?",
+      "options": [
+        "F) [pie chart option]",
+        "G) [pie chart option]",
+        "H) [pie chart option]",
+        "J) [pie chart option]"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 93,
+      "stem": "The pots in which group were most likely covered by the greatest number of layers of the plastic mesh?",
+      "options": [
+        "A) Group 1",
+        "B) Group 2",
+        "C) Group 3",
+        "D) Group 4"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 94,
+      "stem": "Based on the results of the study, approximately what percent of the seedlings that received a sunlight intensity of 10% survived to 10 weeks?",
+      "options": [
+        "F) 8%",
+        "G) 18%",
+        "H) 92%",
+        "J) Cannot be determined from the given information"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 95,
+      "stem": "Suppose that as the plant dry mass increases, the leaf area ratio (a measure of the leaf area per gram of plant mass) decreases. Based on the results of the study, the plants in which group most likely had the lowest leaf area ratio?",
+      "options": [
+        "A) Group 1",
+        "B) Group 2",
+        "C) Group 3",
+        "D) Group 4"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 96,
+      "stem": "The effect of what abiotic factor was examined in the study?",
+      "options": [
+        "F) Average dry mass",
+        "G) Average precipitation",
+        "H) Seedling mortality",
+        "J) Sunlight intensity"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 97,
+      "stem": "Based on the results of the study, what was the dry mass of an individual seedling in Group 2?",
+      "options": [
+        "A) 0.18 g",
+        "B) 0.58 g",
+        "C) 2.7 g",
+        "D) Cannot be determined from the given information"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 98,
+      "stem": "In each trial, the flasks were most likely shaken to:",
+      "options": [
+        "F) increase the concentration of B and of MB in the solution.",
+        "G) decrease the concentration of B and of MB in the solution.",
+        "H) maximize the contact between the Congo red and the particles of B and of MB.",
+        "J) minimize the contact between the Congo red and the particles of B and of MB."
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 99,
+      "stem": "Suppose that, in an additional trial of Experiment 3, a shaking time of 100 min had been tested. The % CR removed by MB in this trial would most likely have been between:",
+      "options": [
+        "A) 10% and 20%.",
+        "B) 20% and 30%.",
+        "C) 70% and 80%.",
+        "D) 80% and 90%."
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 100,
+      "stem": "In Experiment 2, the % CR removed by B from the neutral Congo red solution was closest to which of the following?",
+      "options": [
+        "F) 10%",
+        "G) 20%",
+        "H) 90%",
+        "J) 100%"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 101,
+      "stem": "Based on the results of Experiments 2 and 3, the % CR removed would likely be greatest for which of the following combinations of pH and shaking time?",
+      "options": [
+        "A) pH: 5.0, Shaking time: 60 min",
+        "B) pH: 5.0, Shaking time: 240 min",
+        "C) pH: 10.0, Shaking time: 60 min",
+        "D) pH: 10.0, Shaking time: 240 min"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 102,
+      "stem": "Based on Figure 2 and additional information in the passage, how many trials were performed in Experiment 2?",
+      "options": [
+        "F) Two; in each trial, the % CR removed was determined for either B or MB at each of 6 pH values.",
+        "G) Six; in each trial, the % CR removed was determined for both B and MB at 1 of 6 pH values.",
+        "H) Twelve; in each trial, the % CR removed was determined for either B or MB at 1 of 6 pH values.",
+        "J) Eighteen; in each trial, the % CR removed was determined for either B, MB, or Congo red at 1 of 6 pH values."
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 103,
+      "stem": "The concentration of Congo red that remained in the solution when the shaking ended was approximately:",
+      "options": [
+        "A. 0 mg/L.",
+        "B. 100 mg/L.",
+        "C. 200 mg/L.",
+        "D. 300 mg/L."
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 104,
+      "stem": "Which student would be most likely to agree that while the rod was partially submerged, the scale was supporting the entire weight of the rod?",
+      "options": [
+        "F. Student 1",
+        "G. Student 2",
+        "H. Student 3",
+        "J. Student 4"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 105,
+      "stem": "Within a fluid, pressure increases as depth increases. This fact weakens the response(s) given by which student(s)?",
+      "options": [
+        "A. Student 1 only",
+        "B. Students 1 and 2 only",
+        "C. Students 3 and 4 only",
+        "D. Students 2, 3, and 4 only"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 106,
+      "stem": "Suppose that it were determined that the magnitude of B was 1.37 N. Based on Student 2's argument, how much weight would the teacher's hand have been supporting?",
+      "options": [
+        "F. 1.37 N",
+        "G. 3.63 N",
+        "H. 5.00 N",
+        "J. 6.37 N"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 107,
+      "stem": "Suppose that the teacher had held the rod above the water such that no portion of the rod was ever submerged. Based on Student 1's response, how much weight would the teacher's hand have been supporting, 0.00 N or 5.00 N?",
+      "options": [
+        "A. 0.00 N; the teacher's hand would not have been supporting any weight, because the buoyant force would have been 5.00 N.",
+        "B. 0.00 N; the teacher's hand would not have been supporting any weight, because the buoyant force would have been zero.",
+        "C. 5.00 N; the teacher's hand would have been supporting the entire weight of the rod, because the buoyant force would have been 5.00 N.",
+        "D. 5.00 N; the teacher's hand would have been supporting the entire weight of the rod, because the buoyant force would have been zero."
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 108,
+      "stem": "In regard to B, which of the following statements summarizes the responses given by Students 1 and 3?",
+      "options": [
+        "F. Student 1 claimed that B is equal in magnitude to the weight of the displaced water, whereas Student 3 claimed that B is equal in magnitude to the weight of the rod.",
+        "G. Student 1 claimed that B is equal in magnitude to the weight of the rod, whereas Student 3 claimed that B is equal in magnitude to the weight of the displaced water.",
+        "H. Students 1 and 3 both claimed that B is equal in magnitude to the weight of the displaced water.",
+        "J. Students 1 and 3 both claimed that B is equal in magnitude to the weight of the rod."
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 109,
+      "stem": "Consider the \"before\" portion of Figure 1, and assume that the scale was on a lab bench. If the scale itself had a weight of 45.80 N, what total force must the lab bench have been exerting on the underside of the scale?",
+      "options": [
+        "A. 35.80 N",
+        "B. 40.80 N",
+        "C. 50.80 N",
+        "D. 55.80 N"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 110,
+      "stem": "For the batch of jam prepared with 1.0% Pectin Z by mass, as storage time increased, the TMA concentration:",
+      "options": [
+        "F. increased only.",
+        "G. decreased only.",
+        "H. increased and then decreased.",
+        "J. decreased and then increased."
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 111,
+      "stem": "Suppose the scientists had also prepared a batch of jam using 0.5% Pectin Y. Based on the results of the experiment, at a storage time of 3 months, the TMA concentration would most likely have been between:",
+      "options": [
+        "A. 21 mg/100 g and 26 mg/100 g.",
+        "B. 26 mg/100 g and 28 mg/100 g.",
+        "C. 28 mg/100 g and 32 mg/100 g.",
+        "D. 32 mg/100 g and 34 mg/100 g."
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 112,
+      "stem": "Which of the following variables was not an independent variable in the experiment?",
+      "options": [
+        "F. Pectin concentration",
+        "G. Storage time",
+        "H. TMA concentration",
+        "J. Type of pectin"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 113,
+      "stem": "Suppose that the experiment had been repeated, except that the jars had been stored at 30°C. Would the TMA concentrations in this new experiment more likely have been less than or greater than the corresponding TMA concentrations listed in Table 1? The TMA concentrations in the new experiment would most likely have been:",
+      "options": [
+        "A. less, because more TMA would have broken down at the higher temperature.",
+        "B. less, because more TMA would have broken down at the lower temperature.",
+        "C. greater, because less TMA would have broken down at the higher temperature.",
+        "D. greater, because less TMA would have broken down at the lower temperature."
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 114,
+      "stem": "Assume that, in the recipe the scientists used, 100 g of jam was produced for every 70 g of blackberries. If no TMA broke down as the jam was prepared, what mass of TMA would have been found in 100 g of jam before the jars were placed in boiling water?",
+      "options": [
+        "F. 70 mg",
+        "G. 140 mg",
+        "H. 200 mg",
+        "J. 280 mg"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 115,
+      "stem": "A total of how many jars were prepared in the experiment?",
+      "options": [
+        "A. 12",
+        "B. 36",
+        "C. 48",
+        "D. 54"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 116,
+      "stem": "Allele A and Allele B can best be described as:",
+      "options": [
+        "F) different versions of the same gene.",
+        "G) different versions of different genes.",
+        "H) identical versions of the same gene.",
+        "J) identical versions of different genes."
+      ],
+      "correctAnswer": "F"
+    },
+    {
+      "q": 117,
+      "stem": "Suppose that another population of amoebas with an initial Allele A frequency of 0.5 and an initial size of 10,000 had been included in the computer simulation. Based on Figure 1, the frequency of Allele B in G2 for that population would most likely have been closest to which of the following?",
+      "options": [
+        "A) 0.0",
+        "B) 0.5",
+        "C) 0.8",
+        "D) 1.0"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 118,
+      "stem": "According to Figure 2, Allele B was absent from which of P5−P8 in G2?",
+      "options": [
+        "F) P5",
+        "G) P6",
+        "H) P7",
+        "J) P8"
+      ],
+      "correctAnswer": "?"
+    },
+    {
+      "q": 119,
+      "stem": "Based on Figures 1 and 2, is the effect of genetic drift on allele frequency greater in a relatively large population or in a relatively small population?",
+      "options": [
+        "A) Relatively large; each of P1−P4 experienced greater fluctuations in the frequency of Allele A than did each of P5−P8.",
+        "B) Relatively large; each of P5−P8 experienced greater fluctuations in the frequency of Allele A than did each of P1−P4.",
+        "C) Relatively small; each of P1−P4 experienced greater fluctuations in the frequency of Allele A than did each of P5−P8.",
+        "D) Relatively small; each of P5−P8 experienced greater fluctuations in the frequency of Allele A than did each of P1−P4."
+      ],
+      "correctAnswer": "D"
+    },
+    {
+      "q": 120,
+      "stem": "Based on Figure 1, in the initial generation of each of P1−P4, how many amoebas had the genotype AA, and how many amoebas had the genotype BB?",
+      "options": [
+        "F) Amoebas with genotype AA: 5,000 Amoebas with genotype BB: 5,000",
+        "G) Amoebas with genotype AA: 5,000 Amoebas with genotype BB: 10,000",
+        "H) Amoebas with genotype AA: 10,000 Amoebas with genotype BB: 5,000",
+        "J) Amoebas with genotype AA: 10,000 Amoebas with genotype BB: 10,000"
+      ],
+      "correctAnswer": "?"
+    }
+  ]
+}
