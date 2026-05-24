@@ -307,6 +307,12 @@ export default function PracticePage() {
   const [questions, setQuestions] = useState<Question[]>([]);
   const questionsRef = useRef<Question[]>([]);  // always up-to-date for async callbacks
   const [currentIndex, setCurrentIndex] = useState(0);
+  // 2026-05-24 REQ-049 — Stale-response guard (mirrored from PL).
+  // Bug: user submits Q1 → fetch awaits → user clicks Next → currentIndex
+  // advances to Q2 → Q1's response.then() fires → setFeedback writes to Q2
+  // → Q2 options disabled (disabled={!!feedback}) → "frozen Q2/Q3".
+  const currentIndexRef = useRef(0);
+  useEffect(() => { currentIndexRef.current = currentIndex; }, [currentIndex]);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [feedback, setFeedback] = useState<{
     isCorrect: boolean;
@@ -590,6 +596,12 @@ export default function PracticePage() {
 
   async function submitAnswer(answer: string) {
     if (!sessionId || !currentQuestion || isSubmitting) return;
+    // 2026-05-24 — Capture submit context to detect stale-response race.
+    // See PL commit 66d092a for full RCA. Same fix mirrored here.
+    const submitContext = {
+      index: currentIndex,
+      questionId: currentQuestion.id,
+    };
     setSelectedAnswer(answer);
     setIsSubmitting(true);
 
@@ -609,7 +621,16 @@ export default function PracticePage() {
         signal: AbortSignal.timeout(35000),
       });
 
+      // STALE-RESPONSE GUARD: if user advanced past this Q while waiting,
+      // drop the response. currentIndexRef is live (vs the closure's
+      // currentIndex which is captured at call time).
+      if (currentIndexRef.current !== submitContext.index) {
+        return;
+      }
+
       const data = await response.json();
+      // Re-check after second await
+      if (currentIndexRef.current !== submitContext.index) return;
       if (!response.ok) {
         // 503 transient (FRQ AI grading temporarily unavailable) — let the
         // student retry without losing their answer. Don't clear
