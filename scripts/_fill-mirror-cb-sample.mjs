@@ -14,6 +14,7 @@ import "dotenv/config";
 import { readFileSync, existsSync } from "node:fs";
 import crypto from "node:crypto";
 import { normalizeQuestion, runDeterministicGates } from "./lib/_question-gates.mjs";
+import { secondPassVerify } from "./lib/_second-pass-verifier.mjs";
 process.env.DATABASE_URL = (process.env.DATABASE_URL || "").replace(/^["']|["']$/g, "");
 const { neon } = await import("@neondatabase/serverless");
 const sql = neon(process.env.DATABASE_URL);
@@ -86,7 +87,9 @@ YOUR JOB: Generate ${count} questions that test the SAME concept as the referenc
 
 RULES:
 1. Each option starts with "A) "/"B) " prefix.
-2. Explanation MUST start with "Letter X is correct" where X = correctAnswer.
+2. Explanation MUST refer to the answer by VALUE not by letter label
+   (e.g., "The correct answer is 8 because..." — NEVER "Letter C is correct").
+   Letter-label references break when options shuffle.
 3. Explanation 60-160 chars.
 4. NO confession phrases, NO hints in options.
 
@@ -107,6 +110,8 @@ Return JSON only.`;
     q.course = course;
     const gate = runDeterministicGates(q);
     if (!gate.ok) { failed++; continue; }
+    const verify = await secondPassVerify(q);
+    if (!verify.ok) { failed++; continue; }
     const id = crypto.randomUUID();
     try {
       if (isSN(course)) {

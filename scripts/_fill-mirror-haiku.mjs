@@ -11,6 +11,7 @@ import "dotenv/config";
 import { readFileSync, existsSync } from "node:fs";
 import crypto from "node:crypto";
 import { normalizeQuestion, runDeterministicGates } from "./lib/_question-gates.mjs";
+import { secondPassVerify } from "./lib/_second-pass-verifier.mjs";
 process.env.DATABASE_URL = (process.env.DATABASE_URL || "").replace(/^["']|["']$/g, "");
 const { neon } = await import("@neondatabase/serverless");
 const sql = neon(process.env.DATABASE_URL);
@@ -77,7 +78,9 @@ GENERATE ${count} questions in the SAME format:
 - Same intellectual depth
 - VARY values, scenarios — keep the conceptual core
 - For math: ensure correctAnswer is mathematically valid; double-check arithmetic
-- Each explanation MUST start with "Letter X is correct" where X = correctAnswer
+- Explanations MUST refer to the answer by VALUE, never by letter label
+  (e.g., "The answer is 8 because log₂(8)=3" — NOT "Letter C is correct")
+  This eliminates the entire letter-mismatch bug class when options shuffle.
 - Explanation 80-160 chars, single sentence
 - No "the answer is", no hints in options, no confessions
 
@@ -98,6 +101,10 @@ JSON only, no markdown.`;
     q.course = course;
     const gate = runDeterministicGates(q);
     if (!gate.ok) { failed++; continue; }
+    // 2026-05-23 — Second-pass LLM verifier (ChatGPT-recommended QA layer).
+    // Haiku independently re-solves the Q and rejects if disagreement.
+    const verify = await secondPassVerify(q);
+    if (!verify.ok) { failed++; continue; }
     const id = crypto.randomUUID();
     try {
       if (isSN(course)) {
