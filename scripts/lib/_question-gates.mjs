@@ -237,6 +237,12 @@ export function runDeterministicGates(q) {
   if (!q.correctAnswer || !/^[A-E]$/.test(q.correctAnswer)) {
     return { ok: false, gate: "structure", reason: `correctAnswer "${q.correctAnswer}" not a single letter A-E` };
   }
+  // 2026-05-24 Rule 12 — FRQ-format leak: correctAnswer like "Same as explanation",
+  // "See above", "Refer to rubric" should NEVER pass MCQ gate. Already caught by
+  // single-letter check above, but adding explicit signal for telemetry.
+  if (/^(?:same|see|refer|consult|review|check)\b/i.test(String(q.correctAnswer))) {
+    return { ok: false, gate: "structure-frq-leak", reason: `MCQ correctAnswer "${q.correctAnswer}" looks like FRQ rubric text — schema violation` };
+  }
   if (!q.explanation || typeof q.explanation !== "string" || q.explanation.length < 40) {
     return { ok: false, gate: "structure", reason: "explanation missing or shorter than 40 chars" };
   }
@@ -291,6 +297,26 @@ export function runDeterministicGates(q) {
     }
     if (prefixCount > 0 && prefixCount < opts.length) {
       return { ok: false, gate: "options-partial-prefix", reason: `${prefixCount}/${opts.length} options have prefix, inconsistent` };
+    }
+    // 2026-05-24 — Catch "all options labeled with the same letter" bug.
+    // User-reported: MARKETING champion had ["A) ...","A) ...","A) ...","A) ...","A) ..."]
+    // and HUMANITIES (replacement) had the same pattern. Data corruption.
+    const prefixLetters = opts
+      .map((o) => o.trim().match(/^([A-E])[\)\.]/)?.[1])
+      .filter(Boolean);
+    if (prefixLetters.length === opts.length) {
+      const distinct = new Set(prefixLetters);
+      if (distinct.size !== opts.length) {
+        return { ok: false, gate: "options-duplicate-prefix-letters",
+          reason: `${opts.length} options but only ${distinct.size} distinct prefix letters (e.g. all "A)")` };
+      }
+      // Verify prefixes are sequential A, B, C, D[, E]
+      const expected = "ABCDE".slice(0, opts.length).split("");
+      const got = prefixLetters.join("");
+      if (got !== expected.join("")) {
+        return { ok: false, gate: "options-out-of-order-prefix",
+          reason: `prefix letters ${got} not sequential (expected ${expected.join("")})` };
+      }
     }
   }
   // 2d. Mixed option types (Yes/No coexisting with algebraic/numeric)
@@ -424,6 +450,45 @@ export function runDeterministicGates(q) {
       return { ok: false, gate: "stem-truncated-math",
         reason: `stem appears truncated (no math object after verb): "${stemTrim.slice(0, 60)}"` };
     }
+  }
+
+  // 2026-05-24 — Tier-3 Token Truncation Gate (ChatGPT v2 #12).
+  // Detects silently-truncated generations: unmatched parens, abrupt
+  // ending mid-word, dangling math operators.
+  const expl = q.explanation;
+  // Unmatched parens (count open vs close)
+  const openP = (expl.match(/\(/g) || []).length;
+  const closeP = (expl.match(/\)/g) || []).length;
+  if (Math.abs(openP - closeP) >= 2) {
+    return { ok: false, gate: "explanation-unmatched-parens",
+      reason: `explanation has ${openP} open vs ${closeP} close parens — likely truncated` };
+  }
+  // Ends mid-word (last char is a letter not punctuation, and prev char isn't whitespace)
+  const last = expl.trim().slice(-2);
+  if (last && /[a-z][a-z]/.test(last) && !/[.?!:)\]}]$/.test(expl.trim())) {
+    // Allow if ends with common closing words
+    if (!/(\.|\?|!|\bequals|true|false|positive|negative|zero|one|two|three|four|five|six|seven|eight|nine|ten|none|all)$/i.test(expl.trim())) {
+      return { ok: false, gate: "explanation-abrupt-end",
+        reason: `explanation appears truncated mid-word: ends with "${last}"` };
+    }
+  }
+  // Ends with dangling operator (=, +, -, ×, etc.)
+  if (/[=+\-*/×÷^]\s*$/.test(expl.trim())) {
+    return { ok: false, gate: "explanation-dangling-operator",
+      reason: `explanation ends with dangling math operator — likely truncated` };
+  }
+
+  // 2026-05-24 — Tier-1 Explanation-Solution Independence Gate (ChatGPT v2 #5).
+  // "X is correct because it simplifies correctly" — no pedagogy, just
+  // restates the answer. Reject if the explanation is mostly just the
+  // answer value + a tautology.
+  // Heuristic: explanation body (after first sentence) must contain at
+  // least one non-tautological reasoning marker.
+  const REASONING_MARKERS = /\b(because|since|by|using|apply|applied|when|if|therefore|then|so that|substitute|substituting|let|where|note|recall|first|next|after|formula|theorem|property|rule|definition|identity|setting|solving|isolating|combining|distributing|factoring|expanding|multiplying|dividing|adding|subtracting|squaring|integrating|differentiating|evaluating|equation|expression|step)\b/i;
+  const explAfterLead = expl.replace(/^[^.]+\./, "").trim();
+  if (expl.length >= 40 && explAfterLead.length >= 15 && !REASONING_MARKERS.test(expl)) {
+    return { ok: false, gate: "explanation-no-reasoning",
+      reason: `explanation lacks reasoning markers (because/since/by/using/apply/etc.) — likely just restates the answer` };
   }
 
   return { ok: true };
