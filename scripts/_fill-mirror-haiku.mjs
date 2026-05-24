@@ -73,19 +73,28 @@ ${sampleCorrect ? `Answer: ${sampleCorrect}` : ""}
 
 TOPIC: ${suggestedTopic}
 
-GENERATE ${count} questions in the SAME format:
+GENERATE ${count} questions in the SAME format.
+
+🚫 ABSOLUTE FORBIDDEN RULES — any violation = regenerate the entire question:
+- NEVER refer to answer options by letter label (no "Letter C is correct", "Option B", "Choice A")
+- NEVER output a stem that's missing its math object — "Factor x²+5x+6" is OK, "Factor the expression" alone is NOT
+- NEVER output truncated stems ending in "of", "the", "value of", "expression"
+- NEVER output multiple correct answers
+- NEVER reuse the SAME correct-answer text in two options
+- NEVER make a distractor identical to a trivial reword of the correct answer
+- NEVER use "all of the above" / "none of the above" in math/science
+
+✅ REQUIRED:
 - ${numOpts} options labeled A-${letters[numOpts-1]}, each prefixed "X) "
-- Same intellectual depth
-- VARY values, scenarios — keep the conceptual core
-- For math: ensure correctAnswer is mathematically valid; double-check arithmetic
-- Explanations MUST refer to the answer by VALUE, never by letter label
-  (e.g., "The answer is 8 because log₂(8)=3" — NOT "Letter C is correct")
-  This eliminates the entire letter-mismatch bug class when options shuffle.
+- Stem is COMPLETE and self-contained (a fresh solver can answer with only the stem + options)
+- Math: solve it yourself, then pick the option whose VALUE matches your solution
+- Explanations refer to the answer by VALUE not label: "The answer is 8 because log₂(8)=3"
 - Explanation 80-160 chars, single sentence
-- No "the answer is", no hints in options, no confessions
+- All distractors distinct, plausible, and aligned to common student mistakes
+- Mathematically/factually correct — if uncertain, regenerate
 
 OUTPUT exactly:
-{"questions":[{"questionText":"...","options":["A) ...","B) ...",...],"correctAnswer":"A","explanation":"Letter A is correct because ...","topic":"${suggestedTopic}","difficulty":"MEDIUM"}]}
+{"questions":[{"questionText":"...","options":["A) ...","B) ...",...],"correctAnswer":"A","explanation":"The answer is 8 because ...","topic":"${suggestedTopic}","difficulty":"MEDIUM"}]}
 
 JSON only, no markdown.`;
 

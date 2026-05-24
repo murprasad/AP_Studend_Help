@@ -393,6 +393,27 @@ export function runDeterministicGates(q) {
     }
   }
 
+  // 5. Truncated-stem (math-completeness) gate — added 2026-05-24 from ChatGPT
+  // recommendation. Catches stems like "Factor the expression", "Solve for x",
+  // "What is the expanded form of" with no actual math object afterwards.
+  // Gregory (PASS user) hit "What is the expanded form of" in his session.
+  const stemTrim = (q.questionText || "").trim();
+  const TRUNC_PATTERNS = [
+    /^(factor|simplify|evaluate|expand|solve|compute|calculate|differentiate|integrate)\s+(the\s+)?(expression|equation|polynomial|function|formula|value|form)\.?$/i,
+    /^(factor|simplify|evaluate|expand|solve|compute|calculate)\s+(the\s+)?(following|above|given|next)\b/i,
+    /\bexpanded\s+form\s+of\s*[?:.]?$/i,
+    /\bfactored\s+form\s+of\s*[?:.]?$/i,
+    /\bsolve\s+for\s+[a-z]\.?\s*$/i,                          // "Solve for x" with no equation
+    /\bwhat\s+(is|are)\s+(the\s+)?value\s+of\s*[?:.]?$/i,
+    /\bthe\s+expression\s*[?:.]?$/i,                          // ends with bare "the expression"
+  ];
+  for (const re of TRUNC_PATTERNS) {
+    if (re.test(stemTrim)) {
+      return { ok: false, gate: "stem-truncated-math",
+        reason: `stem appears truncated (no math object after verb): "${stemTrim.slice(0, 60)}"` };
+    }
+  }
+
   return { ok: true };
 }
 
