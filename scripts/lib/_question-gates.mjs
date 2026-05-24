@@ -338,6 +338,18 @@ export function runDeterministicGates(q) {
     }
   }
 
+  // 2026-05-24 — Body letter references in explanation are brittle on
+  // shuffle. Catches "B is incorrect", "Option C is wrong", "A is not
+  // correct" anywhere after position 60. User report 2026-05-24 on f∘g
+  // composition Q showed "2x - 5 is correct because… B is incorrect due
+  // to wrong substitution." — if options shuffle, "B" reference is wrong.
+  const INCORRECT_LETTER_RE = /[.,]\s*(?:Letter|Option|Choice|Answer)?\s*\(?[A-E]\)?\s+(?:is\s+(?:in)?correct|is\s+wrong|is\s+not\s+correct)\b/i;
+  const incorrM = q.explanation.match(INCORRECT_LETTER_RE);
+  if (incorrM && incorrM.index !== undefined && incorrM.index >= 60) {
+    return { ok: false, gate: "explanation-body-letter-ref",
+      reason: `body references option letter ("${incorrM[0].trim().slice(0, 40)}") — brittle on shuffle. Use value-based reasoning only.` };
+  }
+
   // 3a. Numeric coherence — only fires for clearly SCALAR answers where
   // the digit *is* the answer (not an incidental year/edition/ordinal).
   // Examples that fire: "x = 7", "0.5", "42", "$1,200".
