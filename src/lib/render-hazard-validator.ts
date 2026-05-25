@@ -46,13 +46,23 @@ export function validateRenderHazards(
 
   // Bug 1: unescaped currency $ that will be misread as LaTeX math.
   // Distinguish currency (`$5`, `$1,000`) from legit inline math (`$x^2$`).
-  // ≥2 currency-style $ AND no math markers → flag. Otherwise skip
-  // because mixed-content stems are ambiguous to a regex parser.
+  //
+  // - Currency: $ immediately followed by a digit.
+  // - Math delimiter: $ followed by non-digit (letter, backslash, brace).
+  //
+  // ≥2 unescaped currency $ in the stem with no matching math-delimiter
+  // intent → the markdown renderer pairs them up as math, italicizing the
+  // numbers + stripping whitespace. Real bug seen 2026-05-12.
+  //
+  // Skipped when the question contains legit math markers (`$x...$`,
+  // `\frac`, `^`, `_{`, etc.) because mixed-content stems are
+  // ambiguous and would need a parser to disambiguate cleanly.
   const allUnescaped = questionText.match(/(?<!\\)\$/g) ?? [];
   if (allUnescaped.length >= 2) {
     const currencyDollars = questionText.match(/(?<!\\)\$\d/g) ?? [];
     const hasMathMarkers = /(?<!\\)\$[A-Za-z\\{]/.test(questionText) ||
       /\\(?:frac|sqrt|sum|int|lim|cdot|times|div|leq|geq|neq|alpha|beta|gamma|theta|pi|infty)/.test(questionText);
+    // Flag only when ≥2 currency-style $ AND no legit math markers present.
     if (currencyDollars.length >= 2 && !hasMathMarkers) {
       return `Render hazard: ${currencyDollars.length} unescaped currency $ — markdown will render as LaTeX math. Escape each as \\$ or write "dollars".`;
     }
@@ -66,6 +76,26 @@ export function validateRenderHazards(
       if (stimTrimmed.length < 20) {
         return `Phantom stimulus: stem references a figure/graph/diagram via "${questionText.match(re)?.[0]}" but stimulus field is empty/missing.`;
       }
+    }
+  }
+
+  // Bug 3 (2026-05-25, Lucas Q5): nested `$...$` inside `\frac{...}`.
+  // Pattern that mangles KaTeX rendering: "$\frac{$2x^{2}$ + 3x}{$x^{2}$ + 1}$"
+  // The outer $ pair closes at the first inner $, leaving the rest as raw text.
+  // Detection: any `\frac{` containing a `$` before its matching `}`.
+  const fracIdx = questionText.indexOf("\\frac{");
+  if (fracIdx >= 0) {
+    let depth = 0;
+    let i = fracIdx + 6;
+    let inFrac = true;
+    while (i < questionText.length && inFrac) {
+      const ch = questionText[i];
+      if (ch === "{") depth++;
+      else if (ch === "}") { if (depth === 0) inFrac = false; else depth--; }
+      else if (ch === "$") {
+        return `Render hazard: nested "$" inside \\frac{} — closes outer math early. Strip the inner $ delimiters (already inside math mode).`;
+      }
+      i++;
     }
   }
 

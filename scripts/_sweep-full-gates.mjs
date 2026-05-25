@@ -77,6 +77,8 @@ const USER_VISIBLE_GATES = new Set([
   "explanation-hallucination-suspicious-precision",
   "explanation-hallucination-weak-hedging",
   "explanation-hallucination-fake-expert-appeal",
+  // Render hazard — Lucas Q5 nested-frac bug (2026-05-25)
+  "render-hazard-nested-frac",
   // UARP §5 surrogate — domain vocabulary expectations (Ayu meiosis-Q class, 2026-05-25)
   "options-missing-canonical-ploidy",
   "options-missing-canonical-selection-type",

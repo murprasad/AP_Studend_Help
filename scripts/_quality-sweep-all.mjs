@@ -29,6 +29,10 @@ const sweeps = [
   // Sprint B-lite (2026-05-24, UARP §6.1) — writes data/question-performance-snapshot.json.
   // Harmless until traffic arrives; thresholds gate by MIN_N=5 so no false flags today.
   { name: "item-performance", cmd: ["node", "scripts/_item-performance-sweep.mjs"] },
+  // UARP §6.4 (2026-05-25) — template-collapse detector; review-only flagging.
+  { name: "cognitive-diversity", cmd: ["node", "scripts/_cognitive-diversity-sweep.mjs"] },
+  // UARP §16 (2026-05-25) — trust certification engine (gold/silver/bronze tier).
+  { name: "trust-certification", cmd: ["node", "scripts/_trust-certification-engine.mjs", ...(APPLY ? ["--apply"] : [])] },
 ];
 
 function run(name, cmd) {

@@ -601,6 +601,24 @@ export function runDeterministicGates(q) {
       reason: `explanation implies multiple correct answers ("${contraM[0].slice(0, 50)}") — MCQ must support EXACTLY one answer` };
   }
 
+  // 2026-05-25 — Render hazard: nested $ inside \frac{} (Lucas Q5 bug).
+  // Pattern that mangles KaTeX: "\frac{$x^{2}$ + 1}{$y^{2}$ + 1}" — outer
+  // math closes at first inner $, leaving the rest as raw text.
+  const fracIdx = (q.questionText || "").indexOf("\\frac{");
+  if (fracIdx >= 0) {
+    let depth = 0, i = fracIdx + 6, inFrac = true;
+    while (i < q.questionText.length && inFrac) {
+      const ch = q.questionText[i];
+      if (ch === "{") depth++;
+      else if (ch === "}") { if (depth === 0) inFrac = false; else depth--; }
+      else if (ch === "$") {
+        return { ok: false, gate: "render-hazard-nested-frac",
+          reason: 'nested "$" inside \\frac{} — closes outer math early; strip inner $ delimiters' };
+      }
+      i++;
+    }
+  }
+
   // 2026-05-24 — Tier-1 Explanation-Solution Independence Gate (ChatGPT v2 #5).
   // "X is correct because it simplifies correctly" — no pedagogy, just
   // restates the answer. Reject if the explanation is mostly just the
