@@ -113,6 +113,62 @@ const DOMAIN_VOCAB_EXPECTATIONS = [
   { stemRe: /\btype\s+of\s+(?:function|number)\b/i, terms: ["linear","quadratic","polynomial","exponential","logarithmic","rational","integer","rational","irrational","real","complex"], min: 2,
     courses: /COLLEGE_ALGEBRA|COLLEGE_MATH|PRECALCULUS|CALCULUS/i,
     name: "function-type", desc: 'function/number-type Q lacks canonical terms (linear/quadratic/polynomial/etc.)' },
+
+  // 2026-05-25 extension batch
+  // Psychology
+  { stemRe: /\btype\s+of\s+(?:classical\s+)?conditioning\b/i, terms: ["classical","operant","observational","habituation","sensitization"], min: 2,
+    courses: /PSYCHOLOG/i,
+    name: "conditioning-type", desc: 'conditioning-type Q lacks canonical terms (classical/operant/observational)' },
+  { stemRe: /\btype\s+of\s+memory\b/i, terms: ["short-term","long-term","sensory","working","episodic","semantic","procedural","implicit","explicit"], min: 2,
+    courses: /PSYCHOLOG/i,
+    name: "memory-type", desc: 'memory-type Q lacks canonical terms (short-term/long-term/episodic/etc.)' },
+  { stemRe: /\bschool\s+of\s+(?:thought\s+in\s+)?psycholog/i, terms: ["behaviorism","cognitivism","humanism","psychoanalysis","gestalt","functionalism","structuralism"], min: 2,
+    courses: /PSYCHOLOG/i,
+    name: "psych-school", desc: 'psych-school Q lacks canonical terms (behaviorism/cognitivism/humanism)' },
+
+  // Chemistry — reaction types
+  { stemRe: /\btype\s+of\s+(?:chemical\s+)?reaction\b/i, terms: ["synthesis","combination","decomposition","single replacement","double replacement","combustion","redox","neutralization","precipitation","acid-base"], min: 2,
+    courses: /CHEMISTRY/i,
+    name: "reaction-type", desc: 'reaction-type Q lacks canonical terms (synthesis/decomposition/redox/etc.)' },
+
+  // Government — types of government
+  { stemRe: /\btype\s+of\s+government\b/i, terms: ["democracy","republic","monarchy","oligarchy","autocracy","theocracy","dictatorship","totalitarian","authoritarian","parliamentary","federal"], min: 2,
+    courses: /GOVERNMENT|HISTORY|SOCIAL/i,
+    name: "gov-type", desc: 'government-type Q lacks canonical terms (democracy/republic/monarchy/etc.)' },
+
+  // Biology — organelles
+  { stemRe: /\borganelle\b/i, terms: ["mitochondria","nucleus","ribosome","endoplasmic reticulum","golgi","lysosome","vacuole","chloroplast","peroxisome","cytoskeleton"], min: 2,
+    courses: /BIOLOGY|NATURAL_SCIENCES/i,
+    name: "organelle", desc: 'organelle Q lacks canonical names (mitochondria/nucleus/ribosome/etc.)' },
+
+  // English — parts of speech
+  { stemRe: /\bpart\s+of\s+speech\b/i, terms: ["noun","verb","adjective","adverb","pronoun","preposition","conjunction","interjection"], min: 2,
+    courses: /ENGLISH|COMPOSITION|LITERATURE|GRAMMAR/i,
+    name: "part-of-speech", desc: 'part-of-speech Q lacks canonical terms (noun/verb/adjective/etc.)' },
+
+  // English — literary devices
+  { stemRe: /\bliterary\s+(?:device|technique)\b/i, terms: ["metaphor","simile","personification","alliteration","hyperbole","irony","symbolism","onomatopoeia","oxymoron","foreshadowing","allusion","imagery"], min: 2,
+    courses: /LITERATURE|ENGLISH|COMPOSITION/i,
+    name: "literary-device", desc: 'literary-device Q lacks canonical terms (metaphor/simile/irony/etc.)' },
+
+  // History — types of revolution
+  { stemRe: /\btype\s+of\s+revolution\b/i, terms: ["industrial","political","scientific","agricultural","social","cultural","economic","commercial"], min: 2,
+    courses: /HISTORY|WESTERN_CIV/i,
+    name: "revolution-type", desc: 'revolution-type Q lacks canonical adjectives (industrial/political/scientific/etc.)' },
+];
+
+// 2026-05-25 — additional hallucination patterns (UARP §3.6 extension).
+const HALLUCINATION_PATTERNS_V2 = [
+  { re: /\bit\s+is\s+(?:well[\s-]?known|widely\s+accepted|generally\s+agreed)\s+that\b/i, name: "v2-appeal-to-consensus",
+    desc: '"it is well-known/widely accepted that" — appeal to consensus without source' },
+  { re: /\b(?:often|typically|generally)\s+(?:considered|regarded|believed)\s+to\s+be\b/i, name: "v2-vague-attribution",
+    desc: '"often considered to be" — vague attribution, no agent' },
+  { re: /\baccording\s+to\s+(?:some|many|most)\s+(?:experts|scholars|psychologists|economists|historians)\b/i, name: "v2-anonymous-experts",
+    desc: '"according to some/many experts" — no expert actually identified' },
+  { re: /\bapproximately\s+\d{2,}(?:,\d{3})*\s+(?:people|cases|individuals|patients|subjects)\b/i, name: "v2-suspect-population",
+    desc: 'suspect population figure (approximately N people) — likely invented' },
+  { re: /\b(?:research|studies?)\s+(?:from\s+)?\d{4}\s+(?:show|suggest|reveal|prove)/i, name: "v2-fake-year-citation",
+    desc: '"research from YYYY shows" — bare-year citation with no source' },
 ];
 
 const LETTER_CLAIM_REGEX = /(?:^|[^A-Z])(?:option\s+|answer\s+is\s+)?\(?([A-E])\)?\s+is\s+correct/i;
@@ -501,6 +557,13 @@ export function runDeterministicGates(q) {
         reason: desc };
     }
   }
+  // 4b-v2. Additional hallucination patterns (2026-05-25)
+  for (const { re, name, desc } of HALLUCINATION_PATTERNS_V2) {
+    if (re.test(q.explanation)) {
+      return { ok: false, gate: `explanation-hallucination-${name}`,
+        reason: desc };
+    }
+  }
 
   // 4c. Domain vocabulary expectations (UARP §5 surrogate) — Meiosis ploidy
   // bug class (Ayu, 2026-05-25). When stem matches a known pattern, options
@@ -599,6 +662,48 @@ export function runDeterministicGates(q) {
   if (contraM) {
     return { ok: false, gate: "explanation-multi-answer-implication",
       reason: `explanation implies multiple correct answers ("${contraM[0].slice(0, 50)}") — MCQ must support EXACTLY one answer` };
+  }
+
+  // 2026-05-25 ext — Stem quality gates (UARP §4.1 distractor-pedagogy supports).
+  // Stem-vague: "Which is true?" / "What is the answer?" / "Which is correct?"
+  // — no specific noun-phrase, generator was lazy.
+  if (/^(?:which|what)\s+(?:is|are)\s+(?:true|correct|accurate|right|valid)\??$/i.test((q.questionText || "").trim())) {
+    return { ok: false, gate: "stem-vague-no-topic",
+      reason: 'stem has no specific subject ("Which is true?") — generator lazy' };
+  }
+  // Stem missing question mark when it's a question shape (Which/What/How/Why)
+  if (/^(?:which|what|how|why|when|where|who|in\s+which|under\s+what)\b/i.test((q.questionText || "").trim())
+      && !/[?]\s*$/.test((q.questionText || "").trim())) {
+    return { ok: false, gate: "stem-missing-question-mark",
+      reason: 'question-shape stem ("Which/What/How/…") missing terminal "?"' };
+  }
+
+  // 2026-05-25 ext — Options distractor-pedagogy supports.
+  // Lazy negation distractors: ALL options start with same comparative word.
+  // Narrowed 2026-05-25 — over-aggressive original version unapproved 2785 Qs
+  // in lit/comp courses where "The author...", "A method...", "In the passage..."
+  // are legitimate stems. Only flag CLOSED-VOCAB comparative words.
+  const LAZY_PREFIX_WORDS = /^(increased|decreased|increasing|decreasing|positive|negative|higher|lower|greater|lesser|more|less|larger|smaller)$/i;
+  const firstWords = opts
+    .map((o) => o.replace(/^[A-E]\)\s*/, "").split(/\s+/)[0]?.toLowerCase() ?? "")
+    .filter((w) => w.length > 2);
+  const wordCounts = {};
+  for (const w of firstWords) wordCounts[w] = (wordCounts[w] || 0) + 1;
+  for (const [w, n] of Object.entries(wordCounts)) {
+    // Only fire if ALL options share the comparative word, AND it's from the
+    // closed-vocab list — generic "The"/"A"/"In" are valid in lit/comp Qs.
+    if (n === opts.length && opts.length >= 4 && LAZY_PREFIX_WORDS.test(w)) {
+      return { ok: false, gate: "options-lazy-shared-prefix-word",
+        reason: `all ${n} options start with comparative "${w}" — lazy distractor pattern` };
+    }
+  }
+  // Yes/No-style trap: any option is exactly "Yes" / "No" / "True" / "False" / "Maybe" — CB never uses
+  for (const o of opts) {
+    const body = o.replace(/^[A-E]\)\s*/, "").trim().toLowerCase();
+    if (/^(yes|no|true|false|maybe|sometimes|always|never)\.?$/.test(body)) {
+      return { ok: false, gate: "options-bare-yesno",
+        reason: `option is bare "${body}" — CB style requires substantive distractors` };
+    }
   }
 
   // 2026-05-25 — Render hazard: nested $ inside \frac{} (Lucas Q5 bug).

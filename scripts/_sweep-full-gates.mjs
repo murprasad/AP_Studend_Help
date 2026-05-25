@@ -79,6 +79,27 @@ const USER_VISIBLE_GATES = new Set([
   "explanation-hallucination-fake-expert-appeal",
   // Render hazard — Lucas Q5 nested-frac bug (2026-05-25)
   "render-hazard-nested-frac",
+  // 2026-05-25 extension batch
+  "stem-vague-no-topic",
+  "stem-missing-question-mark",
+  "options-lazy-shared-prefix-word",
+  "options-bare-yesno",
+  // Hallucination V2
+  "explanation-hallucination-v2-appeal-to-consensus",
+  "explanation-hallucination-v2-vague-attribution",
+  "explanation-hallucination-v2-anonymous-experts",
+  "explanation-hallucination-v2-suspect-population",
+  "explanation-hallucination-v2-fake-year-citation",
+  // Domain vocab extensions
+  "options-missing-canonical-conditioning-type",
+  "options-missing-canonical-memory-type",
+  "options-missing-canonical-psych-school",
+  "options-missing-canonical-reaction-type",
+  "options-missing-canonical-gov-type",
+  "options-missing-canonical-organelle",
+  "options-missing-canonical-part-of-speech",
+  "options-missing-canonical-literary-device",
+  "options-missing-canonical-revolution-type",
   // UARP §5 surrogate — domain vocabulary expectations (Ayu meiosis-Q class, 2026-05-25)
   "options-missing-canonical-ploidy",
   "options-missing-canonical-selection-type",
