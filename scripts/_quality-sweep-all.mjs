@@ -26,6 +26,9 @@ const sweeps = [
   { name: "full-gates",       cmd: ["node", "scripts/_sweep-full-gates.mjs",           ...(APPLY ? ["--apply"] : [])] },
   { name: "cas-recompute",    cmd: ["npx", "tsx", "scripts/_cas-sweep.mjs",            ...(APPLY ? ["--apply"] : [])] },
   { name: "distractor",       cmd: ["node", "scripts/_distractor-plausibility-sweep.mjs", ...(APPLY ? ["--apply"] : [])] },
+  // Sprint B-lite (2026-05-24, UARP §6.1) — writes data/question-performance-snapshot.json.
+  // Harmless until traffic arrives; thresholds gate by MIN_N=5 so no false flags today.
+  { name: "item-performance", cmd: ["node", "scripts/_item-performance-sweep.mjs"] },
 ];
 
 function run(name, cmd) {
