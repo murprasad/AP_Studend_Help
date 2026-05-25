@@ -454,6 +454,12 @@ model Question {
   contentHash        String?   @unique  // SHA-256 of normalized questionText — prevents duplicates
   apSkill            String?            // e.g., "Causation", "Comparison", "Data Analysis"
   bloomLevel         String?            // "remember" | "apply" | "analyze" — Bloom's taxonomy level
+  // UARP §17.1 provenance — 2026-05-25. Mirrors PL.
+  promptVersion      String?
+  validatorVersion   String?
+  repairHistory      Json?
+  trustScore         Int?
+  certification      String?
   timesAnswered Int         @default(0)
   timesCorrect  Int         @default(0)
   reportedCount Int         @default(0)
