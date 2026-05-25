@@ -366,14 +366,14 @@ export function runDeterministicGates(q) {
 
   // 2026-05-24 — Body letter references in explanation are brittle on
   // shuffle. Catches "B is incorrect", "Option C is wrong", "A is not
-  // correct" anywhere after position 60. User report 2026-05-24 on f∘g
-  // composition Q showed "2x - 5 is correct because… B is incorrect due
-  // to wrong substitution." — if options shuffle, "B" reference is wrong.
-  const INCORRECT_LETTER_RE = /[.,]\s*(?:Letter|Option|Choice|Answer)?\s*\(?[A-E]\)?\s+(?:is\s+(?:in)?correct|is\s+wrong|is\s+not\s+correct)\b/i;
+  // correct" anywhere after position 60. Plus 2026-05-24 (Isabel report):
+  // "C is a type of mnemonic, but D is the most comprehensive answer" —
+  // contradictory phrasing using "[Letter] is the/a [adjective]" pattern.
+  const INCORRECT_LETTER_RE = /[.,]\s*(?:Letter|Option|Choice|Answer)?\s*\(?[A-E]\)?\s+(?:is\s+(?:in)?correct|is\s+wrong|is\s+not\s+correct|is\s+(?:the|a|an)\s+(?:most|more|less|least|best|better|worse|comprehensive|correct|complete|accurate)\b|is\s+a\s+type\s+of)\b/i;
   const incorrM = q.explanation.match(INCORRECT_LETTER_RE);
   if (incorrM && incorrM.index !== undefined && incorrM.index >= 60) {
     return { ok: false, gate: "explanation-body-letter-ref",
-      reason: `body references option letter ("${incorrM[0].trim().slice(0, 40)}") — brittle on shuffle. Use value-based reasoning only.` };
+      reason: `body references option letter ("${incorrM[0].trim().slice(0, 50)}") — brittle on shuffle. Use value-based reasoning only.` };
   }
 
   // 3a. Numeric coherence — only fires for clearly SCALAR answers where
@@ -478,6 +478,44 @@ export function runDeterministicGates(q) {
       reason: `explanation ends with dangling math operator — likely truncated` };
   }
 
+  // 2026-05-24 — ChatGPT v2 Gate 20: SUBJECTIVITY LEAK.
+  // MCQs must be objectively gradable. Reject explanations introducing
+  // ranking/preference language ("best answer", "most comprehensive",
+  // "closest", "arguably", "better choice") UNLESS the stem itself asks
+  // for it ("which is the BEST"). Isabel report: explanation said "D is
+  // the most comprehensive answer" after declaring A correct — broke
+  // single-answer assumption.
+  const SUBJ_LEAK_RE = /\b(?:most\s+comprehensive|best\s+answer|closest\s+answer|better\s+choice|arguably|most\s+reasonable|more\s+correct|strongest\s+choice)\b/i;
+  const stemAsksForBest = /\b(?:best|strongest|most\s+likely|most\s+accurate|primary|main|chief)\b/i.test(q.questionText);
+  if (SUBJ_LEAK_RE.test(q.explanation) && !stemAsksForBest) {
+    return { ok: false, gate: "explanation-subjectivity-leak",
+      reason: `explanation contains ranking/preference language ("${q.explanation.match(SUBJ_LEAK_RE)[0]}") but stem doesn't ask for "best/strongest/most" — undermines single-answer objectivity` };
+  }
+
+  // 2026-05-24 — ChatGPT v2 Gate 17: ALL/NONE-OF-THE-ABOVE VALIDATION.
+  // CB exams almost never use "All of the above" / "None of the above"
+  // outside specific course conventions. Isabel report: mnemonic Q used
+  // both ("A) All of the above … E) None of the above") creating ambiguity.
+  // Reject globally — better to lose a few legit Qs than serve broken ones.
+  const optsLower = opts.map((o) => o.toLowerCase().replace(/^[a-e][\)\.]\s*/, "").trim());
+  const hasAllOfAbove = optsLower.some((o) => /^all\s+of\s+the\s+(above|other|previous|listed)/i.test(o));
+  const hasNoneOfAbove = optsLower.some((o) => /^none\s+of\s+the\s+(above|other|previous|listed)/i.test(o));
+  if (hasAllOfAbove || hasNoneOfAbove) {
+    return { ok: false, gate: "options-all-or-none-of-above",
+      reason: `option uses "${hasAllOfAbove ? 'All' : 'None'} of the above" — not used in real CB exams; creates ambiguity (Isabel's mnemonic-device Q hit this)` };
+  }
+
+  // 2026-05-24 — ChatGPT v2 Gate 18: EXPLANATION CONTRADICTION.
+  // Reject if explanation contradicts itself — implies multiple correct
+  // answers OR weakens uniqueness of stored answer. Patterns: "however,
+  // X is also", "but X is the most…", "X could also be correct".
+  const CONTRADICTION_RE = /(?:however|but|although|though|while|despite),?\s+(?:option|choice|letter)?\s*\(?[A-E]\)?\s+(?:is\s+(?:also|the\s+(?:more|most|best))|could\s+(?:also|be\s+correct)|might\s+(?:also|be)|works?\s+too|is\s+a\s+valid)/i;
+  const contraM = q.explanation.match(CONTRADICTION_RE);
+  if (contraM) {
+    return { ok: false, gate: "explanation-multi-answer-implication",
+      reason: `explanation implies multiple correct answers ("${contraM[0].slice(0, 50)}") — MCQ must support EXACTLY one answer` };
+  }
+
   // 2026-05-24 — Tier-1 Explanation-Solution Independence Gate (ChatGPT v2 #5).
   // "X is correct because it simplifies correctly" — no pedagogy, just
   // restates the answer. Reject if the explanation is mostly just the
@@ -489,6 +527,72 @@ export function runDeterministicGates(q) {
   if (expl.length >= 40 && explAfterLead.length >= 15 && !REASONING_MARKERS.test(expl)) {
     return { ok: false, gate: "explanation-no-reasoning",
       reason: `explanation lacks reasoning markers (because/since/by/using/apply/etc.) — likely just restates the answer` };
+  }
+
+  // 2026-05-24 — Sprint A / UARP §3.3 — Negation gate.
+  // When stem contains NOT/EXCEPT/LEAST/FALSE/INCORRECT, the correct answer is
+  // the ONE that violates the assertion. The explanation must acknowledge the
+  // negation (mention "not", "except", "false", "incorrect", "violates", "only one",
+  // "exception", "does not", or restate the inverted logic). Otherwise the
+  // generator likely justified the answer as if it were a positive question.
+  const NEGATION_STEM_REGEX = /\b(?:which\s+(?:is|are|of\s+the\s+following|statement)\s+(?:is\s+|are\s+)?(?:not|false|incorrect)\b|except\b|least\s+likely\b|not\s+(?:true|correct|accurate|incorrect|false|wrong|associated|considered|an\s+example|a\s+characteristic|a\s+feature|typically|usually|generally)\b|\bNOT\b(?=\s+(?:true|correct|incorrect|false|considered|associated|typically|usually|a|an|the)))/i;
+  const stem = q.questionText;
+  const stemHasNegation = NEGATION_STEM_REGEX.test(stem);
+  if (stemHasNegation) {
+    // Double-negation in stem: "Which is NOT incorrect" — ambiguous, reject.
+    const doubleNeg = /\bnot\b[^.?]{0,40}\b(?:not|never|incorrect|false|wrong|untrue|fails?\s+to)\b/i;
+    if (doubleNeg.test(stem)) {
+      return { ok: false, gate: "stem-double-negation",
+        reason: `stem has double negation ("not ... not/incorrect/false") — ambiguous logic` };
+    }
+    // Explanation must acknowledge the inverted logic.
+    const NEGATION_ACK = /\b(not|except|false|incorrect|exception|violates?|does\s+not|is\s+the\s+only|only\s+one|opposite|contradicts?|does\s+not\s+(?:apply|fit|match|belong|hold)|fails?\s+to|unlike|whereas\s+the\s+others)\b/i;
+    if (!NEGATION_ACK.test(expl)) {
+      return { ok: false, gate: "explanation-ignores-negation",
+        reason: `stem has negation cue (NOT/EXCEPT/LEAST) but explanation never acknowledges the inversion — generator likely treated as positive question` };
+    }
+  }
+
+  // 2026-05-24 — Sprint A / UARP §3.1 — Semantic-contract gate (numeric extremum).
+  // When stem asks for smallest/largest/greatest/least/highest/lowest/max/min
+  // AND every option parses to a single number, verify the stored correctAnswer
+  // really IS the extremum. Catches "What is the largest? A) 5  B) 12  C) 3"
+  // where generator picks A by mistake.
+  const EXTREMUM_REGEX = /\b(smallest|largest|greatest|least|highest|lowest|maximum|minimum|biggest|max\b|min\b)\b/i;
+  const extremumMatch = stem.match(EXTREMUM_REGEX);
+  if (extremumMatch) {
+    const word = extremumMatch[1].toLowerCase();
+    const wantsMax = /^(largest|greatest|highest|maximum|biggest|max)/.test(word);
+    // Parse each option's numeric content (strip the "A) " prefix and any leading $ or %)
+    const optNums = opts.map((o) => {
+      const stripped = o.replace(/^[A-E]\)\s*/, "").replace(/[\$%,\s]/g, "");
+      const m = stripped.match(/^-?\d+(?:\.\d+)?$/);
+      return m ? Number(stripped) : NaN;
+    });
+    const allNumeric = optNums.every((n) => Number.isFinite(n));
+    if (allNumeric && new Set(optNums).size === optNums.length) {
+      const correctIdx = q.correctAnswer.charCodeAt(0) - 65;
+      const correctVal = optNums[correctIdx];
+      const extremumVal = wantsMax ? Math.max(...optNums) : Math.min(...optNums);
+      if (correctVal !== extremumVal) {
+        return { ok: false, gate: "stem-extremum-mismatch",
+          reason: `stem asks for "${word}" but correctAnswer (${correctVal}) is not the ${wantsMax ? "max" : "min"} of options [${optNums.join(", ")}] — should be ${extremumVal}` };
+      }
+    }
+  }
+
+  // 2026-05-24 — Sprint A / UARP §3.1 — Semantic-contract gate (trend direction).
+  // When stem asks about "increase/decrease/rise/fall/grow/shrink", the explanation
+  // must reference the direction (otherwise generator may have picked opposite).
+  const TREND_STEM = /\b(increase|decrease|rise|fall|grow|shrink|expand|contract|gain|lose|appreciate|depreciate)s?\b/i;
+  const trendMatch = stem.match(TREND_STEM);
+  if (trendMatch) {
+    // Explanation must contain SOME trend word (same or related)
+    const TREND_ACK = /\b(increase|decrease|rise|ros[ei]|fall|fell|grow|grew|shrink|shrank|shrunk|expand|contract|gain|lost?|appreciat|depreciat|higher|lower|more|less|greater|smaller|up|down|positive|negative|inverse|direct|proportional)/i;
+    if (!TREND_ACK.test(expl)) {
+      return { ok: false, gate: "explanation-ignores-trend",
+        reason: `stem asks about "${trendMatch[1]}" (trend/direction) but explanation never references direction words — likely answers wrong-direction` };
+    }
   }
 
   return { ok: true };

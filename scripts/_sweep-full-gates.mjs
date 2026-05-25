@@ -41,17 +41,33 @@ const VISIBLE_ONLY = !!args["visible-only"];
 const INCLUDE_PREFIX = !!args["include-prefix-issues"];
 const USER_VISIBLE_GATES = new Set([
   "structure",
+  "structure-frq-leak",                // 2026-05-24
   "options-count",
   "options-duplicate",
   "options-permutation-equivalent",   // v2 (2026-05-21)
   "options-mixed-types",
+  "options-duplicate-prefix-letters",  // 2026-05-24
+  "options-out-of-order-prefix",       // 2026-05-24
+  "options-all-or-none-of-above",      // 2026-05-24 ChatGPT v2 #17
   "option-contains-hint",
   "correctAnswer-index",
   "explanation-letter-mismatch",
   "explanation-self-contradiction",    // v2
   "explanation-numeric-mismatch",      // v2
+  "explanation-body-letter-ref",       // 2026-05-24
+  "explanation-subjectivity-leak",     // 2026-05-24 ChatGPT v2 #20
+  "explanation-multi-answer-implication", // 2026-05-24 ChatGPT v2 #18
+  "explanation-unmatched-parens",      // 2026-05-24
+  "explanation-abrupt-end",            // 2026-05-24
+  "explanation-dangling-operator",     // 2026-05-24
+  "explanation-no-reasoning",          // 2026-05-24
   "options-length-skewed",             // v2
   "stem-missing-stimulus",             // v2
+  "stem-truncated-math",               // 2026-05-24
+  "stem-double-negation",              // 2026-05-24 Sprint A (UARP §3.3)
+  "stem-extremum-mismatch",            // 2026-05-24 Sprint A (UARP §3.1)
+  "explanation-ignores-negation",      // 2026-05-24 Sprint A (UARP §3.3)
+  "explanation-ignores-trend",         // 2026-05-24 Sprint A (UARP §3.1)
   "confession-phrase",
 ]);
 
