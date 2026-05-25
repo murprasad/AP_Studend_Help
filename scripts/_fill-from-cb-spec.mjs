@@ -58,18 +58,26 @@ async function fillTopic(course, unit, topic, count) {
   const SYSTEM = `You write ${family} ${subjectName} exam questions in College Board style.
 Topic: "${topic}"
 
-CRITICAL:
+CRITICAL JSON FORMAT:
+- "correctAnswer" field: MUST be EXACTLY one letter ${optLabels} — NEVER the value. Examples:
+    GOOD: "correctAnswer": "B"
+    BAD:  "correctAnswer": "8"     ← put 8 inside option B, not here
+    BAD:  "correctAnswer": "x > 3" ← put expression inside an option, not here
+
+CONTENT RULES:
 1. Stem DIRECT, CONCRETE, real-world. 8-40 words.
-2. Exactly ${numOpts} options (${optLabels}). Each "A) "/"B) " prefix.
-3. Explanation MUST refer to the answer by VALUE not letter. NEVER write
-   "Letter X is correct" — that pattern breaks when options shuffle.
-   Instead: "The answer is 8 because log₂(8)=3" or "Glucose is correct
-   because plants store..."
-4. Explanation 60-160 chars. NO confession phrases.
-5. NO hints in options.
+2. Exactly ${numOpts} options (${optLabels}). Each option starts with its letter prefix like "A) value" "B) value" etc.
+3. Explanation 80-200 characters MINIMUM. Refer to answer by VALUE not by letter
+   (e.g., "8 is correct because log₂(8)=3" — NOT "Letter B is correct").
+   Use because/since/by/applying — at least one reasoning word.
+4. No confession phrases (no "closest match", "best guess", "approximately").
+5. No hints in options.
 6. Mix difficulty: 40% EASY, 50% MEDIUM, 10% HARD.
 
-OUTPUT JSON: {"questions":[{"questionText","options":["A) ...",...,"${numOpts===4?'D':'E'}) ..."],"correctAnswer","explanation","topic":"${topic}","difficulty":"EASY"}]}`;
+EXAMPLE (perfect):
+{"questionText":"What is log₂(8)?","options":["A) 2","B) 3","C) 4","D) 6","E) 8"],"correctAnswer":"B","explanation":"3 is correct because log₂(8) asks 'what power of 2 equals 8', and 2³ = 8, so the answer is 3.","topic":"${topic}","difficulty":"EASY"}
+
+OUTPUT JSON: {"questions":[{...},{...},...]}`;
 
   let parsed;
   try { parsed = await callGroq(SYSTEM, `Generate ${count} ${family} ${subjectName} questions on "${topic}". JSON only.`); }
@@ -78,13 +86,26 @@ OUTPUT JSON: {"questions":[{"questionText","options":["A) ...",...,"${numOpts===
   if (!arr.length) return { inserted: 0, failed: 0 };
 
   let inserted = 0, failed = 0, dupes = 0;
+  const gateCounts = {};
   for (const q of arr) {
     normalizeQuestion(q);
     q.course = course;
     const gate = runDeterministicGates(q);
-    if (!gate.ok) { failed++; continue; }
+    if (!gate.ok) {
+      gateCounts[gate.gate] = (gateCounts[gate.gate] || 0) + 1;
+      // DEBUG: dump first rejection per topic
+      if (gateCounts[gate.gate] === 1) {
+        console.log(`      DEBUG rejected (${gate.gate}): ${gate.reason}`);
+        console.log(`        stem(${(q.questionText||'').length}c): "${(q.questionText||'').slice(0,80)}"`);
+        console.log(`        ans=${q.correctAnswer}  expl(${(q.explanation||'').length}c): "${(q.explanation||'').slice(0,80)}"`);
+      }
+      failed++; continue;
+    }
     const verify = await secondPassVerify(q);
-    if (!verify.ok) { failed++; continue; }
+    if (!verify.ok) {
+      gateCounts[`verifier:${verify.reason?.slice(0,30) || "unknown"}`] = (gateCounts[`verifier:${verify.reason?.slice(0,30) || "unknown"}`] || 0) + 1;
+      failed++; continue;
+    }
     const id = crypto.randomUUID();
     try {
       if (isSN(course)) {
@@ -96,6 +117,10 @@ OUTPUT JSON: {"questions":[{"questionText","options":["A) ...",...,"${numOpts===
       }
       inserted++;
     } catch (e) { if (e.code === "23505") dupes++; else failed++; }
+  }
+  if (failed > 0 && Object.keys(gateCounts).length > 0) {
+    const summary = Object.entries(gateCounts).sort((a,b)=>b[1]-a[1]).slice(0,5).map(([g,n])=>`${g}=${n}`).join(", ");
+    console.log(`      gate-fail breakdown: ${summary}`);
   }
   return { inserted, failed, dupes };
 }
