@@ -52,6 +52,69 @@ const CONFESSION_PHRASES = [
   "approximate", "rounded to match", "wedged",
 ];
 
+// 2026-05-24 — UARP §3.6 hallucination patterns. Beyond confession phrases.
+// Catches generator hedging that masks fabricated facts.
+const HALLUCINATION_PATTERNS = [
+  // Fabricated citation patterns (no real CB explanation cites named studies)
+  { re: /\b[A-Z][a-z]+\s+et\s+al\.\s*\(\d{4}\)/, name: "fake-citation",
+    desc: 'fabricated academic citation (e.g., "Smith et al. (2024)")' },
+  { re: /\baccording\s+to\s+(?:recent\s+)?research\b/i, name: "fake-research-appeal",
+    desc: '"according to research" without source — generator filler' },
+  { re: /\bstudies\s+have\s+shown\b/i, name: "vague-studies",
+    desc: '"studies have shown" — vague appeal to authority' },
+  { re: /\bresearch\s+(?:indicates|suggests|demonstrates)\b/i, name: "vague-research",
+    desc: '"research indicates/suggests" — unsourced authority' },
+  // Suspicious decimal-precision facts (likely hallucinated)
+  { re: /\bexactly\s+\d+\.\d+\s*%/i, name: "suspicious-precision",
+    desc: 'suspiciously precise statistic ("exactly 73.4%")' },
+  // Generator hedging tells
+  { re: /\bit\s+(?:can|could|may|might)\s+be\s+(?:said|argued|claimed)\b/i, name: "weak-hedging",
+    desc: 'weak hedging ("it can be said") — generator unsure' },
+  { re: /\bsome\s+(?:experts|scholars|sources)\s+(?:argue|believe|suggest)/i, name: "fake-expert-appeal",
+    desc: '"some experts argue" — no actual expert named' },
+];
+
+// 2026-05-24 — Domain Vocabulary Expectations (UARP §5 surrogate).
+//
+// Catches the "Meiosis ploidy" bug class (Ayu, CLEP_BIOLOGY 2026-05-25):
+//   Stem: "Meiosis results in cells with what ploidy?"
+//   Options: Increased / Variable / Zero / Unchanged / Decreased
+//   Bug: NONE of the options use the canonical bio term "haploid" / "diploid".
+//
+// When a stem matches a known pattern, the options collectively MUST contain at
+// least MIN of the expected canonical terms. Deterministic, fast, no false
+// positives (rejections are clean signal — option set actually lacks vocab).
+const DOMAIN_VOCAB_EXPECTATIONS = [
+  // Biology
+  { stemRe: /\bploidy\b/i, terms: ["haploid","diploid","triploid","tetraploid","polyploid","monoploid"], min: 2,
+    courses: /^CLEP_BIOLOGY|^AP_BIOLOGY/i,
+    name: "ploidy", desc: 'stem asks about ploidy but options lack canonical terms (haploid/diploid/etc.)' },
+  { stemRe: /\btype\s+of\s+(?:natural\s+)?selection\b/i, terms: ["stabilizing","directional","disruptive","balancing","frequency-dependent"], min: 2,
+    courses: /BIOLOGY|EVOLUTION/i,
+    name: "selection-type", desc: 'stem asks selection type but options lack canonical terms (stabilizing/directional/disruptive)' },
+  { stemRe: /\bphase\s+of\s+(?:mitosis|meiosis|cell\s+cycle)\b/i, terms: ["prophase","metaphase","anaphase","telophase","interphase","cytokinesis"], min: 2,
+    courses: /BIOLOGY/i,
+    name: "cell-cycle-phase", desc: 'stem asks cell cycle phase but options lack canonical terms (prophase/metaphase/etc.)' },
+  { stemRe: /\btype\s+of\s+inheritance\b/i, terms: ["dominant","recessive","codominance","incomplete dominance","polygenic","sex-linked","autosomal","x-linked"], min: 2,
+    courses: /BIOLOGY|GENETICS/i,
+    name: "inheritance-type", desc: 'inheritance-type Q lacks canonical terms (dominant/codominance/etc.)' },
+  { stemRe: /\btype\s+of\s+(?:chemical\s+)?bond\b/i, terms: ["ionic","covalent","hydrogen","metallic","peptide","disulfide","glycosidic","phosphodiester"], min: 2,
+    courses: /BIOLOGY|CHEMISTRY/i,
+    name: "bond-type", desc: 'bond-type Q lacks canonical terms (ionic/covalent/etc.)' },
+  // Chemistry
+  { stemRe: /\b(?:state|phase)\s+of\s+matter\b/i, terms: ["solid","liquid","gas","plasma"], min: 3,
+    courses: /CHEMISTRY|PHYSICS/i,
+    name: "state-of-matter", desc: 'state/phase-of-matter Q lacks canonical terms (solid/liquid/gas)' },
+  // Government / History
+  { stemRe: /\bbranch(?:es)?\s+of\s+(?:the\s+)?(?:U\.?S\.?\s+)?government\b/i, terms: ["legislative","executive","judicial"], min: 2,
+    courses: /GOVERNMENT|HISTORY/i,
+    name: "gov-branch", desc: 'branch-of-government Q lacks canonical terms (legislative/executive/judicial)' },
+  // Math
+  { stemRe: /\btype\s+of\s+(?:function|number)\b/i, terms: ["linear","quadratic","polynomial","exponential","logarithmic","rational","integer","rational","irrational","real","complex"], min: 2,
+    courses: /COLLEGE_ALGEBRA|COLLEGE_MATH|PRECALCULUS|CALCULUS/i,
+    name: "function-type", desc: 'function/number-type Q lacks canonical terms (linear/quadratic/polynomial/etc.)' },
+];
+
 const LETTER_CLAIM_REGEX = /(?:^|[^A-Z])(?:option\s+|answer\s+is\s+)?\(?([A-E])\)?\s+is\s+correct/i;
 
 // Broader letter-claim patterns — captures every "X is the answer" style.
@@ -428,6 +491,28 @@ export function runDeterministicGates(q) {
   for (const phrase of CONFESSION_PHRASES) {
     if (explLower.includes(phrase)) {
       return { ok: false, gate: "confession-phrase", reason: `explanation contains confession phrase: "${phrase}"` };
+    }
+  }
+
+  // 4b. Hallucination patterns (UARP §3.6) — fabricated citations/authorities
+  for (const { re, name, desc } of HALLUCINATION_PATTERNS) {
+    if (re.test(q.explanation)) {
+      return { ok: false, gate: `explanation-hallucination-${name}`,
+        reason: desc };
+    }
+  }
+
+  // 4c. Domain vocabulary expectations (UARP §5 surrogate) — Meiosis ploidy
+  // bug class (Ayu, 2026-05-25). When stem matches a known pattern, options
+  // collectively must contain >= min canonical terms for that domain.
+  for (const { stemRe, terms, min, courses, name, desc } of DOMAIN_VOCAB_EXPECTATIONS) {
+    if (!stemRe.test(q.questionText)) continue;
+    if (q.course && courses && !courses.test(q.course)) continue;
+    const allOptsLower = opts.map((o) => o.toLowerCase()).join(" || ");
+    const matched = terms.filter((t) => allOptsLower.includes(t.toLowerCase())).length;
+    if (matched < min) {
+      return { ok: false, gate: `options-missing-canonical-${name}`,
+        reason: `${desc} (matched ${matched}/${min} required of [${terms.slice(0,5).join(", ")}…])` };
     }
   }
 

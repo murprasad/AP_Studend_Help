@@ -69,6 +69,23 @@ const USER_VISIBLE_GATES = new Set([
   "explanation-ignores-negation",      // 2026-05-24 Sprint A (UARP §3.3)
   "explanation-ignores-trend",         // 2026-05-24 Sprint A (UARP §3.1)
   "confession-phrase",
+  // UARP §3.6 hallucination patterns (2026-05-24)
+  "explanation-hallucination-fake-citation",
+  "explanation-hallucination-fake-research-appeal",
+  "explanation-hallucination-vague-studies",
+  "explanation-hallucination-vague-research",
+  "explanation-hallucination-suspicious-precision",
+  "explanation-hallucination-weak-hedging",
+  "explanation-hallucination-fake-expert-appeal",
+  // UARP §5 surrogate — domain vocabulary expectations (Ayu meiosis-Q class, 2026-05-25)
+  "options-missing-canonical-ploidy",
+  "options-missing-canonical-selection-type",
+  "options-missing-canonical-cell-cycle-phase",
+  "options-missing-canonical-inheritance-type",
+  "options-missing-canonical-bond-type",
+  "options-missing-canonical-state-of-matter",
+  "options-missing-canonical-gov-branch",
+  "options-missing-canonical-function-type",
 ]);
 
 let visibleCourses = null;
