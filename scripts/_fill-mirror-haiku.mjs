@@ -13,8 +13,8 @@ import crypto from "node:crypto";
 import { normalizeQuestion, runDeterministicGates } from "./lib/_question-gates.mjs";
 import { secondPassVerify } from "./lib/_second-pass-verifier.mjs";
 process.env.DATABASE_URL = (process.env.DATABASE_URL || "").replace(/^["']|["']$/g, "");
-const { neon } = await import("@neondatabase/serverless");
-const sql = neon(process.env.DATABASE_URL);
+const { neonRetry } = await import("./lib/_sql-retry.mjs");
+const sql = neonRetry(process.env.DATABASE_URL);
 
 const args = Object.fromEntries(
   process.argv.slice(2).map((a) => {

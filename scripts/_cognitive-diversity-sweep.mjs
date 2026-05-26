@@ -20,8 +20,8 @@ import "dotenv/config";
 import { writeFileSync, mkdirSync } from "node:fs";
 import path from "node:path";
 process.env.DATABASE_URL = (process.env.DATABASE_URL || "").replace(/^["']|["']$/g, "");
-const { neon } = await import("@neondatabase/serverless");
-const sql = neon(process.env.DATABASE_URL);
+const { neonRetry } = await import("./lib/_sql-retry.mjs");
+const sql = neonRetry(process.env.DATABASE_URL);
 
 const args = Object.fromEntries(
   process.argv.slice(2).map((a) => {
