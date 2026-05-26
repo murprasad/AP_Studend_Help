@@ -1,0 +1,45 @@
+{
+  "name": "@preplion/generation-loop",
+  "version": "0.1.0",
+  "description": "Closed-loop generator for AI-authored test-prep questions. Couples LLM generation with a gate engine so failures feed back as retries (Layer 1), accumulate as per-topic negative-prompt memory (Layer 2), and drive template selection over time (Layer 3). Pairs with @preplion/question-gates.",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc --outDir dist",
+    "test": "vitest run"
+  },
+  "keywords": [
+    "edtech",
+    "ai",
+    "llm",
+    "generation",
+    "feedback-loop",
+    "active-learning",
+    "mcq",
+    "test-prep",
+    "exam-prep",
+    "self-improving"
+  ],
+  "author": "PrepLion",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/preplion/generation-loop"
+  },
+  "homepage": "https://preplion.ai",
+  "private": true,
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

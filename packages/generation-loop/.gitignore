@@ -1,0 +1,4 @@
+node_modules/
+*.tsbuildinfo
+# Sourcemaps + declaration maps add noise; keep .js + .d.ts only.
+dist/**/*.map

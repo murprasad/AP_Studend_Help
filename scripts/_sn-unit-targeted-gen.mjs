@@ -12,6 +12,8 @@
 import "dotenv/config";
 import crypto from "node:crypto";
 import { normalizeQuestion, runDeterministicGates } from "./lib/_question-gates.mjs";
+// Closed-loop generator (@preplion/generation-loop). Opt-in via --use-loop.
+import { generateWithFeedback, registerTemplate, DEFAULT_MCQ_TEMPLATE } from "../packages/generation-loop/dist/index.js";
 
 const args = Object.fromEntries(process.argv.slice(2).map(a => {
   if (a === "--dry") return ["dry", true];
@@ -22,6 +24,8 @@ const args = Object.fromEntries(process.argv.slice(2).map(a => {
 
 const PLAN = !!args.plan;
 const DRY = !!args.dry;
+const USE_LOOP = !!args["use-loop"]; // 2026-05-26: opt-in @preplion/generation-loop
+if (USE_LOOP) registerTemplate(DEFAULT_MCQ_TEMPLATE);
 
 process.env.DATABASE_URL = (process.env.DATABASE_URL || "").replace(/^["']|["']$/g, "");
 const { neon } = await import("@neondatabase/serverless");
@@ -108,15 +112,53 @@ async function generateForCourseUnit({ course, unit, count, options }) {
   const start = Date.now();
   for (let i = 0; i < count * 2 && ok < count; i++) {
     try {
-      const q = await generateOne(course, unit, options);
-      // Unified gate stack — same as PL/runtime. Reject before INSERT.
-      const candidate = { ...q, course };
-      normalizeQuestion(candidate);
-      const gate = runDeterministicGates(candidate);
-      if (!gate.ok) {
-        fail++;
-        if (fail <= 3) console.warn(`  [gate] ${gate.gate}: ${gate.reason?.slice(0, 100)}`);
-        continue;
+      let q;
+      if (USE_LOOP) {
+        // Closed-loop path: retry-on-fail + per-topic memory.
+        // Note: the loop uses DEFAULT_MCQ_TEMPLATE, NOT the unit-aware prompt
+        // generateOne builds. Output may need a unit-aware template (v0.2).
+        const llmAdapter = async ({ systemPrompt, userPrompt }) => {
+          const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+            method: "POST",
+            headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
+            body: JSON.stringify({
+              model: "llama-3.3-70b-versatile",
+              messages: [
+                { role: "system", content: systemPrompt },
+                { role: "user", content: userPrompt },
+              ],
+              response_format: { type: "json_object" }, max_tokens: 1200, temperature: 0.5,
+            }),
+            signal: AbortSignal.timeout(30000),
+          });
+          if (!res.ok) throw new Error(`Groq ${res.status}`);
+          return (await res.json())?.choices?.[0]?.message?.content ?? "{}";
+        };
+        const gateAdapter = (cand) => {
+          normalizeQuestion(cand);
+          return runDeterministicGates(cand);
+        };
+        const result = await generateWithFeedback({
+          course, topic: unit, llm: llmAdapter, gates: gateAdapter, maxRetries: 3,
+        });
+        if (result.result !== "passed" || !result.q) {
+          fail++;
+          const lastFail = [...result.gateHistory].reverse().find((g) => !g.ok);
+          if (fail <= 3) console.warn(`  [loop] failed-after-${result.attemptsUsed} (${lastFail?.gate}): ${lastFail?.reason?.slice(0, 80)}`);
+          continue;
+        }
+        q = result.q;
+      } else {
+        q = await generateOne(course, unit, options);
+        // Unified gate stack — same as PL/runtime. Reject before INSERT.
+        const candidate = { ...q, course };
+        normalizeQuestion(candidate);
+        const gate = runDeterministicGates(candidate);
+        if (!gate.ok) {
+          fail++;
+          if (fail <= 3) console.warn(`  [gate] ${gate.gate}: ${gate.reason?.slice(0, 100)}`);
+          continue;
+        }
       }
       const hash = contentHashOf(q.questionText);
       if (DRY) { console.log(`  [dry] ${q.questionText.slice(0, 80)}…`); ok++; continue; }

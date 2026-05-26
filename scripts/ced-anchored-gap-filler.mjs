@@ -19,6 +19,8 @@ import { neon } from "@neondatabase/serverless";
 import { createHash, randomUUID } from "node:crypto";
 import fs from "node:fs";
 import { normalizeQuestion, runDeterministicGates } from "./lib/_question-gates.mjs";
+// Closed-loop generator (@preplion/generation-loop). Opt-in via --use-loop.
+import { generateWithFeedback, registerTemplate, DEFAULT_MCQ_TEMPLATE } from "../packages/generation-loop/dist/index.js";
 
 const sql = neon(process.env.DATABASE_URL);
 const GROQ_KEY = process.env.GROQ_API_KEY;
@@ -34,6 +36,8 @@ const DIFFICULTY = (args.difficulty ?? "MEDIUM").toUpperCase();
 const TOPICS_FILE = args["topics-file"];
 const SOURCE_MARKER = args.source ?? `ced-gap-fill-${Date.now()}`;
 const COURSE_DESC = args["course-desc"] ?? `College Board AP exam`;
+const USE_LOOP = !!args["use-loop"]; // 2026-05-26: opt-in @preplion/generation-loop
+if (USE_LOOP) registerTemplate(DEFAULT_MCQ_TEMPLATE);
 
 if (!COURSE || !UNIT || !TOPICS_FILE) {
   console.error("Required: --course --unit --topics-file. See header.");
@@ -145,20 +149,42 @@ while (added < TARGET) {
   if (topicIdx > TOPICS.length * 15) break; // safety stop — allows ~15 attempts per topic for thin topic lists
 
   try {
-    const raw = await callGroq(buildPrompt(topic));
-    const q = JSON.parse(raw);
-    if (!q.questionText || !Array.isArray(q.options) || q.options.length !== 4 || !q.correctAnswer) {
-      errored++;
-      continue;
-    }
-    // Unified gate stack — same as PL/runtime. Reject before INSERT.
-    const candidate = { ...q, course: COURSE };
-    normalizeQuestion(candidate);
-    const gate = runDeterministicGates(candidate);
-    if (!gate.ok) {
-      errored++;
-      if (errored <= 5) console.warn(`  [gate] ${gate.gate}: ${gate.reason?.slice(0, 100)}`);
-      continue;
+    let q;
+    if (USE_LOOP) {
+      // Closed-loop path: retry-on-fail + per-topic memory.
+      const llmAdapter = async ({ systemPrompt, userPrompt }) =>
+        await callGroq(`${systemPrompt}\n\n${userPrompt}`);
+      const gateAdapter = (cand) => {
+        normalizeQuestion(cand);
+        return runDeterministicGates(cand);
+      };
+      const topicStr = typeof topic === "string" ? topic : (topic?.topic ?? "");
+      const result = await generateWithFeedback({
+        course: COURSE, topic: topicStr, llm: llmAdapter, gates: gateAdapter, maxRetries: 3,
+      });
+      if (result.result !== "passed" || !result.q) {
+        errored++;
+        const lastFail = [...result.gateHistory].reverse().find((g) => !g.ok);
+        if (errored <= 5) console.warn(`  [loop] failed-after-${result.attemptsUsed} (${lastFail?.gate}): ${lastFail?.reason?.slice(0, 80)}`);
+        continue;
+      }
+      q = result.q;
+    } else {
+      const raw = await callGroq(buildPrompt(topic));
+      q = JSON.parse(raw);
+      if (!q.questionText || !Array.isArray(q.options) || q.options.length !== 4 || !q.correctAnswer) {
+        errored++;
+        continue;
+      }
+      // Unified gate stack — same as PL/runtime. Reject before INSERT.
+      const candidate = { ...q, course: COURSE };
+      normalizeQuestion(candidate);
+      const gate = runDeterministicGates(candidate);
+      if (!gate.ok) {
+        errored++;
+        if (errored <= 5) console.warn(`  [gate] ${gate.gate}: ${gate.reason?.slice(0, 100)}`);
+        continue;
+      }
     }
     const r = await insertQuestion(q, topic);
     if (r.saved) {
