@@ -36,5 +36,6 @@ export { generateWithFeedback } from "./generate-with-feedback.js";
 export { recordGateOutcome, getNegativePromptForTopic, getTopicStats } from "./feedback-store.js";
 export { registerTemplate, getTemplate, listTemplates, scoreTemplate, selectTemplate, _resetRegistryForTests, } from "./template-registry.js";
 export { DEFAULT_MCQ_TEMPLATE } from "./templates/default-mcq.js";
-export type { Question, GateOutcome, Template, FailureRecord, TopicFeedback, TemplateScore, TopicScores, LoopResult, LlmFn, GateFn, GenerateInput, } from "./types.js";
+export { expectedOptionCount, optionLetters, courseFamily, courseSubject, } from "./course-info.js";
+export type { Question, GateOutcome, Template, TemplateContext, UserPromptContext, FailureRecord, TopicFeedback, TemplateScore, TopicScores, LoopResult, LlmFn, GateFn, GenerateInput, } from "./types.js";
 //# sourceMappingURL=index.d.ts.map

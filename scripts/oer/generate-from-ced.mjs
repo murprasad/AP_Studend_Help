@@ -29,6 +29,10 @@ import { readFileSync, writeFileSync, existsSync, mkdirSync } from "node:fs";
 import { join } from "node:path";
 import crypto from "node:crypto";
 import { normalizeQuestion, runDeterministicGates } from "../lib/_question-gates.mjs";
+// Closed-loop generator (@preplion/generation-loop). Opt-in via --use-loop.
+// CED-grounded — uses buildUserPrompt callback so the CED chunk context
+// stays in the user prompt (not stored anywhere — copyright).
+import { generateWithFeedback, registerTemplate, DEFAULT_MCQ_TEMPLATE } from "../../packages/generation-loop/dist/index.js";
 
 const args = Object.fromEntries(
   process.argv.slice(2).map((a) => {
@@ -41,6 +45,8 @@ const COURSE = args.course;
 const LIMIT = args.limit ? parseInt(args.limit, 10) : null;
 const CONCURRENCY = args.concurrency ? parseInt(args.concurrency, 10) : 3;
 const DRY = !!args.dry;
+const USE_LOOP = !!args["use-loop"]; // 2026-05-26: opt-in @preplion/generation-loop
+if (USE_LOOP) registerTemplate(DEFAULT_MCQ_TEMPLATE);
 
 if (!COURSE) {
   console.error("usage: --course=<ApCourse> [--limit=N] [--dry]");
@@ -236,16 +242,72 @@ const startTs = Date.now();
 async function worker() {
   while (i < slice.length) {
     const idx = i++;
-    const r = await generateOne(slice[idx], idx);
-    if (!r.ok) { failed++; continue; }
-    // Unified gate stack — same as PL/runtime. Reject before INSERT.
-    const candidate = { ...r.data, course: COURSE };
-    normalizeQuestion(candidate);
-    const gate = runDeterministicGates(candidate);
-    if (!gate.ok) {
-      failed++;
-      if (failed <= 5) console.warn(`  [gate] ${gate.gate}: ${gate.reason?.slice(0, 100)}`);
-      continue;
+    let r;
+    if (USE_LOOP) {
+      const chunk = slice[idx];
+      const llmAdapter = async ({ systemPrompt, userPrompt }) => {
+        const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: "llama-3.3-70b-versatile",
+            messages: [
+              { role: "system", content: systemPrompt },
+              { role: "user", content: userPrompt },
+            ],
+            response_format: { type: "json_object" }, max_tokens: 900, temperature: args.temp ? parseFloat(args.temp) : 0.4,
+          }),
+          signal: AbortSignal.timeout(30000),
+        });
+        if (!res.ok) throw new Error(`Groq ${res.status}`);
+        return (await res.json())?.choices?.[0]?.message?.content ?? "{}";
+      };
+      const gateAdapter = (cand) => { normalizeQuestion(cand); return runDeterministicGates(cand); };
+      const cedPrompt = ({ previousFailure }) => {
+        const parts = [
+          `Write an original MCQ for ${COURSE.replace(/_/g, " ")}. Use the CED section below as content guidance — do NOT quote or copy it; the student won't see it.`,
+          `CED CONTEXT (do NOT quote):\n"""\n${chunk.slice(0, 2500)}\n"""`,
+          `If the question needs a numerical scenario, equation, or short stimulus, include it directly in the stimulus or questionText.`,
+        ];
+        if (previousFailure && !previousFailure.ok) {
+          parts.push(`Previous attempt FAILED gate "${previousFailure.gate}": ${previousFailure.reason}. Re-generate fixing that specific failure.`);
+        }
+        parts.push(`Return JSON only.`);
+        return parts.join("\n\n");
+      };
+      const result = await generateWithFeedback({
+        course: COURSE,
+        topic: `ced-chunk-${idx}`,
+        llm: llmAdapter, gates: gateAdapter,
+        buildUserPrompt: cedPrompt,
+        maxRetries: 3,
+      });
+      if (result.result !== "passed" || !result.q) {
+        failed++;
+        const lastFail = [...result.gateHistory].reverse().find((g) => !g.ok);
+        if (failed <= 5) console.warn(`  [loop] failed-after-${result.attemptsUsed} (${lastFail?.gate}): ${lastFail?.reason?.slice(0, 80)}`);
+        continue;
+      }
+      r = { ok: true, data: {
+        questionText: result.q.questionText,
+        stimulus: result.q.stimulus ?? null,
+        options: result.q.options,
+        correctAnswer: result.q.correctAnswer,
+        explanation: result.q.explanation,
+        unit: courseUnits[0],
+        skill: result.q.topic || "CED-grounded",
+      } };
+    } else {
+      r = await generateOne(slice[idx], idx);
+      if (!r.ok) { failed++; continue; }
+      const candidate = { ...r.data, course: COURSE };
+      normalizeQuestion(candidate);
+      const gate = runDeterministicGates(candidate);
+      if (!gate.ok) {
+        failed++;
+        if (failed <= 5) console.warn(`  [gate] ${gate.gate}: ${gate.reason?.slice(0, 100)}`);
+        continue;
+      }
     }
     generated++;
     if (DRY) continue;

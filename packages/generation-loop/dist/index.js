@@ -36,4 +36,5 @@ export { generateWithFeedback } from "./generate-with-feedback.js";
 export { recordGateOutcome, getNegativePromptForTopic, getTopicStats } from "./feedback-store.js";
 export { registerTemplate, getTemplate, listTemplates, scoreTemplate, selectTemplate, _resetRegistryForTests, } from "./template-registry.js";
 export { DEFAULT_MCQ_TEMPLATE } from "./templates/default-mcq.js";
+export { expectedOptionCount, optionLetters, courseFamily, courseSubject, } from "./course-info.js";
 //# sourceMappingURL=index.js.map

@@ -26,6 +26,10 @@ import { readFileSync, writeFileSync, existsSync, mkdirSync } from "node:fs";
 import { join } from "node:path";
 import crypto from "node:crypto";
 import { normalizeQuestion, runDeterministicGates } from "../lib/_question-gates.mjs";
+// Closed-loop generator (@preplion/generation-loop). Opt-in via --use-loop.
+// OER passage-grounded — uses buildUserPrompt callback so the passage stays
+// in the user prompt while still gaining Layer 1 retry + Layer 2 memory.
+import { generateWithFeedback, registerTemplate, DEFAULT_MCQ_TEMPLATE } from "../../packages/generation-loop/dist/index.js";
 
 const args = Object.fromEntries(
   process.argv.slice(2).map((a) => {
@@ -39,6 +43,8 @@ const COURSE = args.course;
 const LIMIT = args.limit ? parseInt(args.limit, 10) : null;
 const CONCURRENCY = args.concurrency ? parseInt(args.concurrency, 10) : 3;
 const DRY = !!args.dry;
+const USE_LOOP = !!args["use-loop"]; // 2026-05-26: opt-in @preplion/generation-loop
+if (USE_LOOP) registerTemplate(DEFAULT_MCQ_TEMPLATE);
 
 if (!BOOK_ID || !COURSE) {
   console.error("usage: --id=<gutenberg-id> --course=<ApCourse> [--limit=N] [--dry]");
@@ -171,16 +177,75 @@ async function worker() {
   while (i < passages.length) {
     const idx = i++;
     const p = passages[idx];
-    const r = await generateOne(p);
-    if (!r.ok) { failed++; continue; }
-    // Unified gate stack — same as PL/runtime. Reject before INSERT.
-    const candidate = { ...r.data, course: COURSE };
-    normalizeQuestion(candidate);
-    const gate = runDeterministicGates(candidate);
-    if (!gate.ok) {
-      failed++;
-      if (failed <= 5) console.warn(`  [gate] ${gate.gate}: ${gate.reason?.slice(0, 100)}`);
-      continue;
+    let r;
+    if (USE_LOOP) {
+      // Closed-loop path: passage stays in the user prompt via the custom
+      // buildUserPrompt callback. Retry-on-fail + per-passage memory.
+      const sourceLine = `From "${book.title}" by ${book.author} (Project Gutenberg, public domain)`;
+      const llmAdapter = async ({ systemPrompt, userPrompt }) => {
+        const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
+          body: JSON.stringify({
+            model: "llama-3.3-70b-versatile",
+            messages: [
+              { role: "system", content: systemPrompt },
+              { role: "user", content: userPrompt },
+            ],
+            response_format: { type: "json_object" }, max_tokens: 700, temperature: 0.4,
+          }),
+          signal: AbortSignal.timeout(30000),
+        });
+        if (!res.ok) throw new Error(`Groq ${res.status}`);
+        return (await res.json())?.choices?.[0]?.message?.content ?? "{}";
+      };
+      const gateAdapter = (cand) => { normalizeQuestion(cand); return runDeterministicGates(cand); };
+      const passagePrompt = ({ previousFailure }) => {
+        const parts = [
+          `Write ONE high-quality MCQ grounded in the following passage. The question MUST be answerable strictly from the passage — no outside knowledge.`,
+          `PASSAGE:\n"${p.text.slice(0, 1800)}"`,
+          `ATTRIBUTION: ${sourceLine}`,
+          `Tests: inference / tone / characterization / theme / rhetorical strategy / diction.`,
+        ];
+        if (previousFailure && !previousFailure.ok) {
+          parts.push(`Previous attempt FAILED gate "${previousFailure.gate}": ${previousFailure.reason}. Re-generate fixing that specific failure.`);
+        }
+        parts.push(`Return JSON only.`);
+        return parts.join("\n\n");
+      };
+      const result = await generateWithFeedback({
+        course: COURSE,
+        topic: `passage-${p.index}`,
+        llm: llmAdapter, gates: gateAdapter,
+        buildUserPrompt: passagePrompt,
+        maxRetries: 3,
+      });
+      if (result.result !== "passed" || !result.q) {
+        failed++;
+        const lastFail = [...result.gateHistory].reverse().find((g) => !g.ok);
+        if (failed <= 5) console.warn(`  [loop] failed-after-${result.attemptsUsed} (${lastFail?.gate}): ${lastFail?.reason?.slice(0, 80)}`);
+        continue;
+      }
+      // Loop result shape ≠ generateOne shape; adapt.
+      r = { ok: true, data: {
+        questionText: result.q.questionText,
+        options: result.q.options,
+        correctAnswer: result.q.correctAnswer,
+        explanation: result.q.explanation,
+        unit: courseUnits[0], // loop doesn't pick unit; fall back to first
+        skill: result.q.topic || "Passage-Based Analysis",
+      } };
+    } else {
+      r = await generateOne(p);
+      if (!r.ok) { failed++; continue; }
+      const candidate = { ...r.data, course: COURSE };
+      normalizeQuestion(candidate);
+      const gate = runDeterministicGates(candidate);
+      if (!gate.ok) {
+        failed++;
+        if (failed <= 5) console.warn(`  [gate] ${gate.gate}: ${gate.reason?.slice(0, 100)}`);
+        continue;
+      }
     }
     generated++;
     if (DRY) continue;

@@ -18,8 +18,11 @@ import {
   scoreTemplate,
   selectTemplate,
   DEFAULT_MCQ_TEMPLATE,
+  expectedOptionCount,
+  optionLetters,
+  courseFamily,
 } from "../src/index.js";
-import type { Question } from "../src/types.js";
+import type { Question, Template } from "../src/types.js";
 
 let dataDir: string;
 
@@ -118,6 +121,7 @@ describe("template-registry", () => {
   });
 
   it("explores equal-weighted before MIN_SAMPLES, then exploits", () => {
+    const defaultId = DEFAULT_MCQ_TEMPLATE.id;
     // Register a 2nd template
     registerTemplate({
       id: "alt-template-v1",
@@ -126,7 +130,7 @@ describe("template-registry", () => {
     });
     // Only 5 attempts each — should still equal-weight
     for (let i = 0; i < 5; i++) {
-      scoreTemplate(dataDir, "CLEP_BIOLOGY", "cells", "default-mcq-v1", "passed");
+      scoreTemplate(dataDir, "CLEP_BIOLOGY", "cells", defaultId, "passed");
       scoreTemplate(dataDir, "CLEP_BIOLOGY", "cells", "alt-template-v1", "failed-after-retries");
     }
     // 1000 picks — should be ~50/50 since we're still in exploration phase
@@ -136,8 +140,108 @@ describe("template-registry", () => {
       picks.set(t.id, (picks.get(t.id) ?? 0) + 1);
     }
     // Each template should be picked between 30% and 70% (loose bounds for flake)
-    expect(picks.get("default-mcq-v1")!).toBeGreaterThan(300);
+    expect(picks.get(defaultId)!).toBeGreaterThan(300);
     expect(picks.get("alt-template-v1")!).toBeGreaterThan(300);
+  });
+});
+
+describe("course-info", () => {
+  it("returns 5 options for most CLEP courses, 4 for the documented exceptions", () => {
+    expect(expectedOptionCount("CLEP_AMERICAN_GOVERNMENT")).toBe(5);
+    expect(expectedOptionCount("CLEP_BIOLOGY")).toBe(5);
+    expect(expectedOptionCount("CLEP_COLLEGE_MATH")).toBe(4);
+    expect(expectedOptionCount("CLEP_SPANISH")).toBe(4);
+  });
+
+  it("returns 4 options for AP/SAT/ACT/PSAT/DSST/Accuplacer", () => {
+    expect(expectedOptionCount("AP_BIOLOGY")).toBe(4);
+    expect(expectedOptionCount("SAT_MATH")).toBe(4);
+    expect(expectedOptionCount("ACT_ENGLISH")).toBe(4);
+    expect(expectedOptionCount("PSAT_MATH")).toBe(4);
+    expect(expectedOptionCount("DSST_ASTRONOMY")).toBe(4);
+    expect(expectedOptionCount("ACCUPLACER")).toBe(4);
+  });
+
+  it("returns matching option letters", () => {
+    expect(optionLetters("CLEP_AMERICAN_GOVERNMENT")).toBe("A-E");
+    expect(optionLetters("AP_BIOLOGY")).toBe("A-D");
+  });
+
+  it("returns sensible course families", () => {
+    expect(courseFamily("CLEP_BIOLOGY")).toBe("CLEP");
+    expect(courseFamily("AP_PHYSICS_1")).toBe("AP");
+    expect(courseFamily("SAT_MATH")).toBe("digital SAT");
+    expect(courseFamily("DSST_ASTRONOMY")).toBe("DSST");
+  });
+});
+
+describe("course-aware default template", () => {
+  it("DEFAULT_MCQ_TEMPLATE is v2 and function-based", () => {
+    expect(DEFAULT_MCQ_TEMPLATE.id).toBe("default-mcq-v2");
+    expect(typeof DEFAULT_MCQ_TEMPLATE.systemPrompt).toBe("function");
+  });
+
+  it("injects EXACTLY 5 options for CLEP courses", () => {
+    const fn = DEFAULT_MCQ_TEMPLATE.systemPrompt as (ctx: { course: string; topic: string }) => string;
+    const prompt = fn({ course: "CLEP_AMERICAN_GOVERNMENT", topic: "civil rights" });
+    expect(prompt).toContain("EXACTLY 5 options");
+    expect(prompt).toContain("A-E");
+    expect(prompt).toContain("CLEP");
+  });
+
+  it("injects EXACTLY 4 options for AP/SAT/ACT courses", () => {
+    const fn = DEFAULT_MCQ_TEMPLATE.systemPrompt as (ctx: { course: string; topic: string }) => string;
+    const prompt = fn({ course: "AP_PHYSICS_1", topic: "kinematics" });
+    expect(prompt).toContain("EXACTLY 4 options");
+    expect(prompt).toContain("A-D");
+    expect(prompt).toContain("AP");
+  });
+});
+
+describe("generateWithFeedback resolves function-based systemPrompt", () => {
+  it("calls the systemPrompt function with {course, topic} when it's a function", async () => {
+    let capturedSystemPrompt = "";
+    const funcTemplate: Template = {
+      id: "test-func-template",
+      version: "1.0.0",
+      systemPrompt: ({ course, topic }) => `Custom for ${course}/${topic}`,
+    };
+    _resetRegistryForTests();
+    registerTemplate(funcTemplate);
+    const result = await generateWithFeedback({
+      course: "CLEP_BIOLOGY",
+      topic: "cells",
+      llm: async ({ systemPrompt }) => {
+        capturedSystemPrompt = systemPrompt;
+        return JSON.stringify(makeQ());
+      },
+      gates: () => ({ ok: true }),
+      dataDir,
+    });
+    expect(result.result).toBe("passed");
+    expect(capturedSystemPrompt).toContain("Custom for CLEP_BIOLOGY/cells");
+  });
+
+  it("still accepts a string-based systemPrompt (backwards-compat)", async () => {
+    let capturedSystemPrompt = "";
+    const stringTemplate: Template = {
+      id: "test-string-template",
+      version: "1.0.0",
+      systemPrompt: "Static prompt string",
+    };
+    _resetRegistryForTests();
+    registerTemplate(stringTemplate);
+    await generateWithFeedback({
+      course: "CLEP_BIOLOGY",
+      topic: "cells",
+      llm: async ({ systemPrompt }) => {
+        capturedSystemPrompt = systemPrompt;
+        return JSON.stringify(makeQ());
+      },
+      gates: () => ({ ok: true }),
+      dataDir,
+    });
+    expect(capturedSystemPrompt).toContain("Static prompt string");
   });
 });
 
@@ -215,6 +319,51 @@ describe("generateWithFeedback (closed loop)", () => {
     expect(capturedSystemPrompts[0]).toContain("AVOID THESE PATTERNS");
     expect(capturedSystemPrompts[0]).toContain("phantom-stimulus");
     expect(capturedSystemPrompts[0]).toContain("3 prior failures");
+  });
+
+  it("uses a custom buildUserPrompt callback when provided", async () => {
+    const captured: string[] = [];
+    const result = await generateWithFeedback({
+      course: "AP_ENGLISH_LITERATURE",
+      topic: "passage-001",
+      llm: async ({ userPrompt }) => {
+        captured.push(userPrompt);
+        return JSON.stringify(makeQ({ course: "AP_ENGLISH_LITERATURE" }));
+      },
+      gates: () => ({ ok: true }),
+      buildUserPrompt: ({ course, topic, attempt }) =>
+        `OER PASSAGE for ${course}/${topic} on attempt ${attempt}. Write a passage-grounded MCQ.`,
+      dataDir,
+    });
+    expect(result.result).toBe("passed");
+    expect(captured[0]).toContain("OER PASSAGE for AP_ENGLISH_LITERATURE/passage-001");
+    expect(captured[0]).toContain("attempt 1");
+  });
+
+  it("custom buildUserPrompt receives the previous failure on retries", async () => {
+    const capturedAttempts: number[] = [];
+    const capturedPrevFails: (string | undefined)[] = [];
+    let gateCalls = 0;
+    const result = await generateWithFeedback({
+      course: "AP_ENGLISH_LITERATURE",
+      topic: "passage-001",
+      llm: async () => JSON.stringify(makeQ({ course: "AP_ENGLISH_LITERATURE" })),
+      gates: () => {
+        gateCalls++;
+        return gateCalls === 1
+          ? { ok: false, gate: "explanation-too-short", reason: "32 chars, need ≥80" }
+          : { ok: true };
+      },
+      buildUserPrompt: ({ attempt, previousFailure }) => {
+        capturedAttempts.push(attempt);
+        capturedPrevFails.push(previousFailure?.gate);
+        return `attempt=${attempt}`;
+      },
+      dataDir,
+    });
+    expect(result.result).toBe("passed");
+    expect(capturedAttempts).toEqual([1, 2]);
+    expect(capturedPrevFails).toEqual([undefined, "explanation-too-short"]);
   });
 
   it("handles unparseable LLM output by treating it as a shape-parse-fail and retrying", async () => {

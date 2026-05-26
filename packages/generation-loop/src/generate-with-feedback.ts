@@ -67,11 +67,15 @@ function parseQuestionFromLlm(raw: string, course: string, topic: string): Quest
 }
 
 /**
- * Build the user prompt for the LLM. The system prompt comes from the
- * selected template; the user prompt carries the immediate task + any
- * retry feedback from a previous attempt.
+ * Default user-prompt builder. The system prompt comes from the selected
+ * template; the user prompt carries the immediate task + any retry feedback
+ * from a previous attempt.
+ *
+ * Callers can override this entirely via GenerateInput.buildUserPrompt
+ * when they need to inject context that doesn't fit this shape
+ * (e.g. a passage/stimulus). See OER generators for that pattern.
  */
-function buildUserPrompt(
+function defaultBuildUserPrompt(
   course: string,
   topic: string,
   spec: Record<string, unknown> | undefined,
@@ -112,24 +116,31 @@ export async function generateWithFeedback(input: GenerateInput): Promise<LoopRe
     maxRetries = DEFAULT_MAX_RETRIES,
     dataDir = DEFAULT_DATA_DIR,
     forceTemplateId,
+    buildUserPrompt: customBuildUserPrompt,
   } = input;
 
   const template = forceTemplateId
     ? (getTemplate(forceTemplateId) ?? selectTemplate(dataDir, course, topic))
     : selectTemplate(dataDir, course, topic);
 
-  // Compose the system prompt = template + per-topic negative memory.
+  // Compose the system prompt = template (string or course-aware function)
+  // + per-topic negative memory.
+  const templateSystemPrompt = typeof template.systemPrompt === "function"
+    ? template.systemPrompt({ course, topic })
+    : template.systemPrompt;
   const negativePrompt = getNegativePromptForTopic(dataDir, course, topic);
   const systemPrompt = negativePrompt
-    ? `${template.systemPrompt}\n\n${negativePrompt}`
-    : template.systemPrompt;
+    ? `${templateSystemPrompt}\n\n${negativePrompt}`
+    : templateSystemPrompt;
 
   const gateHistory: GateOutcome[] = [];
   let previousFailure: GateOutcome | null = null;
   let lastQ: Question | null = null;
 
   for (let attempt = 1; attempt <= maxRetries + 1; attempt++) {
-    const userPrompt = buildUserPrompt(course, topic, spec, previousFailure);
+    const userPrompt = customBuildUserPrompt
+      ? customBuildUserPrompt({ course, topic, spec, previousFailure, attempt })
+      : defaultBuildUserPrompt(course, topic, spec, previousFailure);
     const raw = await llm({ systemPrompt, userPrompt });
     const q = parseQuestionFromLlm(raw, course, topic);
 

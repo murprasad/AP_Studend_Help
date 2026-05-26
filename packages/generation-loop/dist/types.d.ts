@@ -20,13 +20,25 @@ export interface GateOutcome {
     /** Human-readable failure reason when ok=false. */
     reason?: string;
 }
+/** Context passed to a function-based systemPrompt. */
+export interface TemplateContext {
+    course: string;
+    topic: string;
+}
 /** A registered prompt template the generator can choose from. */
 export interface Template {
     id: string;
     /** Semver or date tag; bump when prompt content changes meaningfully. */
     version: string;
-    /** System prompt content; receives no string interpolation from us. */
-    systemPrompt: string;
+    /**
+     * System prompt content.
+     *
+     * - Pass a `string` for a static prompt (course-agnostic).
+     * - Pass a `(ctx) => string` to be course-aware — the loop will call it
+     *   with the current `{course, topic}` before each generation. This lets
+     *   the template inject things like option count, exam family, etc.
+     */
+    systemPrompt: string | ((ctx: TemplateContext) => string);
     /** Optional per-template metadata for telemetry. */
     metadata?: Record<string, unknown>;
 }
@@ -83,6 +95,16 @@ export type LlmFn = (args: {
 }) => Promise<string>;
 /** Gate caller — adapter provided by the host. */
 export type GateFn = (q: Question) => Promise<GateOutcome> | GateOutcome;
+/** Context passed to a custom buildUserPrompt callback. */
+export interface UserPromptContext {
+    course: string;
+    topic: string;
+    spec?: Record<string, unknown>;
+    /** Null on attempt 1; the prior gate outcome on retries. */
+    previousFailure: GateOutcome | null;
+    /** 1-indexed. attempt=1 is the first try; attempt>1 is a retry. */
+    attempt: number;
+}
 /** Input for generateWithFeedback. */
 export interface GenerateInput {
     course: string;
@@ -98,5 +120,19 @@ export interface GenerateInput {
     dataDir?: string;
     /** Override template selection (skip Layer 3). */
     forceTemplateId?: string;
+    /**
+     * Optional custom user-prompt builder. When provided, the loop calls this
+     * instead of its built-in builder. The callback still receives the gate's
+     * previous failure on retries, so Layer 1 retry-with-feedback keeps working.
+     *
+     * Use this when the call has context that doesn't fit the default builder
+     * (e.g. a passage/stimulus the question must be grounded in). The OER
+     * passage-grounded generators use this pattern.
+     *
+     * The system prompt (from the selected template) and Layer 2 negative
+     * memory are still prepended automatically; you only control the user
+     * message.
+     */
+    buildUserPrompt?: (ctx: UserPromptContext) => string;
 }
 //# sourceMappingURL=types.d.ts.map

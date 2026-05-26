@@ -44,10 +44,18 @@ export {
   _resetRegistryForTests,
 } from "./template-registry.js";
 export { DEFAULT_MCQ_TEMPLATE } from "./templates/default-mcq.js";
+export {
+  expectedOptionCount,
+  optionLetters,
+  courseFamily,
+  courseSubject,
+} from "./course-info.js";
 export type {
   Question,
   GateOutcome,
   Template,
+  TemplateContext,
+  UserPromptContext,
   FailureRecord,
   TopicFeedback,
   TemplateScore,
