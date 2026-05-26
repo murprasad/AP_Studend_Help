@@ -4,6 +4,7 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { generateBulkQuestions } from "@/lib/ai";
 import { ApUnit, Difficulty, ApCourse, QuestionType, SubTier } from "@prisma/client";
+import { validateQuestion } from "@/lib/validate-question";
 
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions);
@@ -36,17 +37,39 @@ export async function POST(req: NextRequest) {
       tier
     );
 
-    // Save all generated questions to DB in batches of 3 to avoid
+    // Unified gate stack — same engine used by every other generation path.
+    // MCQ only; FRQ/DBQ skip (separate validation strategy). Failing Qs are
+    // dropped, not stored; saved.length reflects gate-passing count.
+    const resolvedCourse = (course as ApCourse) || "AP_WORLD_HISTORY";
+    const gated = [];
+    let gateDropped = 0;
+    for (const q of questions) {
+      if (q.questionType !== QuestionType.MCQ) { gated.push(q); continue; }
+      const validation = await validateQuestion({
+        questionText: q.questionText,
+        options: q.options ?? [],
+        correctAnswer: q.correctAnswer,
+        explanation: q.explanation ?? "",
+        stimulus: q.stimulus ?? undefined,
+        topic: q.topic,
+        unit: q.unit,
+        course: resolvedCourse,
+      }, { llmVerify: false });
+      if (validation.passed) gated.push(q);
+      else gateDropped++;
+    }
+
+    // Save all gate-passing questions to DB in batches of 3 to avoid
     // overwhelming Groq's free-tier rate limit (~30 req/min).
     const BATCH_SIZE = 3;
     const saved = [];
-    for (let i = 0; i < questions.length; i += BATCH_SIZE) {
-      const batch = questions.slice(i, i + BATCH_SIZE);
+    for (let i = 0; i < gated.length; i += BATCH_SIZE) {
+      const batch = gated.slice(i, i + BATCH_SIZE);
       const results = await Promise.all(
         batch.map((q) =>
           prisma.question.create({
             data: {
-              course: (course as ApCourse) || "AP_WORLD_HISTORY",
+              course: resolvedCourse,
               unit: q.unit,
               topic: q.topic,
               subtopic: q.subtopic || "",
@@ -75,6 +98,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({
       success: true,
       generated: saved.length,
+      gateDropped,
       questions: saved.map((q) => ({ id: q.id, topic: q.topic, unit: q.unit, difficulty: q.difficulty })),
     });
   } catch (error) {

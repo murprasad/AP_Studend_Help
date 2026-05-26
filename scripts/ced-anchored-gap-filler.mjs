@@ -18,6 +18,7 @@ import "dotenv/config";
 import { neon } from "@neondatabase/serverless";
 import { createHash, randomUUID } from "node:crypto";
 import fs from "node:fs";
+import { normalizeQuestion, runDeterministicGates } from "./lib/_question-gates.mjs";
 
 const sql = neon(process.env.DATABASE_URL);
 const GROQ_KEY = process.env.GROQ_API_KEY;
@@ -148,6 +149,15 @@ while (added < TARGET) {
     const q = JSON.parse(raw);
     if (!q.questionText || !Array.isArray(q.options) || q.options.length !== 4 || !q.correctAnswer) {
       errored++;
+      continue;
+    }
+    // Unified gate stack — same as PL/runtime. Reject before INSERT.
+    const candidate = { ...q, course: COURSE };
+    normalizeQuestion(candidate);
+    const gate = runDeterministicGates(candidate);
+    if (!gate.ok) {
+      errored++;
+      if (errored <= 5) console.warn(`  [gate] ${gate.gate}: ${gate.reason?.slice(0, 100)}`);
       continue;
     }
     const r = await insertQuestion(q, topic);

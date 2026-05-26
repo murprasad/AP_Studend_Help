@@ -97,7 +97,18 @@ FAIL if ANY of these CORRECTNESS bugs are present:
 - The stimulus reveals the correct numeric answer.
 - LaTeX uses bare "int", "sum", "frac", "rac", "infty" without backslashes.
 - The explanation includes LLM monologue ("hmm", "let me reconsider", "is not needed, just").
-- The question is meta-administration (e.g. "what must a school do to offer AP?") rather than course content.
+- The question is meta-administration (e.g. "what must a school do to offer this exam?") rather than course content.
+
+FAIL also if the question doesn't match real CB exam STYLE/RIGOR (HARD requirement):
+- **Passage/stimulus-based exam without a stimulus** = automatic FAIL. AP Lit, AP Lang, SAT R/W, ACT Reading, ACT English, AP US History, AP World History, AP European History, AP US Government, AP Psychology, AP Human Geography MCQs are typically based on a stimulus (passage, source quote+attribution, scenario, data, chart, diagram). If the stem is abstract trivia with NO stimulus on these courses, FAIL — not a real CB item.
+- Stem reads more like a textbook paragraph than an exam item.
+- Distractors are not all CB-grade plausible (an option is obviously wrong, or doesn't represent a real student misconception).
+- Stimulus omits the CB-style scaffold (no source quote+attribution for history, no table/chart for AP Stats / ACT Science, no described diagram for AP Physics, no passage for SAT R/W, no described code for AP CSP).
+- Source attribution is fabricated, vague, or missing year.
+- Difficulty doesn't match the apparent rigor (HARD-tagged but is just longer recall).
+- Stem uses ambiguous superlatives ("primary", "main", "best") without textual justification.
+
+Otherwise PASS.
 
 Question: ${q.questionText}
 

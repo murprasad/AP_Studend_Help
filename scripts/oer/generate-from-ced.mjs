@@ -28,6 +28,7 @@ import "dotenv/config";
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from "node:fs";
 import { join } from "node:path";
 import crypto from "node:crypto";
+import { normalizeQuestion, runDeterministicGates } from "../lib/_question-gates.mjs";
 
 const args = Object.fromEntries(
   process.argv.slice(2).map((a) => {
@@ -237,6 +238,15 @@ async function worker() {
     const idx = i++;
     const r = await generateOne(slice[idx], idx);
     if (!r.ok) { failed++; continue; }
+    // Unified gate stack — same as PL/runtime. Reject before INSERT.
+    const candidate = { ...r.data, course: COURSE };
+    normalizeQuestion(candidate);
+    const gate = runDeterministicGates(candidate);
+    if (!gate.ok) {
+      failed++;
+      if (failed <= 5) console.warn(`  [gate] ${gate.gate}: ${gate.reason?.slice(0, 100)}`);
+      continue;
+    }
     generated++;
     if (DRY) continue;
     const hash = contentHashOf(r.data.questionText + JSON.stringify(r.data.options));

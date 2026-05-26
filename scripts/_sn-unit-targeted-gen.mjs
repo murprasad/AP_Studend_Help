@@ -11,6 +11,7 @@
  */
 import "dotenv/config";
 import crypto from "node:crypto";
+import { normalizeQuestion, runDeterministicGates } from "./lib/_question-gates.mjs";
 
 const args = Object.fromEntries(process.argv.slice(2).map(a => {
   if (a === "--dry") return ["dry", true];
@@ -108,6 +109,15 @@ async function generateForCourseUnit({ course, unit, count, options }) {
   for (let i = 0; i < count * 2 && ok < count; i++) {
     try {
       const q = await generateOne(course, unit, options);
+      // Unified gate stack — same as PL/runtime. Reject before INSERT.
+      const candidate = { ...q, course };
+      normalizeQuestion(candidate);
+      const gate = runDeterministicGates(candidate);
+      if (!gate.ok) {
+        fail++;
+        if (fail <= 3) console.warn(`  [gate] ${gate.gate}: ${gate.reason?.slice(0, 100)}`);
+        continue;
+      }
       const hash = contentHashOf(q.questionText);
       if (DRY) { console.log(`  [dry] ${q.questionText.slice(0, 80)}…`); ok++; continue; }
       const id = crypto.randomUUID();

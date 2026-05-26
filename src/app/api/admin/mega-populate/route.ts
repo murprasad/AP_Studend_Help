@@ -16,6 +16,7 @@ import { prisma } from "@/lib/prisma";
 import { ApCourse, ApUnit, Difficulty, QuestionType, SubTier } from "@prisma/client";
 import { VALID_AP_COURSES, COURSE_REGISTRY } from "@/lib/courses";
 import { generateQuestion } from "@/lib/ai";
+import { validateQuestion } from "@/lib/validate-question";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 300;
@@ -58,6 +59,22 @@ export async function POST(req: NextRequest) {
     try {
       const q = await generateOne(course, unit, unitName, difficulty, topic);
       if (!q) {
+        failed++;
+        if (i < queue.length - 1) await sleep(600);
+        continue;
+      }
+      // Unified gate stack — same engine used by every other generation path.
+      const validation = await validateQuestion({
+        questionText: q.questionText,
+        options: q.options,
+        correctAnswer: q.correctAnswer,
+        explanation: q.explanation,
+        stimulus: q.stimulus ?? undefined,
+        topic: q.topic,
+        unit,
+        course,
+      }, { llmVerify: false });
+      if (!validation.passed) {
         failed++;
         if (i < queue.length - 1) await sleep(600);
         continue;
