@@ -29,10 +29,13 @@ const APPLY = !!args.apply;
 const COURSE_FILTER = args.course ?? null;
 
 const MATH_COURSES = [
-  "CLEP_COLLEGE_ALGEBRA",
-  "CLEP_CALCULUS",
-  "CLEP_PRECALCULUS",
-  "CLEP_COLLEGE_MATH",
+  "SAT_MATH",
+  "ACT_MATH",
+  "PSAT_MATH",
+  "AP_CALCULUS_AB",
+  "AP_CALCULUS_BC",
+  "AP_STATISTICS",
+  "AP_PRECALCULUS",
 ];
 
 // Dynamic-import the validator from src so we share logic

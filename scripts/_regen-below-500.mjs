@@ -24,9 +24,9 @@
  */
 import "dotenv/config";
 import { spawnSync } from "node:child_process";
+import { neonRetry } from "./lib/_sql-retry.mjs";
 process.env.DATABASE_URL = (process.env.DATABASE_URL || "").replace(/^["']|["']$/g, "");
-const { neon } = await import("@neondatabase/serverless");
-const sql = neon(process.env.DATABASE_URL);
+const sql = neonRetry(process.env.DATABASE_URL);
 
 const args = Object.fromEntries(
   process.argv.slice(2).map((a) => {
@@ -138,8 +138,19 @@ for (const c of candidates) {
     stdio: "inherit", env: process.env,
   });
   if (proc.status !== 0) {
-    console.log(`  ${c.course}: script exited with code ${proc.status} — skipping`);
-    continue;
+    if (useScript === "scripts/_fill-mirror-haiku.mjs") {
+      console.log(`  ${c.course}: mirror-haiku exited ${proc.status} (likely missing --audit) — falling back to cb-spec`);
+      const fallback = spawnSync("node", ["scripts/_fill-from-cb-spec.mjs", `--course=${c.course}`, `--target=${TARGET}`], {
+        stdio: "inherit", env: process.env,
+      });
+      if (fallback.status !== 0) {
+        console.log(`  ${c.course}: fallback also failed (${fallback.status}) — skipping`);
+        continue;
+      }
+    } else {
+      console.log(`  ${c.course}: script exited with code ${proc.status} — skipping`);
+      continue;
+    }
   }
   const afterN = (await sql`SELECT COUNT(*)::int AS n FROM questions WHERE "isApproved" = true AND "questionType" = 'MCQ' AND course::text = ${c.course}`)[0].n;
   const added = afterN - beforeN;

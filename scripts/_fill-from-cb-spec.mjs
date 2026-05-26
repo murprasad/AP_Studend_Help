@@ -13,8 +13,8 @@ import crypto from "node:crypto";
 import { normalizeQuestion, runDeterministicGates } from "./lib/_question-gates.mjs";
 import { secondPassVerify } from "./lib/_second-pass-verifier.mjs";
 process.env.DATABASE_URL = (process.env.DATABASE_URL || "").replace(/^["']|["']$/g, "");
-const { neon } = await import("@neondatabase/serverless");
-const sql = neon(process.env.DATABASE_URL);
+const { neonRetry } = await import("./lib/_sql-retry.mjs");
+const sql = neonRetry(process.env.DATABASE_URL);
 
 const args = Object.fromEntries(
   process.argv.slice(2).map((a) => {
@@ -136,6 +136,31 @@ for (const course of courses) {
   }
   for (const [_skill, info] of Object.entries(spec.skill_categories || {})) {
     if (info?.subskills && Array.isArray(info.subskills)) topics.push(...info.subskills);
+  }
+  // Fallback 1: derive topics from unit_weights_mcq keys (humanized)
+  if (topics.length === 0 && spec.unit_weights_mcq) {
+    for (const unitKey of Object.keys(spec.unit_weights_mcq)) {
+      const human = unitKey.replace(/^UNIT_\d+_/, "").replace(/_/g, " ").toLowerCase();
+      topics.push(human);
+    }
+  }
+  // Fallback 2: history-style specs use period_weights_mcq + course_themes
+  if (topics.length === 0 && spec.period_weights_mcq) {
+    for (const periodKey of Object.keys(spec.period_weights_mcq)) {
+      const human = periodKey.replace(/^PERIOD_\d+_?/, "").replace(/_/g, " ").toLowerCase();
+      topics.push(human);
+    }
+  }
+  if (spec.course_themes && Array.isArray(spec.course_themes)) {
+    for (const theme of spec.course_themes) {
+      if (typeof theme === "string") topics.push(theme);
+    }
+  }
+  // Fallback 3: psychology-style — named theorists become topics (e.g. "Sigmund Freud" → Qs about Freud's theories)
+  if (spec.canonical_theorists_in_scope && Array.isArray(spec.canonical_theorists_in_scope)) {
+    for (const theorist of spec.canonical_theorists_in_scope) {
+      if (typeof theorist === "string") topics.push(theorist);
+    }
   }
   if (topics.length === 0) { console.log(`SKIP ${course} — no topics in cb_spec`); continue; }
 
