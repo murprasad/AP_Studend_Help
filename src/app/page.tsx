@@ -1033,8 +1033,9 @@ export default async function LandingPage() {
               Students were marked wrong on questions where they reasoned correctly. We pulled them.
             </p>
             <p className="text-foreground/80 leading-relaxed">
-              The bank you see today went through 7 deterministic checks (math, structure, distractor
-              integrity, primary-source attribution, figure presence) plus two cross-family LLM judges.
+              The bank you see today goes through <strong>60+ deterministic checks</strong> (math letter-mismatch,
+              extremum-stem mismatch, distractor integrity, render hazards, permutation-equivalent options, primary-source
+              attribution, figure presence) plus a math-symbolic recompute layer and two cross-family LLM judges.
               Anything that fails any check stays unapproved.
               <span className="block mt-1 text-muted-foreground italic">
                 That&apos;s why some courses aren&apos;t live yet.
