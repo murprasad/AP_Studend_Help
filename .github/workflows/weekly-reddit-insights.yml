@@ -1,0 +1,57 @@
+name: Weekly Reddit Insights Report
+
+# Runs every Monday — crawls r/APStudents + r/SAT + r/ACT, generates a
+# human-readable markdown report, commits to data/ as a PR.
+# Complements the existing weekly-feedback-scrape (which updates per-course
+# profile JSONs) by providing a team-readable narrative summary.
+
+on:
+  schedule:
+    - cron: '0 8 * * 1'  # Mondays 08:00 UTC (~2 hrs after profile scrape)
+  workflow_dispatch:
+
+env:
+  NODE_VERSION: '20'
+
+jobs:
+  insights:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+      - name: Install
+        run: npm ci --legacy-peer-deps
+
+      - name: Crawl exam subreddits
+        run: node scripts/crawl-reddit-exam-subs.mjs
+
+      - name: Generate weekly markdown report
+        run: node scripts/reddit-weekly-report.mjs
+
+      - name: Commit + PR if any changes
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -e
+          BR="auto/reddit-insights-$(date -u +%Y-%m-%d)"
+          git config user.name "insights-bot"
+          git config user.email "noreply+insights@studentnest.ai"
+          git checkout -b "$BR"
+          git add scripts/data/reddit-exam-signals-*.json data/reddit-weekly-*.md
+          if [ -z "$(git diff --cached --name-only)" ]; then
+            echo "No new insights — skipping PR"
+            exit 0
+          fi
+          git commit -m "Weekly Reddit insights $(date -u +%Y-%m-%d)"
+          git push -u origin "$BR"
+          gh pr create --title "Weekly Reddit insights $(date -u +%Y-%m-%d)" \
+            --body "Human-readable report of last week's r/APStudents + r/SAT + r/ACT activity. See data/reddit-weekly-*.md for the latest." \
+            --base main
+          gh pr merge --squash --delete-branch --auto || true

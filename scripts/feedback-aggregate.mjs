@@ -229,15 +229,70 @@ for (const file of courseFiles) {
       : { easy: 0.15, medium: 0.50, hard: 0.35, rationale: `avg pass score ${avgPassScore.toFixed(0)} — harder test` }
     : { easy: 0.20, medium: 0.55, hard: 0.25, rationale: "default — no pass-score data yet" };
 
-  // Pop-up tips: dedup by hash + take top 5 unique
-  const tipSeen = new Set();
+  // Pop-up tips — TEMPLATE-COMPOSED (not raw evidence quotes)
+  // 2026-05-09 user feedback: raw quotes were context-stripped fragments.
+  // Now we compose stand-alone tips from the structured calibration data.
+  // These always make sense without the surrounding Reddit post.
+  const courseDisplayForTips = course.replace(/_/g, " ").replace(/CLEP /, "CLEP ").replace(/AP /, "AP ");
+  const subDisplay = course.startsWith("CLEP_") ? "r/clep" : course.startsWith("AP_") ? "r/APStudents" : course.startsWith("SAT_") ? "r/Sat" : course.startsWith("ACT_") ? "r/ACT" : "Reddit";
   const popupTips = [];
-  for (const t of popupTipPool) {
-    const id = createHash("sha256").update(t.text).digest("hex").slice(0, 8);
-    if (tipSeen.has(id)) continue;
-    tipSeen.add(id);
-    popupTips.push({ tip_id: id, text: t.text, source_attribution: t.source_attribution, first_seen: new Date().toISOString().slice(0, 10), topic_filter: [] });
-    if (popupTips.length >= 5) break;
+  function addTip(text) {
+    if (!text || text.length < 30) return;
+    const id = createHash("sha256").update(text).digest("hex").slice(0, 8);
+    if (popupTips.some((t) => t.tip_id === id)) return;
+    popupTips.push({
+      tip_id: id,
+      text,
+      source_attribution: `Compiled from real test-takers on ${subDisplay}`,
+      first_seen: new Date().toISOString().slice(0, 10),
+      topic_filter: [],
+    });
+  }
+
+  // Compute artifacts that templates need
+  const topTopicsForTips = Object.entries(topicCounts)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 4)
+    .map(([t]) => t.replace(/_/g, " "));
+  const struggleTopicsForTips = [...subtopicStruggles.entries()]
+    .sort((a, b) => b[1].count - a[1].count)
+    .slice(0, 3)
+    .map(([t]) => t);
+  const topResourcesForTips = [...prepResources.entries()]
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 3)
+    .map(([r]) => r);
+
+  // Tip 1 — coverage strategy
+  if (coverageStrategy === "wide_not_deep") {
+    addTip(`On ${courseDisplayForTips}, real test-takers say breadth beats depth. Aim to recognize many topics at a 101 level rather than mastering a few in deep detail.`);
+  } else if (coverageStrategy === "deep_narrow") {
+    addTip(`On ${courseDisplayForTips}, real test-takers say the exam goes deep on a narrower set of topics. Pick the heavy-weight topics and master them.`);
+  }
+
+  // Tip 2 — top topics emphasis
+  if (topTopicsForTips.length >= 2) {
+    addTip(`Heaviest-weighted topics on the actual ${courseDisplayForTips} exam (per recent test-takers): ${topTopicsForTips.slice(0, 3).join(", ")}. Spend more time here.`);
+  }
+
+  // Tip 3 — struggle areas
+  if (struggleTopicsForTips.length >= 1) {
+    addTip(`Where ${courseDisplayForTips} students reported struggling most: ${struggleTopicsForTips.join(", ")}. Make sure you can handle these before exam day.`);
+  }
+
+  // Tip 4 — prep resources
+  if (topResourcesForTips.length >= 1) {
+    addTip(`Resources real ${courseDisplayForTips} test-takers credited: ${topResourcesForTips.slice(0, 2).join(" and ")}. Pair with practice questions.`);
+  }
+
+  // Tip 5 — wording / difficulty
+  if (trickyFraction >= 0.10) {
+    addTip(`On ${courseDisplayForTips}, watch for tricky wording — EXCEPT/NOT-style questions and embedded distractors are common. Read each stem twice.`);
+  }
+
+  // Tip 6 — pass-score calibration
+  if (avgPassScore !== null && avgPassScore < 65) {
+    addTip(`A passing score on ${courseDisplayForTips} is reachable: recent successful test-takers reported scoring around ${Math.round(avgPassScore)} after focused study.`);
   }
 
   // Subtopic struggles → top 3
