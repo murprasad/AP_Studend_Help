@@ -141,7 +141,26 @@ export async function generateWithFeedback(input: GenerateInput): Promise<LoopRe
     const userPrompt = customBuildUserPrompt
       ? customBuildUserPrompt({ course, topic, spec, previousFailure, attempt })
       : defaultBuildUserPrompt(course, topic, spec, previousFailure);
-    const raw = await llm({ systemPrompt, userPrompt });
+
+    // Layer 1 robustness: a transient LLM error (rate limit, 400, timeout)
+    // is a retry-able failure, not a thrown exception that breaks the loop.
+    // We treat it the same way as a gate failure — record under a synthetic
+    // gate id so the memory + scorer see it, then retry.
+    let raw: string;
+    try {
+      raw = await llm({ systemPrompt, userPrompt });
+    } catch (e) {
+      const llmErr: GateOutcome = {
+        ok: false,
+        gate: "llm-error",
+        reason: e instanceof Error ? e.message.slice(0, 200) : "unknown llm error",
+      };
+      gateHistory.push(llmErr);
+      recordGateOutcome(dataDir, course, topic, llmErr);
+      previousFailure = llmErr;
+      continue;
+    }
+
     const q = parseQuestionFromLlm(raw, course, topic);
 
     if (!q) {

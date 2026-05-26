@@ -382,4 +382,36 @@ describe("generateWithFeedback (closed loop)", () => {
     expect(result.attemptsUsed).toBe(2);
     expect(result.gateHistory[0]?.gate).toBe("shape-parse-fail");
   });
+
+  it("catches transient LLM errors (e.g. Groq 400) as a retry-able llm-error gate", async () => {
+    let calls = 0;
+    const llm = async () => {
+      calls++;
+      if (calls === 1) throw new Error("Groq 400: bad request");
+      return JSON.stringify(makeQ());
+    };
+    const result = await generateWithFeedback({
+      course: "SAT_MATH",
+      topic: "linear equations",
+      llm, gates: () => ({ ok: true }), dataDir,
+    });
+    expect(result.result).toBe("passed");
+    expect(result.attemptsUsed).toBe(2);
+    expect(result.gateHistory[0]?.gate).toBe("llm-error");
+    expect(result.gateHistory[0]?.reason).toContain("Groq 400");
+  });
+
+  it("returns failed-after-retries when LLM keeps erroring (no infinite loop)", async () => {
+    const result = await generateWithFeedback({
+      course: "SAT_MATH",
+      topic: "linear equations",
+      llm: async () => { throw new Error("permanent 401 auth"); },
+      gates: () => ({ ok: true }),
+      maxRetries: 2,
+      dataDir,
+    });
+    expect(result.result).toBe("failed-after-retries");
+    expect(result.attemptsUsed).toBe(3);
+    expect(result.gateHistory.every((g) => g.gate === "llm-error")).toBe(true);
+  });
 });
