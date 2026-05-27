@@ -1,0 +1,131 @@
+{
+  "course": "PSAT_MATH",
+  "source": {
+    "pdf": "data/raw/sat/sat-practice-test-4-digital.pdf",
+    "url": "https://satsuite.collegeboard.org/sat/practice-preparation/practice-tests/paper",
+    "version": "6TSL05 (Practice Test #4 — digital SAT in nondigital format)",
+    "accessed_date": "2026-05-19"
+  },
+  "exam": {
+    "num_questions": 54,
+    "num_questions_per_module": 27,
+    "num_modules": 2,
+    "time_minutes": 86,
+    "time_minutes_per_module": 43,
+    "time_per_q_seconds": 95,
+    "num_options": 4,
+    "mcq_options": 4,
+    "calculator_allowed": true,
+    "calculator_type": "all_questions",
+    "audio_required": false,
+    "native_language_stems": false,
+    "adaptive_between_modules": true,
+    "distinctive_formats": [
+      "student_produced_response_SPR",
+      "numeric_input",
+      "graph_interpretation",
+      "system_of_equations",
+      "function_notation",
+      "geometry_with_figure"
+    ],
+    "spr_rules": {
+      "max_chars_positive": 5,
+      "max_chars_negative": 6,
+      "fraction_or_decimal_accepted": true,
+      "mixed_number_convert_to_improper_or_decimal": true,
+      "no_symbols": "no percent sign, comma, or dollar sign",
+      "decimal_truncate_or_round_at_4th_digit": true
+    },
+    "spr_fraction_of_questions": "approximately 25% per module (about 6-7 SPR per 27-Q module)",
+    "vocabulary_cues": [
+      "What is the value of",
+      "What is a solution to the given equation",
+      "Which equation represents this situation",
+      "Which equation defines f(x)",
+      "What is the best interpretation of X in this context",
+      "For what value of x does f(x) reach its minimum",
+      "Which of the following correctly compares the medians and the ranges of data sets A and B",
+      "It is plausible that the proportion is",
+      "Note: Figure not drawn to scale / Figures provided are drawn to scale"
+    ],
+    "reference_sheet_provided": true,
+    "reference_formulas": [
+      "A = πr², C = 2πr",
+      "A = ℓw, A = ½bh",
+      "c² = a² + b² (Pythagorean)",
+      "Special right triangles: 30-60-90 (1, √3, 2); 45-45-90 (1, 1, √2)",
+      "V = ℓwh (rect prism), V = πr²h (cylinder), V = (4/3)πr³ (sphere), V = (1/3)πr²h (cone), V = (1/3)ℓwh (pyramid)",
+      "Circle: 360° = 2π radians",
+      "Triangle interior angles sum = 180°"
+    ],
+    "off_scope_keywords": [
+      "calculus",
+      "derivative",
+      "integral",
+      "limit",
+      "differential equation"
+    ]
+  },
+  "skill_categories": {
+    "ALGEBRA": {
+      "weight": 0.35,
+      "subskills": [
+        "Linear equations in one variable",
+        "Linear equations in two variables",
+        "Linear functions",
+        "Systems of two linear equations in two variables",
+        "Linear inequalities in one or two variables"
+      ]
+    },
+    "ADVANCED_MATH": {
+      "weight": 0.35,
+      "subskills": [
+        "Equivalent expressions (factoring, distributing)",
+        "Nonlinear equations in one variable (quadratic, radical, rational)",
+        "Systems of equations in two variables (with at least one nonlinear)",
+        "Nonlinear functions (quadratic, exponential, polynomial, rational, radical, absolute value)",
+        "Function notation, transformations"
+      ]
+    },
+    "PROBLEM_SOLVING_DATA_ANALYSIS": {
+      "weight": 0.15,
+      "subskills": [
+        "Ratios, rates, proportional relationships, units conversions",
+        "Percentages",
+        "One-variable data: distributions and measures of center and spread (median, range)",
+        "Two-variable data: models and scatterplots",
+        "Probability and conditional probability",
+        "Inference from sample statistics and margin of error",
+        "Evaluating statistical claims: observational studies and experiments"
+      ]
+    },
+    "GEOMETRY_AND_TRIGONOMETRY": {
+      "weight": 0.15,
+      "subskills": [
+        "Area and volume formulas (apply reference sheet)",
+        "Lines, angles, triangles (parallel lines + transversal, similar triangles, special right triangles)",
+        "Right triangle trigonometry (sin, cos, tan, complementary angle identity)",
+        "Circles (equation of circle, arc measure, central angle)"
+      ]
+    }
+  },
+  "unit_to_topic_weight_key": {
+    "SAT_MATH_1_ALGEBRA": "ALGEBRA",
+    "SAT_MATH_2_ADVANCED_MATH": "ADVANCED_MATH",
+    "SAT_MATH_3_PROBLEM_SOLVING_DATA_ANALYSIS": "PROBLEM_SOLVING_DATA_ANALYSIS",
+    "SAT_MATH_4_GEOMETRY_AND_TRIGONOMETRY": "GEOMETRY_AND_TRIGONOMETRY"
+  },
+  "sample_stems": [
+    "MCQ: '3 more than 8 times a number x is equal to 83. Which equation represents this situation?' (D) 8x + 3 = 83",
+    "SPR: 'A customer spent $27 to purchase oranges at $3 per pound. How many pounds of oranges did the customer purchase?' [type 9]",
+    "MCQ: 'For the linear function f, the table shows three values of x and their corresponding values of f(x). Which equation defines f(x)?' (A) f(x) = 3x + 29",
+    "MCQ Geometry: 'Right triangles PQR and STU are similar. If the measure of angle Q is 18°, what is the measure of angle S?' (B) 72°",
+    "MCQ Quadratic: 'In the xy-plane, a parabola has vertex (9, −14) ... which of the following could be the value of a + b + c?'",
+    "MCQ Exponential: 'f(x) = 206(1.034)^x ... Which of the following is the best interpretation of f(5) is approximately equal to 243 in this context?' (B) The value of the bank account is estimated to be approximately 243 dollars in 1962",
+    "MCQ Statistics: 'Based on this estimate and margin of error, which of the following is the most appropriate conclusion?' (A) It is plausible that the proportion is between 0.45 and 0.53",
+    "SPR Geometry: 'Point O is the center of a circle. The measure of arc RS on this circle is 100°. What is the measure, in degrees, of its associated angle ROS?' [type 100]",
+    "SPR Trig: 'In triangle JKL, cos(K) = 24/51 and angle J is a right angle. What is the value of cos(L)?'",
+    "MCQ Circles: 'The equation x² + (y−1)² = 49 represents circle A. Circle B is obtained by shifting circle A down 2 units. Which equation represents circle B?' (D) x² + (y+1)² = 49"
+  ],
+  "note": " (auto-derived from SAT_MATH for PSAT regen 2026-05-27 — PSAT is easier SAT)"
+}
