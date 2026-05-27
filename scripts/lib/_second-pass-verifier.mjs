@@ -9,7 +9,9 @@
  *
  * Cost: ~$0.001-0.003 per question via Haiku 4.5.
  */
-const ANTHROPIC_KEY = process.env.ANTHROPIC_API_KEY;
+// Read env at function-call time (not module-import time) so callers can
+// toggle the key per-call without re-importing — and so tests that delete
+// the env var actually see the change. Previously cached at import scope.
 
 const SYSTEM = `You are a QA auditor for standardized-test MCQ content.
 
@@ -33,6 +35,7 @@ Use PASS otherwise.
 Be strict but pragmatic — don't fail on minor wording.`;
 
 export async function secondPassVerify(q) {
+  const ANTHROPIC_KEY = process.env.ANTHROPIC_API_KEY;
   if (!ANTHROPIC_KEY) return { ok: true, verdict: "SKIP", reason: "no ANTHROPIC_API_KEY — skipping verification" };
   const opts = Array.isArray(q.options) ? q.options.map(String) : [];
   if (opts.length < 2) return { ok: true, verdict: "SKIP", reason: "fewer than 2 options" };
