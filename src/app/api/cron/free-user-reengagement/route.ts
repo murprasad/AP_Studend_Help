@@ -29,6 +29,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { sendEmail } from "@/lib/email";
 import { sendPushToUser } from "@/lib/push";
+import { sendSmsToUser } from "@/lib/sms";
 
 export const dynamic = "force-dynamic";
 
@@ -174,6 +175,9 @@ export async function GET(req: NextRequest) {
         body: "3 questions, 60 seconds. See where you stand vs. yesterday.",
         url: practiceUrl,
         tag: "free_first_nudge",
+      }).catch(() => {});
+      await sendSmsToUser(u.id, {
+        body: `StudentNest: 3 ${courseName} Qs, 60 sec. See your gap: ${practiceUrl}`,
       }).catch(() => {});
       await prisma.trialReengagement.create({
         data: {

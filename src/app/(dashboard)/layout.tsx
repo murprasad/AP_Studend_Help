@@ -7,6 +7,7 @@ import { Sidebar } from "@/components/layout/sidebar";
 import { SageChat } from "@/components/layout/sage-chat";
 import { BottomNav } from "@/components/layout/bottom-nav";
 import { PushPermissionBanner } from "@/components/notifications/PushPermissionBanner";
+import { SmsOptInCard } from "@/components/notifications/SmsOptInCard";
 import { Sparkles, Menu, LayoutDashboard } from "lucide-react";
 import Link from "next/link";
 import { ExamModeContext, useExamModeState } from "@/hooks/use-exam-mode";
@@ -304,6 +305,8 @@ export default function DashboardLayout({
         {!inExamMode && <SageChat />}
         {/* Push opt-in banner — self-hides if unsupported, already granted, or previously dismissed */}
         {!inExamMode && !onOnboarding && <PushPermissionBanner />}
+        {/* SMS opt-in card — fires 30s after Push so the asks don't stack */}
+        {!inExamMode && !onOnboarding && <SmsOptInCard />}
         {/* Mobile bottom nav — hidden in exam mode + onboarding. md:hidden
             inside the component itself so desktop stays untouched. */}
         {!onOnboarding && <BottomNav examMode={inExamMode} />}

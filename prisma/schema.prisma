@@ -52,6 +52,12 @@ model User {
   passGuaranteeClaimedAt     DateTime?
   passGuaranteeRefundCents   Int?
   passGuaranteeRefundedAt    DateTime?
+  // 2026-05-27 — SMS channel via Twilio. Opt-in only. STOP keyword
+  // flips smsOptedOutAt; cron skips users with opt-out set.
+  phoneNumber       String?   // E.164 e.g. +15551234567
+  phoneVerifiedAt   DateTime?
+  smsOptedInAt      DateTime?
+  smsOptedOutAt     DateTime?
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
 
