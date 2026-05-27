@@ -483,6 +483,35 @@ export function runDeterministicGates(q) {
     }
   }
 
+  // 2026-05-27 — Self-contradicting explanation: derives a final value
+  // (so x = N / therefore x = N / x must be N) that differs from the
+  // stored answer's value. Triggered by live bug: "Solve 3^x = 81,
+  // correctAnswer=E (option "2"). Explanation: '2 is correct because
+  // 3^2 = 9 and 3^4 = 81, so x = 4.' The "so x = 4" contradicts the
+  // stored "2". Surface letter-match passes ("2" is option E) — but the
+  // math walk derives a different value than the claim. Conservative:
+  // only flag when stored option is a single number AND the derivation
+  // is unambiguous ("so x = N" / "therefore x = N" / "x must be N").
+  const FINAL_VALUE_PATTERNS = [
+    /\bso\s+([xyz])\s*=\s*(-?\d+(?:\.\d+)?)\b/i,
+    /\btherefore\s+([xyz])\s*=\s*(-?\d+(?:\.\d+)?)\b/i,
+    /\bthus\s+([xyz])\s*=\s*(-?\d+(?:\.\d+)?)\b/i,
+    /\b([xyz])\s+must\s+be\s+(-?\d+(?:\.\d+)?)\b/i,
+    /\b([xyz])\s+equals?\s+(-?\d+(?:\.\d+)?)\b/i,
+    /\bvalue\s+of\s+([xyz])\s+is\s+(-?\d+(?:\.\d+)?)\b/i,
+  ];
+  const storedOptText = String(opts[correctIndex] || "").replace(/^[A-E]\)\s*/, "").replace(/\$|\\|`/g, "").trim();
+  const storedNum = storedOptText.match(/^(-?\d+(?:\.\d+)?)$/);
+  if (storedNum) {
+    for (const re of FINAL_VALUE_PATTERNS) {
+      const m = q.explanation.match(re);
+      if (m && m[2] && m[2] !== storedNum[1]) {
+        return { ok: false, gate: "explanation-derives-contradictory-value",
+          reason: `explanation derives "${m[0]}" but stored correctAnswer ${q.correctAnswer} = "${storedOptText}"` };
+      }
+    }
+  }
+
   // 2026-05-24 — Body letter references in explanation are brittle on
   // shuffle. Catches "B is incorrect", "Option C is wrong", "A is not
   // correct" anywhere after position 60. Plus 2026-05-24 (Isabel report):

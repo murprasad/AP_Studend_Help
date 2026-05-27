@@ -330,6 +330,37 @@ export function runDeterministicGates(q: QuestionCandidate): GateResult {
     }
   }
 
+  // 3a. EXPLANATION_DERIVES_CONTRADICTORY_VALUE (2026-05-27) — derivation
+  // ends with "so x = N" / "therefore x = N" / "x must be N" / etc. that
+  // differs from the stored answer's option value. Triggered by live bug:
+  // "Solve 3^x = 81, correctAnswer=E (option '2'). Explanation: '2 is correct
+  // because 3^2 = 9 and 3^4 = 81, so x = 4.'" Surface letter-match passes
+  // ('2' = option E text) but the math walk derives 4. Conservative gate:
+  // only flag when stored option is a single number AND derivation is
+  // unambiguous, so we never false-positive on conceptual options.
+  const FINAL_VALUE_PATTERNS: RegExp[] = [
+    /\bso\s+([xyz])\s*=\s*(-?\d+(?:\.\d+)?)\b/i,
+    /\btherefore\s+([xyz])\s*=\s*(-?\d+(?:\.\d+)?)\b/i,
+    /\bthus\s+([xyz])\s*=\s*(-?\d+(?:\.\d+)?)\b/i,
+    /\b([xyz])\s+must\s+be\s+(-?\d+(?:\.\d+)?)\b/i,
+    /\b([xyz])\s+equals?\s+(-?\d+(?:\.\d+)?)\b/i,
+    /\bvalue\s+of\s+([xyz])\s+is\s+(-?\d+(?:\.\d+)?)\b/i,
+  ];
+  const storedOptForDerivCheck = String(opts[correctIndex] || "").replace(/^[A-E]\)\s*/, "").replace(/\$|\\|`/g, "").trim();
+  const storedNumMatch = storedOptForDerivCheck.match(/^(-?\d+(?:\.\d+)?)$/);
+  if (storedNumMatch) {
+    for (const re of FINAL_VALUE_PATTERNS) {
+      const m = q.explanation.match(re);
+      if (m && m[2] && m[2] !== storedNumMatch[1]) {
+        return {
+          ok: false,
+          gate: "explanation-derives-contradictory-value",
+          reason: `explanation derives "${m[0]}" but stored correctAnswer ${q.correctAnswer} = "${storedOptForDerivCheck}"`,
+        };
+      }
+    }
+  }
+
   // 3b. EXPLANATION_VALUE_MISMATCH (2026-05-18) — explanation's reasoning chain
   // ends with a value matching a DIFFERENT option than the stored letter.
   // Generalizes letter-mismatch: catches cases where the model wrote correct
