@@ -77,3 +77,15 @@ data/reaudit-*.json
 .wrangler/
 AP World History -2025/
 archives/
+
+# Capacitor / Android build outputs
+android/.gradle/
+android/build/
+android/app/build/
+android/local.properties
+android/.idea/
+android/captures/
+android/*.iml
+android/app/*.iml
+android/keystore.properties
+android/app/upload-keystore.jks

@@ -39,6 +39,8 @@
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.7.2",
+    "@capacitor/android": "^8.3.4",
+    "@capacitor/core": "^8.3.4",
     "@cloudflare/next-on-pages": "^1.13.16",
     "@google/generative-ai": "^0.24.1",
     "@hookform/resolvers": "^3.9.0",
@@ -97,6 +99,7 @@
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.11.2",
+    "@capacitor/cli": "^8.3.4",
     "@playwright/test": "^1.59.1",
     "@types/bcryptjs": "^2.4.6",
     "@types/canvas-confetti": "^1.9.0",
