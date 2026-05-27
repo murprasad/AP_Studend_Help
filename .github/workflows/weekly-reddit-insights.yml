@@ -1,9 +1,13 @@
 name: Daily Reddit Insights Report
 
-# Runs every Monday — crawls r/APStudents + r/SAT + r/ACT, generates a
-# human-readable markdown report, commits to data/ as a PR.
-# Complements the existing weekly-feedback-scrape (which updates per-course
-# profile JSONs) by providing a team-readable narrative summary.
+# Runs daily — crawls r/clep + r/APStudents + r/SAT + r/ACT, generates
+# a human-readable markdown report, commits to data/ as a PR.
+# Complements the daily feedback scrape (which updates per-course profile
+# JSONs) by providing a team-readable narrative summary.
+#
+# 2026-05-27: bumped from weekly → daily per user request — daily reviews
+# of test-taker posts (difficulty ratings, score reports, study notes)
+# drive faster improvement cycles.
 
 on:
   schedule:
@@ -35,6 +39,12 @@ jobs:
       - name: Generate weekly markdown report
         run: node scripts/reddit-weekly-report.mjs
 
+      - name: Run gap-analyzer (LLM signal extraction + bank-state linking)
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: node scripts/reddit-gap-analyzer.mjs || echo "gap-analyzer non-fatal failure — skipping"
+
       - name: Commit + PR if any changes
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -44,14 +54,14 @@ jobs:
           git config user.name "insights-bot"
           git config user.email "noreply+insights@studentnest.ai"
           git checkout -b "$BR"
-          git add scripts/data/reddit-exam-signals-*.json data/reddit-weekly-*.md
+          git add scripts/data/reddit-exam-signals-*.json data/reddit-weekly-*.md data/reddit-gap-report-*.md
           if [ -z "$(git diff --cached --name-only)" ]; then
             echo "No new insights — skipping PR"
             exit 0
           fi
-          git commit -m "Weekly Reddit insights $(date -u +%Y-%m-%d)"
+          git commit -m "Daily Reddit insights + gap analysis $(date -u +%Y-%m-%d)"
           git push -u origin "$BR"
-          gh pr create --title "Weekly Reddit insights $(date -u +%Y-%m-%d)" \
-            --body "Human-readable report of last week's r/APStudents + r/SAT + r/ACT activity. See data/reddit-weekly-*.md for the latest." \
+          gh pr create --title "Daily Reddit insights + gap analysis $(date -u +%Y-%m-%d)" \
+            --body "Daily report of r/clep + r/APStudents + r/SAT + r/ACT activity. See data/reddit-weekly-*.md for narrative + data/reddit-gap-report-*.md for product-gap signals + auto-link-to-bank coverage." \
             --base main
           gh pr merge --squash --delete-branch --auto || true
