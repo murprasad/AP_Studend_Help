@@ -28,6 +28,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { sendEmail } from "@/lib/email";
+import { sendPushToUser } from "@/lib/push";
 
 export const dynamic = "force-dynamic";
 
@@ -70,7 +71,7 @@ function buildEmailHtml(opts: { firstName: string; courseName: string; practiceU
       </p>
       <div style="margin-top: 32px; padding-top: 16px; border-top: 1px solid #e2e8f0; text-align: center;">
         <p style="color: #94a3b8; font-size: 11px; line-height: 1.5;">
-          PrepLion — AP &amp; SAT &amp; ACT Exam Prep<br/>
+          StudentNest — AP &amp; SAT &amp; ACT Exam Prep<br/>
           <a href="mailto:contact@studentnest.ai?subject=Unsubscribe%20from%20re-engagement%20emails" style="color: #64748b; text-decoration: underline;">Unsubscribe</a>
         </p>
       </div>
@@ -166,6 +167,14 @@ export async function GET(req: NextRequest) {
 
     try {
       await sendEmail(u.email, subject, html);
+      // Also fire native push if they've subscribed on any device. Best-effort —
+      // failures here don't block the email path.
+      await sendPushToUser(u.id, {
+        title: `Hey ${u.firstName || "there"} — your ${courseName} baseline is ready`,
+        body: "3 questions, 60 seconds. See where you stand vs. yesterday.",
+        url: practiceUrl,
+        tag: "free_first_nudge",
+      }).catch(() => {});
       await prisma.trialReengagement.create({
         data: {
           userId: u.id,

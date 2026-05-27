@@ -6,6 +6,7 @@ import { useEffect, useState, useRef } from "react";
 import { Sidebar } from "@/components/layout/sidebar";
 import { SageChat } from "@/components/layout/sage-chat";
 import { BottomNav } from "@/components/layout/bottom-nav";
+import { PushPermissionBanner } from "@/components/notifications/PushPermissionBanner";
 import { Sparkles, Menu, LayoutDashboard } from "lucide-react";
 import Link from "next/link";
 import { ExamModeContext, useExamModeState } from "@/hooks/use-exam-mode";
@@ -301,6 +302,8 @@ export default function DashboardLayout({
         </main>
         {/* Hide Sage chat widget while in exam mode — full-screen test UX */}
         {!inExamMode && <SageChat />}
+        {/* Push opt-in banner — self-hides if unsupported, already granted, or previously dismissed */}
+        {!inExamMode && !onOnboarding && <PushPermissionBanner />}
         {/* Mobile bottom nav — hidden in exam mode + onboarding. md:hidden
             inside the component itself so desktop stays untouched. */}
         {!onOnboarding && <BottomNav examMode={inExamMode} />}
