@@ -375,6 +375,49 @@ export function runDeterministicGates(q) {
   if (opts.length !== expected) {
     return { ok: false, gate: "options-count", reason: `expected ${expected} options for ${q.course}, got ${opts.length}` };
   }
+  // 2026-05-27 — Unescaped currency $ in stem. Caught by College Algebra
+  // ensemble (5+ real cases) but not by any deterministic gate. Heuristic:
+  // - Strip escaped \$ first
+  // - Count remaining $; if odd → unbalanced → FAIL
+  // - If even, check that each pair surrounds LaTeX-shaped math content
+  //   (no whitespace adjacent to the delimiters AND content uses ^/_/\\/{)
+  // - If pairs don't look like math (digit-only / spaces / no LaTeX symbols),
+  //   they're currency that should be escaped → FAIL
+  {
+    const stemStripped = String(q.questionText || "").replace(/\\\$/g, "");
+    const dollars = (stemStripped.match(/\$/g) || []).length;
+    if (dollars >= 2) {
+      // Split on $ to inspect content between delimiters
+      const parts = stemStripped.split("$");
+      // Even number of $ → odd number of "parts" (3, 5, 7...) where odd-indexed are inside delimiters
+      let suspect = false;
+      if (dollars % 2 !== 0) {
+        suspect = true; // unbalanced
+      } else {
+        // Check each "inside" section. Math-shaped content uses operators
+        // (=, +, -, *, /, ^, _, \), grouping {}, or is just a short token
+        // (variable / number / simple expression). Currency-shaped content
+        // is "75 and …" — digits followed by English prose.
+        for (let i = 1; i < parts.length; i += 2) {
+          const inside = (parts[i] || "").trim();
+          if (!inside) { suspect = true; break; } // empty between dollars = unmatched
+          const hasMathSymbol = /[=+\-*/\\^_{}<>(),]/.test(inside);
+          const hasOnlyShortToken = /^[\w.,^_{}=+\-*/\\<>()|]{1,40}$/.test(inside);
+          const looksLikeMath = hasMathSymbol || hasOnlyShortToken;
+          // Currency-shaped: starts with digit and contains English prose
+          // (a word ≥4 chars + a space).
+          const looksLikeCurrency = /^\d/.test(inside) && /\s[a-z]{4,}/i.test(inside);
+          if (!looksLikeMath || looksLikeCurrency) {
+            suspect = true;
+            break;
+          }
+        }
+      }
+      if (suspect) {
+        return { ok: false, gate: "stem-unescaped-currency-dollar", reason: `stem has ${dollars} bare $ chars that don't form valid paired math delimiters — likely currency that should be escaped as \\$ or written as "dollars"` };
+      }
+    }
+  }
   // 2a. Double-letter-prefix bug
   for (const o of opts) {
     if (DOUBLE_PREFIX_REGEX.test(o)) {

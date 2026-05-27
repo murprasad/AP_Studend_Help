@@ -207,6 +207,44 @@ export function runDeterministicGates(q: QuestionCandidate): GateResult {
   if (opts.length !== expected) {
     return { ok: false, gate: "options-count", reason: `expected ${expected} options for course ${q.course}, got ${opts.length}` };
   }
+  // 2026-05-27 — Unescaped currency $ in stem. Caught by College Algebra
+  // ensemble (5+ real cases) but not by any deterministic gate. Heuristic:
+  // - Strip escaped \$ first
+  // - 0 or 1 bare $ → pass (currency in single dollar amount is fine)
+  // - 2+ bare $ → must form valid LaTeX math pairs (math content between)
+  //   or fail as currency-that-needs-escaping.
+  {
+    const stemStripped = (q.questionText ?? "").replace(/\\\$/g, "");
+    const dollars = (stemStripped.match(/\$/g) ?? []).length;
+    if (dollars >= 2) {
+      let suspect = false;
+      if (dollars % 2 !== 0) {
+        suspect = true;
+      } else {
+        const parts = stemStripped.split("$");
+        for (let i = 1; i < parts.length; i += 2) {
+          const inside = (parts[i] ?? "").trim();
+          if (!inside) { suspect = true; break; }
+          const hasMathSymbol = /[=+\-*/\\^_{}<>(),]/.test(inside);
+          const hasOnlyShortToken = /^[\w.,^_{}=+\-*/\\<>()|]{1,40}$/.test(inside);
+          const looksLikeMath = hasMathSymbol || hasOnlyShortToken;
+          const looksLikeCurrency = /^\d/.test(inside) && /\s[a-z]{4,}/i.test(inside);
+          if (!looksLikeMath || looksLikeCurrency) {
+            suspect = true;
+            break;
+          }
+        }
+      }
+      if (suspect) {
+        return {
+          ok: false,
+          gate: "stem-unescaped-currency-dollar",
+          reason: `stem has ${dollars} bare $ chars that don't form valid paired math delimiters — likely currency that should be escaped as \\$ or written as "dollars"`,
+        };
+      }
+    }
+  }
+
   // 2a. Double letter-prefix bug ("A) A) text")
   for (const o of opts) {
     if (DOUBLE_PREFIX_REGEX.test(o)) {
