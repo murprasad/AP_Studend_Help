@@ -1,4 +1,4 @@
-name: Weekly Reddit Insights Report
+name: Daily Reddit Insights Report
 
 # Runs every Monday — crawls r/APStudents + r/SAT + r/ACT, generates a
 # human-readable markdown report, commits to data/ as a PR.
@@ -7,7 +7,7 @@ name: Weekly Reddit Insights Report
 
 on:
   schedule:
-    - cron: '0 8 * * 1'  # Mondays 08:00 UTC (~2 hrs after profile scrape)
+    - cron: '0 8 * * *'  # Daily 08:00 UTC (~2 hrs after profile scrape)
   workflow_dispatch:
 
 env:

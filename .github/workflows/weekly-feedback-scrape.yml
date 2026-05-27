@@ -1,4 +1,4 @@
-name: Weekly Reddit Feedback Scrape
+name: Daily Reddit Feedback Scrape
 
 # Phase 3 of the user-feedback loop. Scrapes 3 SN-relevant subreddits
 # weekly and updates per-course calibration profiles.
@@ -6,7 +6,7 @@ name: Weekly Reddit Feedback Scrape
 
 on:
   schedule:
-    - cron: '0 6 * * 1'  # Mondays 06:00 UTC
+    - cron: '0 6 * * *'  # Daily 06:00 UTC (~2am ET / 11pm PT)
   workflow_dispatch:
     inputs:
       period:
