@@ -86,7 +86,7 @@ export function Step0CoursePick({ defaultCourse, mustPick = false, onStart }: Pr
       <div>
         <h1 className="text-3xl font-bold">Welcome to StudentNest</h1>
         <p className="text-muted-foreground mt-2 max-w-md mx-auto">
-          A 5-step guided plan to see your projected AP score in about 15 minutes.
+          A guided plan to see your projected score in about 10 minutes.
         </p>
       </div>
 

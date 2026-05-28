@@ -16,6 +16,7 @@
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { getExamCopy } from "@/lib/exam-copy";
 import {
   Trophy, Check, ArrowRight, Brain, Sparkles, BarChart3, Crown,
 } from "lucide-react";
@@ -26,7 +27,17 @@ interface Props {
   weakestUnitName: string | null;
 }
 
-export function Step5Done({ predictedScore, weakestUnitName }: Props) {
+export function Step5Done({ predictedScore, weakestUnitName, course }: Props) {
+  // 2026-05-28 Sprint A5 — exam-family-aware copy. Was hardcoded "AP" /
+  // "FRQ" / "/5" which made every SAT/ACT student see the wrong words.
+  const copy = getExamCopy(course);
+  const checklist = [
+    "Practiced real questions",
+    ...(copy.hasFreeResponse ? ["Tried an FRQ + saw the rubric"] : []),
+    predictedScore !== null
+      ? `Got your ${copy.projectedScoreLabel}: ${predictedScore}${copy.scoreSuffix}${weakestUnitName ? ` · weakest unit ${weakestUnitName}` : ""}`
+      : `Got your ${copy.projectedScoreLabel}`,
+  ];
   return (
     <div className="pt-10 pb-12 max-w-xl mx-auto space-y-6">
       <div className="text-center">
@@ -35,19 +46,13 @@ export function Step5Done({ predictedScore, weakestUnitName }: Props) {
         </div>
         <h1 className="text-3xl font-bold">You&apos;re set up</h1>
         <p className="text-muted-foreground mt-2 max-w-md mx-auto">
-          You completed your first AP session.
+          You completed your first {copy.examName} session.
         </p>
       </div>
 
-      {/* Three ✓ summary */}
+      {/* Two-or-three ✓ summary — FRQ line conditional on whether the exam family has free-response */}
       <div className="rounded-2xl border border-border/40 bg-card p-5 space-y-2.5">
-        {[
-          "Practiced real questions",
-          "Tried an FRQ + saw the rubric",
-          predictedScore !== null
-            ? `Got your projected AP score: ${predictedScore}/5${weakestUnitName ? ` · weakest unit ${weakestUnitName}` : ""}`
-            : "Got your projected AP score",
-        ].map((line, i) => (
+        {checklist.map((line, i) => (
           <div key={i} className="flex items-start gap-2.5">
             <div className="w-5 h-5 rounded-full bg-emerald-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
               <Check className="h-3 w-3 text-emerald-700 dark:text-emerald-400" />

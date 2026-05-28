@@ -30,6 +30,7 @@ import { Step3aFlashcards } from "@/components/journey/step-3a-flashcards";
 import { Step5Done } from "@/components/journey/step-5-done";
 import { TransitionCard } from "@/components/journey/transition-card";
 import { COURSE_REGISTRY } from "@/lib/courses";
+import { getExamCopy } from "@/lib/exam-copy";
 import type { ApCourse } from "@prisma/client";
 
 type Mode = "loading" | "step0" | "step1" | "trans12" | "step2" | "trans23" | "step3" | "trans34" | "step3a" | "step4" | "step5";
@@ -346,7 +347,12 @@ export default function JourneyPage() {
               <p className="text-7xl font-bold text-blue-700 dark:text-blue-400 leading-none">
                 {predictedScore}
               </p>
-              <p className="text-xs text-muted-foreground mt-2">projected AP score · out of 5</p>
+              <p className="text-xs text-muted-foreground mt-2">
+                {/* 2026-05-28 Sprint A5 — exam-family-aware copy. Was hardcoded
+                    "projected AP score · out of 5" which made SAT/ACT students
+                    see "AP score 3/5" on the score reveal. */}
+                {getExamCopy(course).projectedScoreLabel} · {getExamCopy(course).scoreSuffix.replace(/^\//, "out of ")}
+              </p>
               {weakestUnitName && (
                 <p className="text-sm mt-4 font-medium">
                   Focus: <span className="text-foreground">{weakestUnitName}</span> <span className="text-muted-foreground">(weakest)</span>
