@@ -213,20 +213,25 @@ export async function POST(req: NextRequest) {
         break;
     }
   } catch (err) {
-    // Beta 7.3 (2026-04-25): NEVER return 500 to Stripe. Returning a
-    // non-2xx tells Stripe the webhook failed and triggers retries —
-    // FOR THIS EVENT. But returning 500 with a handler-internal error
-    // (e.g. transient Prisma cold-start) makes Stripe retry up to 3
-    // days, AND if the same error recurs on every retry, the event
-    // is eventually marked permanently failed. Real revenue loss case:
-    // user paid, our webhook 500'd on a transient DB hiccup, Stripe
-    // gave up, the user's tier was never flipped to PREMIUM.
+    // Beta 7.3 + 2026-05-27 design audit #12 hardening.
     //
-    // Fix: log the error (Sentry will pick up the console.error in
-    // production) and return 200. Stripe stops retrying, but our
-    // /api/cron/stripe-reconcile hourly cron will catch any state
-    // drift within 60 minutes via the `checked` → `reconciled` path.
+    // We still return 200 here (rather than letting Stripe retry) for
+    // the reasons documented in Beta 7.3: a stuck transient bug would
+    // exhaust Stripe's retry budget and silently drop revenue.
+    //
+    // BUT the audit was right that "Sentry will pick up the
+    // console.error" is not actually true unless captureConsole is
+    // wired. Explicitly capture here so every handled:false has an
+    // alertable trail — without it, the hourly /api/cron/stripe-reconcile
+    // is the only safety net, and if THAT cron silently dies (no
+    // alerting today either) paid users sit FREE indefinitely.
     console.error(`[webhook] Error handling event=${event.id} type=${event.type}:`, err);
+    try {
+      const Sentry = await import("@sentry/nextjs");
+      Sentry.captureException(err, {
+        tags: { surface: "stripe-webhook", eventId: event.id, eventType: event.type },
+      });
+    } catch { /* Sentry init may not be configured in dev — never let alerting break the handler */ }
     return NextResponse.json({
       received: true,
       handled: false,
