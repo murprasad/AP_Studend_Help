@@ -86,13 +86,22 @@ export function SageCoachPromoCard({ course }: Props) {
             </div>
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-2">
-                <p className="text-[16px] font-semibold leading-tight">Sage Coach — FRQ Grader</p>
+                {/* 2026-05-28 Sprint B4 — Was "Sage Coach — FRQ Grader" with
+                    copy "Submit your free-response answer for instant AI
+                    feedback." But /sage-coach is a VOICE-only oral-response
+                    coach (60-sec audio recording + 5-dim oral rubric). The
+                    mismatch was bait-and-switch for premium users. Renamed
+                    to "Oral Coach" to match what the page actually delivers.
+                    A real FRQ Grader is queued as a separate feature. */}
+                <p className="text-[16px] font-semibold leading-tight">Sage Oral Coach</p>
                 <Badge variant="outline" className="text-[10px] border-emerald-500/40 text-emerald-700 dark:text-emerald-700 dark:text-emerald-400 bg-emerald-500/5">
                   Premium
                 </Badge>
               </div>
               <p className="text-[13px] text-muted-foreground mt-1">
-                Submit your free-response answer ←’ instant AI feedback against the official College Board rubric. Practice the writing the exam actually rewards.
+                Talk through a concept out loud for 60 seconds. Sage scores
+                clarity, depth, examples, structure, and confidence — the
+                explain-to-pass loop the real exam rewards.
               </p>
             </div>
           </div>

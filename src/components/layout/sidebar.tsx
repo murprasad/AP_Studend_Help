@@ -31,6 +31,7 @@ import {
   PenLine,
   Mic,
   Layers,
+  Cog,
 } from "lucide-react";
 import { useTheme } from "@/hooks/use-theme";
 import { useState, useEffect } from "react";
@@ -69,6 +70,8 @@ const navItems: NavItem[] = [
   { href: "/sage-coach", icon: Mic, label: "Sage Coach" },
   { href: "/community", icon: Users, label: "Community" },
   { href: "/billing", icon: Crown, label: "Billing" },
+  // 2026-05-28 Sprint B1 — Settings shipped. Was missing entirely.
+  { href: "/settings", icon: Cog, label: "Settings" },
   { href: "/about", icon: Info, label: "About" },
 ];
 

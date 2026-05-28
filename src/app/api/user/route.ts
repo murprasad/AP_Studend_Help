@@ -25,7 +25,7 @@ export async function PATCH(req: NextRequest) {
 
   try {
     const body = await req.json();
-    const update: { track?: string; onboardingCompletedAt?: Date } = {};
+    const update: { track?: string; onboardingCompletedAt?: Date; dailyQuizOptIn?: boolean } = {};
 
     if (body.track !== undefined) {
       const validTracks = ["ap", "sat", "act", "clep", "dsst"];
@@ -42,6 +42,11 @@ export async function PATCH(req: NextRequest) {
       update.onboardingCompletedAt = new Date();
     }
 
+    // 2026-05-28 Sprint B1 — Settings page support.
+    if (typeof body.dailyQuizOptIn === "boolean") {
+      update.dailyQuizOptIn = body.dailyQuizOptIn;
+    }
+
     if (Object.keys(update).length === 0) {
       return NextResponse.json({ error: "No valid fields to update" }, { status: 400 });
     }
@@ -54,6 +59,48 @@ export async function PATCH(req: NextRequest) {
   } catch (error) {
     console.error("PATCH /api/user error:", error);
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+  }
+}
+
+/**
+ * DELETE /api/user — GDPR / CCPA Right to Erasure.
+ *
+ * 2026-05-28 Sprint B1 — ported from PL. SN had no delete-account
+ * endpoint at all; the student walkthrough flagged this as a P0
+ * compliance exposure. Wipes user data in FK-dependency order.
+ */
+export async function DELETE() {
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.id) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const userId = session.user.id;
+
+  try {
+    await prisma.studentResponse.deleteMany({ where: { userId } });
+    await prisma.sessionFeedback.deleteMany({ where: { session: { userId } } });
+    await prisma.sessionQuestion.deleteMany({ where: { session: { userId } } });
+    await prisma.practiceSession.deleteMany({ where: { userId } });
+    await prisma.masteryScore.deleteMany({ where: { userId } });
+    await prisma.masteryGoal.deleteMany({ where: { userId } });
+    await prisma.flashcardReview.deleteMany({ where: { userId } }).catch(() => {});
+    await prisma.userAchievement.deleteMany({ where: { userId } });
+    await prisma.tutorConversation.deleteMany({ where: { userId } });
+    await prisma.tutorKnowledgeCheck.deleteMany({ where: { userId } }).catch(() => {});
+    await prisma.diagnosticResult.deleteMany({ where: { userId } });
+    await prisma.studyPlan.deleteMany({ where: { userId } });
+    await prisma.discussionReply.deleteMany({ where: { userId } }).catch(() => {});
+    await prisma.discussionThread.deleteMany({ where: { userId } }).catch(() => {});
+    await prisma.questionReport.deleteMany({ where: { userId } }).catch(() => {});
+    await prisma.moduleSubscription.deleteMany({ where: { userId } });
+    await prisma.verificationToken.deleteMany({ where: { userId } });
+    await prisma.passwordResetToken.deleteMany({ where: { userId } });
+    await prisma.account.deleteMany({ where: { userId } });
+    await prisma.user.delete({ where: { id: userId } });
+
+    return NextResponse.json({ success: true, message: "Account and all data deleted." });
+  } catch (error) {
+    console.error("DELETE /api/user error:", error);
+    return NextResponse.json({ error: "Failed to delete account" }, { status: 500 });
   }
 }
 
