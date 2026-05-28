@@ -15,8 +15,9 @@
  * memory project_sage_coach_prd.md for full spec.
  */
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from "react"
 import { useRouter } from "next/navigation"
+import { sageCoachReducer, initialSageCoachState } from "@/lib/sage-coach-fsm"
 import { Button } from "@/components/ui/button"
 import { useCourse } from "@/hooks/use-course"
 import { useExamMode } from "@/hooks/use-exam-mode"
@@ -178,6 +179,33 @@ export default function SageCoachPage() {
   const [evaluation, setEvaluation] = useState<EvalResult | null>(null)
   const [previousScore, setPreviousScore] = useState<number | null>(null)
 
+  // 2026-05-28 D2 Phase 1 — parallel-state FSM reducer. No UI consumes
+  // this yet; the useEffect below logs when the new state and legacy
+  // phase string disagree on the user-visible state. Once silent for 7
+  // days, Phase 2 wires UI consumers behind NEXT_PUBLIC_D2_NEW_UI.
+  // See src/lib/sage-coach-fsm.ts + tests + design.
+  const [fsmState, fsmDispatch] = useReducer(sageCoachReducer, initialSageCoachState)
+  useEffect(() => {
+    if (typeof window === "undefined") return
+    if (process.env.NEXT_PUBLIC_D2_ASSERT !== "true" && process.env.NODE_ENV !== "development") return
+    // Map legacy phase string to expected FSM phase.kind.
+    const expectedKind: Record<string, string> = {
+      checking: "checking",
+      loading: "loading",
+      intro: "prompt",
+      prompt: "prompt",
+      recording: "recording",
+      processing: "processing",
+      feedback: "feedback",
+      daily_limit: "daily_limit",
+      error: "error",
+    }
+    const target = expectedKind[phase as string]
+    if (target && fsmState.phase.kind !== "checking" && fsmState.phase.kind !== target) {
+      console.warn("[D2-assert] phase mismatch", { legacy: phase, fsm: fsmState.phase.kind })
+    }
+  })
+
   const recognitionRef = useRef<SRInstance | null>(null)
   const timerRef = useRef<NodeJS.Timeout | null>(null)
   const recordStartRef = useRef<number>(0)
@@ -229,11 +257,19 @@ export default function SageCoachPage() {
       if (!res.ok) throw new Error(data.error || "Failed to load question")
       setConcept(data)
       setPhase("prompt")
+      // D2 Phase 1 — parallel dispatch.
+      fsmDispatch({
+        type: "READY",
+        concept: { conceptId: data.id, question: data.question, course: data.course },
+        resumable: null,
+        previousScore: previousScore,
+      })
     } catch (e) {
       setError((e as Error).message)
       setPhase("error")
+      fsmDispatch({ type: "LOAD_FAILED", message: (e as Error).message })
     }
-  }, [course])
+  }, [course, previousScore])
 
   // ── Start recording ────────────────────────────────────────────────────
   const startRecording = useCallback(() => {
@@ -294,9 +330,12 @@ export default function SageCoachPage() {
     try {
       rec.start()
       recognitionRef.current = rec
-      recordStartRef.current = Date.now()
+      const startTs = Date.now()
+      recordStartRef.current = startTs
       setSecondsLeft(RECORD_SECONDS)
       setPhase("recording")
+      // D2 Phase 1 — parallel dispatch.
+      fsmDispatch({ type: "START_RECORDING", startedAt: startTs })
       // Tick-down timer. Calling stopRecording from inside the state-updater
       // callback was unreliable — React can bail on/batch nested updates,
       // which is why auto-stop at 60s silently failed. Tick the counter
@@ -318,9 +357,12 @@ export default function SageCoachPage() {
     if (rec) { try { rec.stop() } catch { /* no-op */ } recognitionRef.current = null }
     const durationMs = Date.now() - recordStartRef.current
     const text = transcriptRef.current.trim()
-    processingStartRef.current = Date.now()
+    const submittedAt = Date.now()
+    processingStartRef.current = submittedAt
     setProcessingElapsed(0)
     setPhase("processing")
+    // D2 Phase 1 — parallel dispatch.
+    fsmDispatch({ type: "STOP_RECORDING", submittedAt })
 
     if (!concept) return
 
@@ -357,11 +399,14 @@ export default function SageCoachPage() {
       // Free-tier daily cap hit → show upgrade screen instead of generic error
       if (res.status === 429 && (data as unknown as { error?: string })?.error === "daily_limit") {
         setPhase("daily_limit")
+        fsmDispatch({ type: "DAILY_LIMIT_REACHED" })
         return
       }
       if (!res.ok && !data?.scores) throw new Error("Evaluation failed")
       setEvaluation(data)
       setPhase("feedback")
+      // D2 Phase 1 — parallel dispatch.
+      fsmDispatch({ type: "EVAL_RESOLVED", evaluation: data as unknown as { score: number; feedback: string } })
     } catch (e) {
       if (resolved) return
       resolved = true
