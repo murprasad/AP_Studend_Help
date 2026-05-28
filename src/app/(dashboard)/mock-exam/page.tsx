@@ -611,14 +611,20 @@ export default function MockExamPage() {
     const total = questionsRef.current.length;
 
     // Mid-exam partial paywall (conversion item #3, feedback 2026-04-22).
-    // At Q5 with nextQuestion() blocked, reveal a projected score so
-    // the user feels the mid-investment moment, then gate continuation.
+    // 2026-05-28 Sprint A4 — projected-score prediction now requires ≥30
+    // answered questions. 5-Q-to-AP-score mapping is statistically noise
+    // (95% CI on a 1-5 prediction from 5 Qs spans 1-5), and r/APStudents
+    // veterans spotted it immediately in the student walkthrough. Below
+    // 30, paywall just shows "X/Y correct so far" and the upgrade CTA.
     if (showPartialPaywall) {
       const previewCount = FREE_LIMITS.mockExamQuestions;
+      const MIN_QS_FOR_PROJECTED_AP_SCORE = 30;
+      const showProjected = previewCount >= MIN_QS_FOR_PROJECTED_AP_SCORE;
       const pct = Math.round((correctCount / previewCount) * 100);
-      // AP 1-5 mapping: ≥80% = 5, ≥65% = 4, ≥50% = 3, ≥35% = 2, else 1
-      const projected = pct >= 80 ? 5 : pct >= 65 ? 4 : pct >= 50 ? 3 : pct >= 35 ? 2 : 1;
-      const passing = projected >= 3;
+      const projected = showProjected
+        ? (pct >= 80 ? 5 : pct >= 65 ? 4 : pct >= 50 ? 3 : pct >= 35 ? 2 : 1)
+        : null;
+      const passing = projected !== null && projected >= 3;
       const cardBorder = passing ? "border-blue-500/60" : "border-red-500/60";
       const cardBg = passing
         ? "bg-gradient-to-br from-blue-500/10 via-card to-emerald-500/5"
@@ -629,10 +635,16 @@ export default function MockExamPage() {
             <CardContent className="p-6 text-center space-y-4">
               <p className="text-xs uppercase tracking-wider text-muted-foreground">Halfway preview</p>
               <div>
-                <p className="text-[11px] text-muted-foreground mb-1">Projected {examCopy.scoreLabel}</p>
-                <p className={`text-7xl font-bold leading-none ${passing ? "text-blue-500" : "text-red-500"}`}>
-                  {projected}
-                </p>
+                {showProjected ? (
+                  <>
+                    <p className="text-[11px] text-muted-foreground mb-1">Projected {examCopy.scoreLabel}</p>
+                    <p className={`text-7xl font-bold leading-none ${passing ? "text-blue-500" : "text-red-500"}`}>
+                      {projected}
+                    </p>
+                  </>
+                ) : (
+                  <p className="text-[11px] uppercase tracking-wider text-muted-foreground">Sample too small to project a score</p>
+                )}
                 <p className="text-sm text-muted-foreground mt-2">
                   {correctCount}/{FREE_LIMITS.mockExamQuestions} correct so far
                 </p>
@@ -641,9 +653,11 @@ export default function MockExamPage() {
                 </p>
               </div>
               <p className="text-sm leading-relaxed">
-                {passing
-                  ? "You're trending toward passing — finish the full exam to see your real score and claim your path to a higher number."
-                  : `You're trending toward a ${projected}. Finish the full exam to see your real score and unlock the week-by-week plan that gets you to a 3.`}
+                {showProjected
+                  ? (passing
+                    ? "You're trending toward passing — finish the full exam to see your real score and claim your path to a higher number."
+                    : `You're trending toward a ${projected}. Finish the full exam to see your real score and unlock the week-by-week plan that gets you to a 3.`)
+                  : `5 questions isn't enough to project an ${examCopy.examName} score — the full exam gives you the real calibrated number plus the unit-by-unit gaps.`}
               </p>
               {/* Projected time-to-pass comparison — Option B conversion lever
                   (reviewer 2026-04-22). Roughly 300 Qs to go from 2 → 3 on

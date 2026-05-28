@@ -32,7 +32,7 @@ export default async function FaqPage() {
     "@context": "https://schema.org",
     "@type": "FAQPage",
     mainEntity: [
-      { "@type": "Question", name: "Is StudentNest really free?", acceptedAnswer: { "@type": "Answer", text: `Yes. Free accounts get unlimited MCQ practice across all ${courseCount} courses, 5 Sage Live Tutor chats per day, a basic study plan, and mastery analytics. No credit card required.` } },
+      { "@type": "Question", name: "Is StudentNest really free?", acceptedAnswer: { "@type": "Answer", text: `Yes. Free accounts get unlimited MCQ practice across all ${courseCount} courses, 3 Sage Live Tutor chats per day, a basic study plan, and mastery analytics. No credit card required.` } },
       { "@type": "Question", name: "How much does Premium cost?", acceptedAnswer: { "@type": "Answer", text: `Premium is $9.99/month or $79.99/year (save 33%) per module. Modules: ${examLabel}.` } },
       { "@type": "Question", name: "Is there a refund policy?", acceptedAnswer: { "@type": "Answer", text: "Yes. 7-day refund policy on all Premium subscriptions." } },
       { "@type": "Question", name: "How is StudentNest different from ChatGPT?", acceptedAnswer: { "@type": "Answer", text: "ChatGPT gives random answers. StudentNest gives structured, exam-aligned practice with mastery tracking, personalized study plans, and comprehension verification." } },
