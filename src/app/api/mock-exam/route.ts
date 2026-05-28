@@ -63,13 +63,18 @@ export async function POST(req: NextRequest) {
         questionType: sec.questionType as QuestionType,
         ...(sec.subtopic && { subtopic: sec.subtopic }),
       };
+      // 2026-05-27 — P0 cheat-leak fix per design audit. Never SELECT
+      // correctAnswer or explanation in any route that returns questions
+      // to the client. Grading happens server-side in
+      // POST /api/practice/[sessionId] which re-loads with keys. A
+      // student opening DevTools Network would otherwise read the entire
+      // answer key for the mock before submitting.
       const pool = await prisma.question.findMany({
         where,
         select: {
           id: true, course: true, unit: true, topic: true, subtopic: true,
           difficulty: true, questionType: true, questionText: true,
           stimulus: true, stimulusImageUrl: true, options: true,
-          correctAnswer: true, explanation: true,
         },
         take: 50,
       });

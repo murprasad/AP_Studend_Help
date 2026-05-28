@@ -43,6 +43,11 @@ import {
 } from "lucide-react";
 
 interface Message {
+  /** 2026-05-27 — Stable turn id. Required for the streaming-failure
+   * rollback path: previously used positional slice (slice(0, -2)) which
+   * deleted the wrong messages if the user typed a second message while
+   * the first was still streaming. Now we identify by id, never position. */
+  id: string;
   role: "user" | "assistant";
   content: string;
   followUps?: string[];
@@ -138,6 +143,7 @@ export default function AiTutorPage() {
           const firstName = (session?.user as { name?: string })?.name?.split(" ")[0];
           const hi = firstName ? `Hey ${firstName}!` : "Hey!";
           setMessages([{
+            id: `a-greet-${Date.now()}`,
             role: "assistant",
             content: `${hi} I'm Sage 🌿 Ready to help with ${courseLabel}. Here's how most students start with me: paste a practice question you got wrong and ask "why is [X] the answer?" — it's the fastest way to close knowledge gaps. What do you want to work on?`,
           }]);
@@ -182,6 +188,7 @@ export default function AiTutorPage() {
         }
 
         const assistantMessage: Message = {
+          id: `a-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
           role: "assistant",
           content: data.response,
           followUps: Array.isArray(data.followUps)
@@ -209,11 +216,18 @@ export default function AiTutorPage() {
   async function sendMessage(content: string) {
     if (!content.trim() || isLoading) return;
 
-    const userMessage: Message = { role: "user", content };
+    // 2026-05-27 — Stable turn ids. Every mutation inside the async closure
+    // below identifies the row to update by id, not by position. Previously
+    // `slice(0, -2)` and `updated[updated.length - 1] = ...` would target
+    // the WRONG row if the user typed a second message while the first
+    // was streaming (deleted both messages instead of the failing turn).
+    const turnUserId = `u-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+    const turnAssistantId = `a-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+    const userMessage: Message = { id: turnUserId, role: "user", content };
 
     setMessages((prev) => {
       const historySnapshot = prev;
-      const assistantPlaceholder: Message = { role: "assistant", content: "" };
+      const assistantPlaceholder: Message = { id: turnAssistantId, role: "assistant", content: "" };
 
       (async () => {
         setIsLoading(true);
@@ -234,8 +248,9 @@ export default function AiTutorPage() {
           });
 
           if (!streamRes.ok || !streamRes.body) {
-            setMessages((p) => p.slice(0, -2));
-            setMessages((p) => [...p, userMessage]);
+            // Remove the failed assistant placeholder by id, keep everything
+            // else (including any messages the user typed while we were waiting).
+            setMessages((p) => p.filter((m) => m.id !== turnAssistantId));
             setIsStreaming(false);
             await sendMessageNonStreaming(content, historySnapshot);
             return;
@@ -263,11 +278,11 @@ export default function AiTutorPage() {
                 const delta = parsed.choices?.[0]?.delta?.content || "";
                 if (delta) {
                   fullText += delta;
-                  setMessages((p) => {
-                    const updated = [...p];
-                    updated[updated.length - 1] = { role: "assistant", content: fullText };
-                    return updated;
-                  });
+                  setMessages((p) =>
+                    p.map((m) =>
+                      m.id === turnAssistantId ? { ...m, content: fullText } : m
+                    )
+                  );
                   // Live-update right panel sections during streaming
                   setCurrentSections(parseSections(fullText));
                 }
@@ -292,11 +307,11 @@ export default function AiTutorPage() {
             }
           }
 
-          setMessages((p) => {
-            const updated = [...p];
-            updated[updated.length - 1] = { role: "assistant", content: answer, followUps };
-            return updated;
-          });
+          setMessages((p) =>
+            p.map((m) =>
+              m.id === turnAssistantId ? { ...m, content: answer, followUps } : m
+            )
+          );
 
           const finalSections = parseSections(answer);
           setCurrentSections(finalSections);
@@ -334,8 +349,9 @@ export default function AiTutorPage() {
             })
             .catch(() => {});
         } catch {
-          setMessages((p) => p.slice(0, -2));
-          setMessages((p) => [...p, userMessage]);
+          // Remove the failed assistant by id only — preserve user messages
+          // typed mid-stream + the original user message.
+          setMessages((p) => p.filter((m) => m.id !== turnAssistantId));
           setIsStreaming(false);
           await sendMessageNonStreaming(content, historySnapshot);
         } finally {

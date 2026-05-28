@@ -59,7 +59,12 @@ export async function POST(req: NextRequest) {
     // of the platform (AI tutor, mock exams, diagnostics already use
     // hasAnyPremium). Per-module ModuleSubscription rows still exist for
     // analytics/attribution; they are NOT used for gating here anymore.
-    const hasPremium = isAdmin || hasAnyPremium(moduleSubs) || isPremiumForTrack(session.user.subscriptionTier, userTrack);
+    // 2026-05-27 — per design audit P0: JWT can be up to 30 days stale
+    // after a Stripe webhook flips subscriptionTier in the DB. Use the
+    // effective-entitlements helper which falls back to a DB read when
+    // the JWT says free. Closes the "just paid but still see paywall" hole.
+    const { isEffectivelyPremium } = await import("@/lib/effective-entitlements");
+    const hasPremium = await isEffectivelyPremium(session, session.user.id, userTrack);
     const [premiumRestricted, aiGenEnabled] = await Promise.all([
       isPremiumRestrictionEnabled(),
       getSetting("ai_generation_enabled", "true").then((v) => v === "true"),

@@ -92,6 +92,11 @@ export default function MockExamPage() {
   const [questions, setQuestions] = useState<ExamQuestion[]>([]);
   const questionsRef = useRef<ExamQuestion[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
+  // 2026-05-27 — live mirror of currentIndex for stale-response guard.
+  // Closures inside submitAnswer's await chain capture currentIndex at call
+  // time; the ref lets us check the LIVE value to know if user advanced.
+  const currentIndexRef = useRef(0);
+  useEffect(() => { currentIndexRef.current = currentIndex; }, [currentIndex]);
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [feedback, setFeedback] = useState<{ isCorrect: boolean; correctAnswer: string; explanation: string } | null>(null);
   const [timeLeft, setTimeLeft] = useState(0);
@@ -275,7 +280,15 @@ export default function MockExamPage() {
   async function submitAnswer(answer: string) {
     if (!sessionId || !questions[currentIndex] || isSubmitting) return;
     setIsSubmitting(true);
-    const qId = questions[currentIndex].id;
+    // 2026-05-27 — stale-response guard ported from PL practice page per
+    // design audit #9. Capture index + questionId at submit time; if user
+    // advances during the await, drop the response so setFeedback can't
+    // write to the wrong question (which would disable the new Q's options).
+    const submitContext = {
+      index: currentIndex,
+      questionId: questions[currentIndex].id,
+    };
+    const qId = submitContext.questionId;
     setAnswers((prev) => ({ ...prev, [qId]: answer }));
 
     const total = questionsRef.current.length || selectedInfo.questionCount;
@@ -289,13 +302,15 @@ export default function MockExamPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ questionId: qId, answer, timeSpentSecs: timeSecs }),
       });
+      // Stale-response check: did user advance past this Q while we waited?
+      if (currentIndexRef.current !== submitContext.index) return;
       const data = await response.json();
+      if (currentIndexRef.current !== submitContext.index) return;
       if (!response.ok) {
         toast({ title: "Error", description: data.error || "Failed to submit", variant: "destructive" });
         return;
       }
       setFeedback(data);
-      // Track correctness for the mid-exam projected-score reveal.
       if (data.isCorrect) setCorrectCount((c) => c + 1);
     } catch {
       toast({ title: "Error", variant: "destructive" });

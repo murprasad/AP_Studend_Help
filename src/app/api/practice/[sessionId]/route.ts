@@ -469,32 +469,71 @@ async function updateMasteryScore(
   }
 }
 
+/**
+ * 2026-05-27 — Atomic-safe rewrite per design audit P0 finding.
+ *
+ * See PL companion fix for the full incident write-up. Summary: the
+ * previous read-modify-write pattern lost XP increments + double-counted
+ * streaks under concurrent answer submits (two tabs, double-tap, retry).
+ *
+ * New shape:
+ *  - XP is incremented via atomic SQL UPDATE (row-level safe on Neon HTTP).
+ *  - Streak math is gated on "first submit of the day" — subsequent
+ *    submits the same calendar day skip the streak path entirely.
+ */
 async function updateUserProgress(userId: string, xpEarned: number) {
   try {
-    const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (xpEarned <= 0) return;
+
+    await prisma.$executeRawUnsafe(
+      `UPDATE users
+         SET "totalXp" = "totalXp" + $1,
+             level     = FLOOR(SQRT(("totalXp" + $1) / 100.0)) + 1
+       WHERE id = $2`,
+      xpEarned,
+      userId,
+    );
+
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { streakDays: true, longestStreak: true, streakFreezes: true, lastActiveDate: true },
+    });
     if (!user) return;
 
-    const today = new Date();
+    const now = new Date();
+    const today = new Date(now);
     today.setHours(0, 0, 0, 0);
 
     const lastActive = user.lastActiveDate ? new Date(user.lastActiveDate) : null;
+    if (lastActive) {
+      const lastActiveDay = new Date(lastActive);
+      lastActiveDay.setHours(0, 0, 0, 0);
+      if (lastActiveDay.getTime() === today.getTime()) {
+        // Already counted today — sibling request handled streak. Only
+        // touch lastActiveDate so heartbeat stays current.
+        await prisma.user.update({
+          where: { id: userId },
+          data: { lastActiveDate: now },
+        });
+        return;
+      }
+    }
 
     let newStreak = user.streakDays;
-    let newFreezes = (user as { streakFreezes?: number }).streakFreezes ?? 0;
+    let newFreezes = user.streakFreezes ?? 0;
     if (lastActive) {
       const yesterday = new Date(today);
       yesterday.setDate(yesterday.getDate() - 1);
-      lastActive.setHours(0, 0, 0, 0);
+      const lastActiveDay = new Date(lastActive);
+      lastActiveDay.setHours(0, 0, 0, 0);
 
-      if (lastActive.getTime() === yesterday.getTime()) {
+      if (lastActiveDay.getTime() === yesterday.getTime()) {
         newStreak += 1;
-      } else if (lastActive.getTime() < yesterday.getTime()) {
-        // Missed at least one day — try to apply a freeze token
+      } else if (lastActiveDay.getTime() < yesterday.getTime()) {
         const twoDaysAgo = new Date(today);
         twoDaysAgo.setDate(today.getDate() - 2);
-        const missedOneDayOnly = lastActive.getTime() === twoDaysAgo.getTime();
+        const missedOneDayOnly = lastActiveDay.getTime() === twoDaysAgo.getTime();
         if (missedOneDayOnly && newFreezes > 0) {
-          // Freeze covers exactly one missed day — streak continues
           newFreezes -= 1;
           newStreak += 1;
         } else {
@@ -505,25 +544,19 @@ async function updateUserProgress(userId: string, xpEarned: number) {
       newStreak = 1;
     }
 
-    // Award a freeze token for every 7-day streak milestone (weekly consistency)
     const prevStreak = user.streakDays;
     if (newStreak > prevStreak && newStreak % 7 === 0) {
-      newFreezes = Math.min(newFreezes + 1, 5); // cap at 5
+      newFreezes = Math.min(newFreezes + 1, 5);
     }
-
-    const newXp = user.totalXp + xpEarned;
-    const newLevel = Math.floor(Math.sqrt(newXp / 100)) + 1;
 
     await prisma.user.update({
       where: { id: userId },
       data: {
-        totalXp: newXp,
-        level: newLevel,
         streakDays: newStreak,
         longestStreak: Math.max(newStreak, user.longestStreak ?? 0),
         streakFreezes: newFreezes,
-        lastActiveDate: new Date(),
-      } as Record<string, unknown>,
+        lastActiveDate: now,
+      },
     });
   } catch (error) {
     console.error("updateUserProgress error:", error);
