@@ -102,6 +102,25 @@ export default function AiTutorPage() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const recognitionRef = useRef<any>(null);
 
+  // 2026-05-28 Sprint B3 — visible Sage daily-cap counter.
+  // Was invisible until students hit 429 mid-question. Now surfaced
+  // in the header so they know what they're working with.
+  const [tutorCap, setTutorCap] = useState<{ used: number; limit: number; remaining: number; isPremium: boolean } | null>(null);
+  useEffect(() => {
+    fetch("/api/user/limits", { cache: "no-store" })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d: any) => {
+        if (!d?.tutor) return;
+        setTutorCap({
+          used: d.tutor.used ?? 0,
+          limit: d.tutor.limit ?? 0,
+          remaining: d.tutor.remaining ?? 0,
+          isPremium: d.subscriptionTier && d.subscriptionTier !== "FREE",
+        });
+      })
+      .catch(() => {});
+  }, [course, messages.length]);
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const conversationIdRef = useRef<string | null>(null);
   conversationIdRef.current = conversationId;
@@ -553,12 +572,29 @@ export default function AiTutorPage() {
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
-            {messages.length > 0 && (
-              <Button variant="outline" size="sm" onClick={startNewConversation} className="gap-1.5 text-xs h-8">
-                <RefreshCw className="h-3 w-3" />
-                New chat
-              </Button>
-            )}
+            <div className="flex items-center gap-2">
+              {tutorCap && !tutorCap.isPremium && tutorCap.limit > 0 && (
+                <span
+                  className={cn(
+                    "text-[11px] px-2 py-0.5 rounded-full border tabular-nums",
+                    tutorCap.remaining === 0
+                      ? "border-destructive/40 bg-destructive/10 text-destructive"
+                      : tutorCap.remaining === 1
+                      ? "border-amber-500/40 bg-amber-500/10 text-amber-600 dark:text-amber-400"
+                      : "border-border bg-muted/40 text-muted-foreground"
+                  )}
+                  title="Free Sage tutor chats today. Premium is unlimited."
+                >
+                  {tutorCap.remaining}/{tutorCap.limit} chats today
+                </span>
+              )}
+              {messages.length > 0 && (
+                <Button variant="outline" size="sm" onClick={startNewConversation} className="gap-1.5 text-xs h-8">
+                  <RefreshCw className="h-3 w-3" />
+                  New chat
+                </Button>
+              )}
+            </div>
           </div>
 
           {/* Messages / suggested questions */}
