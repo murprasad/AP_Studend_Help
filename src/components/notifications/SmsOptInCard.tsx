@@ -27,6 +27,11 @@ export function SmsOptInCard() {
     // 2026-05-27 — Default OFF until owner flips NEXT_PUBLIC_NOTIFICATIONS_ENABLED=true.
     // Prevents the card showing in prod before Twilio env vars are configured.
     if (process.env.NEXT_PUBLIC_NOTIFICATIONS_ENABLED !== "true") return;
+    // 2026-05-28 — Separate SMS-only gate. Owner explicitly deferred SMS
+    // (doesn't want to own a Twilio number), so the card stays hidden even
+    // when push is enabled. Flip NEXT_PUBLIC_SMS_ENABLED=true if/when
+    // Twilio gets wired.
+    if (process.env.NEXT_PUBLIC_SMS_ENABLED !== "true") return;
     if (localStorage.getItem(DISMISS_KEY)) return;
     // Defer 30s so it doesn't fire alongside the push opt-in on first
     // dashboard load — back-to-back permission asks bury conversion.
