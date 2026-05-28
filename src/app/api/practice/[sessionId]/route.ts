@@ -350,16 +350,40 @@ export async function PATCH(
       select: { score: true },
     });
 
+    // 2026-05-28 Sprint D3 (mirrored from PL) — server is single source of
+    // truth for session summary. totalQuestions reflects planned session
+    // size; answeredCount is what user actually submitted; questions[] is
+    // canonical per-Q rows. Client summary renders directly from this.
+    const plannedTotal = updatedSession.totalQuestions || responses.length;
+    const responseById = new Map(responses.map((r) => [r.questionId, r]));
+    const sessionQuestions = await prisma.sessionQuestion.findMany({
+      where: { sessionId },
+      orderBy: { order: "asc" },
+      select: { questionId: true, order: true },
+    });
+    const questionRows = sessionQuestions.map((sq) => {
+      const r = responseById.get(sq.questionId);
+      return {
+        questionId: sq.questionId,
+        order: sq.order,
+        answered: !!r,
+        isCorrect: r?.isCorrect ?? null,
+        timeSpentSecs: r?.timeSpentSecs ?? null,
+      };
+    });
+
     const response = NextResponse.json({
       session: updatedSession,
       summary: {
-        totalQuestions: responses.length,
+        totalQuestions: plannedTotal,
         correctAnswers: correctCount,
-        accuracy: Math.round(accuracy),
+        answeredCount: responses.length,
+        accuracy: plannedTotal > 0 ? Math.round((correctCount / plannedTotal) * 100) : 0,
         timeSpentSecs: totalTime,
         xpEarned,
         apScoreEstimate: apScore,
         previousAccuracy: previousSession?.score != null ? Math.round(previousSession.score) : null,
+        questions: questionRows,
       },
     });
 
