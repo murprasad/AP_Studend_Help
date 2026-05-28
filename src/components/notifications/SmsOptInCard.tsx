@@ -24,6 +24,9 @@ export function SmsOptInCard() {
 
   useEffect(() => {
     if (typeof window === "undefined") return;
+    // 2026-05-27 — Default OFF until owner flips NEXT_PUBLIC_NOTIFICATIONS_ENABLED=true.
+    // Prevents the card showing in prod before Twilio env vars are configured.
+    if (process.env.NEXT_PUBLIC_NOTIFICATIONS_ENABLED !== "true") return;
     if (localStorage.getItem(DISMISS_KEY)) return;
     // Defer 30s so it doesn't fire alongside the push opt-in on first
     // dashboard load — back-to-back permission asks bury conversion.

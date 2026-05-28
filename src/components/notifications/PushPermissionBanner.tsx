@@ -34,6 +34,9 @@ export function PushPermissionBanner() {
 
   useEffect(() => {
     if (typeof window === "undefined") return;
+    // 2026-05-27 — Default OFF until owner flips NEXT_PUBLIC_NOTIFICATIONS_ENABLED=true.
+    // Prevents the banner showing in prod before VAPID env vars are configured.
+    if (process.env.NEXT_PUBLIC_NOTIFICATIONS_ENABLED !== "true") return;
     if (!("Notification" in window) || !("serviceWorker" in navigator) || !("PushManager" in window)) return;
     if (Notification.permission !== "default") return;
     if (localStorage.getItem(DISMISS_KEY)) return;
