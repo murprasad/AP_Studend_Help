@@ -28,8 +28,20 @@ function ResetPasswordForm() {
       setError("Missing reset token. Please use the link from your email.");
       return;
     }
+    // 2026-05-28 Sprint C5 — parity with register's stricter Zod rules.
+    // Was: min 8 chars only. Now: min 8 + ≥1 uppercase + ≥1 number.
+    // Closes the loophole where a user could reset to a weaker password
+    // than register would accept.
     if (password.length < 8) {
       setError("Password must be at least 8 characters.");
+      return;
+    }
+    if (!/[A-Z]/.test(password)) {
+      setError("Password must contain at least one uppercase letter.");
+      return;
+    }
+    if (!/[0-9]/.test(password)) {
+      setError("Password must contain at least one number.");
       return;
     }
     if (password !== confirmPassword) {

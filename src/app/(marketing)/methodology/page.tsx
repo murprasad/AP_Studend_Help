@@ -4,7 +4,7 @@ import { TrendingUp, Target, ShieldCheck } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "How StudentNest Projects Your Predicted Score — Methodology",
-  description: "The honest math behind our predicted-score estimates, improvement projections, and \"Pass Confident Guarantee.\" No smoke. No inflated promises.",
+  description: "The honest math behind our predicted-score estimates and improvement projections. Pass Guarantee terms live at /pass-guarantee. No smoke. No inflated promises.",
   alternates: { canonical: "https://studentnest.ai/methodology" },
 };
 
@@ -53,16 +53,26 @@ export default function Page() {
         </p>
       </section>
 
+      {/* 2026-05-28 Sprint C1 — student-walkthrough flagged two different
+          Pass Guarantees on the site with conflicting eligibility (this page
+          described a "60-day extension + most-recent-payment refund"
+          guarantee tied to "high-confidence prediction within 14 days,"
+          while /pass-guarantee described a different "80% study plan + 3
+          mocks ≥75% + refund + retake fee" policy). Two policies under
+          two names = legal + trust risk. The single canonical policy now
+          lives at /pass-guarantee. */}
       <section className="space-y-3">
         <div className="flex items-center gap-2">
           <ShieldCheck className="h-5 w-5 text-primary" />
-          <h2 className="text-2xl font-bold">Pass Confident Guarantee — the fine print</h2>
+          <h2 className="text-2xl font-bold">Pass Guarantee</h2>
         </div>
         <p className="text-muted-foreground">
-          If StudentNest shows you a predicted score in the passing range (AP 3+ / SAT 1200+ / ACT 24+) with <strong className="text-foreground">high confidence</strong> and you don&apos;t pass the real exam, we extend your subscription by <strong className="text-foreground">60 days free</strong> and refund your most recent plan payment.
+          The full terms — eligibility, refund mechanics, what counts as &quot;passing&quot; per exam family — live on the dedicated Pass Guarantee page so there&apos;s exactly one canonical policy.
         </p>
-        <p className="text-muted-foreground">
-          Conditions: the high-confidence passing prediction must have been shown to you within the 14 days preceding your exam date, confirmed by at least one full mock exam. Email your exam score report to <a href="mailto:contact@studentnest.ai" className="text-primary underline">contact@studentnest.ai</a> within 30 days of the exam.
+        <p className="text-sm">
+          <Link href="/pass-guarantee" className="text-primary underline">
+            Read the full Pass Guarantee →
+          </Link>
         </p>
         <p className="text-sm text-muted-foreground">
           Plus 7-day money-back guarantee on every plan — email support within 7 days of purchase, no questions asked.

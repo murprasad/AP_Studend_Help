@@ -348,9 +348,17 @@ export default function RegisterPage() {
                 <SelectValue placeholder="Select your grade" />
               </SelectTrigger>
               <SelectContent>
+                {/* 2026-05-28 Sprint C6 — Was 10-12 only, which blocked 9th
+                    graders (legitimate PSAT/SAT-prep audience), homeschoolers,
+                    early college students, and adults preparing for an AP
+                    exam they're sitting at a testing center. The age cohort
+                    we actually exclude is "Grade Level: 1-8" — adding 9th and
+                    Other catches everyone in between. */}
+                <SelectItem value="9">9th Grade (Freshman)</SelectItem>
                 <SelectItem value="10">10th Grade (Sophomore)</SelectItem>
                 <SelectItem value="11">11th Grade (Junior)</SelectItem>
                 <SelectItem value="12">12th Grade (Senior)</SelectItem>
+                <SelectItem value="other">Other / Adult learner</SelectItem>
               </SelectContent>
             </Select>
             {errors.gradeLevel && (
