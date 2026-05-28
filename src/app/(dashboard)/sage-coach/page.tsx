@@ -73,6 +73,93 @@ function getSpeechRecognition(): (new () => SRInstance) | null {
 
 const RECORD_SECONDS = 60
 
+// ── Transcript persistence (D2 partial — design audit P0 #4) ─────────────
+// SpeechRecognition runs locally in the browser and the only copy of the
+// student's spoken answer is the in-memory `transcript` state. A connection
+// loss, tab background, or accidental refresh during the 60s window throws
+// the transcript away AND the 1/day free attempt is still consumed by the
+// time stopRecording fires. We mitigate by mirroring the transcript to
+// sessionStorage on every onresult tick, and offering a Resume prompt on
+// mount if a recent (<30 min) buffer exists.
+const TRANSCRIPT_TTL_MS = 30 * 60 * 1000
+const transcriptStorageKey = (course: string, conceptId: string | null) =>
+  `sage_coach_transcript_${course}_${conceptId ?? "pending"}`
+
+type PersistedTranscript = {
+  transcript: string
+  conceptId: string | null
+  conceptQuestion: string | null
+  course: string
+  savedAt: number
+}
+
+function readPersistedTranscript(course: string): PersistedTranscript | null {
+  if (typeof window === "undefined") return null
+  try {
+    // We don't know the conceptId on first mount, so scan keys for any
+    // sage_coach_transcript_<course>_* entry. Pick the freshest non-empty
+    // record under TTL.
+    const prefix = `sage_coach_transcript_${course}_`
+    let best: PersistedTranscript | null = null
+    for (let i = 0; i < window.sessionStorage.length; i++) {
+      const k = window.sessionStorage.key(i)
+      if (!k || !k.startsWith(prefix)) continue
+      const raw = window.sessionStorage.getItem(k)
+      if (!raw) continue
+      try {
+        const parsed: PersistedTranscript = JSON.parse(raw)
+        if (!parsed?.transcript?.trim()) continue
+        if (Date.now() - parsed.savedAt > TRANSCRIPT_TTL_MS) {
+          window.sessionStorage.removeItem(k)
+          continue
+        }
+        if (!best || parsed.savedAt > best.savedAt) best = parsed
+      } catch {
+        window.sessionStorage.removeItem(k)
+      }
+    }
+    return best
+  } catch {
+    return null
+  }
+}
+
+function writePersistedTranscript(payload: PersistedTranscript) {
+  if (typeof window === "undefined") return
+  try {
+    window.sessionStorage.setItem(
+      transcriptStorageKey(payload.course, payload.conceptId),
+      JSON.stringify(payload),
+    )
+  } catch {
+    /* quota exceeded / private mode — best-effort only */
+  }
+}
+
+function clearPersistedTranscript(course: string, conceptId: string | null) {
+  if (typeof window === "undefined") return
+  try {
+    window.sessionStorage.removeItem(transcriptStorageKey(course, conceptId))
+  } catch {
+    /* no-op */
+  }
+}
+
+function clearAllPersistedTranscripts(course: string) {
+  if (typeof window === "undefined") return
+  try {
+    const prefix = `sage_coach_transcript_${course}_`
+    const doomed: string[] = []
+    for (let i = 0; i < window.sessionStorage.length; i++) {
+      const k = window.sessionStorage.key(i)
+      if (k && k.startsWith(prefix)) doomed.push(k)
+    }
+    doomed.forEach((k) => window.sessionStorage.removeItem(k))
+  } catch {
+    /* no-op */
+  }
+}
+
 export default function SageCoachPage() {
   const router = useRouter()
   const [course] = useCourse()
@@ -95,6 +182,9 @@ export default function SageCoachPage() {
   const timerRef = useRef<NodeJS.Timeout | null>(null)
   const recordStartRef = useRef<number>(0)
   const transcriptRef = useRef<string>("")
+  // Resume-prompt: populated on mount if sessionStorage holds a recent buffer.
+  // Surfaces a "Resume from your last attempt?" CTA above the intro/prompt UI.
+  const [resumable, setResumable] = useState<PersistedTranscript | null>(null)
   // Diagnostic: elapsed time during processing phase, so hangs are visible
   // to the user (and surface in bug reports). Clears when phase leaves
   // "processing".
@@ -102,6 +192,25 @@ export default function SageCoachPage() {
   const processingStartRef = useRef<number>(0)
 
   const hasSpeech = useMemo(() => typeof window !== "undefined" && !!getSpeechRecognition(), [])
+
+  // D2 partial: on mount + whenever course changes, look for a recent
+  // sessionStorage transcript from this same course. Only surfaces when
+  // we're at a "safe" phase (intro/prompt/error) so it doesn't blink in
+  // mid-recording or mid-feedback.
+  useEffect(() => {
+    const found = readPersistedTranscript(course)
+    setResumable(found)
+  }, [course])
+
+  // Clear the persisted buffer once the server-side evaluation lands —
+  // the student's work has been turned into feedback and counted, so the
+  // crash-recovery copy is no longer load-bearing.
+  useEffect(() => {
+    if (evaluation && concept) {
+      clearPersistedTranscript(course, concept.id)
+      setResumable(null)
+    }
+  }, [evaluation, concept, course])
 
   // ── Load a concept ─────────────────────────────────────────────────────
   // Dep on `course` is CRITICAL — without it, useCallback captures the
@@ -148,7 +257,20 @@ export default function SageCoachPage() {
         else interim += r[0].transcript
       }
       if (finalText) transcriptRef.current += finalText + " "
-      setTranscript(transcriptRef.current + interim)
+      const merged = transcriptRef.current + interim
+      setTranscript(merged)
+      // D2 partial: mirror every tick (interim + final) to sessionStorage so
+      // a connection drop, tab background, or refresh doesn't vacuum the
+      // student's only copy of their spoken answer.
+      if (concept) {
+        writePersistedTranscript({
+          transcript: merged,
+          conceptId: concept.id,
+          conceptQuestion: concept.question,
+          course,
+          savedAt: Date.now(),
+        })
+      }
     }
     rec.onerror = (e: any) => {
       // Browser-specific guidance the user can actually act on. The
@@ -188,7 +310,7 @@ export default function SageCoachPage() {
       setPhase("error")
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [hasSpeech])
+  }, [hasSpeech, concept, course])
 
   const stopRecording = useCallback(async (_auto = false) => {
     if (timerRef.current) { clearInterval(timerRef.current); timerRef.current = null }
@@ -304,7 +426,12 @@ export default function SageCoachPage() {
     transcriptRef.current = ""
     setEvaluation(null)
     setPhase("prompt")
-  }, [evaluation])
+    // D2 partial: leaving a successful feedback state via "Try again" means
+    // the prior buffer is fully consumed — nuke any lingering keys for this
+    // course so the resume prompt doesn't keep re-surfacing.
+    clearAllPersistedTranscripts(course)
+    setResumable(null)
+  }, [evaluation, course])
 
   useEffect(() => () => {
     if (timerRef.current) clearInterval(timerRef.current)
@@ -439,10 +566,53 @@ export default function SageCoachPage() {
     )
   }
 
+  // D2 partial: resume banner shown on intro/prompt/error phases when a
+  // recent (<30 min) transcript buffer exists for this course in
+  // sessionStorage. "Resume" doesn't re-trigger the API call — it just
+  // pre-fills the transcript box so the student can see and copy/paste
+  // their answer somewhere safe, or click record again with a head start.
+  const resumeBanner = resumable && (phase === "intro" || phase === "prompt" || phase === "error") ? (
+    <div className="w-full max-w-xl mx-auto mb-4 bg-amber-500/10 border border-amber-500/30 rounded-xl p-4 text-left">
+      <p className="text-sm font-semibold text-amber-200">Resume from your last attempt?</p>
+      <p className="text-[13px] text-amber-100/80 mt-1">
+        We saved your transcript from {Math.round((Date.now() - resumable.savedAt) / 60000)} min ago in case your connection dropped.
+      </p>
+      <p className="text-[12px] text-neutral-300 mt-2 line-clamp-3 italic">
+        "{resumable.transcript.slice(0, 240)}{resumable.transcript.length > 240 ? "…" : ""}"
+      </p>
+      <div className="flex gap-2 mt-3">
+        <Button
+          size="sm"
+          variant="outline"
+          className="border-amber-500/40 bg-transparent text-amber-200 hover:bg-amber-500/10 hover:text-amber-100"
+          onClick={() => {
+            setTranscript(resumable.transcript)
+            transcriptRef.current = resumable.transcript
+            setResumable(null)
+          }}
+        >
+          Restore transcript
+        </Button>
+        <Button
+          size="sm"
+          variant="ghost"
+          className="text-neutral-400 hover:text-neutral-200"
+          onClick={() => {
+            clearAllPersistedTranscripts(course)
+            setResumable(null)
+          }}
+        >
+          Discard
+        </Button>
+      </div>
+    </div>
+  ) : null
+
   if (phase === "intro") {
     return (
       <div className="fixed inset-0 bg-neutral-950 text-neutral-50 z-50 flex flex-col items-center justify-center px-6">
         <div className="max-w-xl text-center space-y-6">
+          {resumeBanner}
           <Sparkles className="h-10 w-10 mx-auto text-amber-700 dark:text-amber-400" />
           <h1 className="text-3xl sm:text-4xl font-bold">Sage Coach</h1>
           <p className="text-xs uppercase tracking-widest text-amber-700 dark:text-amber-400">
@@ -489,6 +659,7 @@ export default function SageCoachPage() {
     return (
       <div className="fixed inset-0 bg-neutral-950 text-neutral-50 z-50 flex flex-col items-center justify-center px-6">
         <div className="max-w-md text-center space-y-4">
+          {resumeBanner}
           <AlertCircle className="h-10 w-10 text-amber-700 dark:text-amber-400 mx-auto" />
           <p className="text-neutral-200">{error || "Something went wrong."}</p>
           <Button onClick={loadConcept} variant="outline" className="border-neutral-700 bg-neutral-900 text-neutral-100 hover:bg-neutral-800 hover:text-neutral-50">Try again</Button>
@@ -501,6 +672,7 @@ export default function SageCoachPage() {
     return (
       <div className="fixed inset-0 bg-neutral-950 text-neutral-50 z-50 flex flex-col px-6 py-10 sm:py-16">
         <div className="flex-1 flex flex-col justify-center max-w-2xl w-full mx-auto space-y-8">
+          {resumeBanner}
           <div className="space-y-2 text-center">
             <p className="text-xs uppercase tracking-widest text-amber-700 dark:text-amber-400">{concept.course.replace(/_/g, " ")} · {concept.unit.replace(/_/g, " ")}</p>
             <p className="text-[11px] text-neutral-500 uppercase tracking-widest">{concept.difficulty}</p>
