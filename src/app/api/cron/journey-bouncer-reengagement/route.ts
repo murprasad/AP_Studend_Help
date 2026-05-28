@@ -118,8 +118,16 @@ export async function GET(req: NextRequest) {
       emailVerified: { not: null },
       onboardingCompletedAt: null,
       createdAt: { gte: windowStart, lte: windowEnd },
+      // 2026-05-28 — also catch explicit-exit bouncers (currentStep=99 is
+      // the marker UserJourney uses for "user clicked Exit"). Emily LaFemina
+      // hit this: completed Step 1, hit Exit, currentStep flipped 1→99.
+      // The earlier cron would have skipped her. The exitAt IS NOT NULL
+      // arm covers any future exit-marker convention change.
       userJourney: {
-        currentStep: { in: [0, 1, 2] },
+        OR: [
+          { currentStep: { in: [0, 1, 2] } },
+          { exitAt: { not: null } },
+        ],
       },
     },
     select: {
