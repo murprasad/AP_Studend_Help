@@ -31,8 +31,11 @@ export function Step0CoursePick({ defaultCourse, mustPick = false, onStart }: Pr
   const [hasUserPicked, setHasUserPicked] = useState(!mustPick);
   const [submitting, setSubmitting] = useState(false);
 
-  // Only AP courses for now — SAT/ACT/CLEP/DSST coming as journey expands
-  const apCourses = VISIBLE_AP_COURSES;
+  // 2026-05-28 — was "Only AP courses for now" but VISIBLE_AP_COURSES has
+  // included SAT/ACT/PSAT for months. Stale comment + the picker labeled
+  // itself "AP course" while showing SAT_MATH, ACT_ENGLISH, etc. — Dev Ya
+  // hit it today (picked SAT_MATH, bounced in 9 min).
+  const exams = VISIBLE_AP_COURSES;
 
   const handleStart = async () => {
     if (!hasUserPicked) return;
@@ -43,14 +46,14 @@ export function Step0CoursePick({ defaultCourse, mustPick = false, onStart }: Pr
   if (picking) {
     return (
       <div className="space-y-4">
-        <h1 className="text-2xl font-bold text-center">Pick your course</h1>
+        <h1 className="text-2xl font-bold text-center">Pick your exam</h1>
         <p className="text-sm text-muted-foreground text-center">
           {mustPick && !hasUserPicked
-            ? "Choose which AP course you want to start with. You can switch anytime later."
-            : "You can switch courses anytime later."}
+            ? "Choose the AP, SAT, ACT, or PSAT exam you're preparing for. You can switch anytime later."
+            : "You can switch exams anytime later."}
         </p>
         <div className="grid gap-2 max-h-[60vh] overflow-y-auto">
-          {apCourses.map((c) => (
+          {exams.map((c) => (
             <button
               key={c}
               type="button"

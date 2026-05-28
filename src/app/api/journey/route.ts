@@ -87,11 +87,24 @@ export async function POST(req: Request) {
 
   if (action === "start") {
     const course = body.course && isValidCourse(body.course) ? body.course : "AP_WORLD_HISTORY";
-    const journey = await prisma.userJourney.upsert({
-      where: { userId },
-      update: { course, currentStep: 0, completedAt: null },
-      create: { userId, course, currentStep: 0 },
-    });
+    // 2026-05-28 — sync User.track to the family of the course they picked.
+    // Was: defaulted to "ap" at signup and never updated. Dev Ya picked
+    // SAT_MATH on Step 0 but `user.track` stayed "ap" → dashboard sidebar
+    // highlighted AP rails instead of SAT — confusing enough to bounce.
+    // The family inference is the prefix before "_": AP_BIOLOGY → ap,
+    // SAT_MATH → sat, ACT_ENGLISH → act, PSAT_MATH → psat.
+    const family = course.split("_")[0]?.toLowerCase() ?? "ap";
+    const allowedTracks = new Set(["ap", "sat", "act", "psat"]);
+    const newTrack = allowedTracks.has(family) ? family : "ap";
+
+    const [journey] = await Promise.all([
+      prisma.userJourney.upsert({
+        where: { userId },
+        update: { course, currentStep: 0, completedAt: null },
+        create: { userId, course, currentStep: 0 },
+      }),
+      prisma.user.update({ where: { id: userId }, data: { track: newTrack } }).catch(() => {}),
+    ]);
     return NextResponse.json({ journey });
   }
 
