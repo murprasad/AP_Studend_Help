@@ -92,10 +92,21 @@ export function TodaysSetCard({ course }: Props) {
   // the entire card. Persona walkthrough showed the Link click landed back
   // on /dashboard — likely a parent click handler intercepting. router.push
   // is unambiguous.
+  // 2026-05-29 #2 — User reported: clicking Today's Set didn't drill the
+  // suggested weak concept. Now pass the weakest unit as a query param so
+  // the practice page filters to it. conceptKeys[0] = "unit:X" → strip
+  // the prefix and forward as ?unit=X.
   function handleStart() {
-    router.push(
-      `/practice?course=${encodeURIComponent(course)}&plan=today&count=${count}&src=todays_set`,
-    );
+    const firstConcept = data!.plan.conceptKeys[0] ?? "";
+    const unit = firstConcept.startsWith("unit:") ? firstConcept.slice(5) : "";
+    const params = new URLSearchParams({
+      course,
+      plan: "today",
+      count: String(count),
+      src: "todays_set",
+    });
+    if (unit) params.set("unit", unit);
+    router.push(`/practice?${params.toString()}`);
   }
 
   return (
