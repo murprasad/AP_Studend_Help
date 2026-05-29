@@ -12,6 +12,7 @@
  */
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Loader2, Play, Check, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -28,6 +29,7 @@ interface Props {
 }
 
 export function TodaysSetCard({ course }: Props) {
+  const router = useRouter();
   const [data, setData] = useState<TodaysSetResponse | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -86,11 +88,22 @@ export function TodaysSetCard({ course }: Props) {
   const minutes = Math.max(10, Math.round(count * 1.2)); // ~1.2 min/Q
   const concepts = data.plan.conceptKeys.length;
 
+  // 2026-05-29 — Use programmatic navigation rather than <Link> wrapping
+  // the entire card. Persona walkthrough showed the Link click landed back
+  // on /dashboard — likely a parent click handler intercepting. router.push
+  // is unambiguous.
+  function handleStart() {
+    router.push(
+      `/practice?course=${encodeURIComponent(course)}&plan=today&count=${count}&src=todays_set`,
+    );
+  }
+
   return (
-    <Link
-      href={`/practice?course=${encodeURIComponent(course)}&plan=today&count=${count}`}
+    <button
+      type="button"
+      onClick={handleStart}
       data-testid="todays-set-cta"
-      className="block group"
+      className="block group w-full text-left"
     >
       <div className="rounded-2xl border-2 border-blue-500/40 bg-gradient-to-r from-blue-500/10 via-blue-500/5 to-transparent p-5 transition-colors group-hover:from-blue-500/15 group-hover:via-blue-500/10">
         <div className="flex items-center gap-4">
@@ -106,6 +119,6 @@ export function TodaysSetCard({ course }: Props) {
           <ArrowRight className="h-5 w-5 text-blue-700 dark:text-blue-400 flex-shrink-0" />
         </div>
       </div>
-    </Link>
+    </button>
   );
 }

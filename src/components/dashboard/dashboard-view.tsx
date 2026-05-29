@@ -282,10 +282,13 @@ function DashboardBody({ course, impressionId }: { course: string; impressionId:
           has taken diagnostic. */}
       <DiagnosticPromptCard course={course as string} />
 
-      {/* 2. Predicted native-scale score + delta */}
-      <div data-focus-target="analytics">
-        <OutcomeProgressStrip course={course as string} />
-      </div>
+      {/* 2. Predicted native-scale score + delta — hide when new Readiness
+            hero is rendering to avoid two stacked scaled-score widgets. */}
+      {process.env.NEXT_PUBLIC_PASS_PROB_LEGACY === "true" && (
+        <div data-focus-target="analytics">
+          <OutcomeProgressStrip course={course as string} />
+        </div>
+      )}
 
       {/* Secondary cards collapsed behind "Show more" toggle.
           User-directed (2026-04-27): "reduce dashboard to ONE primary

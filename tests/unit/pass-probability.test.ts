@@ -25,16 +25,16 @@ describe("pass-probability v1.0", () => {
     expect(r.drivers).toEqual([]);
   });
 
-  it("2. User below SAMPLE_SIZE_FLOOR (9 drills) returns null pp", () => {
+  it("2. User below SAMPLE_SIZE_FLOOR (4 drills) returns null pp", () => {
     const r = computePassProbability({
       recentMocks: [],
-      recentDrillResponses: Array(9).fill({ isCorrect: true, answeredAt: NOW }),
+      recentDrillResponses: Array(4).fill({ isCorrect: true, answeredAt: NOW }),
       conceptMasteries: [],
       abandonedSessionsLast7d: 0,
       passThreshold: 0.5,
     });
     expect(r.passProbability).toBeNull();
-    expect(r.sampleSize).toBe(9);
+    expect(r.sampleSize).toBe(4);
     // Components were computed but the headline is null per PRD.
     expect(r.components.drillTerm).toBeGreaterThan(0);
   });

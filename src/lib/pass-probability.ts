@@ -98,7 +98,12 @@ const MODEL_VERSION = "v1.0";
 const COVERAGE_MASTERY_BAR = 0.70;
 const ABANDON_PENALTY_PER = 0.02;
 const ABANDON_PENALTY_CAP = 0.10;
-const SAMPLE_SIZE_FLOOR = 10;
+// 2026-05-29 — Lowered from 10 to 5 after persona walkthrough showed
+// a Pass Plan user with 4 algebra responses fell into the "take diagnostic"
+// state — most real users cluster activity in 1-2 courses, making per-course
+// floor of 10 too aggressive. With 5 the CI auto-widens to its 0.15 cap,
+// which is honest signaling.
+const SAMPLE_SIZE_FLOOR = 5;
 const CI_BASE = 0.20;
 const CI_CAP = 0.15;
 const DRIVER_TARGET_MASTERY = 0.85;
