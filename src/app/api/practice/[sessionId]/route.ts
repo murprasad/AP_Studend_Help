@@ -176,6 +176,10 @@ Return ONLY valid JSON (no markdown, no extra text):
       });
     }
 
+    // 2026-05-28 PRD Phase 5 — optional Brainscape CBR confidence (mirror PL).
+    const bodyConf = (body as { confidenceSelf?: number }).confidenceSelf;
+    const confidenceSelf = (typeof bodyConf === "number" && bodyConf >= 1 && bodyConf <= 5) ? bodyConf : null;
+
     // Record the response
     await prisma.studentResponse.create({
       data: {
@@ -185,6 +189,7 @@ Return ONLY valid JSON (no markdown, no extra text):
         studentAnswer: answer,
         isCorrect,
         timeSpentSecs: timeSpentSecs || 0,
+        confidenceSelf,
       },
     });
 
