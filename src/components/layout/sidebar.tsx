@@ -57,7 +57,8 @@ interface NavItem {
 // Sage Live Tutor moves below Community so primary surface is the practice
 // loop, not chat. Direct /ai-tutor still works. Sage Coach (oral) stays
 // where it is — different surface, different value.
-const SAGE_DEMOTED = process.env.NEXT_PUBLIC_SAGE_DEMOTE === "true";
+// 2026-05-29 — default ON (mirror PL). Opt-out via NEXT_PUBLIC_SAGE_DEMOTED_OFF=true.
+const SAGE_DEMOTED = process.env.NEXT_PUBLIC_SAGE_DEMOTED_OFF !== "true";
 
 const navItems: NavItem[] = SAGE_DEMOTED
   ? [
