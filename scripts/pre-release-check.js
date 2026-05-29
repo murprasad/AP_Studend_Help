@@ -333,6 +333,7 @@ section("10. No 'pass probability' in user-facing copy");
     "src/components/dashboard/pass-ready-cert.tsx",
     "src/components/dashboard/pass-ready-cert-gate.tsx",
     "src/components/dashboard/dashboard-view.tsx", // hosts flag-gated imports
+    "src/components/mock-exam/post-mock-reveal.tsx", // mirrored for parity; SN wiring deferred until Readiness rebrand
     "src/app/api/pass-probability/route.ts",
     "src/app/api/todays-set/route.ts",
     "src/app/api/cron/snapshot-pass-probability/route.ts",
