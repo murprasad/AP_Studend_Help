@@ -441,8 +441,9 @@ export async function POST(req: NextRequest) {
     // Real-user impact: Abhipsa Rout, Emily LaFemina both have practice
     // sessions but no feedback prompt ever fired. Anyone who's created a
     // session is past onboarding by definition — flip the sentinel.
-    // Fire-and-forget; updateMany so concurrent calls don't race.
-    prisma.user.updateMany({
+    // Awaited (not fire-and-forget) because Cloudflare Workers terminate
+    // unfinished promises after response, silently dropping the write.
+    await prisma.user.updateMany({
       where: { id: session.user.id, onboardingCompletedAt: null },
       data: { onboardingCompletedAt: new Date() },
     }).catch(() => { /* non-critical */ });
