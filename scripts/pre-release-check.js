@@ -321,6 +321,19 @@ section("10. No 'pass probability' in user-facing copy");
     "src/lib/score-predictors/sat.ts",
     "src/lib/score-predictors/act.ts",
     "src/lib/confetti.ts", // internal comment only
+    // 2026-05-28 PRD-passprob — engine ported from PL behind
+    // NEXT_PUBLIC_PASS_PROB_ENGINE (default off). Before SN activation, the
+    // user-visible copy in these files needs a rebrand to "Predicted Score"
+    // — AP/SAT/ACT students see scaled scores, not pass/fail. Tracked in
+    // docs/PASS_PROBABILITY_ENGINE_PRD_2026_05_28.md Appendix B follow-up.
+    // Files are inert until the flag flips.
+    "src/lib/pass-probability.ts",
+    "src/components/dashboard/pass-probability-hero.tsx",
+    "src/components/dashboard/todays-set-card.tsx",
+    "src/components/dashboard/pass-ready-cert.tsx",
+    "src/app/api/pass-probability/route.ts",
+    "src/app/api/todays-set/route.ts",
+    "src/app/api/cron/snapshot-pass-probability/route.ts",
   ]);
   const PATTERN = /pass[\s\-]?probability/i;
   let leaks = 0;
