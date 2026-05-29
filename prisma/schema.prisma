@@ -98,6 +98,10 @@ model User {
   sageCoachSessions    SageCoachSession[]
   flashcardReviews     FlashcardReview[]
   userJourney          UserJourney?
+  // 2026-05-28 PRD-passprob back-relations (mirror PL 7d7d5c8)
+  passProbSnapshots    PassProbabilitySnapshot[]
+  dailyPracticePlans   DailyPracticePlan[]
+  examResults          ExamResult[]
 
   @@map("users")
 }
@@ -494,6 +498,7 @@ model Question {
   responses    StudentResponse[]
   sessionQuestions SessionQuestion[]
   reports      QuestionReport[]
+  concepts     QuestionConcept[]
 
   @@index([course, unit, difficulty, questionType])
   @@map("questions")
@@ -547,6 +552,9 @@ model StudentResponse {
   isCorrect     Boolean
   timeSpentSecs Int      @default(0)
   answeredAt    DateTime @default(now())
+  /// 2026-05-28 PRD-passprob — Brainscape-style CBR (mirror of PL).
+  /// 1=Guessing, 2=Maybe, 3=Pretty sure, 4=Confident, 5=Certain.
+  confidenceSelf Int?
 
   user     User             @relation(fields: [userId], references: [id], onDelete: Cascade)
   question Question         @relation(fields: [questionId], references: [id])
@@ -1670,4 +1678,72 @@ model SageCoachSession {
   @@index([userId, course, createdAt])
   @@index([conceptId])
   @@map("sage_coach_sessions")
+}
+
+
+// ──────────────────────────────────────────────────────────────────────────
+// 2026-05-28 PRD-passprob — mirror of PL 7d7d5c8. Same models, ApCourse
+// where PL uses ExamCourse. See docs/PASS_PROBABILITY_ENGINE_PRD_2026_05_28.md
+// ──────────────────────────────────────────────────────────────────────────
+
+model QuestionConcept {
+  id          String   @id @default(cuid())
+  questionId  String
+  question    Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  conceptKey  String
+  weight      Float    @default(1.0)
+  createdAt   DateTime @default(now())
+
+  @@index([conceptKey])
+  @@index([questionId])
+  @@map("question_concepts")
+}
+
+model PassProbabilitySnapshot {
+  id                 String   @id @default(cuid())
+  userId             String
+  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course             ApCourse
+  passProbability    Float
+  confidenceInterval Float
+  sampleSize         Int
+  computedAt         DateTime @default(now())
+  modelVersion       String   @default("v1.0")
+  driverFactors      Json?
+
+  @@unique([userId, course, computedAt])
+  @@index([userId, course])
+  @@map("pass_probability_snapshots")
+}
+
+model DailyPracticePlan {
+  id               String    @id @default(cuid())
+  userId           String
+  user             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course           ApCourse
+  forDate          DateTime
+  questionIds      String[]
+  conceptKeys      String[]
+  expectedDeltaPct Float?
+  completedAt      DateTime?
+  servedAt         DateTime  @default(now())
+
+  @@unique([userId, course, forDate])
+  @@index([userId, forDate])
+  @@map("daily_practice_plans")
+}
+
+model ExamResult {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course      ApCourse
+  examDate    DateTime
+  scaledScore Int?
+  passed      Boolean
+  reportedAt  DateTime @default(now())
+
+  @@index([userId, course])
+  @@index([course, passed])
+  @@map("exam_results")
 }
