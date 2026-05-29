@@ -53,27 +53,48 @@ interface NavItem {
   adminOnly?: boolean;
 }
 
-const navItems: NavItem[] = [
-  { href: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
-  { href: "/practice", icon: Zap, label: "Practice" },
-  // FRQ Practice — AP only (SAT/ACT don't have FRQs). Admins always see it.
-  { href: "/frq-practice", icon: PenLine, label: "FRQ Practice", tracks: ["ap"] },
-  { href: "/mock-exam", icon: Trophy, label: "Mock Exam" },
-  { href: "/diagnostic", icon: ClipboardList, label: "Diagnostic" },
-  { href: "/flashcards", icon: Layers, label: "Flashcards" },
-  { href: "/analytics", icon: BarChart3, label: "Analytics" },
-  { href: "/study-plan", icon: BookOpen, label: "Study Plan" },
-  { href: "/resources", icon: Library, label: "Resources" },
-  { href: "/ai-tutor", icon: MessageSquare, label: "Sage Live Tutor" },
-  // Sage Coach — oral-response training. Available to all users (2026-04-21).
-  // Free users get 1 evaluation per day; unlimited on paid.
-  { href: "/sage-coach", icon: Mic, label: "Sage Coach" },
-  { href: "/community", icon: Users, label: "Community" },
-  { href: "/billing", icon: Crown, label: "Billing" },
-  // 2026-05-28 Sprint B1 — Settings shipped. Was missing entirely.
-  { href: "/settings", icon: Cog, label: "Settings" },
-  { href: "/about", icon: Info, label: "About" },
-];
+// 2026-05-28 PRD Phase 6 — Sage demoted (mirror PL 1fc7f9b). Flag-gated.
+// Sage Live Tutor moves below Community so primary surface is the practice
+// loop, not chat. Direct /ai-tutor still works. Sage Coach (oral) stays
+// where it is — different surface, different value.
+const SAGE_DEMOTED = process.env.NEXT_PUBLIC_SAGE_DEMOTE === "true";
+
+const navItems: NavItem[] = SAGE_DEMOTED
+  ? [
+      { href: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
+      { href: "/practice", icon: Zap, label: "Practice" },
+      { href: "/frq-practice", icon: PenLine, label: "FRQ Practice", tracks: ["ap"] },
+      { href: "/mock-exam", icon: Trophy, label: "Mock Exam" },
+      { href: "/diagnostic", icon: ClipboardList, label: "Diagnostic" },
+      { href: "/flashcards", icon: Layers, label: "Flashcards" },
+      { href: "/analytics", icon: BarChart3, label: "Analytics" },
+      { href: "/study-plan", icon: BookOpen, label: "Study Plan" },
+      { href: "/resources", icon: Library, label: "Resources" },
+      { href: "/sage-coach", icon: Mic, label: "Sage Coach" },
+      { href: "/community", icon: Users, label: "Community" },
+      // Sage Live Tutor demoted here
+      { href: "/ai-tutor", icon: MessageSquare, label: "Sage (ask anytime)" },
+      { href: "/billing", icon: Crown, label: "Billing" },
+      { href: "/settings", icon: Cog, label: "Settings" },
+      { href: "/about", icon: Info, label: "About" },
+    ]
+  : [
+      { href: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
+      { href: "/practice", icon: Zap, label: "Practice" },
+      { href: "/frq-practice", icon: PenLine, label: "FRQ Practice", tracks: ["ap"] },
+      { href: "/mock-exam", icon: Trophy, label: "Mock Exam" },
+      { href: "/diagnostic", icon: ClipboardList, label: "Diagnostic" },
+      { href: "/flashcards", icon: Layers, label: "Flashcards" },
+      { href: "/analytics", icon: BarChart3, label: "Analytics" },
+      { href: "/study-plan", icon: BookOpen, label: "Study Plan" },
+      { href: "/resources", icon: Library, label: "Resources" },
+      { href: "/ai-tutor", icon: MessageSquare, label: "Sage Live Tutor" },
+      { href: "/sage-coach", icon: Mic, label: "Sage Coach" },
+      { href: "/community", icon: Users, label: "Community" },
+      { href: "/billing", icon: Crown, label: "Billing" },
+      { href: "/settings", icon: Cog, label: "Settings" },
+      { href: "/about", icon: Info, label: "About" },
+    ];
 
 // Derived from COURSE_REGISTRY — no hardcoded course names here.
 const COURSE_OPTIONS = (Object.entries(COURSE_REGISTRY) as [ApCourse, { name: string; shortName: string }][]).map(
