@@ -434,6 +434,19 @@ export async function POST(req: NextRequest) {
       },
     });
 
+    // 2026-05-28 — Side-door close. Quickstart (and any non-/journey entry)
+    // lets users start practice without ever setting onboardingCompletedAt.
+    // That null sentinel silently disables downstream hooks (session-feedback
+    // prompt, upsell cards, trial-reengagement cron) for those users.
+    // Real-user impact: Abhipsa Rout, Emily LaFemina both have practice
+    // sessions but no feedback prompt ever fired. Anyone who's created a
+    // session is past onboarding by definition — flip the sentinel.
+    // Fire-and-forget; updateMany so concurrent calls don't race.
+    prisma.user.updateMany({
+      where: { id: session.user.id, onboardingCompletedAt: null },
+      data: { onboardingCompletedAt: new Date() },
+    }).catch(() => { /* non-critical */ });
+
     // Insert session questions via raw SQL to avoid implicit transactions
     // (the Neon HTTP adapter does not support transactions).
     // $executeRawUnsafe with positional params is safe here — all values

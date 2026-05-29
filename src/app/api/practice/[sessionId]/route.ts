@@ -188,6 +188,19 @@ Return ONLY valid JSON (no markdown, no extra text):
       },
     });
 
+    // 2026-05-28 — Incremental correctAnswers update (mirror PL bc00cf4+).
+    // The field was only finalized at session-complete; abandoned sessions
+    // displayed 0/N even when StudentResponse rows had partial correct
+    // answers. The completion handler still overwrites with recomputed
+    // correctCount, so a missed increment self-corrects on finish. The
+    // duplicate-response guard above means retries don't double-count.
+    if (isCorrect) {
+      prisma.practiceSession.update({
+        where: { id: sessionId },
+        data: { correctAnswers: { increment: 1 } },
+      }).catch(() => { /* non-critical aggregation */ });
+    }
+
     // Update question stats
     const updatedQuestion = await prisma.question.update({
       where: { id: questionId },

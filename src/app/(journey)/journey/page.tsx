@@ -161,6 +161,19 @@ export default function JourneyPage() {
     })();
   }, [mode, updateSession]);
 
+  // ── Auto-redirect to dashboard when step 5 is reached (trim 2026-05-28). ──
+  // Replaces the Step5Done celebration screen. Brief delay lets the JWT
+  // refresh land and middleware sees onboardingCompletedAt before /dashboard
+  // does its own check. focus=primary-action makes dashboard scroll to the
+  // primary CTA so the next click goes to practice.
+  useEffect(() => {
+    if (mode !== "step5") return;
+    const t = setTimeout(() => {
+      router.push("/dashboard?focus=primary-action&src=journey_done");
+    }, 600);
+    return () => clearTimeout(t);
+  }, [mode, router]);
+
   // ── Prefetch step 2 FRQ when step 1 starts ─────────────────────────────────
   useEffect(() => {
     if (mode !== "step1" || prefetchedRef.current.frq) return;
@@ -206,7 +219,12 @@ export default function JourneyPage() {
   // ── trans23 → step 3 ───────────────────────────────────────────────────────
   const handleTrans23 = () => setMode("step3");
 
-  // ── Step 3 → trans34 ───────────────────────────────────────────────────────
+  // ── Step 3 → step 5 (trim 2026-05-28) ──────────────────────────────────────
+  // Mirror PL trim of 2026-05-21: diagnostic completion goes straight to
+  // step 5 (done), skipping trans34 + step3a (flashcards) + step4 (targeted
+  // MCQs). Real users (Abhipsa, ASNAP, Rithik) dropped off here.
+  // PL trim message: "Removes 7+ intermediate screens; user hits dashboard
+  // ~60% faster."
   const handleStep3Done = useCallback(async (out: {
     diagnosticId: string;
     weakestUnit: string | null;
@@ -216,17 +234,16 @@ export default function JourneyPage() {
     setWeakestUnit(out.weakestUnit);
     setPredictedScore(out.predictedScore);
     await apiPost("advance", {
-      step: 4,
+      step: 5,
       artifactId: out.diagnosticId,
       weakestUnit: out.weakestUnit ?? undefined,
     });
-    setMode("trans34");
-  }, [apiPost]);
+    // JWT refresh so middleware sees onboardingCompletedAt on the next request.
+    try { await updateSession(); } catch { /* non-fatal */ }
+    setMode("step5");
+  }, [apiPost, updateSession]);
 
-  // ── trans34 → step 3a (flashcards) → step 4 ───────────────────────────────
-  // Beta 9.6 — insert flashcard micro-step between score reveal and
-  // targeted MCQ practice. Per user spec: "Quick memory boost before
-  // practice" — light touch, no separate feature, just micro-step.
+  // Legacy handlers preserved for users with currentStep === 3a/4 mid-flight.
   const handleTrans34 = () => setMode("step3a");
   const handleStep3aDone = () => setMode("step4");
 
@@ -403,14 +420,19 @@ export default function JourneyPage() {
     );
   }
 
-  // step5
+  // step5 — auto-redirect to dashboard (trim 2026-05-28).
+  // User feedback: "Celebration after a 9-Q diagnostic feels patronizing to a
+  // Grade 11 student." Replaced Step5Done celebration with an immediate
+  // hand-off to /dashboard?focus=primary-action so the next click lands the
+  // user on practice. Brief loading state keeps the transition non-jarring.
+  // Step5Done component is still exported in case we need a fallback render.
+  void Step5Done; // keep import live for type-graph + dynamic-import safety
   return (
     <JourneyShell step={5} totalSteps={5}>
-      <Step5Done
-        predictedScore={predictedScore}
-        course={course}
-        weakestUnitName={weakestUnitName}
-      />
+      <div className="pt-16 flex flex-col items-center gap-3" data-testid="journey-done-redirect">
+        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+        <p className="text-sm text-muted-foreground">Setting up your dashboard…</p>
+      </div>
     </JourneyShell>
   );
 }
