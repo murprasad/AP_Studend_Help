@@ -331,6 +331,7 @@ section("10. No 'pass probability' in user-facing copy");
     "src/components/dashboard/pass-probability-hero.tsx",
     "src/components/dashboard/todays-set-card.tsx",
     "src/components/dashboard/pass-ready-cert.tsx",
+    "src/components/dashboard/pass-ready-cert-gate.tsx",
     "src/components/dashboard/dashboard-view.tsx", // hosts flag-gated imports
     "src/app/api/pass-probability/route.ts",
     "src/app/api/todays-set/route.ts",
