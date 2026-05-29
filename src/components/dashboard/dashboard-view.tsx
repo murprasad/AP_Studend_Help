@@ -29,6 +29,9 @@ import { useRouter } from "next/navigation";
 import { useCourse } from "@/hooks/use-course";
 import { getExamCopy } from "@/lib/exam-copy";
 import { MasteryTierUpCard } from "@/components/dashboard/mastery-tier-up-card";
+// 2026-05-28 PRD-passprob (mirror of PL)
+import { PassProbabilityHero } from "@/components/dashboard/pass-probability-hero";
+import { TodaysSetCard } from "@/components/dashboard/todays-set-card";
 import { ResumeCard } from "@/components/dashboard/resume-card";
 import { PrimaryActionStrip } from "@/components/dashboard/primary-action-strip";
 import { OutcomeProgressStrip } from "@/components/dashboard/outcome-progress-strip";
@@ -212,6 +215,17 @@ function DashboardBody({ course, impressionId }: { course: string; impressionId:
 
       {/* 0. Celebration — renders null when no unread tier-up */}
       <MasteryTierUpCard />
+
+      {/* 2026-05-28 PRD-passprob — mirror of PL. Pass Probability hero +
+          Today's Set CTA. Behind NEXT_PUBLIC_PASS_PROB_ENGINE (default off).
+          When on, renders BEFORE existing PrimaryActionStrip. Legacy CTAs
+          remain so Pass Plan + Free users keep all existing affordances. */}
+      {process.env.NEXT_PUBLIC_PASS_PROB_ENGINE === "true" && (
+        <>
+          <PassProbabilityHero course={course as string} courseDisplayName={course as string} />
+          <TodaysSetCard course={course as string} />
+        </>
+      )}
 
       {/* 1a. Resume — renders only when in-progress session exists */}
       <ResumeCard course={course as string} />
