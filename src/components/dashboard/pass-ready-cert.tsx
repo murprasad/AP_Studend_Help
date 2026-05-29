@@ -37,11 +37,11 @@ export function PassReadyCert({
   const [shareNotice, setShareNotice] = useState<string | null>(null);
 
   async function handleShare() {
-    const text = `I'm at ${predictedPassPercent}% likely to pass ${courseDisplayName} after ${studyDays} days on StudentNest!`;
+    const text = `I'm at ${predictedPassPercent}% readiness on ${courseDisplayName} after ${studyDays} days on StudentNest!`;
     const url = "https://studentnest.ai";
     if (navigator.share) {
       try {
-        await navigator.share({ title: "StudentNest — Pass Ready", text, url });
+        await navigator.share({ title: "StudentNest — Exam Ready", text, url });
         setShareNotice("Shared!");
       } catch { setShareNotice("Share canceled."); }
     } else {
@@ -57,17 +57,17 @@ export function PassReadyCert({
     if (!w) return;
     w.document.write(`
       <html>
-      <head><title>StudentNest Pass Ready — ${studentName}</title></head>
+      <head><title>StudentNest Exam Ready — ${studentName}</title></head>
       <body style="font-family: -apple-system, system-ui, sans-serif; padding: 40px; background: #fafaf9;">
         <div style="max-width: 600px; margin: 0 auto; padding: 48px; border: 2px solid #10b981; border-radius: 24px; background: linear-gradient(135deg, rgba(16,185,129,0.05), rgba(245,158,11,0.05));">
           <div style="text-align: center;">
             <div style="font-size: 64px; line-height: 1;">🪺</div>
-            <h1 style="font-size: 24px; font-weight: 700; margin: 16px 0 8px;">StudentNest — Pass Ready</h1>
+            <h1 style="font-size: 24px; font-weight: 700; margin: 16px 0 8px;">StudentNest — Exam Ready</h1>
             <p style="color: #6b7280; font-size: 14px; margin: 0;">${courseDisplayName}</p>
             <hr style="margin: 24px 0; border: none; border-top: 1px solid rgba(0,0,0,0.1);" />
             <p style="font-size: 18px; margin: 0 0 8px;">${studentName}</p>
             <p style="font-size: 72px; font-weight: 700; color: #047857; margin: 8px 0; line-height: 1;">${predictedPassPercent}%</p>
-            <p style="color: #6b7280; font-size: 14px; margin: 0 0 24px;">likely to pass</p>
+            <p style="color: #6b7280; font-size: 14px; margin: 0 0 24px;">readiness on</p>
             <p style="font-size: 14px;">Studied ${studyDays} days · ${sessionsCount} practice sets</p>
             <hr style="margin: 32px 0 16px; border: none; border-top: 1px solid rgba(0,0,0,0.1);" />
             <p style="color: #9ca3af; font-size: 11px; margin: 0;">studentnest.ai · Predicted pass probability is calibrated to ${course.startsWith("CLEP_") ? "College Board CLEP" : course.startsWith("DSST_") ? "Prometric DSST" : "exam"} scoring</p>
