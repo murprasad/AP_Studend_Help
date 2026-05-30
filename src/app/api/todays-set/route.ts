@@ -117,6 +117,23 @@ export async function GET(req: Request) {
       unitMasteries: masteries,
     });
 
+    // 2026-05-30 — Safety net: if the generator returned empty questionIds
+    // but the candidate pool has questions, fall back to the first 12 of
+    // the pool. Real-user report: +free saw "no targeted set ready" on
+    // dashboard even though candidate pool had hundreds of Qs. Better to
+    // serve generic Qs than empty UX.
+    if (result.questionIds.length === 0 && candidatePool.length > 0) {
+      const recentQids = new Set(pastResponses.map(r => r.questionId));
+      const fallback = candidatePool
+        .filter(q => !recentQids.has(q.id))
+        .slice(0, 12)
+        .map(q => q.id);
+      result.questionIds = fallback;
+      if (result.conceptKeys.length === 0 && candidatePool.length > 0) {
+        result.conceptKeys = [`unit:${candidatePool[0].unit}`];
+      }
+    }
+
     await prisma.dailyPracticePlan.create({
       data: {
         userId,
