@@ -16,7 +16,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.8,
     })),
     { url: `${baseUrl}/sat-prep`, lastModified: now, changeFrequency: "weekly", priority: 0.9 },
+    { url: `${baseUrl}/sat-prep/free-vs-paid`, lastModified: now, changeFrequency: "monthly", priority: 0.85 },
     { url: `${baseUrl}/act-prep`, lastModified: now, changeFrequency: "weekly", priority: 0.9 },
+    { url: `${baseUrl}/act-vs-sat-which-should-i-take`, lastModified: now, changeFrequency: "monthly", priority: 0.85 },
+    { url: `${baseUrl}/digital-sat-2024-changes`, lastModified: now, changeFrequency: "monthly", priority: 0.85 },
     // CLEP pages (only when clep_enabled flag is on)
     ...(clepOn ? [
       { url: `${baseUrl}/clep-prep`, lastModified: now, changeFrequency: "weekly" as const, priority: 0.9 },
