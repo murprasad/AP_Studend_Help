@@ -4,7 +4,11 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { ApUnit } from "@prisma/client";
 import { estimateApScore } from "@/lib/utils";
-import { computeSatSectionScore, familyForCourse } from "@/lib/sat-scaled-score";
+import {
+  computeSatSectionScore,
+  familyForCourse,
+  inferModule2Tier,
+} from "@/lib/sat-scaled-score";
 import { getCourseForUnit } from "@/lib/courses";
 import { callAIWithCascade } from "@/lib/ai-providers";
 import { rateLimit } from "@/lib/rate-limit";
@@ -332,14 +336,32 @@ export async function PATCH(
     // F7 (#100) 2026-05-31 — Digital SAT 200-800 scaled score. Returns null
     // for non-SAT courses; result.summary surfaces it for the UI to show
     // alongside the AP 1-5 estimate when applicable.
+    // F8 (#100) — Apply Module-2-tier ceiling derived from M1 performance.
+    // For SAT/PSAT sessions, order responses by sessionQuestion.order and
+    // infer the tier the student would have been routed to. The result is
+    // a CB-spec-shaped scaled score that respects adaptive equating.
     const satFamily = familyForCourse(practiceSession.course as string);
-    const satSectionScore = satFamily
-      ? computeSatSectionScore({
-          accuracyPercent: accuracy,
-          totalAnswered: responses.length,
-          family: satFamily,
-        })
-      : null;
+    let satSectionScore: ReturnType<typeof computeSatSectionScore> = null;
+    if (satFamily) {
+      // Order responses by their sessionQuestion.order so M1 split is correct
+      const sqRows = await prisma.sessionQuestion.findMany({
+        where: { sessionId },
+        orderBy: { order: "asc" },
+        select: { questionId: true },
+      });
+      const responseById = new Map(responses.map((r) => [r.questionId, r]));
+      const orderedResponses = sqRows
+        .map((sq) => responseById.get(sq.questionId))
+        .filter((r): r is NonNullable<typeof r> => !!r)
+        .map((r) => ({ isCorrect: r.isCorrect }));
+      const module2Tier = inferModule2Tier(orderedResponses) ?? undefined;
+      satSectionScore = computeSatSectionScore({
+        accuracyPercent: accuracy,
+        totalAnswered: responses.length,
+        family: satFamily,
+        module2Tier,
+      });
+    }
 
     const updatedSession = await prisma.practiceSession.update({
       where: { id: sessionId },

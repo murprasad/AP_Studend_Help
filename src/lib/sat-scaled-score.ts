@@ -38,10 +38,42 @@ export interface SatSectionScore {
   family: SatFamily;
 }
 
+/**
+ * 2026-05-31 (F8 of #100) — Module-2 difficulty tier, mirrors CB's
+ * adaptive equating logic. After Module 1, the test routes the student
+ * to either an EASIER or HARDER Module 2. The M2 tier the student
+ * ended in determines the upper bound of their possible scaled score:
+ *
+ *   HARD   M2 → full 200-800 ceiling (the only path to 700+)
+ *   MEDIUM M2 → caps around 650 (CB published "max possible if M2 medium")
+ *   EASY   M2 → caps around 590 (the cap-at-the-bottom-of-the-band path)
+ *
+ * Real CB equating is per-test and IRT-calibrated. These caps are the
+ * shape that matches CB's published score-table behavior for the
+ * digital SAT scoring guides (2024+). Will be replaced by true IRT
+ * theta estimates when F11 lands.
+ */
+export type Module2Tier = "EASY" | "MEDIUM" | "HARD";
+
+const M2_TIER_CAP_SAT: Record<Module2Tier, number> = {
+  EASY: 590,
+  MEDIUM: 650,
+  HARD: 800,
+};
+const M2_TIER_CAP_PSAT: Record<Module2Tier, number> = {
+  EASY: 560,
+  MEDIUM: 620,
+  HARD: 760,
+};
+
 export interface SatScaledScoreInputs {
   accuracyPercent: number; // 0–100
   totalAnswered: number;
   family: SatFamily;
+  // F8 — Module-2 tier from the adaptive split. When omitted (e.g., a
+  // single-flat-mock for backward compatibility), no tier ceiling is
+  // applied and the full 200-800 / 160-760 curve is in play.
+  module2Tier?: Module2Tier;
 }
 
 const CURVE: Array<{ accuracy: number; sat: number; psat: number }> = [
@@ -79,7 +111,19 @@ export function computeSatSectionScore(
   const sat = lo.sat + t * (hi.sat - lo.sat);
   const psat = lo.psat + t * (hi.psat - lo.psat);
   const family = inputs.family;
-  const scaled = family === "PSAT" ? psat : sat;
+  let scaled = family === "PSAT" ? psat : sat;
+  // F8 (#100) — Apply Module-2-tier ceiling. CB equating limits the
+  // student's possible scaled score to the band the M2 tier opens up.
+  // A student in an EASY Module 2 can't break ~590 even with 100%
+  // correct on the (easier) items; only a HARD Module 2 unlocks the
+  // full 800 ceiling. Floors remain the standard scale floor.
+  if (inputs.module2Tier) {
+    const cap =
+      family === "PSAT"
+        ? M2_TIER_CAP_PSAT[inputs.module2Tier]
+        : M2_TIER_CAP_SAT[inputs.module2Tier];
+    scaled = Math.min(scaled, cap);
+  }
   // Round to the nearest 10, like CB's published score tables.
   const rounded = Math.round(scaled / 10) * 10;
   return {
@@ -103,4 +147,35 @@ export function familyForCourse(course: string): SatFamily | null {
 
 export function isSatLikeCourse(course: string): boolean {
   return familyForCourse(course) !== null;
+}
+
+/**
+ * 2026-05-31 (F8) — Infer the Module-2 tier the student would have been
+ * routed to, based on their Module-1 performance. Mirrors CB's published
+ * routing rule:
+ *   M1 ≥ 75%  → HARD   M2 (the only path to 700+)
+ *   M1 50–74% → MEDIUM M2
+ *   M1 < 50%  → EASY   M2
+ *
+ * Inputs: a sequence of per-Q correct/wrong responses in ORDER. We split
+ * at the halfway point and take the M1 accuracy. When the sequence is
+ * too short to be meaningful (<10 Qs), returns null (no cap applied,
+ * full curve in play).
+ *
+ * Live CB routing happens DURING the test after M1 completes. Until the
+ * mock-exam UI exposes that signal explicitly, this helper provides a
+ * retroactive equivalent that matches the routing the student would have
+ * triggered.
+ */
+export function inferModule2Tier(
+  orderedResponses: ReadonlyArray<{ isCorrect: boolean }>,
+): Module2Tier | null {
+  if (orderedResponses.length < 10) return null;
+  const m1End = Math.floor(orderedResponses.length / 2);
+  const m1 = orderedResponses.slice(0, m1End);
+  const correct = m1.filter((r) => r.isCorrect).length;
+  const m1Acc = m1.length > 0 ? (correct / m1.length) * 100 : 0;
+  if (m1Acc >= 75) return "HARD";
+  if (m1Acc >= 50) return "MEDIUM";
+  return "EASY";
 }
