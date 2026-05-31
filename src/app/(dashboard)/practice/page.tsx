@@ -31,6 +31,7 @@ import { SessionLimitHitCard } from "@/components/practice/session-limit-hit-car
 import { useFirstAnswerReward } from "@/components/practice/first-answer-reward-modal";
 import { CrossModuleNudge } from "@/components/practice/cross-module-nudge";
 import { DesmosCalculatorPanel } from "@/components/practice/desmos-calculator";
+import { khanAcademyLinkFor, hasKhanAcademyLinks } from "@/lib/khan-academy-sat-links";
 import {
   Zap,
   BookOpen,
@@ -1354,6 +1355,29 @@ export default function PracticePage() {
                         : `Incorrect — Answer: ${feedback.correctAnswer}`}
                     </p>
                     <ExplanationDisplay text={feedback.explanation} />
+
+                    {/* F12 (#100) 2026-05-31 — Khan Academy SAT skill-link
+                        for SAT/PSAT wrong answers. KA is the official CB
+                        partner; the link routes to the content-domain
+                        practice track for the unit the student missed. */}
+                    {!feedback.isCorrect && hasKhanAcademyLinks(currentQuestion.course) && (() => {
+                      const link = khanAcademyLinkFor(
+                        currentQuestion.course,
+                        currentQuestion.unit ?? null,
+                      );
+                      if (!link) return null;
+                      return (
+                        <a
+                          href={link.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-500/20 transition-colors"
+                        >
+                          <BookOpen className="h-3.5 w-3.5" />
+                          Review on Khan Academy →
+                        </a>
+                      );
+                    })()}
 
                     {currentQuestion.course?.startsWith("CLEP_") && (
                       <div className="flex items-center gap-3 pt-1 text-xs text-muted-foreground">
