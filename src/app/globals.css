@@ -119,6 +119,44 @@ html, body { overflow-x: hidden; }
   @apply bg-gradient-to-r from-blue-600 via-blue-500 to-teal-500 bg-clip-text text-transparent;
 }
 
+/* ═══════════════════════════════════════════════════════════════════════════
+ * 2026-05-31 — CB-skin overrides (#102 SN mirror). Scoped to marketing +
+ * auth surfaces (which set font-roboto on their root container) so legacy
+ * gradient + blue-primary CTAs flatten to CB cobalt-on-white. In-app
+ * surfaces (dashboard/practice/etc.) keep the original tokens since they
+ * don't apply font-roboto at the root.
+ * ═══════════════════════════════════════════════════════════════════════════ */
+.font-roboto .gradient-text {
+  background: none !important;
+  -webkit-background-clip: initial !important;
+  -webkit-text-fill-color: initial !important;
+  color: #324DC7 !important; /* cb-cobalt */
+}
+/* Primary CTAs on marketing → cobalt */
+.font-roboto .bg-primary,
+.font-roboto .bg-blue-600,
+.font-roboto .bg-blue-700 {
+  background-color: #324DC7 !important; /* cb-cobalt */
+}
+.font-roboto .bg-primary:hover,
+.font-roboto .bg-blue-600:hover,
+.font-roboto .bg-blue-700:hover {
+  background-color: #0077C8 !important; /* cb-sky */
+}
+.font-roboto .text-blue-600,
+.font-roboto .text-blue-700 {
+  color: #324DC7 !important; /* cb-cobalt */
+}
+.font-roboto .text-blue-500,
+.font-roboto .text-blue-400 {
+  color: #0077C8 !important; /* cb-sky */
+}
+/* Border + body-text token bridges for marketing surfaces */
+.font-roboto .text-foreground { color: #1E1E3F !important; }
+.font-roboto .text-muted-foreground { color: #586581 !important; }
+.font-roboto .border-border\/40 { border-color: #E4E7EB !important; }
+.font-roboto .border-border { border-color: #E4E7EB !important; }
+
 /* Glow effect for cards */
 .card-glow {
   box-shadow: 0 0 0 1px rgba(24, 101, 242, 0.1), 0 4px 6px -1px rgba(0, 0, 0, 0.3);
