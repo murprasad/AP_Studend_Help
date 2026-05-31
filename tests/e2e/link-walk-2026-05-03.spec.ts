@@ -63,17 +63,19 @@ test.describe("Click walk — landing page links actually navigate", () => {
   // Critical click targets on the landing page. These are clicked in a real
   // browser session — catches soft-nav failures that HTTP-only verify misses
   // (the AP-card-click bug the user reported on 2026-05-03).
+  // 2026-05-31 — CB-style landing rewrite (task #99) consolidated the
+  // top nav to Pricing + Sign in only. The per-exam links moved to the
+  // hero 4-tile grid below the fold (selectors without `nav` prefix).
+  // /contact was dropped from the footer in the rewrite. Updated to
+  // match the new structure.
   const LANDING_CLICKS = [
-    { selector: 'nav a[href="/ap-prep"]',   expected: /\/ap-prep$/,    desc: "Nav: AP" },
-    { selector: 'nav a[href="/sat-prep"]',  expected: /\/sat-prep$/,   desc: "Nav: SAT" },
-    { selector: 'nav a[href="/act-prep"]',  expected: /\/act-prep$/,   desc: "Nav: ACT" },
     { selector: 'nav a[href="/pricing"]',   expected: /\/pricing$/,    desc: "Nav: Pricing" },
-    { selector: 'nav a[href="/login"]',     expected: /\/login(\?|$)/, desc: "Nav: Log In" },
-    { selector: 'a[href="/ap-prep"]',       expected: /\/ap-prep$/,    desc: "Module card: AP" },
-    { selector: 'a[href="/sat-prep"]',      expected: /\/sat-prep$/,   desc: "Module card: SAT" },
-    { selector: 'a[href="/act-prep"]',      expected: /\/act-prep$/,   desc: "Module card: ACT" },
+    { selector: 'nav a[href="/login"]',     expected: /\/login(\?|$)/, desc: "Nav: Sign in" },
+    { selector: 'a[href="/ap-prep"]',       expected: /\/ap-prep$/,    desc: "Tile: AP" },
+    { selector: 'a[href="/sat-prep"]',      expected: /\/sat-prep$/,   desc: "Tile: SAT" },
+    { selector: 'a[href="/act-prep"]',      expected: /\/act-prep$/,   desc: "Tile: ACT" },
+    { selector: 'a[href="/psat-prep"]',     expected: /\/psat-prep$/,  desc: "Tile: PSAT" },
     { selector: 'footer a[href="/about"]',  expected: /\/about$/,      desc: "Footer: About" },
-    { selector: 'footer a[href="/contact"]',expected: /\/contact$/,    desc: "Footer: Contact" },
     { selector: 'footer a[href="/terms"]',  expected: /\/terms$/,      desc: "Footer: Terms" },
     { selector: 'footer a[href="/privacy"]',expected: /\/privacy$/,    desc: "Footer: Privacy" },
     { selector: 'footer a[href="/faq"]',    expected: /\/faq$/,        desc: "Footer: FAQ" },
