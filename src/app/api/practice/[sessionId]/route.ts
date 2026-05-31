@@ -4,6 +4,7 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { ApUnit } from "@prisma/client";
 import { estimateApScore } from "@/lib/utils";
+import { computeSatSectionScore, familyForCourse } from "@/lib/sat-scaled-score";
 import { getCourseForUnit } from "@/lib/courses";
 import { callAIWithCascade } from "@/lib/ai-providers";
 import { rateLimit } from "@/lib/rate-limit";
@@ -328,6 +329,17 @@ export async function PATCH(
     const totalTime = responses.reduce((sum, r) => sum + r.timeSpentSecs, 0);
     const accuracy = responses.length > 0 ? (correctCount / responses.length) * 100 : 0;
     const apScore = estimateApScore(accuracy, responses.length);
+    // F7 (#100) 2026-05-31 — Digital SAT 200-800 scaled score. Returns null
+    // for non-SAT courses; result.summary surfaces it for the UI to show
+    // alongside the AP 1-5 estimate when applicable.
+    const satFamily = familyForCourse(practiceSession.course as string);
+    const satSectionScore = satFamily
+      ? computeSatSectionScore({
+          accuracyPercent: accuracy,
+          totalAnswered: responses.length,
+          family: satFamily,
+        })
+      : null;
 
     const updatedSession = await prisma.practiceSession.update({
       where: { id: sessionId },
@@ -400,6 +412,11 @@ export async function PATCH(
         timeSpentSecs: totalTime,
         xpEarned,
         apScoreEstimate: apScore,
+        // F7 — Digital SAT scaled section score (200-800 SAT / 160-760 PSAT).
+        // null for non-SAT courses; UI conditionally renders.
+        satScaledScore: satSectionScore?.scaledScore ?? null,
+        satScaleMin: satSectionScore?.scaleMin ?? null,
+        satScaleMax: satSectionScore?.scaleMax ?? null,
         previousAccuracy: previousSession?.score != null ? Math.round(previousSession.score) : null,
         questions: questionRows,
       },

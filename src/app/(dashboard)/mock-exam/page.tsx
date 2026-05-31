@@ -74,6 +74,11 @@ interface ExamResult {
   timeSpentSecs: number;
   xpEarned: number;
   apScoreEstimate: number;
+  // 2026-05-31 (F7 of #100) — Digital SAT 200-800 scaled section score.
+  // Server returns null for non-SAT/PSAT courses.
+  satScaledScore?: number | null;
+  satScaleMin?: number | null;
+  satScaleMax?: number | null;
 }
 
 export default function MockExamPage() {
@@ -608,20 +613,48 @@ export default function MockExamPage() {
         {/* Beta 9.3.5 — ONE clear next step at top of mock-exam summary. */}
         <PostSessionNextStep course={course} source="mock_summary" />
 
-        <Card className="card-glow">
-          <CardContent className="p-6 text-center">
-            <p className="text-sm text-muted-foreground mb-2">Estimated {examCopy.scoreLabel}</p>
-            <p className={`text-8xl font-bold ${scoreColors[result.apScoreEstimate] || "text-foreground"}`}>
-              {result.apScoreEstimate}
-            </p>
-            <p className="text-muted-foreground mt-2 mb-6">
-              {isClep ? "out of 80 (pass: 50+)" : `out of ${examCopy.scoreScale.max}`}
-            </p>
-            <p className="text-base font-medium">
-              {scoreMessages[result.apScoreEstimate] || "Keep practicing!"}
-            </p>
-          </CardContent>
-        </Card>
+        {/* F7 (#100) 2026-05-31 — Digital SAT 200-800 scaled section
+            score takes the headline slot for SAT/PSAT mocks. Other
+            exams (AP 1-5, CLEP 20-80) keep their existing scale. */}
+        {result.satScaledScore != null && result.satScaleMax != null && result.satScaleMin != null ? (
+          <Card className="card-glow">
+            <CardContent className="p-6 text-center">
+              <p className="text-sm text-muted-foreground mb-2">
+                Projected section score
+              </p>
+              <p className="text-8xl font-bold text-blue-600 dark:text-blue-400 tabular-nums">
+                {result.satScaledScore}
+              </p>
+              <p className="text-muted-foreground mt-2 mb-6">
+                out of {result.satScaleMax} (CB scale: {result.satScaleMin}–{result.satScaleMax})
+              </p>
+              <p className="text-base font-medium">
+                {result.satScaledScore >= 700
+                  ? "Excellent — top tier on this section."
+                  : result.satScaledScore >= 600
+                  ? "Strong. A few more sessions to break 700."
+                  : result.satScaledScore >= 500
+                  ? "Solid foundation. Focus on weak units to push past 600."
+                  : "Keep practicing — the score curve responds fast at this band."}
+              </p>
+            </CardContent>
+          </Card>
+        ) : (
+          <Card className="card-glow">
+            <CardContent className="p-6 text-center">
+              <p className="text-sm text-muted-foreground mb-2">Estimated {examCopy.scoreLabel}</p>
+              <p className={`text-8xl font-bold ${scoreColors[result.apScoreEstimate] || "text-foreground"}`}>
+                {result.apScoreEstimate}
+              </p>
+              <p className="text-muted-foreground mt-2 mb-6">
+                {isClep ? "out of 80 (pass: 50+)" : `out of ${examCopy.scoreScale.max}`}
+              </p>
+              <p className="text-base font-medium">
+                {scoreMessages[result.apScoreEstimate] || "Keep practicing!"}
+              </p>
+            </CardContent>
+          </Card>
+        )}
 
         <div className="grid grid-cols-2 gap-4">
           {[
