@@ -30,6 +30,7 @@ import { ReportQuestionModal } from "@/components/practice/report-question-modal
 import { SessionLimitHitCard } from "@/components/practice/session-limit-hit-card";
 import { useFirstAnswerReward } from "@/components/practice/first-answer-reward-modal";
 import { CrossModuleNudge } from "@/components/practice/cross-module-nudge";
+import { DesmosCalculatorPanel } from "@/components/practice/desmos-calculator";
 import {
   Zap,
   BookOpen,
@@ -1145,6 +1146,14 @@ export default function PracticePage() {
             <div className="text-base font-medium leading-relaxed">
               <MarkdownContent content={currentQuestion.questionText} useMermaid={false} />
             </div>
+            {/* F4 (#100) 2026-05-31 — Desmos calculator panel on every
+                SAT/PSAT Math question. CB's Bluebook embeds Desmos on
+                every Math screen on the real digital SAT. Collapsible
+                default-closed so it doesn't dominate the card. */}
+            {(currentQuestion.course === "SAT_MATH" ||
+              currentQuestion.course === "PSAT_MATH") && (
+              <DesmosCalculatorPanel />
+            )}
             <div className="flex justify-end -mt-2">
               <ReportQuestionModal questionId={currentQuestion.id} />
             </div>

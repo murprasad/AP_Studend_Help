@@ -13,6 +13,8 @@ import { formatTime } from "@/lib/utils";
 import { optionLetter, cleanOptionText } from "@/lib/options";
 import { ApCourse } from "@prisma/client";
 import { getCourseTrack, getMockExamConfig } from "@/lib/courses";
+import { DesmosCalculatorPanel } from "@/components/practice/desmos-calculator";
+import { SatModuleBreak } from "@/components/practice/sat-module-break";
 import { getExamCopy } from "@/lib/exam-copy";
 import { isPremiumForTrack, type ModuleSub } from "@/lib/tiers";
 import { QuestionContent } from "@/components/question/question-content";
@@ -35,7 +37,25 @@ import { PostMockReveal } from "@/components/mock-exam/post-mock-reveal";
 import Link from "next/link";
 import { FREE_LIMITS, LOCK_COPY, projectedDaysToTarget } from "@/lib/tier-limits";
 
-type ExamPhase = "intro" | "section1" | "complete";
+type ExamPhase = "intro" | "section1" | "break" | "complete";
+
+// 2026-05-31 (F2 of #100 SAT=CB parity) — the digital SAT is 2 adaptive
+// modules per section with a 10-minute break in between. SN's mock-exam
+// runs as a single flat session everywhere else (AP, ACT, CLEP). For
+// SAT/PSAT only, we split the session at the halfway point and show a
+// break screen — the FSM lengthens to intro → section1 (Module 1) →
+// break → section1 (Module 2) → complete. Adaptive Module-2 difficulty
+// routing comes in a follow-up (tracked as F8).
+const ADAPTIVE_COURSES = new Set([
+  "SAT_MATH",
+  "SAT_READING_WRITING",
+  "PSAT_MATH",
+  "PSAT_READING_WRITING",
+]);
+function isAdaptiveCourse(course: string | null | undefined): boolean {
+  return !!course && ADAPTIVE_COURSES.has(course);
+}
+const SAT_BREAK_SECS = 10 * 60; // CB-spec: 10-min break between sections
 type ExamMode = "full" | "quick";
 
 interface ExamQuestion {
@@ -336,6 +356,14 @@ export default function MockExamPage() {
     }
   }, [sessionId]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // 2026-05-31 (F2 of #100) — Compute module-1 boundary for adaptive
+  // courses. The digital SAT splits the section in half: Math is 22+22 of
+  // its 44 Qs, R&W is 27+27 of its 54 Qs. Non-adaptive courses (AP/ACT/
+  // CLEP) ignore this boundary entirely.
+  const moduleOneEndIndex = isAdaptiveCourse(course)
+    ? Math.floor(questionsRef.current.length / 2) - 1
+    : -1;
+
   function nextQuestion() {
     const total = questionsRef.current.length;
     // Partial-lock gate for FREE users: after the tier-limit-configured
@@ -344,6 +372,19 @@ export default function MockExamPage() {
     // src/lib/tier-limits.ts so a future spec change is one-file.
     if (!hasPremium && currentIndex === FREE_LIMITS.mockExamQuestions - 1 && currentIndex + 1 < total) {
       setShowPartialPaywall(true);
+      return;
+    }
+    // F2 — at the end of Module 1, transition to the break phase instead
+    // of advancing to the next question. The break screen offers a 10-min
+    // pause (per the CB spec) plus a "Continue to Module 2" button. When
+    // Module 2 begins, currentIndex resumes at moduleOneEndIndex + 1.
+    if (
+      isAdaptiveCourse(course) &&
+      currentIndex === moduleOneEndIndex &&
+      currentIndex + 1 < total
+    ) {
+      setPhase("break");
+      setFeedback(null);
       return;
     }
     if (currentIndex + 1 >= total) {
@@ -612,6 +653,14 @@ export default function MockExamPage() {
     );
   }
 
+  // ── Break (digital SAT 2-module structure, F2 of #100) ───────────────────
+  if (phase === "break") {
+    return <SatModuleBreak onContinue={() => {
+      setCurrentIndex(moduleOneEndIndex + 1);
+      setPhase("section1");
+    }} />;
+  }
+
   // ── Section 1 ─────────────────────────────────────────────────────────────
   if (phase === "section1" && currentQ) {
     const total = questionsRef.current.length;
@@ -732,6 +781,12 @@ export default function MockExamPage() {
             <div className="text-base font-medium leading-relaxed">
               <QuestionContent content={currentQ.questionText} />
             </div>
+
+            {/* F4 (#100) 2026-05-31 — Desmos calculator embed on SAT/PSAT
+                Math mock exams. Mirrors the practice-page embed. */}
+            {(course === "SAT_MATH" || course === "PSAT_MATH") && (
+              <DesmosCalculatorPanel />
+            )}
 
             <div className="space-y-2">
               {parsedOptions.map((option, i) => {
