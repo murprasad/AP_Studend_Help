@@ -85,7 +85,7 @@ export default async function LandingPage() {
               SN
             </span>
             <span className="text-base font-medium text-cb-indigo">
-              StudentNest
+              StudentNest <span className="text-cb-muted font-normal">Prep</span>
             </span>
           </Link>
           <nav className="flex items-center gap-5 text-sm">
@@ -273,7 +273,7 @@ export default async function LandingPage() {
       <footer className="border-t border-cb-cardBorder bg-white">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-cb-muted">
           <div>
-            <span className="font-medium text-cb-indigo">StudentNest</span>
+            <span className="font-medium text-cb-indigo">StudentNest Prep</span>
             <span className="mx-2 text-cb-cardBorder">·</span>
             <span>© {new Date().getFullYear()}</span>
           </div>
