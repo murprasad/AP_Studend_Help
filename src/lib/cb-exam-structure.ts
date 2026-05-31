@@ -13,7 +13,7 @@ export interface ExamSection {
   /** CB-official label (e.g. "DBQ", "AAQ", "Argument Essay") */
   cbName: string;
   /** Underlying questionType enum value for DB queries */
-  questionType: "MCQ" | "SAQ" | "DBQ" | "LEQ" | "FRQ" | "CODING";
+  questionType: "MCQ" | "SAQ" | "DBQ" | "LEQ" | "FRQ" | "CODING" | "NUMERICAL";
   /** Number of questions on the real exam */
   count: number;
   /** Percent of total score */
@@ -24,6 +24,13 @@ export interface ExamSection {
   freeAccess: boolean;
   /** Specific subtopic tag in DB (matches `questions.subtopic` for filtering) */
   subtopic?: string;
+  /**
+   * 2026-05-31 (F6 of SAT=CB parity sprint) — Optional unit filter for
+   * courses where the CB content domains map to our `unit` field rather
+   * than `subtopic`. SAT/PSAT/ACT use this. AP courses still use the
+   * legacy subtopic mapping.
+   */
+  unit?: string;
 }
 
 export interface CourseExamStructure {
@@ -173,6 +180,95 @@ export const AP_EXAM_STRUCTURES: Record<string, CourseExamStructure> = {
       { cbName: "Modeling Non-Periodic", questionType: "FRQ", count: 1, percentOfScore: 9.375, minutes: 15, freeAccess: false, subtopic: "Modeling Non-Periodic" },
       { cbName: "Modeling Periodic", questionType: "FRQ", count: 1, percentOfScore: 9.375, minutes: 15, freeAccess: false, subtopic: "Modeling Periodic" },
       { cbName: "Symbolic Manipulations", questionType: "FRQ", count: 1, percentOfScore: 9.375, minutes: 15, freeAccess: false, subtopic: "Symbolic Manipulations" },
+    ],
+  },
+  // ────────────────────────────────────────────────────────────────────────────
+  // Digital SAT (2024+) — 2-module adaptive structure.
+  // Math: 44 Qs in two 35-min modules (~75% MCQ + ~25% SPR/grid-in).
+  // R&W:  54 Qs in two 32-min modules (100% MCQ, 1-2 paragraph passage each).
+  // Content-domain weights below match collegeboard.org's published
+  // operational item counts (sample-test breakdowns 2024-2026). The
+  // mock-exam route samples by these weights to keep the practice mix
+  // honest. Module-1 mixed difficulty + adaptive Module-2 routing
+  // lives in the mock-exam UI (F2), not this static structure.
+  // ────────────────────────────────────────────────────────────────────────────
+  SAT_MATH: {
+    course: "SAT_MATH",
+    totalMinutes: 70, // 2 modules × 35 min
+    sections: [
+      // Multiple-choice questions by content domain (~33 of 44 total = ~75%).
+      { cbName: "Algebra (MCQ)",                       questionType: "MCQ",       count: 10, percentOfScore: 26, minutes: 16, freeAccess: true, unit: "SAT_MATH_1_ALGEBRA" },
+      { cbName: "Advanced Math (MCQ)",                 questionType: "MCQ",       count: 10, percentOfScore: 26, minutes: 16, freeAccess: true, unit: "SAT_MATH_2_ADVANCED_MATH" },
+      { cbName: "Problem-Solving & Data Analysis (MCQ)", questionType: "MCQ",     count: 6,  percentOfScore: 11, minutes: 10, freeAccess: true, unit: "SAT_MATH_3_PROBLEM_SOLVING" },
+      { cbName: "Geometry & Trigonometry (MCQ)",       questionType: "MCQ",       count: 7,  percentOfScore: 12, minutes: 12, freeAccess: true, unit: "SAT_MATH_4_GEOMETRY_TRIG" },
+      // Student-Produced Response (SPR/grid-in) — ~11 of 44 = ~25%.
+      { cbName: "Algebra (SPR)",                       questionType: "NUMERICAL", count: 3, percentOfScore: 9,  minutes: 5, freeAccess: false, unit: "SAT_MATH_1_ALGEBRA" },
+      { cbName: "Advanced Math (SPR)",                 questionType: "NUMERICAL", count: 3, percentOfScore: 9,  minutes: 5, freeAccess: false, unit: "SAT_MATH_2_ADVANCED_MATH" },
+      { cbName: "Problem-Solving & Data Analysis (SPR)", questionType: "NUMERICAL", count: 3, percentOfScore: 4, minutes: 3, freeAccess: false, unit: "SAT_MATH_3_PROBLEM_SOLVING" },
+      { cbName: "Geometry & Trigonometry (SPR)",       questionType: "NUMERICAL", count: 2, percentOfScore: 3,  minutes: 3, freeAccess: false, unit: "SAT_MATH_4_GEOMETRY_TRIG" },
+    ],
+  },
+  SAT_READING_WRITING: {
+    course: "SAT_READING_WRITING",
+    totalMinutes: 64, // 2 modules × 32 min
+    sections: [
+      { cbName: "Craft & Structure",        questionType: "MCQ", count: 14, percentOfScore: 28, minutes: 17, freeAccess: true, unit: "SAT_RW_1_CRAFT_STRUCTURE" },
+      { cbName: "Information & Ideas",      questionType: "MCQ", count: 13, percentOfScore: 26, minutes: 15, freeAccess: true, unit: "SAT_RW_2_INFO_IDEAS" },
+      { cbName: "Standard English Conventions", questionType: "MCQ", count: 14, percentOfScore: 26, minutes: 17, freeAccess: true, unit: "SAT_RW_3_STANDARD_ENGLISH" },
+      { cbName: "Expression of Ideas",      questionType: "MCQ", count: 13, percentOfScore: 20, minutes: 15, freeAccess: true, unit: "SAT_RW_4_EXPRESSION_IDEAS" },
+    ],
+  },
+  // PSAT mirrors SAT structure with the SAT_HARD difficulty tier capped out.
+  PSAT_MATH: {
+    course: "PSAT_MATH",
+    totalMinutes: 70,
+    sections: [
+      { cbName: "Algebra (MCQ)",                       questionType: "MCQ", count: 11, percentOfScore: 25, minutes: 16, freeAccess: true, unit: "PSAT_MATH_1_ALGEBRA" },
+      { cbName: "Advanced Math (MCQ)",                 questionType: "MCQ", count: 11, percentOfScore: 25, minutes: 16, freeAccess: true, unit: "PSAT_MATH_2_ADVANCED_MATH" },
+      { cbName: "Problem-Solving & Data Analysis (MCQ)", questionType: "MCQ", count: 8, percentOfScore: 19, minutes: 12, freeAccess: true, unit: "PSAT_MATH_3_PROBLEM_SOLVING" },
+      { cbName: "Geometry & Trigonometry (MCQ)",       questionType: "MCQ", count: 9,  percentOfScore: 22, minutes: 13, freeAccess: true, unit: "PSAT_MATH_4_GEOMETRY_TRIG" },
+      { cbName: "Numeric Entry",                       questionType: "NUMERICAL", count: 5, percentOfScore: 9, minutes: 13, freeAccess: false },
+    ],
+  },
+  PSAT_READING_WRITING: {
+    course: "PSAT_READING_WRITING",
+    totalMinutes: 64,
+    sections: [
+      { cbName: "Craft & Structure",        questionType: "MCQ", count: 14, percentOfScore: 28, minutes: 17, freeAccess: true, unit: "PSAT_RW_1_CRAFT_STRUCTURE" },
+      { cbName: "Information & Ideas",      questionType: "MCQ", count: 13, percentOfScore: 26, minutes: 15, freeAccess: true, unit: "PSAT_RW_2_INFO_IDEAS" },
+      { cbName: "Standard English Conventions", questionType: "MCQ", count: 14, percentOfScore: 26, minutes: 17, freeAccess: true, unit: "PSAT_RW_3_STANDARD_ENGLISH" },
+      { cbName: "Expression of Ideas",      questionType: "MCQ", count: 13, percentOfScore: 20, minutes: 15, freeAccess: true, unit: "PSAT_RW_4_EXPRESSION_IDEAS" },
+    ],
+  },
+  // ────────────────────────────────────────────────────────────────────────────
+  // ACT — linear (non-adaptive), 5-option MCQ.
+  // ────────────────────────────────────────────────────────────────────────────
+  ACT_MATH: {
+    course: "ACT_MATH",
+    totalMinutes: 60,
+    sections: [
+      { cbName: "Mathematics", questionType: "MCQ", count: 60, percentOfScore: 100, minutes: 60, freeAccess: true },
+    ],
+  },
+  ACT_ENGLISH: {
+    course: "ACT_ENGLISH",
+    totalMinutes: 45,
+    sections: [
+      { cbName: "English", questionType: "MCQ", count: 75, percentOfScore: 100, minutes: 45, freeAccess: true },
+    ],
+  },
+  ACT_READING: {
+    course: "ACT_READING",
+    totalMinutes: 35,
+    sections: [
+      { cbName: "Reading", questionType: "MCQ", count: 40, percentOfScore: 100, minutes: 35, freeAccess: true },
+    ],
+  },
+  ACT_SCIENCE: {
+    course: "ACT_SCIENCE",
+    totalMinutes: 35,
+    sections: [
+      { cbName: "Science", questionType: "MCQ", count: 40, percentOfScore: 100, minutes: 35, freeAccess: true },
     ],
   },
   AP_COMPUTER_SCIENCE_PRINCIPLES: {

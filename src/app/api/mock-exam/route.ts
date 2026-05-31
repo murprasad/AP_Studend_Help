@@ -57,11 +57,15 @@ export async function POST(req: NextRequest) {
         ? Math.min(targetCount, 15)
         : Math.min(targetCount, 2);
 
+      // 2026-05-31 (F6) — Section filter now supports unit-keyed sampling
+      // for SAT/PSAT/ACT (where CB content domains map to our `unit` field)
+      // in addition to the legacy subtopic-keyed sampling for AP courses.
       const where: Record<string, unknown> = {
         course: course as ApCourse,
         isApproved: true,
         questionType: sec.questionType as QuestionType,
         ...(sec.subtopic && { subtopic: sec.subtopic }),
+        ...(sec.unit && { unit: sec.unit }),
       };
       // 2026-05-27 — P0 cheat-leak fix per design audit. Never SELECT
       // correctAnswer or explanation in any route that returns questions
