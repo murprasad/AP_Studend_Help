@@ -101,15 +101,14 @@ for (const f of refundFiles) {
 
 // ─── 4. Logo consistency ─────────────────────────────────────────────────────
 section("4. Logo consistency");
-// 2026-05-31 — Landing rewrite (task #99) replaced the Sparkles +
-// gradient-text wordmark on the SN homepage with an institutional
-// CB-style "SN" initials mark on a cobalt circle. The new mark
-// includes the literal "StudentNest" text, so we relax this check
-// for src/app/page.tsx and rely on the existing logo files in the
-// shared layouts to enforce brand consistency across in-app surfaces.
+// 2026-05-31 — Landing + chrome rewrite (#99/#102) replaced the
+// Sparkles + gradient-text wordmark on every marketing/auth surface
+// with the institutional CB-style "SN" initials mark on a cobalt
+// circle. The wordmark is now literal "StudentNest Prep" text instead
+// of gradient-text. We retain the check on the dashboard layout +
+// sidebar (in-app surfaces still use the original mark) and drop the
+// marketing + auth layouts from the allowlist.
 const LOGO_FILES = [
-  "src/app/(marketing)/layout.tsx",
-  "src/app/(auth)/layout.tsx",
   "src/app/(dashboard)/layout.tsx",
   "src/components/layout/sidebar.tsx",
 ];
