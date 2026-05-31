@@ -1,6 +1,17 @@
+// 2026-05-31 (Sprint G1) — Brevo as preferred transport, mirror of PL.
+// Brevo wins: free 300/day forever, no surprise paywall (Resend free
+// tier silently 4xx'd custom-domain sends at the $20/mo Pro upgrade
+// boundary on PL). SN domain must be Brevo-authenticated; see PL
+// commit 76459c9 for the setup steps.
+// Falls back to Resend if BREVO_API_KEY is not configured.
+const BREVO_API_KEY = process.env.BREVO_API_KEY;
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
-const FROM_EMAIL = process.env.RESEND_FROM_EMAIL ?? "noreply@studentnest.ai";
+const FROM_EMAIL =
+  process.env.BREVO_FROM_EMAIL ??
+  process.env.RESEND_FROM_EMAIL ??
+  "noreply@studentnest.ai";
 const REPLY_TO_EMAIL = process.env.RESEND_REPLY_TO ?? "contact@studentnest.ai";
+const FROM_NAME = process.env.EMAIL_FROM_NAME ?? "StudentNest";
 
 interface SendEmailOptions {
   /**
@@ -18,22 +29,51 @@ export async function sendEmail(
   html: string,
   opts: SendEmailOptions = {},
 ): Promise<void> {
-  if (!RESEND_API_KEY) {
-    throw new Error("RESEND_API_KEY is not configured. Add it to your environment variables.");
+  if (!BREVO_API_KEY && !RESEND_API_KEY) {
+    throw new Error("Email transport not configured. Set BREVO_API_KEY (preferred) or RESEND_API_KEY.");
   }
 
   // Beta 7.4 (2026-04-25): CAN-SPAM Section 5(a)(5) requires a clear
-  // unsubscribe mechanism for commercial email. Resend honors the
-  // List-Unsubscribe header (RFC 8058 one-click + RFC 2369 mailto)
-  // automatically when present, which also improves Gmail/Outlook
-  // deliverability — both flag missing List-Unsubscribe as a soft
-  // spam signal. Transactional emails (account verification, password
-  // reset) opt out via opts.transactional=true.
+  // unsubscribe mechanism for commercial email. Both Brevo and Resend
+  // honor the List-Unsubscribe header (RFC 8058 one-click + RFC 2369
+  // mailto) automatically when present, which also improves Gmail/Outlook
+  // deliverability. Transactional emails (verification, password reset)
+  // opt out via opts.transactional=true.
   const headers: Record<string, string> = {};
   if (!opts.transactional) {
     const unsubMailto = `mailto:${REPLY_TO_EMAIL}?subject=Unsubscribe`;
     headers["List-Unsubscribe"] = `<${unsubMailto}>`;
     headers["List-Unsubscribe-Post"] = "List-Unsubscribe=One-Click";
+  }
+
+  // Prefer Brevo when configured (free 300/day forever, mirror of PL).
+  if (BREVO_API_KEY) {
+    const brevoRes = await fetch("https://api.brevo.com/v3/smtp/email", {
+      method: "POST",
+      headers: {
+        "api-key": BREVO_API_KEY,
+        "Content-Type": "application/json",
+        accept: "application/json",
+      },
+      body: JSON.stringify({
+        sender: { email: FROM_EMAIL, name: FROM_NAME },
+        to: [{ email: to }],
+        replyTo: { email: REPLY_TO_EMAIL },
+        subject,
+        htmlContent: html,
+        ...(Object.keys(headers).length > 0 ? { headers } : {}),
+      }),
+    });
+    // Brevo returns 201 Created on success
+    if (brevoRes.status === 201) {
+      return;
+    }
+    const brevoErr = await brevoRes.text().catch(() => "");
+    if (!RESEND_API_KEY) {
+      throw new Error(`Brevo API error ${brevoRes.status}: ${brevoErr}`);
+    }
+    console.warn(`[email] Brevo failed (${brevoRes.status}: ${brevoErr.slice(0, 200)}). Falling back to Resend.`);
+    // Fall through to Resend below
   }
 
   const res = await fetch("https://api.resend.com/emails", {

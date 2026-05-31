@@ -314,6 +314,18 @@ export default function PracticePage() {
   const currentIndexRef = useRef(0);
   useEffect(() => { currentIndexRef.current = currentIndex; }, [currentIndex]);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
+  // 2026-05-31 Sprint G1 — Belt-and-suspenders defensive reset (mirror of PL b9acf1e).
+  // Audit confirmed SN has the same Q2/Q3 bug class as PL: per-question UI
+  // state (selectedAnswer, feedback, feedbackRating) lives in shared
+  // useState slots, and several code paths advance currentIndex without
+  // explicitly resetting. Independent useEffect on [currentIndex] hard-clears
+  // these slots so the leak class becomes structurally impossible.
+  // Real fix: D1 reducer migration (PL task #36; SN sister task).
+  useEffect(() => {
+    setSelectedAnswer(null);
+    setFeedback(null);
+    setFeedbackRating(null);
+  }, [currentIndex]);
   const [feedback, setFeedback] = useState<{
     isCorrect: boolean;
     correctAnswer: string;
