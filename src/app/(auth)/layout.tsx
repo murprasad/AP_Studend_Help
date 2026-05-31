@@ -1,20 +1,23 @@
 import Link from "next/link";
-import { Sparkles } from "lucide-react";
 
+// 2026-05-31 — Auth pages adopt the CB design system to match the
+// marketing surface. Cobalt SN initials mark replaces Sparkles +
+// gradient wordmark. White body, Roboto default.
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen bg-background flex flex-col">
-      <nav className="border-b border-border/40 p-4">
-        <Link href="/" className="flex items-center gap-2 w-fit">
-          <Sparkles className="h-6 w-6 text-blue-500" />
-          <div>
-            <span className="text-lg font-bold">
-              <span className="gradient-text">Student</span><span className="text-foreground/80 font-medium">Nest</span><span className="text-blue-600 dark:text-blue-700 dark:text-blue-400 font-normal text-[0.6em] ml-1">Prep</span>
+    <div className="min-h-screen bg-white text-cb-indigo font-roboto flex flex-col">
+      <header className="border-b border-cb-cardBorder bg-white">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 h-14 flex items-center">
+          <Link href="/" className="flex items-center gap-2">
+            <span className="inline-flex items-center justify-center h-7 w-7 rounded-full bg-cb-cobalt text-white text-xs font-bold">
+              SN
             </span>
-            <p className="text-xs text-muted-foreground leading-none">Study Smarter. Score Higher.</p>
-          </div>
-        </Link>
-      </nav>
+            <span className="text-base font-medium text-cb-indigo">
+              StudentNest <span className="text-cb-muted font-normal">Prep</span>
+            </span>
+          </Link>
+        </div>
+      </header>
       <div className="flex-1 flex items-center justify-center p-4">
         {children}
       </div>
