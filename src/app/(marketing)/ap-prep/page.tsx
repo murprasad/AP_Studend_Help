@@ -1,46 +1,50 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { CheckCircle, ArrowRight, Sparkles, Brain, Target, BarChart3, Clock } from "lucide-react";
-import { BrowserFrame } from "@/components/landing/browser-frame";
-import { MockupAnalytics } from "@/components/landing/mockup-analytics";
-import { MockupStudyPlan } from "@/components/landing/mockup-study-plan";
-import { MockupPractice } from "@/components/landing/mockup-practice";
+import { CbProductPage } from "@/components/marketing/cb-product-page";
 import { getVisibleCourses } from "@/lib/settings";
+
+// 2026-05-31 — Rebuilt against shared CB product-page template so the
+// landing → /ap-prep navigation lands on a CB-consistent destination
+// (#102). The dynamic per-course flashcards/practice subpages under
+// /ap-prep/[slug] remain unchanged and continue to use their own
+// detail layout.
 
 export const metadata: Metadata = {
   title: "AP Exam Prep — Practice & Tutoring | StudentNest Prep",
-  description: "Score a 5 on your AP exam with exam-aligned practice questions, instant feedback, and mastery tracking across 10 AP courses. Free to start.",
+  description:
+    "Score a 5 on your AP exam with exam-aligned practice questions, instant feedback, and mastery tracking across 14 AP courses. Free to start.",
   openGraph: {
     title: "AP Exam Prep | StudentNest Prep",
-    description: "Exam-aligned AP prep. 10 courses. Instant explanations. Mastery tracking. Free to start.",
+    description:
+      "Exam-aligned AP prep. 14 courses. Instant explanations. Mastery tracking. Free to start.",
     url: "https://studentnest.ai/ap-prep",
   },
 };
 
-// Each entry tagged with its ApCourse enum so the server can filter by
-// the bank-quality visible_courses SiteSetting allowlist (added 2026-05-02).
-// Includes ALL 14 AP courses — the filter trims down to whatever passes
-// the audit at runtime.
-const courses = [
-  { enum: "AP_WORLD_HISTORY",                 name: "AP World History: Modern",       units: 9,  slug: "ap-world-history-modern" },
-  { enum: "AP_COMPUTER_SCIENCE_PRINCIPLES",   name: "AP Computer Science Principles", units: 5,  slug: "ap-computer-science-principles" },
-  { enum: "AP_PHYSICS_1",                     name: "AP Physics 1: Algebra-Based",    units: 10, slug: "ap-physics-1" },
-  { enum: "AP_CALCULUS_AB",                   name: "AP Calculus AB",                 units: 8 },
-  { enum: "AP_CALCULUS_BC",                   name: "AP Calculus BC",                 units: 10 },
-  { enum: "AP_STATISTICS",                    name: "AP Statistics",                  units: 9 },
-  { enum: "AP_CHEMISTRY",                     name: "AP Chemistry",                   units: 9 },
-  { enum: "AP_BIOLOGY",                       name: "AP Biology",                     units: 8 },
-  { enum: "AP_US_HISTORY",                    name: "AP US History",                  units: 9 },
-  { enum: "AP_PSYCHOLOGY",                    name: "AP Psychology",                  units: 9 },
-  { enum: "AP_ENVIRONMENTAL_SCIENCE",         name: "AP Environmental Science",       units: 9 },
-  { enum: "AP_HUMAN_GEOGRAPHY",               name: "AP Human Geography",             units: 7 },
-  { enum: "AP_US_GOVERNMENT",                 name: "AP US Government & Politics",    units: 5 },
-  { enum: "AP_PRECALCULUS",                   name: "AP Precalculus",                 units: 4 },
+// Short descriptors per AP course — kept terse so the grid stays scannable.
+const allCourses = [
+  { enum: "AP_WORLD_HISTORY",               name: "AP World History: Modern",       units: 9,  desc: "Civilizations, empires, revolutions, globalization, MCQ + SAQ + DBQ + LEQ." },
+  { enum: "AP_COMPUTER_SCIENCE_PRINCIPLES", name: "AP CS Principles",               units: 5,  desc: "Algorithms, data, internet, impact of computing. MCQ + 2 written responses." },
+  { enum: "AP_PHYSICS_1",                   name: "AP Physics 1",                   units: 10, desc: "Kinematics, forces, energy, momentum, rotation, oscillations, fluids." },
+  { enum: "AP_CALCULUS_AB",                 name: "AP Calculus AB",                 units: 8,  desc: "Limits, derivatives, integrals, differential equations." },
+  { enum: "AP_CALCULUS_BC",                 name: "AP Calculus BC",                 units: 10, desc: "All AB topics plus series, parametric, polar." },
+  { enum: "AP_STATISTICS",                  name: "AP Statistics",                  units: 9,  desc: "Data analysis, probability, inference, regression." },
+  { enum: "AP_CHEMISTRY",                   name: "AP Chemistry",                   units: 9,  desc: "Atomic structure, bonding, reactions, thermodynamics, kinetics." },
+  { enum: "AP_BIOLOGY",                     name: "AP Biology",                     units: 8,  desc: "Cells, genetics, evolution, ecology, physiology." },
+  { enum: "AP_US_HISTORY",                  name: "AP US History",                  units: 9,  desc: "Colonial era through modern America. MCQ + SAQ + DBQ + LEQ." },
+  { enum: "AP_PSYCHOLOGY",                  name: "AP Psychology",                  units: 5,  desc: "Biological bases, cognition, development, social psychology, mental health." },
+  { enum: "AP_ENVIRONMENTAL_SCIENCE",       name: "AP Environmental Science",       units: 9,  desc: "Ecosystems, biodiversity, populations, pollution, sustainability." },
+  { enum: "AP_HUMAN_GEOGRAPHY",             name: "AP Human Geography",             units: 7,  desc: "Population, migration, culture, agriculture, cities, development." },
+  { enum: "AP_US_GOVERNMENT",               name: "AP US Government & Politics",    units: 5,  desc: "Constitutional foundations, branches, civil liberties, ideology, participation." },
+  { enum: "AP_PRECALCULUS",                 name: "AP Precalculus",                 units: 4,  desc: "Polynomial & rational, exponential & log, trig & polar, functions." },
 ];
 
-function buildJsonLd(visibleCourses: typeof courses) {
-  return {
+export default async function ApPrepPage() {
+  const allowlist = await getVisibleCourses().catch(() => "all" as const);
+  const visibleCourses =
+    allowlist === "all"
+      ? allCourses
+      : allCourses.filter((c) => allowlist.includes(c.enum));
+  const jsonLd = {
     "@context": "https://schema.org",
     "@type": "ItemList",
     name: "AP Exam Prep Courses",
@@ -53,207 +57,41 @@ function buildJsonLd(visibleCourses: typeof courses) {
         "@type": "Course",
         name: c.name,
         description: `${c.name} prep with ${c.units} units of practice, mastery tracking, and instant explanations.`,
-        provider: { "@type": "Organization", name: "StudentNest Prep", url: "https://studentnest.ai" },
+        provider: {
+          "@type": "Organization",
+          name: "StudentNest Prep",
+          url: "https://studentnest.ai",
+        },
         isAccessibleForFree: true,
         offers: [
           { "@type": "Offer", price: "0", priceCurrency: "USD", name: "Free" },
-          { "@type": "Offer", price: "9.99", priceCurrency: "USD", name: "AP Premium", billingIncrement: "P1M" },
+          {
+            "@type": "Offer",
+            price: "9.99",
+            priceCurrency: "USD",
+            name: "AP Premium",
+            billingIncrement: "P1M",
+          },
         ],
       },
     })),
   };
-}
 
-export default async function ApPrepPage() {
-  // Apply bank-quality visibility filter (added 2026-05-02). Same source-
-  // of-truth as the sidebar/practice API — only show courses we can
-  // actually serve at College-Board grade.
-  const allowlist = await getVisibleCourses().catch(() => "all" as const);
-  const visibleCourses = allowlist === "all"
-    ? courses
-    : courses.filter((c) => allowlist.includes(c.enum));
-  const jsonLd = buildJsonLd(visibleCourses);
   return (
-    <div className="max-w-5xl mx-auto px-4 py-16 space-y-16">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      {/* Hero — two-column */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-        <div className="text-center lg:text-left space-y-4">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-500 text-sm font-medium">
-            <Sparkles className="h-4 w-4" /> {visibleCourses.length} AP Courses
-          </div>
-          <h1 className="text-4xl sm:text-5xl font-bold">
-            Turn your AP prep into a 5 — with a tutor that teaches, quizzes, and adapts.
-          </h1>
-          <p className="text-xl text-muted-foreground max-w-xl mx-auto lg:mx-0">
-            Sage teaches concepts, quizzes you, and tracks mastery by unit — so every session improves your score. <span className="text-foreground font-medium">30 minutes a day is enough.</span>
-          </p>
-          <div className="flex gap-3 justify-center lg:justify-start pt-2">
-            <Link href="/register?module=ap">
-              <Button size="lg" className="gap-2 bg-blue-600 hover:bg-blue-700">Start Free AP Diagnostic <ArrowRight className="h-5 w-5" /></Button>
-            </Link>
-            <Link href="/pricing">
-              <Button size="lg" variant="outline">See Pricing</Button>
-            </Link>
-          </div>
-        </div>
-        <div className="hidden lg:block animate-float">
-          <BrowserFrame title="StudentNest Prep · AP Analytics" className="shadow-2xl shadow-blue-500/10">
-            <MockupAnalytics variant="ap-generic" />
-          </BrowserFrame>
-        </div>
-        <div className="lg:hidden max-w-md mx-auto w-full">
-          <BrowserFrame title="StudentNest Prep · AP Analytics">
-            <MockupAnalytics variant="ap-generic" />
-          </BrowserFrame>
-        </div>
-      </div>
-
-      {/* Pain statement — why most AP prep stalls */}
-      <div className="rounded-xl border border-orange-500/20 bg-orange-500/5 p-5 text-center max-w-3xl mx-auto">
-        <p className="text-base font-medium text-foreground/90 leading-relaxed">
-          Most AP prep stalls because students re-read units they already know. Sage drills you only on the content you&apos;re losing points on.
-        </p>
-      </div>
-
-      {/* Features — alternating text + mockups */}
-      <div className="space-y-20">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
-          <div className="space-y-3">
-            <div className="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center"><Target className="h-5 w-5 text-blue-500" /></div>
-            <h2 className="text-2xl font-bold">Sage builds your study plan by unit</h2>
-            <p className="text-muted-foreground leading-relaxed">10–15 diagnostic questions identify your weak spots. Sage creates a weekly plan targeting your lowest-scoring units first — and adjusts as you improve.</p>
-          </div>
-          <BrowserFrame title="StudentNest Prep · AP Study Plan" className="shadow-xl"><MockupStudyPlan variant="ap-generic" /></BrowserFrame>
-        </div>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
-          <div className="lg:order-2 space-y-3">
-            <div className="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center"><Brain className="h-5 w-5 text-blue-500" /></div>
-            <div className="flex items-center gap-2">
-              <h2 className="text-2xl font-bold">Practice FRQs with rubric scoring on real AP standards</h2>
-              <span className="text-[10px] font-bold uppercase tracking-wider bg-blue-600 text-white px-2 py-0.5 rounded">Premium</span>
-            </div>
-            <p className="text-muted-foreground leading-relaxed">Most platforms only do MCQs. Sage scores your free-response answers (SAQ, LEQ, DBQ) against the actual College Board rubrics — point by point — so you know exactly what AP graders want before exam day. <span className="text-foreground/70">Free tier includes one full FRQ to try; unlimited with Premium.</span></p>
-          </div>
-          <div className="lg:order-1"><BrowserFrame title="StudentNest Prep · AP Practice" className="shadow-xl"><MockupPractice /></BrowserFrame></div>
-        </div>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
-          <div className="space-y-3">
-            <div className="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center"><BarChart3 className="h-5 w-5 text-blue-500" /></div>
-            <h2 className="text-2xl font-bold">Track mastery and see your estimated AP score</h2>
-            <p className="text-muted-foreground leading-relaxed">Per-unit mastery scores, accuracy trends, and a readiness heatmap — all in real time. Know exactly when you&apos;re ready for exam day.</p>
-          </div>
-          <BrowserFrame title="StudentNest Prep · AP Analytics" className="shadow-xl"><MockupAnalytics variant="ap-generic" /></BrowserFrame>
-        </div>
-      </div>
-
-      {/* Outcomes — what students get */}
-      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {[
-          { icon: Brain, title: "Understand, Don't Memorize", desc: "Sage explains why each answer is correct — and why wrong answers are common mistakes." },
-          { icon: Target, title: "Focus Where It Matters", desc: "Practice adapts to your weakest units automatically. No wasted study time." },
-          { icon: BarChart3, title: "See Your Progress", desc: "Per-unit mastery scores, accuracy trends, and an estimated AP score — all in real time." },
-          { icon: Clock, title: "Know When You're Ready", desc: "Mock exams simulate real AP pacing. Walk in confident, not guessing." },
-        ].map((f) => (
-          <div key={f.title} className="p-5 rounded-xl border border-border/40 bg-card/50 space-y-2">
-            <div className="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center">
-              <f.icon className="h-5 w-5 text-blue-500" />
-            </div>
-            <p className="font-semibold text-sm">{f.title}</p>
-            <p className="text-xs text-muted-foreground">{f.desc}</p>
-          </div>
-        ))}
-      </div>
-
-      {/* Sample Study Schedule */}
-      <div className="space-y-4">
-        <h2 className="text-2xl font-bold text-center">Sample 8-Week AP Study Plan</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          {[
-            { week: "Week 1", task: "Diagnostic test + start Unit 1" },
-            { week: "Weeks 2–5", task: "2 units per week with daily practice" },
-            { week: "Week 6", task: "Review weak areas + ask Sage" },
-            { week: "Weeks 7–8", task: "Full mock exams + final review" },
-          ].map((w) => (
-            <div key={w.week} className="p-4 rounded-xl border border-blue-500/15 bg-card/50 text-center">
-              <p className="text-xs font-semibold text-blue-500 mb-1">{w.week}</p>
-              <p className="text-xs text-muted-foreground">{w.task}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Course List */}
-      <div>
-        <h2 className="text-2xl font-bold mb-6 text-center">{visibleCourses.length} AP Courses — Curriculum Coverage</h2>
-        <div className="grid sm:grid-cols-2 gap-3">
-          {visibleCourses.map((c) => {
-            const inner = (
-              <>
-                <CheckCircle className="h-5 w-5 text-emerald-700 dark:text-emerald-400 flex-shrink-0" />
-                <span className="text-sm font-medium">{c.name}</span>
-                <span className="ml-auto text-xs text-muted-foreground">({c.units} units)</span>
-                {c.slug && <ArrowRight className="h-4 w-4 text-blue-700 dark:text-blue-400 flex-shrink-0" />}
-              </>
-            );
-            return c.slug ? (
-              <Link
-                key={c.name}
-                href={`/ap-prep/${c.slug}`}
-                className="flex items-center gap-3 p-3.5 rounded-lg bg-card/50 border border-border/40 hover:border-blue-500/40 transition-colors"
-              >
-                {inner}
-              </Link>
-            ) : (
-              <div key={c.name} className="flex items-center gap-3 p-3.5 rounded-lg bg-card/50 border border-border/40">
-                {inner}
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Free vs Premium */}
-      <div className="grid sm:grid-cols-2 gap-4">
-        <div className="rounded-xl border border-border/40 bg-card/50 p-6 space-y-3">
-          <p className="font-bold">Free</p>
-          <p className="text-2xl font-bold text-muted-foreground">$0</p>
-          {["Unlimited MCQ practice", "5 Sage Live Tutor chats/day", "Basic study plan", "Mastery analytics"].map((f) => (
-            <div key={f} className="flex items-center gap-2 text-sm"><CheckCircle className="h-4 w-4 text-emerald-700 dark:text-emerald-400" />{f}</div>
-          ))}
-        </div>
-        <div className="rounded-xl border-2 border-blue-500 bg-blue-500/5 p-6 space-y-3">
-          <p className="font-bold text-blue-500">AP Premium</p>
-          <p className="text-2xl font-bold">$9.99<span className="text-sm font-normal text-muted-foreground">/mo</span></p>
-          <p className="text-xs text-green-700 dark:text-green-400 font-medium">or $79.99/yr — save 33%</p>
-          {["Everything in Free", "Unlimited Sage Live Tutor chats", "FRQ scored against the official AP rubric", "Personalized study plan", "Streaming Sage responses"].map((f) => (
-            <div key={f} className="flex items-center gap-2 text-sm"><CheckCircle className="h-4 w-4 text-blue-500" />{f}</div>
-          ))}
-          <form action="/api/checkout?plan=monthly&module=ap" method="POST" className="pt-2">
-            <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700">Start AP Premium</Button>
-          </form>
-        </div>
-      </div>
-
-      {/* Parent trust */}
-      <div className="rounded-xl border border-border/40 bg-card/50 p-6 text-center space-y-2">
-        <p className="text-sm font-semibold">For parents</p>
-        <p className="text-xs text-muted-foreground leading-relaxed max-w-xl mx-auto">
-          All practice questions align with College Board AP curriculum standards. Your child gets adaptive practice, real-time mastery tracking, and a clear study plan — for less than one hour of AP tutoring per month.
-        </p>
-      </div>
-
-      {/* CTA */}
-      <div className="text-center space-y-4">
-        <h2 className="text-3xl font-bold">Ready to aim for a 5?</h2>
-        <Link href="/register?module=ap">
-          <Button size="lg" className="gap-2 bg-blue-600 hover:bg-blue-700">Start Free AP Diagnostic <ArrowRight className="h-5 w-5" /></Button>
-        </Link>
-      </div>
-
-      <p className="text-xs text-center text-muted-foreground">
-        AP® is a trademark of the College Board, which is not affiliated with StudentNest.
-      </p>
-    </div>
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <CbProductPage
+        family="AP"
+        headline="Score a 5 on your AP exams."
+        subhead="14 AP courses with exam-aligned practice, instant explanations, and mastery tracking per unit. Walk into May ready, not panicking."
+        diagnosticHref="/register?module=ap"
+        ctaLabel="Start free AP diagnostic"
+        courses={visibleCourses}
+        bottomCtaText="Pick your AP exam. Take 10 questions. See your projected 1-5 score."
+      />
+    </>
   );
 }
