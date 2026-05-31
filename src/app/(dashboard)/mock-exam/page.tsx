@@ -31,6 +31,7 @@ import {
 import { CourseSelectorInline } from "@/components/layout/course-selector-inline";
 import { CourseExamOverview } from "@/components/practice/course-exam-overview";
 import { PostSessionNextStep } from "@/components/practice/post-session-next-step";
+import { PostMockReveal } from "@/components/mock-exam/post-mock-reveal";
 import Link from "next/link";
 import { FREE_LIMITS, LOCK_COPY, projectedDaysToTarget } from "@/lib/tier-limits";
 
@@ -557,6 +558,11 @@ export default function MockExamPage() {
           <Trophy className="h-16 w-16 text-yellow-700 dark:text-yellow-400 mx-auto mb-4" />
           <h1 className="text-3xl font-bold">Exam Complete!</h1>
         </div>
+
+        {/* #93 — PostMockReveal mounted 2026-05-31 (after Scarlett/Shaadana
+            forensic). Mock-complete is the highest-intent SN conversion
+            moment — surface predicted score + trial CTA at the top. */}
+        <PostMockReveal course={course} />
 
         {/* Beta 9.3.5 — ONE clear next step at top of mock-exam summary. */}
         <PostSessionNextStep course={course} source="mock_summary" />

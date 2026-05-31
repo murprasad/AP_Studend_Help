@@ -15,6 +15,7 @@ import { ApUnit } from "@prisma/client"
 import Link from "next/link"
 import { LockedInsightOverlay } from "@/components/diagnostic/locked-insight-overlay"
 import { QuestionContent } from "@/components/question/question-content"
+import { PostMockReveal } from "@/components/mock-exam/post-mock-reveal"
 import { buildFocusedPracticeUrl } from "@/lib/diagnostic-helpers"
 import {
   ClipboardList, CheckCircle, XCircle, ChevronRight, ArrowRight,
@@ -283,6 +284,12 @@ export default function DiagnosticPage() {
           </h1>
           <p className="text-muted-foreground mt-1">{courseName} — personalized breakdown</p>
         </div>
+
+        {/* #93 — PostMockReveal mounted 2026-05-31 (after Scarlett/Shaadana
+            forensic). The diagnostic-complete moment is SN's highest-intent
+            conversion point — must surface predicted score + trial CTA
+            BEFORE the existing reveal cards. */}
+        <PostMockReveal course={course} />
 
         {/* FREE reveal — predicted score headline. Creates curiosity for the
             gated detail below. Shown to everyone (free + paid). */}
