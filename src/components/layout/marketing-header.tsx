@@ -64,7 +64,12 @@ export function MarketingHeader() {
             <Link href="/act-prep" className="hidden sm:block text-sm text-muted-foreground hover:text-foreground transition-colors">
               ACT Prep
             </Link>
-            <Link href="/psat-prep" className="hidden lg:block text-sm text-muted-foreground hover:text-foreground transition-colors">
+            {/* 2026-05-31 — promoted PSAT from lg-only to sm:block so it
+                shows beside AP/SAT/ACT at every breakpoint that has those.
+                The new CB-style landing also has PSAT as a co-equal tile
+                on the hero, but the marketing header is shared across all
+                marketing routes and must reflect the same 4-product line-up. */}
+            <Link href="/psat-prep" className="hidden sm:block text-sm text-muted-foreground hover:text-foreground transition-colors">
               PSAT Prep
             </Link>
             <Link href="/am-i-ready" className="hidden md:block text-sm font-medium text-primary hover:text-primary/80 transition-colors">

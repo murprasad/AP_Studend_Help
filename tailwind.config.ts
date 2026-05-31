@@ -10,6 +10,20 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        // 2026-05-31 — College Board design tokens for the new landing page
+        // (src/app/page.tsx). Use directly via bg-cb-cobalt, text-cb-indigo,
+        // etc. Not wired into the global theme — only the marketing landing
+        // adopts the CB look. Auth + dashboard surfaces keep their existing
+        // theme so the in-app experience is unchanged.
+        cb: {
+          cobalt: "#324DC7",
+          sky: "#0077C8",
+          yellow: "#FEDB00",
+          indigo: "#1E1E3F",
+          muted: "#586581",
+          bandGray: "#F7F8FA",
+          cardBorder: "#E4E7EB",
+        },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
@@ -55,6 +69,12 @@ const config: Config = {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+      },
+      fontFamily: {
+        // 2026-05-31 — wired by app/layout.tsx via next/font/google with
+        // CSS variables. Used by the CB-style landing page (page.tsx).
+        roboto: ["var(--font-roboto)", "system-ui", "sans-serif"],
+        "roboto-slab": ["var(--font-roboto-slab)", "Georgia", "serif"],
       },
       keyframes: {
         "accordion-down": {

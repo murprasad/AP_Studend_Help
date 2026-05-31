@@ -1,11 +1,27 @@
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Roboto, Roboto_Slab } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
 import { Toaster } from "@/components/ui/toaster";
 import { SentryInit } from "@/components/sentry-init";
 
 const inter = Inter({ subsets: ["latin"] });
+// 2026-05-31 — Roboto + Roboto Slab loaded for the CB-style marketing
+// landing. Exposed as CSS variables so the new landing can opt-in via
+// `font-roboto` / `font-roboto-slab` Tailwind utilities. Other surfaces
+// keep Inter via the default body className.
+const roboto = Roboto({
+  weight: ["400", "500", "700"],
+  subsets: ["latin"],
+  variable: "--font-roboto",
+  display: "swap",
+});
+const robotoSlab = Roboto_Slab({
+  weight: ["700"],
+  subsets: ["latin"],
+  variable: "--font-roboto-slab",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "StudentNest Prep — AP, SAT & ACT Exam Prep",
@@ -51,7 +67,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning className={`${roboto.variable} ${robotoSlab.variable}`}>
       <head>
         {/* JSON-LD Organization schema */}
         <script
