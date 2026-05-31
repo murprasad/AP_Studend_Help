@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "course": "ACT_READING",
-  "last_updated": "2026-05-09",
+  "last_updated": "2026-05-31",
   "source_count": 3,
   "calibration": {
     "coverage_strategy": "wide_not_deep",
@@ -35,20 +35,41 @@
       "note": "Students compare us to these — match the register."
     }
   },
-  "generator_prompt_injection": "REAL TEST-TAKER INSIGHTS (sourced from r/ACT, updated 2026-05-09):\n- Coverage: Real test-takers report this exam covers breadth over depth. Stay at college 101 level on each topic.\n- High-emphasis topics (per real students): math, english.\n- Students struggle most with: reading. Generate proportionally more on these.\n- Wording style: ~0% of items should use realistic exam-style indirection (NOT unfair ambiguity).\n- Difficulty target: 30% easy / 50% medium / 20% hard. avg pass score 29 suggests easier test.\n- Authenticity bar: students compare us to ACT class, practice tests. Match that register.",
+  "generator_prompt_injection": "REAL TEST-TAKER INSIGHTS (sourced from r/ACT, updated 2026-05-31):\n- Coverage: Real test-takers report this exam covers breadth over depth. Stay at college 101 level on each topic.\n- High-emphasis topics (per real students): math, english.\n- Students struggle most with: reading. Generate proportionally more on these.\n- Wording style: ~0% of items should use realistic exam-style indirection (NOT unfair ambiguity).\n- Difficulty target: 30% easy / 50% medium / 20% hard. avg pass score 29 suggests easier test.\n- Authenticity bar: students compare us to ACT class, practice tests. Match that register.",
   "popup_tips": [
     {
-      "tip_id": "7f307288",
-      "text": "I missed one question on the ACT",
-      "source_attribution": "From a recent ACT READING test-taker",
-      "first_seen": "2026-05-09",
+      "tip_id": "6eeb3a5c",
+      "text": "On ACT READING, real test-takers say breadth beats depth. Aim to recognize many topics at a 101 level rather than mastering a few in deep detail.",
+      "source_attribution": "Compiled from real test-takers on r/ACT",
+      "first_seen": "2026-05-31",
       "topic_filter": []
     },
     {
-      "tip_id": "767160c5",
-      "text": "ineffective for actual test score",
-      "source_attribution": "From a recent ACT READING test-taker",
-      "first_seen": "2026-05-09",
+      "tip_id": "1950a713",
+      "text": "Heaviest-weighted topics on the actual ACT READING exam (per recent test-takers): math, english. Spend more time here.",
+      "source_attribution": "Compiled from real test-takers on r/ACT",
+      "first_seen": "2026-05-31",
+      "topic_filter": []
+    },
+    {
+      "tip_id": "edd2188e",
+      "text": "Where ACT READING students reported struggling most: reading. Make sure you can handle these before exam day.",
+      "source_attribution": "Compiled from real test-takers on r/ACT",
+      "first_seen": "2026-05-31",
+      "topic_filter": []
+    },
+    {
+      "tip_id": "419966cf",
+      "text": "Resources real ACT READING test-takers credited: ACT class and practice tests. Pair with practice questions.",
+      "source_attribution": "Compiled from real test-takers on r/ACT",
+      "first_seen": "2026-05-31",
+      "topic_filter": []
+    },
+    {
+      "tip_id": "f394c305",
+      "text": "A passing score on ACT READING is reachable: recent successful test-takers reported scoring around 29 after focused study.",
+      "source_attribution": "Compiled from real test-takers on r/ACT",
+      "first_seen": "2026-05-31",
       "topic_filter": []
     }
   ]
