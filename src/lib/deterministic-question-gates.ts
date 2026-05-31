@@ -38,6 +38,12 @@ export interface QuestionCandidate {
   unit?: string;
   course?: string;
   stimulus?: string | null;
+  // 2026-05-31 (#100 SAT=CB parity / validation engine integration) —
+  // questionType is consulted by the SAT/PSAT gates: NUMERICAL items
+  // have a numeric correctAnswer (not a letter A-E) and may legitimately
+  // have no options. MCQ items continue through the standard letter +
+  // option count gates.
+  questionType?: string;
 }
 
 export interface GateResult {
@@ -52,7 +58,36 @@ const FOUR_CHOICE_COURSES = new Set([
   "CLEP_SPANISH_WRITING",
   "CLEP_FRENCH",
   "CLEP_GERMAN",
+  // 2026-05-31 — SAT/PSAT correction (#100 SAT=CB parity, validation
+  // engine integration). The digital SAT (since March 2024) uses 4
+  // choices (A–D) on every MCQ, not 5. Previously fell through to the
+  // default 5 — every SAT/PSAT generation would either pass with 5
+  // (wrong) or fail option-count for being 4 (correct). PSAT mirrors
+  // SAT structure. ACT English/Reading/Science are also 4-choice;
+  // ACT_MATH remains 5-choice (the only 5-choice MCQ format on the
+  // common exams).
+  "SAT_MATH",
+  "SAT_READING_WRITING",
+  "PSAT_MATH",
+  "PSAT_READING_WRITING",
+  "ACT_ENGLISH",
+  "ACT_READING",
+  "ACT_SCIENCE",
 ]);
+
+/**
+ * 2026-05-31 — Courses where every question MUST have a non-trivial
+ * stimulus (passage, table, or figure). SAT/PSAT R&W is the canonical
+ * case: every question pairs with a 1-2 paragraph passage and is fully
+ * answerable from that passage alone. A generated R&W item with no
+ * stimulus is automatically un-shippable.
+ */
+const STIMULUS_REQUIRED_COURSES = new Set([
+  "SAT_READING_WRITING",
+  "PSAT_READING_WRITING",
+]);
+
+const MIN_STIMULUS_CHARS = 50;
 
 /**
  * 2026-05-17 — Hint-in-option patterns. CB style says options must be bare
@@ -191,11 +226,40 @@ export function runDeterministicGates(q: QuestionCandidate): GateResult {
   if (!q.questionText || typeof q.questionText !== "string" || q.questionText.length < 10) {
     return { ok: false, gate: "structure", reason: "questionText empty or too short" };
   }
-  if (!q.correctAnswer || !/^[A-E]$/.test(q.correctAnswer)) {
+  // 2026-05-31 (#100) — SAT/PSAT NUMERICAL (SPR/grid-in) items have a
+  // numeric correctAnswer like "5/2" or "0.75", not a letter A-E. Branch
+  // the structural check by questionType. MCQs continue with the strict
+  // letter-form check; NUMERICAL just requires a non-empty string.
+  const isNumeric = q.questionType === "NUMERICAL";
+  if (isNumeric) {
+    if (!q.correctAnswer || typeof q.correctAnswer !== "string" || q.correctAnswer.length === 0) {
+      return { ok: false, gate: "structure", reason: "NUMERICAL correctAnswer empty" };
+    }
+  } else if (!q.correctAnswer || !/^[A-E]$/.test(q.correctAnswer)) {
     return { ok: false, gate: "structure", reason: `correctAnswer "${q.correctAnswer}" not a single letter A-E` };
   }
   if (!q.explanation || typeof q.explanation !== "string" || q.explanation.length < 40) {
     return { ok: false, gate: "structure", reason: "explanation missing or shorter than 40 chars" };
+  }
+  // 1b. Stimulus presence — for courses where CB spec requires every
+  // question to be paired with a passage / table / figure (SAT/PSAT R&W).
+  // A bare-stem R&W item is automatically un-shippable per the digital
+  // SAT spec.
+  if (STIMULUS_REQUIRED_COURSES.has(q.course ?? "")) {
+    const stim = (q.stimulus ?? "").trim();
+    if (!stim || stim.length < MIN_STIMULUS_CHARS) {
+      return {
+        ok: false,
+        gate: "stimulus-required",
+        reason: `${q.course} requires a passage stimulus (≥${MIN_STIMULUS_CHARS} chars); got ${stim.length}`,
+      };
+    }
+  }
+  // 1c. NUMERICAL items skip the options-related gates entirely — they
+  // don't have options to validate. Early-return after a question-text
+  // check above.
+  if (isNumeric) {
+    return { ok: true };
   }
 
   // 2. Options
