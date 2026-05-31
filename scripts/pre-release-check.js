@@ -60,8 +60,13 @@ try {
 
 // ─── 3. Pricing consistency ───────────────────────────────────────────────────
 section("3. Pricing consistency");
+// 2026-05-31 — Landing rewrite (task #99) removed inline pricing from
+// the homepage. Prices now live exclusively on /pricing (+ terms +
+// about + billing), which is where students click through for them.
+// The landing focuses on the diagnostic flow, not pricing — so the
+// page.tsx entry is dropped. The four downstream surfaces still
+// require the prices for consistency / refund-policy claims.
 const PRICING_FILES = {
-  "src/app/page.tsx":                           ["9.99", "79.99"],
   "src/app/(marketing)/pricing/pricing-client.tsx": ["9.99", "79.99", "33%"],
   "src/app/(marketing)/terms/page.tsx":          ["9.99", "79.99"],
   "src/app/(marketing)/about/page.tsx":          ["79.99"],
@@ -96,12 +101,17 @@ for (const f of refundFiles) {
 
 // ─── 4. Logo consistency ─────────────────────────────────────────────────────
 section("4. Logo consistency");
+// 2026-05-31 — Landing rewrite (task #99) replaced the Sparkles +
+// gradient-text wordmark on the SN homepage with an institutional
+// CB-style "SN" initials mark on a cobalt circle. The new mark
+// includes the literal "StudentNest" text, so we relax this check
+// for src/app/page.tsx and rely on the existing logo files in the
+// shared layouts to enforce brand consistency across in-app surfaces.
 const LOGO_FILES = [
   "src/app/(marketing)/layout.tsx",
   "src/app/(auth)/layout.tsx",
   "src/app/(dashboard)/layout.tsx",
   "src/components/layout/sidebar.tsx",
-  "src/app/page.tsx",
 ];
 // The (marketing) layout delegates its logo to the MarketingHeader component.
 // Follow one level of component composition when the file itself doesn't
