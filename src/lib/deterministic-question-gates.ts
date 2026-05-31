@@ -63,13 +63,17 @@ const FOUR_CHOICE_COURSES = new Set([
   // choices (A–D) on every MCQ, not 5. Previously fell through to the
   // default 5 — every SAT/PSAT generation would either pass with 5
   // (wrong) or fail option-count for being 4 (correct). PSAT mirrors
-  // SAT structure. ACT English/Reading/Science are also 4-choice;
-  // ACT_MATH remains 5-choice (the only 5-choice MCQ format on the
-  // common exams).
+  // SAT structure.
   "SAT_MATH",
   "SAT_READING_WRITING",
   "PSAT_MATH",
   "PSAT_READING_WRITING",
+  // 2026-05-31 — Enhanced ACT (April 2025 paper / fall 2025 online)
+  // changed ACT Math from the legacy 5-choice format to 4-choice.
+  // English/Reading/Science were always 4-choice. ACT_MATH is now in
+  // the FOUR_CHOICE_COURSES set — the legacy 5-choice generation
+  // pipeline is queued for regen + un-approve in #103 A3.
+  "ACT_MATH",
   "ACT_ENGLISH",
   "ACT_READING",
   "ACT_SCIENCE",

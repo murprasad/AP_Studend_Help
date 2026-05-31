@@ -42,8 +42,10 @@ describe("Option count — SAT/PSAT default to 4 choices (digital SAT spec)", ()
   it("ACT_ENGLISH expects 4 options", () => {
     expect(expectedOptionCount("ACT_ENGLISH")).toBe(4);
   });
-  it("ACT_MATH still expects 5 options (only 5-choice MCQ format)", () => {
-    expect(expectedOptionCount("ACT_MATH")).toBe(5);
+  it("ACT_MATH expects 4 options after Enhanced ACT (2025)", () => {
+    // Enhanced ACT (April 2025) eliminated ACT Math's legacy 5-choice
+    // format. ACT Math is now 4-choice like every other section.
+    expect(expectedOptionCount("ACT_MATH")).toBe(4);
   });
   it("AP courses still expect 5 options", () => {
     expect(expectedOptionCount("AP_CALCULUS_AB")).toBe(5);

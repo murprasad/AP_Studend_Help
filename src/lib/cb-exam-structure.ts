@@ -241,34 +241,45 @@ export const AP_EXAM_STRUCTURES: Record<string, CourseExamStructure> = {
     ],
   },
   // ────────────────────────────────────────────────────────────────────────────
-  // ACT — linear (non-adaptive), 5-option MCQ.
+  // Enhanced ACT (rolled out April 2025 paper / fall 2025 online).
+  // Per official spec at act.org/test-changes/enhancements:
+  //   - Core = English + Math + Reading. 131 Qs, 125 min total.
+  //   - Math is now 4-option MCQ (was 5-option — Enhanced ACT killed
+  //     the unique 5-choice format that previously distinguished ACT).
+  //   - Science is OPTIONAL — taken students get a Science score (1-36)
+  //     + STEM score (avg of Math + Science). Composite no longer
+  //     includes Science by default. Same 4-option MCQ format.
+  //   - Calculator permitted on Math only (no calc on Eng/Read/Sci).
+  //   - More time per Q than legacy: ~18% more across the board.
+  // 2026-05-31 (#103 SN=ACT parity) — corrected from legacy 60/60/4-choice
+  // Math, 75/45 English, 40/35 Reading, 40/35 required-Science.
   // ────────────────────────────────────────────────────────────────────────────
   ACT_MATH: {
     course: "ACT_MATH",
-    totalMinutes: 60,
+    totalMinutes: 50,
     sections: [
-      { cbName: "Mathematics", questionType: "MCQ", count: 60, percentOfScore: 100, minutes: 60, freeAccess: true },
+      { cbName: "Mathematics", questionType: "MCQ", count: 45, percentOfScore: 100, minutes: 50, freeAccess: true },
     ],
   },
   ACT_ENGLISH: {
     course: "ACT_ENGLISH",
-    totalMinutes: 45,
+    totalMinutes: 35,
     sections: [
-      { cbName: "English", questionType: "MCQ", count: 75, percentOfScore: 100, minutes: 45, freeAccess: true },
+      { cbName: "English", questionType: "MCQ", count: 50, percentOfScore: 100, minutes: 35, freeAccess: true },
     ],
   },
   ACT_READING: {
     course: "ACT_READING",
-    totalMinutes: 35,
+    totalMinutes: 40,
     sections: [
-      { cbName: "Reading", questionType: "MCQ", count: 40, percentOfScore: 100, minutes: 35, freeAccess: true },
+      { cbName: "Reading", questionType: "MCQ", count: 36, percentOfScore: 100, minutes: 40, freeAccess: true },
     ],
   },
   ACT_SCIENCE: {
     course: "ACT_SCIENCE",
-    totalMinutes: 35,
+    totalMinutes: 40,
     sections: [
-      { cbName: "Science", questionType: "MCQ", count: 40, percentOfScore: 100, minutes: 35, freeAccess: true },
+      { cbName: "Science (Optional)", questionType: "MCQ", count: 40, percentOfScore: 100, minutes: 40, freeAccess: true },
     ],
   },
   AP_COMPUTER_SCIENCE_PRINCIPLES: {
