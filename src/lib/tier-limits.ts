@@ -40,6 +40,16 @@ export const FREE_LIMITS = {
   tutorChatsPerDay: 3,
   /** How many mock-exam questions the student sees before the paywall. */
   mockExamQuestions: 5,
+  /**
+   * 2026-05-31 — F16 (#100 SAT=CB parity).
+   * SAT/PSAT free tier gets 8 full-length adaptive mocks — same count CB
+   * gives away on Bluebook. The 5-Q partial paywall above is bypassed for
+   * adaptive courses (SAT_MATH, SAT_READING_WRITING, PSAT_*) up to this
+   * lifetime cap; afterward the standard mock paywall kicks in.
+   *
+   * Non-adaptive (AP / CLEP / DSST / ACT) courses still use the 5-Q gate.
+   */
+  freeAdaptiveMocksLifetime: 8,
   /** Legacy blanket FRQ access flag — superseded by per-type/per-course
    *  caps below in Beta 8.13. Kept for backward compat with old gates that
    *  may still read it; new code should use the per-type limits. */

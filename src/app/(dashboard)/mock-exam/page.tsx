@@ -144,6 +144,33 @@ export default function MockExamPage() {
   // paywall can reveal a projected score based on mid-exam performance.
   const [correctCount, setCorrectCount] = useState(0);
   const [showPartialPaywall, setShowPartialPaywall] = useState(false);
+  // F16 (#100) — free 8 full-length adaptive mocks for SAT/PSAT students.
+  // null = unknown (not loaded yet); object = loaded status.
+  const [adaptiveFreeStatus, setAdaptiveFreeStatus] = useState<
+    | null
+    | { isAdaptive: boolean; mocksRemaining: number; hasFreeMocksLeft: boolean }
+  >(null);
+  useEffect(() => {
+    if (!course || !isAdaptiveCourse(course)) {
+      setAdaptiveFreeStatus({ isAdaptive: false, mocksRemaining: 0, hasFreeMocksLeft: false });
+      return;
+    }
+    let cancelled = false;
+    fetch(`/api/mock-exam/free-adaptive-status?course=${encodeURIComponent(course)}`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => {
+        if (cancelled || !d) return;
+        setAdaptiveFreeStatus({
+          isAdaptive: !!d.isAdaptive,
+          mocksRemaining: typeof d.mocksRemaining === "number" ? d.mocksRemaining : 0,
+          hasFreeMocksLeft: !!d.hasFreeMocksLeft,
+        });
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, [course]);
 
   // Resolve both Full + Quick configs so the toggle can preview each without
   // waiting for re-render. Pacing (secsPerQuestion) is identical between the
@@ -385,7 +412,19 @@ export default function MockExamPage() {
     // preview (default 5 Qs), surface the projected-score paywall instead
     // of advancing. Premium users flow through normally. Limit lives in
     // src/lib/tier-limits.ts so a future spec change is one-file.
-    if (!hasPremium && currentIndex === FREE_LIMITS.mockExamQuestions - 1 && currentIndex + 1 < total) {
+    //
+    // F16 (#100): SAT/PSAT free students get 8 full-length adaptive mocks
+    // (matching CB's Bluebook free count). When the user is still under
+    // that cap, skip the 5-Q paywall for THIS session — the cap is
+    // enforced server-side at session-create time, not mid-session.
+    const adaptiveFreeMockBypass =
+      isAdaptiveCourse(course) && adaptiveFreeStatus?.hasFreeMocksLeft === true;
+    if (
+      !hasPremium &&
+      !adaptiveFreeMockBypass &&
+      currentIndex === FREE_LIMITS.mockExamQuestions - 1 &&
+      currentIndex + 1 < total
+    ) {
       setShowPartialPaywall(true);
       return;
     }
@@ -431,6 +470,24 @@ export default function MockExamPage() {
             Timed section simulation with official {trackLabel} pacing
           </p>
         </div>
+
+        {/* F16 (#100) — 8 free full-length adaptive mocks for SAT/PSAT.
+            Surface count + cap so the student knows the offer is real.
+            Hidden once they hit the cap (the create endpoint returns 402
+            in that case and the UI surfaces an upgrade card). */}
+        {!hasPremium &&
+          adaptiveFreeStatus?.isAdaptive &&
+          adaptiveFreeStatus.hasFreeMocksLeft && (
+            <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/5 p-4 text-sm">
+              <span className="font-semibold text-emerald-700 dark:text-emerald-400">
+                Free: {adaptiveFreeStatus.mocksRemaining} of {FREE_LIMITS.freeAdaptiveMocksLifetime}
+              </span>
+              <span className="text-foreground/80">
+                {" "}full-length adaptive mocks remaining — matches the 8 CB gives
+                you on Bluebook.
+              </span>
+            </div>
+          )}
 
         {/* CB exam structure card — added 2026-04-27 so students know
             the real exam shape (MCQ + SAQ + DBQ + LEQ) even when our
@@ -739,8 +796,32 @@ export default function MockExamPage() {
   }
 
   // ── Break (digital SAT 2-module structure, F2 of #100) ───────────────────
+  // F2-routing (2026-05-31, Sprint S3): on Continue, call the server to
+  // route Module 2 difficulty based on M1 performance, then swap the in-
+  // memory questions array for the M2 portion before resuming section1.
   if (phase === "break") {
-    return <SatModuleBreak onContinue={() => {
+    return <SatModuleBreak onContinue={async () => {
+      if (sessionId && isAdaptiveCourse(course)) {
+        try {
+          const res = await fetch("/api/mock-exam/module-2", {
+            method: "POST",
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify({ sessionId }),
+          });
+          if (res.ok) {
+            const data = await res.json();
+            const m2Qs = Array.isArray(data.questions) ? (data.questions as ExamQuestion[]) : [];
+            if (m2Qs.length > 0) {
+              const m1End: number = typeof data.m1End === "number" ? data.m1End : moduleOneEndIndex + 1;
+              setQuestions((prev) => [...prev.slice(0, m1End), ...m2Qs]);
+            }
+          }
+        } catch (e) {
+          // Soft-fail: routing endpoint hiccup shouldn't strand the student.
+          // The original (non-routed) Module-2 questions remain in place.
+          console.error("[mock-exam] module-2 routing failed:", e);
+        }
+      }
       setCurrentIndex(moduleOneEndIndex + 1);
       setPhase("section1");
     }} />;

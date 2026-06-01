@@ -21,8 +21,17 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { ApCourse, QuestionType, SessionType } from "@prisma/client";
 import { getCBExamStructure } from "@/lib/cb-exam-structure";
+import { FREE_LIMITS } from "@/lib/tier-limits";
+import { isPremiumForTrack } from "@/lib/tiers";
 
 export const dynamic = "force-dynamic";
+
+const ADAPTIVE_COURSES: ReadonlySet<string> = new Set([
+  "SAT_MATH",
+  "SAT_READING_WRITING",
+  "PSAT_MATH",
+  "PSAT_READING_WRITING",
+]);
 
 export async function POST(req: NextRequest) {
   try {
@@ -33,6 +42,40 @@ export async function POST(req: NextRequest) {
     const course = (body.course as ApCourse) || "AP_WORLD_HISTORY";
     // mode: "scaled" (default, ~40% length) or "full" (full CB count)
     const mode = (body.mode as string) || "scaled";
+
+    // F16 (#100) — server-side adaptive-mock cap. SAT/PSAT free students
+    // get 8 full-length adaptive mocks; the 9th create attempt returns 402
+    // so the client can surface the upgrade screen instead of starting a
+    // doomed session. Premium users + non-adaptive courses are unaffected.
+    if (ADAPTIVE_COURSES.has(course as string)) {
+      const user = await prisma.user.findUnique({
+        where: { id: session.user.id },
+        select: { subscriptionTier: true, track: true },
+      });
+      const premium = user
+        ? isPremiumForTrack(user.subscriptionTier ?? "FREE", user.track ?? "ap")
+        : false;
+      if (!premium) {
+        const mocksUsed = await prisma.practiceSession.count({
+          where: {
+            userId: session.user.id,
+            course: course as ApCourse,
+            sessionType: "MOCK_EXAM" as SessionType,
+          },
+        });
+        if (mocksUsed >= FREE_LIMITS.freeAdaptiveMocksLifetime) {
+          return NextResponse.json(
+            {
+              error: "Free adaptive mock cap reached",
+              code: "FREE_ADAPTIVE_MOCK_CAP",
+              mocksUsed,
+              cap: FREE_LIMITS.freeAdaptiveMocksLifetime,
+            },
+            { status: 402 },
+          );
+        }
+      }
+    }
 
     const struct = getCBExamStructure(course);
     if (!struct) {

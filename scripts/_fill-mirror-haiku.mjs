@@ -12,6 +12,7 @@ import { readFileSync, existsSync } from "node:fs";
 import crypto from "node:crypto";
 import { normalizeQuestion, runDeterministicGates } from "./lib/_question-gates.mjs";
 import { secondPassVerify } from "./lib/_second-pass-verifier.mjs";
+import { callJsonObject, PROVIDERS_AVAILABLE } from "./lib/_llm-cascade.mjs";
 process.env.DATABASE_URL = (process.env.DATABASE_URL || "").replace(/^["']|["']$/g, "");
 const { neonRetry } = await import("./lib/_sql-retry.mjs");
 const sql = neonRetry(process.env.DATABASE_URL);
@@ -26,9 +27,16 @@ const COUNT = parseInt(args.count ?? "3", 10);
 const COURSE_FILTER = args.course ?? null;
 const COURSES_LIST = (args.courses ?? "").split(",").filter(Boolean);
 const ALL = !!args["all-non-covered"];
+const LIMIT_TARGETS = args["limit-targets"] ? parseInt(args["limit-targets"], 10) : Infinity;
 
-const ANTHROPIC_KEY = process.env.ANTHROPIC_API_KEY;
-if (!ANTHROPIC_KEY) { console.error("ANTHROPIC_API_KEY required"); process.exit(1); }
+// 2026-06-01 — Migrated from hardcoded Anthropic to shared LLM cascade
+// (Gemini → Groq → OpenRouter → Anthropic). The 'mirror-fill' modelUsed
+// tag is kept for back-compat; the actual provider per Q lives in the run log.
+if (PROVIDERS_AVAILABLE.length === 0) {
+  console.error("No LLM provider keys set. Need at least one of: GOOGLE_AI_API_KEY, GROQ_API_KEY, OPENROUTER_API_KEY, ANTHROPIC_API_KEY");
+  process.exit(1);
+}
+console.log("Provider cascade:", PROVIDERS_AVAILABLE.join(" → "));
 if (!args.audit) { console.error("Need --audit=<path>"); process.exit(1); }
 
 const audit = JSON.parse(readFileSync(args.audit, "utf8"));
@@ -36,24 +44,13 @@ const audit = JSON.parse(readFileSync(args.audit, "utf8"));
 function hashText(s) { return crypto.createHash("sha256").update(s.toLowerCase().replace(/\s+/g, " ").trim()).digest("hex"); }
 const isSN = (c) => c.startsWith("AP_") || c.startsWith("SAT_") || c.startsWith("ACT_") || c.startsWith("PSAT_");
 
-async function callHaiku(system, user) {
-  const res = await fetch("https://api.anthropic.com/v1/messages", {
-    method: "POST",
-    headers: { "x-api-key": ANTHROPIC_KEY, "anthropic-version": "2023-06-01", "Content-Type": "application/json" },
-    body: JSON.stringify({
-      model: "claude-haiku-4-5-20251001",
-      max_tokens: 4000,
-      temperature: 0.5,
-      system,
-      messages: [{ role: "user", content: user }],
-    }),
-  });
-  if (!res.ok) throw new Error(`Haiku ${res.status}: ${(await res.text()).slice(0, 150)}`);
-  const j = await res.json();
-  const out = j?.content?.[0]?.text || "{}";
-  const m = out.match(/\{[\s\S]*\}/);
-  if (!m) return { questions: [] };
-  try { return JSON.parse(m[0]); } catch { return { questions: [] }; }
+async function callAuthor(system, user) {
+  try {
+    const { parsed } = await callJsonObject(system, user, { maxTokens: 4000 });
+    return parsed?.questions ? parsed : { questions: parsed?.items ?? [] };
+  } catch (e) {
+    throw new Error(`cascade: ${String(e?.message ?? e).slice(0, 200)}`);
+  }
 }
 
 async function mirrorFill(course, sampleStem, sampleOptions, sampleCorrect, suggestedTopic, count) {
@@ -99,7 +96,7 @@ OUTPUT exactly:
 JSON only, no markdown.`;
 
   let parsed;
-  try { parsed = await callHaiku(SYSTEM, `Author ${count} questions on "${suggestedTopic}". Return JSON only.`); }
+  try { parsed = await callAuthor(SYSTEM, `Author ${count} questions on "${suggestedTopic}". Return JSON only.`); }
   catch (e) { return { inserted: 0, failed: 0, err: e.message.slice(0, 80) }; }
   const arr = parsed?.questions || [];
   if (!arr.length) return { inserted: 0, failed: 0 };
@@ -137,8 +134,11 @@ for (const course of targetCourses) {
   const targets = results.filter((r) => r.verdict === "GAP" || (ALL && r.verdict === "PARTIAL"));
   if (!targets.length) continue;
   console.log(`\n══ ${course} — ${targets.length} mirror targets ══`);
+  let targetIdx = 0;
   for (const t of targets) {
     if (!t.stem || !t.suggested_topic || t.suggested_topic === "—") continue;
+    if (targetIdx >= LIMIT_TARGETS) { console.log(`  (--limit-targets=${LIMIT_TARGETS} reached, stopping)`); break; }
+    targetIdx += 1;
     let sampleQ = null;
     try {
       const sd = JSON.parse(readFileSync(`data/sample-questions/${course}.json`, "utf8"));

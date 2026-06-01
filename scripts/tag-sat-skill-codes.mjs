@@ -124,17 +124,28 @@ console.log("LIMIT:", limit);
 console.log("");
 
 // Load distribution
-const distribution = await sql`
-  SELECT course::text AS course, unit::text AS unit, COUNT(*)::int AS n
-  FROM questions
-  WHERE course::text IN (
-    'SAT_MATH','SAT_READING_WRITING','PSAT_MATH','PSAT_READING_WRITING'
-  )
-  ${courseFilter ? sql`AND course::text = ${courseFilter}` : sql``}
-  AND "isApproved" = true
-  GROUP BY course, unit
-  ORDER BY course, unit
-`;
+const distribution = courseFilter
+  ? await sql`
+      SELECT course::text AS course, unit::text AS unit, COUNT(*)::int AS n
+      FROM questions
+      WHERE course::text IN (
+        'SAT_MATH','SAT_READING_WRITING','PSAT_MATH','PSAT_READING_WRITING'
+      )
+      AND course::text = ${courseFilter}
+      AND "isApproved" = true
+      GROUP BY course, unit
+      ORDER BY course, unit
+    `
+  : await sql`
+      SELECT course::text AS course, unit::text AS unit, COUNT(*)::int AS n
+      FROM questions
+      WHERE course::text IN (
+        'SAT_MATH','SAT_READING_WRITING','PSAT_MATH','PSAT_READING_WRITING'
+      )
+      AND "isApproved" = true
+      GROUP BY course, unit
+      ORDER BY course, unit
+    `;
 
 console.log("## Current bank distribution by domain\n");
 console.log("course               | unit                              | approved Qs");
@@ -157,15 +168,259 @@ for (const [unit, codes] of Object.entries(SKILL_CODES_BY_UNIT)) {
 
 if (!COMMIT) {
   console.log("\n(Dry-run only — no DB writes performed.)");
-  console.log("Re-run with --commit and ANTHROPIC_API_KEY set to perform per-Q inference.");
-} else if (!process.env.ANTHROPIC_API_KEY) {
-  console.log("\n✗ ANTHROPIC_API_KEY not set — can't run per-Q skill-code inference.");
-  console.log("Set it and re-run with --commit.");
-  process.exit(1);
-} else {
-  console.log("\nPer-Q skill-code inference + DB writes are gated on a Prisma");
-  console.log("schema migration that adds question.skillCode. That migration");
-  console.log("is queued — until then this script reports the bank distribution");
-  console.log("and the skill-code allowlist, so the actual tagging pass can be");
-  console.log("scheduled against an updated schema.");
+  console.log("Re-run with --commit set to perform per-Q inference.");
+  process.exit(0);
 }
+
+// 2026-05-31 — User chose free-LLM cascade after ANTHROPIC_API_KEY ran out
+// of credits. Order: Gemini 2.0 Flash → Groq llama-3.3-70b → OpenRouter
+// free GPT-OSS. Skip providers without an env key. At least one needed.
+const PROVIDERS_AVAILABLE = [
+  process.env.GOOGLE_AI_API_KEY ? "gemini" : null,
+  process.env.GROQ_API_KEY ? "groq" : null,
+  process.env.OPENROUTER_API_KEY ? "openrouter" : null,
+  process.env.ANTHROPIC_API_KEY ? "anthropic" : null,
+].filter(Boolean);
+if (PROVIDERS_AVAILABLE.length === 0) {
+  console.log("\n✗ No LLM provider keys set (need GOOGLE_AI_API_KEY, GROQ_API_KEY, OPENROUTER_API_KEY, or ANTHROPIC_API_KEY).");
+  process.exit(1);
+}
+console.log("\n## Provider cascade:", PROVIDERS_AVAILABLE.join(" → "));
+
+// ── Per-Q Haiku inference + DB writes ─────────────────────────────────────
+console.log("\n## Per-Q Haiku inference\n");
+
+const rows = courseFilter
+  ? await sql`
+      SELECT id, course::text AS course, unit::text AS unit, topic,
+             LEFT("questionText", 600) AS qtext, LEFT(COALESCE(stimulus, ''), 400) AS stim
+      FROM questions
+      WHERE course::text IN (
+        'SAT_MATH','SAT_READING_WRITING','PSAT_MATH','PSAT_READING_WRITING'
+      )
+      AND course::text = ${courseFilter}
+      AND "isApproved" = true
+      AND "skillCode" IS NULL
+      ORDER BY id
+      LIMIT ${limit}
+    `
+  : await sql`
+      SELECT id, course::text AS course, unit::text AS unit, topic,
+             LEFT("questionText", 600) AS qtext, LEFT(COALESCE(stimulus, ''), 400) AS stim
+      FROM questions
+      WHERE course::text IN (
+        'SAT_MATH','SAT_READING_WRITING','PSAT_MATH','PSAT_READING_WRITING'
+      )
+      AND "isApproved" = true
+      AND "skillCode" IS NULL
+      ORDER BY id
+      LIMIT ${limit}
+    `;
+
+console.log(`Loaded ${rows.length} approved SAT/PSAT Qs still missing skillCode.`);
+if (rows.length === 0) {
+  console.log("Nothing to tag. Done.");
+  process.exit(0);
+}
+
+const BATCH_SIZE = 15;
+let totalTagged = 0;
+let totalSkipped = 0;
+const startedAt = Date.now();
+
+function parseJsonArray(text) {
+  if (!text) return null;
+  const stripped = text.trim().replace(/^```(?:json)?\s*|\s*```$/g, "");
+  // Try whole-string parse first (Groq json_object mode returns {"items": [...]})
+  try {
+    const whole = JSON.parse(stripped);
+    if (Array.isArray(whole)) return whole;
+    if (whole && Array.isArray(whole.items)) return whole.items;
+    if (whole && Array.isArray(whole.classifications)) return whole.classifications;
+    if (whole && Array.isArray(whole.results)) return whole.results;
+  } catch {
+    // fall through to regex extraction
+  }
+  const m = stripped.match(/\[[\s\S]*\]/);
+  if (!m) return null;
+  try {
+    const parsed = JSON.parse(m[0]);
+    return Array.isArray(parsed) ? parsed : null;
+  } catch {
+    return null;
+  }
+}
+
+async function callGemini(system, user) {
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent?key=${process.env.GOOGLE_AI_API_KEY}`;
+  const res = await fetch(url, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({
+      contents: [{ role: "user", parts: [{ text: `${system}\n\n${user}` }] }],
+      generationConfig: { responseMimeType: "application/json", maxOutputTokens: 2000, temperature: 0 },
+    }),
+  });
+  if (!res.ok) throw new Error(`Gemini ${res.status}: ${(await res.text()).slice(0, 200)}`);
+  const data = await res.json();
+  return data.candidates?.[0]?.content?.parts?.[0]?.text ?? "";
+}
+
+async function callGroq(system, user) {
+  const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      authorization: `Bearer ${process.env.GROQ_API_KEY}`,
+      "content-type": "application/json",
+    },
+    body: JSON.stringify({
+      model: "llama-3.3-70b-versatile",
+      messages: [
+        { role: "system", content: system },
+        { role: "user", content: user },
+      ],
+      response_format: { type: "json_object" },
+      max_tokens: 2000,
+      temperature: 0,
+    }),
+  });
+  if (!res.ok) throw new Error(`Groq ${res.status}: ${(await res.text()).slice(0, 200)}`);
+  const data = await res.json();
+  return data.choices?.[0]?.message?.content ?? "";
+}
+
+async function callOpenRouter(system, user) {
+  const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
+      "content-type": "application/json",
+    },
+    body: JSON.stringify({
+      model: "openai/gpt-oss-120b:free",
+      messages: [
+        { role: "system", content: system },
+        { role: "user", content: user },
+      ],
+      max_tokens: 2000,
+      temperature: 0,
+    }),
+  });
+  if (!res.ok) throw new Error(`OpenRouter ${res.status}: ${(await res.text()).slice(0, 200)}`);
+  const data = await res.json();
+  return data.choices?.[0]?.message?.content ?? "";
+}
+
+async function callAnthropic(system, user) {
+  const res = await fetch("https://api.anthropic.com/v1/messages", {
+    method: "POST",
+    headers: {
+      "x-api-key": process.env.ANTHROPIC_API_KEY,
+      "anthropic-version": "2023-06-01",
+      "content-type": "application/json",
+    },
+    body: JSON.stringify({
+      model: "claude-haiku-4-5-20251001",
+      max_tokens: 2000,
+      system,
+      messages: [{ role: "user", content: user }],
+    }),
+  });
+  if (!res.ok) throw new Error(`Anthropic ${res.status}: ${(await res.text()).slice(0, 200)}`);
+  const data = await res.json();
+  return data.content?.[0]?.text ?? "";
+}
+
+const PROVIDER_CALLS = { gemini: callGemini, groq: callGroq, openrouter: callOpenRouter, anthropic: callAnthropic };
+// Memoize provider failure to avoid hammering a known-dead provider.
+// Reset on next process invocation, which is fine for our use case.
+const providerDead = new Set();
+
+async function callWithCascade(system, user) {
+  let lastErr = null;
+  for (const provider of PROVIDERS_AVAILABLE) {
+    if (providerDead.has(provider)) continue;
+    try {
+      const text = await PROVIDER_CALLS[provider](system, user);
+      return { text, provider };
+    } catch (e) {
+      const msg = String(e?.message ?? e);
+      lastErr = msg;
+      // 400/401/402/403 = config/quota; mark dead so we stop hammering it
+      if (/^[A-Z][\w]+ (4(00|01|02|03)|429)/i.test(msg)) {
+        providerDead.add(provider);
+        console.log(`  ⚠  ${provider} disabled for this run: ${msg.slice(0, 120)}`);
+      }
+    }
+  }
+  throw new Error(`All providers failed. Last: ${lastErr}`);
+}
+
+async function inferBatch(batch) {
+  // Group by unit so each batch shares an allowlist
+  const byUnit = new Map();
+  for (const r of batch) {
+    if (!byUnit.has(r.unit)) byUnit.set(r.unit, []);
+    byUnit.get(r.unit).push(r);
+  }
+  const results = new Map();
+  for (const [unit, qs] of byUnit) {
+    const allowlist = SKILL_CODES_BY_UNIT[unit];
+    if (!allowlist) {
+      for (const _q of qs) totalSkipped += 1;
+      continue;
+    }
+    const promptItems = qs.map((q, i) => `[${i}] (id: ${q.id})
+TOPIC: ${q.topic ?? ""}
+${q.stim ? `PASSAGE: ${q.stim}\n` : ""}QUESTION: ${q.qtext}`).join("\n\n");
+    const system = `You classify College Board digital SAT questions by official skill code.
+For each question, return EXACTLY ONE skill code from the allowlist below.
+Output JSON ONLY (no prose, no markdown fences) shaped exactly:
+{"items": [{"i": <index>, "id": "<id>", "code": "<SKILL_CODE>"}]}
+ALLOWLIST for ${unit}:
+${allowlist.map((c) => `  - ${c}`).join("\n")}`;
+    const user = `Classify each question with one skill code from the allowlist:\n\n${promptItems}`;
+    let text = "";
+    let provider = "";
+    try {
+      const r = await callWithCascade(system, user);
+      text = r.text;
+      provider = r.provider;
+    } catch (e) {
+      console.log(`  ✗ ${unit}: ${String(e?.message ?? e).slice(0, 180)}`);
+      for (const _q of qs) totalSkipped += 1;
+      continue;
+    }
+    const parsed = parseJsonArray(text);
+    if (!Array.isArray(parsed)) {
+      console.log(`  ✗ ${unit} (${provider}): unparsable output: ${text.slice(0, 150)}`);
+      for (const _q of qs) totalSkipped += 1;
+      continue;
+    }
+    for (const item of parsed) {
+      if (!item?.id || !item?.code) continue;
+      if (!allowlist.includes(item.code)) continue;
+      results.set(item.id, item.code);
+    }
+  }
+  return results;
+}
+
+for (let i = 0; i < rows.length; i += BATCH_SIZE) {
+  const batch = rows.slice(i, i + BATCH_SIZE);
+  const tagged = await inferBatch(batch);
+  // Bulk update
+  for (const [id, code] of tagged) {
+    try {
+      await sql`UPDATE questions SET "skillCode" = ${code} WHERE id = ${id}`;
+      totalTagged += 1;
+    } catch (e) {
+      totalSkipped += 1;
+      console.log(`  ✗ UPDATE failed for ${id}: ${e.message}`);
+    }
+  }
+  const elapsed = ((Date.now() - startedAt) / 1000).toFixed(0);
+  console.log(`  Progress: ${i + batch.length}/${rows.length}  (tagged: ${totalTagged}, skipped: ${totalSkipped}, ${elapsed}s)`);
+}
+
+console.log(`\n# Done. Tagged ${totalTagged} / ${rows.length}. Skipped ${totalSkipped}.`);

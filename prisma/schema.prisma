@@ -478,6 +478,13 @@ model Question {
   sourcePage     Int?     // page number in the source PDF
   sourceLicense  String?  // e.g., "CC BY 4.0"
   sourceChapter  String?  // human-readable chapter label
+  // 2026-05-31 — F13 (#100 SAT=CB parity). Official CB skill code for
+  // SAT/PSAT questions (e.g., "ALG.LIN_EQ_ONE_VAR", "CRS.WORDS_IN_CONTEXT").
+  // Populated by scripts/tag-sat-skill-codes.mjs via Haiku inference
+  // constrained to the published 32-code allowlist. Nullable: non-SAT/PSAT
+  // courses stay null. Khan Academy partnership links (F12) become
+  // per-skill instead of per-domain once this is populated.
+  skillCode      String?
   modelUsed          String?
   generatedForTier   SubTier   @default(FREE)
   contentHash        String?   @unique  // SHA-256 of normalized questionText — prevents duplicates
@@ -501,6 +508,7 @@ model Question {
   concepts     QuestionConcept[]
 
   @@index([course, unit, difficulty, questionType])
+  @@index([course, skillCode], map: "Question_course_skillCode_idx")
   @@map("questions")
 }
 
