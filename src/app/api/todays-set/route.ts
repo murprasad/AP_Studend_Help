@@ -8,9 +8,19 @@
  * Response:
  *   {
  *     plan: { questionIds: string[], conceptKeys: string[], expectedDeltaPctHint: number },
+ *     conceptMeta: Array<{
+ *       key: string,         // "unit:ACT_ENG_1_PRODUCTION_WRITING"
+ *       attempts: number,    // historic Qs answered in this unit
+ *       mastery: number,     // 0-1 accuracy in this unit
+ *       isUntried: boolean,  // attempts == 0
+ *     }>,
  *     alreadyDone: boolean,
  *     generated: boolean,  // false if served from cache
  *   }
+ *
+ * 2026-06-01 conceptMeta added (bug #1, #5, #9 from persona walkthrough)
+ * so TodaysSetCard can render correct verb (Try vs Strengthen vs Polish)
+ * and not claim "Strengthen X" for units the user has never touched.
  *
  * Designed for the dashboard hero CTA. Cheap (<150ms).
  */
@@ -48,13 +58,47 @@ export async function GET(req: Request) {
     const existing = await prisma.dailyPracticePlan.findUnique({
       where: { userId_course_forDate: { userId, course, forDate: todayUtc } },
     });
+    // Shared helper: derive per-unit attempts + accuracy from this user's
+    // course responses. Used for both cached and freshly-generated plans
+    // so the conceptMeta is always live (not stale from yesterday's plan).
+    const buildConceptMeta = async (keys: string[]) => {
+      if (keys.length === 0) return [];
+      const units = keys.map((k) => (k.startsWith("unit:") ? k.slice(5) : k));
+      const rows: Array<{ unit: string; attempts: number; correct: number }> = await prisma.$queryRawUnsafe(
+        `SELECT q.unit::text AS unit,
+                COUNT(*)::int AS attempts,
+                COUNT(*) FILTER (WHERE sr."isCorrect" = true)::int AS correct
+         FROM student_responses sr
+         JOIN questions q ON q.id = sr."questionId"
+         WHERE sr."userId" = $1
+           AND q.course = $2::"ApCourse"
+           AND q.unit = ANY($3::"ApUnit"[])
+         GROUP BY q.unit`,
+        userId, course, units,
+      );
+      const byUnit: Record<string, { attempts: number; correct: number }> = {};
+      for (const r of rows) byUnit[r.unit] = { attempts: r.attempts, correct: r.correct };
+      return keys.map((key) => {
+        const unit = key.startsWith("unit:") ? key.slice(5) : key;
+        const row = byUnit[unit] ?? { attempts: 0, correct: 0 };
+        return {
+          key,
+          attempts: row.attempts,
+          mastery: row.attempts > 0 ? row.correct / row.attempts : 0,
+          isUntried: row.attempts === 0,
+        };
+      });
+    };
+
     if (existing) {
+      const conceptMeta = await buildConceptMeta(existing.conceptKeys);
       return NextResponse.json({
         plan: {
           questionIds: existing.questionIds,
           conceptKeys: existing.conceptKeys,
           expectedDeltaPctHint: existing.expectedDeltaPct ?? 0,
         },
+        conceptMeta,
         alreadyDone: existing.completedAt !== null,
         generated: false,
       });
@@ -145,12 +189,14 @@ export async function GET(req: Request) {
       },
     }).catch(() => { /* race ignored */ });
 
+    const conceptMeta = await buildConceptMeta(result.conceptKeys);
     return NextResponse.json({
       plan: {
         questionIds: result.questionIds,
         conceptKeys: result.conceptKeys,
         expectedDeltaPctHint: result.expectedDeltaPctHint,
       },
+      conceptMeta,
       alreadyDone: false,
       generated: true,
     });

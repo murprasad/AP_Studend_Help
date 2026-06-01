@@ -61,7 +61,14 @@ export interface TodaysSetResult {
 const TARGET_SIZE_DEFAULT = 12;
 const WEAK_CONCEPTS_TO_TARGET = 3;
 const RECENT_DEDUP_DAYS = 14;
-const PER_CONCEPT_WEIGHTS = [0.5, 0.3, 0.2];
+// 2026-06-01 — Bug #4 fix: dropped per-concept weights from [0.5, 0.3, 0.2]
+// to [0.4, 0.25, 0.15] to free 20% of the set for exploration. Without
+// exploration, persona walkthrough showed the system serving the same unit
+// to a user for 25 consecutive sessions while other units' mastery silently
+// staled. Exploration spreads ~2-3 Qs of every 12-Q set across non-targeted
+// units so all units stay re-verified.
+const PER_CONCEPT_WEIGHTS = [0.4, 0.25, 0.15];
+const EXPLORATION_RATIO = 0.20;
 
 /**
  * Brainscape-style CBR multiplier on SM-2 interval. confidence 5 stretches
@@ -100,6 +107,35 @@ export function generateTodaysSet(inputs: TodaysSetInputs): TodaysSetResult {
     if (!lastResponseByQ.has(r.questionId)) lastResponseByQ.set(r.questionId, r);
   }
 
+  // 2026-06-01 — Bug #13 fix: diagnostic-mode first set. For a brand-new
+  // user (no responses ever), targeting "weakest" by mastery is meaningless
+  // — every unit has the default 50% mastery. Picking weakest 3 is
+  // arbitrary. Instead, distribute the first set evenly across ALL units
+  // so the dashboard's "weakest" recommendation is data-driven by session 2.
+  if (inputs.pastResponses.length === 0) {
+    const allUnits = Array.from(new Set(inputs.candidatePool.map((c) => c.unit)));
+    const perUnit = Math.max(1, Math.ceil(targetSize / Math.max(allUnits.length, 1)));
+    const picked: string[] = [];
+    for (const unit of allUnits) {
+      const bucket = inputs.candidatePool.filter((c) => c.unit === unit);
+      // Shuffle bucket so different new users don't get identical sets
+      const shuffled = bucket.sort(() => Math.random() - 0.5).slice(0, perUnit);
+      for (const c of shuffled) {
+        if (picked.length >= targetSize) break;
+        if (!picked.includes(c.id)) picked.push(c.id);
+      }
+      if (picked.length >= targetSize) break;
+    }
+    return {
+      questionIds: picked.slice(0, targetSize),
+      conceptKeys: allUnits.map((u) => `unit:${u}`),
+      // For a diagnostic, the value isn't "your readiness will move +Xpp" —
+      // it's "establish a baseline." Encode that as a small positive hint
+      // so the card knows this is informative, not aspirational.
+      expectedDeltaPctHint: 0.02,
+    };
+  }
+
   // Rank units by mastery — lowest first.
   const sortedUnits = [...inputs.unitMasteries]
     .sort((a, b) => a.masteryScore - b.masteryScore)
@@ -131,6 +167,31 @@ export function generateTodaysSet(inputs: TodaysSetInputs): TodaysSetResult {
       if (picked.includes(c.id)) continue;
       picked.push(c.id);
       if (picked.filter(id => bucket.some(b => b.id === id)).length >= quota) break;
+    }
+  }
+
+  // 2026-06-01 — Bug #4 fix: exploration tail. Reserve EXPLORATION_RATIO
+  // of the set for units OUTSIDE the targeted weak set. Without this, a
+  // user's "weakest unit" never gets challenged because Today's Set never
+  // serves it. Picks oldest-attempted (lowest prio = haven't seen in
+  // longest) from non-targeted units so stale mastery surfaces.
+  const weakUnitSet = new Set(weakUnits);
+  const explorationTarget = Math.floor(targetSize * EXPLORATION_RATIO);
+  if (explorationTarget > 0 && picked.length < targetSize) {
+    const nonTargetCandidates = inputs.candidatePool.filter(
+      (c) => !recentQids.has(c.id) && !weakUnitSet.has(c.unit) && !picked.includes(c.id),
+    );
+    // Sort by SM-2 priority (oldest seen / unseen → top)
+    const ranked = nonTargetCandidates
+      .map((c) => ({ c, prio: sm2Priority(lastResponseByQ.get(c.id), nowMs) }))
+      .sort((a, b) => b.prio - a.prio)
+      .map((x) => x.c);
+    let explorationTaken = 0;
+    for (const c of ranked) {
+      if (picked.length >= targetSize) break;
+      if (explorationTaken >= explorationTarget) break;
+      picked.push(c.id);
+      explorationTaken += 1;
     }
   }
 

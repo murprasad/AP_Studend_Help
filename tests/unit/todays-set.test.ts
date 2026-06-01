@@ -13,10 +13,14 @@ function buildPool(units: string[], perUnit = 10): { id: string; unit: string; d
 }
 
 describe("Today's Set generator", () => {
-  it("1. Picks 12 Qs concentrated in 3 weakest units", () => {
+  it("1. Picks 12 Qs concentrated in 3 weakest units (with 20% exploration tail)", () => {
+    // 2026-06-01 — v1.1: adds an EXPLORATION_RATIO tail so ~2-3 of 12 Qs
+    // come from non-weak units. Without this, a user's "weakest unit" got
+    // 25+ consecutive sessions of identical targeting (persona walkthrough
+    // bug #4). Must seed pastResponses to bypass diagnostic-mode short-circuit.
     const r = generateTodaysSet({
       candidatePool: buildPool(["A", "B", "C", "D", "E"]),
-      pastResponses: [],
+      pastResponses: [{ questionId: "seed", isCorrect: true, confidenceSelf: 4, answeredAt: daysAgo(60) }],
       unitMasteries: [
         { unit: "A", masteryScore: 20 },
         { unit: "B", masteryScore: 40 },
@@ -27,8 +31,32 @@ describe("Today's Set generator", () => {
     });
     expect(r.questionIds.length).toBe(12);
     const inWeak = r.questionIds.filter(id => id.startsWith("A-") || id.startsWith("B-") || id.startsWith("C-")).length;
-    expect(inWeak).toBeGreaterThanOrEqual(10);
+    // Most still weak; ~2-3 reserved for exploration of D/E
+    expect(inWeak).toBeGreaterThanOrEqual(9);
+    expect(inWeak).toBeLessThanOrEqual(12);
     expect(r.conceptKeys).toEqual(["unit:A", "unit:B", "unit:C"]);
+  });
+
+  it("1b. Diagnostic-mode: brand-new user with no past responses gets evenly-distributed first set", () => {
+    // 2026-06-01 Bug #13 fix: targeting "weakest" is meaningless before
+    // baseline data exists (every unit has the same default mastery).
+    // For pastResponses === [], distribute across ALL units instead.
+    const r = generateTodaysSet({
+      candidatePool: buildPool(["A", "B", "C", "D", "E"]),
+      pastResponses: [],
+      unitMasteries: [
+        { unit: "A", masteryScore: 50 },
+        { unit: "B", masteryScore: 50 },
+        { unit: "C", masteryScore: 50 },
+        { unit: "D", masteryScore: 50 },
+        { unit: "E", masteryScore: 50 },
+      ],
+    });
+    expect(r.questionIds.length).toBe(12);
+    // Should touch all 5 units, not just 3
+    const unitsTouched = new Set(r.questionIds.map((id) => id.split("-")[0]));
+    expect(unitsTouched.size).toBeGreaterThanOrEqual(4);
+    expect(r.conceptKeys.length).toBe(5);
   });
 
   it("2. Skips questions answered in last 14 days", () => {
@@ -73,10 +101,13 @@ describe("Today's Set generator", () => {
     expect(idxQ3).toBeLessThan(idxQ5);
   });
 
-  it("5. expectedDeltaPctHint scales with mastery gap", () => {
+  it("5. expectedDeltaPctHint scales with mastery gap (non-diagnostic users)", () => {
+    // Seed a past response so we bypass diagnostic-mode (where expectedDelta
+    // is fixed at 0.02 since the goal is baseline coverage, not lift).
+    const seed = { questionId: "seed", isCorrect: true, confidenceSelf: 4, answeredAt: daysAgo(60) };
     const big = generateTodaysSet({
       candidatePool: buildPool(["A", "B", "C"]),
-      pastResponses: [],
+      pastResponses: [seed],
       unitMasteries: [
         { unit: "A", masteryScore: 10 },
         { unit: "B", masteryScore: 20 },
@@ -85,7 +116,7 @@ describe("Today's Set generator", () => {
     });
     const small = generateTodaysSet({
       candidatePool: buildPool(["A", "B", "C"]),
-      pastResponses: [],
+      pastResponses: [seed],
       unitMasteries: [
         { unit: "A", masteryScore: 70 },
         { unit: "B", masteryScore: 75 },

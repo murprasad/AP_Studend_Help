@@ -33,6 +33,7 @@ import { MasteryTierUpCard } from "@/components/dashboard/mastery-tier-up-card";
 import { PassProbabilityHero } from "@/components/dashboard/pass-probability-hero";
 import { TodaysSetCard } from "@/components/dashboard/todays-set-card";
 import { SatSkillHeatmap } from "@/components/dashboard/sat-skill-heatmap";
+import { ActivationGate } from "@/components/dashboard/activation-gate";
 import { PassReadyCertGate } from "@/components/dashboard/pass-ready-cert-gate";
 import { ResumeCard } from "@/components/dashboard/resume-card";
 import { PrimaryActionStrip } from "@/components/dashboard/primary-action-strip";
@@ -45,6 +46,7 @@ import { DailyStudyOSCard } from "@/components/dashboard/daily-study-os-card";
 import { DailyGoalCard } from "@/components/dashboard/daily-goal-card";
 import { LockedValueCard } from "@/components/dashboard/locked-value-card";
 import { AutoLaunchNudge } from "@/components/dashboard/auto-launch-nudge";
+import { useDaysSinceOnboard } from "@/lib/use-new-user";
 import { FlashcardsDueCard } from "@/components/dashboard/flashcards-due-card";
 import { SingleQuestionEntry } from "@/components/dashboard/single-question-entry";
 import { DiagnosticPromptCard } from "@/components/dashboard/diagnostic-prompt-card";
@@ -147,6 +149,13 @@ function DashboardBody({ course, impressionId }: { course: string; impressionId:
   //   PrimaryActionStrip("Warm up") + SingleQuestionEntry("TRY IT") +
   //   DiagnosticPrompt + OutcomeProgressStrip — duplicated welcome vibe.
   const { forcing, loading: journeyLoading, postJourney } = useJourneyForcing(course);
+  // 2026-06-01 — minimal post-onboarding dashboard for brand-new users.
+  // < 24h: hide AutoLaunchNudge (they JUST did the journey warm-up).
+  // < 3d: hide ExamDatePromptCard (don't ask for another form fill).
+  // GreetingCard's upsell gates itself via useIsFirstWeekUser.
+  const daysSinceOnboard = useDaysSinceOnboard();
+  const isFreshlyOnboarded = daysSinceOnboard < 1;
+  const isFirstWeek = daysSinceOnboard < 3;
   // Beta 9.6 — focus pulse when arriving from /journey "What to do next" tile
   useDashboardFocus();
   // Beta 9.7 — post-journey streamlined dashboard. For users who completed
@@ -212,8 +221,10 @@ function DashboardBody({ course, impressionId }: { course: string; impressionId:
 
       {/* Nawal-pattern nudge — renders null unless user has 2+ dashboard
           views today AND zero questions answered today. One-shot modal
-          offering a 3-Q warmup so dashboard-staring converts to action. */}
-      <AutoLaunchNudge course={course as string} />
+          offering a 3-Q warmup so dashboard-staring converts to action.
+          2026-06-01 — hidden for brand-new (< 24h post-onboard) users
+          since they JUST finished the journey's warm-up + diagnostic. */}
+      {!isFreshlyOnboarded && <AutoLaunchNudge course={course as string} />}
 
       {/* 0. Celebration — renders null when no unread tier-up */}
       <MasteryTierUpCard />
@@ -225,12 +236,15 @@ function DashboardBody({ course, impressionId }: { course: string; impressionId:
           Free users keep all existing affordances. */}
       {process.env.NEXT_PUBLIC_PASS_PROB_LEGACY !== "true" && (
         <>
-          <PassProbabilityHero course={course as string} courseDisplayName={course as string} />
+          {/* 2026-06-01 Fix C — ActivationGate gates the readiness +
+              heatmap cards behind 10+ responses. First-week users see a
+              single focused "answer N more to unlock" CTA instead of the
+              4-CTA traffic jam Yin (3-Q ACT_ENGLISH bouncer) hit. */}
+          <ActivationGate course={course as string}>
+            <PassProbabilityHero course={course as string} courseDisplayName={course as string} />
+            <SatSkillHeatmap course={course as string} />
+          </ActivationGate>
           <TodaysSetCard course={course as string} />
-          {/* F15 (#100) 2026-05-31 — SAT/PSAT skill heatmap. Renders null
-              for non-SAT/PSAT courses so the dashboard is unchanged for
-              AP/ACT students. */}
-          <SatSkillHeatmap course={course as string} />
           <PassReadyCertGate
             course={course as string}
             courseDisplayName={course as string}
@@ -264,8 +278,10 @@ function DashboardBody({ course, impressionId }: { course: string; impressionId:
       {/* 1c-pre. (2026-05-01) — Exam-date prompt. Renders ONLY when the
           user hasn't set their exam date yet. Without this entry point,
           CramModeCard + DailyStudyOSCard's exam-aware behaviour stays
-          dark for everyone. Disappears the moment a date is saved. */}
-      <ExamDatePromptCard course={course as ApCourse} />
+          dark for everyone. Disappears the moment a date is saved.
+          2026-06-01 — also hidden for first-week (< 3 days post-onboard)
+          users; adding a second form fill on day-0 dashboard kills flow. */}
+      {!isFirstWeek && <ExamDatePromptCard course={course as ApCourse} />}
 
       {/* 1c. Phase C (Beta 8.3) — Cram Mode countdown + today's plan.
           Renders ONLY when User.examDate is set AND <30 days out. Placed

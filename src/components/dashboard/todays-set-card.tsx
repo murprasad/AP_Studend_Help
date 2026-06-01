@@ -16,12 +16,58 @@ import { useRouter } from "next/navigation";
 import { Loader2, Play, Check, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { AP_UNITS } from "@/lib/utils";
+
+/**
+ * 2026-06-01 — Fix A + B for new-user activation gap.
+ * Forensic on user `itsyourgirlyin@gmail.com` (3-Q ACT_ENGLISH user) showed
+ * she landed on dashboard 11s after first practice ended, saw "14 mins · 12
+ * questions · 1 weakest concept", and bounced. The subtitle hid the
+ * actionable hook (which concept) behind a count, and led with time-cost
+ * not value. This subtitle now:
+ *   - Names the concept ("Strengthen Production of Writing")
+ *   - Shows the question count
+ *   - Drops the minutes lead (it was a deterrent for n=3 history users)
+ */
+function unitDisplayName(unitKey: string): string {
+  // conceptKeys come in as "unit:ACT_ENG_1_PRODUCTION_WRITING"; strip prefix
+  const raw = unitKey.startsWith("unit:") ? unitKey.slice(5) : unitKey;
+  return (AP_UNITS as Record<string, string>)[raw] ?? raw.replace(/_/g, " ");
+}
+
+interface ConceptMeta {
+  key: string;
+  attempts: number;
+  mastery: number;
+  isUntried: boolean;
+}
 
 interface TodaysSetResponse {
   plan: { questionIds: string[]; conceptKeys: string[]; expectedDeltaPctHint: number };
+  conceptMeta?: ConceptMeta[];
   alreadyDone: boolean;
   generated: boolean;
   warning?: string;
+}
+
+/**
+ * 2026-06-01 — Bug #1, #5, #9 fix.
+ * Choose the right action verb for the card title based on the user's
+ * actual relationship to the concept. "Strengthen" implies prior weakness;
+ * for an untouched unit, the right framing is "Try" (an invitation, not a
+ * remediation). At polish-level mastery the framing should be aspirational.
+ *
+ * Thresholds chosen to feel honest:
+ *   - isUntried (0 attempts)  → "Try"
+ *   - mastery < 0.50          → "Strengthen"
+ *   - mastery < 0.80          → "Sharpen"
+ *   - mastery >= 0.80         → "Polish"
+ */
+function actionVerb(meta: ConceptMeta | null): string {
+  if (!meta || meta.isUntried) return "Try";
+  if (meta.mastery < 0.50) return "Strengthen";
+  if (meta.mastery < 0.80) return "Sharpen";
+  return "Polish";
 }
 
 interface Props {
@@ -87,6 +133,20 @@ export function TodaysSetCard({ course }: Props) {
   const count = data.plan.questionIds.length;
   const minutes = Math.max(10, Math.round(count * 1.2)); // ~1.2 min/Q
   const concepts = data.plan.conceptKeys.length;
+  const firstConceptName = data.plan.conceptKeys[0]
+    ? unitDisplayName(data.plan.conceptKeys[0])
+    : null;
+  // 2026-06-01 — Bug #1/#5/#9 fix: pick verb from per-concept state, not
+  // a hardcoded "Strengthen". Falls back to "Try" when conceptMeta missing.
+  const firstMeta = data.conceptMeta?.[0] ?? null;
+  const verb = actionVerb(firstMeta);
+  // 2026-06-01 — Bug #7/#15 fix: if the system itself thinks the set won't
+  // move the user's number (expectedDeltaPctHint < 0.5 percentage points)
+  // AND the user already has data on the targeted concept, reframe as a
+  // daily warmup rather than a recommendation. Avoids surfacing CTAs the
+  // system has 0 confidence in.
+  const lowExpectedLift = data.plan.expectedDeltaPctHint < 0.005;
+  const isWarmup = lowExpectedLift && firstMeta != null && !firstMeta.isUntried && firstMeta.mastery >= 0.50;
 
   // 2026-05-29 — Use programmatic navigation rather than <Link> wrapping
   // the entire card. Persona walkthrough showed the Link click landed back
@@ -122,9 +182,15 @@ export function TodaysSetCard({ course }: Props) {
             <Play className="h-6 w-6 text-blue-700 dark:text-blue-400" fill="currentColor" />
           </div>
           <div className="flex-1 min-w-0">
-            <h3 className="font-semibold leading-tight">Today&apos;s Set</h3>
+            <h3 className="font-semibold leading-tight">
+              {firstConceptName
+                ? (isWarmup ? `Daily warm-up · ${firstConceptName}` : `${verb} ${firstConceptName}`)
+                : "Today's Set"}
+            </h3>
             <p className="text-sm text-muted-foreground mt-0.5">
-              {minutes} mins · {count} questions · {concepts} weakest {concepts === 1 ? "concept" : "concepts"}
+              {count} questions
+              {concepts > 1 && ` · ${concepts - 1} more area${concepts - 1 === 1 ? "" : "s"}`}
+              {" · "}~{minutes} mins
             </p>
           </div>
           <ArrowRight className="h-5 w-5 text-blue-700 dark:text-blue-400 flex-shrink-0" />

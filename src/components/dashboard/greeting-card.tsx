@@ -19,6 +19,7 @@ import Link from "next/link";
 import { Crown, Sparkles } from "lucide-react";
 import { hasAnyPremium, isPremiumForTrack } from "@/lib/tiers";
 import type { ModuleSub } from "@/lib/tiers";
+import { useIsFirstWeekUser } from "@/lib/use-new-user";
 
 function timeOfDayGreeting(): string {
   const hour = new Date().getHours();
@@ -29,6 +30,11 @@ function timeOfDayGreeting(): string {
 
 export function GreetingCard() {
   const { data: session } = useSession();
+  // 2026-06-01 — suppress upsell + plan label for brand-new users (first
+  // ~3 days). They haven't seen the product's value yet; throwing $9.99
+  // at them on day 0 is anti-activation. Plan badge reappears once they
+  // mature past the first-week threshold.
+  const isFirstWeek = useIsFirstWeekUser();
   if (!session?.user) return null;
 
   const user = session.user as {
@@ -48,6 +54,17 @@ export function GreetingCard() {
 
   const greeting = timeOfDayGreeting();
   const nameStr = firstName ? `, ${firstName}` : "";
+
+  // First-week, free-tier user: name-only greeting, no plan strip.
+  if (isFirstWeek && !isPremium) {
+    return (
+      <div className="px-1 pt-1 pb-2">
+        <p className="text-[15px] sm:text-base font-semibold leading-tight">
+          {greeting}{nameStr}
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="flex items-center justify-between gap-3 px-1 pt-1 pb-2">

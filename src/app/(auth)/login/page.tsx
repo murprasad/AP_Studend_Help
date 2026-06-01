@@ -115,7 +115,7 @@ export default function LoginPage() {
             plain h1 here fixes both K2 (exactly one h1) and the K9 heading-order
             skip that a sr-only h1 above an h3 CardTitle introduced (2026-04-24). */}
         <h1 className="text-2xl font-semibold leading-none tracking-tight">Welcome back</h1>
-        <CardDescription>Log in to continue your AP exam prep</CardDescription>
+        <CardDescription>Log in to continue your exam prep</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         {/* Persistent error banner — shown when login fails. Stays visible

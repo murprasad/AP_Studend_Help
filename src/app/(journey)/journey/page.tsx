@@ -188,43 +188,55 @@ export default function JourneyPage() {
       .catch(() => {});
   }, [mode, course]);
 
-  // ── Step 0 → start journey ─────────────────────────────────────────────────
+  // ── Step 0 → diagnostic (compressed flow, 2026-06-01) ────────────────────
+  // 2026-06-01 — Compressed journey per user feedback. Previously: 7 screens
+  // (course-pick → warm-up MCQs → trans → FRQ → trans → diagnostic → done)
+  // for AP, 5 for SAT/ACT/PSAT. Compressed to:
+  //   AP:        course-pick → diagnostic → FRQ → /dashboard       (4 steps)
+  //   SAT/ACT/PSAT: course-pick → diagnostic → /dashboard          (3 steps)
+  // Step 1 (warm-up) was 3 MCQs without diagnostic logic — folded into the
+  // 9-Q diagnostic (which already touches all units). Transitions trans12 /
+  // trans23 / trans34 dropped — they were single-button pages between
+  // sessions that drove dropoff per real-user data (Abhipsa, ASNAP, Rithik).
+  // Step 5 (done card) replaced by PostJourneyHero on the dashboard itself.
   const handleStart = useCallback(async (chosenCourse: string) => {
     setCourse(chosenCourse);
-    // 2026-05-13 — persist the chosen course to localStorage + cookie so the
-    // dashboard's useCourse hook sees it after the journey completes. Issue
-    // user reported: after picking AP X in Step 0, the post-journey dashboard
-    // defaulted to AP_WORLD_HISTORY and the user had to re-pick.
     writeCourseToBrowserStorage(chosenCourse);
     await apiPost("start", { course: chosenCourse });
-    await apiPost("advance", { step: 1 });
-    setMode("step1");
+    // Jump straight to step 3 (diagnostic). Skip step 1 (warm-up).
+    await apiPost("advance", { step: 3 });
+    setMode("step3");
   }, [apiPost]);
 
-  // ── Step 1 → trans12 ───────────────────────────────────────────────────────
+  // Legacy handler — only reachable for users mid-flight on the old FSM.
+  // After 2026-06-01 deploy, step1 is never entered from step0; this just
+  // routes anyone with currentStep === 1 in the DB to step 3 so they're not
+  // stranded on a removed mode.
   const handleStep1Done = useCallback(async (artifact: { sessionId: string }) => {
-    await apiPost("advance", { step: 2, artifactId: artifact.sessionId });
-    setMode("trans12");
+    await apiPost("advance", { step: 3, artifactId: artifact.sessionId });
+    setMode("step3");
   }, [apiPost]);
 
-  // ── trans12 → step 2 ───────────────────────────────────────────────────────
+  // Legacy: trans12 → step 2 (FRQ). After compression, no fresh entrants.
   const handleTrans12 = () => setMode("step2");
 
-  // ── Step 2 → trans23 ───────────────────────────────────────────────────────
+  // ── Step 2 (FRQ) done → /dashboard ───────────────────────────────────────
+  // 2026-06-01 — FRQ is the terminal screen for AP. After it completes,
+  // mark journey complete and go to dashboard (the new PostJourneyHero
+  // shows the projected score + weakest unit there).
   const handleStep2Done = useCallback(async (frqId: string) => {
-    await apiPost("advance", { step: 3, artifactId: frqId });
-    setMode("trans23");
-  }, [apiPost]);
+    await apiPost("advance", { step: 5, artifactId: frqId });
+    try { await updateSession(); } catch { /* non-fatal */ }
+    router.push("/dashboard");
+  }, [apiPost, updateSession, router]);
 
-  // ── trans23 → step 3 ───────────────────────────────────────────────────────
+  // Legacy: trans23 — no fresh entrants after compression.
   const handleTrans23 = () => setMode("step3");
 
-  // ── Step 3 → step 5 (trim 2026-05-28) ──────────────────────────────────────
-  // Mirror PL trim of 2026-05-21: diagnostic completion goes straight to
-  // step 5 (done), skipping trans34 + step3a (flashcards) + step4 (targeted
-  // MCQs). Real users (Abhipsa, ASNAP, Rithik) dropped off here.
-  // PL trim message: "Removes 7+ intermediate screens; user hits dashboard
-  // ~60% faster."
+  // ── Step 3 (diagnostic) done → FRQ (AP) or /dashboard (non-AP) ───────────
+  // 2026-06-01 — Branch on track. AP students need the FRQ as their final
+  // step (it's the differentiator). Non-AP tracks have no FRQ; the
+  // diagnostic IS the final step, redirect to dashboard immediately.
   const handleStep3Done = useCallback(async (out: {
     diagnosticId: string;
     weakestUnit: string | null;
@@ -233,32 +245,39 @@ export default function JourneyPage() {
   }) => {
     setWeakestUnit(out.weakestUnit);
     setPredictedScore(out.predictedScore);
-    await apiPost("advance", {
-      step: 5,
-      artifactId: out.diagnosticId,
-      weakestUnit: out.weakestUnit ?? undefined,
-    });
-    // JWT refresh so middleware sees onboardingCompletedAt on the next request.
-    try { await updateSession(); } catch { /* non-fatal */ }
-    setMode("step5");
-  }, [apiPost, updateSession]);
+    const hasFrq = getExamCopy(course).hasFreeResponse;
+    if (hasFrq) {
+      // AP: advance to step 2 (FRQ); the FRQ component will mark complete
+      // when done.
+      await apiPost("advance", {
+        step: 2,
+        artifactId: out.diagnosticId,
+        weakestUnit: out.weakestUnit ?? undefined,
+      });
+      setMode("step2");
+    } else {
+      // SAT/ACT/PSAT: diagnostic is the terminal step.
+      await apiPost("advance", {
+        step: 5,
+        artifactId: out.diagnosticId,
+        weakestUnit: out.weakestUnit ?? undefined,
+      });
+      try { await updateSession(); } catch { /* non-fatal */ }
+      router.push("/dashboard");
+    }
+  }, [apiPost, updateSession, course, router]);
 
   // Legacy handlers preserved for users with currentStep === 3a/4 mid-flight.
   const handleTrans34 = () => setMode("step3a");
   const handleStep3aDone = () => setMode("step4");
 
-  // ── Step 4 → step 5 (done) ─────────────────────────────────────────────────
+  // Legacy: step 4 (targeted MCQs) → /dashboard. Old FSM remnant; only
+  // reachable for users mid-flight before the 2026-05-28 trim.
   const handleStep4Done = useCallback(async (artifact: { sessionId: string }) => {
     await apiPost("advance", { step: 5, artifactId: artifact.sessionId });
-    // Beta 9.7.2 — force NextAuth to refresh the JWT from DB. The advance
-    // handler just wrote `onboardingCompletedAt = NOW` to the User row;
-    // without this update() call, the cookie-based session in the
-    // browser still has the OLD value (null) until next sign-in. With
-    // it, the next request to /dashboard sees a fresh JWT and middleware
-    // doesn't bounce the user back to /journey.
     try { await updateSession(); } catch { /* non-fatal */ }
-    setMode("step5");
-  }, [apiPost, updateSession]);
+    router.push("/dashboard");
+  }, [apiPost, updateSession, router]);
 
   // ── Helper: pretty unit name ───────────────────────────────────────────────
   const courseConfig = COURSE_REGISTRY[course as ApCourse] ?? null;
@@ -300,12 +319,13 @@ export default function JourneyPage() {
   }
 
   if (mode === "trans12") {
+    const examName = getExamCopy(course).examName;
     return (
       <JourneyShell step={2} totalSteps={5}>
         <TransitionCard
           eyebrow="Good start"
-          title="Now try a real AP question"
-          body="One AP-style FRQ. You'll see the official rubric and how AP graders score it — the part most students never see."
+          title={`Now try a real ${examName} question`}
+          body={`One ${examName}-style FRQ. You'll see the official rubric and how ${examName} graders score it — the part most students never see.`}
           cta="Continue"
           tone="indigo"
           icon="scroll"
@@ -326,12 +346,13 @@ export default function JourneyPage() {
   }
 
   if (mode === "trans23") {
+    const examName = getExamCopy(course).examName;
     return (
       <JourneyShell step={3} totalSteps={5}>
         <TransitionCard
-          eyebrow="Now estimate your AP score"
+          eyebrow={`Now estimate your ${examName} score`}
           title="A quick diagnostic — 5 minutes"
-          body="One question per unit. We'll show you a projected AP score and the unit you should fix first."
+          body={`One question per unit. We'll show you a projected ${examName} score and the unit you should fix first.`}
           cta="Start diagnostic"
           tone="purple"
           icon="telescope"

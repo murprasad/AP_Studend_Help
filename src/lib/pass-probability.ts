@@ -94,39 +94,51 @@ export interface PassProbResult {
   drivers: Array<{ conceptKey: string; currentMastery: number; deltaIfMastered: number }>;
 }
 
-const MODEL_VERSION = "v1.0";
+const MODEL_VERSION = "v1.1";
 const COVERAGE_MASTERY_BAR = 0.70;
 const ABANDON_PENALTY_PER = 0.02;
 const ABANDON_PENALTY_CAP = 0.10;
-// 2026-05-29 — Lowered from 10 to 5 after persona walkthrough showed
-// a Pass Plan user with 4 algebra responses fell into the "take diagnostic"
-// state — most real users cluster activity in 1-2 courses, making per-course
-// floor of 10 too aggressive. With 5 the CI auto-widens to its 0.15 cap,
-// which is honest signaling.
-const SAMPLE_SIZE_FLOOR = 5;
+// 2026-06-01 — Raised back to 20 after corrected persona walkthrough
+// showed the formula declares "93% readiness" from 5 Qs at 100% accuracy.
+// Floor of 5 + the 0.60 above-threshold bonus in normalizeScore + the
+// 0.9 redistributed weight when no mocks = trivial scores inflate to
+// near-pass numbers. Raising the floor to 20 forces real signal before
+// the dashboard claims a readiness score; below the floor the UI shows
+// "build your number" instead of a confidently-wrong figure.
+const SAMPLE_SIZE_FLOOR = 20;
 const CI_BASE = 0.20;
 const CI_CAP = 0.15;
 const DRIVER_TARGET_MASTERY = 0.85;
 
 /**
- * Normalize a raw score (0-1) against the course's pass threshold. Maps
- * threshold → 0.50, twice-threshold → 1.00, sub-threshold → linear ramp
- * down. Above threshold curves toward 1.0 but never overshoots.
+ * Normalize a raw score (0-1) against the course's pass threshold.
+ *
+ * 2026-06-01 (v1.1) — Removed the 0.60 above-threshold floor that was
+ * mapping any "just barely passing" score (50% drill accuracy) to 60%
+ * normalized. Combined with the 0.9 redistributed weight when no mocks
+ * exist, the old curve gave a fresh user with 8 right-out-of-8 answers
+ * a 93% readiness. New curve is monotonic + continuous: score == result
+ * with a gentle above-threshold lift that NEVER awards more than the raw
+ * score itself in the 50-70% band.
  *
  * Examples (passThreshold=0.50):
- *   score=0.30 → 0.30 (below threshold = same scale)
- *   score=0.50 → 0.60 (at threshold = slight cushion)
- *   score=0.70 → 0.80
- *   score=0.90 → 0.95
+ *   score=0.30 → 0.30
+ *   score=0.50 → 0.50  (was 0.60)
+ *   score=0.60 → 0.62  (was 0.78 — biggest correction)
+ *   score=0.70 → 0.75  (was 0.86)
+ *   score=0.80 → 0.85  (was 0.91)
+ *   score=0.90 → 0.93
  *   score=1.00 → 1.00
  */
 function normalizeScore(score: number, passThreshold: number): number {
   if (score <= 0) return 0;
   if (score >= 1) return 1;
   if (score < passThreshold) return score; // sub-threshold: linear
-  // Above threshold: map [threshold, 1] → [0.60, 1.00] with diminishing returns
+  // Above threshold: gentle convex lift that starts AT the raw score
+  // (not a +0.10 jump) and asymptotes to 1.0
   const aboveThreshold = (score - passThreshold) / Math.max(1 - passThreshold, 0.01);
-  return 0.60 + 0.40 * Math.sqrt(aboveThreshold);
+  // f(0)=score, f(1)=1, convex
+  return score + (1 - score) * Math.pow(aboveThreshold, 1.5) * 0.5;
 }
 
 /**
@@ -147,10 +159,17 @@ function recentMockScore(mocks: PassProbInputs["recentMocks"]): number | null {
 /**
  * Exponentially-decayed drill accuracy. Each older response contributes
  * less. Empty → null.
+ *
+ * 2026-06-01 — Decay softened 0.95 → 0.97 to reduce session-to-session
+ * variance (bug #6). With 0.95 the last 5 Qs dominated, so a single 0%
+ * session → -12 readiness; a single 100% session → +12. Real student
+ * dashboards had unhelpful ±12-pt swings per session. With 0.97 the
+ * weight at i=30 is 0.40 (vs 0.21 prior), giving older Qs a fairer
+ * say and smoothing single-session noise.
  */
 function recentDrillAccuracy(responses: PassProbInputs["recentDrillResponses"]): number | null {
   if (responses.length === 0) return null;
-  const decay = 0.95; // each older response = 95% of the next-newer one's weight
+  const decay = 0.97; // each older response = 97% of the next-newer one's weight
   let numer = 0;
   let denom = 0;
   for (let i = 0; i < responses.length && i < 30; i++) {
@@ -162,13 +181,29 @@ function recentDrillAccuracy(responses: PassProbInputs["recentDrillResponses"]):
 }
 
 /**
- * Fraction of concepts where mastery ≥ COVERAGE_MASTERY_BAR.
+ * Coverage: fraction-of-concepts-mastered with PARTIAL CREDIT.
+ *
+ * 2026-06-01 — Bug #3 fix. Previous step function awarded 0 coverage
+ * credit until mastery hit 70%. A student at 65% mastery in every unit
+ * got the same coverage signal as someone at 0% in every unit, which
+ * is demotivating and inaccurate. New curve:
+ *
+ *   mastery <= 0.30   → 0 credit (still in "needs work" range)
+ *   0.30 < mastery < 0.70 → linear from 0 to 1
+ *   mastery >= 0.70   → 1 credit (full)
+ *
  * Empty array → 0 (no concepts mastered).
  */
 function conceptCoverage(masteries: PassProbInputs["conceptMasteries"]): number {
   if (masteries.length === 0) return 0;
-  const covered = masteries.filter(m => m.mastery >= COVERAGE_MASTERY_BAR).length;
-  return covered / masteries.length;
+  const RAMP_LO = 0.30;
+  const RAMP_HI = COVERAGE_MASTERY_BAR; // 0.70
+  const sum = masteries.reduce((s, m) => {
+    if (m.mastery >= RAMP_HI) return s + 1;
+    if (m.mastery <= RAMP_LO) return s + 0;
+    return s + (m.mastery - RAMP_LO) / (RAMP_HI - RAMP_LO);
+  }, 0);
+  return sum / masteries.length;
 }
 
 export function computePassProbability(inputs: PassProbInputs): PassProbResult {

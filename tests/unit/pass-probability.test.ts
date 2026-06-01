@@ -188,19 +188,39 @@ describe("pass-probability v1.0", () => {
     expect(passThresholdForCourse("UNKNOWN_X")).toBe(0.60);
   });
 
-  it("12. Concept coverage with no mastered concepts contributes 0", () => {
+  it("12. Concept coverage awards partial credit between 0.30 and 0.70 mastery (gradient, not step)", () => {
+    // 2026-06-01 (v1.1) — was a step function bug: students mid-journey at
+    // 0.65 mastery got 0 coverage credit, same as 0% mastery. Now a 0.65-mastery
+    // student gets partial credit reflecting their progress.
     const r = computePassProbability({
       recentMocks: [{ score: 0.70, takenAt: NOW }],
       recentDrillResponses: [],
       conceptMasteries: [
-        { conceptKey: "a", mastery: 0.40 },
-        { conceptKey: "b", mastery: 0.50 },
-        { conceptKey: "c", mastery: 0.65 }, // all below 0.70 bar
+        { conceptKey: "a", mastery: 0.40 }, // 0.25 credit (in ramp)
+        { conceptKey: "b", mastery: 0.50 }, // 0.50 credit (in ramp)
+        { conceptKey: "c", mastery: 0.65 }, // 0.875 credit (in ramp)
+      ],
+      abandonedSessionsLast7d: 0,
+      passThreshold: 0.5,
+    });
+    // Expected: avg of (0.25, 0.50, 0.875) ≈ 0.542; coverageTerm = 0.1 * 0.542 ≈ 0.054
+    expect(r.components.coverageTerm).toBeGreaterThan(0.04);
+    expect(r.components.coverageTerm).toBeLessThan(0.07);
+    expect(r.drivers.length).toBeGreaterThan(0);
+  });
+
+  it("12b. Mastery below 0.30 still contributes 0 to coverage", () => {
+    const r = computePassProbability({
+      recentMocks: [{ score: 0.70, takenAt: NOW }],
+      recentDrillResponses: [],
+      conceptMasteries: [
+        { conceptKey: "a", mastery: 0.20 },
+        { conceptKey: "b", mastery: 0.10 },
+        { conceptKey: "c", mastery: 0.00 },
       ],
       abandonedSessionsLast7d: 0,
       passThreshold: 0.5,
     });
     expect(r.components.coverageTerm).toBe(0);
-    expect(r.drivers.length).toBeGreaterThan(0); // but drivers exist
   });
 });
