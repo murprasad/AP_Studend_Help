@@ -79,6 +79,16 @@ interface ExamResult {
   satScaledScore?: number | null;
   satScaleMin?: number | null;
   satScaleMax?: number | null;
+  // 2026-05-31 (F9 of #100) — Per-content-domain subscores (each
+  // domain converted through the same scaled-score curve). Empty
+  // array for non-SAT/PSAT courses. Server already sorted weakest
+  // first.
+  satDomainSubscores?: Array<{
+    unit: string;
+    accuracyPercent: number;
+    totalAnswered: number;
+    scaledScore: number;
+  }>;
 }
 
 export default function MockExamPage() {
@@ -639,7 +649,49 @@ export default function MockExamPage() {
               </p>
             </CardContent>
           </Card>
-        ) : (
+        ) : null}
+
+        {/* F9 (#100) 2026-05-31 — Per-content-domain subscores. Same CB
+            scale per domain (each domain converted through the SAT/PSAT
+            curve at its own accuracy). Sorted weakest first so students
+            see the gap they should attack. */}
+        {result.satDomainSubscores && result.satDomainSubscores.length > 0 && (
+          <Card className="card-glow">
+            <CardContent className="p-6 space-y-4">
+              <div className="flex items-baseline justify-between">
+                <h3 className="font-semibold text-base">Domain subscores</h3>
+                <span className="text-xs text-muted-foreground">
+                  weakest → strongest
+                </span>
+              </div>
+              <ul className="space-y-3">
+                {result.satDomainSubscores.map((d) => (
+                  <li key={d.unit} className="flex items-center gap-3">
+                    <div className="flex-1">
+                      <p className="text-sm font-medium leading-tight">
+                        {d.unit.replace(/^(SAT|PSAT)_(MATH|RW)_\d+_/, "").replace(/_/g, " ")}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {d.accuracyPercent}% on {d.totalAnswered}{" "}
+                        {d.totalAnswered === 1 ? "question" : "questions"}
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-xl font-bold tabular-nums text-blue-600 dark:text-blue-400">
+                        {d.scaledScore}
+                      </p>
+                      <p className="text-[10px] text-muted-foreground">
+                        of {result.satScaleMax}
+                      </p>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </CardContent>
+          </Card>
+        )}
+
+        {!result.satScaledScore && (
           <Card className="card-glow">
             <CardContent className="p-6 text-center">
               <p className="text-sm text-muted-foreground mb-2">Estimated {examCopy.scoreLabel}</p>

@@ -342,6 +342,16 @@ export async function PATCH(
     // a CB-spec-shaped scaled score that respects adaptive equating.
     const satFamily = familyForCourse(practiceSession.course as string);
     let satSectionScore: ReturnType<typeof computeSatSectionScore> = null;
+    // F9 (#100) 2026-05-31 — Per-content-domain subscores for SAT/PSAT.
+    // CB Bluebook shows a per-domain breakout under the section score so
+    // students see which of the 4 content domains is the weakest. The
+    // same scaled-score curve runs against each domain's accuracy.
+    let satDomainSubscores: Array<{
+      unit: string;
+      accuracyPercent: number;
+      totalAnswered: number;
+      scaledScore: number;
+    }> = [];
     if (satFamily) {
       // Order responses by their sessionQuestion.order so M1 split is correct
       const sqRows = await prisma.sessionQuestion.findMany({
@@ -361,6 +371,43 @@ export async function PATCH(
         family: satFamily,
         module2Tier,
       });
+
+      // F9 — compute per-domain subscores. Load each response's
+      // question.unit so we can group accuracy by content domain.
+      const responsesWithUnit = await prisma.studentResponse.findMany({
+        where: { sessionId },
+        select: {
+          isCorrect: true,
+          question: { select: { unit: true } },
+        },
+      });
+      const byUnit = new Map<string, { correct: number; total: number }>();
+      for (const r of responsesWithUnit) {
+        const unit = r.question?.unit;
+        if (!unit) continue;
+        const u = byUnit.get(unit) ?? { correct: 0, total: 0 };
+        u.total += 1;
+        if (r.isCorrect) u.correct += 1;
+        byUnit.set(unit, u);
+      }
+      satDomainSubscores = Array.from(byUnit.entries())
+        .map(([unit, { correct, total }]) => {
+          const acc = total > 0 ? (correct / total) * 100 : 0;
+          const sub = computeSatSectionScore({
+            accuracyPercent: acc,
+            totalAnswered: total,
+            family: satFamily,
+            module2Tier,
+          });
+          return {
+            unit,
+            accuracyPercent: Math.round(acc),
+            totalAnswered: total,
+            scaledScore: sub?.scaledScore ?? 0,
+          };
+        })
+        // Sort weakest → strongest so the student sees the gap first.
+        .sort((a, b) => a.scaledScore - b.scaledScore);
     }
 
     const updatedSession = await prisma.practiceSession.update({
@@ -439,6 +486,9 @@ export async function PATCH(
         satScaledScore: satSectionScore?.scaledScore ?? null,
         satScaleMin: satSectionScore?.scaleMin ?? null,
         satScaleMax: satSectionScore?.scaleMax ?? null,
+        // F9 — per-content-domain subscores (4 domains per section,
+        // sorted weakest first). Empty for non-SAT courses.
+        satDomainSubscores,
         previousAccuracy: previousSession?.score != null ? Math.round(previousSession.score) : null,
         questions: questionRows,
       },
