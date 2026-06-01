@@ -32,6 +32,7 @@ import { MasteryTierUpCard } from "@/components/dashboard/mastery-tier-up-card";
 // 2026-05-28 PRD-passprob (mirror of PL — SN uses "Readiness" framing)
 import { PassProbabilityHero } from "@/components/dashboard/pass-probability-hero";
 import { TodaysSetCard } from "@/components/dashboard/todays-set-card";
+import { SatSkillHeatmap } from "@/components/dashboard/sat-skill-heatmap";
 import { PassReadyCertGate } from "@/components/dashboard/pass-ready-cert-gate";
 import { ResumeCard } from "@/components/dashboard/resume-card";
 import { PrimaryActionStrip } from "@/components/dashboard/primary-action-strip";
@@ -226,6 +227,10 @@ function DashboardBody({ course, impressionId }: { course: string; impressionId:
         <>
           <PassProbabilityHero course={course as string} courseDisplayName={course as string} />
           <TodaysSetCard course={course as string} />
+          {/* F15 (#100) 2026-05-31 — SAT/PSAT skill heatmap. Renders null
+              for non-SAT/PSAT courses so the dashboard is unchanged for
+              AP/ACT students. */}
+          <SatSkillHeatmap course={course as string} />
           <PassReadyCertGate
             course={course as string}
             courseDisplayName={course as string}
