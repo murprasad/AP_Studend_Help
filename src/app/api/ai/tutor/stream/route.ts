@@ -66,7 +66,46 @@ End every response with exactly: FOLLOW_UPS: ["q1","q2","q3"]`;
   ];
 
   const apiKey = process.env.GROQ_API_KEY;
-  if (!apiKey) return new Response("AI not configured", { status: 503 });
+
+  // 2026-05-31 — Sage broader cascade fallback. User reported that on SN,
+  // clicking Sage from a wrong answer didn't get a response. Root cause:
+  // this route was Groq-only with no fallback. When Groq was rate-limited
+  // or returned 503, the user just saw "AI unavailable" with no recovery.
+  // Mirror of the PL H1.2 fix: try Groq first (it streams, which is the
+  // best UX), then fall back to the full callAIWithCascade chain through
+  // Gemini → Anthropic → Together.ai → OpenRouter → Pollinations-Free.
+  // The cascade is non-streaming; we wrap it in a single-chunk SSE event
+  // so the client UI doesn't need a separate code path.
+  async function streamCascadeFallback(): Promise<Response> {
+    try {
+      const { callAIWithCascade } = await import("@/lib/ai-providers");
+      const userPrompt = messages
+        .filter((m) => m.role !== "system")
+        .map((m) => `${m.role}: ${m.content}`)
+        .join("\n\n");
+      const cascadeText = await callAIWithCascade(userPrompt, systemPrompt, [], 1);
+      if (cascadeText?.trim()) {
+        const sseChunk = `data: ${JSON.stringify({
+          choices: [{ delta: { content: cascadeText.trim() } }],
+        })}\n\ndata: [DONE]\n\n`;
+        return new Response(sseChunk, {
+          headers: {
+            "Content-Type": "text/event-stream",
+            "Cache-Control": "no-cache",
+            "Connection": "keep-alive",
+          },
+        });
+      }
+    } catch (err) {
+      console.warn("[sage-stream] cascade fallback failed:", err);
+    }
+    return new Response("AI unavailable", { status: 503 });
+  }
+
+  if (!apiKey) {
+    // No Groq key — go straight to the cascade.
+    return streamCascadeFallback();
+  }
 
   const groqRes = await fetch("https://api.groq.com/openai/v1/chat/completions", {
     method: "POST",
@@ -88,9 +127,15 @@ End every response with exactly: FOLLOW_UPS: ["q1","q2","q3"]`;
     // token is usually <1s) but covers slow cold paths through the
     // provider's regional load balancers.
     signal: AbortSignal.timeout(30_000),
+  }).catch((err) => {
+    console.warn("[sage-stream] Groq request failed:", err);
+    return null;
   });
 
-  if (!groqRes.ok) return new Response("AI unavailable", { status: 503 });
+  if (!groqRes || !groqRes.ok) {
+    // Groq failed/rate-limited — fall back to the broader cascade.
+    return streamCascadeFallback();
+  }
 
   // Pass through the SSE stream directly
   return new Response(groqRes.body, {
