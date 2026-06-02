@@ -203,10 +203,20 @@ export default function JourneyPage() {
     setCourse(chosenCourse);
     writeCourseToBrowserStorage(chosenCourse);
     await apiPost("start", { course: chosenCourse });
+    // 2026-06-02 — refresh JWT after start. /api/journey start updates
+    // User.track in DB to match the picked course's family (so picking
+    // SAT_MATH flips track from default "ap" to "sat"), but the JWT
+    // cookie still carries the stale track value. /api/diagnostic gates
+    // on session.user.track (JWT) and returns 403 "This course is not
+    // available on your current track." for cross-family picks until
+    // the JWT refreshes. updateSession() forces a JWT refresh via the
+    // NextAuth "update" trigger which re-reads track from DB.
+    // Reported by murprasad+std@gmail.com testing SAT track end-to-end.
+    try { await updateSession(); } catch { /* non-fatal */ }
     // Jump straight to step 3 (diagnostic). Skip step 1 (warm-up).
     await apiPost("advance", { step: 3 });
     setMode("step3");
-  }, [apiPost]);
+  }, [apiPost, updateSession]);
 
   // Legacy handler — only reachable for users mid-flight on the old FSM.
   // After 2026-06-01 deploy, step1 is never entered from step0; this just
