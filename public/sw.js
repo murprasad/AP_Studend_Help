@@ -1,7 +1,15 @@
-const CACHE_NAME = "preplion-v7";
+// 2026-06-02 — Renamed from preplion-v7 → studentnest-v8 (copy-paste bug
+// from PL fork). A user with the old SW installed will keep serving
+// stale /sat-prep navigation outcomes; bumping the cache name + the SW
+// activate step (already calls caches.delete on non-current keys)
+// forces all users to drop the legacy preplion-v7 entries.
+// Also fixed STATIC_PAGES: dropped /clep-prep and /dsst-prep (not SN
+// pages — those are PrepLion); added the actual 4 SN product pages.
+const CACHE_NAME = "studentnest-v8";
 const QUESTION_CACHE = "studentnest-questions-v1";
 const STATIC_PAGES = [
-  "/", "/pricing", "/about", "/faq", "/clep-prep", "/dsst-prep", "/login", "/register",
+  "/", "/pricing", "/about", "/faq", "/login", "/register",
+  "/ap-prep", "/sat-prep", "/act-prep", "/psat-prep",
   "/dashboard", "/practice", "/ai-tutor", "/billing", "/mock-exam", "/diagnostic",
   "/analytics", "/study-plan", "/resources", "/community", "/onboarding", "/flashcards",
 ];

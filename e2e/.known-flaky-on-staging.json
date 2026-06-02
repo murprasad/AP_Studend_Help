@@ -77,13 +77,9 @@
     { "file": "journey-rail", "title": "Exit button — redirects to dashboard + persists exited state" },
     { "file": "journey-rail", "title": "Step 1 — Start my plan → interstitial → Start →" },
     { "file": "journey-rail", "title": "/dashboard auto-redirects to /journey for fresh user without journey row" },
-    { "_note": "STALE-LANDING-#102 — see _landingRewriteDrift in top doc block. Refresh after landing-test rewrite." },
+    { "_note": "2026-06-02 — TRUE-CODE-CHANGE entries below. data-testid='module-card-*' was removed (Link[href] tiles in new landing); /clep-prep no longer exists on SN (CLEP is PrepLion). These tests need to be deleted/rewritten — keeping allowlisted is a stopgap. Tile-click tests REMOVED from allowlist 2026-06-02 after user reported clicks dead in prod (turned out to be a stale service worker — preplion-v7 cache name + STATIC_PAGES missing /sat-prep /ap-prep /act-prep /psat-prep). Headless browser confirms tiles navigate; SW bumped to studentnest-v8 to force all users off the stale cache." },
     { "file": "fmea-top5-2026-05-03", "title": "Each module card renders with a non-transparent border + non-transparent bg" },
     { "file": "fmea-top5-2026-05-03", "title": "/api/feature-flags response matches what the landing page actually advertises" },
-    { "file": "link-walk-2026-05-03", "title": "Landing → Tile: SAT" },
-    { "file": "link-walk-2026-05-03", "title": "Landing → Tile: ACT" },
-    { "file": "link-walk-2026-05-03", "title": "Landing → Tile: PSAT" },
-    { "file": "link-walk-2026-05-03", "title": "About → Pricing" },
     { "file": "public-entry-points", "title": "/clep-prep loads + hero CTA links to /register?track=clep" }
   ]
 }
