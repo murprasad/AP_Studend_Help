@@ -66,7 +66,7 @@ export function AdminTestUsersTab() {
       } else {
         toast({
           title: email ? `Reset ${email}` : "All test users reset",
-          description: `${totalDeleted} records deleted. Accounts are fresh for QA.`,
+          description: `${totalDeleted} records deleted. Sign out (this browser) then sign in as the test user to land on /journey as new. Different browser? Test user must clear cookies first.`,
         });
       }
       await fetchUsers();

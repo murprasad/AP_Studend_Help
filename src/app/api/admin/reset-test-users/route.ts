@@ -179,7 +179,23 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  return NextResponse.json({ results });
+  // Beta 11.3.x — clear the onboarding_completed bridge cookie on the
+  // caller's browser. Without this, an admin who resets a test user on
+  // the same browser they later sign in as that user will still have
+  // the stale bridge cookie matching the test user's id (cookie value
+  // = userId, set by /api/journey with 30-day TTL). Middleware then
+  // treats the freshly-reset user as recentlyOnboarded and skips the
+  // /journey redirect. Clearing here covers the common single-browser
+  // dev workflow. Different-browser testing still needs the test user
+  // to clear their cookies manually — admin UI now surfaces that.
+  const response = NextResponse.json({ results });
+  response.cookies.set("onboarding_completed", "", {
+    path: "/",
+    maxAge: 0,
+    sameSite: "lax",
+    secure: true,
+  });
+  return response;
 }
 
 // ── PATCH: Set tier for a test user (simulate Premium) ──────────────────────

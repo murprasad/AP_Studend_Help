@@ -58,7 +58,11 @@ export async function GET() {
     // Middleware compares the cookie value to JWT.id and ignores mismatches.
     res.cookies.set("onboarding_completed", session.user.id, {
       path: "/",
-      maxAge: 60 * 60 * 24 * 30, // 30 days
+      // Beta 11.3.x — was 30 days. The bridge only needs to survive
+      // until JWT refresh (next sign-in or update trigger). 1 day
+      // matches the practice/[sessionId] route and shortens the stale-
+      // cookie window for admin test-user resets.
+      maxAge: 60 * 60 * 24,
       sameSite: "lax",
       secure: true,
     });
@@ -161,7 +165,9 @@ export async function POST(req: Request) {
     // Middleware compares the cookie value to JWT.id and ignores mismatches.
     res.cookies.set("onboarding_completed", session.user.id, {
         path: "/",
-        maxAge: 60 * 60 * 24 * 30, // 30 days
+        // Beta 11.3.x — see GET handler comment. 30d → 1d to shorten
+        // the stale-cookie window for admin test-user resets.
+        maxAge: 60 * 60 * 24,
         sameSite: "lax",
         secure: true,
       });
