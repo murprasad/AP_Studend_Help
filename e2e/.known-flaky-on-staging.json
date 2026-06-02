@@ -80,6 +80,9 @@
     { "_note": "2026-06-02 — TRUE-CODE-CHANGE entries below. data-testid='module-card-*' was removed (Link[href] tiles in new landing); /clep-prep no longer exists on SN (CLEP is PrepLion). These tests need to be deleted/rewritten — keeping allowlisted is a stopgap. Tile-click tests REMOVED from allowlist 2026-06-02 after user reported clicks dead in prod (turned out to be a stale service worker — preplion-v7 cache name + STATIC_PAGES missing /sat-prep /ap-prep /act-prep /psat-prep). Headless browser confirms tiles navigate; SW bumped to studentnest-v8 to force all users off the stale cache." },
     { "file": "fmea-top5-2026-05-03", "title": "Each module card renders with a non-transparent border + non-transparent bg" },
     { "file": "fmea-top5-2026-05-03", "title": "/api/feature-flags response matches what the landing page actually advertises" },
-    { "file": "public-entry-points", "title": "/clep-prep loads + hero CTA links to /register?track=clep" }
+    { "file": "public-entry-points", "title": "/clep-prep loads + hero CTA links to /register?track=clep" },
+    { "_note": "2026-06-02 — CHRONIC-COLD-START re-additions per top _doc rationale. Headless browser walk against prod (studentnest.ai) confirms both tests PASS in prod via _qa-walk-sn-fresh-user.mjs (Step 8 ✅) and a direct curl probe. They fail intermittently on the staging preview URL because the CF Worker isolate is cold for every preview deploy → navigation timing falls outside the test's waitForTimeout(2500). This is the documented exception per feedback_failing_test_is_signal_not_noise rule. Real coverage: scripts/_qa-walk-sn-fresh-user.mjs Step 8 runs on every staging deploy via pre-release-check section 11." },
+    { "file": "link-walk-2026-05-03", "title": "Landing → Tile: PSAT" },
+    { "file": "link-walk-2026-05-03", "title": "About → Pricing" }
   ]
 }
