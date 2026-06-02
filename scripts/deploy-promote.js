@@ -30,6 +30,50 @@ function run(cmd, args, opts = {}) {
 (async () => {
   console.log(`\n🚀 Promote to production (studentnest.ai)\n`);
 
+  // 2026-06-02 — Quality Process v1 G5 gate. The promote script refuses
+  // to ship if the most recent Release Manifest has any unchecked gate
+  // (g1_po, g2_dev, g3_rev, g4_qa, g5_rm still 'pending'). Soft-warn
+  // until ENFORCE_QUALITY_GATES=1. See docs/QUALITY_PROCESS.md.
+  {
+    const enforce = process.env.ENFORCE_QUALITY_GATES === "1";
+    const manifestsDir = path.join(__dirname, "..", "data", "release-manifests");
+    let recentManifest = null;
+    try {
+      const files = fs.readdirSync(manifestsDir).filter((f) => f.endsWith(".md") && !f.startsWith("."));
+      if (files.length > 0) {
+        const stats = files.map((f) => ({ f, mtime: fs.statSync(path.join(manifestsDir, f)).mtimeMs }));
+        stats.sort((a, b) => b.mtime - a.mtime);
+        recentManifest = stats[0];
+      }
+    } catch { /* dir may not exist */ }
+
+    if (!recentManifest) {
+      const msg = `⚠ G5 Quality Process: no release manifest in data/release-manifests/. Create from docs/RELEASE_MANIFEST_TEMPLATE.md before promote.`;
+      if (enforce) { console.error(`❌ ${msg}`); process.exit(1); }
+      else { console.log(msg); }
+    } else {
+      const ageH = (Date.now() - recentManifest.mtime) / (1000 * 60 * 60);
+      const content = fs.readFileSync(path.join(manifestsDir, recentManifest.f), "utf8");
+      const pendingGates = [];
+      for (const g of ["g1_po", "g2_dev", "g3_rev", "g4_qa", "g5_rm"]) {
+        const re = new RegExp(`^${g}:\\s*pending`, "m");
+        if (re.test(content)) pendingGates.push(g);
+      }
+      if (ageH > 12) {
+        const msg = `⚠ G5 Quality Process: most recent manifest (${recentManifest.f}) is ${ageH.toFixed(1)}h old; expected a fresh one for this promote.`;
+        if (enforce) { console.error(`❌ ${msg}`); process.exit(1); }
+        else { console.log(msg); }
+      }
+      if (pendingGates.length > 0) {
+        const msg = `⚠ G5 Quality Process: manifest ${recentManifest.f} still has pending gate(s): ${pendingGates.join(", ")}.`;
+        if (enforce) { console.error(`❌ ${msg}`); process.exit(1); }
+        else { console.log(msg); }
+      } else {
+        console.log(`  ✅ G5 Quality Process: manifest ${recentManifest.f} has all gates approved.`);
+      }
+    }
+  }
+
   // Re-run pre-release-check + unit tests as the final guard before
   // touching prod. Cheap, catches "I edited a file after the staging
   // build" scenarios.
