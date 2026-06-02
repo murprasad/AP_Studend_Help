@@ -1,0 +1,28 @@
+{
+  "course": "AP_MICROECONOMICS",
+  "source": { "url": "https://apcentral.collegeboard.org/courses/ap-microeconomics/exam", "accessed_date": "2026-05-20" },
+  "exam": {
+    "num_options": 4,
+    "mcq_section": { "count": 60, "minutes": 70 },
+    "frq_section": { "count": 3, "minutes": 60 },
+    "total_minutes": 130, "scoring_scale": "1-5",
+    "calculator_allowed": false,
+    "vocabulary_cues": ["Which of the following would most likely cause", "If the price of X increases", "Which of the following best describes a market"]
+  },
+  "skill_categories": {
+    "BASIC_ECONOMIC_CONCEPTS": { "weight": 0.06, "subskills": ["Scarcity, opp cost", "PPF", "Comparative advantage"] },
+    "SUPPLY_DEMAND": { "weight": 0.21, "subskills": ["Demand/supply determinants", "Equilibrium", "Elasticities", "Consumer/producer surplus", "Government intervention"] },
+    "PRODUCTION_COST_PERFECT_COMPETITION": { "weight": 0.225, "subskills": ["Production function", "Cost curves (MC, AVC, ATC)", "Profit maximization in perfect competition", "SR vs LR"] },
+    "IMPERFECT_COMPETITION": { "weight": 0.225, "subskills": ["Monopoly", "Oligopoly", "Monopolistic competition", "Game theory", "Price discrimination"] },
+    "FACTOR_MARKETS": { "weight": 0.135, "subskills": ["Derived demand", "MRP", "Wage determination", "Monopsony"] },
+    "MARKET_FAILURE_GOVT_ROLE": { "weight": 0.145, "subskills": ["Externalities", "Public goods", "Income distribution", "Tax incidence"] }
+  },
+  "unit_to_topic_weight_key": {
+    "AP_MICRO_1_BASIC_CONCEPTS": "BASIC_ECONOMIC_CONCEPTS",
+    "AP_MICRO_2_SUPPLY_DEMAND": "SUPPLY_DEMAND",
+    "AP_MICRO_3_PRODUCTION_PERFECT_COMP": "PRODUCTION_COST_PERFECT_COMPETITION",
+    "AP_MICRO_4_IMPERFECT_COMP": "IMPERFECT_COMPETITION",
+    "AP_MICRO_5_FACTOR_MARKETS": "FACTOR_MARKETS",
+    "AP_MICRO_6_MARKET_FAILURE": "MARKET_FAILURE_GOVT_ROLE"
+  }
+}

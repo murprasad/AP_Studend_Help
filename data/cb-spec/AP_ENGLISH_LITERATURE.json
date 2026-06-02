@@ -1,0 +1,36 @@
+{
+  "course": "AP_ENGLISH_LITERATURE",
+  "source": { "url": "https://apcentral.collegeboard.org/courses/ap-english-literature-and-composition/exam", "accessed_date": "2026-05-20" },
+  "exam": {
+    "num_options": 4,
+    "mcq_section": { "count": 55, "minutes": 60, "passages": 5 },
+    "frq_section": { "count": 3, "minutes": 120, "types": ["Poetry Analysis", "Prose Fiction Analysis", "Literary Argument"] },
+    "total_minutes": 180, "scoring_scale": "1-5",
+    "distinctive_formats": ["passage_based_only", "linked_stimulus", "5_passages_x_11_questions"],
+    "vocabulary_cues": [
+      "In context, the phrase X most directly suggests",
+      "The shift between lines X and Y is best described as",
+      "The author's use of X serves primarily to",
+      "Which of the following best describes the tone"
+    ]
+  },
+  "skill_categories": {
+    "CHARACTER": { "weight": 0.165, "subskills": ["Identify, describe characters", "Trace character development"] },
+    "SETTING": { "weight": 0.055, "subskills": ["Identify, describe setting"] },
+    "STRUCTURE": { "weight": 0.165, "subskills": ["Identify, describe how structure shapes meaning"] },
+    "NARRATION": { "weight": 0.165, "subskills": ["Identify, describe narrator/speaker"] },
+    "FIGURATIVE_LANGUAGE": { "weight": 0.275, "subskills": ["Word choice, imagery, symbols", "Comparisons"] },
+    "LITERARY_ARGUMENTATION": { "weight": 0.175, "subskills": ["Develop interpretation", "Use textual evidence"] }
+  },
+  "unit_to_topic_weight_key": {
+    "AP_ENGLIT_1_SHORT_FICTION_I": "CHARACTER",
+    "AP_ENGLIT_2_POETRY_I": "FIGURATIVE_LANGUAGE",
+    "AP_ENGLIT_3_LONGER_FICTION_DRAMA_I": "STRUCTURE",
+    "AP_ENGLIT_4_SHORT_FICTION_II": "NARRATION",
+    "AP_ENGLIT_5_POETRY_II": "FIGURATIVE_LANGUAGE",
+    "AP_ENGLIT_6_LONGER_FICTION_DRAMA_II": "STRUCTURE",
+    "AP_ENGLIT_7_SHORT_FICTION_III": "CHARACTER",
+    "AP_ENGLIT_8_POETRY_III": "FIGURATIVE_LANGUAGE",
+    "AP_ENGLIT_9_LONGER_FICTION_DRAMA_III": "LITERARY_ARGUMENTATION"
+  }
+}

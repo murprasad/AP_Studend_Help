@@ -1,0 +1,48 @@
+{
+  "course": "AP_ENVIRONMENTAL_SCIENCE",
+  "source": {
+    "pdf": "data/raw/ced/environmental-science-ced.pdf",
+    "url": "https://apcentral.collegeboard.org/courses/ap-environmental-science/exam",
+    "accessed_date": "2026-05-20"
+  },
+  "exam": {
+    "num_options": 4,
+    "mcq_section": { "count": 80, "minutes": 90 },
+    "frq_section": { "count": 3, "minutes": 70, "types": ["Design an Investigation", "Analyze an Environmental Problem and Propose a Solution", "Analyze an Environmental Problem and Propose a Solution Using Calculations"] },
+    "total_minutes": 160,
+    "scoring_scale": "1-5",
+    "audio_required": false,
+    "calculator_allowed": false,
+    "distinctive_formats": ["data_analysis_stimulus", "math_no_calculator", "linked_stimulus", "environmental_calculation"],
+    "vocabulary_cues": [
+      "Which of the following best describes",
+      "Based on the graph",
+      "Which of the following is a primary cause of",
+      "The most likely consequence of",
+      "Calculate the (units)"
+    ]
+  },
+  "skill_categories": {
+    "LIVING_WORLD_ECOSYSTEMS": { "weight": 0.075, "subskills": ["Biotic/abiotic factors", "Trophic levels", "Ecosystem services", "Biogeochemical cycles"] },
+    "LIVING_WORLD_BIODIVERSITY": { "weight": 0.075, "subskills": ["Species diversity", "Ecological tolerance", "Disturbances"] },
+    "POPULATIONS": { "weight": 0.125, "subskills": ["r/K selected", "Survivorship curves", "Population growth"] },
+    "EARTH_SYSTEMS_RESOURCES": { "weight": 0.125, "subskills": ["Plate tectonics", "Soil", "Atmosphere", "Watersheds"] },
+    "LAND_WATER_USE": { "weight": 0.125, "subskills": ["Tragedy of commons", "Agriculture", "Forestry", "Mining"] },
+    "ENERGY_RESOURCES_CONSUMPTION": { "weight": 0.125, "subskills": ["Fossil fuels", "Nuclear", "Renewables", "Energy conservation"] },
+    "ATMOSPHERIC_POLLUTION": { "weight": 0.10, "subskills": ["Photochemical smog", "Acid rain", "Indoor air", "Stratospheric ozone"] },
+    "AQUATIC_TERRESTRIAL_POLLUTION": { "weight": 0.10, "subskills": ["Eutrophication", "BOD", "POPs", "Solid waste"] },
+    "GLOBAL_CHANGE": { "weight": 0.15, "subskills": ["Climate change", "Ozone depletion", "Invasive species", "Endangered species"] }
+  },
+  "unit_to_topic_weight_key": {
+    "AP_APES_1_LIVING_WORLD": "LIVING_WORLD_ECOSYSTEMS",
+    "AP_APES_2_BIODIVERSITY": "LIVING_WORLD_BIODIVERSITY",
+    "AP_APES_3_POPULATIONS": "POPULATIONS",
+    "AP_APES_4_EARTH_SYSTEMS": "EARTH_SYSTEMS_RESOURCES",
+    "AP_APES_5_LAND_WATER": "LAND_WATER_USE",
+    "AP_APES_6_ENERGY": "ENERGY_RESOURCES_CONSUMPTION",
+    "AP_APES_7_AIR_POLLUTION": "ATMOSPHERIC_POLLUTION",
+    "AP_APES_8_AQUATIC_TERRESTRIAL_POLLUTION": "AQUATIC_TERRESTRIAL_POLLUTION",
+    "AP_APES_9_GLOBAL_CHANGE": "GLOBAL_CHANGE"
+  },
+  "ap_skills": ["Skill 1 — Explain environmental concepts", "Skill 2 — Analyze visual representations", "Skill 3 — Analyze data", "Skill 4 — Analyze sources", "Skill 5 — Mathematical routines", "Skill 6 — Solutions to environmental problems", "Skill 7 — Make connections to environmental scenarios"]
+}

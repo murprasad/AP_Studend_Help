@@ -1,0 +1,36 @@
+{
+  "course": "AP_COMPUTER_SCIENCE_A",
+  "source": { "url": "https://apcentral.collegeboard.org/courses/ap-computer-science-a/exam", "accessed_date": "2026-05-20" },
+  "exam": {
+    "num_options": 4,
+    "mcq_section": { "count": 40, "minutes": 90 },
+    "frq_section": { "count": 4, "minutes": 90, "types": ["Methods/Control Structures", "Class", "Array/ArrayList", "2D Array"] },
+    "total_minutes": 180, "scoring_scale": "1-5",
+    "language": "Java", "code_in_questions": true,
+    "vocabulary_cues": ["What is printed", "Which of the following code segments", "Which of the following replaces / can be used to replace"]
+  },
+  "skill_categories": {
+    "PRIMITIVE_TYPES": { "weight": 0.035, "subskills": ["int/double/boolean", "Casting", "Math class"] },
+    "USING_OBJECTS": { "weight": 0.075, "subskills": ["String methods", "Wrapper classes", "Method calls"] },
+    "BOOLEAN_EXPRESSIONS_IF_STATEMENTS": { "weight": 0.155, "subskills": ["if/else if/else", "Logical operators", "De Morgan's"] },
+    "ITERATION": { "weight": 0.175, "subskills": ["for/while loops", "Nested loops", "Loop analysis"] },
+    "WRITING_CLASSES": { "weight": 0.175, "subskills": ["Constructors", "Instance variables", "Methods", "Encapsulation", "this/static"] },
+    "ARRAY": { "weight": 0.075, "subskills": ["1D arrays", "Traversal", "Modification"] },
+    "ARRAYLIST": { "weight": 0.13, "subskills": ["ArrayList methods", "Iteration", "Modification during iteration"] },
+    "TWO_D_ARRAY": { "weight": 0.075, "subskills": ["2D arrays", "Row-major traversal", "Column-major traversal"] },
+    "INHERITANCE": { "weight": 0.075, "subskills": ["extends/super", "Polymorphism", "Method overriding"] },
+    "RECURSION": { "weight": 0.03, "subskills": ["Base case + recursive case", "Tracing recursive calls"] }
+  },
+  "unit_to_topic_weight_key": {
+    "AP_CSA_1_PRIMITIVE_TYPES": "PRIMITIVE_TYPES",
+    "AP_CSA_2_USING_OBJECTS": "USING_OBJECTS",
+    "AP_CSA_3_BOOLEAN_IF": "BOOLEAN_EXPRESSIONS_IF_STATEMENTS",
+    "AP_CSA_4_ITERATION": "ITERATION",
+    "AP_CSA_5_WRITING_CLASSES": "WRITING_CLASSES",
+    "AP_CSA_6_ARRAY": "ARRAY",
+    "AP_CSA_7_ARRAYLIST": "ARRAYLIST",
+    "AP_CSA_8_2D_ARRAY": "TWO_D_ARRAY",
+    "AP_CSA_9_INHERITANCE": "INHERITANCE",
+    "AP_CSA_10_RECURSION": "RECURSION"
+  }
+}

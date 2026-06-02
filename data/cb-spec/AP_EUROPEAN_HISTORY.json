@@ -1,0 +1,36 @@
+{
+  "course": "AP_EUROPEAN_HISTORY",
+  "source": { "url": "https://apcentral.collegeboard.org/courses/ap-european-history/exam", "accessed_date": "2026-05-20" },
+  "exam": {
+    "num_options": 4,
+    "mcq_section": { "count": 55, "minutes": 55 },
+    "saq_section": { "count": 3, "minutes": 40 },
+    "dbq_section": { "count": 1, "minutes": 60, "documents": 7 },
+    "leq_section": { "count": 1, "minutes": 40 },
+    "total_minutes": 195, "scoring_scale": "1-5",
+    "distinctive_formats": ["dbq_with_7_documents", "linked_stimulus", "primary_source_clusters"],
+    "vocabulary_cues": ["The excerpt above most directly reflects", "Which of the following would most likely have supported the perspective", "Which of the following best explains the cause"]
+  },
+  "skill_categories": {
+    "RENAISSANCE_EXPLORATION": { "weight": 0.105, "subskills": ["Italian Renaissance", "Northern Renaissance", "Age of Exploration", "Commercial Revolution"] },
+    "AGE_OF_REFORMATION": { "weight": 0.105, "subskills": ["Protestant Reformation (Luther/Calvin)", "Catholic Reformation", "Wars of Religion"] },
+    "ABSOLUTISM_CONSTITUTIONALISM": { "weight": 0.13, "subskills": ["Louis XIV", "English Civil War + Glorious Revolution", "Peter the Great", "Eastern absolutism"] },
+    "SCIENTIFIC_PHILOSOPHICAL_POLITICAL_DEVELOPMENTS": { "weight": 0.13, "subskills": ["Scientific Revolution", "Enlightenment", "Enlightened absolutism"] },
+    "CONFLICT_CRISIS_REACTION_LATE_18TH_19TH": { "weight": 0.13, "subskills": ["French Revolution", "Napoleon", "Congress of Vienna", "Restoration"] },
+    "INDUSTRIALIZATION_ITS_EFFECTS": { "weight": 0.105, "subskills": ["Industrial Revolution", "Liberalism/Socialism/Marxism", "Realism", "1848 revolutions"] },
+    "19TH_CENTURY_PERSPECTIVES_POLITICAL_DEVELOPMENTS": { "weight": 0.105, "subskills": ["Italian + German unification", "Imperialism", "Romanticism"] },
+    "20TH_CENTURY_GLOBAL_CONFLICTS": { "weight": 0.13, "subskills": ["WWI", "Russian Revolution", "WWII", "Holocaust", "Cold War"] },
+    "COLD_WAR_CONTEMPORARY_EUROPE": { "weight": 0.07, "subskills": ["EU formation", "Decolonization", "Fall of USSR", "Migration"] }
+  },
+  "unit_to_topic_weight_key": {
+    "AP_EUROHIST_1_RENAISSANCE": "RENAISSANCE_EXPLORATION",
+    "AP_EUROHIST_2_REFORMATION": "AGE_OF_REFORMATION",
+    "AP_EUROHIST_3_ABSOLUTISM": "ABSOLUTISM_CONSTITUTIONALISM",
+    "AP_EUROHIST_4_SCIENTIFIC_ENLIGHTENMENT": "SCIENTIFIC_PHILOSOPHICAL_POLITICAL_DEVELOPMENTS",
+    "AP_EUROHIST_5_REVOLUTION_NAPOLEON": "CONFLICT_CRISIS_REACTION_LATE_18TH_19TH",
+    "AP_EUROHIST_6_INDUSTRIALIZATION": "INDUSTRIALIZATION_ITS_EFFECTS",
+    "AP_EUROHIST_7_19TH_CENTURY_POLITICS": "19TH_CENTURY_PERSPECTIVES_POLITICAL_DEVELOPMENTS",
+    "AP_EUROHIST_8_20TH_CENTURY_WARS": "20TH_CENTURY_GLOBAL_CONFLICTS",
+    "AP_EUROHIST_9_COLD_WAR_CONTEMPORARY": "COLD_WAR_CONTEMPORARY_EUROPE"
+  }
+}

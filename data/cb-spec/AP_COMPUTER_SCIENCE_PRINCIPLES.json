@@ -1,0 +1,39 @@
+{
+  "course": "AP_COMPUTER_SCIENCE_PRINCIPLES",
+  "source": {
+    "pdf": "data/raw/ced/computer-science-principles-ced.pdf",
+    "url": "https://apcentral.collegeboard.org/courses/ap-computer-science-principles/exam",
+    "accessed_date": "2026-05-20"
+  },
+  "exam": {
+    "num_options": 4,
+    "mcq_section": { "count": 70, "minutes": 120 },
+    "performance_task": { "name": "Create Performance Task", "submitted_pre_exam": true, "weight_of_score": 0.30 },
+    "exam_section_weight": 0.70,
+    "scoring_scale": "1-5",
+    "audio_required": false,
+    "distinctive_formats": ["pseudocode_questions", "binary_hex_questions", "data_compression_questions", "linked_stimulus_for_some"],
+    "calculator_allowed": false,
+    "vocabulary_cues": [
+      "Which of the following is the most likely outcome",
+      "Which of the following best describes the result",
+      "Consider the following code segment",
+      "Which of the following is true about"
+    ]
+  },
+  "skill_categories": {
+    "CREATIVE_DEVELOPMENT": { "weight": 0.115, "subskills": ["Collaboration", "Program function/purpose", "Program design", "Iteration"] },
+    "DATA": { "weight": 0.20, "subskills": ["Binary numbers", "Data compression", "Information extraction"] },
+    "ALGORITHMS_PROGRAMMING": { "weight": 0.35, "subskills": ["Variables/assignment", "Lists", "Conditionals", "Iteration", "Procedures", "Mathematical expressions", "Strings", "Boolean expressions"] },
+    "COMPUTER_SYSTEMS_NETWORKS": { "weight": 0.115, "subskills": ["The Internet", "Fault tolerance", "Parallel/distributed computing"] },
+    "IMPACT_OF_COMPUTING": { "weight": 0.22, "subskills": ["Beneficial/harmful effects", "Digital divide", "Computing bias", "Crowdsourcing", "Legal/ethical concerns", "Privacy", "Cybersecurity"] }
+  },
+  "unit_to_topic_weight_key": {
+    "AP_CSP_1_CREATIVE_DEVELOPMENT": "CREATIVE_DEVELOPMENT",
+    "AP_CSP_2_DATA": "DATA",
+    "AP_CSP_3_ALGORITHMS": "ALGORITHMS_PROGRAMMING",
+    "AP_CSP_4_SYSTEMS_NETWORKS": "COMPUTER_SYSTEMS_NETWORKS",
+    "AP_CSP_5_IMPACT": "IMPACT_OF_COMPUTING"
+  },
+  "ap_skills": ["Skill 1 — Computational solutions for problems", "Skill 2 — Algorithmic abstractions", "Skill 3 — Code in pseudocode", "Skill 4 — Connect computing concepts", "Skill 5 — Describe impacts of computing"]
+}

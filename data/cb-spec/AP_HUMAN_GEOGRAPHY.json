@@ -1,0 +1,42 @@
+{
+  "course": "AP_HUMAN_GEOGRAPHY",
+  "source": {
+    "pdf": "data/raw/ced/human-geography-ced.pdf",
+    "url": "https://apcentral.collegeboard.org/courses/ap-human-geography/exam",
+    "accessed_date": "2026-05-20"
+  },
+  "exam": {
+    "num_options": 4,
+    "mcq_section": { "count": 60, "minutes": 60 },
+    "frq_section": { "count": 3, "minutes": 75, "types": ["No stimulus", "Quantitative or qualitative stimulus", "Two contrasting sources/maps"] },
+    "total_minutes": 135,
+    "scoring_scale": "1-5",
+    "audio_required": false,
+    "distinctive_formats": ["map_stimulus", "data_table_stimulus", "linked_stimulus", "scale_of_analysis"],
+    "vocabulary_cues": [
+      "Which of the following best explains",
+      "Based on the map",
+      "Which of the following geographic concepts is illustrated by",
+      "The pattern shown in the figure is most directly the result of"
+    ]
+  },
+  "skill_categories": {
+    "THINKING_GEOGRAPHICALLY": { "weight": 0.10, "subskills": ["Maps", "Scale", "Spatial concepts", "GIS"] },
+    "POPULATION_MIGRATION": { "weight": 0.15, "subskills": ["Demographics", "Population pyramids", "Demographic transition", "Migration push/pull"] },
+    "CULTURAL_PATTERNS_PROCESSES": { "weight": 0.15, "subskills": ["Diffusion", "Cultural landscape", "Religion", "Language"] },
+    "POLITICAL_PATTERNS_PROCESSES": { "weight": 0.15, "subskills": ["State/nation/nation-state", "Gerrymandering", "Devolution", "Supranationalism"] },
+    "AGRICULTURE_RURAL": { "weight": 0.15, "subskills": ["Agricultural origins", "Von Thunen", "Green Revolution", "Subsistence vs commercial"] },
+    "CITIES_URBAN_PROCESSES": { "weight": 0.15, "subskills": ["Models (Burgess concentric, Hoyt sector, Harris-Ullman multiple nuclei)", "Urbanization", "Gentrification", "Suburbanization"] },
+    "INDUSTRIAL_ECONOMIC_DEVELOPMENT": { "weight": 0.15, "subskills": ["Rostow stages", "Wallerstein world-systems", "Weber industrial location", "GDP/GINI"] }
+  },
+  "unit_to_topic_weight_key": {
+    "AP_HUGEO_1_THINKING_GEO": "THINKING_GEOGRAPHICALLY",
+    "AP_HUGEO_2_POPULATION_MIGRATION": "POPULATION_MIGRATION",
+    "AP_HUGEO_3_CULTURE": "CULTURAL_PATTERNS_PROCESSES",
+    "AP_HUGEO_4_POLITICAL": "POLITICAL_PATTERNS_PROCESSES",
+    "AP_HUGEO_5_AGRICULTURE": "AGRICULTURE_RURAL",
+    "AP_HUGEO_6_URBAN": "CITIES_URBAN_PROCESSES",
+    "AP_HUGEO_7_INDUSTRIAL_ECONOMIC": "INDUSTRIAL_ECONOMIC_DEVELOPMENT"
+  },
+  "ap_skills": ["Skill 1 — Concepts/Processes", "Skill 2 — Spatial Relationships", "Skill 3 — Data Analysis", "Skill 4 — Source Analysis", "Skill 5 — Scales of Analysis"]
+}

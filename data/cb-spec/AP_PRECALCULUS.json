@@ -1,0 +1,36 @@
+{
+  "course": "AP_PRECALCULUS",
+  "source": {
+    "pdf": "data/raw/ced/precalculus-ced.pdf",
+    "url": "https://apcentral.collegeboard.org/courses/ap-precalculus/exam",
+    "accessed_date": "2026-05-20"
+  },
+  "exam": {
+    "num_options": 4,
+    "mcq_section": { "count": 40, "minutes": 80, "parts": [{"part_a": {"count": 28, "minutes": 80, "calculator": false}}, {"part_b": {"count": 12, "minutes": 40, "calculator": true}}] },
+    "frq_section": { "count": 4, "minutes": 60, "calculator_allowed_for_2": 2 },
+    "total_minutes": 180,
+    "scoring_scale": "1-5",
+    "audio_required": false,
+    "distinctive_formats": ["function_modeling", "graphical_analysis", "table_analysis", "calculator_active_questions"],
+    "vocabulary_cues": [
+      "Which of the following could be the value of",
+      "Which of the following functions best models",
+      "Which of the following statements is true about the function",
+      "Based on the table"
+    ]
+  },
+  "skill_categories": {
+    "POLYNOMIAL_RATIONAL_FUNCTIONS": { "weight": 0.30, "subskills": ["Change-rate analysis", "Polynomial behavior", "End behavior", "Rational function asymptotes"] },
+    "EXPONENTIAL_LOGARITHMIC_FUNCTIONS": { "weight": 0.27, "subskills": ["Exponential models", "Logarithmic models", "Inverse functions", "Compositions"] },
+    "TRIGONOMETRIC_POLAR_FUNCTIONS": { "weight": 0.30, "subskills": ["Unit circle", "Trig identities", "Inverse trig", "Polar coordinates", "Sinusoidal models"] },
+    "FUNCTIONS_INVOLVING_PARAMETERS_VECTORS_MATRICES": { "weight": 0.13, "subskills": ["Parametric functions", "Vector-valued functions", "Matrices, linear transformations"] }
+  },
+  "unit_to_topic_weight_key": {
+    "AP_PRECALC_1_POLYNOMIAL_RATIONAL": "POLYNOMIAL_RATIONAL_FUNCTIONS",
+    "AP_PRECALC_2_EXPONENTIAL_LOG": "EXPONENTIAL_LOGARITHMIC_FUNCTIONS",
+    "AP_PRECALC_3_TRIG_POLAR": "TRIGONOMETRIC_POLAR_FUNCTIONS",
+    "AP_PRECALC_4_PARAMETRIC_VECTORS": "FUNCTIONS_INVOLVING_PARAMETERS_VECTORS_MATRICES"
+  },
+  "ap_skills": ["Skill 1 — Procedural and symbolic fluency", "Skill 2 — Multiple representations of functions", "Skill 3 — Communication and reasoning"]
+}

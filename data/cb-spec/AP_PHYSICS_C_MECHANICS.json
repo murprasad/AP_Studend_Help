@@ -1,0 +1,30 @@
+{
+  "course": "AP_PHYSICS_C_MECHANICS",
+  "source": { "url": "https://apcentral.collegeboard.org/courses/ap-physics-c-mechanics/exam", "accessed_date": "2026-05-20" },
+  "exam": {
+    "num_options": 4,
+    "mcq_section": { "count": 35, "minutes": 45, "calculator_allowed": false },
+    "frq_section": { "count": 3, "minutes": 45, "calculator_allowed": true },
+    "total_minutes": 90, "scoring_scale": "1-5",
+    "calculus_based": true, "equation_sheet_provided": true,
+    "vocabulary_cues": ["Which of the following is", "Calculate the", "Derive an expression"]
+  },
+  "skill_categories": {
+    "KINEMATICS": { "weight": 0.18, "subskills": ["1D/2D motion", "Calculus derivations"] },
+    "NEWTONS_LAWS_OF_MOTION": { "weight": 0.20, "subskills": ["Force equations", "Free-body diagrams", "Friction"] },
+    "WORK_ENERGY_POWER": { "weight": 0.14, "subskills": ["Work-energy theorem", "Conservative forces", "Power"] },
+    "SYSTEMS_OF_PARTICLES_LINEAR_MOMENTUM": { "weight": 0.12, "subskills": ["Center of mass", "Impulse-momentum", "Collisions"] },
+    "ROTATION": { "weight": 0.18, "subskills": ["Angular kinematics", "Rotational dynamics", "Moment of inertia", "Angular momentum"] },
+    "OSCILLATIONS": { "weight": 0.08, "subskills": ["SHM", "Springs", "Pendulums"] },
+    "GRAVITATION": { "weight": 0.10, "subskills": ["Newton's gravitation", "Orbital mechanics", "Kepler"] }
+  },
+  "unit_to_topic_weight_key": {
+    "AP_PHYSC_M_1_KINEMATICS": "KINEMATICS",
+    "AP_PHYSC_M_2_NEWTON_LAWS": "NEWTONS_LAWS_OF_MOTION",
+    "AP_PHYSC_M_3_WORK_ENERGY": "WORK_ENERGY_POWER",
+    "AP_PHYSC_M_4_SYSTEMS_MOMENTUM": "SYSTEMS_OF_PARTICLES_LINEAR_MOMENTUM",
+    "AP_PHYSC_M_5_ROTATION": "ROTATION",
+    "AP_PHYSC_M_6_OSCILLATIONS": "OSCILLATIONS",
+    "AP_PHYSC_M_7_GRAVITATION": "GRAVITATION"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "course": "AP_PHYSICS_2",
+  "source": { "url": "https://apcentral.collegeboard.org/courses/ap-physics-2/exam", "accessed_date": "2026-05-20" },
+  "exam": {
+    "num_options": 4,
+    "mcq_section": { "count": 50, "minutes": 90 },
+    "frq_section": { "count": 4, "minutes": 90 },
+    "total_minutes": 180, "scoring_scale": "1-5",
+    "calculator_allowed": true, "equation_sheet_provided": true,
+    "distinctive_formats": ["multi_select_mcq", "graph_interpretation", "experimental_design"],
+    "covers": "Fluids, Thermodynamics, Electricity (E&M), Magnetism, Geometric/Physical Optics, Modern Physics"
+  },
+  "skill_categories": {
+    "FLUIDS_THERMODYNAMICS": { "weight": 0.22, "subskills": ["Fluid statics/dynamics", "Heat transfer", "Kinetic theory", "Laws of thermodynamics", "PV diagrams"] },
+    "ELECTRIC_FORCE_FIELD_POTENTIAL": { "weight": 0.18, "subskills": ["Coulomb's law", "Electric fields", "Potential", "Gauss's law"] },
+    "ELECTRIC_CIRCUITS": { "weight": 0.17, "subskills": ["Ohm's law", "Kirchhoff", "Capacitors", "RC circuits"] },
+    "MAGNETISM_ELECTROMAGNETIC_INDUCTION": { "weight": 0.17, "subskills": ["Magnetic fields", "Forces on charges", "Faraday's law", "Lenz's law"] },
+    "GEOMETRIC_PHYSICAL_OPTICS": { "weight": 0.13, "subskills": ["Reflection/refraction", "Lenses/mirrors", "Interference", "Diffraction"] },
+    "QUANTUM_ATOMIC_NUCLEAR": { "weight": 0.13, "subskills": ["Photoelectric effect", "Atomic energy levels", "Nuclear physics", "Wave-particle duality"] }
+  },
+  "unit_to_topic_weight_key": {
+    "AP_PHYS2_1_FLUIDS": "FLUIDS_THERMODYNAMICS",
+    "AP_PHYS2_2_THERMO": "FLUIDS_THERMODYNAMICS",
+    "AP_PHYS2_3_ELECTRIC_FORCE": "ELECTRIC_FORCE_FIELD_POTENTIAL",
+    "AP_PHYS2_4_CIRCUITS": "ELECTRIC_CIRCUITS",
+    "AP_PHYS2_5_MAGNETISM": "MAGNETISM_ELECTROMAGNETIC_INDUCTION",
+    "AP_PHYS2_6_OPTICS": "GEOMETRIC_PHYSICAL_OPTICS",
+    "AP_PHYS2_7_QUANTUM": "QUANTUM_ATOMIC_NUCLEAR"
+  }
+}

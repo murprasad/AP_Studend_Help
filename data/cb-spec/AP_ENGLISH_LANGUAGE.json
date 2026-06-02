@@ -1,0 +1,41 @@
+{
+  "course": "AP_ENGLISH_LANGUAGE",
+  "source": {
+    "pdf": "data/raw/ced/english-language-ced.pdf",
+    "url": "https://apcentral.collegeboard.org/courses/ap-english-language-and-composition/exam",
+    "accessed_date": "2026-05-20"
+  },
+  "exam": {
+    "num_options": 4,
+    "mcq_section": { "count": 45, "minutes": 60, "types": ["Reading questions (23-25)", "Writing/composition questions (20-22)"] },
+    "frq_section": { "count": 3, "minutes": 135, "types": ["Synthesis (6 sources)", "Rhetorical Analysis", "Argument"] },
+    "total_minutes": 195,
+    "scoring_scale": "1-5",
+    "audio_required": false,
+    "distinctive_formats": ["passage_with_line_numbers", "rhetorical_strategy_identification", "synthesis_with_sources", "argument_essay"],
+    "vocabulary_cues": [
+      "The author primarily uses",
+      "The shift in tone in lines X-Y is best described as",
+      "The phrase quoted in line X functions primarily to",
+      "Which of the following best describes the author's purpose in",
+      "In the context of the passage as a whole"
+    ]
+  },
+  "skill_categories": {
+    "RHETORICAL_SITUATION_READING": { "weight": 0.115, "subskills": ["Audience", "Purpose", "Context", "Speaker/Writer"] },
+    "RHETORICAL_SITUATION_WRITING": { "weight": 0.115, "subskills": ["Address audience", "Establish purpose"] },
+    "CLAIMS_EVIDENCE_READING": { "weight": 0.135, "subskills": ["Thesis identification", "Evidence types"] },
+    "CLAIMS_EVIDENCE_WRITING": { "weight": 0.135, "subskills": ["Develop claims", "Use evidence"] },
+    "REASONING_ORGANIZATION_READING": { "weight": 0.135, "subskills": ["Lines of reasoning", "Organization"] },
+    "REASONING_ORGANIZATION_WRITING": { "weight": 0.135, "subskills": ["Develop reasoning", "Organize"] },
+    "STYLE_READING": { "weight": 0.115, "subskills": ["Word choice", "Syntax", "Tone"] },
+    "STYLE_WRITING": { "weight": 0.115, "subskills": ["Use style choices", "Revise for style"] }
+  },
+  "unit_to_topic_weight_key": {
+    "AP_ENGLANG_1_RHETORICAL_SITUATION": "RHETORICAL_SITUATION_READING",
+    "AP_ENGLANG_2_CLAIMS_EVIDENCE": "CLAIMS_EVIDENCE_READING",
+    "AP_ENGLANG_3_REASONING_ORGANIZATION": "REASONING_ORGANIZATION_READING",
+    "AP_ENGLANG_4_STYLE": "STYLE_READING"
+  },
+  "ap_skills": ["Skill 1 — Identify and describe components of the rhetorical situation", "Skill 2 — Explain how claims, evidence, reasoning develop an argument", "Skill 3 — Identify and explain organization", "Skill 4 — Identify and explain stylistic choices"]
+}

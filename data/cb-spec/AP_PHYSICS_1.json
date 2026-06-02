@@ -1,0 +1,47 @@
+{
+  "course": "AP_PHYSICS_1",
+  "source": {
+    "pdf": "data/raw/ced/physics-1-ced.pdf",
+    "url": "https://apcentral.collegeboard.org/courses/ap-physics-1/exam",
+    "accessed_date": "2026-05-20"
+  },
+  "exam": {
+    "num_options": 4,
+    "mcq_section": { "count": 40, "minutes": 80 },
+    "frq_section": { "count": 4, "minutes": 100, "types": ["Mathematical Routines", "Translation Between Representations", "Experimental Design and Analysis", "Qualitative/Quantitative Translation"] },
+    "total_minutes": 180,
+    "scoring_scale": "1-5",
+    "audio_required": false,
+    "calculator_allowed": true,
+    "equation_sheet_provided": true,
+    "distinctive_formats": ["multi_select_mcq", "graph_interpretation", "free_body_diagrams", "experimental_design"],
+    "redesign_2024_2025": "Now includes fluids unit (added) — total 8 units",
+    "vocabulary_cues": [
+      "Which of the following best explains",
+      "Which of the following is the most likely",
+      "Based on the graph",
+      "Two of the following could be true (multi-select)"
+    ]
+  },
+  "skill_categories": {
+    "KINEMATICS": { "weight": 0.10, "subskills": ["1D/2D motion", "Projectile", "Reference frames"] },
+    "DYNAMICS_FORCE": { "weight": 0.16, "subskills": ["Newton's laws", "Friction", "Free-body diagrams", "Centripetal"] },
+    "CIRCULAR_MOTION_GRAVITATION": { "weight": 0.09, "subskills": ["Centripetal", "Gravitational fields", "Kepler"] },
+    "ENERGY": { "weight": 0.16, "subskills": ["Work", "KE/PE", "Conservation of energy", "Power"] },
+    "MOMENTUM": { "weight": 0.16, "subskills": ["Impulse", "Conservation of momentum", "Elastic/inelastic"] },
+    "SIMPLE_HARMONIC_MOTION": { "weight": 0.07, "subskills": ["Springs", "Pendulums", "Period/frequency"] },
+    "TORQUE_ROTATIONAL": { "weight": 0.12, "subskills": ["Torque", "Rotational KE", "Angular momentum", "Conservation"] },
+    "FLUIDS": { "weight": 0.14, "subskills": ["Density/pressure", "Buoyancy", "Continuity", "Bernoulli"] }
+  },
+  "unit_to_topic_weight_key": {
+    "AP_PHYS1_1_KINEMATICS": "KINEMATICS",
+    "AP_PHYS1_2_DYNAMICS": "DYNAMICS_FORCE",
+    "AP_PHYS1_3_CIRCULAR_GRAVITATION": "CIRCULAR_MOTION_GRAVITATION",
+    "AP_PHYS1_4_ENERGY": "ENERGY",
+    "AP_PHYS1_5_MOMENTUM": "MOMENTUM",
+    "AP_PHYS1_6_SHM": "SIMPLE_HARMONIC_MOTION",
+    "AP_PHYS1_7_TORQUE_ROTATIONAL": "TORQUE_ROTATIONAL",
+    "AP_PHYS1_8_FLUIDS": "FLUIDS"
+  },
+  "ap_skills": ["Skill 1 — Modeling", "Skill 2 — Mathematical routines", "Skill 3 — Scientific questioning", "Skill 4 — Experimental method", "Skill 5 — Data analysis", "Skill 6 — Argumentation"]
+}

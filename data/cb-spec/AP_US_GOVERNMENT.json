@@ -1,0 +1,70 @@
+{
+  "course": "AP_US_GOVERNMENT",
+  "source": {
+    "pdf": "data/raw/ced/us-government-ced.pdf",
+    "url": "https://apcentral.collegeboard.org/courses/ap-united-states-government-and-politics/exam",
+    "accessed_date": "2026-05-20"
+  },
+  "exam": {
+    "num_options": 4,
+    "mcq_section": { "count": 55, "minutes": 80 },
+    "frq_section": { "count": 4, "minutes": 100, "types": ["Concept Application", "Quantitative Analysis", "SCOTUS Comparison", "Argument Essay"] },
+    "total_minutes": 180,
+    "scoring_scale": "1-5",
+    "audio_required": false,
+    "native_language_stems": false,
+    "distinctive_formats": ["quantitative_analysis", "scotus_comparison", "founding_documents_required", "linked_stimulus"],
+    "required_foundational_documents": [
+      "Declaration of Independence",
+      "Articles of Confederation",
+      "U.S. Constitution",
+      "Federalist 10, 51, 70, 78",
+      "Brutus 1",
+      "Letter from a Birmingham Jail"
+    ],
+    "required_scotus_cases": [
+      "Marbury v. Madison (1803)",
+      "McCulloch v. Maryland (1819)",
+      "U.S. v. Lopez (1995)",
+      "Engel v. Vitale (1962)",
+      "Wisconsin v. Yoder (1972)",
+      "Tinker v. Des Moines (1969)",
+      "New York Times v. U.S. (1971)",
+      "Schenck v. U.S. (1919)",
+      "Gideon v. Wainwright (1963)",
+      "Roe v. Wade (1973)",
+      "McDonald v. Chicago (2010)",
+      "Brown v. Board (1954)",
+      "Citizens United v. FEC (2010)",
+      "Baker v. Carr (1962)",
+      "Shaw v. Reno (1993)"
+    ],
+    "vocabulary_cues": [
+      "Which of the following best describes",
+      "Which of the following is true of",
+      "Based on the data in the graph",
+      "Which of the following is similar to the holding in"
+    ]
+  },
+  "skill_categories": {
+    "FOUNDATIONS_OF_AMERICAN_DEMOCRACY": { "weight": 0.18, "subskills": ["Constitutional foundations", "Federalist/Antifederalist debates", "Democracy theories"] },
+    "INTERACTIONS_BETWEEN_BRANCHES": { "weight": 0.30, "subskills": ["Congress", "Presidency", "Federal courts", "Bureaucracy"] },
+    "CIVIL_LIBERTIES_RIGHTS": { "weight": 0.20, "subskills": ["Bill of Rights incorporation", "Equal protection", "Selective incorporation"] },
+    "AMERICAN_POLITICAL_IDEOLOGIES_BELIEFS": { "weight": 0.18, "subskills": ["Political socialization", "Public opinion polling", "Ideologies"] },
+    "POLITICAL_PARTICIPATION": { "weight": 0.14, "subskills": ["Voting", "Parties", "Interest groups", "Elections", "Media"] }
+  },
+  "unit_to_topic_weight_key": {
+    "AP_USGOV_1_FOUNDATIONS": "FOUNDATIONS_OF_AMERICAN_DEMOCRACY",
+    "AP_USGOV_2_BRANCHES": "INTERACTIONS_BETWEEN_BRANCHES",
+    "AP_USGOV_3_LIBERTIES_RIGHTS": "CIVIL_LIBERTIES_RIGHTS",
+    "AP_USGOV_4_IDEOLOGY": "AMERICAN_POLITICAL_IDEOLOGIES_BELIEFS",
+    "AP_USGOV_5_PARTICIPATION": "POLITICAL_PARTICIPATION"
+  },
+  "ap_skills": ["Skill 1 — Apply political concepts and processes", "Skill 2 — Apply Supreme Court decisions", "Skill 3 — Analyze and interpret quantitative data", "Skill 4 — Analyze qualitative sources", "Skill 5 — Develop an argument"],
+  "sample_stem_patterns": [
+    "Which of the following best explains the difference between the Articles of Confederation and the U.S. Constitution?",
+    "Based on the data in the table, which of the following statements is best supported?",
+    "Which of the following Supreme Court cases established the principle of judicial review?",
+    "The author of the passage above would most likely support which of the following statements?"
+  ]
+}

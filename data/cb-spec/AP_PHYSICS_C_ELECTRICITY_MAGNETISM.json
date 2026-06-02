@@ -1,0 +1,25 @@
+{
+  "course": "AP_PHYSICS_C_ELECTRICITY_MAGNETISM",
+  "source": { "url": "https://apcentral.collegeboard.org/courses/ap-physics-c-electricity-and-magnetism/exam", "accessed_date": "2026-05-20" },
+  "exam": {
+    "num_options": 4,
+    "mcq_section": { "count": 35, "minutes": 45, "calculator_allowed": false },
+    "frq_section": { "count": 3, "minutes": 45, "calculator_allowed": true },
+    "total_minutes": 90, "scoring_scale": "1-5",
+    "calculus_based": true, "equation_sheet_provided": true
+  },
+  "skill_categories": {
+    "ELECTROSTATICS": { "weight": 0.265, "subskills": ["Coulomb's law", "Electric fields", "Gauss's law", "Conductors/insulators"] },
+    "CONDUCTORS_CAPACITORS_DIELECTRICS": { "weight": 0.175, "subskills": ["Capacitance", "Energy in capacitors", "Dielectrics"] },
+    "ELECTRIC_CIRCUITS": { "weight": 0.20, "subskills": ["Ohm's law", "Kirchhoff", "RC circuits", "Steady-state vs transient"] },
+    "MAGNETIC_FIELDS": { "weight": 0.20, "subskills": ["Biot-Savart", "Ampere's law", "Magnetic forces", "Charged particle motion"] },
+    "ELECTROMAGNETISM": { "weight": 0.16, "subskills": ["Faraday's law", "Lenz's law", "Inductance", "LR circuits", "Maxwell equations"] }
+  },
+  "unit_to_topic_weight_key": {
+    "AP_PHYSC_EM_1_ELECTROSTATICS": "ELECTROSTATICS",
+    "AP_PHYSC_EM_2_CAPACITORS": "CONDUCTORS_CAPACITORS_DIELECTRICS",
+    "AP_PHYSC_EM_3_CIRCUITS": "ELECTRIC_CIRCUITS",
+    "AP_PHYSC_EM_4_MAGNETIC_FIELDS": "MAGNETIC_FIELDS",
+    "AP_PHYSC_EM_5_ELECTROMAGNETISM": "ELECTROMAGNETISM"
+  }
+}

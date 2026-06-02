@@ -1,0 +1,28 @@
+{
+  "course": "AP_MACROECONOMICS",
+  "source": { "url": "https://apcentral.collegeboard.org/courses/ap-macroeconomics/exam", "accessed_date": "2026-05-20" },
+  "exam": {
+    "num_options": 4,
+    "mcq_section": { "count": 60, "minutes": 70 },
+    "frq_section": { "count": 3, "minutes": 60, "types": ["Long FRQ + 2 Short FRQs"] },
+    "total_minutes": 130, "scoring_scale": "1-5",
+    "calculator_allowed": false,
+    "vocabulary_cues": ["All else equal", "Which of the following would most likely", "Based on the table", "Which of the following best explains"]
+  },
+  "skill_categories": {
+    "BASIC_ECONOMIC_CONCEPTS": { "weight": 0.075, "subskills": ["Scarcity, opp cost", "PPF", "Specialization, comparative advantage"] },
+    "ECONOMIC_INDICATORS_BUSINESS_CYCLE": { "weight": 0.155, "subskills": ["GDP", "Unemployment (frictional/structural/cyclical)", "Inflation (CPI)", "Business cycle phases"] },
+    "NATIONAL_INCOME_PRICE_DETERMINATION": { "weight": 0.215, "subskills": ["AD/AS model", "Multiplier", "MPC/MPS", "Fiscal policy", "Equilibrium output"] },
+    "FINANCIAL_SECTOR": { "weight": 0.225, "subskills": ["Money market", "Banking/fractional reserve", "Monetary policy", "Loanable funds", "Real vs nominal rates"] },
+    "LONG_RUN_CONSEQUENCES_STABILIZATION_POLICIES": { "weight": 0.175, "subskills": ["Crowding out", "Phillips curve", "LRAS", "Inflation expectations"] },
+    "OPEN_ECONOMY_INTERNATIONAL_TRADE_FINANCE": { "weight": 0.155, "subskills": ["Balance of payments", "Exchange rates", "Currency appreciation/depreciation"] }
+  },
+  "unit_to_topic_weight_key": {
+    "AP_MACRO_1_BASIC_CONCEPTS": "BASIC_ECONOMIC_CONCEPTS",
+    "AP_MACRO_2_INDICATORS_CYCLES": "ECONOMIC_INDICATORS_BUSINESS_CYCLE",
+    "AP_MACRO_3_NATIONAL_INCOME": "NATIONAL_INCOME_PRICE_DETERMINATION",
+    "AP_MACRO_4_FINANCIAL_SECTOR": "FINANCIAL_SECTOR",
+    "AP_MACRO_5_LONG_RUN_POLICIES": "LONG_RUN_CONSEQUENCES_STABILIZATION_POLICIES",
+    "AP_MACRO_6_INTERNATIONAL": "OPEN_ECONOMY_INTERNATIONAL_TRADE_FINANCE"
+  }
+}

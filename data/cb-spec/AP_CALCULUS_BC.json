@@ -1,0 +1,47 @@
+{
+  "course": "AP_CALCULUS_BC",
+  "source": {
+    "pdf": "data/raw/ced/calculus-bc-ced.pdf",
+    "url": "https://apcentral.collegeboard.org/courses/ap-calculus-bc/exam",
+    "accessed_date": "2026-05-20"
+  },
+  "exam": {
+    "num_options": 4,
+    "mcq_section": { "count": 45, "minutes": 105, "parts": [{"part_a": {"count": 30, "minutes": 60, "calculator": false}}, {"part_b": {"count": 15, "minutes": 45, "calculator": true}}] },
+    "frq_section": { "count": 6, "minutes": 90, "parts": [{"part_a": {"count": 2, "calculator": true}}, {"part_b": {"count": 4, "calculator": false}}] },
+    "total_minutes": 195,
+    "scoring_scale": "1-5",
+    "audio_required": false,
+    "distinctive_formats": ["graphical_analysis", "tabular_analysis", "differential_equations", "parametric_polar_vectors", "infinite_series"],
+    "covers_calc_ab_topics": true,
+    "vocabulary_cues": [
+      "What is the value of",
+      "Which of the following is equivalent to",
+      "The function f is defined by",
+      "Let f be a differentiable function such that"
+    ]
+  },
+  "skill_categories": {
+    "LIMITS_CONTINUITY": { "weight": 0.07, "subskills": ["Limit definition", "Continuity", "L'Hopital", "Squeeze theorem"] },
+    "DIFFERENTIATION_DEFINITION": { "weight": 0.06, "subskills": ["Derivative definition", "MVT"] },
+    "DIFFERENTIATION_RULES": { "weight": 0.08, "subskills": ["Chain rule", "Product/quotient", "Implicit", "Inverse trig"] },
+    "DIFFERENTIATION_APPLICATIONS": { "weight": 0.10, "subskills": ["Related rates", "Linear approximation", "Optimization"] },
+    "ANALYTIC_APPLICATIONS_DIFFERENTIATION": { "weight": 0.11, "subskills": ["Extrema", "Concavity", "Curve sketching", "MVT applications"] },
+    "INTEGRATION_ACCUMULATION_CHANGE": { "weight": 0.13, "subskills": ["Riemann sums", "Definite integrals", "FTC"] },
+    "DIFFERENTIAL_EQUATIONS": { "weight": 0.08, "subskills": ["Slope fields", "Euler's method", "Separable DEs", "Logistic"] },
+    "APPLICATIONS_INTEGRATION": { "weight": 0.13, "subskills": ["Area between curves", "Volumes of revolution", "Arc length"] },
+    "PARAMETRIC_POLAR_VECTORS": { "weight": 0.13, "subskills": ["Parametric derivatives/integrals", "Polar area", "Vector-valued functions"] },
+    "INFINITE_SEQUENCES_SERIES": { "weight": 0.13, "subskills": ["Convergence tests", "Power series", "Taylor/Maclaurin", "Lagrange error"] }
+  },
+  "unit_to_topic_weight_key": {
+    "AP_CALCBC_1_LIMITS": "LIMITS_CONTINUITY",
+    "AP_CALCBC_2_DERIVATIVES": "DIFFERENTIATION_RULES",
+    "AP_CALCBC_3_INTEGRALS": "INTEGRATION_ACCUMULATION_CHANGE",
+    "AP_CALCBC_4_APPLICATIONS_DIFF": "ANALYTIC_APPLICATIONS_DIFFERENTIATION",
+    "AP_CALCBC_5_DIFF_EQS": "DIFFERENTIAL_EQUATIONS",
+    "AP_CALCBC_6_APPLICATIONS_INT": "APPLICATIONS_INTEGRATION",
+    "AP_CALCBC_7_PARAMETRIC_POLAR_VECTOR": "PARAMETRIC_POLAR_VECTORS",
+    "AP_CALCBC_8_SERIES": "INFINITE_SEQUENCES_SERIES"
+  },
+  "ap_skills": ["Skill 1 — Implementing mathematical processes", "Skill 2 — Connecting representations", "Skill 3 — Justification", "Skill 4 — Communication and notation"]
+}
