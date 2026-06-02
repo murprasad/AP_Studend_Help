@@ -123,13 +123,27 @@ try {
   log("4. Diagnostic accepts course (no track error)", "PASS");
 
   // ── STEP 5: Diagnostic Q1 renders with answer options ──────────────────
+  // Format-agnostic: SN uses "(A)" CB-style; legacy used "A." — try both.
   await page.waitForTimeout(2000);
-  const optionA = page.locator('button:has-text("A.")').first();
-  const hasA = await optionA.isVisible({ timeout: 8000 }).catch(() => false);
+  const optionPatterns = [
+    'button:has-text("(A)")',
+    'button:has-text("A.")',
+    'button:has-text("A)")',
+    'button[aria-label*="Option A" i]',
+  ];
+  let optionA = null;
+  for (const sel of optionPatterns) {
+    const cand = page.locator(sel).first();
+    if (await cand.isVisible({ timeout: 1500 }).catch(() => false)) {
+      optionA = cand;
+      break;
+    }
+  }
+  const hasA = optionA !== null;
   log("5. Diagnostic Q1 renders with options", hasA ? "PASS" : "FAIL");
 
   // ── STEP 6: Submit one answer + ensure no 'unable to submit' error ─────
-  if (hasA) {
+  if (hasA && optionA) {
     await optionA.click();
     await page.waitForTimeout(800);
     const nextBtn = page.locator('button:has-text("Submit"), button:has-text("Next")').first();
