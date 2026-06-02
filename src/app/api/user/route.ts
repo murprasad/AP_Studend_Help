@@ -138,6 +138,11 @@ export async function GET(req: NextRequest) {
             passGuaranteeEligibleAt: true,
             passGuaranteeClaimedAt: true,
             passGuaranteeRefundCents: true,
+            // 2026-06-02 — Settings page reads dailyQuizOptIn to drive
+            // the notification checkbox state. Without this in the
+            // select, the box was always unchecked even when the user
+            // had previously opted in (and the PATCH had succeeded).
+            dailyQuizOptIn: true,
           },
         }),
         null,

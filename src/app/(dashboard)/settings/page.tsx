@@ -62,15 +62,20 @@ export default function SettingsPage() {
       .then((r) => (r.ok ? r.json() : null))
       .then((data) => {
         if (!data) return;
+        // 2026-06-02 — /api/user returns { user: {...}, flags, moduleSubs }.
+        // Was reading data.email / data.firstName / etc. directly, which is
+        // one level too shallow. Result: Settings Profile rendered "—" for
+        // Name/Email/Grade for every user (user-reported on SAT walk).
+        const u = data.user ?? data; // tolerate the legacy degraded fallback too
         setProfile({
-          email: data.email ?? "",
-          firstName: data.firstName ?? "",
-          lastName: data.lastName ?? "",
-          gradeLevel: data.gradeLevel ?? "",
-          track: data.track ?? "ap",
-          examDate: data.examDate ?? null,
-          dailyQuizOptIn: !!data.dailyQuizOptIn,
-          subscriptionTier: data.subscriptionTier ?? "FREE",
+          email: u.email ?? "",
+          firstName: u.firstName ?? "",
+          lastName: u.lastName ?? "",
+          gradeLevel: u.gradeLevel ?? "",
+          track: u.track ?? "ap",
+          examDate: u.examDate ?? null,
+          dailyQuizOptIn: !!u.dailyQuizOptIn,
+          subscriptionTier: u.subscriptionTier ?? "FREE",
         });
       })
       .catch(() => {});

@@ -70,7 +70,37 @@ export default function ResourcesPage() {
   const [course] = useCourse();
   const [selectedUnit, setSelectedUnit] = useState<ApUnit | "ALL">("ALL");
   const [expandedUnit, setExpandedUnit] = useState<ApUnit | null>(null);
-  const [activeTab, setActiveTab] = useState<"resources" | "videos" | "skills" | "textbooks">("resources");
+  // 2026-06-02 — exam family + display name derivation. Was hard-coded to
+  // AP_COURSES[course] which is undefined for SAT_MATH / ACT_MATH / PSAT_*
+  // → header rendered "Curated undefined resources" + Exam-Skills tab
+  // showed AP writing-skill videos on SAT user accounts.
+  const family: "AP" | "SAT" | "ACT" | "PSAT" | "OTHER" = course.startsWith("AP_")
+    ? "AP"
+    : course.startsWith("SAT_")
+    ? "SAT"
+    : course.startsWith("ACT_")
+    ? "ACT"
+    : course.startsWith("PSAT_")
+    ? "PSAT"
+    : "OTHER";
+  const displayName: string =
+    AP_COURSES[course] ||
+    COURSE_REGISTRY[course]?.name ||
+    COURSE_REGISTRY[course]?.shortName ||
+    course;
+  // Exam Skills tab content (EXAM_SKILLS data) is AP-specific (DBQ, LEQ,
+  // SAQ etc). Hide it for non-AP tracks to avoid surfacing irrelevant
+  // content. SAT/ACT/PSAT students see Resources, Textbooks, Videos.
+  type TabId = "resources" | "videos" | "skills" | "textbooks";
+  const TABS: Array<{ id: TabId; label: string; icon: React.ElementType }> = [
+    { id: "resources", label: "All Resources", icon: Library },
+    { id: "textbooks", label: "Textbooks", icon: BookMarked },
+    { id: "videos", label: "Video Library", icon: Video },
+    ...(family === "AP"
+      ? [{ id: "skills" as TabId, label: "Exam Skills", icon: GraduationCap }]
+      : []),
+  ];
+  const [activeTab, setActiveTab] = useState<TabId>("resources");
 
   const UNIT_ITEMS = getCourseUnits(course);
 
@@ -84,23 +114,18 @@ export default function ResourcesPage() {
       <div>
         <h1 className="text-3xl font-bold">Study Resources</h1>
         <p className="text-muted-foreground mt-1">
-          Curated {AP_COURSES[course] || COURSE_REGISTRY[course]?.shortName || COURSE_REGISTRY[course]?.name} resources from the best educational platforms
+          Curated {displayName} resources from the best educational platforms
         </p>
       </div>
 
       <CourseSelectorInline />
 
-      {/* Tabs */}
+      {/* Tabs (track-aware: Exam Skills hidden for non-AP) */}
       <div className="flex gap-2 border-b border-border/40">
-        {[
-          { id: "resources", label: "All Resources", icon: Library },
-          { id: "textbooks", label: "Textbooks", icon: BookMarked },
-          { id: "videos", label: "Video Library", icon: Video },
-          { id: "skills", label: "Exam Skills", icon: GraduationCap },
-        ].map((tab) => (
+        {TABS.map((tab) => (
           <button
             key={tab.id}
-            onClick={() => setActiveTab(tab.id as typeof activeTab)}
+            onClick={() => setActiveTab(tab.id)}
             className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors -mb-px ${
               activeTab === tab.id
                 ? "border-blue-500 text-blue-500"
@@ -121,7 +146,7 @@ export default function ResourcesPage() {
             <div>
               <h2 className="text-lg font-bold mb-3 flex items-center gap-2">
                 <BookOpen className="h-5 w-5 text-emerald-700 dark:text-emerald-400" />
-                Recommended for {AP_COURSES[course] || COURSE_REGISTRY[course]?.name}
+                Recommended for {displayName}
               </h2>
               <div className="space-y-2">
                 {COURSE_REGISTRY[course].tutorResources!.replace(/\\n/g, "\n").split("\n").filter((l: string) => l.trim().startsWith("-")).map((line: string, i: number) => {
@@ -324,7 +349,7 @@ export default function ResourcesPage() {
       {activeTab === "textbooks" && (
         <div className="space-y-6">
           <p className="text-muted-foreground">
-            Recommended textbooks and study guides for {AP_COURSES[course]}. Free resources are highlighted.
+            Recommended textbooks and study guides for {displayName}. Free resources are highlighted.
           </p>
 
           {/* Free resources first */}
@@ -629,7 +654,7 @@ export default function ResourcesPage() {
       {activeTab === "skills" && (
         <div className="space-y-6">
           <p className="text-muted-foreground">
-            Master AP exam writing skills with these targeted resources from Heimler&apos;s History, Fiveable, and College Board.
+            Master {family === "AP" ? "AP" : displayName} exam skills with these targeted resources from Heimler&apos;s History, Fiveable, and College Board.
           </p>
 
           {course === "AP_PHYSICS_1" && (
@@ -708,7 +733,7 @@ export default function ResourcesPage() {
             <CardContent>
               <div className="grid sm:grid-cols-2 gap-3">
                 {(COURSE_REGISTRY[course]?.collegeBoardLinks ?? [
-                  { label: `${AP_COURSES[course]} Course Overview`, url: "https://apcentral.collegeboard.org" },
+                  { label: `${displayName} Course Overview`, url: "https://apcentral.collegeboard.org" },
                 ]).map((link: { label: string; url: string }) => (
                   <a key={link.label} href={link.url} target="_blank" rel="noopener noreferrer"
                     className="flex items-center gap-2 p-3 rounded-lg border border-border/40 hover:bg-accent text-sm transition-colors">
