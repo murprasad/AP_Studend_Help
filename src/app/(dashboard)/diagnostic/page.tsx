@@ -263,14 +263,37 @@ export default function DiagnosticPage() {
   if (mode === "results" && result) {
     const sortedUnits = Object.entries(result.unitScores).sort((a, b) => a[1] - b[1])
 
-    // Overall predicted score — crude mapping from mean unit score to 1-5
-    // scale. Used as the FREE-tier reveal that creates curiosity for the
-    // paywalled detail below. Intentionally does NOT show unit-level detail.
+    // 2026-06-02 — derive exam family from course prefix. The result
+    // screen had been hardcoded for AP (predicted 1-5, "Your Predicted
+    // AP Score", FRQ bridge, "AP Premium"); SAT user with SAT_MATH saw
+    // "Predicted 1" + an FRQ CTA that doesn't apply.
+    const examFamily: "AP" | "SAT" | "ACT" | "PSAT" = course.startsWith("SAT_")
+      ? "SAT"
+      : course.startsWith("ACT_")
+      ? "ACT"
+      : course.startsWith("PSAT_")
+      ? "PSAT"
+      : "AP"
+    const hasFrq = examFamily === "AP"
+
+    // Track-aware predicted score: AP 1-5, SAT 200-800, ACT 1-36, PSAT
+    // 320-1520. Each is a crude linear interpolation of mean unit
+    // percentage. Same as before for AP — additive for the others.
     const scores = Object.values(result.unitScores)
     const meanPct = scores.length ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length) : 0
-    const predictedScore = meanPct >= 80 ? 5 : meanPct >= 65 ? 4 : meanPct >= 50 ? 3 : meanPct >= 35 ? 2 : 1
-    const scoreLabel = predictedScore >= 3 ? "Passing" : "Needs Work"
-    const scoreColor = predictedScore === 5 ? "emerald" : predictedScore === 4 ? "emerald" : predictedScore === 3 ? "blue" : predictedScore === 2 ? "amber" : "red"
+    const predictedScore = examFamily === "AP"
+      ? (meanPct >= 80 ? 5 : meanPct >= 65 ? 4 : meanPct >= 50 ? 3 : meanPct >= 35 ? 2 : 1)
+      : examFamily === "SAT"
+      ? Math.round(200 + (meanPct / 100) * 600)
+      : examFamily === "ACT"
+      ? Math.round(1 + (meanPct / 100) * 35)
+      : /* PSAT */ Math.round(320 + (meanPct / 100) * 1200)
+    const passThreshold = examFamily === "AP" ? 3 : examFamily === "SAT" ? 480 : examFamily === "ACT" ? 18 : /* PSAT */ 800
+    const isPassing = examFamily === "AP" ? predictedScore >= 3 : predictedScore >= passThreshold
+    const scoreLabel = isPassing ? "Passing" : "Needs Work"
+    const scoreColor = examFamily === "AP"
+      ? (predictedScore === 5 ? "emerald" : predictedScore === 4 ? "emerald" : predictedScore === 3 ? "blue" : predictedScore === 2 ? "amber" : "red")
+      : (meanPct >= 70 ? "emerald" : meanPct >= 50 ? "blue" : meanPct >= 35 ? "amber" : "red")
 
     const tier = (session?.user as { subscriptionTier?: string })?.subscriptionTier ?? "FREE"
     const locked = !(tier === "PREMIUM" || tier === "AP_PREMIUM" || tier === "CLEP_PREMIUM")
@@ -296,7 +319,10 @@ export default function DiagnosticPage() {
         <Card className={`border-${scoreColor}-500/30 bg-${scoreColor}-500/5`}>
           <CardContent className="p-6 text-center">
             <p className="text-xs uppercase tracking-wide text-muted-foreground mb-2">
-              Your Predicted AP Score
+              {/* 2026-06-02 — track-aware label. SAT/ACT/PSAT users
+                  saw "Your Predicted AP Score" + 1-5 scale, totally
+                  wrong for their exam. */}
+              Your Predicted {examFamily} Score
             </p>
             <p className={`text-7xl font-bold text-${scoreColor}-500 leading-none`}>
               {predictedScore}
@@ -311,7 +337,9 @@ export default function DiagnosticPage() {
             "After diagnostic: 'You're strong in MCQs. Next: FRQs (40% of
             your AP score). Try 1 FRQ.'" The MCQ diagnostic is intentionally
             the entry. The bridge converts the score reveal into a deeper
-            practice commitment for users now warmed up. */}
+            practice commitment for users now warmed up.
+            2026-06-02 — only AP has FRQs. SAT/ACT/PSAT skip this card. */}
+        {hasFrq && (
         <Card className="border-amber-500/30 bg-gradient-to-br from-amber-500/10 to-orange-500/5">
           <CardContent className="p-5 space-y-3">
             <div className="flex items-start gap-3">
@@ -333,6 +361,7 @@ export default function DiagnosticPage() {
             </Link>
           </CardContent>
         </Card>
+        )}
 
         {/* Focused-practice hook (PrepLion REQ-023 port). Single weakest unit
             is revealed outside the paywall as the hook — "you have a gap,

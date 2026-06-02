@@ -44,6 +44,13 @@ export interface QuestionCandidate {
   // have no options. MCQ items continue through the standard letter +
   // option count gates.
   questionType?: string;
+  // 2026-06-02 — claims-visual gate. AI generators occasionally produce
+  // "Figure: A right triangle with legs 3, 4..." style stems that
+  // CLAIM a visual exists but no image is attached. Students hit these
+  // as blockers — text alone may not be sufficient. The gate compares
+  // visual-claim language in questionText/stimulus against the presence
+  // of stimulusImageUrl.
+  stimulusImageUrl?: string | null;
 }
 
 export interface GateResult {
@@ -264,6 +271,44 @@ export function runDeterministicGates(q: QuestionCandidate): GateResult {
   // check above.
   if (isNumeric) {
     return { ok: true };
+  }
+
+  // 1d. CLAIMS-VISUAL-NO-IMAGE gate (2026-06-02). User-reported defect
+  // (journey diagnostic on SN): "Figure: a right triangle with legs 3
+  // and 4, hypotenuse unknown" rendered with NO actual figure. 5 ACT_MATH
+  // "Figure:" MCQs + 26 broader "the diagram / the graph below / shown
+  // in the figure" MCQs were approved with no stimulusImageUrl. Some
+  // are answerable from text (those got rewritten), but most need a
+  // real image — student is stuck without it. This gate prevents
+  // future AI generations from re-entering the bank in this state.
+  //
+  // Patterns are conservative: only language that clearly REFERENCES
+  // a visual the student must see ("Figure:", "Figure shows X",
+  // "the diagram below/above", "the graph below/above",
+  // "shown in the figure/graph", "as shown in the figure/diagram/graph",
+  // "in the figure/diagram/graph above/below"). Generic mentions like
+  // "diagram of cellular respiration" (informational, not load-bearing)
+  // are not flagged because they often appear in stimulus text.
+  {
+    const text = `${q.questionText ?? ""} ${q.stimulus ?? ""}`;
+    const claimsVisual =
+      /(^|\s)Figure:\s/i.test(text) ||
+      /Figure shows\b/i.test(text) ||
+      /the diagram (below|above|shown)/i.test(text) ||
+      /the graph (below|above|shown)/i.test(text) ||
+      /shown in the (figure|graph|diagram)/i.test(text) ||
+      /as shown in the (figure|graph|diagram)/i.test(text) ||
+      /in the (figure|graph|diagram) (above|below)/i.test(text);
+    const hasImage =
+      typeof q.stimulusImageUrl === "string" && q.stimulusImageUrl.trim().length > 0;
+    if (claimsVisual && !hasImage) {
+      return {
+        ok: false,
+        gate: "claims-visual-no-image",
+        reason:
+          "Question references a figure/diagram/graph that the student must see, but no stimulusImageUrl is attached. Either attach the image or rewrite the question to be answerable from text alone.",
+      };
+    }
   }
 
   // 2. Options

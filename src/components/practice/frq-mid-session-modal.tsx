@@ -39,6 +39,13 @@ const STORAGE_KEY_PREFIX = "frq_mid_session_shown_v1::";
 
 export function shouldShowFrqMidSession(course: string): boolean {
   if (typeof window === "undefined") return false;
+  // 2026-06-02 — Track gate. SAT/ACT/PSAT don't have FRQs (per the
+  // activation overhaul, commit 7847904: SAT/ACT/PSAT journey is
+  // course-pick → diagnostic → /dashboard, no FRQ step). The modal copy
+  // is hardcoded for AP ("try a real AP question") and the destination
+  // /frq-practice will reject non-AP courses. User-reported defect:
+  // SAT_MATH practice triggered this modal at Q3.
+  if (!course.startsWith("AP_")) return false;
   try {
     return localStorage.getItem(STORAGE_KEY_PREFIX + course) !== "true";
   } catch {
