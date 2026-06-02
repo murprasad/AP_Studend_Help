@@ -1,6 +1,6 @@
 {
   "name": "studentnest",
-  "version": "11.2.0",
+  "version": "11.3.0",
   "private": true,
   "scripts": {
     "dev": "next dev",

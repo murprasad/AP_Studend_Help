@@ -62,7 +62,7 @@ export default function AboutPage() {
           </div>
           <div className="flex items-center gap-2 flex-wrap">
             <h1 className="text-3xl font-bold gradient-text">About StudentNest Prep</h1>
-            <Badge className="bg-blue-500/20 text-blue-800 dark:text-blue-400 border-blue-500/30 text-xs font-semibold">Beta 11.2</Badge>
+            <Badge className="bg-blue-500/20 text-blue-800 dark:text-blue-400 border-blue-500/30 text-xs font-semibold">Beta 11.3</Badge>
           </div>
         </div>
         <p className="text-muted-foreground leading-relaxed max-w-2xl mx-auto">
@@ -314,8 +314,8 @@ export default function AboutPage() {
       <div className="space-y-6">
         <div className="text-center space-y-1">
           <Badge className="bg-blue-500/20 text-blue-800 dark:text-blue-400 border-blue-500/30 text-xs font-semibold mb-2">Latest Release</Badge>
-          <h2 className="text-xl font-bold">What&apos;s New in Beta 11.2</h2>
-          <p className="text-sm text-muted-foreground">All 29 AP/SAT/ACT courses now live with ≥500 silver-tier vetted questions each. Built a 4-source pipeline (OpenStax + Gutenberg + CB CED + AI generation) flowing through deterministic gates (structure, answer-consistency, math-recompute, style, source-attribution). 7 previously-hidden courses (AP Lit, AP Lang, AP Euro, AP Physics 1, AP Calc AB, AP Precalc, SAT R&amp;W) now exposed on the sidebar. Average bank size: 600+ questions per course.</p>
+          <h2 className="text-xl font-bold">What&apos;s New in Beta 11.3</h2>
+          <p className="text-sm text-muted-foreground">SAT=CB parity complete: scaled 200-800 section scores, 2-module routing with Module-2 tier feeding the scaled-score band, Desmos embed in Math, RW digital-format copy, domain subscores on mock-exam result, Khan Academy skill-links on wrong answers, and weighted sampling. Plus ACT parity (Conventions content gap closed), full activation overhaul (journey compression, minimal dashboard), Pass-Probability Engine + Today&apos;s Set (replaces &quot;Readiness&quot; framing), CB-style landing rebuild for /ap //sat //act //psat, Capacitor Android wrap, SMS/Twilio + Web Push re-engagement, and 31 CB cb-spec files covering all visible courses.</p>
         </div>
         <div className="grid sm:grid-cols-2 gap-3 text-left">
           {[

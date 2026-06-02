@@ -400,6 +400,25 @@ npm run pages:deploy    # checks + build + deploy to CF Pages
 
 ## Release History
 
+### Beta 11.3 (2026-06-01)
+- **SAT=CB parity (#100, F1-F16)**: scaled 200-800 section scores, 2-module routing with Module-2 tier feeding the scaled-score band (F8), Desmos calculator embed (F4) + 2-module break (F2), RW digital-format copy (F5) + weighted sampling (F6), domain subscores on mock-exam result (F9), Khan Academy skill-links on wrong answers (F12), CB skill-code tagger scaffold (F13), SAT skill heatmap on dashboard (F15), SAT domain-paced study plan module (F14).
+- **SN=ACT parity (#103)**: A1/A2/A4 — ACT_MATH 5-choice audit script + Conventions content gap closed (250 new ACT_ENGLISH Qs targeting the 4% vs CB 40.5% gap).
+- **Activation overhaul** (`7847904`): journey compression, formula tightening, minimal dashboard.
+- **Pass-Probability Engine + Today's Set** (PRD phases 1-11): pass-probability schema + formula + 12 tests, cron, hero copy, Today's Set generator + endpoint, CBR widget, Pass Ready cert, Sage demotion behind flag (default ON), PostMockReveal component wired into diagnostic + mock-exam complete, "Readiness" framing replaces "pass probability" copy.
+- **Landing CB-style 4-exam rebuild (#99/#102)**: /ap, /sat, /act, /psat rewritten; chrome (marketing + auth surfaces) migrated to CB design; @layer-wrap CB-skin overrides shipped in prod.
+- **CB-spec encoding**: 17 new AP cb_specs (Calc BC, CSA, CSP, English Lang/Lit, Env Sci, Euro, Human Geo, Macro/Micro, Physics 1/2/CE/CM, Precalc, US Gov, World History) + 2 SAT + 2 PSAT + 4 ACT = all 31 visible courses covered.
+- **Capacitor Android wrap** — native shell over live site.
+- **Re-engagement**: Web Push (VAPID + Prisma + sw.js + opt-in banner + cron), SMS via Twilio (third channel alongside email + push), free-tier dropped-off re-engagement cron (mirrored from PL).
+- **Reddit gap analyzer + auto-link to bank** (mirrored from PL).
+- **Brevo email transport** (G1.3) + Q2/Q3 defensive reset (G1.1).
+- **QA**: ported 4 specs from PrepLion (scope, brand, cross-surface, onboarding); Stripe checkout smoke spec; Playwright triage allowlist.
+- **SEO**: 3 P0 SEO pages (SAT free-vs-paid, ACT-vs-SAT, Digital SAT 2024); analytics gtag.ts portable to GA4.
+- **Yuvan-trace funnel fix**: register persists `?course=` to localStorage as `sn_preselected_course`; quickstart honors it as recommended card.
+- **Validation engine**: SAT/PSAT-aware deterministic gates (#100).
+- **Admin reset bug fix**: `onboarding_completed` bridge cookie now cleared on reset response; cookie maxAge in `/api/journey` shortened from 30d to 1d to limit stale-cookie window for QA test users.
+- **Brand**: landing branded to "StudentNest Prep" per user feedback.
+- **package.json**: bumped to `11.3.0`.
+
 ### Beta 2.1 (2026-03-21)
 - **Per-Module Stripe Subscriptions**: Independent $9.99/mo or $79.99/yr subscriptions for AP, SAT, ACT, and CLEP modules. Each module has its own Stripe price ID, payment link, checkout flow, and webhook handling. `ModuleSubscription` table tracks per-module status.
 - **Module-Locked Sidebar**: Sidebar now filters courses strictly by user's module (ap/sat/act/clep). Users who sign up from `/ap-prep` see only AP courses. No "Browse all courses" escape hatch — clean, focused experience.
