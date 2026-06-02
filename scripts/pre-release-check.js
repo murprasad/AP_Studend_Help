@@ -413,6 +413,62 @@ section("10. No 'pass probability' in user-facing copy");
   }
 }
 
+// ─── 11. Quality Process v1 — QA Walk + Release Manifest gates ──────────────
+// 2026-06-02 — added in response to user goal directive after defect cluster
+// (admin reset, tile clicks, SAT track, popup jump) reached prod because no
+// role was consistently playing QA. See docs/QUALITY_PROCESS.md G4 + G5.
+//
+// Soft-warn for now (won't block deploy until baseline of QA walks exists),
+// but logs prominently so the team can't claim ignorance. Flip to hard fail
+// once `data/qa-walks/*.md` is the established cadence.
+section("11. Quality Process gates (QA walk + release manifest)");
+{
+  const fs = require("fs");
+  const path = require("path");
+  const QA_WALKS_DIR = path.join(__dirname, "..", "data", "qa-walks");
+  const MANIFESTS_DIR = path.join(__dirname, "..", "data", "release-manifests");
+  const ENFORCE = process.env.ENFORCE_QUALITY_GATES === "1";
+
+  // Find most recent QA walk log
+  let recentWalk = null;
+  try {
+    const files = fs.readdirSync(QA_WALKS_DIR).filter((f) => f.endsWith(".md") && !f.startsWith("."));
+    if (files.length > 0) {
+      const stats = files.map((f) => ({ f, mtime: fs.statSync(path.join(QA_WALKS_DIR, f)).mtimeMs }));
+      stats.sort((a, b) => b.mtime - a.mtime);
+      recentWalk = stats[0];
+    }
+  } catch { /* dir may not exist yet */ }
+
+  if (recentWalk) {
+    const ageHours = (Date.now() - recentWalk.mtime) / (1000 * 60 * 60);
+    if (ageHours <= 24) {
+      ok(`G4 QA Walk Log present and fresh: ${recentWalk.f} (${ageHours.toFixed(1)}h old)`);
+    } else if (ENFORCE) {
+      fail(`G4 QA Walk Log stale: ${recentWalk.f} is ${ageHours.toFixed(1)}h old (>24h). Run a fresh persona walkthrough before deploying.`);
+    } else {
+      console.log(`  ⚠ G4 QA Walk Log stale: ${recentWalk.f} is ${ageHours.toFixed(1)}h old. Set ENFORCE_QUALITY_GATES=1 once baseline is stable.`);
+    }
+  } else if (ENFORCE) {
+    fail(`G4 QA Walk Log missing: no files in data/qa-walks/. See docs/QUALITY_PROCESS.md.`);
+  } else {
+    console.log(`  ⚠ G4 QA Walk Log missing — soft-warn. Create data/qa-walks/YYYY-MM-DD-<change>.md per docs/QUALITY_PROCESS.md.`);
+  }
+
+  // Release manifest for current HEAD
+  let manifestCount = 0;
+  try {
+    manifestCount = fs.readdirSync(MANIFESTS_DIR).filter((f) => f.endsWith(".md") && !f.startsWith(".")).length;
+  } catch { /* dir may not exist */ }
+  if (manifestCount > 0) {
+    ok(`G5 Release Manifests directory has ${manifestCount} entries (most recent should be filled out for this release)`);
+  } else if (ENFORCE) {
+    fail(`G5 Release Manifest missing: no files in data/release-manifests/. Copy docs/RELEASE_MANIFEST_TEMPLATE.md.`);
+  } else {
+    console.log(`  ⚠ G5 Release Manifest missing — soft-warn. Create data/release-manifests/<tag>.md per docs/RELEASE_MANIFEST_TEMPLATE.md.`);
+  }
+}
+
 // ─── Summary ─────────────────────────────────────────────────────────────────
 console.log(`\n${"─".repeat(50)}`);
 if (failed === 0) {
