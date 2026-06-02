@@ -19,6 +19,12 @@
 import { spawn, execSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+// 2026-06-02 — ES module __dirname shim. Quality Process v1 gate added
+// path.join(__dirname, ...) which doesn't exist in ES module scope. The
+// staging gate caught this before touching prod (as designed).
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 function run(cmd, args, opts = {}) {
   return new Promise((resolve, reject) => {
