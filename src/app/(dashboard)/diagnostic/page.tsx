@@ -47,13 +47,14 @@ export default function DiagnosticPage() {
   const { data: session } = useSession()
   const [mode, setMode] = useState<DiagMode>("intro")
   const { enterExamMode, exitExamMode } = useExamMode()
+  // 2026-06-03 — User request: every feature page renders full-screen with
+  // a Dashboard return button (Flashcards parity), including Diagnostics.
+  // Was previously only entering exam mode during `mode === "testing"` so
+  // intro + results kept the sidebar. Now full-screen across all 3 modes.
   useEffect(() => {
-    // Full-screen mode while taking the diagnostic; back to the normal
-    // layout on the intro and results screens so nav is available.
-    if (mode === "testing") enterExamMode()
-    else exitExamMode()
-  }, [mode, enterExamMode, exitExamMode])
-  useEffect(() => { return () => exitExamMode() }, [exitExamMode])
+    enterExamMode()
+    return () => exitExamMode()
+  }, [enterExamMode, exitExamMode])
   const [sessionId, setSessionId] = useState<string | null>(null)
   const [questions, setQuestions] = useState<DiagQuestion[]>([])
   const [currentIndex, setCurrentIndex] = useState(0)
