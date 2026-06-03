@@ -37,16 +37,24 @@ const SECONDS_PER_CARD = 20;
 export function FlashcardsDueCard({ course }: Props) {
   const [count, setCount] = useState<number | null>(null);
 
+  // 2026-06-03 — Flashcards are AP/CLEP-only per user feedback. SAT/PSAT/
+  // ACT students don't need vocab/concept SR cards; their prep is
+  // question-volume + adaptive test simulation. Skip the fetch entirely
+  // and render null so the dashboard doesn't surface this block.
+  const isFlashcardsTrack =
+    course?.startsWith("AP_") || course?.startsWith("CLEP_");
+
   useEffect(() => {
-    if (!course) return;
+    if (!course || !isFlashcardsTrack) return;
     let cancelled = false;
     fetch(`/api/flashcards/due-count?course=${course}`, { cache: "no-store" })
       .then((r) => (r.ok ? r.json() : null))
       .then((d: CountResponse | null) => { if (!cancelled && d) setCount(d.count); })
       .catch(() => { /* silent — the block hides on error */ });
     return () => { cancelled = true; };
-  }, [course]);
+  }, [course, isFlashcardsTrack]);
 
+  if (!isFlashcardsTrack) return null;
   if (count === null || count < MIN_TO_SHOW) return null;
 
   const minutes = Math.min(10, Math.ceil((count * SECONDS_PER_CARD) / 60));

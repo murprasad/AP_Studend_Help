@@ -61,6 +61,44 @@ export default function FlashcardsPage() {
   const [course] = useCourse();
   const { enterExamMode, exitExamMode } = useExamMode();
 
+  // 2026-06-03 — Flashcards are AP/CLEP-only per user feedback. SAT/PSAT/
+  // ACT students bouncing here directly (deep-link / old bookmark) get a
+  // clear gate-page explaining and routing them to the right surface.
+  const isFlashcardsTrack =
+    course?.startsWith("AP_") || course?.startsWith("CLEP_");
+  if (course && !isFlashcardsTrack) {
+    return (
+      <div className="max-w-2xl mx-auto px-6 py-12">
+        <h1 className="text-xl font-semibold mb-2">Flashcards aren&apos;t part of {String(course).replace(/_/g, " ")} prep</h1>
+        <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
+          SAT, PSAT, and ACT prep is question-volume + adaptive test simulation, not vocabulary/concept SR cards. Flashcards are kept available for AP and CLEP courses where they fit the exam pattern.
+        </p>
+        <div className="flex gap-3">
+          <Link
+            href="/practice"
+            className="inline-block px-4 py-2 rounded-full text-sm font-semibold bg-blue-600 text-white hover:bg-blue-700"
+          >
+            Go to Practice
+          </Link>
+          {(course?.startsWith("SAT_") || course?.startsWith("PSAT_") || course?.startsWith("ACT_")) && (
+            <Link
+              href="/full-practice-test"
+              className="inline-block px-4 py-2 rounded-full text-sm font-semibold border border-slate-300 hover:bg-slate-50"
+            >
+              Full Practice Test
+            </Link>
+          )}
+          <Link
+            href="/dashboard"
+            className="inline-block px-4 py-2 rounded-full text-sm font-semibold border border-slate-300 hover:bg-slate-50"
+          >
+            Back to Dashboard
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
   const [cards, setCards] = useState<Flashcard[] | null>(null);
   const [index, setIndex] = useState(0);
   const [showBack, setShowBack] = useState(false);

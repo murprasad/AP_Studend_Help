@@ -71,7 +71,10 @@ const navItems: NavItem[] = SAGE_DEMOTED
       { href: "/full-practice-test", icon: Trophy, label: "Full Practice Test", tracks: ["sat", "psat", "act"] },
       { href: "/mock-exam", icon: Trophy, label: "Mock Exam", tracks: ["ap", "clep"] },
       { href: "/diagnostic", icon: ClipboardList, label: "Diagnostic" },
-      { href: "/flashcards", icon: Layers, label: "Flashcards" },
+      // 2026-06-03 — Flashcards gated to AP + CLEP per user feedback.
+      // SAT/PSAT/ACT students don't need vocab/concept SR cards; their
+      // prep is question-volume + adaptive test simulation.
+      { href: "/flashcards", icon: Layers, label: "Flashcards", tracks: ["ap", "clep"] },
       { href: "/analytics", icon: BarChart3, label: "Analytics" },
       { href: "/study-plan", icon: BookOpen, label: "Study Plan" },
       { href: "/resources", icon: Library, label: "Resources" },
@@ -93,7 +96,10 @@ const navItems: NavItem[] = SAGE_DEMOTED
       { href: "/full-practice-test", icon: Trophy, label: "Full Practice Test", tracks: ["sat", "psat", "act"] },
       { href: "/mock-exam", icon: Trophy, label: "Mock Exam", tracks: ["ap", "clep"] },
       { href: "/diagnostic", icon: ClipboardList, label: "Diagnostic" },
-      { href: "/flashcards", icon: Layers, label: "Flashcards" },
+      // 2026-06-03 — Flashcards gated to AP + CLEP per user feedback.
+      // SAT/PSAT/ACT students don't need vocab/concept SR cards; their
+      // prep is question-volume + adaptive test simulation.
+      { href: "/flashcards", icon: Layers, label: "Flashcards", tracks: ["ap", "clep"] },
       { href: "/analytics", icon: BarChart3, label: "Analytics" },
       { href: "/study-plan", icon: BookOpen, label: "Study Plan" },
       { href: "/resources", icon: Library, label: "Resources" },
