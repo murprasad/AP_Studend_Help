@@ -129,6 +129,29 @@ export default function DiagnosticPage() {
   const courseName = AP_COURSES[course] || COURSE_REGISTRY[course]?.name || course
 
   if (mode === "intro") {
+    // 2026-06-02 — track-aware copy. Was hardcoded AP-only:
+    //   "we'll cover FRQs/essays in your next-step plan" — FRQs only
+    //   apply to AP exams; SAT/ACT/PSAT don't have FRQs.
+    //   "{N} units · AP/SAT/ACT" — surfaced all 3 family names
+    //   regardless of the user's actual track.
+    const introFamily: "AP" | "SAT" | "ACT" | "PSAT" | "CLEP" = isCLEP
+      ? "CLEP"
+      : course.startsWith("SAT_")
+      ? "SAT"
+      : course.startsWith("ACT_")
+      ? "ACT"
+      : course.startsWith("PSAT_")
+      ? "PSAT"
+      : "AP";
+    const subhead =
+      introFamily === "AP"
+        ? "15-min MCQ check — we'll cover FRQs/essays in your next-step plan."
+        : introFamily === "CLEP"
+        ? "15-min MCQ check — your starting point for the CLEP exam."
+        : "15-min MCQ check — we'll surface your weakest domains and pace your study plan.";
+    const familyLabel =
+      introFamily === "CLEP" ? "CLEP Exam" : `${introFamily} Exam`;
+
     return (
       <div className="max-w-2xl mx-auto space-y-6">
         <div>
@@ -137,7 +160,7 @@ export default function DiagnosticPage() {
             Quick Score Estimate
           </h1>
           <p className="text-muted-foreground mt-2">
-            15-min MCQ check — we'll cover FRQs/essays in your next-step plan.
+            {subhead}
           </p>
         </div>
 
@@ -146,7 +169,7 @@ export default function DiagnosticPage() {
           <BookOpen className={`h-5 w-5 text-${accentColor}-400 flex-shrink-0`} />
           <div>
             <p className="text-sm font-semibold">{courseName}</p>
-            <p className="text-xs text-muted-foreground">{Object.keys(courseUnits).length} units · {isCLEP ? "CLEP Exam" : "AP/SAT/ACT"}</p>
+            <p className="text-xs text-muted-foreground">{Object.keys(courseUnits).length} units · {familyLabel}</p>
           </div>
         </div>
 
