@@ -124,8 +124,17 @@ export function CourseExamOverview({ course, isFreeTier }: Props) {
         {isFreeTier && struct.sections.some((s) => !s.freeAccess) && (
           <div className="pt-2 border-t border-border/40">
             <p className="text-xs text-muted-foreground mb-2">
-              Free covers MCQ practice. Upgrade to unlock essay-format practice
-              with AI-scored rubric feedback.
+              {/* 2026-06-03 — Track-aware upsell copy. "Essay-format practice
+                  with AI-scored rubric feedback" is AP-only; SAT/PSAT have
+                  SPR (numeric grid-in) not essays; ACT is MCQ-only with no
+                  premium-locked section types. */}
+              {course?.startsWith("AP_")
+                ? "Free covers MCQ practice. Upgrade to unlock essay-format practice with AI-scored rubric feedback."
+                : course?.startsWith("SAT_") || course?.startsWith("PSAT_")
+                ? "Free covers MCQ practice. Upgrade to unlock SPR (student-produced response / numeric grid-in) practice — required for 25% of the real exam."
+                : course?.startsWith("ACT_")
+                ? "Free covers MCQ practice. Upgrade to unlock full-length section mocks with adaptive timing."
+                : "Free covers MCQ practice. Upgrade for full bank access."}
             </p>
             <Link href="/billing?utm_source=exam_overview_cta&utm_campaign=premium_upsell">
               <Button size="sm" className="rounded-full h-8 text-xs">
