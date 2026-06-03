@@ -33,7 +33,7 @@ import { MasteryTierUpCard } from "@/components/dashboard/mastery-tier-up-card";
 import { PassProbabilityHero } from "@/components/dashboard/pass-probability-hero";
 import { TodaysSetCard } from "@/components/dashboard/todays-set-card";
 import { SatSkillHeatmap } from "@/components/dashboard/sat-skill-heatmap";
-import { ActivationGate, PreDiagnosticSuppress } from "@/components/dashboard/activation-gate";
+import { ActivationGate, PreDiagnosticSuppress, PostDiagnosticSuppress } from "@/components/dashboard/activation-gate";
 import { PassReadyCertGate } from "@/components/dashboard/pass-ready-cert-gate";
 import { ResumeCard } from "@/components/dashboard/resume-card";
 import { PrimaryActionStrip } from "@/components/dashboard/primary-action-strip";
@@ -268,10 +268,20 @@ function DashboardBody({ course, impressionId }: { course: string; impressionId:
           Beta 9.3.3: also hidden when JourneyHeroCard is forcing (the journey
           card already supplies the start CTA — showing this strip too gave
           users 2 competing "Warm up / TRY IT" buttons). */}
+      {/* 2026-06-02 — PrimaryActionStrip is suppressed POST-diagnostic.
+          Once the user has a diagnostic, TodaysSetCard surfaces a
+          specific weak-area CTA ('Start today's 10 in Algebra') with
+          a clear reason. PrimaryActionStrip adds 3+ competing tool
+          tiles (Flashcards/Sage/Mock Exam/Show more tools) which the
+          user reported as "No clear action to improve the score."
+          Suppressing post-diagnostic restores the single-CTA model.
+          Pre-diagnostic, it still renders as the entry-point set. */}
       {!forcing && !journeyLoading && (
-        <div data-focus-target="primary-action">
-          <PrimaryActionStrip course={course} impressionId={impressionId} />
-        </div>
+        <PostDiagnosticSuppress course={course as string}>
+          <div data-focus-target="primary-action">
+            <PrimaryActionStrip course={course} impressionId={impressionId} />
+          </div>
+        </PostDiagnosticSuppress>
       )}
 
       {/* 1b-Q1. Single-question entry — Q1 commitment fix (2026-04-27).

@@ -155,3 +155,33 @@ export function PreDiagnosticSuppress({ children, course }: { children: ReactNod
   if (!stats || stats.hasDiagnostic) return <>{children}</>;
   return null;
 }
+
+/**
+ * Inverse of PreDiagnosticSuppress — render children ONLY when the user
+ * has not yet taken a diagnostic. For surfaces that act as "while you're
+ * getting calibrated" fallbacks (e.g. PrimaryActionStrip tool tiles)
+ * which become redundant noise once TodaysSetCard takes over with a
+ * specific weak-area CTA.
+ */
+export function PostDiagnosticSuppress({ children, course }: { children: ReactNode; course?: string }) {
+  const [stats, setStats] = useState<ActivationStats | null>(null);
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    let cancelled = false;
+    const url = course
+      ? `/api/me/activation-progress?course=${encodeURIComponent(course)}`
+      : "/api/me/activation-progress";
+    fetch(url)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d: ActivationStats | null) => {
+        if (cancelled) return;
+        setStats(d);
+        setLoading(false);
+      })
+      .catch(() => { if (!cancelled) setLoading(false); });
+    return () => { cancelled = true; };
+  }, [course]);
+  if (loading) return null;
+  if (!stats || !stats.hasDiagnostic) return <>{children}</>;
+  return null;
+}

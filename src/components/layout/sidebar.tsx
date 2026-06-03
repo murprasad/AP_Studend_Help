@@ -416,9 +416,24 @@ export function Sidebar({ userRole, userTrack, isOpen = false, onClose = () => {
               // FRQ Practice is meaningful only when the user's selected course
               // is in the AP family. Since users can now switch across AP/SAT/
               // ACT freely, the right gate is the course they're actually on.
-              if (item.tracks.includes("ap") && (course as string).startsWith("AP_")) return true;
-              if (item.tracks.includes("sat") && (course as string).startsWith("SAT_")) return true;
-              if (item.tracks.includes("act") && (course as string).startsWith("ACT_")) return true;
+              //
+              // 2026-06-02 — ALSO gate by user track when course is the
+              // default fallback. Track-leak sweep caught FRQ Practice
+              // rendering for a fresh SAT user whose course hadn't yet
+              // committed (useCourse() returns AP_WORLD_HISTORY default
+              // before journey Step 0 completes). Track is authoritative
+              // when course hasn't been explicitly picked yet.
+              const familyFromCourse = (course as string).startsWith("AP_")
+                ? "ap"
+                : (course as string).startsWith("SAT_")
+                ? "sat"
+                : (course as string).startsWith("ACT_")
+                ? "act"
+                : (course as string).startsWith("PSAT_")
+                ? "psat"
+                : null;
+              const effectiveFamily = familyFromCourse ?? effectiveTrack;
+              if (item.tracks.includes(effectiveFamily)) return true;
               return false;
             })
             .map((item) => {
