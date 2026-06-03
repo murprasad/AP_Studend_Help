@@ -16,6 +16,7 @@ import { config } from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
 import { renderStimulus, type StimulusSpec } from "../src/lib/stimulus-svg/index";
+import { pickAnchorsForSection, formatAnchorForPrompt, scoreAgainstCb } from "../src/lib/cb-corpus";
 
 config({ path: "C:/Users/akkil/project/AP_Help/.env" });
 process.env.DATABASE_URL = (process.env.DATABASE_URL || "").replace(/^["']|["']$/g, "");
@@ -28,6 +29,14 @@ async function main() {
   const FLAGS = process.argv.slice(2);
   const COUNT = parseInt(FLAGS.find((f) => f.startsWith("--count="))?.split("=")[1] ?? "5", 10);
   const DRY_RUN = FLAGS.includes("--dry-run");
+  // 2026-06-03 — Extended to support PSAT_MATH, ACT_MATH, ACT_SCIENCE.
+  // ACT_SCIENCE uses data-table + bar/line/scatter dominantly (CB target ~80%).
+  const COURSE = (FLAGS.find((f) => f.startsWith("--target-course="))?.split("=")[1] ?? "SAT_MATH").toUpperCase();
+  const VALID = ["SAT_MATH", "PSAT_MATH", "ACT_MATH", "ACT_SCIENCE"];
+  if (!VALID.includes(COURSE)) {
+    console.error(`Invalid --target-course=${COURSE}. Valid: ${VALID.join(", ")}`);
+    process.exit(1);
+  }
 
   const { neon } = await import("@neondatabase/serverless");
   const sql = neon(process.env.DATABASE_URL!);
@@ -38,16 +47,37 @@ async function main() {
     process.exit(1);
   }
 
-  // Blueprints — each generates a figure-stimulus Q. Stratified to match
-  // CB Math domain ranges: 32-35% Algebra, 32-35% Advanced Math, 13-16% PSDA, 13-16% Geo&Trig.
-  const BLUEPRINTS: BP[] = [
-    { domain: "ALGEBRA", subskill: "Linear functions — slope interpretation", unit: "SAT_MATH_1_ALGEBRA", figureKind: "scatterPlot-trendline", contexts: ["subscriber growth", "savings over time", "fuel consumption", "population growth"] },
-    { domain: "ALGEBRA", subskill: "Linear equations from a graph — finding y-intercept", unit: "SAT_MATH_1_ALGEBRA", figureKind: "coordinatePlane-line", contexts: ["cost over time", "distance traveled", "balance over months", "tank fill level"] },
-    { domain: "PROBLEM_SOLVING_DATA_ANALYSIS", subskill: "One-variable data — measure of center from bar chart", unit: "SAT_MATH_3_PROBLEM_SOLVING", figureKind: "barChart", contexts: ["votes for school activities", "books read per student", "products sold per category"] },
-    { domain: "PROBLEM_SOLVING_DATA_ANALYSIS", subskill: "Two-variable data — scatterplot interpretation", unit: "SAT_MATH_3_PROBLEM_SOLVING", figureKind: "scatterPlot-trendline", contexts: ["temperature vs ice cream sales", "study hours vs exam score", "screen time vs sleep hours"] },
-  ];
+  // Per-course blueprints. Each course has its own unit IDs + relevant
+  // figure kinds. PSAT mirrors SAT. ACT_MATH uses ACT unit IDs. ACT_SCIENCE
+  // is data-table + scatter/bar dominant per CB-target ~80% figure.
+  const BLUEPRINTS_BY_COURSE: Record<string, BP[]> = {
+    SAT_MATH: [
+      { domain: "ALGEBRA", subskill: "Linear functions — slope interpretation", unit: "SAT_MATH_1_ALGEBRA", figureKind: "scatterPlot-trendline", contexts: ["subscriber growth", "savings over time", "fuel consumption", "population growth"] },
+      { domain: "ALGEBRA", subskill: "Linear equations from a graph — finding y-intercept", unit: "SAT_MATH_1_ALGEBRA", figureKind: "coordinatePlane-line", contexts: ["cost over time", "distance traveled", "balance over months", "tank fill level"] },
+      { domain: "PROBLEM_SOLVING_DATA_ANALYSIS", subskill: "One-variable data — measure of center from bar chart", unit: "SAT_MATH_3_PROBLEM_SOLVING", figureKind: "barChart", contexts: ["votes for school activities", "books read per student", "products sold per category"] },
+      { domain: "PROBLEM_SOLVING_DATA_ANALYSIS", subskill: "Two-variable data — scatterplot interpretation", unit: "SAT_MATH_3_PROBLEM_SOLVING", figureKind: "scatterPlot-trendline", contexts: ["temperature vs ice cream sales", "study hours vs exam score", "screen time vs sleep hours"] },
+    ],
+    PSAT_MATH: [
+      { domain: "ALGEBRA", subskill: "Linear functions — slope interpretation", unit: "PSAT_MATH_1_ALGEBRA", figureKind: "scatterPlot-trendline", contexts: ["subscriber growth", "savings over time", "fuel consumption", "population growth"] },
+      { domain: "ALGEBRA", subskill: "Linear equations from a graph — finding y-intercept", unit: "PSAT_MATH_1_ALGEBRA", figureKind: "coordinatePlane-line", contexts: ["cost over time", "distance traveled", "balance over months"] },
+      { domain: "PROBLEM_SOLVING_DATA_ANALYSIS", subskill: "Measure of center from bar chart", unit: "PSAT_MATH_3_PROBLEM_SOLVING", figureKind: "barChart", contexts: ["votes for school activities", "books read per student"] },
+      { domain: "PROBLEM_SOLVING_DATA_ANALYSIS", subskill: "Scatterplot interpretation", unit: "PSAT_MATH_3_PROBLEM_SOLVING", figureKind: "scatterPlot-trendline", contexts: ["temperature vs sales", "study hours vs score"] },
+    ],
+    ACT_MATH: [
+      { domain: "NUMBER", subskill: "Number-line / proportion from a chart", unit: "ACT_MATH_1_NUMBER", figureKind: "barChart", contexts: ["test scores by class", "students per major"] },
+      { domain: "ALGEBRA", subskill: "Linear equation from a graph", unit: "ACT_MATH_2_ALGEBRA", figureKind: "coordinatePlane-line", contexts: ["temperature change", "balance over months", "distance traveled"] },
+      { domain: "ALGEBRA", subskill: "Scatterplot trend identification", unit: "ACT_MATH_2_ALGEBRA", figureKind: "scatterPlot-trendline", contexts: ["age vs reaction time", "height vs weight"] },
+      { domain: "STATISTICS", subskill: "Bar chart data interpretation", unit: "ACT_MATH_4_STATISTICS", figureKind: "barChart", contexts: ["voter turnout by precinct", "products sold per category"] },
+    ],
+    ACT_SCIENCE: [
+      { domain: "DATA_REPRESENTATION", subskill: "Read a measurement from a chart", unit: "ACT_SCI_1_DATA_REPRESENTATION", figureKind: "barChart", contexts: ["enzyme reaction rates at varying temperatures", "plant growth at light intensities", "yield by catalyst concentration"] },
+      { domain: "DATA_REPRESENTATION", subskill: "Identify trend on a scatter plot from an experiment", unit: "ACT_SCI_1_DATA_REPRESENTATION", figureKind: "scatterPlot-trendline", contexts: ["pH vs reaction rate", "altitude vs air pressure", "concentration vs absorbance"] },
+      { domain: "RESEARCH_SUMMARIES", subskill: "Compare two experiments via bar chart", unit: "ACT_SCI_2_RESEARCH_SUMMARIES", figureKind: "barChart", contexts: ["bacterial growth in 3 media", "tensile strength at temperatures", "voltage at concentrations"] },
+    ],
+  };
+  const BLUEPRINTS = BLUEPRINTS_BY_COURSE[COURSE];
 
-  console.log(`\n═══ Seed SAT_MATH with figures — ${DRY_RUN ? "DRY-RUN" : "WRITE MODE"} (count=${COUNT}) ═══\n`);
+  console.log(`\n═══ Seed ${COURSE} with figures — ${DRY_RUN ? "DRY-RUN" : "WRITE MODE"} (count=${COUNT}) ═══\n`);
 
   let saved = 0, failed = 0;
   for (let i = 0; i < COUNT; i++) {
@@ -62,6 +92,19 @@ async function main() {
       if (!ai) { process.stdout.write("AI fail\n"); failed++; continue; }
       const parsed = JSON.parse(ai);
       if (!validateQuestion(parsed)) { process.stdout.write("validation fail\n"); failed++; continue; }
+
+      // 2026-06-03 — CB-corpus stylometric validation. New goal: no question
+      // is approved unless it matches CB corpus distribution. Score generated
+      // candidate against the 47-Q Math corpus from data/cb-corpus/.
+      const styloScore = scoreAgainstCb(
+        { stem: parsed.stem, options: parsed.options, correctAnswer: parsed.correctAnswer },
+        "MATH",
+      );
+      if (!styloScore.overall.pass) {
+        process.stdout.write(`stylometric fail: ${styloScore.overall.reasons.join("; ")}\n`);
+        failed++;
+        continue;
+      }
 
       if (DRY_RUN) {
         process.stdout.write(`OK (dry — svg ${rendered.svg.length}b, options ${parsed.options.length})\n`);
@@ -82,7 +125,7 @@ async function main() {
           $13, true, true, $14, NOW(), NOW())`,
         [
           id,
-          "SAT_MATH",
+          COURSE,
           bp.unit,
           bp.subskill,
           ctx,
@@ -94,7 +137,7 @@ async function main() {
           parsed.workedSolution,
           JSON.stringify(parsed.distractorExplanations),
           rendered.dataUri,
-          "llama-3.3-70b-versatile/fidelity-pipeline-v1",
+          "llama-3.3-70b-versatile/fidelity-pipeline-v2-cb-anchored",
         ],
       );
       process.stdout.write(`OK saved ${id.slice(0, 8)} — svg ${rendered.svg.length}b\n`);
@@ -191,7 +234,15 @@ function buildPrompt(bp: BP, ctx: string, stimulus: any): string {
     ? "median-vs-mean confusion, max-as-median, mode-as-mean, off-by-one-count, sum-not-divided"
     : "off-by-one, sign-flip, scale-misread, units-error";
 
-  return `You are writing a CB-style Digital SAT Math question.
+  // 2026-06-03 — Few-shot anchors from real CB practice tests (data/cb-corpus/).
+  // Forces style/rigor parity with actual CB items instead of generic SAT-ish prose.
+  const anchors = pickAnchorsForSection("MATH", 3);
+  const anchorBlock = anchors.length
+    ? "\n\nREAL CB-SAT REFERENCE QUESTIONS (match this style + rigor + framing):\n\n" +
+      anchors.map((a, i) => formatAnchorForPrompt(a, i + 1)).join("\n\n")
+    : "";
+
+  return `You are writing a CB-style Digital SAT Math question.${anchorBlock}
 
 CONTEXT:
 - Domain: ${bp.domain}
