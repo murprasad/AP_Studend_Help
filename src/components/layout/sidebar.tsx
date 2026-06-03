@@ -65,8 +65,11 @@ const navItems: NavItem[] = SAGE_DEMOTED
       { href: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
       { href: "/practice", icon: Zap, label: "Practice" },
       { href: "/frq-practice", icon: PenLine, label: "FRQ Practice", tracks: ["ap"] },
-      { href: "/full-practice-test", icon: Trophy, label: "Full Practice Test", tracks: ["sat", "psat"] },
-      { href: "/mock-exam", icon: Trophy, label: "Mock Exam" },
+      // 2026-06-03 — Per-track single entry point (user feedback). SAT/PSAT/
+      // ACT see "Full Practice Test" (CB/ACT native term); AP + CLEP see
+      // "Mock Exam" (established AP term). Eliminates dual-entry confusion.
+      { href: "/full-practice-test", icon: Trophy, label: "Full Practice Test", tracks: ["sat", "psat", "act"] },
+      { href: "/mock-exam", icon: Trophy, label: "Mock Exam", tracks: ["ap", "clep"] },
       { href: "/diagnostic", icon: ClipboardList, label: "Diagnostic" },
       { href: "/flashcards", icon: Layers, label: "Flashcards" },
       { href: "/analytics", icon: BarChart3, label: "Analytics" },
@@ -84,8 +87,11 @@ const navItems: NavItem[] = SAGE_DEMOTED
       { href: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
       { href: "/practice", icon: Zap, label: "Practice" },
       { href: "/frq-practice", icon: PenLine, label: "FRQ Practice", tracks: ["ap"] },
-      { href: "/full-practice-test", icon: Trophy, label: "Full Practice Test", tracks: ["sat", "psat"] },
-      { href: "/mock-exam", icon: Trophy, label: "Mock Exam" },
+      // 2026-06-03 — Per-track single entry point (user feedback). SAT/PSAT/
+      // ACT see "Full Practice Test" (CB/ACT native term); AP + CLEP see
+      // "Mock Exam" (established AP term). Eliminates dual-entry confusion.
+      { href: "/full-practice-test", icon: Trophy, label: "Full Practice Test", tracks: ["sat", "psat", "act"] },
+      { href: "/mock-exam", icon: Trophy, label: "Mock Exam", tracks: ["ap", "clep"] },
       { href: "/diagnostic", icon: ClipboardList, label: "Diagnostic" },
       { href: "/flashcards", icon: Layers, label: "Flashcards" },
       { href: "/analytics", icon: BarChart3, label: "Analytics" },

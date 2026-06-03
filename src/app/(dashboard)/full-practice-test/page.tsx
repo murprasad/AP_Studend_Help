@@ -51,13 +51,14 @@ const SAT_TESTS: FullTest[] = [
 
 export default function FullPracticeTestPage() {
   const [course] = useCourse();
-  const isSatTrack =
-    course === "SAT_MATH" ||
-    course === "SAT_READING_WRITING" ||
-    course === "PSAT_MATH" ||
-    course === "PSAT_READING_WRITING";
+  // 2026-06-03 — Page now serves SAT/PSAT/ACT (was SAT/PSAT only). Per user
+  // feedback, Mock Exam is replaced for these tracks; Full Practice Test is
+  // the single full-length entry.
+  const isFullTestTrack =
+    !!course &&
+    (course.startsWith("SAT_") || course.startsWith("PSAT_") || course.startsWith("ACT_"));
 
-  if (!isSatTrack) {
+  if (!isFullTestTrack) {
     return (
       <div
         className="min-h-screen bg-white text-slate-900"
@@ -66,7 +67,7 @@ export default function FullPracticeTestPage() {
         <div className="max-w-3xl mx-auto px-6 py-12">
           <h1 className="text-2xl font-semibold mb-3 text-slate-900">Full Practice Test</h1>
           <p className="text-slate-600 leading-relaxed">
-            Full-length practice tests are available for SAT and PSAT courses. Switch your course (sidebar → course selector) to SAT or PSAT to access this section.
+            Full-length practice tests are available for SAT, PSAT, and ACT courses. Switch your course (sidebar → course selector) to SAT, PSAT, or ACT to access this section.
           </p>
           <Link
             href="/dashboard"
@@ -80,9 +81,20 @@ export default function FullPracticeTestPage() {
   }
 
   const isSat = course?.startsWith("SAT_");
-  const moduleTime = course === "SAT_MATH" ? "35 min" : "32 min";
-  const totalTime = course === "SAT_MATH" ? "70 min" : "64 min";
-  const qCount = course === "SAT_MATH" || course === "PSAT_MATH" ? "44" : "54";
+  const isAct = course?.startsWith("ACT_");
+  // ACT timing/Q counts per ACT.org official structure:
+  //   English 45 min/75 Q · Math 60 min/60 Q · Reading 35 min/40 Q · Science 35 min/40 Q
+  // SAT timing/Q counts per CB satsuite.collegeboard.org:
+  //   Math 70 min/44 Q (35 per module) · R&W 64 min/54 Q (32 per module)
+  const moduleTime = isAct
+    ? course === "ACT_MATH" ? "60 min" : course === "ACT_ENGLISH" ? "45 min" : "35 min"
+    : course === "SAT_MATH" ? "35 min" : "32 min";
+  const totalTime = isAct
+    ? course === "ACT_MATH" ? "60 min" : course === "ACT_ENGLISH" ? "45 min" : "35 min"
+    : course === "SAT_MATH" ? "70 min" : "64 min";
+  const qCount = isAct
+    ? course === "ACT_MATH" ? "60" : course === "ACT_ENGLISH" ? "75" : "40"
+    : course === "SAT_MATH" || course === "PSAT_MATH" ? "44" : "54";
 
   return (
     <div
@@ -93,13 +105,15 @@ export default function FullPracticeTestPage() {
         {/* Bluebook-style header: minimal, monochrome, generous space */}
         <div className="mb-10">
           <p className="text-xs uppercase tracking-[0.18em] text-slate-500 font-semibold mb-2">
-            {isSat ? "Digital SAT" : "PSAT/NMSQT"} · Practice
+            {isSat ? "Digital SAT" : isAct ? "ACT" : "PSAT/NMSQT"} · Practice
           </p>
           <h1 className="text-[26px] font-semibold tracking-tight text-slate-900 leading-tight">
             Full-length practice tests
           </h1>
           <p className="text-[15px] text-slate-600 mt-3 leading-relaxed max-w-2xl">
-            Take a full, two-module {isSat ? "SAT" : "PSAT"} mock that mirrors the official CB experience: adaptive Module 2 routing, official timing, Desmos calculator, and 200–800 scaled scoring.
+            {isAct
+              ? "Take a full-length ACT section mock that mirrors the official ACT experience: official timing, 4-option multiple choice (5-option for Math), and 1–36 scaled scoring."
+              : `Take a full, two-module ${isSat ? "SAT" : "PSAT"} mock that mirrors the official CB experience: adaptive Module 2 routing, official timing, Desmos calculator, and 200–800 scaled scoring.`}
           </p>
         </div>
 

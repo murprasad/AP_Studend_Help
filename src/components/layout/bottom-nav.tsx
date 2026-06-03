@@ -15,13 +15,25 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { LayoutDashboard, Zap, Trophy, BarChart3, Sparkles } from "lucide-react";
+import { useCourse } from "@/hooks/use-course";
 
-const TABS = [
-  { href: "/dashboard", icon: LayoutDashboard, label: "Home" },
-  { href: "/practice", icon: Zap, label: "Practice" },
-  { href: "/mock-exam", icon: Trophy, label: "Mock" },
-  { href: "/analytics", icon: BarChart3, label: "Progress" },
-];
+// 2026-06-03 — Per-track Mock vs Full Practice Test entry. SAT/PSAT/ACT
+// route the 3rd tab to /full-practice-test (CB/ACT native term); AP + CLEP
+// (and any unknown course) keep "Mock". Same pattern as sidebar so mobile
+// stays consistent.
+function tabsForCourse(course: string | null | undefined) {
+  const isSatPsatAct =
+    !!course &&
+    (course.startsWith("SAT_") || course.startsWith("PSAT_") || course.startsWith("ACT_"));
+  return [
+    { href: "/dashboard", icon: LayoutDashboard, label: "Home" },
+    { href: "/practice", icon: Zap, label: "Practice" },
+    isSatPsatAct
+      ? { href: "/full-practice-test", icon: Trophy, label: "Full Test" }
+      : { href: "/mock-exam", icon: Trophy, label: "Mock" },
+    { href: "/analytics", icon: BarChart3, label: "Progress" },
+  ];
+}
 
 interface Props {
   examMode?: boolean;
@@ -31,6 +43,8 @@ interface Props {
 
 export function BottomNav({ examMode, onSageClick, sageOpen }: Props) {
   const pathname = usePathname();
+  const [course] = useCourse();
+  const TABS = tabsForCourse(course);
   if (examMode) return null;
 
   return (
