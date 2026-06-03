@@ -2,16 +2,17 @@
   "course": "SAT_READING_WRITING",
   "source": {
     "pdf": "data/raw/sat/sat-practice-test-4-digital.pdf",
-    "url": "https://satsuite.collegeboard.org/sat/practice-preparation/practice-tests/paper",
-    "version": "6TSL05 (Practice Test #4 — digital SAT in nondigital format)",
-    "accessed_date": "2026-05-19"
+    "official_structure_url": "https://satsuite.collegeboard.org/sat/whats-on-the-test/structure",
+    "version": "Digital SAT structure (CB official 2026-06-02)",
+    "accessed_date": "2026-06-02",
+    "spec_correction_note": "Previously calibrated to PAPER Practice Test 4 (66 Qs / 78 min). Corrected 2026-06-02 to DIGITAL SAT R&W per official CB structure: 54 Qs (27/module), 64 min (32/module)."
   },
   "exam": {
-    "num_questions": 66,
-    "num_questions_per_module": 33,
+    "num_questions": 54,
+    "num_questions_per_module": 27,
     "num_modules": 2,
-    "time_minutes": 78,
-    "time_minutes_per_module": 39,
+    "time_minutes": 64,
+    "time_minutes_per_module": 32,
     "time_per_q_seconds": 71,
     "num_options": 4,
     "calculator_allowed": false,

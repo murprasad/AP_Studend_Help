@@ -2,16 +2,18 @@
   "course": "SAT_MATH",
   "source": {
     "pdf": "data/raw/sat/sat-practice-test-4-digital.pdf",
-    "url": "https://satsuite.collegeboard.org/sat/practice-preparation/practice-tests/paper",
-    "version": "6TSL05 (Practice Test #4 — digital SAT in nondigital format)",
-    "accessed_date": "2026-05-19"
+    "official_structure_url": "https://satsuite.collegeboard.org/sat/whats-on-the-test/structure",
+    "official_math_url": "https://satsuite.collegeboard.org/sat/whats-on-the-test/math/overview",
+    "version": "Digital SAT structure (CB official 2026-06-02)",
+    "accessed_date": "2026-06-02",
+    "spec_correction_note": "Previously calibrated to PAPER Practice Test 4 (54 Qs / 86 min). Corrected 2026-06-02 to DIGITAL SAT format per official CB structure page: 44 Qs (22/module), 70 min (35/module)."
   },
   "exam": {
-    "num_questions": 54,
-    "num_questions_per_module": 27,
+    "num_questions": 44,
+    "num_questions_per_module": 22,
     "num_modules": 2,
-    "time_minutes": 86,
-    "time_minutes_per_module": 43,
+    "time_minutes": 70,
+    "time_minutes_per_module": 35,
     "time_per_q_seconds": 95,
     "num_options": 4,
     "mcq_options": 4,
@@ -62,27 +64,32 @@
   },
   "skill_categories": {
     "ALGEBRA": {
-      "weight": 0.35,
+      "weight": 0.32,
+      "target_q_count_range": [13, 15],
+      "source_url": "https://satsuite.collegeboard.org/sat/whats-on-the-test/math/types/algebra",
       "subskills": [
-        "Linear equations in one variable",
-        "Linear equations in two variables",
+        "Linear equations in 1 variable",
+        "Linear equations in 2 variables",
         "Linear functions",
-        "Systems of two linear equations in two variables",
-        "Linear inequalities in one or two variables"
+        "Systems of 2 linear equations in 2 variables",
+        "Linear inequalities in 1 or 2 variables"
       ]
     },
     "ADVANCED_MATH": {
-      "weight": 0.35,
+      "weight": 0.32,
+      "target_q_count_range": [13, 15],
+      "source_url": "https://satsuite.collegeboard.org/sat/whats-on-the-test/math/types/advanced",
       "subskills": [
-        "Equivalent expressions (factoring, distributing)",
-        "Nonlinear equations in one variable (quadratic, radical, rational)",
-        "Systems of equations in two variables (with at least one nonlinear)",
-        "Nonlinear functions (quadratic, exponential, polynomial, rational, radical, absolute value)",
-        "Function notation, transformations"
+        "Equivalent expressions",
+        "Nonlinear equations in 1 variable (absolute value, quadratic, exponential, polynomial, rational, radical, other)",
+        "Systems of equations in 2 variables (nonlinear)",
+        "Nonlinear functions"
       ]
     },
     "PROBLEM_SOLVING_DATA_ANALYSIS": {
-      "weight": 0.15,
+      "weight": 0.135,
+      "target_q_count_range": [5, 7],
+      "source_url": "https://satsuite.collegeboard.org/sat/whats-on-the-test/math/types/problem-solving",
       "subskills": [
         "Ratios, rates, proportional relationships, units conversions",
         "Percentages",
@@ -94,12 +101,14 @@
       ]
     },
     "GEOMETRY_AND_TRIGONOMETRY": {
-      "weight": 0.15,
+      "weight": 0.135,
+      "target_q_count_range": [5, 7],
+      "source_url": "https://satsuite.collegeboard.org/sat/whats-on-the-test/math/types/geometry-trigonometry",
       "subskills": [
-        "Area and volume formulas (apply reference sheet)",
-        "Lines, angles, triangles (parallel lines + transversal, similar triangles, special right triangles)",
-        "Right triangle trigonometry (sin, cos, tan, complementary angle identity)",
-        "Circles (equation of circle, arc measure, central angle)"
+        "Area and volume formulas",
+        "Lines, angles, and triangles",
+        "Right triangles and trigonometry",
+        "Circles"
       ]
     }
   },
