@@ -20,7 +20,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
-export const runtime = "edge";
+// Note: NOT edge runtime — Prisma WASM raw-SQL helpers (prisma.$queryRawUnsafe
+// / $executeRawUnsafe) need the Node runtime path. Building this route under
+// edge triggers a webpack WASM-not-flagged parse error against the Prisma
+// query engine WASM binary.
 
 export async function GET(req: NextRequest) {
   const auth = req.headers.get("authorization") || req.headers.get("x-cron-secret");
