@@ -413,6 +413,66 @@ section("10. No 'pass probability' in user-facing copy");
   }
 }
 
+// ─── 10b. Course composition vs CB spec ─────────────────────────────────────
+// 2026-06-03 — Per-question gates catch broken Qs but cannot see aggregate
+// bank composition (numeric%, image%, stimulus%). User-triggered RCA after
+// finding 0 image-stimulus questions on SAT_MATH despite the digital SAT
+// being image-heavy. Calls _audit-course-composition.mjs which compares
+// each course's bank to CB-derived target ratios. Soft-warn until
+// ENFORCE_COMPOSITION_GATE=1 (filling content gaps is multi-week work).
+section("10b. Course-composition vs CB spec");
+{
+  const enforce = process.env.ENFORCE_COMPOSITION_GATE === "1";
+  if (!process.env.DATABASE_URL) {
+    console.log(`  ⚠ composition audit skipped (DATABASE_URL not set)`);
+  } else {
+    try {
+      const raw = execSync("node scripts/_audit-course-composition.mjs --json", {
+        encoding: "utf8",
+        stdio: ["ignore", "pipe", "pipe"],
+        timeout: 90_000,
+      });
+      const data = JSON.parse(raw);
+      let failedChecks = 0;
+      for (const c of data.courses ?? []) {
+        for (const ch of c.checks ?? []) {
+          if (!ch.within) failedChecks++;
+        }
+      }
+      if (failedChecks === 0) {
+        ok(`Course composition: all courses within CB tolerance`);
+      } else {
+        const msg = `Course composition: ${failedChecks} check(s) outside CB tolerance — see scripts/_audit-course-composition.mjs for details`;
+        if (enforce) fail(msg);
+        else console.log(`  ⚠ ${msg}`);
+      }
+    } catch (err) {
+      // Audit script exits non-zero when there are gaps; that's expected
+      // signal, not infrastructure failure. Surface via the JSON parse
+      // path above instead.
+      const out = err.stdout ?? "";
+      if (out) {
+        try {
+          const data = JSON.parse(out);
+          let failedChecks = 0;
+          for (const c of data.courses ?? []) {
+            for (const ch of c.checks ?? []) {
+              if (!ch.within) failedChecks++;
+            }
+          }
+          const msg = `Course composition: ${failedChecks} check(s) outside CB tolerance (soft-warn — flip ENFORCE_COMPOSITION_GATE=1 once gaps fill)`;
+          if (enforce) fail(msg);
+          else console.log(`  ⚠ ${msg}`);
+        } catch {
+          console.log(`  ⚠ composition audit JSON unparsable; see scripts/_audit-course-composition.mjs output`);
+        }
+      } else {
+        console.log(`  ⚠ composition audit could not run: ${String(err.message ?? err).slice(0, 120)}`);
+      }
+    }
+  }
+}
+
 // ─── 11. Quality Process v1 — QA Walk + Release Manifest gates ──────────────
 // 2026-06-02 — added in response to user goal directive after defect cluster
 // (admin reset, tile clicks, SAT track, popup jump) reached prod because no

@@ -1,0 +1,46 @@
+name: Course composition audit
+
+# 2026-06-03 — Standing report so PO sees per-course composition health
+# (image %, numeric %, stimulus %) vs CB target ratios every Monday,
+# regardless of deploy cadence. Replaces the silent-known-limitation
+# pattern that let SAT_MATH ship 0 image-stimulus questions for months.
+
+on:
+  schedule:
+    - cron: "0 14 * * 1"  # Mondays 14:00 UTC (~07:00 PT) — start of work week
+  workflow_dispatch: {}
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm ci --legacy-peer-deps
+      - name: Run audit
+        id: audit
+        run: |
+          set +e
+          node scripts/_audit-course-composition.mjs > audit.txt 2>&1
+          echo "exit_code=$?" >> $GITHUB_OUTPUT
+          cat audit.txt
+      - name: Archive report
+        run: |
+          mkdir -p data/composition-audits
+          DATE=$(date -I)
+          cp audit.txt "data/composition-audits/${DATE}.txt"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/composition-audits/
+          git diff --cached --quiet || git commit -m "audit(composition): weekly report ${DATE}"
+          git push || true
+      - name: Surface shortfalls (non-fatal — soft-warn)
+        if: steps.audit.outputs.exit_code != '0'
+        run: |
+          echo "⚠ Composition gaps detected. Review audit.txt above."
+          echo "Per docs/GENERATOR_CAPABILITIES.md, these gaps may be structural — text-only generator cannot produce image stimuli without an image pipeline ship."

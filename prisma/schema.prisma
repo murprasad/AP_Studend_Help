@@ -460,6 +460,14 @@ model Question {
   options           Json?
   correctAnswer String
   explanation  String       @db.Text
+  // 2026-06-03 — CB-style distractor explanations per goal "detailed
+  // response provided when student answers incorrectly rather than
+  // taking them to Sage". CB publishes a specific explanation for
+  // each wrong option (e.g., "This is the value of f(2) − g(2),
+  // not 4f(2) − g(2)"). Stored as Json keyed by option letter:
+  //   { "A": "explanation if A picked", "B": "...", "D": "..." }
+  // Correct-option letter is intentionally omitted.
+  distractorExplanations Json?
   isAiGenerated Boolean     @default(false)
   isApproved   Boolean      @default(true)
   // 2026-05-10 — Quality tier flags (per feedback_serve_only_vetted_to_students.md).
