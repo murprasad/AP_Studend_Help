@@ -16,7 +16,44 @@ import { cn } from "@/lib/utils";
 const ONBOARDING_KEY = "onboarding_completed";
 
 // Pages allowed to stay in exam mode. Navigating anywhere else auto-exits.
-const EXAM_MODE_PAGES = ["/diagnostic", "/mock-exam", "/ai-tutor", "/practice", "/flashcards"];
+const EXAM_MODE_PAGES = [
+  "/diagnostic",
+  "/mock-exam",
+  "/ai-tutor",
+  "/practice",
+  "/flashcards",
+  // 2026-06-03 — user request: every feature page renders full-screen with
+  // a return-to-dashboard button (Flashcards parity).
+  "/full-practice-test",
+  "/analytics",
+  "/study-plan",
+  "/resources",
+  "/sage-coach",
+  "/community",
+  "/billing",
+  "/settings",
+  "/about",
+  "/frq-practice",
+];
+
+// Pages that AUTO-ENTER exam mode on mount (no need for the page to opt in
+// via useExamMode().enterExamMode()). Per user 2026-06-03: same full-screen
+// treatment as Flashcards for every feature listed. Excludes /dashboard
+// itself (the hub) and /onboarding (different chrome).
+const AUTO_FULL_SCREEN_PAGES: string[] = [
+  "/full-practice-test",
+  "/analytics",
+  "/study-plan",
+  "/resources",
+  "/sage-coach",
+  "/community",
+  "/billing",
+  "/settings",
+  "/about",
+  "/practice",        // already exam-mode-eligible; auto-enter so /practice landing is full-screen too
+  "/frq-practice",
+  "/ai-tutor",
+];
 
 export default function DashboardLayout({
   children,
@@ -189,6 +226,19 @@ export default function DashboardLayout({
       })
       .catch(() => { /* silent */ });
   }, [status, pathname, router]);
+
+  // 2026-06-03 — Auto-enter exam mode for pages in AUTO_FULL_SCREEN_PAGES.
+  // Centralized here so individual pages don't need useExamMode boilerplate.
+  // Matches via prefix to cover subpaths (e.g., /analytics/courses).
+  useEffect(() => {
+    const matchesFullScreen = AUTO_FULL_SCREEN_PAGES.some(
+      (p) => pathname === p || pathname.startsWith(p + "/"),
+    );
+    if (matchesFullScreen && !examModeState.examMode) {
+      examModeState.enterExamMode();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname]);
 
   // Auto-exit exam mode when navigating away from exam-mode pages
   useEffect(() => {
