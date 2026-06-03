@@ -468,6 +468,16 @@ model Question {
   //   { "A": "explanation if A picked", "B": "...", "D": "..." }
   // Correct-option letter is intentionally omitted.
   distractorExplanations Json?
+  // 2026-06-03 — Full Practice Test seat assignment. NULL = in the general
+  // pool. 1, 2, 3 = belongs to Full Practice Test set N served on
+  // /full-practice-test → /mock-exam?test=N. Set membership is deterministic
+  // (same Q always served for the same test), letting students replay or
+  // compare results across tests.
+  practiceTestSet Int?
+  // Position within the practice test set (for sequential delivery / module
+  // boundary). 1-22 = Module 1, 23-44 = Module 2 for SAT_MATH; 1-27 / 28-54
+  // for SAT_RW.
+  practiceTestPosition Int?
   isAiGenerated Boolean     @default(false)
   isApproved   Boolean      @default(true)
   // 2026-05-10 — Quality tier flags (per feedback_serve_only_vetted_to_students.md).

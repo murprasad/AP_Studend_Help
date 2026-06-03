@@ -1,28 +1,27 @@
 "use client";
 
-// /full-practice-test — CB-style entry point for Digital SAT full-length
-// practice tests. Surfaces what the student sees on CB's own Bluebook:
-// "Take a full-length practice test."
+// /full-practice-test — CB Bluebook-aligned full-length test entry.
 //
-// V1 (this commit): 3 test sets listed; Test 1 available, Tests 2/3 marked
-// "Coming soon". Click on Test 1 routes to /mock-exam where the existing
-// 2-module SAT/PSAT adaptive flow runs.
+// Design language: matches CB Bluebook visual conventions:
+//   - White background, generous whitespace
+//   - Helvetica Neue / sans-serif at CB-aligned sizes
+//   - CB blue accent (#324dc7-style) for primary actions
+//   - Letter-circle answer buttons (rendered on the test page itself)
+//   - Card-based test selection with clear available/locked states
 //
-// V2 (next): each test deals from a specific bank slice (CB corpus) instead
-// of the random pool, so Test 1 / Test 2 / Test 3 are deterministic.
+// /full-practice-test?course=SAT_MATH or PSAT_MATH = served from the
+// deterministic Full Practice Test sets (44 Qs each tagged practiceTestSet=N).
 
 import Link from "next/link";
 import { useCourse } from "@/hooks/use-course";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Clock, FileText, Lock, Trophy } from "lucide-react";
+import { Clock, FileText, Lock, CheckCircle2 } from "lucide-react";
 
 interface FullTest {
   id: number;
   label: string;
   status: "available" | "coming-soon";
   description: string;
+  qCount: number;
 }
 
 const SAT_TESTS: FullTest[] = [
@@ -31,131 +30,173 @@ const SAT_TESTS: FullTest[] = [
     label: "Full Practice Test 1",
     status: "available",
     description:
-      "98 questions across two adaptive sections (R&W + Math). Module 1 difficulty determines Module 2 routing, matching the official CB Digital SAT.",
+      "Two adaptive modules (22 + 22 Qs). Module 1 difficulty determines Module 2 routing, matching the official CB Digital SAT.",
+    qCount: 44,
   },
   {
     id: 2,
     label: "Full Practice Test 2",
     status: "coming-soon",
     description: "Releases next week. Same adaptive 2-module structure, fresh question bank.",
+    qCount: 44,
   },
   {
     id: 3,
     label: "Full Practice Test 3",
     status: "coming-soon",
     description: "Releases two weeks from launch. Same adaptive structure with new items.",
+    qCount: 44,
   },
 ];
 
 export default function FullPracticeTestPage() {
   const [course] = useCourse();
-  const isSatTrack = course === "SAT_MATH" || course === "SAT_READING_WRITING" || course === "PSAT_MATH" || course === "PSAT_READING_WRITING";
+  const isSatTrack =
+    course === "SAT_MATH" ||
+    course === "SAT_READING_WRITING" ||
+    course === "PSAT_MATH" ||
+    course === "PSAT_READING_WRITING";
 
   if (!isSatTrack) {
     return (
-      <div className="max-w-3xl mx-auto px-6 py-12">
-        <h1 className="text-2xl font-semibold mb-3">Full Practice Test</h1>
-        <p className="text-muted-foreground">
-          Full-length practice tests are available for SAT and PSAT courses. Switch your course (sidebar → course selector) to SAT or PSAT to access this section.
-        </p>
-        <Button asChild className="mt-6" variant="outline">
-          <Link href="/dashboard">Back to dashboard</Link>
-        </Button>
+      <div
+        className="min-h-screen bg-white text-slate-900"
+        style={{ fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif' }}
+      >
+        <div className="max-w-3xl mx-auto px-6 py-12">
+          <h1 className="text-2xl font-semibold mb-3 text-slate-900">Full Practice Test</h1>
+          <p className="text-slate-600 leading-relaxed">
+            Full-length practice tests are available for SAT and PSAT courses. Switch your course (sidebar → course selector) to SAT or PSAT to access this section.
+          </p>
+          <Link
+            href="/dashboard"
+            className="inline-block mt-6 px-5 py-2 rounded-full text-sm font-medium bg-slate-900 text-white hover:bg-slate-800 transition-colors"
+          >
+            Back to dashboard
+          </Link>
+        </div>
       </div>
     );
   }
 
   const isSat = course?.startsWith("SAT_");
-  const moduleTime = isSat ? (course === "SAT_MATH" ? "35 min" : "32 min") : "32 min";
-  const totalTime = isSat ? (course === "SAT_MATH" ? "70 min" : "64 min") : "64 min";
-  const qCount = isSat ? (course === "SAT_MATH" ? "44" : "54") : "54";
+  const moduleTime = course === "SAT_MATH" ? "35 min" : "32 min";
+  const totalTime = course === "SAT_MATH" ? "70 min" : "64 min";
+  const qCount = course === "SAT_MATH" || course === "PSAT_MATH" ? "44" : "54";
 
   return (
-    <div className="max-w-4xl mx-auto px-6 py-10">
-      {/* Hero — CB-style */}
-      <div className="mb-8 pb-6 border-b border-border/40">
-        <div className="flex items-start gap-4">
-          <div className="w-14 h-14 rounded-2xl bg-blue-500/10 flex items-center justify-center flex-shrink-0">
-            <Trophy className="h-7 w-7 text-blue-700 dark:text-blue-400" />
+    <div
+      className="min-h-screen bg-white text-slate-900"
+      style={{ fontFamily: '"Helvetica Neue", Helvetica, Arial, sans-serif' }}
+    >
+      <div className="max-w-3xl mx-auto px-6 py-10">
+        {/* Bluebook-style header: minimal, monochrome, generous space */}
+        <div className="mb-10">
+          <p className="text-xs uppercase tracking-[0.18em] text-slate-500 font-semibold mb-2">
+            {isSat ? "Digital SAT" : "PSAT/NMSQT"} · Practice
+          </p>
+          <h1 className="text-[26px] font-semibold tracking-tight text-slate-900 leading-tight">
+            Full-length practice tests
+          </h1>
+          <p className="text-[15px] text-slate-600 mt-3 leading-relaxed max-w-2xl">
+            Take a full, two-module {isSat ? "SAT" : "PSAT"} mock that mirrors the official CB experience: adaptive Module 2 routing, official timing, Desmos calculator, and 200–800 scaled scoring.
+          </p>
+        </div>
+
+        {/* CB-style stat row — matches the structure summary on satsuite.collegeboard.org */}
+        <div className="grid grid-cols-3 gap-4 mb-10 pb-8 border-b border-slate-200">
+          <div>
+            <p className="text-[11px] uppercase tracking-[0.14em] text-slate-500 font-semibold mb-1">Questions</p>
+            <p className="text-[22px] font-semibold text-slate-900 leading-none">{qCount}</p>
           </div>
           <div>
-            <h1 className="text-2xl font-semibold tracking-tight">Full Practice Test</h1>
-            <p className="text-sm text-muted-foreground mt-1.5">
-              Full-length, two-module {isSat ? "SAT" : "PSAT"} mock — adaptive Module 2 routing, official timing, Desmos calculator, official scoring.
-            </p>
+            <p className="text-[11px] uppercase tracking-[0.14em] text-slate-500 font-semibold mb-1">Total time</p>
+            <p className="text-[22px] font-semibold text-slate-900 leading-none">{totalTime}</p>
+          </div>
+          <div>
+            <p className="text-[11px] uppercase tracking-[0.14em] text-slate-500 font-semibold mb-1">Per module</p>
+            <p className="text-[22px] font-semibold text-slate-900 leading-none">{moduleTime}</p>
           </div>
         </div>
 
-        {/* Stats row — matches CB's spec page */}
-        <div className="grid grid-cols-3 gap-3 mt-6">
-          <div className="rounded-lg border border-border/40 bg-card p-3">
-            <p className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold">Questions</p>
-            <p className="text-xl font-semibold mt-0.5">{qCount}</p>
-          </div>
-          <div className="rounded-lg border border-border/40 bg-card p-3">
-            <p className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold">Total Time</p>
-            <p className="text-xl font-semibold mt-0.5">{totalTime}</p>
-          </div>
-          <div className="rounded-lg border border-border/40 bg-card p-3">
-            <p className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold">Per Module</p>
-            <p className="text-xl font-semibold mt-0.5">{moduleTime}</p>
-          </div>
-        </div>
-      </div>
-
-      {/* Test list */}
-      <div className="space-y-3">
-        {SAT_TESTS.map((t) => {
-          const isAvailable = t.status === "available";
-          return (
-            <Card key={t.id} className={`${isAvailable ? "" : "opacity-60"}`}>
-              <CardHeader className="pb-3">
-                <div className="flex items-start justify-between gap-3">
-                  <div className="flex items-start gap-3">
-                    <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${isAvailable ? "bg-blue-500/10" : "bg-muted"}`}>
-                      {isAvailable ? <FileText className="h-5 w-5 text-blue-700 dark:text-blue-400" /> : <Lock className="h-5 w-5 text-muted-foreground" />}
-                    </div>
-                    <div>
-                      <p className="text-base font-semibold">{t.label}</p>
-                      <p className="text-xs text-muted-foreground mt-0.5">{t.description}</p>
-                    </div>
+        {/* Test selection cards — Bluebook-style flat cards with clear hover and locked states */}
+        <div className="space-y-3 mb-10">
+          {SAT_TESTS.map((t) => {
+            const isAvailable = t.status === "available";
+            return (
+              <div
+                key={t.id}
+                className={`rounded-lg border ${isAvailable ? "border-slate-200 hover:border-blue-400 hover:shadow-sm" : "border-slate-200 bg-slate-50"} p-5 transition-all`}
+              >
+                <div className="flex items-start gap-4">
+                  <div
+                    className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 ${
+                      isAvailable ? "bg-blue-50 text-blue-700" : "bg-slate-100 text-slate-400"
+                    }`}
+                  >
+                    {isAvailable ? <FileText className="h-4.5 w-4.5" /> : <Lock className="h-4.5 w-4.5" />}
                   </div>
-                  {isAvailable ? (
-                    <Badge variant="default" className="bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 border-emerald-500/30">Available</Badge>
-                  ) : (
-                    <Badge variant="outline">Coming soon</Badge>
-                  )}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-baseline justify-between gap-3 mb-1">
+                      <p className="text-[15px] font-semibold text-slate-900">{t.label}</p>
+                      {isAvailable ? (
+                        <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full uppercase tracking-wider">
+                          <CheckCircle2 className="h-3 w-3" />
+                          Available
+                        </span>
+                      ) : (
+                        <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">Coming soon</span>
+                      )}
+                    </div>
+                    <p className="text-[13.5px] text-slate-600 leading-relaxed mb-3">{t.description}</p>
+                    {isAvailable && (
+                      <div className="flex items-center gap-4">
+                        <Link
+                          href={`/mock-exam?test=${t.id}`}
+                          className="inline-flex items-center gap-2 px-5 py-2 rounded-full text-[13.5px] font-semibold bg-blue-600 text-white hover:bg-blue-700 transition-colors"
+                          style={{ backgroundColor: "#324dc7" }}
+                        >
+                          Start Test {t.id}
+                        </Link>
+                        <span className="text-[12px] text-slate-500 inline-flex items-center gap-1">
+                          <Clock className="h-3 w-3" />
+                          Allow {totalTime} of uninterrupted time
+                        </span>
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </CardHeader>
-              {isAvailable && (
-                <CardContent className="pt-0 pl-[3.25rem]">
-                  <div className="flex items-center gap-3">
-                    <Button asChild>
-                      <Link href={`/mock-exam?test=${t.id}`}>
-                        Start Test {t.id} →
-                      </Link>
-                    </Button>
-                    <span className="text-xs text-muted-foreground flex items-center gap-1.5">
-                      <Clock className="h-3 w-3" />
-                      Allow {totalTime} of uninterrupted time
-                    </span>
-                  </div>
-                </CardContent>
-              )}
-            </Card>
-          );
-        })}
-      </div>
+              </div>
+            );
+          })}
+        </div>
 
-      <div className="mt-8 rounded-lg border border-border/40 bg-muted/30 p-4">
-        <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1.5">What to expect</p>
-        <ul className="text-sm text-foreground/80 space-y-1.5">
-          <li>• Two modules per section, separated by a 10-minute break (CB-spec)</li>
-          <li>• Module 1 performance determines Module 2 difficulty (adaptive routing)</li>
-          <li>• Built-in Desmos graphing calculator (Math only, available on every question)</li>
-          <li>• Official 200–800 scaled score on completion</li>
-          <li>• Per-question time, no early submit on Module 1</li>
-        </ul>
+        {/* What to expect — CB-style minimal expectations callout */}
+        <div className="rounded-lg border border-slate-200 bg-slate-50 p-5">
+          <p className="text-[11px] uppercase tracking-[0.14em] text-slate-500 font-semibold mb-3">What to expect</p>
+          <ul className="text-[13.5px] text-slate-700 space-y-2 leading-relaxed">
+            <li className="flex gap-2">
+              <span className="text-slate-400 flex-shrink-0 mt-0.5">·</span>
+              <span>Two modules per section, separated by a 10-minute break (CB-spec)</span>
+            </li>
+            <li className="flex gap-2">
+              <span className="text-slate-400 flex-shrink-0 mt-0.5">·</span>
+              <span>Module 1 performance determines Module 2 difficulty (adaptive routing)</span>
+            </li>
+            <li className="flex gap-2">
+              <span className="text-slate-400 flex-shrink-0 mt-0.5">·</span>
+              <span>Built-in Desmos graphing calculator on Math (available on every question)</span>
+            </li>
+            <li className="flex gap-2">
+              <span className="text-slate-400 flex-shrink-0 mt-0.5">·</span>
+              <span>Per-option distractor explanations on wrong answers (no Sage redirect)</span>
+            </li>
+            <li className="flex gap-2">
+              <span className="text-slate-400 flex-shrink-0 mt-0.5">·</span>
+              <span>200–800 scaled score on completion</span>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
   );

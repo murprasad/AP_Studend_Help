@@ -42,6 +42,13 @@ export async function POST(req: NextRequest) {
     const course = (body.course as ApCourse) || "AP_WORLD_HISTORY";
     // mode: "scaled" (default, ~40% length) or "full" (full CB count)
     const mode = (body.mode as string) || "scaled";
+    // 2026-06-03 — Full Practice Test mode. When body.practiceTestSet is
+    // 1, 2, or 3, bypass section sampling and serve the deterministic
+    // pre-tagged 44-question set in CB Module-1 / Module-2 order. The
+    // /full-practice-test page calls this with practiceTestSet param.
+    const practiceTestSet = typeof body.practiceTestSet === "number"
+      ? body.practiceTestSet
+      : null;
 
     // F16 (#100) — server-side adaptive-mock cap. SAT/PSAT free students
     // get 8 full-length adaptive mocks; the 9th create attempt returns 402
@@ -75,6 +82,59 @@ export async function POST(req: NextRequest) {
           );
         }
       }
+    }
+
+    // ── Full Practice Test fast path ──
+    // When practiceTestSet is specified, serve the deterministic 44-Q set
+    // tagged on the Question table. Skips section sampling entirely.
+    if (practiceTestSet && [1, 2, 3].includes(practiceTestSet)) {
+      const ftQuestions = await prisma.question.findMany({
+        where: {
+          course: course as ApCourse,
+          isApproved: true,
+          practiceTestSet,
+        },
+        orderBy: { practiceTestPosition: "asc" },
+        select: {
+          id: true, course: true, unit: true, topic: true, subtopic: true,
+          difficulty: true, questionType: true, questionText: true,
+          stimulus: true, stimulusImageUrl: true, options: true,
+          practiceTestPosition: true,
+        },
+      });
+      if (ftQuestions.length === 0) {
+        return NextResponse.json(
+          { error: `Full Practice Test ${practiceTestSet} not yet seeded for ${course}` },
+          { status: 400 },
+        );
+      }
+      const session_ = await prisma.practiceSession.create({
+        data: {
+          userId: session.user.id,
+          course: course as ApCourse,
+          sessionType: "MOCK_EXAM" as SessionType,
+          totalQuestions: ftQuestions.length,
+        },
+      });
+      const placeholders = ftQuestions
+        .map((_, i) => `($${i * 4 + 1}, $${i * 4 + 2}, $${i * 4 + 3}, $${i * 4 + 4})`)
+        .join(", ");
+      const values = ftQuestions.flatMap((q, i) => [crypto.randomUUID(), session_.id, q.id, i]);
+      await prisma.$executeRawUnsafe(
+        `INSERT INTO session_questions (id, "sessionId", "questionId", "order") VALUES ${placeholders}`,
+        ...values,
+      );
+      return NextResponse.json({
+        sessionId: session_.id,
+        course,
+        mode: "full-practice-test",
+        practiceTestSet,
+        totalQuestions: ftQuestions.length,
+        questions: ftQuestions.map((q) => ({
+          ...q,
+          sectionLabel: (q.practiceTestPosition ?? 0) <= 22 ? "Module 1" : "Module 2",
+        })),
+      });
     }
 
     const struct = getCBExamStructure(course);

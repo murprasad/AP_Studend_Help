@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef, useMemo } from "react";
+import { useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useExamMode } from "@/hooks/use-exam-mode";
 import { Button } from "@/components/ui/button";
@@ -58,6 +59,9 @@ function isAdaptiveCourse(course: string | null | undefined): boolean {
 const SAT_BREAK_SECS = 10 * 60; // CB-spec: 10-min break between sections
 type ExamMode = "full" | "quick";
 
+// 2026-06-03 — Pulled out of component so test=N URL param can be read on
+// mount and threaded into startExam(). Top of component reads via useSearchParams.
+
 interface ExamQuestion {
   id: string;
   questionText: string;
@@ -96,6 +100,15 @@ export default function MockExamPage() {
   const [course] = useCourse();
   const { data: session } = useSession();
   const [phase, setPhase] = useState<ExamPhase>("intro");
+
+  // 2026-06-03 — Full Practice Test entry. /full-practice-test sends users
+  // here with ?test=N (1, 2, or 3). When present, startExam() POSTs
+  // practiceTestSet=N to /api/mock-exam, which serves the deterministic
+  // 44-Q CB-aligned set instead of the random pool.
+  const searchParams = useSearchParams();
+  const testParam = searchParams?.get("test");
+  const practiceTestSetParam =
+    testParam && /^[123]$/.test(testParam) ? parseInt(testParam, 10) : null;
 
   // Premium check — default Full for premium, Quick for free-trial.
   const hasPremium = useMemo(() => {
@@ -294,17 +307,25 @@ export default function MockExamPage() {
   async function startExam() {
     setIsLoading(true);
     try {
+      // 2026-06-03 — Full Practice Test mode override. When the page is
+      // entered with ?test=N (1, 2, or 3) from /full-practice-test, route
+      // to /api/mock-exam with practiceTestSet=N to fetch the deterministic
+      // 44-Q CB-aligned set. Forces CB-fidelity path regardless of mode.
+      const practiceTestSet = practiceTestSetParam;
+      const isFullPracticeTest = practiceTestSet !== null;
       // CB-fidelity mock when mode === "full" — pulls a mix of MCQ + SAQ +
       // DBQ + LEQ in CB proportions (added 2026-04-27 to close the credibility
       // gap where the structure card said "MCQ + SAQ + DBQ + LEQ" but the
       // actual mock served only MCQs). "quick" mode keeps the legacy
       // MCQ-only path for users who want a fast 30-min check.
-      const usesCBFidelity = mode === "full";
+      const usesCBFidelity = isFullPracticeTest || mode === "full";
       const response = await fetch(usesCBFidelity ? "/api/mock-exam" : "/api/practice", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(
-          usesCBFidelity
+          isFullPracticeTest
+            ? { course, mode: "full", practiceTestSet }
+            : usesCBFidelity
             ? { course, mode: "full" }  // full CB count for serious-prep simulation
             : {
                 sessionType: "MOCK_EXAM",
