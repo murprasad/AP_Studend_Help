@@ -1,0 +1,73 @@
+{
+  "course": "SAT_MATH",
+  "domain": "PROBLEM_SOLVING_DATA_ANALYSIS",
+  "subskill": "One-variable data — measure of center from bar chart",
+  "difficulty": "MEDIUM",
+  "questionType": "MCQ",
+  "stimulusSpec": {
+    "kind": "barChart",
+    "spec": {
+      "width": 420,
+      "height": 320,
+      "title": "Books read per student",
+      "xLabel": "Category",
+      "yLabel": "Count",
+      "categories": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E"
+      ],
+      "values": [
+        28,
+        48,
+        11,
+        22,
+        25
+      ]
+    },
+    "_meta": {
+      "categories": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E"
+      ],
+      "values": [
+        28,
+        48,
+        11,
+        22,
+        25
+      ],
+      "sum": 134
+    }
+  },
+  "stimulusImageUrl": "data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 420 320\" width=\"420\" height=\"320\" role=\"img\" aria-label=\"Books read per student\"><line x1=\"48\" y1=\"272\" x2=\"372\" y2=\"272\" stroke=\"%23d8dee5\" stroke-width=\"1\" /><text x=\"42\" y=\"276\" font-family=\"\"Helvetica Neue\", \"TT Commons Pro\", Helvetica, Arial, sans-serif\" font-size=\"13\" fill=\"%231f2933\" text-anchor=\"end\">0</text><line x1=\"48\" y1=\"234.66666666666669\" x2=\"372\" y2=\"234.66666666666669\" stroke=\"%23d8dee5\" stroke-width=\"1\" /><text x=\"42\" y=\"238.66666666666669\" font-family=\"\"Helvetica Neue\", \"TT Commons Pro\", Helvetica, Arial, sans-serif\" font-size=\"13\" fill=\"%231f2933\" text-anchor=\"end\">10</text><line x1=\"48\" y1=\"197.33333333333334\" x2=\"372\" y2=\"197.33333333333334\" stroke=\"%23d8dee5\" stroke-width=\"1\" /><text x=\"42\" y=\"201.33333333333334\" font-family=\"\"Helvetica Neue\", \"TT Commons Pro\", Helvetica, Arial, sans-serif\" font-size=\"13\" fill=\"%231f2933\" text-anchor=\"end\">20</text><line x1=\"48\" y1=\"160\" x2=\"372\" y2=\"160\" stroke=\"%23d8dee5\" stroke-width=\"1\" /><text x=\"42\" y=\"164\" font-family=\"\"Helvetica Neue\", \"TT Commons Pro\", Helvetica, Arial, sans-serif\" font-size=\"13\" fill=\"%231f2933\" text-anchor=\"end\">30</text><line x1=\"48\" y1=\"122.66666666666669\" x2=\"372\" y2=\"122.66666666666669\" stroke=\"%23d8dee5\" stroke-width=\"1\" /><text x=\"42\" y=\"126.66666666666669\" font-family=\"\"Helvetica Neue\", \"TT Commons Pro\", Helvetica, Arial, sans-serif\" font-size=\"13\" fill=\"%231f2933\" text-anchor=\"end\">40</text><line x1=\"48\" y1=\"85.33333333333331\" x2=\"372\" y2=\"85.33333333333331\" stroke=\"%23d8dee5\" stroke-width=\"1\" /><text x=\"42\" y=\"89.33333333333331\" font-family=\"\"Helvetica Neue\", \"TT Commons Pro\", Helvetica, Arial, sans-serif\" font-size=\"13\" fill=\"%231f2933\" text-anchor=\"end\">50</text><line x1=\"48\" y1=\"48\" x2=\"372\" y2=\"48\" stroke=\"%23d8dee5\" stroke-width=\"1\" /><text x=\"42\" y=\"52\" font-family=\"\"Helvetica Neue\", \"TT Commons Pro\", Helvetica, Arial, sans-serif\" font-size=\"13\" fill=\"%231f2933\" text-anchor=\"end\">60</text><line x1=\"48\" y1=\"48\" x2=\"48\" y2=\"272\" stroke=\"%231f2933\" stroke-width=\"1.5\" /><line x1=\"48\" y1=\"272\" x2=\"372\" y2=\"272\" stroke=\"%231f2933\" stroke-width=\"1.5\" /><rect x=\"60.96000000000001\" y=\"167.46666666666667\" width=\"38.879999999999995\" height=\"104.53333333333333\" fill=\"%230b62a4\" /><text x=\"80.4\" y=\"290\" font-family=\"\"Helvetica Neue\", \"TT Commons Pro\", Helvetica, Arial, sans-serif\" font-size=\"13\" fill=\"%231f2933\" text-anchor=\"middle\">A</text><text x=\"80.4\" y=\"161.46666666666667\" font-family=\"\"Helvetica Neue\", \"TT Commons Pro\", Helvetica, Arial, sans-serif\" font-size=\"12\" fill=\"%231f2933\" text-anchor=\"middle\">28</text><rect x=\"125.75999999999999\" y=\"92.79999999999998\" width=\"38.879999999999995\" height=\"179.20000000000002\" fill=\"%230b62a4\" /><text x=\"145.2\" y=\"290\" font-family=\"\"Helvetica Neue\", \"TT Commons Pro\", Helvetica, Arial, sans-serif\" font-size=\"13\" fill=\"%231f2933\" text-anchor=\"middle\">B</text><text x=\"145.2\" y=\"86.79999999999998\" font-family=\"\"Helvetica Neue\", \"TT Commons Pro\", Helvetica, Arial, sans-serif\" font-size=\"12\" fill=\"%231f2933\" text-anchor=\"middle\">48</text><rect x=\"190.56\" y=\"230.93333333333334\" width=\"38.879999999999995\" height=\"41.06666666666666\" fill=\"%230b62a4\" /><text x=\"210\" y=\"290\" font-family=\"\"Helvetica Neue\", \"TT Commons Pro\", Helvetica, Arial, sans-serif\" font-size=\"13\" fill=\"%231f2933\" text-anchor=\"middle\">C</text><text x=\"210\" y=\"224.93333333333334\" font-family=\"\"Helvetica Neue\", \"TT Commons Pro\", Helvetica, Arial, sans-serif\" font-size=\"12\" fill=\"%231f2933\" text-anchor=\"middle\">11</text><rect x=\"255.35999999999996\" y=\"189.86666666666667\" width=\"38.879999999999995\" height=\"82.13333333333333\" fill=\"%230b62a4\" /><text x=\"274.79999999999995\" y=\"290\" font-family=\"\"Helvetica Neue\", \"TT Commons Pro\", Helvetica, Arial, sans-serif\" font-size=\"13\" fill=\"%231f2933\" text-anchor=\"middle\">D</text><text x=\"274.79999999999995\" y=\"183.86666666666667\" font-family=\"\"Helvetica Neue\", \"TT Commons Pro\", Helvetica, Arial, sans-serif\" font-size=\"12\" fill=\"%231f2933\" text-anchor=\"middle\">22</text><rect x=\"320.15999999999997\" y=\"178.66666666666666\" width=\"38.879999999999995\" height=\"93.33333333333334\" fill=\"%230b62a4\" /><text x=\"339.59999999999997\" y=\"290\" font-family=\"\"Helvetica Neue\", \"TT Commons Pro\", Helvetica, Arial, sans-serif\" font-size=\"13\" fill=\"%231f2933\" text-anchor=\"middle\">E</text><text x=\"339.59999999999997\" y=\"172.66666666666666\" font-family=\"\"Helvetica Neue\", \"TT Commons Pro\", Helvetica, Arial, sans-serif\" font-size=\"12\" fill=\"%231f2933\" text-anchor=\"middle\">25</text><text x=\"210\" y=\"22\" font-family=\"\"Helvetica Neue\", \"TT Commons Pro\", Helvetica, Arial, sans-serif\" font-size=\"15\" font-weight=\"600\" fill=\"%231f2933\" text-anchor=\"middle\">Books read per student</text><text x=\"210\" y=\"314\" font-family=\"\"Helvetica Neue\", \"TT Commons Pro\", Helvetica, Arial, sans-serif\" font-size=\"14\" fill=\"%231f2933\" text-anchor=\"middle\">Category</text><text x=\"14\" y=\"160\" font-family=\"\"Helvetica Neue\", \"TT Commons Pro\", Helvetica, Arial, sans-serif\" font-size=\"14\" fill=\"%231f2933\" text-anchor=\"middle\" transform=\"rotate(-90, 14, 160)\">Count</text></svg>",
+  "questionText": "The bar chart shows the number of books read by students in five different classes. Which of the following is the best interpretation of the mean number of books read by the students? The mean is calculated by dividing the total number of books read by the total number of classes.",
+  "options": [
+    "A) 26.8",
+    "B) 28",
+    "C) 48",
+    "D) 25"
+  ],
+  "correctAnswer": "A",
+  "explanation": "To find the mean, we divide the total number of books read (134) by the total number of classes (5). mean = 134 / 5 = 26.8",
+  "distractorExplanations": {
+    "B": "This option is incorrect because it is based on the sum-vs-mean confusion. The student may have misread the question and thought the mean was the same as the value of one of the categories. However, the mean is calculated by dividing the total number of books read by the total number of classes, which is 26.8.",
+    "C": "This option is incorrect because it is based on the max-as-median misconception. The student may have thought that the mean was the same as the maximum value in the chart, which is 48. However, the mean is a measure of center that takes into account all the values, not just the maximum.",
+    "D": "This option is incorrect because it is based on the label-misread mistake. The student may have misread the label of one of the categories and thought it was the mean. However, the mean is calculated by dividing the total number of books read by the total number of classes, which is 26.8."
+  },
+  "sourceAttribution": {
+    "figureLicense": "Algorithmic SVG — original",
+    "scenarioLicense": "Synthetic stimulus modeled on real-world domain (illustrative)"
+  },
+  "verify": {
+    "svgBytes": 5016,
+    "hasStimulusImageUrl": true,
+    "distractorCount": 3,
+    "perOptionExplanationsPresent": true
+  }
+}

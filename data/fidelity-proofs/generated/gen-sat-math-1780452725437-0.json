@@ -1,0 +1,123 @@
+{
+  "course": "SAT_MATH",
+  "domain": "ALGEBRA",
+  "subskill": "Linear functions — slope interpretation",
+  "difficulty": "MEDIUM",
+  "questionType": "MCQ",
+  "stimulusSpec": {
+    "kind": "scatterPlot",
+    "spec": {
+      "width": 440,
+      "height": 360,
+      "xRange": [
+        0,
+        12
+      ],
+      "yRange": [
+        0,
+        350
+      ],
+      "title": "Savings over time vs Time",
+      "xLabel": "Months",
+      "yLabel": "savings over time",
+      "points": [
+        {
+          "x": 0,
+          "y": 54,
+          "color": "#0b62a4"
+        },
+        {
+          "x": 2,
+          "y": 100,
+          "color": "#0b62a4"
+        },
+        {
+          "x": 4,
+          "y": 143,
+          "color": "#0b62a4"
+        },
+        {
+          "x": 6,
+          "y": 188,
+          "color": "#0b62a4"
+        },
+        {
+          "x": 8,
+          "y": 230,
+          "color": "#0b62a4"
+        },
+        {
+          "x": 10,
+          "y": 280,
+          "color": "#0b62a4"
+        }
+      ],
+      "trendline": {
+        "from": [
+          0,
+          57
+        ],
+        "to": [
+          10,
+          277
+        ],
+        "color": "#0b62a4"
+      }
+    },
+    "_meta": {
+      "intercept": 57,
+      "slope": 22,
+      "dataPoints": [
+        {
+          "x": 0,
+          "y": 54
+        },
+        {
+          "x": 2,
+          "y": 100
+        },
+        {
+          "x": 4,
+          "y": 143
+        },
+        {
+          "x": 6,
+          "y": 188
+        },
+        {
+          "x": 8,
+          "y": 230
+        },
+        {
+          "x": 10,
+          "y": 280
+        }
+      ]
+    }
+  },
+  "stimulusImageUrl": "data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 440 360\" width=\"440\" height=\"360\" role=\"img\" aria-label=\"Savings over time vs Time\"><line x1=\"48\" y1=\"48\" x2=\"48\" y2=\"312\" stroke=\"%23d8dee5\" stroke-width=\"1\" /><line x1=\"105.33333333333333\" y1=\"48\" x2=\"105.33333333333333\" y2=\"312\" stroke=\"%23d8dee5\" stroke-width=\"1\" /><line x1=\"162.66666666666666\" y1=\"48\" x2=\"162.66666666666666\" y2=\"312\" stroke=\"%23d8dee5\" stroke-width=\"1\" /><line x1=\"220\" y1=\"48\" x2=\"220\" y2=\"312\" stroke=\"%23d8dee5\" stroke-width=\"1\" /><line x1=\"277.3333333333333\" y1=\"48\" x2=\"277.3333333333333\" y2=\"312\" stroke=\"%23d8dee5\" stroke-width=\"1\" /><line x1=\"334.6666666666667\" y1=\"48\" x2=\"334.6666666666667\" y2=\"312\" stroke=\"%23d8dee5\" stroke-width=\"1\" /><line x1=\"392\" y1=\"48\" x2=\"392\" y2=\"312\" stroke=\"%23d8dee5\" stroke-width=\"1\" /><line x1=\"48\" y1=\"312\" x2=\"392\" y2=\"312\" stroke=\"%23d8dee5\" stroke-width=\"1\" /><line x1=\"48\" y1=\"274.2857142857143\" x2=\"392\" y2=\"274.2857142857143\" stroke=\"%23d8dee5\" stroke-width=\"1\" /><line x1=\"48\" y1=\"236.57142857142856\" x2=\"392\" y2=\"236.57142857142856\" stroke=\"%23d8dee5\" stroke-width=\"1\" /><line x1=\"48\" y1=\"198.85714285714286\" x2=\"392\" y2=\"198.85714285714286\" stroke=\"%23d8dee5\" stroke-width=\"1\" /><line x1=\"48\" y1=\"161.14285714285714\" x2=\"392\" y2=\"161.14285714285714\" stroke=\"%23d8dee5\" stroke-width=\"1\" /><line x1=\"48\" y1=\"123.42857142857142\" x2=\"392\" y2=\"123.42857142857142\" stroke=\"%23d8dee5\" stroke-width=\"1\" /><line x1=\"48\" y1=\"85.71428571428572\" x2=\"392\" y2=\"85.71428571428572\" stroke=\"%23d8dee5\" stroke-width=\"1\" /><line x1=\"48\" y1=\"48\" x2=\"392\" y2=\"48\" stroke=\"%23d8dee5\" stroke-width=\"1\" /><line x1=\"48\" y1=\"312\" x2=\"392\" y2=\"312\" stroke=\"%231f2933\" stroke-width=\"1.5\" /><line x1=\"48\" y1=\"48\" x2=\"48\" y2=\"312\" stroke=\"%231f2933\" stroke-width=\"1.5\" /><text x=\"48\" y=\"330\" font-family=\"\"Helvetica Neue\", \"TT Commons Pro\", Helvetica, Arial, sans-serif\" font-size=\"13\" fill=\"%231f2933\" text-anchor=\"middle\">0</text><text x=\"105.33333333333333\" y=\"330\" font-family=\"\"Helvetica Neue\", \"TT Commons Pro\", Helvetica, Arial, sans-serif\" font-size=\"13\" fill=\"%231f2933\" text-anchor=\"middle\">2</text><text x=\"162.66666666666666\" y=\"330\" font-family=\"\"Helvetica Neue\", \"TT Commons Pro\", Helvetica, Arial, sans-serif\" font-size=\"13\" fill=\"%231f2933\" text-anchor=\"middle\">4</text><text x=\"220\" y=\"330\" font-family=\"\"Helvetica Neue\", \"TT Commons Pro\", Helvetica, Arial, sans-serif\" font-size=\"13\" fill=\"%231f2933\" text-anchor=\"middle\">6</text><text x=\"277.3333333333333\" y=\"330\" font-family=\"\"Helvetica Neue\", \"TT Commons Pro\", Helvetica, Arial, sans-serif\" font-size=\"13\" fill=\"%231f2933\" text-anchor=\"middle\">8</text><text x=\"334.6666666666667\" y=\"330\" font-family=\"\"Helvetica Neue\", \"TT Commons Pro\", Helvetica, Arial, sans-serif\" font-size=\"13\" fill=\"%231f2933\" text-anchor=\"middle\">10</text><text x=\"392\" y=\"330\" font-family=\"\"Helvetica Neue\", \"TT Commons Pro\", Helvetica, Arial, sans-serif\" font-size=\"13\" fill=\"%231f2933\" text-anchor=\"middle\">12</text><text x=\"42\" y=\"316\" font-family=\"\"Helvetica Neue\", \"TT Commons Pro\", Helvetica, Arial, sans-serif\" font-size=\"13\" fill=\"%231f2933\" text-anchor=\"end\">0</text><text x=\"42\" y=\"278.2857142857143\" font-family=\"\"Helvetica Neue\", \"TT Commons Pro\", Helvetica, Arial, sans-serif\" font-size=\"13\" fill=\"%231f2933\" text-anchor=\"end\">50</text><text x=\"42\" y=\"240.57142857142856\" font-family=\"\"Helvetica Neue\", \"TT Commons Pro\", Helvetica, Arial, sans-serif\" font-size=\"13\" fill=\"%231f2933\" text-anchor=\"end\">100</text><text x=\"42\" y=\"202.85714285714286\" font-family=\"\"Helvetica Neue\", \"TT Commons Pro\", Helvetica, Arial, sans-serif\" font-size=\"13\" fill=\"%231f2933\" text-anchor=\"end\">150</text><text x=\"42\" y=\"165.14285714285714\" font-family=\"\"Helvetica Neue\", \"TT Commons Pro\", Helvetica, Arial, sans-serif\" font-size=\"13\" fill=\"%231f2933\" text-anchor=\"end\">200</text><text x=\"42\" y=\"127.42857142857142\" font-family=\"\"Helvetica Neue\", \"TT Commons Pro\", Helvetica, Arial, sans-serif\" font-size=\"13\" fill=\"%231f2933\" text-anchor=\"end\">250</text><text x=\"42\" y=\"89.71428571428572\" font-family=\"\"Helvetica Neue\", \"TT Commons Pro\", Helvetica, Arial, sans-serif\" font-size=\"13\" fill=\"%231f2933\" text-anchor=\"end\">300</text><text x=\"42\" y=\"52\" font-family=\"\"Helvetica Neue\", \"TT Commons Pro\", Helvetica, Arial, sans-serif\" font-size=\"13\" fill=\"%231f2933\" text-anchor=\"end\">350</text><line x1=\"48\" y1=\"269.0057142857143\" x2=\"334.6666666666667\" y2=\"103.06285714285713\" stroke=\"%230b62a4\" stroke-width=\"2\" /><circle cx=\"48\" cy=\"271.2685714285714\" r=\"4\" fill=\"%230b62a4\" stroke=\"white\" stroke-width=\"0.8\" /><circle cx=\"105.33333333333333\" cy=\"236.57142857142856\" r=\"4\" fill=\"%230b62a4\" stroke=\"white\" stroke-width=\"0.8\" /><circle cx=\"162.66666666666666\" cy=\"204.13714285714286\" r=\"4\" fill=\"%230b62a4\" stroke=\"white\" stroke-width=\"0.8\" /><circle cx=\"220\" cy=\"170.1942857142857\" r=\"4\" fill=\"%230b62a4\" stroke=\"white\" stroke-width=\"0.8\" /><circle cx=\"277.3333333333333\" cy=\"138.5142857142857\" r=\"4\" fill=\"%230b62a4\" stroke=\"white\" stroke-width=\"0.8\" /><circle cx=\"334.6666666666667\" cy=\"100.79999999999998\" r=\"4\" fill=\"%230b62a4\" stroke=\"white\" stroke-width=\"0.8\" /><text x=\"220\" y=\"22\" font-family=\"\"Helvetica Neue\", \"TT Commons Pro\", Helvetica, Arial, sans-serif\" font-size=\"15\" font-weight=\"600\" fill=\"%231f2933\" text-anchor=\"middle\">Savings over time vs Time</text><text x=\"220\" y=\"354\" font-family=\"\"Helvetica Neue\", \"TT Commons Pro\", Helvetica, Arial, sans-serif\" font-size=\"14\" fill=\"%231f2933\" text-anchor=\"middle\">Months</text><text x=\"14\" y=\"180\" font-family=\"\"Helvetica Neue\", \"TT Commons Pro\", Helvetica, Arial, sans-serif\" font-size=\"14\" fill=\"%231f2933\" text-anchor=\"middle\" transform=\"rotate(-90, 14, 180)\">savings over time</text></svg>",
+  "questionText": "The scatterplot shows the relationship between savings and time in months. The line of best fit has a y-intercept of 57 and a slope of 22. Which of the following is the best interpretation of the slope of the line of best fit?",
+  "options": [
+    "A) For every additional month, the savings increases by 22 dollars",
+    "B) The initial savings is 22 dollars",
+    "C) The savings after 10 months is 22 dollars",
+    "D) For every 22 months, the savings increases by 1 dollar"
+  ],
+  "correctAnswer": "A",
+  "explanation": "The slope of the line of best fit represents the change in savings for a one-month change in time. Since the slope is 22, this means that for every additional month, the savings increases by 22 dollars.",
+  "distractorExplanations": {
+    "B": "This option demonstrates slope-vs-intercept-confusion. The student incorrectly interprets the slope as the y-intercept. To find the correct interpretation, recall that the slope represents the change in the dependent variable for a one-unit change in the independent variable, whereas the y-intercept represents the initial or starting value. In this case, the y-intercept is 57, which represents the initial savings, not the slope.",
+    "C": "This option demonstrates slope-as-endpoint. The student incorrectly interprets the slope as the endpoint or the final value. However, the slope represents the rate of change, not the final value. The final value after 10 months can be found by using the equation of the line, which is y = 22x + 57, where x is the number of months. Plugging in x = 10 gives y = 22(10) + 57 = 277.",
+    "D": "This option demonstrates units-error. The student incorrectly interprets the slope as the change in months for a one-dollar change in savings. However, the slope represents the change in savings for a one-month change in time. To find the correct interpretation, recall that the slope is given as 22, which means that for every additional month, the savings increases by 22 dollars."
+  },
+  "sourceAttribution": {
+    "figureLicense": "Algorithmic SVG — original",
+    "scenarioLicense": "Synthetic stimulus modeled on real-world domain (illustrative)"
+  },
+  "verify": {
+    "svgBytes": 5605,
+    "hasStimulusImageUrl": true,
+    "distractorCount": 3,
+    "perOptionExplanationsPresent": true
+  }
+}

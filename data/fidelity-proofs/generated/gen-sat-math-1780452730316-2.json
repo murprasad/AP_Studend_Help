@@ -1,0 +1,67 @@
+{
+  "course": "SAT_MATH",
+  "domain": "ALGEBRA",
+  "subskill": "Linear equations from a graph — finding y-intercept",
+  "difficulty": "MEDIUM",
+  "questionType": "MCQ",
+  "stimulusSpec": {
+    "kind": "coordinatePlane",
+    "spec": {
+      "width": 420,
+      "height": 360,
+      "xRange": [
+        0,
+        10
+      ],
+      "yRange": [
+        0,
+        40
+      ],
+      "title": "Distance traveled",
+      "xLabel": "Time (hours)",
+      "yLabel": "distance traveled",
+      "lines": [
+        {
+          "from": [
+            0,
+            10
+          ],
+          "to": [
+            10,
+            30
+          ],
+          "color": "#0b62a4"
+        }
+      ]
+    },
+    "_meta": {
+      "intercept": 10,
+      "slope": 2
+    }
+  },
+  "stimulusImageUrl": "data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 420 360\" width=\"420\" height=\"360\" role=\"img\" aria-label=\"Distance traveled\"><line x1=\"48\" y1=\"48\" x2=\"48\" y2=\"312\" stroke=\"%23d8dee5\" stroke-width=\"1\" /><line x1=\"80.4\" y1=\"48\" x2=\"80.4\" y2=\"312\" stroke=\"%23d8dee5\" stroke-width=\"1\" /><line x1=\"112.8\" y1=\"48\" x2=\"112.8\" y2=\"312\" stroke=\"%23d8dee5\" stroke-width=\"1\" /><line x1=\"145.2\" y1=\"48\" x2=\"145.2\" y2=\"312\" stroke=\"%23d8dee5\" stroke-width=\"1\" /><line x1=\"177.6\" y1=\"48\" x2=\"177.6\" y2=\"312\" stroke=\"%23d8dee5\" stroke-width=\"1\" /><line x1=\"210\" y1=\"48\" x2=\"210\" y2=\"312\" stroke=\"%23d8dee5\" stroke-width=\"1\" /><line x1=\"242.4\" y1=\"48\" x2=\"242.4\" y2=\"312\" stroke=\"%23d8dee5\" stroke-width=\"1\" /><line x1=\"274.79999999999995\" y1=\"48\" x2=\"274.79999999999995\" y2=\"312\" stroke=\"%23d8dee5\" stroke-width=\"1\" /><line x1=\"307.2\" y1=\"48\" x2=\"307.2\" y2=\"312\" stroke=\"%23d8dee5\" stroke-width=\"1\" /><line x1=\"339.6\" y1=\"48\" x2=\"339.6\" y2=\"312\" stroke=\"%23d8dee5\" stroke-width=\"1\" /><line x1=\"372\" y1=\"48\" x2=\"372\" y2=\"312\" stroke=\"%23d8dee5\" stroke-width=\"1\" /><line x1=\"48\" y1=\"312\" x2=\"372\" y2=\"312\" stroke=\"%23d8dee5\" stroke-width=\"1\" /><line x1=\"48\" y1=\"279\" x2=\"372\" y2=\"279\" stroke=\"%23d8dee5\" stroke-width=\"1\" /><line x1=\"48\" y1=\"246\" x2=\"372\" y2=\"246\" stroke=\"%23d8dee5\" stroke-width=\"1\" /><line x1=\"48\" y1=\"213\" x2=\"372\" y2=\"213\" stroke=\"%23d8dee5\" stroke-width=\"1\" /><line x1=\"48\" y1=\"180\" x2=\"372\" y2=\"180\" stroke=\"%23d8dee5\" stroke-width=\"1\" /><line x1=\"48\" y1=\"147\" x2=\"372\" y2=\"147\" stroke=\"%23d8dee5\" stroke-width=\"1\" /><line x1=\"48\" y1=\"114\" x2=\"372\" y2=\"114\" stroke=\"%23d8dee5\" stroke-width=\"1\" /><line x1=\"48\" y1=\"81\" x2=\"372\" y2=\"81\" stroke=\"%23d8dee5\" stroke-width=\"1\" /><line x1=\"48\" y1=\"48\" x2=\"372\" y2=\"48\" stroke=\"%23d8dee5\" stroke-width=\"1\" /><line x1=\"48\" y1=\"312\" x2=\"372\" y2=\"312\" stroke=\"%231f2933\" stroke-width=\"1.5\" /><line x1=\"48\" y1=\"48\" x2=\"48\" y2=\"312\" stroke=\"%231f2933\" stroke-width=\"1.5\" /><line x1=\"80.4\" y1=\"312\" x2=\"80.4\" y2=\"317\" stroke=\"%231f2933\" stroke-width=\"1.5\" /><text x=\"80.4\" y=\"331\" font-family=\"\"Helvetica Neue\", \"TT Commons Pro\", Helvetica, Arial, sans-serif\" font-size=\"13\" fill=\"%231f2933\" text-anchor=\"middle\">1</text><line x1=\"112.8\" y1=\"312\" x2=\"112.8\" y2=\"317\" stroke=\"%231f2933\" stroke-width=\"1.5\" /><text x=\"112.8\" y=\"331\" font-family=\"\"Helvetica Neue\", \"TT Commons Pro\", Helvetica, Arial, sans-serif\" font-size=\"13\" fill=\"%231f2933\" text-anchor=\"middle\">2</text><line x1=\"145.2\" y1=\"312\" x2=\"145.2\" y2=\"317\" stroke=\"%231f2933\" stroke-width=\"1.5\" /><text x=\"145.2\" y=\"331\" font-family=\"\"Helvetica Neue\", \"TT Commons Pro\", Helvetica, Arial, sans-serif\" font-size=\"13\" fill=\"%231f2933\" text-anchor=\"middle\">3</text><line x1=\"177.6\" y1=\"312\" x2=\"177.6\" y2=\"317\" stroke=\"%231f2933\" stroke-width=\"1.5\" /><text x=\"177.6\" y=\"331\" font-family=\"\"Helvetica Neue\", \"TT Commons Pro\", Helvetica, Arial, sans-serif\" font-size=\"13\" fill=\"%231f2933\" text-anchor=\"middle\">4</text><line x1=\"210\" y1=\"312\" x2=\"210\" y2=\"317\" stroke=\"%231f2933\" stroke-width=\"1.5\" /><text x=\"210\" y=\"331\" font-family=\"\"Helvetica Neue\", \"TT Commons Pro\", Helvetica, Arial, sans-serif\" font-size=\"13\" fill=\"%231f2933\" text-anchor=\"middle\">5</text><line x1=\"242.4\" y1=\"312\" x2=\"242.4\" y2=\"317\" stroke=\"%231f2933\" stroke-width=\"1.5\" /><text x=\"242.4\" y=\"331\" font-family=\"\"Helvetica Neue\", \"TT Commons Pro\", Helvetica, Arial, sans-serif\" font-size=\"13\" fill=\"%231f2933\" text-anchor=\"middle\">6</text><line x1=\"274.79999999999995\" y1=\"312\" x2=\"274.79999999999995\" y2=\"317\" stroke=\"%231f2933\" stroke-width=\"1.5\" /><text x=\"274.79999999999995\" y=\"331\" font-family=\"\"Helvetica Neue\", \"TT Commons Pro\", Helvetica, Arial, sans-serif\" font-size=\"13\" fill=\"%231f2933\" text-anchor=\"middle\">7</text><line x1=\"307.2\" y1=\"312\" x2=\"307.2\" y2=\"317\" stroke=\"%231f2933\" stroke-width=\"1.5\" /><text x=\"307.2\" y=\"331\" font-family=\"\"Helvetica Neue\", \"TT Commons Pro\", Helvetica, Arial, sans-serif\" font-size=\"13\" fill=\"%231f2933\" text-anchor=\"middle\">8</text><line x1=\"339.6\" y1=\"312\" x2=\"339.6\" y2=\"317\" stroke=\"%231f2933\" stroke-width=\"1.5\" /><text x=\"339.6\" y=\"331\" font-family=\"\"Helvetica Neue\", \"TT Commons Pro\", Helvetica, Arial, sans-serif\" font-size=\"13\" fill=\"%231f2933\" text-anchor=\"middle\">9</text><line x1=\"372\" y1=\"312\" x2=\"372\" y2=\"317\" stroke=\"%231f2933\" stroke-width=\"1.5\" /><text x=\"372\" y=\"331\" font-family=\"\"Helvetica Neue\", \"TT Commons Pro\", Helvetica, Arial, sans-serif\" font-size=\"13\" fill=\"%231f2933\" text-anchor=\"middle\">10</text><line x1=\"43\" y1=\"279\" x2=\"48\" y2=\"279\" stroke=\"%231f2933\" stroke-width=\"1.5\" /><text x=\"39\" y=\"283\" font-family=\"\"Helvetica Neue\", \"TT Commons Pro\", Helvetica, Arial, sans-serif\" font-size=\"13\" fill=\"%231f2933\" text-anchor=\"end\">5</text><line x1=\"43\" y1=\"246\" x2=\"48\" y2=\"246\" stroke=\"%231f2933\" stroke-width=\"1.5\" /><text x=\"39\" y=\"250\" font-family=\"\"Helvetica Neue\", \"TT Commons Pro\", Helvetica, Arial, sans-serif\" font-size=\"13\" fill=\"%231f2933\" text-anchor=\"end\">10</text><line x1=\"43\" y1=\"213\" x2=\"48\" y2=\"213\" stroke=\"%231f2933\" stroke-width=\"1.5\" /><text x=\"39\" y=\"217\" font-family=\"\"Helvetica Neue\", \"TT Commons Pro\", Helvetica, Arial, sans-serif\" font-size=\"13\" fill=\"%231f2933\" text-anchor=\"end\">15</text><line x1=\"43\" y1=\"180\" x2=\"48\" y2=\"180\" stroke=\"%231f2933\" stroke-width=\"1.5\" /><text x=\"39\" y=\"184\" font-family=\"\"Helvetica Neue\", \"TT Commons Pro\", Helvetica, Arial, sans-serif\" font-size=\"13\" fill=\"%231f2933\" text-anchor=\"end\">20</text><line x1=\"43\" y1=\"147\" x2=\"48\" y2=\"147\" stroke=\"%231f2933\" stroke-width=\"1.5\" /><text x=\"39\" y=\"151\" font-family=\"\"Helvetica Neue\", \"TT Commons Pro\", Helvetica, Arial, sans-serif\" font-size=\"13\" fill=\"%231f2933\" text-anchor=\"end\">25</text><line x1=\"43\" y1=\"114\" x2=\"48\" y2=\"114\" stroke=\"%231f2933\" stroke-width=\"1.5\" /><text x=\"39\" y=\"118\" font-family=\"\"Helvetica Neue\", \"TT Commons Pro\", Helvetica, Arial, sans-serif\" font-size=\"13\" fill=\"%231f2933\" text-anchor=\"end\">30</text><line x1=\"43\" y1=\"81\" x2=\"48\" y2=\"81\" stroke=\"%231f2933\" stroke-width=\"1.5\" /><text x=\"39\" y=\"85\" font-family=\"\"Helvetica Neue\", \"TT Commons Pro\", Helvetica, Arial, sans-serif\" font-size=\"13\" fill=\"%231f2933\" text-anchor=\"end\">35</text><line x1=\"43\" y1=\"48\" x2=\"48\" y2=\"48\" stroke=\"%231f2933\" stroke-width=\"1.5\" /><text x=\"39\" y=\"52\" font-family=\"\"Helvetica Neue\", \"TT Commons Pro\", Helvetica, Arial, sans-serif\" font-size=\"13\" fill=\"%231f2933\" text-anchor=\"end\">40</text><line x1=\"48\" y1=\"246\" x2=\"372\" y2=\"114\" stroke=\"%230b62a4\" stroke-width=\"2\" /><text x=\"210\" y=\"352\" font-family=\"\"Helvetica Neue\", \"TT Commons Pro\", Helvetica, Arial, sans-serif\" font-size=\"14\" fill=\"%231f2933\" text-anchor=\"middle\">Time (hours)</text><text x=\"14\" y=\"180\" font-family=\"\"Helvetica Neue\", \"TT Commons Pro\", Helvetica, Arial, sans-serif\" font-size=\"14\" fill=\"%231f2933\" text-anchor=\"middle\" transform=\"rotate(-90, 14, 180)\">distance traveled</text><text x=\"210\" y=\"22\" font-family=\"\"Helvetica Neue\", \"TT Commons Pro\", Helvetica, Arial, sans-serif\" font-size=\"15\" font-weight=\"600\" fill=\"%231f2933\" text-anchor=\"middle\">Distance traveled</text></svg>",
+  "questionText": "Which of the following is the best interpretation of the y-intercept of the line of best fit in the figure? The line crosses the y-axis at a specific point, as shown.",
+  "options": [
+    "A) 10",
+    "B) 12",
+    "C) 8",
+    "D) 5"
+  ],
+  "correctAnswer": "A",
+  "explanation": "To find the y-intercept, look for where the line crosses the y-axis. In this figure, the line crosses the y-axis at y = 10. Therefore, the y-intercept is 10.",
+  "distractorExplanations": {
+    "B": "This option is incorrect due to an off-by-one-category mistake. The student may have miscounted the units on the y-axis or added an extra unit to the correct y-intercept value. To find the correct y-intercept, simply look for where the line crosses the y-axis and read the value from the y-axis.",
+    "C": "This option is incorrect due to a label-misread mistake. The student may have misread the label on the y-axis or confused it with another point on the line. Make sure to carefully read the labels on the axes and identify the correct point where the line crosses the y-axis.",
+    "D": "This option is incorrect due to a range-as-mode mistake. The student may have looked at the range of y-values covered by the line and mistakenly chosen a value within that range as the y-intercept. Instead, focus on where the line actually crosses the y-axis to find the correct y-intercept."
+  },
+  "sourceAttribution": {
+    "figureLicense": "Algorithmic SVG — original",
+    "scenarioLicense": "Synthetic stimulus modeled on real-world domain (illustrative)"
+  },
+  "verify": {
+    "svgBytes": 6888,
+    "hasStimulusImageUrl": true,
+    "distractorCount": 3,
+    "perOptionExplanationsPresent": true
+  }
+}
