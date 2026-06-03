@@ -332,6 +332,7 @@ export default function PracticePage() {
     isCorrect: boolean;
     correctAnswer: string;
     explanation: string;
+    distractorExplanations?: Record<string, string> | null;
     frqScore?: FrqScore;
   } | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -1382,6 +1383,28 @@ export default function PracticePage() {
                         : `Incorrect — Answer: ${feedback.correctAnswer}`}
                     </p>
                     <ExplanationDisplay text={feedback.explanation} />
+
+                    {/* 2026-06-02 — Fidelity P4: per-option distractor explanation
+                        renders INLINE when the student picked a wrong option AND
+                        the question has distractorExplanations populated. This
+                        keeps the student in the practice flow instead of routing
+                        them out to Sage on every miss. */}
+                    {!feedback.isCorrect
+                      && selectedAnswer
+                      && selectedAnswer !== "__IDK__"
+                      && feedback.distractorExplanations
+                      && typeof feedback.distractorExplanations === "object"
+                      && (feedback.distractorExplanations as Record<string, string>)[selectedAnswer.toUpperCase()] && (
+                      <div className="rounded-lg border border-amber-500/30 bg-amber-500/5 p-3 mt-2">
+                        <p className="text-xs font-semibold text-amber-700 dark:text-amber-400 uppercase tracking-wide mb-1.5">
+                          Why option {selectedAnswer.toUpperCase()} is wrong
+                        </p>
+                        <ExplanationDisplay
+                          text={(feedback.distractorExplanations as Record<string, string>)[selectedAnswer.toUpperCase()]}
+                          small
+                        />
+                      </div>
+                    )}
 
                     {/* F12 (#100) 2026-05-31 — Khan Academy SAT skill-link
                         for SAT/PSAT wrong answers. KA is the official CB

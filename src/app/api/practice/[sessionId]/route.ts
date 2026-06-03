@@ -178,6 +178,7 @@ Return ONLY valid JSON (no markdown, no extra text):
         isCorrect: existingResponse.isCorrect,
         correctAnswer: question.correctAnswer,
         explanation: question.explanation,
+        distractorExplanations: question.distractorExplanations ?? null,
       });
     }
 
@@ -278,6 +279,7 @@ Return ONLY valid JSON (no markdown, no extra text):
       isCorrect,
       correctAnswer: question.correctAnswer,
       explanation: question.explanation,
+      distractorExplanations: question.distractorExplanations ?? null,
       ...(frqScore && { frqScore }),
     });
   } catch (error) {
