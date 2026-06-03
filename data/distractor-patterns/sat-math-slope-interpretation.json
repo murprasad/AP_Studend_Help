@@ -1,0 +1,43 @@
+{
+  "skill": "Linear functions — slope interpretation",
+  "exam": "SAT_MATH",
+  "domain": "ALGEBRA",
+  "source": "Derived from patterns across CB SAT Practice Tests 1-4 (data/official/SAT/)",
+  "mistakeCategories": [
+    {
+      "id": "slope-vs-intercept-confusion",
+      "name": "Confusing slope with y-intercept",
+      "description": "Student picks the y-intercept value as the rate of change.",
+      "studentExample": "On a line with slope 20 and intercept 50, says 'the rate is 50'.",
+      "synthesisCue": "Phrase the distractor as if the starting value were the per-unit rate."
+    },
+    {
+      "id": "intercept-as-slope",
+      "name": "Reading the per-unit rate from the starting value",
+      "description": "Student treats the value at x=0 as the slope.",
+      "studentExample": "On a line starting at 50K, says 'gains 50K per month'.",
+      "synthesisCue": "Use the y-intercept number in the per-unit rate language."
+    },
+    {
+      "id": "slope-as-endpoint",
+      "name": "Quoting an endpoint as if it were the rate",
+      "description": "Student selects a specific (x, y) point and presents it as the rate.",
+      "studentExample": "Picks (20, 250) and says 'after 20 months the value is 250'.",
+      "synthesisCue": "Describe a specific endpoint rather than rate of change."
+    },
+    {
+      "id": "sign-flip",
+      "name": "Sign-reversed rate of change",
+      "description": "Student calculates the absolute change correctly but mis-attributes direction (gain vs loss).",
+      "studentExample": "On a line falling from 250 to 50 over 10 months, says 'gains 20 per month'.",
+      "synthesisCue": "Reverse the direction of the rate while keeping the magnitude correct."
+    },
+    {
+      "id": "units-error",
+      "name": "Slope correct but units mis-stated",
+      "description": "Student computes the slope correctly but reports it in the wrong unit (e.g. thousands as units).",
+      "studentExample": "Slope is 20 thousand per month, but student reports 20 per month.",
+      "synthesisCue": "Quote the slope value with the wrong order-of-magnitude unit suffix."
+    }
+  ]
+}
