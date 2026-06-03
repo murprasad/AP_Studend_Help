@@ -1585,10 +1585,16 @@ export default function PracticePage() {
           return (
             <div className="col-span-2 flex items-center gap-2 px-3 py-2 rounded-lg bg-yellow-500/5 border border-yellow-500/20 text-xs text-yellow-300/80">
               <Crown className="h-3.5 w-3.5 flex-shrink-0 text-yellow-700 dark:text-yellow-400" />
-              <span>You&apos;re on the Free plan — 3 sessions/day. {userTrack === "clep"
-                ? <>Want unlimited practice + all 34 CLEP courses? <Link href="/pricing" className="underline hover:text-blue-300">Upgrade to CLEP Premium</Link></>
-                : <>Want unlimited practice + FRQ scoring? <Link href="/pricing" className="underline hover:text-blue-300">Upgrade to AP Premium</Link></>
-              }</span>
+              <span>You&apos;re on the Free plan — 3 sessions/day. {(() => {
+                // 2026-06-03 — track-aware upgrade copy. "FRQ scoring" +
+                // "AP Premium" leaked to SAT/ACT/PSAT users per user report
+                // 2026-06-03. Branches on userTrack.
+                if (userTrack === "clep") return <>Want unlimited practice + all 34 CLEP courses? <Link href="/pricing" className="underline hover:text-blue-300">Upgrade to CLEP Premium</Link></>;
+                if (userTrack === "sat") return <>Want unlimited practice + Desmos + full-length adaptive mocks? <Link href="/pricing" className="underline hover:text-blue-300">Upgrade to SAT Premium</Link></>;
+                if (userTrack === "psat") return <>Want unlimited practice + full-length mocks? <Link href="/pricing" className="underline hover:text-blue-300">Upgrade to PSAT Premium</Link></>;
+                if (userTrack === "act") return <>Want unlimited practice + full-length mocks for all 4 sections? <Link href="/pricing" className="underline hover:text-blue-300">Upgrade to ACT Premium</Link></>;
+                return <>Want unlimited practice + FRQ scoring? <Link href="/pricing" className="underline hover:text-blue-300">Upgrade to AP Premium</Link></>;
+              })()}</span>
             </div>
           );
         })()}

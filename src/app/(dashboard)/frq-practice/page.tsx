@@ -48,6 +48,51 @@ export default function FrqPracticePage() {
   // fall through to persisted course otherwise.
   const course = (urlCourse ?? persistedCourse) as ApCourse;
 
+  // 2026-06-03 — Track guard. SAT/PSAT/ACT/CLEP have no FRQ — bounce
+  // users who reach this page with a non-AP course. Defense-in-depth on
+  // top of the sidebar tracks: ["ap"] filter (which sometimes the user
+  // can bypass via direct URL / older bookmark / sidebar bug). Renders
+  // a brief redirect message rather than redirecting silently so the
+  // user sees what happened.
+  const isApCourse = typeof course === "string" && course.startsWith("AP_");
+  if (!isApCourse) {
+    return (
+      <div className="max-w-2xl mx-auto px-6 py-12">
+        <h1 className="text-xl font-semibold mb-2">FRQ Practice isn&apos;t available for this course</h1>
+        <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
+          FRQ (free-response question) practice is specific to AP exams. The course you have selected ({String(course).replace(/_/g, " ")}) doesn&apos;t use FRQs.
+          {course?.startsWith("SAT_") || course?.startsWith("PSAT_")
+            ? " For SAT/PSAT, try the Full Practice Test or Practice instead."
+            : course?.startsWith("ACT_")
+            ? " For ACT, try Mock Exam or Practice instead."
+            : ""}
+        </p>
+        <div className="flex gap-3">
+          <Link
+            href="/practice"
+            className="inline-block px-4 py-2 rounded-full text-sm font-semibold bg-blue-600 text-white hover:bg-blue-700"
+          >
+            Go to Practice
+          </Link>
+          {(course?.startsWith("SAT_") || course?.startsWith("PSAT_")) && (
+            <Link
+              href="/full-practice-test"
+              className="inline-block px-4 py-2 rounded-full text-sm font-semibold border border-slate-300 hover:bg-slate-50"
+            >
+              Full Practice Test
+            </Link>
+          )}
+          <Link
+            href="/dashboard"
+            className="inline-block px-4 py-2 rounded-full text-sm font-semibold border border-slate-300 hover:bg-slate-50"
+          >
+            Back to Dashboard
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
   const [list, setList] = useState<FrqListItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

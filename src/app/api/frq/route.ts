@@ -32,6 +32,18 @@ export async function GET(req: NextRequest) {
     const course = searchParams.get("course") as ApCourse | null;
     const unit = searchParams.get("unit") as ApUnit | null;
     const limit = Math.min(parseInt(searchParams.get("limit") || "10"), 50);
+
+    // 2026-06-03 — FRQ is AP-only. SAT/PSAT/ACT/CLEP have no FRQ content;
+    // return an empty list with a hint instead of querying the bank. Was
+    // returning empty arrays anyway (no rows match) but added explicit
+    // guard so logs surface the misroute and clients get a clearer signal.
+    if (course && !String(course).startsWith("AP_")) {
+      return NextResponse.json({
+        frqs: [],
+        hint: "FRQ practice is only available for AP courses.",
+        nonApCourse: true,
+      });
+    }
     // 2026-05-01 — recommended=1 returns ONE curated FRQ targeted at the
     // user's weakest unit. Used by /frq-practice auto-pick path (?first_taste=1
     // or ?guided=1) and by the Next Step Engine. Skips Prisma's `not: null`

@@ -28,12 +28,23 @@ interface Props {
   isFreeTier: boolean;
 }
 
+// 2026-06-03 — Track-aware exam label. Was hardcoded "AP" before, leaked
+// to SAT/ACT/PSAT/CLEP practice pages per user report 2026-06-03.
+function examLabelForCourse(course: string): string {
+  if (course?.startsWith("SAT_")) return "SAT";
+  if (course?.startsWith("PSAT_")) return "PSAT";
+  if (course?.startsWith("ACT_")) return "ACT";
+  if (course?.startsWith("CLEP_")) return "CLEP";
+  return "AP";
+}
+
 export function CourseExamOverview({ course, isFreeTier }: Props) {
   const [expanded, setExpanded] = useState(false);
   const struct = getCBExamStructure(course);
   if (!struct) return null;
 
   const totalQuestions = struct.sections.reduce((s, sec) => s + sec.count, 0);
+  const examLabel = examLabelForCourse(course);
 
   if (!expanded) {
     return (
@@ -44,7 +55,7 @@ export function CourseExamOverview({ course, isFreeTier }: Props) {
         aria-expanded="false"
       >
         <div className="min-w-0">
-          <p className="text-sm font-medium">See real AP exam structure</p>
+          <p className="text-sm font-medium">See real {examLabel} exam structure</p>
           <p className="text-xs text-muted-foreground">
             {totalQuestions} questions · {struct.totalMinutes} min · {struct.sections.length} sections
           </p>
@@ -60,7 +71,7 @@ export function CourseExamOverview({ course, isFreeTier }: Props) {
         <div>
           <div className="flex items-center justify-between gap-2 flex-wrap">
             <h3 className="text-base font-semibold">
-              Real AP exam — what you&apos;ll face
+              Real {examLabel} exam — what you&apos;ll face
             </h3>
             <button
               type="button"

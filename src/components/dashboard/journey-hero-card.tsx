@@ -251,11 +251,24 @@ export function JourneyHeroCard({ course }: Props) {
                     Practice <ArrowRight className="h-4 w-4" />
                   </Button>
                 </Link>
-                <Link href={`/frq-practice?course=${course}&src=premium_hero`}>
-                  <Button size="sm" variant="outline" className="rounded-full gap-2">
-                    FRQ practice
-                  </Button>
-                </Link>
+                {/* 2026-06-03 — FRQ practice CTA is AP-only. Per user report
+                    2026-06-03 it was leaking onto SAT/PSAT/ACT/CLEP dashboards.
+                    For SAT/PSAT, swap in Full Practice Test CTA which is the
+                    actual track-appropriate next step. */}
+                {course?.startsWith("AP_") && (
+                  <Link href={`/frq-practice?course=${course}&src=premium_hero`}>
+                    <Button size="sm" variant="outline" className="rounded-full gap-2">
+                      FRQ practice
+                    </Button>
+                  </Link>
+                )}
+                {(course?.startsWith("SAT_") || course?.startsWith("PSAT_")) && (
+                  <Link href={`/full-practice-test?course=${course}`}>
+                    <Button size="sm" variant="outline" className="rounded-full gap-2">
+                      Full Practice Test
+                    </Button>
+                  </Link>
+                )}
                 <Link href="/sage-coach">
                   <Button size="sm" variant="outline" className="rounded-full gap-2">
                     Sage Coach
@@ -387,7 +400,9 @@ export function JourneyHeroCard({ course }: Props) {
                 {state.count}/5 questions answered. Finish your warm-up.
               </p>
               <p className="text-xs text-muted-foreground">
-                A few more questions and you&apos;ll see the real differentiator: AP-rubric FRQ scoring.
+                {course?.startsWith("AP_")
+                  ? "A few more questions and you'll see the real differentiator: AP-rubric FRQ scoring."
+                  : "A few more questions and your readiness score will sharpen."}
               </p>
               <Link href={`/practice?mode=focused&count=5&course=${course}&src=journey_hero&quickstart=1`}>
                 <Button size="sm" className="rounded-full mt-1 gap-2">
