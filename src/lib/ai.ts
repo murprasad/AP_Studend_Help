@@ -651,6 +651,41 @@ export async function generateQuestion(
     }
   }
 
+  // 2026-06-03 — CB-corpus calibration for SAT / ACT / PSAT. Mirrors the
+  // CLEP/AP calibration sections above: pulls 2-3 random anchors from the
+  // parsed CB corpus (data/cb-corpus/*.json) and injects them as few-shot
+  // examples to force style+rigor parity with actual CB items.
+  //
+  // Closes Acceptance #1 of the 2026-06-03 goal "Generator must validate
+  // every question against the real CB corpus before approval."
+  // Without this, only the new figure-seeder used CB anchors; the prod
+  // generator (this function) used only the prompt template.
+  let cbCorpusCalibrationSection = "";
+  const courseStr = inferredCourse as string;
+  const useSatCorpus =
+    courseStr === "SAT_MATH" || courseStr === "SAT_READING_WRITING" ||
+    courseStr === "PSAT_MATH" || courseStr === "PSAT_READING_WRITING" ||
+    courseStr.startsWith("ACT_");
+  if (useSatCorpus && !quickMode) {
+    try {
+      const { pickAnchorsForSection, formatAnchorForPrompt } = await import("./cb-corpus");
+      // Section mapping: Math courses → MATH corpus; everything else → READING_WRITING.
+      // ACT corpus not yet parsed (task #34) — use SAT corpus as best-available proxy
+      // until ACT corpus is parsed (then add section dispatch for ACT_*).
+      const section: "MATH" | "READING_WRITING" =
+        courseStr === "SAT_MATH" || courseStr === "PSAT_MATH" || courseStr === "ACT_MATH"
+          ? "MATH"
+          : "READING_WRITING";
+      const anchors = pickAnchorsForSection(section, 2);
+      if (anchors.length > 0) {
+        const anchorText = anchors.map((a, i) => formatAnchorForPrompt(a, i + 1)).join("\n\n");
+        cbCorpusCalibrationSection = `\n\nREAL CB-SAT REFERENCE QUESTIONS (match this style + rigor + framing):\n\n${anchorText}\n\nGenerate a DIFFERENT question at the SAME quality and CB-style level. Do NOT copy these scenarios or wording.`;
+      }
+    } catch {
+      // cb-corpus module not available or empty — continue without anchors
+    }
+  }
+
   // CLEP OpenStax content grounding — fetch unit-specific textbook content for factual accuracy
   let openStaxGroundingSection = "";
   if ((inferredCourse as string).startsWith("CLEP_") && !quickMode) {
@@ -682,7 +717,7 @@ export async function generateQuestion(
     }
   }
 
-  const allEnrichments = `${cbFrqSeedSection}${clepCalibrationSection}${apCalibrationSection}${apGroundingSection}${openStaxGroundingSection}`;
+  const allEnrichments = `${cbFrqSeedSection}${clepCalibrationSection}${apCalibrationSection}${apGroundingSection}${openStaxGroundingSection}${cbCorpusCalibrationSection}`;
   const prompt = seedQuestion
     ? `${basePrompt}${allEnrichments}\n\nREFERENCE QUESTION (for style/difficulty calibration — generate something DIFFERENT):\n"${seedQuestion}"\n\nGenerate a new question on the SAME concept with entirely different numbers, context, and scenario. Do NOT reuse the same values or phrasing from the reference.`
     : allEnrichments
@@ -756,6 +791,38 @@ export async function generateQuestion(
           lastError = lastRejectionReason;
           continue;
         }
+
+        // 2026-06-03 — CB-corpus stylometric gate. Closes Acceptance #2 of
+        // the 2026-06-03 goal "Generator must validate every question
+        // against the real CB corpus". Applies to SAT/PSAT/ACT only
+        // (CB-corpus has SAT/Math data; AP/CLEP use their own calibration).
+        // Rejects candidates with stem/option lengths >±2σ from CB corpus
+        // distribution or distractor lengths uneven.
+        if (useSatCorpus) {
+          try {
+            const { scoreAgainstCb } = await import("./cb-corpus");
+            const section: "MATH" | "READING_WRITING" =
+              courseStr === "SAT_MATH" || courseStr === "PSAT_MATH" || courseStr === "ACT_MATH"
+                ? "MATH"
+                : "READING_WRITING";
+            const styloScore = scoreAgainstCb(
+              {
+                stem: qtStr,
+                options: opts as string[],
+                correctAnswer: String(candidate.correctAnswer),
+              },
+              section,
+            );
+            if (!styloScore.overall.pass) {
+              lastRejectionReason = `CB-stylometric: ${styloScore.overall.reasons.join("; ")}`;
+              lastError = lastRejectionReason;
+              continue;
+            }
+          } catch {
+            // cb-corpus module unavailable — fall through (stylometric is a
+            // soft gate; structural + factual gates below still run).
+          }
+        }
         const refsPseudo = /\bpseudocode|\bcode (segment|block|below)|trace (the |this )(following |below )?(pseudo)?code/i.test(qtStr);
         if (refsPseudo && !/\b(PROCEDURE|DISPLAY|INPUT|IF|REPEAT|FOR EACH|RETURN|<-|←)\b/.test(stimStr)) {
           lastRejectionReason = "Question references pseudocode but stimulus lacks AP pseudocode syntax (PROCEDURE/DISPLAY/REPEAT/IF/etc.)";
@@ -801,6 +868,20 @@ export async function generateQuestion(
         // (option D) — is exactly what these gates flag. Skipped silently
         // for non-numeric MCQs (validateExplanationMath returns null when
         // no arithmetic statements found).
+        // 2026-05-12: deterministic render-hazard gate (regex, <1ms, no LLM).
+        // Catches the $-rendering bug (currency $ pairs as LaTeX math) and the
+        // phantom-stimulus bug (stem says "the figure shown" with no stimulus).
+        // Runs BEFORE any LLM judge — saves cascade time + rate-limit budget.
+        const { validateRenderHazards } = await import("./render-hazard-validator");
+        const renderErr = validateRenderHazards(
+          typeof candidate.questionText === "string" ? candidate.questionText : "",
+          typeof candidate.stimulus === "string" ? candidate.stimulus : null,
+        );
+        if (renderErr) {
+          lastRejectionReason = renderErr;
+          lastError = lastRejectionReason;
+          continue;
+        }
         const { validateExplanationMath, validateAnswerNumericMatch } = await import("./math-validator");
         const mathErr = validateExplanationMath(explStr);
         if (mathErr) {
@@ -817,13 +898,43 @@ export async function generateQuestion(
       }
 
       if (needsValidation) {
-        // Cross-model validation: pass generator model so validator uses a different model family
-        const validation = await validateQuestion(JSON.stringify(candidate), difficulty, undefined, inferredCourse as string, raw.modelUsed);
-        if (!validation.approved) {
-          console.warn(`[generateQuestion] Attempt ${attempt} rejected: ${validation.reason}`);
-          lastRejectionReason = validation.reason ?? "validation failed";
+        // 2026-05-12: replace single-model validateQuestion with 3-model
+        // ensemble (Groq + Claude + Gemini). Quorum: ≥2 PASS → ok; ≥2 FAIL
+        // → reject. The single-model judge was being outsmarted by generator
+        // confessions ("closest match is $65" with last number planted to
+        // match the stored option). Three different model families are
+        // unlikely to share the same blind spot. Fail-OPEN when no quorum
+        // (infrastructure issue, not a quality flag) — same as the
+        // retroactive sweep policy in scripts/ensemble-sweep.mjs.
+        const { ensembleJudgeMcq } = await import("./ensemble-judge");
+        const opts2 = typeof candidate.options === "string"
+          ? JSON.parse(candidate.options)
+          : candidate.options ?? [];
+        const explForEnsemble: string | null = typeof candidate.explanation === "string"
+          ? candidate.explanation
+          : null;
+        const ensemble = await ensembleJudgeMcq({
+          questionText: String(candidate.questionText ?? ""),
+          options: opts2 as string[],
+          correctAnswer: String(candidate.correctAnswer ?? ""),
+          explanation: explForEnsemble,
+        });
+        if (!ensemble.ok) {
+          console.warn(`[generateQuestion] Attempt ${attempt} rejected by ensemble: ${ensemble.reason}`);
+          lastRejectionReason = `Ensemble FAIL: ${ensemble.reason ?? "quorum disagreed"}`;
           lastError = lastRejectionReason;
           continue;
+        }
+        // Fall back to single-model validator if ensemble had no quorum
+        // (all abstained / infrastructure flake). This preserves coverage.
+        if (ensemble.fallback) {
+          const validation = await validateQuestion(JSON.stringify(candidate), difficulty, undefined, inferredCourse as string, raw.modelUsed);
+          if (!validation.approved) {
+            console.warn(`[generateQuestion] Attempt ${attempt} rejected (ensemble no-quorum, single fallback): ${validation.reason}`);
+            lastRejectionReason = validation.reason ?? "validation failed";
+            lastError = lastRejectionReason;
+            continue;
+          }
         }
       }
       aiResult = raw;
