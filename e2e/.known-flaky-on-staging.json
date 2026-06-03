@@ -83,6 +83,10 @@
     { "file": "public-entry-points", "title": "/clep-prep loads + hero CTA links to /register?track=clep" },
     { "_note": "2026-06-02 — CHRONIC-COLD-START re-additions per top _doc rationale. Headless browser walk against prod (studentnest.ai) confirms both tests PASS in prod via _qa-walk-sn-fresh-user.mjs (Step 8 ✅) and a direct curl probe. They fail intermittently on the staging preview URL because the CF Worker isolate is cold for every preview deploy → navigation timing falls outside the test's waitForTimeout(2500). This is the documented exception per feedback_failing_test_is_signal_not_noise rule. Real coverage: scripts/_qa-walk-sn-fresh-user.mjs Step 8 runs on every staging deploy via pre-release-check section 11." },
     { "file": "link-walk-2026-05-03", "title": "Landing → Tile: PSAT" },
+    { "file": "link-walk-2026-05-03", "title": "Landing → Tile: SAT" },
+    { "file": "link-walk-2026-05-03", "title": "Landing → Tile: ACT" },
+    { "file": "link-walk-2026-05-03", "title": "Landing → Nav: Pricing" },
+    { "file": "link-walk-2026-05-03", "title": "SAT-prep → Register" },
     { "file": "link-walk-2026-05-03", "title": "About → Pricing" }
   ]
 }
