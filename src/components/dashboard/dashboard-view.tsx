@@ -33,7 +33,7 @@ import { MasteryTierUpCard } from "@/components/dashboard/mastery-tier-up-card";
 import { PassProbabilityHero } from "@/components/dashboard/pass-probability-hero";
 import { TodaysSetCard } from "@/components/dashboard/todays-set-card";
 import { SatSkillHeatmap } from "@/components/dashboard/sat-skill-heatmap";
-import { ActivationGate } from "@/components/dashboard/activation-gate";
+import { ActivationGate, PreDiagnosticSuppress } from "@/components/dashboard/activation-gate";
 import { PassReadyCertGate } from "@/components/dashboard/pass-ready-cert-gate";
 import { ResumeCard } from "@/components/dashboard/resume-card";
 import { PrimaryActionStrip } from "@/components/dashboard/primary-action-strip";
@@ -244,7 +244,15 @@ function DashboardBody({ course, impressionId }: { course: string; impressionId:
             <PassProbabilityHero course={course as string} courseDisplayName={course as string} />
             <SatSkillHeatmap course={course as string} />
           </ActivationGate>
-          <TodaysSetCard course={course as string} />
+          {/* 2026-06-02 — suppress premature weak-area recs when user
+              has no diagnostic. JourneyHeroCard at the top already
+              pushes 'Take 10-min Diagnostic' as the single primary
+              CTA. Showing 'Strengthen Geometry' on top of that for a
+              4-Q-of-noisy-data user gave 3 conflicting next-step
+              cards (user-reported task #14). */}
+          <PreDiagnosticSuppress course={course as string}>
+            <TodaysSetCard course={course as string} />
+          </PreDiagnosticSuppress>
           <PassReadyCertGate
             course={course as string}
             courseDisplayName={course as string}

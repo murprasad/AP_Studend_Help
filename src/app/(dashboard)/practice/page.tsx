@@ -967,12 +967,39 @@ export default function PracticePage() {
               </div>
             </div>
 
-            {sessionSummary.apScoreEstimate > 0 && (
-              <div className="text-center p-4 rounded-lg bg-blue-500/10 border border-blue-500/20 mb-6">
-                <p className="text-sm text-muted-foreground">Estimated {userTrack === "clep" ? "CLEP" : "AP"} Score</p>
-                <p className="text-4xl font-bold text-blue-500">{userTrack === "clep" ? `${Math.round(sessionSummary.apScoreEstimate * 16)}/80` : `${sessionSummary.apScoreEstimate}/5`}</p>
-              </div>
-            )}
+            {sessionSummary.apScoreEstimate > 0 && (() => {
+              // 2026-06-02 — track-aware score badge. Was hardcoded AP 1-5
+              // (or CLEP /80). SAT_MATH practice showed "Estimated AP
+              // Score 1/5" — totally wrong scale for a SAT user. Derive
+              // the family from the course prefix and pick the right
+              // scale + label.
+              const fam: "AP" | "SAT" | "ACT" | "PSAT" | "CLEP" = userTrack === "clep"
+                ? "CLEP"
+                : course.startsWith("SAT_")
+                ? "SAT"
+                : course.startsWith("ACT_")
+                ? "ACT"
+                : course.startsWith("PSAT_")
+                ? "PSAT"
+                : "AP";
+              // apScoreEstimate is normalized 0-5 internally. Scale per family.
+              const norm = sessionSummary.apScoreEstimate / 5; // 0..1
+              const display = fam === "AP"
+                ? `${sessionSummary.apScoreEstimate}/5`
+                : fam === "CLEP"
+                ? `${Math.round(norm * 80)}/80`
+                : fam === "SAT"
+                ? `${Math.round(200 + norm * 600)}/800`     // 200-800 per section
+                : fam === "ACT"
+                ? `${Math.round(1 + norm * 35)}/36`         // 1-36 composite
+                : `${Math.round(160 + norm * 600)}/760`;    // PSAT 160-760 per section
+              return (
+                <div className="text-center p-4 rounded-lg bg-blue-500/10 border border-blue-500/20 mb-6">
+                  <p className="text-sm text-muted-foreground">Estimated {fam} Score</p>
+                  <p className="text-4xl font-bold text-blue-500">{display}</p>
+                </div>
+              );
+            })()}
 
             {/* Improvement message */}
             {sessionSummary.previousAccuracy != null ? (

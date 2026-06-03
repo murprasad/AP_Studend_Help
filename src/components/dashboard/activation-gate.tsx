@@ -80,7 +80,20 @@ export function ActivationGate({ children, course }: Props) {
     return <>{children}</>;
   }
 
-  // Not yet activated → single focused first-week CTA
+  // 2026-06-02 — Per user UX feedback ("What's the ONE most useful
+  // next step?"): when the user hasn't taken the diagnostic yet,
+  // JourneyHeroCard already surfaces "Take 10-min Diagnostic" as the
+  // primary CTA at the top of the dashboard. Rendering ANOTHER
+  // diagnostic CTA here would duplicate the call. Render null so
+  // JourneyHero is the single primary action.
+  //
+  // When the user HAS a diagnostic but hasn't yet hit the activation
+  // threshold (e.g., 4/20 random Qs answered), the readiness score
+  // genuinely isn't reliable yet — keep the "answer N more" CTA as
+  // the focused continuation.
+  if (!stats.hasDiagnostic) {
+    return null;
+  }
   const remaining = stats.threshold - stats.totalAnswered;
   const threshold = stats.threshold;
   return (
@@ -112,4 +125,33 @@ export function ActivationGate({ children, course }: Props) {
       </div>
     </div>
   );
+}
+
+/**
+ * Suppress dashboard cards that surface premature recommendations for
+ * users who haven't yet taken a diagnostic. Companion to ActivationGate —
+ * use to wrap TodaysSetCard / weak-area suggestions so a 4-question user
+ * doesn't get "Strengthen Geometry" on noisy data.
+ */
+export function PreDiagnosticSuppress({ children, course }: { children: ReactNode; course?: string }) {
+  const [stats, setStats] = useState<ActivationStats | null>(null);
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    let cancelled = false;
+    const url = course
+      ? `/api/me/activation-progress?course=${encodeURIComponent(course)}`
+      : "/api/me/activation-progress";
+    fetch(url)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d: ActivationStats | null) => {
+        if (cancelled) return;
+        setStats(d);
+        setLoading(false);
+      })
+      .catch(() => { if (!cancelled) setLoading(false); });
+    return () => { cancelled = true; };
+  }, [course]);
+  if (loading) return null;
+  if (!stats || stats.hasDiagnostic) return <>{children}</>;
+  return null;
 }
