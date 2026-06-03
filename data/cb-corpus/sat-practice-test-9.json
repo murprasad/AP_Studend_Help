@@ -1,0 +1,346 @@
+{
+  "test": "SAT Practice Test #9 (Digital, paper format)",
+  "source_pdf": "data/raw/sat/sat-practice-test-9-digital.pdf",
+  "source_url": "https://satsuite.collegeboard.org/media/pdf/sat-practice-test-9-digital.pdf",
+  "license": "CB practice tests are made available for student preparation use",
+  "accessed": "2026-06-02",
+  "total_questions_parsed": 27,
+  "modules": [
+    {
+      "section": "READING_WRITING",
+      "module": 2,
+      "question_count": 19,
+      "questions": [
+        {
+          "n": 1,
+          "section": "READING_WRITING",
+          "stem": ".1 , The following text is from Anita Desai's 2011 novella Translator Translated. While working on her translation of a novel written in Odia (a language of India) into English, the narrator looks out her window at night to clear her mind. I tried to distract myself with these sights of the ordinary world, but in my mind it was the lines I had been translating and the lines that I had been writing that remained in the forefront. I longed for sleep to obliterate them but it eluded me. Perhaps everything would be normal again once I had sent off the manuscript, I thought, and looked forward to completing the work. �2011 by Anita Desai As used in the text, what does the word \"completing\" most nearly mean?",
+          "options": {
+            "A": "Destroying",
+            "B": "Finishing",
+            "C": "Advertising",
+            "D": "Rejecting"
+          }
+        },
+        {
+          "n": 2,
+          "section": "READING_WRITING",
+          "stem": ".1 , The following text is from Anita Desai's 2011 novella Translator Translated. While working on her translation of a novel written in Odia (a language of India) into English, the narrator looks out her window at night to clear her mind. I tried to distract myself with these sights of the ordinary world, but in my mind it was the lines I had been translating and the lines that I had been writing that remained in the forefront. I longed for sleep to obliterate them but it eluded me. Perhaps everything would be normal again once I had sent off the manuscript, I thought, and looked forward to completing the work. �2011 by Anita Desai As used in the text, what does the word \"completing\" most nearly mean? A) Destroying B) Finishing C) Advertising D) Rejecting . 2 ,_ _ _ _ _ _ _ _____, Predatory animals differ widely in how they _______ food for their young. Some leave dead prey nearby for their young to consume, some bring live prey to their young, and some feed their young directly from their own mouths. Which choice completes the text with the most logical and precise word or phrase?",
+          "options": {
+            "A": "It provides a little-known geographical fact about Kentucky.",
+            "B": "It argues that Karida Brown is an expert on United States politics.",
+            "C": "It presents a major historical event that took place in the twentieth century.",
+            "D": "It describes how Karida Brown benefited from incorporating oral history in her book."
+          }
+        },
+        {
+          "n": 3,
+          "section": "READING_WRITING",
+          "stem": "7 The following text is from Georgia Douglas Johnson's 1922 poem \"Benediction.\" Go forth, my son, Winged by my heart's desire! Great reaches, yet unknown, Await For your possession. I may not, if I would, Retrace the way with you, My pilgrimage is through, But life is calling you! Which choice best states the main purpose of the text?",
+          "options": {
+            "A": "To express hope that a child will have the same accomplishments as his parent did",
+            "B": "To suggest that raising a child involves many struggles",
+            "C": "To warn a child that he will face many challenges throughout his life",
+            "D": "To encourage a child to embrace the experiences life will offer"
+          }
+        },
+        {
+          "n": 4,
+          "section": "READING_WRITING",
+          "stem": "7 The following text is from Georgia Douglas Johnson's 1922 poem \"Benediction.\" Go forth, my son, Winged by my heart's desire! Great reaches, yet unknown, Await For your possession. I may not, if I would, Retrace the way with you, My pilgrimage is through, But life is calling you! Which choice best states the main purpose of the text? A) To express hope that a child will have the same accomplishments as his parent did B) To suggest that raising a child involves many struggles C) To warn a child that he will face many challenges throughout his life D) To encourage a child to embrace the experiences life will offer 8 The following text is from Edith Wharton's 1905 novel The House of Mirth. Lily Bart and a companion are walking through a park. Lily had no real intimacy with nature, but she had a passion for the appropriate and could be keenly sensitive to a scene which was the fitting background of her own sensations. The landscape outspread below her seemed an enlargement of her present mood, and she found something of herself in its calmness, its breadth, its long free reaches. On the nearer slopes the sugar-maples wavered like pyres of light; lower down was a massing of grey orchards, and here and there the lingering green of an oak-grove. Which choice best describes the function of the underlined sentence in the text as a whole?",
+          "options": {
+            "A": "It creates a detailed image of the physical setting of the scene.",
+            "B": "It establishes that a character is experiencing an internal conflict.",
+            "C": "It makes an assertion that the next sentence then expands on.",
+            "D": "It illustrates an idea that is introduced in the previous sentence."
+          }
+        },
+        {
+          "n": 5,
+          "section": "READING_WRITING",
+          "stem": "9 Individual elephants and Arctic herbivores such as caribou tend to have fixed geographic ranges throughout their lifetimes, which had prompted some researchers to speculate that the Arctic woolly mammoth, an extinct elephantid, might have exhibited similar behavior. Mammoth tusks grew in sequential layers, incorporating ingested minerals and organics, and so each ivory stratum reflects the ratio of strontium isotopes (87Sr/86Sr) in the local environment; thus, the sequence of strata shows where the animal roamed during life. Recent analysis of the strontium ratios in the strata of one Arctic woolly mammoth tusk in relation to the geographic distribution of strontium ratios in the environment shows the animal's range begin to expand as it reached sexual maturity, only to contract again in its final 1.5 years. Which choice best describes the function of the underlined statement in the text as a whole?",
+          "options": {
+            "A": "It discusses a characteristic shared by certain animals in order to explain why researchers raised a possibility that turned out not to be supported by data described later in the text.",
+            "B": "It illustrates a pattern of behavior among certain animals in order to present a theory about exceptions to that pattern that is weakened by a finding described later in the text.",
+            "C": "It describes a similarity in the behavior of certain animals in order to show why a method described later in the text did not reveal whether another animal also showed that behavior.",
+            "D": "It introduces a trait shared by certain animals in order to contextualize a hypothesis about the origin of that trait that is advanced later in the text."
+          }
+        },
+        {
+          "n": 6,
+          "section": "READING_WRITING",
+          "stem": "9 Individual elephants and Arctic herbivores such as caribou tend to have fixed geographic ranges throughout their lifetimes, which had prompted some researchers to speculate that the Arctic woolly mammoth, an extinct elephantid, might have exhibited similar behavior. Mammoth tusks grew in sequential layers, incorporating ingested minerals and organics, and so each ivory stratum reflects the ratio of strontium isotopes (87Sr/86Sr) in the local environment; thus, the sequence of strata shows where the animal roamed during life. Recent analysis of the strontium ratios in the strata of one Arctic woolly mammoth tusk in relation to the geographic distribution of strontium ratios in the environment shows the animal's range begin to expand as it reached sexual maturity, only to contract again in its final 1.5 years. Which choice best describes the function of the underlined statement in the text as a whole? A) It discusses a characteristic shared by certain animals in order to explain why researchers raised a possibility that turned out not to be supported by data described later in the text. B) It illustrates a pattern of behavior among certain animals in order to present a theory about exceptions to that pattern that is weakened by a finding described later in the text. C) It describes a similarity in the behavior of certain animals in order to show why a method described later in the text did not reveal whether another animal also showed that behavior. D) It introduces a trait shared by certain animals in order to contextualize a hypothesis about the origin of that trait that is advanced later in the text. 10 In the 1960s, Gloria Richardson led a movement to promote racial equality. Her involvement in this effort was inspired by her daughter, Donna Richardson. In 1961, Donna joined protests organized by the Student Nonviolent Coordinating Committee in Cambridge, Maryland. Following her daughter, Gloria joined these protests too. Gloria soon became the cochair of the Cambridge Nonviolent Action Committee. She was also the leader of what became known as the Cambridge movement. According to the text, what did Gloria Richardson lead?",
+          "options": {
+            "A": "The Cambridge movement",
+            "B": "Her daughter Donna's high school",
+            "C": "Protests to support environmental protections",
+            "D": "A new business in Cambridge, Maryland"
+          }
+        },
+        {
+          "n": 7,
+          "section": "READING_WRITING",
+          "stem": "11 The following text is from Jane Austen's 1811 novel Sense and Sensibility. Elinor lives with her younger sisters and her mother, Mrs. Dashwood. Elinor, this eldest daughter, whose advice was so effectual, possessed a strength of understanding, and coolness of judgment, which qualified her, though only nineteen, to be the counsellor of her mother, and enabled her frequently to counteract, to the advantage of them all, that eagerness of mind in Mrs. Dashwood which must generally have led to imprudence. She had an excellent heart;--her disposition was affectionate, and her feelings were strong; but she knew how to govern them: it was a knowledge which her mother had yet to learn; and which one of her sisters had resolved never to be taught. According to the text, what is true about Elinor?",
+          "options": {
+            "A": "Elinor often argues with her mother but fails to change her mind.",
+            "B": "Elinor can be overly sensitive with regard to family matters.",
+            "C": "Elinor thinks her mother is a bad role model.",
+            "D": "Elinor is remarkably mature for her age."
+          }
+        },
+        {
+          "n": 8,
+          "section": "READING_WRITING",
+          "stem": "11 The following text is from Jane Austen's 1811 novel Sense and Sensibility. Elinor lives with her younger sisters and her mother, Mrs. Dashwood. Elinor, this eldest daughter, whose advice was so effectual, possessed a strength of understanding, and coolness of judgment, which qualified her, though only nineteen, to be the counsellor of her mother, and enabled her frequently to counteract, to the advantage of them all, that eagerness of mind in Mrs. Dashwood which must generally have led to imprudence. She had an excellent heart;--her disposition was affectionate, and her feelings were strong; but she knew how to govern them: it was a knowledge which her mother had yet to learn; and which one of her sisters had resolved never to be taught. According to the text, what is true about Elinor? A) Elinor often argues with her mother but fails to change her mind. B) Elinor can be overly sensitive with regard to family matters. C) Elinor thinks her mother is a bad role model. D) Elinor is remarkably mature for her age. 12 Culinary anthropologist Vertamae Smart-Grosvenor may be known for her decades of work in national public television and radio, but her book Vibration Cooking: or, the Travel Notes of a Geechee Girl is likely her most influential project. The 1970 book, whose title refers to Smart-Grosvenor's roots in the Low Country of South Carolina, was unusual for its time. It combined memoir, recipes, travel writing, and social commentary and challenged notions about conventions of food and cooking. Long admired by many, the book and its author have shaped contemporary approaches to writing about cuisine. Which choice best describes the main idea of the text?",
+          "options": {
+            "A": "Smart-Grosvenor's unconventional book Vibration Cooking: or, the Travel Notes of a Geechee Girl is an important contribution to food writing.",
+            "B": "Smart-Grosvenor held many different positions over her life, including reporter and food writer.",
+            "C": "Smart-Grosvenor's groundbreaking book Vibration Cooking: or, the Travel Notes of a Geechee Girl didn't receive the praise it deserved when it was first published in 1970.",
+            "D": "Smart-Grosvenor was a talented chef whose work inspired many people to start cooking for themselves."
+          }
+        },
+        {
+          "n": 9,
+          "section": "READING_WRITING",
+          "stem": "13 The following text is adapted from Charles W. Chesnutt's 1901 novel The Marrow of Tradition. Mrs. Ochiltree was a woman of strong individuality, whose comments upon her acquaintance[s], present or absent, were marked by a frankness at times no less than startling. This characteristic caused her to be more or less avoided. Mrs. Ochiltree was aware of this sentiment on the part of her acquaintance[s], and rather exulted in it. Based on the text, what is true about Mrs. Ochiltree's acquaintances?",
+          "options": {
+            "A": "They try to refrain from discussing topics that would upset Mrs. Ochiltree.",
+            "B": "They are unable to spend as much time with Mrs. Ochiltree as she would like.",
+            "C": "They are too preoccupied with their own concerns to speak with Mrs. Ochiltree.",
+            "D": "They are likely offended by what Mrs. Ochiltree has said about them."
+          }
+        },
+        {
+          "n": 10,
+          "section": "READING_WRITING",
+          "stem": "13 The following text is adapted from Charles W. Chesnutt's 1901 novel The Marrow of Tradition. Mrs. Ochiltree was a woman of strong individuality, whose comments upon her acquaintance[s], present or absent, were marked by a frankness at times no less than startling. This characteristic caused her to be more or less avoided. Mrs. Ochiltree was aware of this sentiment on the part of her acquaintance[s], and rather exulted in it. Based on the text, what is true about Mrs. Ochiltree's acquaintances? A) They try to refrain from discussing topics that would upset Mrs. Ochiltree. B) They are unable to spend as much time with Mrs. Ochiltree as she would like. C) They are too preoccupied with their own concerns to speak with Mrs. Ochiltree. D) They are likely offended by what Mrs. Ochiltree has said about them. 14 \"Mrs. Spring Fragrance\" is a 1912 short story by Sui Sin Far. In the story, Mrs. Spring Fragrance, a Chinese immigrant living in Seattle, is traveling in California. In letters to her husband and friend, she demonstrates her concern for what's happening at her home in Seattle while she is away: _______ Which quotation from Mrs. Spring Fragrance's letters most effectively illustrates the claim?",
+          "options": {
+            "A": "\"My honorable cousin is preparing for the Fifth Moon Festival, and wishes me to compound for the occasion some American `fudge,' for which delectable sweet, made by my clumsy hands, you have sometimes shown a slight prejudice.\"",
+            "B": "\"Next week I accompany Ah Oi to the beauteous town of San Jos�. There will we be met by the son of the Illustrious Teacher.\"",
+            "C": "\"Forget not to care for the cat, the birds, and the flowers. Do not eat too quickly nor fan too vigorously now that the weather is warming.\"",
+            "D": "\"I am enjoying a most agreeable visit, and American friends, as also our own, strive benevolently for the accomplishment of my pleasure.\""
+          }
+        },
+        {
+          "n": 11,
+          "section": "READING_WRITING",
+          "stem": "15 When digging for clams, their primary food, sea otters damage the roots of eelgrass plants growing on the seafloor. Near Vancouver Island in Canada, the otter population is large and well established, yet the eelgrass meadows are healthier than those found elsewhere off Canada's coast. To explain this, conservation scientist Erin Foster and colleagues compared the Vancouver Island meadows to meadows where otters are absent or were reintroduced only recently. Finding that the Vancouver Island meadows have a more diverse gene pool than the others do, Foster hypothesized that damage to eelgrass roots increases the plant's rate of sexual reproduction; this, in turn, boosts genetic diversity, which benefits the meadows' health overall. Which finding, if true, would most directly undermine Foster's hypothesis?",
+          "options": {
+            "A": "At some sites in the study, eelgrass meadows are found near otter populations that are small and have only recently been reintroduced.",
+            "B": "At several sites not included in the study, there are large, well-established sea otter populations but no eelgrass meadows.",
+            "C": "At several sites not included in the study, eelgrass meadows' health correlates negatively with the length of residence and size of otter populations.",
+            "D": "At some sites in the study, the health of plants unrelated to eelgrass correlates negatively with the length of residence and size of otter populations."
+          }
+        },
+        {
+          "n": 12,
+          "section": "READING_WRITING",
+          "stem": "15 When digging for clams, their primary food, sea otters damage the roots of eelgrass plants growing on the seafloor. Near Vancouver Island in Canada, the otter population is large and well established, yet the eelgrass meadows are healthier than those found elsewhere off Canada's coast. To explain this, conservation scientist Erin Foster and colleagues compared the Vancouver Island meadows to meadows where otters are absent or were reintroduced only recently. Finding that the Vancouver Island meadows have a more diverse gene pool than the others do, Foster hypothesized that damage to eelgrass roots increases the plant's rate of sexual reproduction; this, in turn, boosts genetic diversity, which benefits the meadows' health overall. Which finding, if true, would most directly undermine Foster's hypothesis? A) At some sites in the study, eelgrass meadows are found near otter populations that are small and have only recently been reintroduced. B) At several sites not included in the study, there are large, well-established sea otter populations but no eelgrass meadows. C) At several sites not included in the study, eelgrass meadows' health correlates negatively with the length of residence and size of otter populations. D) At some sites in the study, the health of plants unrelated to eelgrass correlates negatively with the length of residence and size of otter populations. 16 In the twentieth century, ethnographers made a concerted effort to collect Mexican American folklore, but they did not always agree about that folklore's origins. Scholars such as Aurelio Espinosa claimed that Mexican American folklore derived largely from the folklore of Spain, which ruled Mexico and what is now the southwestern United States from the sixteenth to early nineteenth centuries. Scholars such as Am�rico Paredes, by contrast, argued that while some Spanish influence is undeniable, Mexican American folklore is mainly the product of the ongoing interactions of various cultures in Mexico and the United States. Which finding, if true, would most directly support Paredes's argument?",
+          "options": {
+            "A": "The folklore that the ethnographers collected included several songs written in the form of a d�cima, a type of poem originating in late sixteenth-century Spain.",
+            "B": "Much of the folklore that the ethnographers collected had similar elements from region to region.",
+            "C": "Most of the folklore that the ethnographers collected was previously unknown to scholars.",
+            "D": "Most of the folklore that the ethnographers collected consisted of corridos--ballads about history and social life--of a clearly recent origin."
+          }
+        },
+        {
+          "n": 13,
+          "section": "READING_WRITING",
+          "stem": "17 Among social animals that care for their young, such as chickens, macaque monkeys, and humans, newborns appear to show an innate attraction to faces and face-like stimuli. Elisabetta Versace and her colleagues used an image of three black dots arranged in the shape of eyes and a nose or mouth to test whether this trait also occurs in Testudo tortoises, which live alone and do not engage in parental care. They found that tortoise hatchlings showed a significant preference for the image, suggesting that ______ Which choice most logically completes the text?",
+          "options": {
+            "A": "face-like stimuli are likely perceived as harmless by newborns of social species that practice parental care but as threatening by newborns of solitary species without parental care.",
+            "B": "researchers should not assume that an innate attraction to face-like stimuli is necessarily an adaptation related to social interaction or parental care.",
+            "C": "researchers can assume that the attraction to face-like stimuli that is seen in social species that practice parental care is learned rather than innate.",
+            "D": "newly hatched Testudo tortoises show a stronger preference for face-like stimuli than adult Testudo tortoises do."
+          }
+        },
+        {
+          "n": 14,
+          "section": "READING_WRITING",
+          "stem": "17 Among social animals that care for their young, such as chickens, macaque monkeys, and humans, newborns appear to show an innate attraction to faces and face-like stimuli. Elisabetta Versace and her colleagues used an image of three black dots arranged in the shape of eyes and a nose or mouth to test whether this trait also occurs in Testudo tortoises, which live alone and do not engage in parental care. They found that tortoise hatchlings showed a significant preference for the image, suggesting that ______ Which choice most logically completes the text? A) face-like stimuli are likely perceived as harmless by newborns of social species that practice parental care but as threatening by newborns of solitary species without parental care. B) researchers should not assume that an innate attraction to face-like stimuli is necessarily an adaptation related to social interaction or parental care. C) researchers can assume that the attraction to face-like stimuli that is seen in social species that practice parental care is learned rather than innate. D) newly hatched Testudo tortoises show a stronger preference for face-like stimuli than adult Testudo tortoises do. 18 Aptamers--synthetic DNA or RNA molecules that bind to target molecules--can be used to test for foodborne bacterial pathogens, though their specificity (the probability of returning a negative result in the absence of the focal pathogen) in real-world foods has been unclear. Sandeep Somvanshi et al. fabricated test paper incorporating aptamers targeting strain O157:H7 of the bacteria Escherichia coli; the paper shifts from pink to purple as the aptamers bind to target molecules. Somvanshi et al. tested the paper in store-bought pear juice they treated with E. coli O157:H7, other strains of E. coli, or other bacteria species. Following exposure, the paper from the O157:H7 test was purple while papers from the other tests were pink, suggesting that _______ Which choice most logically completes the text?",
+          "options": {
+            "A": "aptamer-based tests in real-world foods are more likely to show a high degree of specificity if the focal pathogen is E. coli O157:H7 than if the focal pathogen is another strain of E. coli or another species.",
+            "B": "uncertainty about the specificity of aptamer-based tests for pathogens in real-world foods may be due to the similarity between E. coli O157:H7 and other E. coli strains.",
+            "C": "the specificity of the tests in a real-world food was unaffected by the aptamers' tendency to bind to different strains of E. coli.",
+            "D": "the aptamers successfully bound to E. coli O157:H7 and the tests displayed a high degree of specificity in a real-world food."
+          }
+        },
+        {
+          "n": 15,
+          "section": "READING_WRITING",
+          "stem": "23 Sociologist Todd Gitlin co-opted the term \"recombinant,\" normally used in reference to genetic engineering, to describe serialized television shows of the 1980s. Gitlin's use of the term referenced TV studios' practice of repackaging successful narrative formulas as new _______ even shows that varied only slightly from other shows still attracted sizeable audiences. Which choice completes the text so that it conforms to the conventions of Standard English?",
+          "options": {
+            "A": "Some of the world's rail tunnels, including one tunnel that extends from Folkestone, England, to Coquelles, France, are longer than 30 miles.",
+            "B": "The Seikan Tunnel is roughly 33 miles long, while the slightly shorter Channel Tunnel is about 31 miles long.",
+            "C": "The Seikan Tunnel, which is roughly 33 miles long, connects the Japanese islands of Honshu and Hokkaido.",
+            "D": "Both the Seikan Tunnel, which is located in Japan, and the Channel Tunnel, which is located in Europe, are examples of rail tunnels."
+          }
+        },
+        {
+          "n": 16,
+          "section": "READING_WRITING",
+          "stem": "30 While researching a topic, a student has taken the following notes: � Pinnipeds, which include seals, sea lions, and walruses, live in and around water. � Pinnipeds are descended not from sea animals but from four-legged, land-dwelling carnivores. � Canadian paleobiologist Natalia Rybczynski recently found a fossil with four legs, webbed toes, and the skull and teeth of a seal. � Rybczynski refers to her rare find as a \"transitional fossil.\" � The fossil illustrates an early stage in the evolution of pinnipeds from their land-dwelling ancestors. The student wants to emphasize the fossil's significance. Which choice most effectively uses relevant information from the notes to accomplish this goal?",
+          "options": {
+            "A": "Canadian paleobiologist Natalia Rybczynski's fossil has the skull and teeth of a seal, which, like sea lions and walruses, is a pinniped.",
+            "B": "Pinnipeds are descended from four-legged, land-dwelling carnivores; a fossil that resembles both was recently found.",
+            "C": "Having four legs but the skull and teeth of a seal, the rare fossil illustrates an early stage in the evolution of pinnipeds from their land-dwelling ancestors.",
+            "D": "A \"transitional fossil\" was recently found by paleobiologist Natalia Rybczynski."
+          }
+        },
+        {
+          "n": 17,
+          "section": "READING_WRITING",
+          "stem": "30 While researching a topic, a student has taken the following notes: � Pinnipeds, which include seals, sea lions, and walruses, live in and around water. � Pinnipeds are descended not from sea animals but from four-legged, land-dwelling carnivores. � Canadian paleobiologist Natalia Rybczynski recently found a fossil with four legs, webbed toes, and the skull and teeth of a seal. � Rybczynski refers to her rare find as a \"transitional fossil.\" � The fossil illustrates an early stage in the evolution of pinnipeds from their land-dwelling ancestors. The student wants to emphasize the fossil's significance. Which choice most effectively uses relevant information from the notes to accomplish this goal? A) Canadian paleobiologist Natalia Rybczynski's fossil has the skull and teeth of a seal, which, like sea lions and walruses, is a pinniped. B) Pinnipeds are descended from four-legged, land-dwelling carnivores; a fossil that resembles both was recently found. C) Having four legs but the skull and teeth of a seal, the rare fossil illustrates an early stage in the evolution of pinnipeds from their land-dwelling ancestors. D) A \"transitional fossil\" was recently found by paleobiologist Natalia Rybczynski. 31 While researching a topic, a student has taken the following notes: � Physicist Muluneh Abebe was working on a garment suited for both warm and cold conditions. � He analyzed the emissivity, or ability to emit heat, of the materials he planned to use. � Abebe found that reflective metal fibers emitted almost no heat and had an emissivity of 0.02. � He found that silicon carbide fibers absorbed large amounts of heat and had an emissivity of 0.74. � The amount of heat a material absorbs is equal to the amount of heat it emits. The student wants to contrast the emissivity of reflective metal fibers with that of silicon carbide fibers. Which choice most effectively uses relevant information from the notes to accomplish this goal?",
+          "options": {
+            "A": "The ability of reflective metal fibers and silicon carbide fibers to emit heat was determined by an analysis of each material's emissivity.",
+            "B": "The amount of heat a material absorbs is equal to the amount it emits, as evidenced in Abebe's analyses.",
+            "C": "Though the reflective metal fibers and silicon carbide fibers had different rates of emissivity, Abebe planned to use both in a garment.",
+            "D": "Whereas the reflective metal fibers had an emissivity of just 0.02, the silicon carbide fibers absorbed large amounts of heat, resulting in an emissivity of 0.74."
+          }
+        },
+        {
+          "n": 18,
+          "section": "READING_WRITING",
+          "stem": "32 While researching a topic, a student has taken the following notes: � In 2020, theater students at Radford and Virginia Tech chose an interactive, online format to present a play about woman suffrage activists. � Their \"Women and the Vote\" website featured an interactive digital drawing of a Victorian-style house. � Audiences were asked to focus on a room of their choice and select from that room an artifact related to the suffrage movement. � One click took them to video clips, songs, artwork, and texts associated with the artifact. � The play was popular with audiences because the format allowed them to control the experience. The student wants to explain an advantage of the \"Women and the Vote\" format. Which choice most effectively uses relevant information from the notes to accomplish this goal?",
+          "options": {
+            "A": "\"Women and the Vote\" featured a drawing of a Victorian-style house with several rooms, each containing suffrage artifacts.",
+            "B": "To access video clips, songs, artwork, and texts, audiences had to first click on an artifact.",
+            "C": "The \"Women and the Vote\" format appealed to audiences because it allowed them to control the experience.",
+            "D": "Using an interactive format, theater students at Radford and Virginia Tech created \"Women and the Vote,\" a play about woman suffrage activists."
+          }
+        },
+        {
+          "n": 19,
+          "section": "READING_WRITING",
+          "stem": "32 While researching a topic, a student has taken the following notes: � In 2020, theater students at Radford and Virginia Tech chose an interactive, online format to present a play about woman suffrage activists. � Their \"Women and the Vote\" website featured an interactive digital drawing of a Victorian-style house. � Audiences were asked to focus on a room of their choice and select from that room an artifact related to the suffrage movement. � One click took them to video clips, songs, artwork, and texts associated with the artifact. � The play was popular with audiences because the format allowed them to control the experience. The student wants to explain an advantage of the \"Women and the Vote\" format. Which choice most effectively uses relevant information from the notes to accomplish this goal? A) \"Women and the Vote\" featured a drawing of a Victorian-style house with several rooms, each containing suffrage artifacts. B) To access video clips, songs, artwork, and texts, audiences had to first click on an artifact. C) The \"Women and the Vote\" format appealed to audiences because it allowed them to control the experience. D) Using an interactive format, theater students at Radford and Virginia Tech created \"Women and the Vote,\" a play about woman suffrage activists. 33 While researching a topic, a student has taken the following notes: � Ducklings expend up to 62.8% less energy when swimming in a line behind their mother than when swimming alone. � The physics behind this energy savings hasn't always been well understood. � Naval architect Zhiming Yuan used computer simulations to study the effect of the mother duck's wake. � The study revealed that ducklings are pushed in a forward direction by the wake's waves. � Yuan determined this push reduces the effect of wave drag on the ducklings by 158%. The student wants to present the study and its methodology. Which choice most effectively uses relevant information from the notes to accomplish this goal?",
+          "options": {
+            "A": "A study revealed that ducklings, which expend up to 62.8% less energy when swimming in a line behind their mother, also experience 158% less drag.",
+            "B": "Seeking to understand how ducklings swimming in a line behind their mother save energy, Zhiming Yuan used computer simulations to study the effect of the mother duck's wake.",
+            "C": "Zhiming Yuan studied the physics behind the fact that by being pushed in a forward direction by waves, ducklings save energy.",
+            "D": "Naval architect Zhiming Yuan discovered that ducklings are pushed in a forward direction by the waves of their mother's wake, reducing the effect of drag by 158%."
+          }
+        }
+      ]
+    },
+    {
+      "section": "MATH",
+      "module": 1,
+      "question_count": 3,
+      "questions": [
+        {
+          "n": 1,
+          "section": "MATH",
+          "stem": "1 The lengths of two sides of a triangle are 4 centimeters and 6 centimeters. If the perimeter of the triangle is 18 centimeters, what is the length, in centimeters, of the third side of this triangle?",
+          "options": {
+            "A": "4",
+            "B": "6",
+            "C": "20",
+            "D": "24"
+          }
+        },
+        {
+          "n": 2,
+          "section": "MATH",
+          "stem": "7 A student council group is selling school posters for a fundraiser. They use the function p(x) = 5x - 220 to determine their profit p(x), in dollars, for selling x school posters. In order to earn a profit of $900, how many school posters must they sell? 9 John paid a total of $165 for a microscope by making a down payment of $37 plus p monthly payments of $16 each. Which of the following equations represents this situation?",
+          "options": {
+            "A": "y = 57x + p",
+            "D": "3w + 5r = 112",
+            "B": "y = px + 57",
+            "C": "y = 57px"
+          }
+        },
+        {
+          "n": 3,
+          "section": "MATH",
+          "stem": "11 A company opens an account with an initial balance of $36,100.00. The account earns interest, and no additional deposits or withdrawals are made. The account balance is given by an exponential function A, where A(t) is the account balance, in dollars, t years after the account is opened. The account balance after 13 years is $68,071.93. Which equation could define A ? A) A(t) = 36,100.00(1.05)t B) A(t) = 31,971.93(1.05)t C) A(t) = 31,971.93(0.05)t D) A(t) = 36,100.00(0.05)t 12 13 y = -2x 3x + y = 40 The solution to the given system of equations is (x, y). What is the value of x ? 14 Data value Frequency 6 3 7 3 8 8 9 8 10 9 11 11 12 9 13 0 14 6 The frequency table summarizes the 57 data values in a data set. What is the maximum data value in the data set? Note: Figure not drawn to scale. The circle shown has center O, circumference 144 , and diameters PR and QS. The length of arc PS is twice the length of arc PQ. What is the length of arc QR ?",
+          "options": {
+            "A": "x",
+            "B": "x",
+            "C": "x",
+            "D": "x"
+          }
+        }
+      ]
+    },
+    {
+      "section": "MATH",
+      "module": 2,
+      "question_count": 5,
+      "questions": [
+        {
+          "n": 1,
+          "section": "MATH",
+          "stem": "9 x + 7 = 10 (x + 7)2 = y Which ordered pair (x, y) is a solution to the given system of equations? A) (3, 100) B) (3, 3) C) (3, 10) D) (3, 70) 10 The function f is defined by f (x) = 7x - 84. What is the x-intercept of the graph of y = f (x) in the xy-plane? A) (-12, 0) B) (-7, 0) C) (7, 0) D) (12, 0) 11 Time (years) Total amount (dollars) 0 604.00 1 606.42 2 608.84 Rosa opened a savings account at a bank. The table shows the exponential relationship between the time t, in years, since Rosa opened the account and the total amount n, in dollars, in the account. If Rosa made no additional deposits or withdrawals, which of the following equations best represents the relationship between t and n ?",
+          "options": {
+            "A": "n = (1 + 604)t",
+            "B": "n = (1 + 0.004)t",
+            "C": "n = 604(1 + 0.004)t",
+            "D": "n = 0.004(1 + 604)t"
+          }
+        },
+        {
+          "n": 2,
+          "section": "MATH",
+          "stem": "9 x + 7 = 10 (x + 7)2 = y Which ordered pair (x, y) is a solution to the given system of equations? A) (3, 100) B) (3, 3) C) (3, 10) D) (3, 70) 10 The function f is defined by f (x) = 7x - 84. What is the x-intercept of the graph of y = f (x) in the xy-plane? A) (-12, 0) B) (-7, 0) C) (7, 0) D) (12, 0) 11 Time (years) Total amount (dollars) 0 604.00 1 606.42 2 608.84 Rosa opened a savings account at a bank. The table shows the exponential relationship between the time t, in years, since Rosa opened the account and the total amount n, in dollars, in the account. If Rosa made no additional deposits or withdrawals, which of the following equations best represents the relationship between t and n ? A) n = (1 + 604)t B) n = (1 + 0.004)t C) n = 604(1 + 0.004)t D) n = 0.004(1 + 604)t 12 w(t) = 300 - 4t The function w models the volume of liquid, in milliliters, in a container t seconds after it begins draining from a hole at the bottom. According to the model, what is the predicted volume, in milliliters, draining from the container each second?",
+          "options": {
+            "A": "The standard deviation of the number of glue sticks brought in by each student for class A is less than the standard deviation of the number of glue sticks brought in by each student for class B.",
+            "B": "The standard deviation of the number of glue sticks brought in by each student for class A is equal to the standard deviation of the number of glue sticks brought in by each student for class B.",
+            "C": "The standard deviation of the number of glue sticks brought in by each student for class A is greater than the standard deviation of the number of glue sticks brought in by each student for class B.",
+            "D": "There is not enough information to compare these standard deviations."
+          }
+        },
+        {
+          "n": 3,
+          "section": "MATH",
+          "stem": "18 m(t) = �0.0274 t 7 2 + 7.3873 t 7 + 75.032 The function m gives the predicted body mass m(t), in kilograms (kg), of a certain animal t days after it was born in a wildlife reserve, where t 390. Which of the following is the best interpretation of the statement \"m(330) is approximately equal to 362\" in this context?",
+          "options": {
+            "A": "The predicted body mass of the animal was approximately 330 kg 362 days after it was born.",
+            "B": "The predicted body mass of the animal was approximately 362 kg 330 days after it was born.",
+            "C": "The predicted body mass of the animal was",
+            "D": "The predicted body mass of the animal was"
+          }
+        },
+        {
+          "n": 4,
+          "section": "MATH",
+          "stem": "18 m(t) = �0.0274 t 7 2 + 7.3873 t 7 + 75.032 The function m gives the predicted body mass m(t), in kilograms (kg), of a certain animal t days after it was born in a wildlife reserve, where t 390. Which of the following is the best interpretation of the statement \"m(330) is approximately equal to 362\" in this context? A) The predicted body mass of the animal was approximately 330 kg 362 days after it was born. B) The predicted body mass of the animal was approximately 362 kg 330 days after it was born. C) The predicted body mass of the animal was 330 approximately 362 kg 7 days after it was born. D) The predicted body mass of the animal was 330 approximately 7 kg 362 days after it was born. 20 t The function f (t) = 60,000(2)410 gives the number of bacteria in a population t minutes after an initial observation. How much time, in minutes, does it take for the number of bacteria in the population to double? 21 The function f is defined by f (x) = ax + b, where a and b are constants and a > 0. In the xy-plane, the graph of y = f (x) has a y-intercept at (0, -25) and passes through the point (2, 23). What is the value of a+b ? 19 Triangle XYZ is similar to triangle RST such that X, Y, and Z correspond to R, S, and T, respectively. The measure of Z is 20� and 2XY = RS. What is the measure of T ?",
+          "options": {
+            "A": "x",
+            "B": "x",
+            "C": "x",
+            "D": "x"
+          }
+        },
+        {
+          "n": 5,
+          "section": "MATH",
+          "stem": "22 y > 13x - 18 For which of the following tables are all the values of x and their corresponding values of y solutions to the given inequality? A) x y 3 21 5 47 8 86 B) x y 3 26 5 42 8 86 C) x y 3 16 5 42 8 81 D) x y 3 26 5 52 8 91 23 A certain town has an area of 4.36 square miles. What is the area, in square yards, of this town? (1 mile = 1,760 yards)",
+          "options": {
+            "A": "20 20 2",
+            "B": "2",
+            "C": "20 2",
+            "D": "40"
+          }
+        }
+      ]
+    },
+    {
+      "section": "READING_WRITING",
+      "module": 1,
+      "question_count": 0,
+      "questions": []
+    },
+    {
+      "section": "MATH",
+      "module": 2,
+      "question_count": 0,
+      "questions": []
+    },
+    {
+      "section": "MATH",
+      "module": 1,
+      "question_count": 0,
+      "questions": []
+    }
+  ]
+}
