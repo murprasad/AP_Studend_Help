@@ -11,9 +11,17 @@
 import { readFileSync, existsSync, readdirSync } from "fs";
 import path from "path";
 
+// 2026-06-03 — Extended to support ACT corpus sections.
+export type CorpusSection =
+  | "READING_WRITING"   // SAT/PSAT R&W
+  | "MATH"              // SAT/PSAT/ACT Math (SAT and ACT pool together for now)
+  | "ACT_ENGLISH"
+  | "ACT_READING"
+  | "ACT_SCIENCE";
+
 export interface CbCorpusQuestion {
   n: number;
-  section: "READING_WRITING" | "MATH";
+  section: CorpusSection;
   module?: number;
   stem: string;
   options: Record<string, string>;
@@ -22,7 +30,7 @@ export interface CbCorpusQuestion {
 }
 
 interface CbCorpusModule {
-  section: "READING_WRITING" | "MATH";
+  section: CorpusSection;
   module: number;
   questions: CbCorpusQuestion[];
 }
@@ -59,11 +67,18 @@ export function loadCbCorpus(): CbCorpusQuestion[] {
 }
 
 /**
- * Pick N random CB-corpus questions matching the given section.
+ * Pick N random corpus questions matching the given section.
  * Used as few-shot anchors in generator prompts.
+ *
+ * Section dispatch:
+ *   MATH                → SAT Math + ACT Math corpus
+ *   READING_WRITING     → SAT R&W corpus
+ *   ACT_ENGLISH         → ACT English passage-based corpus
+ *   ACT_READING         → ACT Reading passage-based corpus
+ *   ACT_SCIENCE         → ACT Science data-display corpus
  */
 export function pickAnchorsForSection(
-  section: "READING_WRITING" | "MATH",
+  section: CorpusSection,
   n = 3,
 ): CbCorpusQuestion[] {
   const pool = loadCbCorpus().filter((q) => q.section === section);
@@ -76,7 +91,7 @@ export function pickAnchorsForSection(
  * Stylometric distribution stats for a section. Computed from corpus once.
  */
 export interface SectionStats {
-  section: "READING_WRITING" | "MATH";
+  section: CorpusSection;
   sampleSize: number;
   stemWordCount: { mean: number; sd: number };
   optionWordCount: { mean: number; sd: number };
@@ -97,7 +112,7 @@ function meanSd(nums: number[]): { mean: number; sd: number } {
   return { mean, sd: Math.sqrt(variance) };
 }
 
-export function getSectionStats(section: "READING_WRITING" | "MATH"): SectionStats {
+export function getSectionStats(section: CorpusSection): SectionStats {
   if (!cachedStats) cachedStats = new Map();
   const cached = cachedStats.get(section);
   if (cached) return cached;
@@ -153,7 +168,7 @@ export interface StylometricScore {
 
 export function scoreAgainstCb(
   candidate: { stem: string; options: string[] | Record<string, string> | string; correctAnswer?: string },
-  section: "READING_WRITING" | "MATH",
+  section: CorpusSection,
 ): StylometricScore {
   const stats = getSectionStats(section);
   const stemWords = wordCount(candidate.stem ?? "");

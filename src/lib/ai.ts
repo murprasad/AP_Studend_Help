@@ -669,17 +669,20 @@ export async function generateQuestion(
   if (useSatCorpus && !quickMode) {
     try {
       const { pickAnchorsForSection, formatAnchorForPrompt } = await import("./cb-corpus");
-      // Section mapping: Math courses → MATH corpus; everything else → READING_WRITING.
-      // ACT corpus not yet parsed (task #34) — use SAT corpus as best-available proxy
-      // until ACT corpus is parsed (then add section dispatch for ACT_*).
-      const section: "MATH" | "READING_WRITING" =
-        courseStr === "SAT_MATH" || courseStr === "PSAT_MATH" || courseStr === "ACT_MATH"
-          ? "MATH"
-          : "READING_WRITING";
-      const anchors = pickAnchorsForSection(section, 2);
+      // Section dispatch — ACT now has its own parsed corpus (task #34
+      // completed 2026-06-03 for ACT_ENGLISH/READING/SCIENCE; ACT_MATH
+      // still falls through to SAT MATH corpus until parser updates).
+      const section =
+        courseStr === "ACT_ENGLISH"   ? "ACT_ENGLISH"
+        : courseStr === "ACT_READING" ? "ACT_READING"
+        : courseStr === "ACT_SCIENCE" ? "ACT_SCIENCE"
+        : courseStr === "SAT_MATH" || courseStr === "PSAT_MATH" || courseStr === "ACT_MATH" ? "MATH"
+        : "READING_WRITING";
+      const anchors = pickAnchorsForSection(section as "MATH" | "READING_WRITING" | "ACT_ENGLISH" | "ACT_READING" | "ACT_SCIENCE", 2);
       if (anchors.length > 0) {
+        const sourceLabel = section.startsWith("ACT_") ? "REAL OFFICIAL ACT" : "REAL CB-SAT";
         const anchorText = anchors.map((a, i) => formatAnchorForPrompt(a, i + 1)).join("\n\n");
-        cbCorpusCalibrationSection = `\n\nREAL CB-SAT REFERENCE QUESTIONS (match this style + rigor + framing):\n\n${anchorText}\n\nGenerate a DIFFERENT question at the SAME quality and CB-style level. Do NOT copy these scenarios or wording.`;
+        cbCorpusCalibrationSection = `\n\n${sourceLabel} REFERENCE QUESTIONS (match this style + rigor + framing):\n\n${anchorText}\n\nGenerate a DIFFERENT question at the SAME quality and ${section.startsWith("ACT_") ? "ACT" : "CB"}-style level. Do NOT copy these scenarios or wording.`;
       }
     } catch {
       // cb-corpus module not available or empty — continue without anchors
@@ -801,17 +804,19 @@ export async function generateQuestion(
         if (useSatCorpus) {
           try {
             const { scoreAgainstCb } = await import("./cb-corpus");
-            const section: "MATH" | "READING_WRITING" =
-              courseStr === "SAT_MATH" || courseStr === "PSAT_MATH" || courseStr === "ACT_MATH"
-                ? "MATH"
-                : "READING_WRITING";
+            const section =
+              courseStr === "ACT_ENGLISH"   ? "ACT_ENGLISH"
+              : courseStr === "ACT_READING" ? "ACT_READING"
+              : courseStr === "ACT_SCIENCE" ? "ACT_SCIENCE"
+              : courseStr === "SAT_MATH" || courseStr === "PSAT_MATH" || courseStr === "ACT_MATH" ? "MATH"
+              : "READING_WRITING";
             const styloScore = scoreAgainstCb(
               {
                 stem: qtStr,
                 options: opts as string[],
                 correctAnswer: String(candidate.correctAnswer),
               },
-              section,
+              section as "MATH" | "READING_WRITING" | "ACT_ENGLISH" | "ACT_READING" | "ACT_SCIENCE",
             );
             if (!styloScore.overall.pass) {
               lastRejectionReason = `CB-stylometric: ${styloScore.overall.reasons.join("; ")}`;
