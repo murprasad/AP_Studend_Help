@@ -24,27 +24,32 @@ interface FullTest {
   qCount: number;
 }
 
+// 2026-06-03 — Domain language fact-checked against CB official source
+// (https://satsuite.collegeboard.org/sat/whats-on-the-test/math/overview).
+// CB publishes RANGES, not exact percentages: Algebra 13-15, Advanced Math
+// 13-15, PSDA 5-7, Geometry & Trig 5-7. Using CB's range phrasing directly
+// is more accurate than any single computed percentage.
 const SAT_TESTS: FullTest[] = [
   {
     id: 1,
     label: "Full Practice Test 1",
     status: "available",
     description:
-      "Two modules of 22 questions each, drawn from our CB-aligned bank in the official domain blueprint (32% Algebra · 32% Advanced Math · 13.5% PSDA · 13.5% Geometry & Trig).",
+      "Two modules of 22 questions each, mixing multiple-choice and student-produced response (SPR) items, aligned to CB's domain ranges (13-15 Algebra · 13-15 Advanced Math · 5-7 Problem-Solving and Data Analysis · 5-7 Geometry and Trigonometry).",
     qCount: 44,
   },
   {
     id: 2,
     label: "Full Practice Test 2",
     status: "available",
-    description: "Fresh 44-question set with the same CB blueprint. Use as your second pass after Test 1.",
+    description: "Fresh 44-question set with the same CB-aligned blueprint and MCQ + SPR mix. Use as your second pass after Test 1.",
     qCount: 44,
   },
   {
     id: 3,
     label: "Full Practice Test 3",
     status: "available",
-    description: "Third 44-question set, same blueprint. Ideal for a final pre-test self-check.",
+    description: "Third 44-question set, same blueprint and MCQ + SPR mix. Ideal for a final pre-test self-check.",
     qCount: 44,
   },
 ];
@@ -111,9 +116,14 @@ export default function FullPracticeTestPage() {
             Full-length practice tests
           </h1>
           <p className="text-[15px] text-slate-600 mt-3 leading-relaxed max-w-2xl">
+            {/* 2026-06-03 — Wording softened: "mirrors the official CB
+                experience" → "designed to closely replicate the Digital SAT
+                testing experience" for trademark / brand-safety, and
+                "official timing" → "SAT-style timing". CB structural facts
+                stay (44 Qs, 2 modules, Module 2 routing, 200-800). */}
             {isAct
-              ? "Take a full-length ACT section mock that mirrors the official ACT experience: official timing, 4-option multiple choice (5-option for Math), and 1–36 scaled scoring."
-              : `Take a full, two-module ${isSat ? "SAT" : "PSAT"} mock that mirrors the official CB experience: adaptive Module 2 routing, official timing, Desmos calculator, and 200–800 scaled scoring.`}
+              ? "Take a full-length ACT section practice test designed to closely replicate the Digital ACT testing experience: SAT-style timing, 4-option multiple choice (5-option for Math), and 1–36 scaled scoring."
+              : `Take a full, two-module ${isSat ? "Digital SAT" : "PSAT"} practice test designed to closely replicate the official testing experience: adaptive Module 2 routing, SAT-style timing, built-in Desmos calculator, and 200–800 scaled scoring.`}
           </p>
         </div>
 
@@ -185,29 +195,40 @@ export default function FullPracticeTestPage() {
           })}
         </div>
 
-        {/* What to expect — CB-style minimal expectations callout */}
+        {/* What to expect — CB-grounded expectations. Reflects: 2 modules,
+            MCQ + SPR mix, escalating difficulty within modules (CB confirmed),
+            Module 1 → Module 2 difficulty + scoring-ceiling routing, Desmos,
+            inline per-Q explanations, 200-800 scaled scoring. */}
         <div className="rounded-lg border border-slate-200 bg-slate-50 p-5">
           <p className="text-[11px] uppercase tracking-[0.14em] text-slate-500 font-semibold mb-3">What to expect</p>
           <ul className="text-[13.5px] text-slate-700 space-y-2 leading-relaxed">
             <li className="flex gap-2">
               <span className="text-slate-400 flex-shrink-0 mt-0.5">·</span>
-              <span>Two modules per section, separated by a 10-minute break (CB-spec)</span>
+              <span>Two adaptive modules of 22 questions each, separated by a 10-minute break</span>
             </li>
             <li className="flex gap-2">
               <span className="text-slate-400 flex-shrink-0 mt-0.5">·</span>
-              <span>Module 1 performance determines Module 2 difficulty (adaptive routing)</span>
+              <span>Mix of multiple-choice and student-produced response (SPR) items, like the real test</span>
             </li>
             <li className="flex gap-2">
               <span className="text-slate-400 flex-shrink-0 mt-0.5">·</span>
-              <span>Built-in Desmos graphing calculator on Math (available on every question)</span>
+              <span>Question difficulty escalates within each module (easier → harder)</span>
             </li>
             <li className="flex gap-2">
               <span className="text-slate-400 flex-shrink-0 mt-0.5">·</span>
-              <span>Per-option distractor explanations on wrong answers (no Sage redirect)</span>
+              <span>Module 1 performance influences Module 2 difficulty and scoring ceiling</span>
             </li>
             <li className="flex gap-2">
               <span className="text-slate-400 flex-shrink-0 mt-0.5">·</span>
-              <span>200–800 scaled score on completion</span>
+              <span>Built-in Desmos graphing calculator available on every Math question</span>
+            </li>
+            <li className="flex gap-2">
+              <span className="text-slate-400 flex-shrink-0 mt-0.5">·</span>
+              <span>Per-option distractor explanations on wrong answers — review every miss inline</span>
+            </li>
+            <li className="flex gap-2">
+              <span className="text-slate-400 flex-shrink-0 mt-0.5">·</span>
+              <span>SAT-style 200–800 scaled score on completion</span>
             </li>
           </ul>
         </div>
