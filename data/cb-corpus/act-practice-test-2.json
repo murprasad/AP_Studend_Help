@@ -1,0 +1,1257 @@
+{
+  "test": "ACT Practice Test 2 (2025 official ACT release)",
+  "source_pdf": "data/raw/act/ACT-Test-Prep-Practice-Test-2.pdf",
+  "source_url": "https://www.act.org",
+  "license": "ACT practice tests are made available for student preparation use",
+  "accessed": "2026-06-03",
+  "total_questions_parsed": 102,
+  "modules": [
+    {
+      "section": "ACT_MATH",
+      "module": 1,
+      "questions": []
+    },
+    {
+      "section": "ACT_ENGLISH",
+      "module": 1,
+      "questions": [
+        {
+          "n": 1,
+          "questionNumber": 1,
+          "section": "ACT_ENGLISH",
+          "stem": "Which choice is least redundant in context?",
+          "options": {
+            "A": "No Change",
+            "B": "multiday tournament in Mississippi",
+            "C": "annual multiday tournament",
+            "D": "multiday tournament"
+          }
+        },
+        {
+          "n": 2,
+          "questionNumber": 2,
+          "section": "ACT_ENGLISH",
+          "stem": "Which choice makes the sentence most grammatically acceptable?",
+          "options": {
+            "F": "No Change",
+            "G": "towa, (ball),",
+            "H": "towa (ball)",
+            "J": "towa, ball"
+          }
+        },
+        {
+          "n": 3,
+          "questionNumber": 4,
+          "section": "ACT_ENGLISH",
+          "stem": "Which choice is least redundant in context?",
+          "options": {
+            "F": "No Change",
+            "G": "The ball that players use is called the towa.",
+            "H": "The posts on the field are twelve feet high.",
+            "J": "Delete the underlined portion."
+          }
+        },
+        {
+          "n": 4,
+          "questionNumber": 6,
+          "section": "ACT_ENGLISH",
+          "stem": "Which choice makes the sentence most grammatically acceptable?",
+          "options": {
+            "F": "No Change",
+            "G": "has been hardly any",
+            "H": "were almost no",
+            "J": "was hardly any"
+          }
+        },
+        {
+          "n": 5,
+          "questionNumber": 7,
+          "section": "ACT_ENGLISH",
+          "stem": "Given that all the choices are accurate, which one most clearly uses specific details to support the sentence's claim about stickball playing fields?",
+          "options": {
+            "A": "No Change",
+            "B": "an important factor in how the games were played.",
+            "C": "from one hundred feet to five miles.",
+            "D": "which affected spectators."
+          }
+        },
+        {
+          "n": 6,
+          "questionNumber": 9,
+          "section": "ACT_ENGLISH",
+          "stem": "The writer wants to add the following sentence to the essay: Players cannot touch the ball with their hands. The sentence would most logically be placed at:",
+          "options": {
+            "A": "Point A in Paragraph 1.",
+            "B": "Point B in Paragraph 2.",
+            "C": "Point C in Paragraph 4.",
+            "D": "Point D in Paragraph 5."
+          }
+        },
+        {
+          "n": 7,
+          "questionNumber": 11,
+          "section": "ACT_ENGLISH",
+          "stem": "Which choice makes the sentence most grammatically acceptable?",
+          "options": {
+            "A": "No Change",
+            "B": "district, Polish architect, Jakub Szczsny",
+            "C": "district Polish architect, Jakub Szczsny,",
+            "D": "district Polish architect Jakub Szczsny"
+          }
+        },
+        {
+          "n": 8,
+          "questionNumber": 12,
+          "section": "ACT_ENGLISH",
+          "stem": "Given that all the choices are accurate, which one sets up a direct contrast regarding the age of the two buildings?",
+          "options": {
+            "F": "No Change",
+            "G": "a pre�World War II brick rooming house,",
+            "H": "located on the corner of Zelazna Street,",
+            "J": "being used as a warehouse,"
+          }
+        },
+        {
+          "n": 9,
+          "questionNumber": 14,
+          "section": "ACT_ENGLISH",
+          "stem": "Which choice most precisely conveys the narrowness of the space?",
+          "options": {
+            "F": "No Change",
+            "G": "sample",
+            "H": "sliver",
+            "J": "speck"
+          }
+        },
+        {
+          "n": 10,
+          "questionNumber": 17,
+          "section": "ACT_ENGLISH",
+          "stem": "Which sequence of sentences presents the writer's argument most logically?",
+          "options": {
+            "A": "No Change",
+            "B": "1, 3, 2",
+            "C": "2, 3, 1",
+            "D": "3, 1, 2"
+          }
+        },
+        {
+          "n": 11,
+          "questionNumber": 18,
+          "section": "ACT_ENGLISH",
+          "stem": "Which choice makes the sentence most grammatically acceptable?",
+          "options": {
+            "F": "No Change",
+            "G": "reach, into the register's",
+            "H": "reach into the registers",
+            "J": "reach into the registers'"
+          }
+        },
+        {
+          "n": 12,
+          "questionNumber": 20,
+          "section": "ACT_ENGLISH",
+          "stem": "If the writer were to delete the underlined portion (adjusting the punctuation as needed), the paragraph would primarily lose:",
+          "options": {
+            "F": "a suggestion that many proponents of keeping the penny in circulation may be motivated by self-interest.",
+            "G": "an indication of the amount of money made by zinc miners when the penny is in circulation.",
+            "H": "an explanation of how zinc mining affects the prices that consumers pay for goods.",
+            "J": "a summary of the argument made by many proponents of pennies for keeping the penny in circulation."
+          }
+        },
+        {
+          "n": 13,
+          "questionNumber": 22,
+          "section": "ACT_ENGLISH",
+          "stem": "Which choice makes the sentence most grammatically acceptable?",
+          "options": {
+            "F": "No Change",
+            "G": "it's a wash; overall, consumers pay no more or no less than",
+            "H": "it's a wash; overall, consumers pay no more or no less then",
+            "J": "its a wash; overall, consumers pay no more or no less than"
+          }
+        },
+        {
+          "n": 14,
+          "questionNumber": 23,
+          "section": "ACT_ENGLISH",
+          "stem": "Which choice most effectively maintains the essay's tone?",
+          "options": {
+            "A": "No Change",
+            "B": "have been reluctant to act.",
+            "C": "haven't closed the deal.",
+            "D": "haven't ratified a thing."
+          }
+        },
+        {
+          "n": 15,
+          "questionNumber": 24,
+          "section": "ACT_ENGLISH",
+          "stem": "Which choice is clearest and most precise in context?",
+          "options": {
+            "F": "No Change",
+            "G": "negligible.",
+            "H": "remote.",
+            "J": "invalid."
+          }
+        },
+        {
+          "n": 16,
+          "questionNumber": 26,
+          "section": "ACT_ENGLISH",
+          "stem": "Which transition word, if any, is most logical in context?",
+          "options": {
+            "F": "No Change",
+            "G": "team, nevertheless,",
+            "H": "team, however,",
+            "J": "team"
+          }
+        },
+        {
+          "n": 17,
+          "questionNumber": 27,
+          "section": "ACT_ENGLISH",
+          "stem": "Given that all the choices are accurate, which one most effectively leads the reader from the preceding sentence to the information that follows?",
+          "options": {
+            "A": "No Change",
+            "B": "Thanks to experience she'd gained on a formal archaeological land dig,",
+            "C": "As one who rarely traveled without her trusty oxygen tank,",
+            "D": "With an interest in the performing arts,"
+          }
+        },
+        {
+          "n": 18,
+          "questionNumber": 28,
+          "section": "ACT_ENGLISH",
+          "stem": "Which choice makes the sentence most grammatically acceptable?",
+          "options": {
+            "F": "No Change",
+            "G": "their",
+            "H": "it's",
+            "J": "its"
+          }
+        },
+        {
+          "n": 19,
+          "questionNumber": 30,
+          "section": "ACT_ENGLISH",
+          "stem": "Which choice is least redundant in context?",
+          "options": {
+            "F": "No Change",
+            "G": "excavation of the 2,200-year-old warship",
+            "H": "excavation off the coast of Sicily",
+            "J": "excavation, which began in 1971,"
+          }
+        },
+        {
+          "n": 20,
+          "questionNumber": 31,
+          "section": "ACT_ENGLISH",
+          "stem": "Which choice makes the sentence most grammatically acceptable?",
+          "options": {
+            "A": "No Change",
+            "B": "with Frost's team recovering",
+            "C": "Frost's team recovering",
+            "D": "Frost's team recovered"
+          }
+        },
+        {
+          "n": 21,
+          "questionNumber": 32,
+          "section": "ACT_ENGLISH",
+          "stem": "Which choice makes the sentence most grammatically acceptable?",
+          "options": {
+            "F": "No Change",
+            "G": "was ready to be",
+            "H": "were",
+            "J": "was"
+          }
+        },
+        {
+          "n": 22,
+          "questionNumber": 34,
+          "section": "ACT_ENGLISH",
+          "stem": "The writer is considering adding the following sentence to the essay: A member of the first civilian diving club in the world, Frost was fond of saying that \"time spent on the surface is time wasted.\" If the writer were to add this sentence, it would most logically be placed at:",
+          "options": {
+            "F": "Point A in Paragraph 1.",
+            "G": "Point B in Paragraph 2.",
+            "H": "Point C in Paragraph 2.",
+            "J": "Point D in Paragraph 3."
+          }
+        },
+        {
+          "n": 23,
+          "questionNumber": 36,
+          "section": "ACT_ENGLISH",
+          "stem": "Which choice makes the sentence most grammatically acceptable?",
+          "options": {
+            "F": "No Change",
+            "G": "astronomer, peering through,",
+            "H": "astronomer: peering through",
+            "J": "astronomer peering through,"
+          }
+        },
+        {
+          "n": 24,
+          "questionNumber": 37,
+          "section": "ACT_ENGLISH",
+          "stem": "Which choice makes the sentence most grammatically acceptable?",
+          "options": {
+            "A": "No Change",
+            "B": "collapse to form stars.",
+            "C": "collapse, stars form.",
+            "D": "collapse and form stars."
+          }
+        },
+        {
+          "n": 25,
+          "questionNumber": 38,
+          "section": "ACT_ENGLISH",
+          "stem": "Which choice makes the sentence most grammatically acceptable?",
+          "options": {
+            "F": "No Change",
+            "G": "nebula is home to thousands of young stars, and",
+            "H": "nebula, home to thousands of young stars, and",
+            "J": "nebula, home to thousands of young stars,"
+          }
+        },
+        {
+          "n": 26,
+          "questionNumber": 39,
+          "section": "ACT_ENGLISH",
+          "stem": "The writer wants to add the following sentence to the preceding paragraph: Located 1,300 light-years from Earth, the nebula is a massive cloud of gas and dust. This sentence would most logically be placed at:",
+          "options": {
+            "A": "Point A.",
+            "B": "Point B.",
+            "C": "Point C.",
+            "D": ""
+          }
+        },
+        {
+          "n": 27,
+          "questionNumber": 40,
+          "section": "ACT_ENGLISH",
+          "stem": "Which transition word is most logical in context?",
+          "options": {
+            "F": "No Change",
+            "G": "Similarly,",
+            "H": "Besides,",
+            "J": "So,"
+          }
+        },
+        {
+          "n": 28,
+          "questionNumber": 41,
+          "section": "ACT_ENGLISH",
+          "stem": "The writer is considering deleting the preceding sentence. Should the sentence be kept or deleted?",
+          "options": {
+            "A": "Kept, because it elaborates on why the narrator is capable of using averted vision when looking at the night sky.",
+            "B": "Kept, because it explains the principle that allowed the narrator to see the nebula more clearly.",
+            "C": "Deleted, because it adds a level of technical detail that is inappropriate for the tone of the essay.",
+            "D": "Deleted, because it digresses from the main point of the paragraph."
+          }
+        },
+        {
+          "n": 29,
+          "questionNumber": 42,
+          "section": "ACT_ENGLISH",
+          "stem": "Which choice is clearest and most precise in context?",
+          "options": {
+            "F": "No Change",
+            "G": "emanated",
+            "H": "emulated",
+            "J": "eliminated"
+          }
+        },
+        {
+          "n": 30,
+          "questionNumber": 43,
+          "section": "ACT_ENGLISH",
+          "stem": "Which choice makes the sentence most grammatically acceptable?",
+          "options": {
+            "A": "No Change",
+            "B": "bird's eggs",
+            "C": "birds eggs",
+            "D": "bird eggs'"
+          }
+        },
+        {
+          "n": 31,
+          "questionNumber": 46,
+          "section": "ACT_ENGLISH",
+          "stem": "Which choice makes the sentence most grammatically acceptable?",
+          "options": {
+            "F": "No Change",
+            "G": "Pittsburgh, resident, Eric Singer,",
+            "H": "Pittsburgh resident, Eric Singer",
+            "J": "Pittsburgh resident Eric Singer"
+          }
+        },
+        {
+          "n": 32,
+          "questionNumber": 48,
+          "section": "ACT_ENGLISH",
+          "stem": "Which choice most effectively maintains the essay's tone?",
+          "options": {
+            "F": "No Change",
+            "G": "play an entire song--wow.",
+            "H": "play a whole entire song!",
+            "J": "play an entire song."
+          }
+        },
+        {
+          "n": 33,
+          "questionNumber": 2,
+          "section": "ACT_ENGLISH",
+          "stem": "A function, f, is defined by the equation f (x) = x2 + 5. What is f(3) + 1?",
+          "options": {
+            "F": "9",
+            "G": "11",
+            "H": "12",
+            "J": "15"
+          }
+        },
+        {
+          "n": 34,
+          "questionNumber": 3,
+          "section": "ACT_ENGLISH",
+          "stem": "Given b = 40 and c = -16, b + c is equal to the product of -4 and what number?",
+          "options": {
+            "A": "-14",
+            "B": "-6",
+            "C": "6",
+            "D": "14"
+          }
+        },
+        {
+          "n": 35,
+          "questionNumber": 5,
+          "section": "ACT_ENGLISH",
+          "stem": "A certain triangle has interior angle measures of (6x)�, (2x)�, and x�. What is the value of x?",
+          "options": {
+            "A": "9",
+            "B": "12",
+            "C": "20",
+            "D": "57"
+          }
+        },
+        {
+          "n": 36,
+          "questionNumber": 9,
+          "section": "ACT_ENGLISH",
+          "stem": "Given the function f (x) = 4x2 - 14x + 12, which of the following expressions is equivalent to f (x)?",
+          "options": {
+            "A": "(-2x + 4)(2x + 3)",
+            "B": "(2x - 4)(2x - 3)",
+            "C": "(2x - 4)(2x + 3)",
+            "D": "(2x - 3)(2x + 4)"
+          }
+        },
+        {
+          "n": 37,
+          "questionNumber": 10,
+          "section": "ACT_ENGLISH",
+          "stem": "Which of the following is equivalent to (6x + 3y) - (y - 2x)?",
+          "options": {
+            "F": "4x + 2y",
+            "G": "5x + y",
+            "H": "5x + 5y",
+            "J": "8x + 2y"
+          }
+        },
+        {
+          "n": 38,
+          "questionNumber": 11,
+          "section": "ACT_ENGLISH",
+          "stem": "Bryce owns an apartment building. He charges $325 per month for each 1bedroom apartment and $410 per month for each 2bedroom apartment. Bryce charged a total of $4,905 in rent for 13 apartments this month. How many 1bedroom apartments did Bryce charge for this month?",
+          "options": {
+            "A": "5",
+            "B": "6",
+            "C": "7",
+            "D": "8"
+          }
+        },
+        {
+          "n": 39,
+          "questionNumber": 13,
+          "section": "ACT_ENGLISH",
+          "stem": "For what value of n does the quadratic equation x2 - 4x + n = 0 have solutions of x = 7 and x = -3?",
+          "options": {
+            "A": "-21",
+            "B": "-4",
+            "C": "4",
+            "D": "10"
+          }
+        },
+        {
+          "n": 40,
+          "questionNumber": 14,
+          "section": "ACT_ENGLISH",
+          "stem": "The lengths of corresponding sides of 2 similar right triangles are in the ratio 4:5. The hypotenuse of the smaller triangle is 20 inches long. How many inches long is the hypotenuse of the larger triangle?",
+          "options": {
+            "F": "9",
+            "G": "20",
+            "H": "21",
+            "J": "25"
+          }
+        },
+        {
+          "n": 41,
+          "questionNumber": 18,
+          "section": "ACT_ENGLISH",
+          "stem": "The sum of 3 positive integers is 180, and the ratio of the integers is 5:3:2. What is the value of the smallest of the integers?",
+          "options": {
+            "F": "18",
+            "G": "36",
+            "H": "54",
+            "J": "90"
+          }
+        },
+        {
+          "n": 42,
+          "questionNumber": 19,
+          "section": "ACT_ENGLISH",
+          "stem": "Jeremy reaches into a box in the closet. The box contains 10 gloves that make up 5 matching pairs. He picks 1 glove at random and puts it on. Then he picks another glove at random. What is the probability that he has picked a matching pair?",
+          "options": {
+            "A": "_1 9",
+            "B": "_1 5",
+            "C": "_4 9",
+            "D": "_1 2"
+          }
+        },
+        {
+          "n": 43,
+          "questionNumber": 21,
+          "section": "ACT_ENGLISH",
+          "stem": "Cameron's bookshelf has 3 books with a rating of 10, 5 books with a rating of 100, and 2 books with a rating of 70. There are no other books on the bookshelf. What is the expected value, to the nearest whole number, of the rating of a book randomly selected from Cameron's bookshelf?",
+          "options": {
+            "A": "18",
+            "B": "60",
+            "C": "67",
+            "D": "85"
+          }
+        },
+        {
+          "n": 44,
+          "questionNumber": 22,
+          "section": "ACT_ENGLISH",
+          "stem": "The 1st term of a certain sequence is -10, and the 2nd term is 1. Each subsequent term is obtained by adding the 2 immediately preceding terms. What is the 5th term of this sequence?",
+          "options": {
+            "F": "-23",
+            "G": "-17",
+            "H": "19",
+            "J": "34"
+          }
+        },
+        {
+          "n": 45,
+          "questionNumber": 24,
+          "section": "ACT_ENGLISH",
+          "stem": "Some values of the function g are given in the table. One of the following equations defines g. Which one? x -2 0 1 2 3 g(x) 0 -8 -6 0 10",
+          "options": {
+            "F": "g(x) = -2x - 8",
+            "G": "g(x) = -x - 8",
+            "H": "g(x) = x2 + 2",
+            "J": "g(x) = 2x2 - 8"
+          }
+        },
+        {
+          "n": 46,
+          "questionNumber": 25,
+          "section": "ACT_ENGLISH",
+          "stem": "The vertex angle of an isosceles triangle is 40�. What is the measure of a base angle?",
+          "options": {
+            "A": "40�",
+            "B": "70�",
+            "C": "100�",
+            "D": "140�"
+          }
+        },
+        {
+          "n": 47,
+          "questionNumber": 27,
+          "section": "ACT_ENGLISH",
+          "stem": "A scale model, where 1 coordinate unit represents 1 mile, is drawn in the standard (x,y) coordinate plane. Angelo's house is at (4,-3), Ella's house is at (4,7), Troy's house is at (-2,7), and Yoko's house is at (-2,-3). Which of the following is closest to the area, in square miles, of the rectangle whose vertices are the real locations of the 4 houses?",
+          "options": {
+            "A": "32",
+            "B": "36",
+            "C": "60",
+            "D": "100"
+          }
+        },
+        {
+          "n": 48,
+          "questionNumber": 29,
+          "section": "ACT_ENGLISH",
+          "stem": "Which of the following expressions equals the height, in feet, of the tree shown? ? 40� 18 feet",
+          "options": {
+            "A": "18 tan 40�",
+            "B": "18 sin 40�",
+            "C": "18 cos 40�",
+            "D": "_ tan1840�"
+          }
+        },
+        {
+          "n": 49,
+          "questionNumber": 30,
+          "section": "ACT_ENGLISH",
+          "stem": "As shown, the number line between 0 and 8 is divided into 6 segments of equal length by points _A through E. Which of the following statements about 8 is true? 0 ABCDE 8 _",
+          "options": {
+            "F": "_8 is at C.",
+            "G": "_8 is at D.",
+            "H": "_8 is between A and B.",
+            "J": "8 is between B and C."
+          }
+        },
+        {
+          "n": 50,
+          "questionNumber": 32,
+          "section": "ACT_ENGLISH",
+          "stem": "Whenever _ -3x3 + 12x x3 - x2 - 6x is defined, it is equivalent to:",
+          "options": {
+            "F": "-2",
+            "G": "_ 1 x+3",
+            "H": "_ 6 - 3x x+3",
+            "J": "_ 6 - 3x x-3"
+          }
+        },
+        {
+          "n": 51,
+          "questionNumber": 33,
+          "section": "ACT_ENGLISH",
+          "stem": "The roots of a polynomial equation are 0, 2, and -5. Which of the following is a factored form of the equation?",
+          "options": {
+            "A": "(x - 2)(x + 5) = 0",
+            "B": "x(x - 2)(x + 5) = 0",
+            "C": "x(x + 2)(x - 5) = 0",
+            "D": "(x - 2)(x + 5) = x"
+          }
+        },
+        {
+          "n": 52,
+          "questionNumber": 36,
+          "section": "ACT_ENGLISH",
+          "stem": "The piecewise functions f and g are given. f (x) = -x2 {1 - x for x < 0 for x 0 g(x) = {xx-+37 for x -1 for x > -1 What is the value of f(g(-1))?",
+          "options": {
+            "F": "-16",
+            "G": "-7",
+            "H": "-5",
+            "J": "-1"
+          }
+        },
+        {
+          "n": 53,
+          "questionNumber": 38,
+          "section": "ACT_ENGLISH",
+          "stem": "A tourism organization randomly selected 100 tourists finishing their summer visit to Spain. The organization asked them how many cities they had toured in the country. The table shows the results. Based on these data, for the population of tourists that visited Spain during the summer, what is the best estimate of the mean number of cities toured? Number of cities 1 2 3 Number of tourists 10 40 50",
+          "options": {
+            "F": "0.8",
+            "G": "2",
+            "H": "2.4",
+            "J": "3"
+          }
+        },
+        {
+          "n": 54,
+          "questionNumber": 39,
+          "section": "ACT_ENGLISH",
+          "stem": "Given that i is the imaginary unit, which of the following numbers is equal to (7 + 4i)2?",
+          "options": {
+            "A": "33",
+            "B": "65",
+            "C": "14 + 8i",
+            "D": "33 + 56i"
+          }
+        },
+        {
+          "n": 55,
+          "questionNumber": 41,
+          "section": "ACT_ENGLISH",
+          "stem": "The real solution of the equation 3ex = 12 is:",
+          "options": {
+            "A": "ln 4",
+            "B": "3 ln 12",
+            "C": "4e",
+            "D": "_ ln 12 3"
+          }
+        },
+        {
+          "n": 56,
+          "questionNumber": 42,
+          "section": "ACT_ENGLISH",
+          "stem": "The figure shows nABC, a right isosceles triangle, inscribed in a circle with center O and radius 10 cm. What is the length, in centimeters, of arc AB shown as the thick curved line? A B 10 cm O DO YOUR FIGURING HERE. 2 C",
+          "options": {
+            "F": "20",
+            "G": "15",
+            "H": "10",
+            "J": "5"
+          }
+        }
+      ]
+    },
+    {
+      "section": "ACT_READING",
+      "module": 1,
+      "questions": [
+        {
+          "n": 1,
+          "questionNumber": 1,
+          "section": "ACT_READING",
+          "stem": "In the context of Passage A, the event described in the second paragraph (lines 26�45) most nearly serves to:",
+          "options": {
+            "A": "provide an anecdote that illustrates the power of the wind in Brooklyn.",
+            "B": "describe the newspaper seller's amusement as the papers were tossed about by the wind.",
+            "C": "recount an experience that left the narrator wary of the wind in Brooklyn.",
+            "D": "suggest that there are areas of Brooklyn that are intolerable because of the wind."
+          }
+        },
+        {
+          "n": 2,
+          "questionNumber": 2,
+          "section": "ACT_READING",
+          "stem": "Which of the following statements best captures how the narrator of Passage A feels about the way his children might perceive the Brooklyn wind?",
+          "options": {
+            "F": "He suspects the wind annoys them and assumes they take measures to avoid it.",
+            "G": "He hopes they share his interest in the wind and seek it out themselves.",
+            "H": "He feels they don't appreciate the wind or other facets of nature as much as they should.",
+            "J": "He hopes they notice how calm Brooklyn can be when the wind is not blowing."
+          }
+        },
+        {
+          "n": 3,
+          "questionNumber": 3,
+          "section": "ACT_READING",
+          "stem": "According to the narrator of Passage A, the branches of the London plane tree near the Court-Montague Building are notable for:",
+          "options": {
+            "A": "their exceptional length and graceful shape.",
+            "B": "the fact that they don't have plastic shopping bags clinging to them.",
+            "C": "the sound they make when the wind whips through them.",
+            "D": "their ability to provide shade for the nearby farmer's market."
+          }
+        },
+        {
+          "n": 4,
+          "questionNumber": 5,
+          "section": "ACT_READING",
+          "stem": "It can reasonably be inferred from Passage B that one result of the excursions the narrator took around Brooklyn with her mother was the narrator's:",
+          "options": {
+            "A": "lifelong commitment to urban renewal and preservation.",
+            "B": "increased appreciation for the history of other American cities.",
+            "C": "fuller notion of what her city was like during different eras.",
+            "D": "decision to expose her own children to art museums."
+          }
+        },
+        {
+          "n": 5,
+          "questionNumber": 6,
+          "section": "ACT_READING",
+          "stem": "Both passages are told from the point of view of narrators who:",
+          "options": {
+            "F": "grew up learning about Brooklyn from their parents.",
+            "G": "try to imagine how Brooklyn might be perceived by tourists.",
+            "H": "illustrate their relationship with Brooklyn through family experiences.",
+            "J": "were raised in Brooklyn but have since gone on to live in other cities."
+          }
+        },
+        {
+          "n": 6,
+          "questionNumber": 7,
+          "section": "ACT_READING",
+          "stem": "The tone of both passages can best be described as a combination of:",
+          "options": {
+            "A": "humor and relief.",
+            "B": "doubt and hesitancy.",
+            "C": "introspection and regret.",
+            "D": "wonder and nostalgia."
+          }
+        },
+        {
+          "n": 7,
+          "questionNumber": 10,
+          "section": "ACT_READING",
+          "stem": "The third paragraph (lines 42�60) marks a shift in the passage from:",
+          "options": {
+            "F": "an argument that condemns the modern lawn to a counterargument that focuses on its benefits.",
+            "G": "an explanation of the drawbacks of the modern lawn to a description of a more environmentally friendly alternative to it.",
+            "H": "a history of the popularity of lawns to a description of typical features of the modern lawn.",
+            "J": "an overview of a debate between homeowners and environmentalists about the purpose of lawns to a plea for homeowners to stop mowing."
+          }
+        },
+        {
+          "n": 8,
+          "questionNumber": 12,
+          "section": "ACT_READING",
+          "stem": "What reason does the passage author give to bolster his claim that \"domination of suburbia by lawn constrains the diversity of birds that could be supported\" (lines 18�19)?",
+          "options": {
+            "F": "Robins, starlings, crows, wagtails, and oystercatchers make use of lawns.",
+            "G": "The ubiquity of the lawn has outstripped its benefits.",
+            "H": "Birds don't carry out any life functions in the modern lawn other than foraging.",
+            "J": "Some people see lawns as a way to gain prestige."
+          }
+        },
+        {
+          "n": 9,
+          "questionNumber": 14,
+          "section": "ACT_READING",
+          "stem": "The passage author most strongly suggests that American homeowners who grow shaggy lawns likely feel the most immediate pressure from which of the following circumstances?",
+          "options": {
+            "F": "The awareness that their actions might lead to corporate losses",
+            "G": "The wasted expense of the lawn equipment they already own",
+            "H": "The need to cancel their lawn care service",
+            "J": "The disapproval of their neighbors"
+          }
+        },
+        {
+          "n": 10,
+          "questionNumber": 16,
+          "section": "ACT_READING",
+          "stem": "The passage author includes the quotation by Pollan (lines 75�78) mainly to:",
+          "options": {
+            "F": "explain why some neighbors gladly accept other neighbors' shaggy lawns.",
+            "G": "cautiously suggest that suburbanites often refuse to perform their civic duties.",
+            "H": "slightly mock the suburban ideals that have led to the proliferation of the modern lawn.",
+            "J": "illustrate how appealing a shaggy lawn looks next to a perfectly mowed lawn."
+          }
+        },
+        {
+          "n": 11,
+          "questionNumber": 17,
+          "section": "ACT_READING",
+          "stem": "What evidence, if accurate, would best support the passage author's claim that \"our love of lawn is rooted in our history as a former British colony\" (lines 2�4)?",
+          "options": {
+            "A": "Kentucky bluegrass, native to several countries, is a common species of grass for lawns in the United States.",
+            "B": "For generations in Britain, a trimmed lawn was a popular status symbol, showing that a homeowner could afford to own land that was not farmed.",
+            "C": "Many of the first lawns in Britain were sculpted to include low mounds where people could sit, though these makeshift benches were rarely used.",
+            "D": "Front lawns became popular in the United States in the 1930s, when lawn maintenance became easier."
+          }
+        },
+        {
+          "n": 12,
+          "questionNumber": 19,
+          "section": "ACT_READING",
+          "stem": "In the context of the passage, the main function of the first paragraph (lines 1�8) is to:",
+          "options": {
+            "A": "provide an overview of the internal process that enables spiders to produce different types of silk.",
+            "B": "illustrate the strength and versatility of spider silks by describing how one particular spider uses its silks to create a web.",
+            "C": "introduce the idea that spiders are resourceful by describing the obstacles they encounter when producing silks for their webs.",
+            "D": "point out that the properties of silks made by spiders are similar to those of silks made by other animals."
+          }
+        },
+        {
+          "n": 13,
+          "questionNumber": 20,
+          "section": "ACT_READING",
+          "stem": "According to the passage, how does the bark spider establish tension in its bridgeline?",
+          "options": {
+            "F": "It drops the bridgeline into water.",
+            "G": "It reinforces the bridgeline with silk.",
+            "H": "It adds dirt to the bridgeline.",
+            "J": "It stretches the bridgeline."
+          }
+        },
+        {
+          "n": 14,
+          "questionNumber": 21,
+          "section": "ACT_READING",
+          "stem": "In the context of the passage, the statement in lines 11�12 can best be described as:",
+          "options": {
+            "A": "a claim asserted by several researchers but contradicted by the passage author.",
+            "B": "a fact the passage author supports by citing the variety of silks other spiders can produce.",
+            "C": "a reasoned judgment based on the passage author's understanding of how spiders produce silks.",
+            "D": "an opinion the passage author presents but offers no support for."
+          }
+        },
+        {
+          "n": 15,
+          "questionNumber": 22,
+          "section": "ACT_READING",
+          "stem": "According to the passage, how many different kinds of silk proteins can an individual spider make?",
+          "options": {
+            "F": "No more than two",
+            "G": "As many as six",
+            "H": "More than twenty-five",
+            "J": "About four hundred"
+          }
+        },
+        {
+          "n": 16,
+          "questionNumber": 24,
+          "section": "ACT_READING",
+          "stem": "Based on lines 65�67 and the table, which of the following statements is accurate?",
+          "options": {
+            "F": "High-tensile steel fiber requires much less energy to break than the bark spider's silk does.",
+            "G": "Only the silver garden spider's flag silk requires more energy to break than the domestic silkworm's silk does.",
+            "H": "Synthetic fibers like Kevlar 49 require much more energy to break than natural fibers like silk do.",
+            "J": "Nylon fiber requires the same amount of energy to break as carbon fiber does."
+          }
+        },
+        {
+          "n": 17,
+          "questionNumber": 25,
+          "section": "ACT_READING",
+          "stem": "Based on the passage and the table, does the information in the table support the passage's claim about how the bark spider's silk compares to steel fiber?",
+          "options": {
+            "A": "Yes, because while the table indicates the bark spider's silk is not as strong as steel fiber, the bark spider's silk is slightly tougher.",
+            "B": "Yes, because the table indicates the toughness of the bark spider's silk far exceeds the toughness of steel fiber.",
+            "C": "No, because the table indicates the toughness of steel fiber is approximately the same as the toughness of the bark spider's silk.",
+            "D": "No, because the table indicates steel fiber is tougher than the bark spider's silk."
+          }
+        },
+        {
+          "n": 18,
+          "questionNumber": 26,
+          "section": "ACT_READING",
+          "stem": "Based on the table, which of the following pairs of materials are most different in terms of elasticity?",
+          "options": {
+            "F": "Silver garden spider flag silk and high-tensile steel fiber",
+            "G": "Silver garden spider flag silk and Kevlar 49 fiber",
+            "H": "Domestic silkworm silk and nylon fiber",
+            "J": "Kevlar 49 fiber and carbon fiber"
+          }
+        },
+        {
+          "n": 19,
+          "questionNumber": 29,
+          "section": "ACT_READING",
+          "stem": "The passage author indicates that in order to become more active participants in the Sundance Festival, Native filmmakers were most in need of:",
+          "options": {
+            "A": "greater funding for the production of big-budget Native films.",
+            "B": "a decision-making voice within the Sundance Institute.",
+            "C": "training in the Sundance Institute's film promotional practices.",
+            "D": "an opportunity to screen Native films internationally."
+          }
+        },
+        {
+          "n": 20,
+          "questionNumber": 30,
+          "section": "ACT_READING",
+          "stem": "Which of the following statements best summarizes the excerpt from Hearne in lines 58�74?",
+          "options": {
+            "F": "Smoke Signals grapples with themes of Native identity and was created to reach younger generations of Native Americans.",
+            "G": "Native films like Smoke Signals are important because they are marketed in the mainstream film industry.",
+            "H": "Smoke Signals is one film in a long line of Native films but was revolutionary in its presentation of Native Americans and advancement of Native filmmaking.",
+            "J": "Those who view Smoke Signals as a landmark Native film in American film history often forget Native films' long history and impact on American cinema."
+          }
+        },
+        {
+          "n": 21,
+          "questionNumber": 31,
+          "section": "ACT_READING",
+          "stem": "Based on the passage, the passage author would most likely agree that Hearne's review of Smoke Signals:",
+          "options": {
+            "A": "helped promote the film during its first release.",
+            "B": "tried to cover too many aspects of the film.",
+            "C": "came too late to be meaningful.",
+            "D": "is both thorough and insightful."
+          }
+        },
+        {
+          "n": 22,
+          "questionNumber": 33,
+          "section": "ACT_READING",
+          "stem": "The passage author describes the conversation between Native filmmakers and Sundance executives as \"wavering\" (line 22) primarily to make clear that, up to that point, the meeting had:",
+          "options": {
+            "A": "been poorly managed and was behind schedule.",
+            "B": "inspired deliberation and debate among the filmmakers.",
+            "C": "become awkward due to the executives' reluctance to include more Native films in the festival.",
+            "D": "meandered in topic and somewhat lacked focus."
+          }
+        },
+        {
+          "n": 23,
+          "questionNumber": 34,
+          "section": "ACT_READING",
+          "stem": "As it is used in line 28, the phrase held by most nearly means:",
+          "options": {
+            "F": "wielded by.",
+            "G": "within reach of.",
+            "H": "perceived of.",
+            "J": "supported by."
+          }
+        },
+        {
+          "n": 24,
+          "questionNumber": 35,
+          "section": "ACT_READING",
+          "stem": "It can reasonably be inferred from the passage that the Sundance Institute's decision to hire someone like Rae was the result of a suggestion from:",
+          "options": {
+            "A": "Farmer.",
+            "B": "Alexie.",
+            "C": "the passage author.",
+            "D": "a Sundance executive."
+          }
+        }
+      ]
+    },
+    {
+      "section": "ACT_SCIENCE",
+      "module": 1,
+      "questions": [
+        {
+          "n": 1,
+          "questionNumber": 1,
+          "section": "ACT_SCIENCE",
+          "stem": "According to Table 2, at 1 atm, what is the BP of the alkane with the chemical formula C5H10?",
+          "options": {
+            "A": "-130�C",
+            "B": "-93�C",
+            "C": "36�C",
+            "D": "49�C"
+          }
+        },
+        {
+          "n": 2,
+          "questionNumber": 3,
+          "section": "ACT_SCIENCE",
+          "stem": "At 1 atm, how many of the cycloalkanes listed in Table 2 have an MP above the MP of ice?",
+          "options": {
+            "A": "1",
+            "B": "3",
+            "C": "4",
+            "D": "7"
+          }
+        },
+        {
+          "n": 3,
+          "questionNumber": 7,
+          "section": "ACT_SCIENCE",
+          "stem": "Based on Scientist 2's argument, do gas particles more likely accrete near the equator or near the poles of a protostar with a disk?",
+          "options": {
+            "A": "Near the equator, because the effect of RP is increased there.",
+            "B": "Near the equator, because the effect of RP is reduced there.",
+            "C": "Near the poles, because the effect of RP is increased there.",
+            "D": "Near the poles, because the effect of RP is reduced there."
+          }
+        },
+        {
+          "n": 4,
+          "questionNumber": 9,
+          "section": "ACT_SCIENCE",
+          "stem": "When the effect of RP overcomes that of gravity, a star is said to have \"emerged from its envelope,\" because that is the first time the star is directly observable from outside the cloud. An observation of which of the following stars emerging from its envelope would support Scientist 2's argument but weaken Scientist 1's argument?",
+          "options": {
+            "A": "A 15 MS star",
+            "B": "A 20 MS star",
+            "C": "A 30 MS star",
+            "D": "A 50 MS star"
+          }
+        },
+        {
+          "n": 5,
+          "questionNumber": 10,
+          "section": "ACT_SCIENCE",
+          "stem": "Scientists 2 and 3 agree that a disk forms around a protostar as a result of the protostar's:",
+          "options": {
+            "F": "motion.",
+            "G": "emission of radiation.",
+            "H": "location within a star cluster.",
+            "J": "merger with another star."
+          }
+        },
+        {
+          "n": 6,
+          "questionNumber": 12,
+          "section": "ACT_SCIENCE",
+          "stem": "Which of the following pie charts best represents the seedling mortality results for Group 4?",
+          "options": {
+            "F": "percent seedling mortality percent seedling survival",
+            "G": "percent seedling mortality percent seedling survival",
+            "H": "percent seedling mortality percent seedling survival",
+            "J": "percent seedling mortality percent seedling survival"
+          }
+        },
+        {
+          "n": 7,
+          "questionNumber": 14,
+          "section": "ACT_SCIENCE",
+          "stem": "Based on the results of the study, approximately what percent of the seedlings that received a sunlight intensity of 10% survived to 10 weeks?",
+          "options": {
+            "F": "8%",
+            "G": "18%",
+            "H": "92%",
+            "J": "Cannot be determined from the given information"
+          }
+        },
+        {
+          "n": 8,
+          "questionNumber": 15,
+          "section": "ACT_SCIENCE",
+          "stem": "Suppose that as the plant dry mass increases, the leaf area ratio (a measure of the leaf area per gram of plant mass) decreases. Based on the results of the study, the plants in which group most likely had the lowest leaf area ratio?",
+          "options": {
+            "A": "Group 1",
+            "B": "Group 2",
+            "C": "Group 3",
+            "D": "Group 4"
+          }
+        },
+        {
+          "n": 9,
+          "questionNumber": 16,
+          "section": "ACT_SCIENCE",
+          "stem": "The effect of what abiotic factor was examined in the study?",
+          "options": {
+            "F": "Average dry mass",
+            "G": "Average precipitation",
+            "H": "Seedling mortality",
+            "J": "Sunlight intensity"
+          }
+        },
+        {
+          "n": 10,
+          "questionNumber": 18,
+          "section": "ACT_SCIENCE",
+          "stem": "In each trial, the flasks were most likely shaken to:",
+          "options": {
+            "F": "increase the concentration of B and of MB in the solution.",
+            "G": "decrease the concentration of B and of MB in the solution.",
+            "H": "maximize the contact between the Congo red and the particles of B and of MB.",
+            "J": "minimize the contact between the Congo red and the particles of B and of MB."
+          }
+        },
+        {
+          "n": 11,
+          "questionNumber": 19,
+          "section": "ACT_SCIENCE",
+          "stem": "Suppose that, in an additional trial of Experiment 3, a shaking time of 100 min had been tested. The % CR removed by MB in this trial would most likely have been between:",
+          "options": {
+            "A": "10% and 20%.",
+            "B": "20% and 30%.",
+            "C": "70% and 80%.",
+            "D": "80% and 90%."
+          }
+        },
+        {
+          "n": 12,
+          "questionNumber": 21,
+          "section": "ACT_SCIENCE",
+          "stem": "Based on the results of Experiments 2 and 3, the % CR removed would likely be greatest for which of the following combinations of pH and shaking time?",
+          "options": {
+            "A": "pH: 5.0 Shaking time: 60 min",
+            "B": "pH: 5.0 Shaking time: 240 min",
+            "C": "pH: 10.0 Shaking time: 60 min",
+            "D": "pH: 10.0 Shaking time: 240 min"
+          }
+        },
+        {
+          "n": 13,
+          "questionNumber": 22,
+          "section": "ACT_SCIENCE",
+          "stem": "Based on Figure 2 and additional information in the passage, how many trials were performed in Experiment 2?",
+          "options": {
+            "F": "Two; in each trial, the % CR removed was determined for either B or MB at each of 6 pH values.",
+            "G": "Six; in each trial, the % CR removed was determined for both B and MB at 1 of 6 pH values.",
+            "H": "Twelve; in each trial, the % CR removed was determined for either B or MB at 1 of 6 pH values.",
+            "J": "Eighteen; in each trial, the % CR removed was determined for either B, MB, or Congo red at 1 of 6 pH values."
+          }
+        },
+        {
+          "n": 14,
+          "questionNumber": 24,
+          "section": "ACT_SCIENCE",
+          "stem": "Which student would be most likely to agree that while the rod was partially submerged, the scale was supporting the entire weight of the rod?",
+          "options": {
+            "F": "Student 1",
+            "G": "Student 2",
+            "H": "Student 3",
+            "J": "Student 4"
+          }
+        },
+        {
+          "n": 15,
+          "questionNumber": 26,
+          "section": "ACT_SCIENCE",
+          "stem": "Suppose that it were determined that the magnitude of B was 1.37 N. Based on Student 2's argument, how much weight would the teacher's hand have been supporting?",
+          "options": {
+            "F": "1.37 N",
+            "G": "3.63 N",
+            "H": "5.00 N",
+            "J": "6.37 N"
+          }
+        },
+        {
+          "n": 16,
+          "questionNumber": 28,
+          "section": "ACT_SCIENCE",
+          "stem": "In regard to B, which of the following statements summarizes the responses given by Students 1 and 3?",
+          "options": {
+            "F": "Student 1 claimed that B is equal in magnitude to the weight of the displaced water, whereas Student 3 claimed that B is equal in magnitude to the weight of the rod.",
+            "G": "Student 1 claimed that B is equal in magnitude to the weight of the rod, whereas Student 3 claimed that B is equal in magnitude to the weight of the displaced water.",
+            "H": "Students 1 and 3 both claimed that B is equal in magnitude to the weight of the displaced water.",
+            "J": "Students 1 and 3 both claimed that B is equal in magnitude to the weight of the rod."
+          }
+        },
+        {
+          "n": 17,
+          "questionNumber": 30,
+          "section": "ACT_SCIENCE",
+          "stem": "For the batch of jam prepared with 1.0% Pectin Z by mass, as storage time increased, the TMA concentration:",
+          "options": {
+            "F": "increased only.",
+            "G": "decreased only.",
+            "H": "increased and then decreased.",
+            "J": "decreased and then increased."
+          }
+        },
+        {
+          "n": 18,
+          "questionNumber": 31,
+          "section": "ACT_SCIENCE",
+          "stem": "Suppose the scientists had also prepared a batch of jam using 0.5% Pectin Y. Based on the results of the experiment, at a storage time of 3 months, the TMA concentration would most likely have been between:",
+          "options": {
+            "A": "21 mg/100 g and 26 mg/100 g.",
+            "B": "26 mg/100 g and 28 mg/100 g.",
+            "C": "28 mg/100 g and 32 mg/100 g.",
+            "D": "32 mg/100 g and 34 mg/100 g."
+          }
+        },
+        {
+          "n": 19,
+          "questionNumber": 33,
+          "section": "ACT_SCIENCE",
+          "stem": "Suppose that the experiment had been repeated, except that the jars had been stored at 30�C. Would the TMA concentrations in this new experiment more likely have been less than or greater than the corresponding TMA concentrations listed in Table 1? The TMA concentrations in the new experiment would most likely have been:",
+          "options": {
+            "A": "less, because more TMA would have broken down at the higher temperature.",
+            "B": "less, because more TMA would have broken down at the lower temperature.",
+            "C": "greater, because less TMA would have broken down at the higher temperature.",
+            "D": "greater, because less TMA would have broken down at the lower temperature."
+          }
+        },
+        {
+          "n": 20,
+          "questionNumber": 34,
+          "section": "ACT_SCIENCE",
+          "stem": "Assume that, in the recipe the scientists used, 100 g of jam was produced for every 70 g of blackberries. If no TMA broke down as the jam was prepared, what mass of TMA would have been found in 100 g of jam before the jars were placed in boiling water?",
+          "options": {
+            "F": "70 mg",
+            "G": "140 mg",
+            "H": "200 mg",
+            "J": "280 mg"
+          }
+        },
+        {
+          "n": 21,
+          "questionNumber": 37,
+          "section": "ACT_SCIENCE",
+          "stem": "Suppose that another population of amoebas with an initial Allele A frequency of 0.5 and an initial size of 10,000 had been included in the computer simulation. Based on Figure 1, the frequency of Allele B in G2 for that population would most likely have been closest to which of the following?",
+          "options": {
+            "A": "0.0",
+            "B": "0.5",
+            "C": "0.8",
+            "D": "1.0"
+          }
+        },
+        {
+          "n": 22,
+          "questionNumber": 39,
+          "section": "ACT_SCIENCE",
+          "stem": "Based on Figures 1 and 2, is the effect of genetic drift on allele frequency greater in a relatively large population or in a relatively small population?",
+          "options": {
+            "A": "Relatively large; each of P1-P4 experienced greater fluctuations in the frequency of Allele A than did each of P5-P8.",
+            "B": "Relatively large; each of P5-P8 experienced greater fluctuations in the frequency of Allele A than did each of P1-P4.",
+            "C": "Relatively small; each of P1-P4 experienced greater fluctuations in the frequency of Allele A than did each of P5-P8.",
+            "D": "Relatively small; each of P5-P8 experienced greater fluctuations in the frequency of Allele A than did each of P1-P4."
+          }
+        }
+      ]
+    }
+  ]
+}
