@@ -66,7 +66,7 @@ export async function POST(req: NextRequest) {
   const maxUnits = Math.min(courseUnitKeys.length, 15)
   const selectedUnits = courseUnitKeys.slice(0, maxUnits)
 
-  const questionsByUnit: { id: string; unit: ApUnit }[] = []
+  let questionsByUnit: { id: string; unit: ApUnit }[] = []
   for (const unit of selectedUnits) {
     const q = await prisma.question.findFirst({
       where: { course: course as ApCourse, unit, isApproved: true, questionType: "MCQ" },
@@ -100,6 +100,38 @@ export async function POST(req: NextRequest) {
       } catch { /* skip this unit — diagnostic will just have fewer questions */ }
     })
     await Promise.allSettled(genPromises)
+  }
+
+  // 2026-06-03 — Dedup defensively. Mirror of PL fix (mamatha case): same
+  // questionId was served twice in her CLEP_CALCULUS diagnostic. Dedup by
+  // id first, then by normalized questionText.
+  {
+    const seenIds = new Set<string>();
+    const seenText = new Set<string>();
+    const textById = new Map<string, string>();
+    const ids = Array.from(new Set(questionsByUnit.map((q) => q.id)));
+    if (ids.length > 0) {
+      const rows = await prisma.question.findMany({
+        where: { id: { in: ids } },
+        select: { id: true, questionText: true },
+      });
+      for (const r of rows) {
+        textById.set(r.id, (r.questionText ?? "").toLowerCase().replace(/\s+/g, " ").trim());
+      }
+    }
+    const filtered: typeof questionsByUnit = [];
+    for (const q of questionsByUnit) {
+      if (seenIds.has(q.id)) continue;
+      const norm = textById.get(q.id);
+      if (norm && norm.length > 5 && seenText.has(norm)) continue;
+      seenIds.add(q.id);
+      if (norm) seenText.add(norm);
+      filtered.push(q);
+    }
+    if (filtered.length !== questionsByUnit.length) {
+      console.log(`[diagnostic] dedupe removed ${questionsByUnit.length - filtered.length} duplicate(s)`);
+    }
+    questionsByUnit = filtered;
   }
 
   if (questionsByUnit.length === 0) {
