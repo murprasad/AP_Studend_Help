@@ -30,21 +30,21 @@ const SAT_TESTS: FullTest[] = [
     label: "Full Practice Test 1",
     status: "available",
     description:
-      "Two adaptive modules (22 + 22 Qs). Module 1 difficulty determines Module 2 routing, matching the official CB Digital SAT.",
+      "Two modules of 22 questions each, drawn from our CB-aligned bank in the official domain blueprint (32% Algebra · 32% Advanced Math · 13.5% PSDA · 13.5% Geometry & Trig).",
     qCount: 44,
   },
   {
     id: 2,
     label: "Full Practice Test 2",
-    status: "coming-soon",
-    description: "Releases next week. Same adaptive 2-module structure, fresh question bank.",
+    status: "available",
+    description: "Fresh 44-question set with the same CB blueprint. Use as your second pass after Test 1.",
     qCount: 44,
   },
   {
     id: 3,
     label: "Full Practice Test 3",
-    status: "coming-soon",
-    description: "Releases two weeks from launch. Same adaptive structure with new items.",
+    status: "available",
+    description: "Third 44-question set, same blueprint. Ideal for a final pre-test self-check.",
     qCount: 44,
   },
 ];
