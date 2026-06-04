@@ -15,26 +15,34 @@ import {
 } from "@/lib/khan-academy-sat-links";
 
 describe("khanAcademyLinkFor — SAT/PSAT KA partnership links", () => {
-  it("SAT_MATH Algebra unit → hub URL contains 'algebra'", () => {
+  // 2026-06-04 — KA URL update. Previously each unit asserted a per-skill
+  // slug in the URL (.../sat#algebra etc.). Khan Academy silently drops
+  // those hash fragments, so we now route every SAT_MATH unit to the
+  // v2-sat-math hub (and r&w to v2-sat-reading-writing). Test asserts
+  // route correctness via base path, and topic precision via label.
+  it("SAT_MATH Algebra unit → routes to v2-sat-math hub + Algebra label", () => {
     const r = khanAcademyLinkFor("SAT_MATH", "SAT_MATH_1_ALGEBRA");
     expect(r).not.toBeNull();
-    expect(r!.url).toMatch(/algebra/);
+    expect(r!.url).toBe("https://www.khanacademy.org/test-prep/v2-sat-math");
     expect(r!.label.toLowerCase()).toMatch(/algebra/);
   });
 
-  it("SAT_MATH Advanced Math unit → hub URL contains 'advanced-math'", () => {
+  it("SAT_MATH Advanced Math unit → routes to v2-sat-math hub + label", () => {
     const r = khanAcademyLinkFor("SAT_MATH", "SAT_MATH_2_ADVANCED_MATH");
-    expect(r!.url).toMatch(/advanced-math/);
+    expect(r!.url).toBe("https://www.khanacademy.org/test-prep/v2-sat-math");
+    expect(r!.label.toLowerCase()).toMatch(/advanced math/);
   });
 
-  it("SAT_MATH Problem-Solving unit → hub URL contains 'problem-solving'", () => {
+  it("SAT_MATH Problem-Solving unit → routes to v2-sat-math hub + label", () => {
     const r = khanAcademyLinkFor("SAT_MATH", "SAT_MATH_3_PROBLEM_SOLVING");
-    expect(r!.url).toMatch(/problem-solving/);
+    expect(r!.url).toBe("https://www.khanacademy.org/test-prep/v2-sat-math");
+    expect(r!.label.toLowerCase()).toMatch(/problem-solving/);
   });
 
-  it("SAT_MATH Geometry unit → hub URL contains 'geometry'", () => {
+  it("SAT_MATH Geometry unit → routes to v2-sat-math hub + label", () => {
     const r = khanAcademyLinkFor("SAT_MATH", "SAT_MATH_4_GEOMETRY_TRIG");
-    expect(r!.url).toMatch(/geometry/);
+    expect(r!.url).toBe("https://www.khanacademy.org/test-prep/v2-sat-math");
+    expect(r!.label.toLowerCase()).toMatch(/geometry/);
   });
 
   it("SAT_READING_WRITING — every unit resolves", () => {
@@ -46,7 +54,7 @@ describe("khanAcademyLinkFor — SAT/PSAT KA partnership links", () => {
     ]) {
       const r = khanAcademyLinkFor("SAT_READING_WRITING", unit);
       expect(r, `unit ${unit} should resolve`).not.toBeNull();
-      expect(r!.url.startsWith("https://www.khanacademy.org/sat")).toBe(true);
+      expect(r!.url).toBe("https://www.khanacademy.org/test-prep/v2-sat-reading-writing");
     }
   });
 
@@ -78,13 +86,13 @@ describe("khanAcademyLinkFor — SAT/PSAT KA partnership links", () => {
   it("Missing/unknown unit on SAT_MATH falls back to course-level hub", () => {
     const r = khanAcademyLinkFor("SAT_MATH", null);
     expect(r).not.toBeNull();
-    expect(r!.url).toMatch(/khanacademy\.org\/sat/);
+    expect(r!.url).toMatch(/khanacademy\.org\/test-prep\/v2-sat-/);
   });
 
   it("Unknown unit string on a SAT course also falls back gracefully", () => {
     const r = khanAcademyLinkFor("SAT_MATH", "GARBAGE_UNIT_KEY");
     expect(r).not.toBeNull();
-    expect(r!.url).toMatch(/khanacademy\.org\/sat/);
+    expect(r!.url).toMatch(/khanacademy\.org\/test-prep\/v2-sat-/);
   });
 });
 
