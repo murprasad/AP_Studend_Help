@@ -311,6 +311,124 @@ export function runDeterministicGates(q: QuestionCandidate): GateResult {
     }
   }
 
+  // 1e. SCAFFOLD-TOKEN-LEAK gate (2026-06-04). User-reported defect
+  // (Morgan Rhodes SAT R&W diagnostic, 2026-06-04 09:21 UTC). AI emitted
+  // its own scaffold/section labels into the rendered fields:
+  //   - questionText: "STIMULUS: The teacher gave the students ___ homework..."
+  //     (literal "STIMULUS:" prefix from JSON-shaped prompt template)
+  //
+  // RCA per [[feedback_rca_for_every_defect]]:
+  //   Tech 5-Why: scaffold label was inside the AI's JSON output → no
+  //   gate stripped it on save → validator was LLM-judged and accepted
+  //   the leaked label → no deterministic check for known template tokens
+  //   → fail-open default.
+  //   Process 5-Why: validator-must-be-deterministic principle
+  //   ([[feedback_validator_must_be_deterministic]]) applied to math +
+  //   visual-claim but NOT to MCQ-stem structural integrity. Gap in gate set.
+  //
+  // PCA: hard-reject any question whose stem starts with these tokens.
+  {
+    const stem = (q.questionText ?? "").trimStart();
+    const stim = (q.stimulus ?? "").trimStart();
+    const SCAFFOLD_RX = /^(STIMULUS|QUESTION|STEM|PROMPT|OPTIONS|ANSWER|EXPLANATION|CONTEXT|PASSAGE)\s*[:：]/i;
+    if (SCAFFOLD_RX.test(stem)) {
+      return {
+        ok: false,
+        gate: "scaffold-token-leak",
+        reason: `questionText starts with a scaffold token (e.g. 'STIMULUS:', 'QUESTION:') — generator template leaked into the rendered field. Strip the prefix or regenerate.`,
+      };
+    }
+    if (SCAFFOLD_RX.test(stim)) {
+      return {
+        ok: false,
+        gate: "scaffold-token-leak",
+        reason: `stimulus starts with a scaffold token — generator template leaked into the rendered field. Strip the prefix or regenerate.`,
+      };
+    }
+  }
+
+  // 1f. JSON-OBJECT-STIMULUS gate (2026-06-04). Same RCA above.
+  //   - Morgan Q4: stimulus = '{"Text 1":"A study...","Text 2":"While..."}'
+  //     rendered to user as raw JSON braces instead of CB-style two-text
+  //     side-by-side layout. AI emitted structured object as a JSON string
+  //     because the prompt asked for "Text 1" and "Text 2" as separate
+  //     fields but the candidate spec stored it in `stimulus` flat.
+  //
+  // PCA: reject when stimulus starts with `{` and contains a known
+  // multi-text key-pattern (Text 1, Passage 1, Source A, etc.) — these
+  // are render-broken. Generic JSON-shaped text (rare) is also rejected
+  // because the renderer treats stimulus as plain markdown, not JSON.
+  {
+    const stim = (q.stimulus ?? "").trimStart();
+    if (stim.length > 0) {
+      const looksLikeJsonStart = /^[{[]/.test(stim);
+      const hasMultiTextKey =
+        /"(Text|Passage|Source|Excerpt)\s*\d?"\s*:/i.test(stim) ||
+        /"(Text|Passage|Source)\s+[AB12]"\s*:/i.test(stim);
+      if (looksLikeJsonStart && (hasMultiTextKey || /"[A-Za-z][\w\s]{0,30}"\s*:\s*"/.test(stim))) {
+        return {
+          ok: false,
+          gate: "json-object-stimulus",
+          reason:
+            "stimulus is a serialized JSON object — renders as raw braces to the student. Parse the fields and store as formatted markdown (e.g., '**Text 1**\\n\\n...\\n\\n**Text 2**\\n\\n...').",
+        };
+      }
+    }
+  }
+
+  // 1g. MISSING-QUESTION-MARKER gate (2026-06-04). MCQ-only. Same RCA above.
+  //   - Morgan Q1: questionText = "The teacher gives the students their
+  //     homework." — declarative statement with no ?, no fill-blank, no
+  //     underlined word marker. Student sees a sentence + 4 buttons with
+  //     no question.
+  //
+  // PCA: every MCQ stem MUST contain one of: question mark (?), fill-
+  // blank pattern (3+ underscores), inline-underline tag (<u>, **bold-
+  // word**), CB-style "Which of the following / What / Why / How / In
+  // the / Based on / According to" interrogative opener, OR a SAT R&W
+  // "underlined portion" reference. If none → reject.
+  //
+  // Skipped for NUMERICAL (handled earlier) and for FRQ types (no MCQ
+  // shape). The check stays loose enough that legitimate CB-style stems
+  // never trigger.
+  if (!isNumeric) {
+    const stem = (q.questionText ?? "").trim();
+    const hasQuestionMark = /\?/.test(stem);
+    const hasFillBlank = /_{3,}/.test(stem);
+    const hasUnderlineMarker = /<u>|\*\*[A-Za-z][^*]{1,40}\*\*/i.test(stem);
+    const hasUnderlinedReference = /\bunderlined\s+(word|phrase|portion|sentence|clause|text|part)\b/i.test(stem);
+    const hasInterrogativeOpener =
+      /^(which|what|why|how|when|where|who|whom|whose|in the|based on|according to|the author|the (writer|speaker|narrator|passage|text|excerpt|study|figure|graph|table|chart|diagram)|select|choose|identify|describe|explain|determine|find|calculate|solve|estimate|evaluate|consider|assume|suppose|if\s)/i.test(stem);
+    const hasStandardInstruction = /\b(complete|fill in|fills the blank|best (completes|describes|explains|fits|expresses)|most (accurately|likely|nearly|appropriate|effectively))\b/i.test(stem);
+    // 2026-06-04 refinement: sentence-completion stems are a legitimate
+    // CB MCQ format. They end WITHOUT terminal punctuation (no .!?;) OR
+    // end with a preposition/article waiting for the option to complete
+    // the thought. Stem "The Fugitive Slave Act of 1850 required" reads as
+    // a fragment alone but is perfectly clear paired with the options.
+    //
+    // Morgan's Q1 — "The teacher gives the students their homework." —
+    // ends with a period AND is a complete declarative. THAT is broken.
+    const lastChar = stem.slice(-1);
+    const endsWithTerminator = /[.!?;]/.test(lastChar);
+    const endsWithPrepOrArticle =
+      /\b(to|of|by|in|at|from|as|with|for|on|into|onto|upon|about|over|under|between|the|a|an|that|this|these|those|than|because|since|while|after|before|during|whereas)$/i.test(stem.replace(/[.!?;:,]$/, ""));
+    const isSentenceCompletion = !endsWithTerminator || endsWithPrepOrArticle;
+
+    const hasMarker =
+      hasQuestionMark || hasFillBlank || hasUnderlineMarker ||
+      hasUnderlinedReference || hasInterrogativeOpener || hasStandardInstruction ||
+      isSentenceCompletion;
+
+    if (!hasMarker) {
+      return {
+        ok: false,
+        gate: "missing-question-marker",
+        reason:
+          "MCQ stem is a complete declarative sentence with no question marker. No '?', no fill-blank, no underlined-word reference, no interrogative opener, no 'best completes' instruction, and the stem ends with a period — not a sentence-completion fragment. Student would see a statement followed by 4 unrelated answer buttons.",
+      };
+    }
+  }
+
   // 2. Options
   const opts = parseOptions(q.options);
   if (opts.length === 0) {
