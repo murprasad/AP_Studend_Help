@@ -403,6 +403,19 @@ export default function PracticePage() {
   const [midSessionPulse, setMidSessionPulse] = useState<string | null>(null);
   const pulseFiredRef = useRef<{ p30: boolean; p60: boolean }>({ p30: false, p60: false });
 
+  // Reset all conversion micro-surfaces (#50/#54/#55): both the visible
+  // state and the once-per-session guards. Called from resetSession and at
+  // the top of both session-start paths so back-to-back auto-launched
+  // sessions don't inherit a stale guard (e.g. a 5-streak upsell that
+  // already fired in the prior session would otherwise never show again).
+  function resetConversionSurfaces() {
+    setStreakForgiveMsg(null);
+    setWinUpsellOpen(false);
+    winUpsellShownRef.current = false;
+    setMidSessionPulse(null);
+    pulseFiredRef.current = { p30: false, p60: false };
+  }
+
   // Reset unit selection when course changes
   useEffect(() => {
     setSelectedUnit("ALL");
@@ -490,6 +503,7 @@ export default function PracticePage() {
   async function startSessionWithOverrides(opts: { unit: string; count: number; difficulty?: string }) {
     // Mirror of startSession with explicit params so we don't depend on
     // React state that may not have flushed yet from the URL-param effect.
+    resetConversionSurfaces();
     setIsStarting(true);
     setSessionLimitReached(false);
     try {
@@ -582,6 +596,7 @@ export default function PracticePage() {
   }
 
   async function startSession() {
+    resetConversionSurfaces();
     setIsStarting(true);
     setSessionLimitReached(false);
     try {
@@ -734,7 +749,7 @@ export default function PracticePage() {
         // know") broke a ≥3 streak. Show one encouraging, dismissible line.
         // Normal wrong answers (no prior streak) get nothing. Use the `answer`
         // arg (not stale `selectedAnswer` state) to detect the IDK sentinel.
-        setStreakForgiveMsg("Everyone has off days — your progress is saved. Keep going. 🌱");
+        setStreakForgiveMsg("Everyone has off days — your progress is saved. Keep going.");
       }
 
       // First-answer-ever reward (AP-season conversion lever). Fires once
@@ -955,13 +970,9 @@ export default function PracticePage() {
     setCheckLoading(false);
     setBeforeScore(null);
     setBeforeFamily(undefined);
-    // Conversion micro-surfaces — reset both visible state and the
-    // once-per-session guards so a brand-new session starts clean.
-    setStreakForgiveMsg(null);
-    setWinUpsellOpen(false);
-    winUpsellShownRef.current = false;
-    setMidSessionPulse(null);
-    pulseFiredRef.current = { p30: false, p60: false };
+    // Conversion micro-surfaces — reset visible state + once-per-session
+    // guards so a brand-new session starts clean.
+    resetConversionSurfaces();
   }
 
   if (mode === "summary" && sessionSummary) {
@@ -1251,7 +1262,7 @@ export default function PracticePage() {
                 <Crown className="h-5 w-5 text-yellow-700 dark:text-yellow-400" />
               </div>
               <div className="flex-1">
-                <p className="text-sm font-semibold">🔥 5 in a row! You&apos;re on a roll.</p>
+                <p className="text-sm font-semibold">5 in a row — you&apos;re on a roll.</p>
                 <p className="text-xs text-muted-foreground mt-0.5">
                   Unlock unlimited practice + Sage tutoring with Premium.
                 </p>
