@@ -423,9 +423,13 @@ export function Sidebar({ userRole, userTrack, isOpen = false, onClose = () => {
             .filter((item) => {
               // Admin-only items (e.g. Sage Coach while in diagnosis).
               if (item.adminOnly && userRole !== "ADMIN") return false;
-              // Track-scoped items (e.g. FRQ Practice is AP-only). Admins see all.
+              // Track-scoped items (e.g. FRQ Practice is AP-only).
+              // 2026-06-04 — REMOVED admin bypass. Admins on SAT_MATH course
+              // were seeing Mock Exam (AP/CLEP-gated) because admin role
+              // skipped the track filter. User reported confusion. Admins
+              // now see the same per-course menu as students would; switch
+              // course to access different items.
               if (!item.tracks) return true;
-              if (userRole === "ADMIN") return true;
               // 2026-05-03 — gate by CURRENT course family, not signup track.
               // FRQ Practice is meaningful only when the user's selected course
               // is in the AP family. Since users can now switch across AP/SAT/

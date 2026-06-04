@@ -834,15 +834,38 @@ export async function generateQuestion(
           lastError = lastRejectionReason;
           continue;
         }
-        const refsPassage = /\b(excerpt|passage|letter|document|source|author|text) (above|below|shown)|the (passage|excerpt|source|document) (above|below)/i.test(qtStr);
-        if (refsPassage && stimStr.length < 40) {
-          lastRejectionReason = "Question references a passage/excerpt but stimulus is missing or too short (need ≥40 chars)";
+        // 2026-06-04 — Visual-claim gate PCA (per [[feedback_rca_for_every_defect]]).
+        // The existing positional-word regex (above/below/shown) missed 761
+        // production-shipped Qs whose stems use action verbs instead, like
+        // "The bar chart shows..." or "Based on the passage, ...". Now match
+        // any reference to a figure/passage/table regardless of positional
+        // word — covers the bug class user reported 2026-06-04.
+        //
+        // Two-tier requirement:
+        //   - passage references → require text stimulus ≥ 50 chars
+        //   - figure/chart/diagram references → require stimulusImageUrl OR
+        //     a stimulus describing the data with ≥ 30 chars
+        const stimImg = candidate.stimulusImageUrl;
+        const hasImage = typeof stimImg === "string" && stimImg.length > 0;
+
+        const refsPassage = /\b(excerpt|passage|letter|document|source|author|text)\b/i.test(qtStr)
+          && /\b(based on|according to|in the |the (passage|excerpt|source|document|text|author|underlined)|in lines? \d|in the (above|below|preceding|following))/i.test(qtStr);
+        if (refsPassage && stimStr.length < 50) {
+          lastRejectionReason = "Question references a passage/excerpt/text but stimulus is missing or too short (need ≥50 chars). [visual-claim-no-stimulus PCA gate]";
           lastError = lastRejectionReason;
           continue;
         }
-        const refsDiagram = /\b(graph|chart|diagram|figure|table|free-body|FBD) (above|below|shown)/i.test(qtStr);
-        if (refsDiagram && stimStr.length < 10) {
-          lastRejectionReason = "Question references a diagram/graph/table but no visual stimulus provided";
+
+        const refsDiagram = /\b(bar chart|scatterplot|scatter plot|line graph|histogram|the chart|the graph|the diagram|the figure|the table|the histogram|figure (?:above|below)|table (?:above|below)|shown in the (figure|diagram|chart|graph)|refer to the (figure|diagram)|free-body|FBD)\b/i.test(qtStr);
+        if (refsDiagram && !hasImage && stimStr.length < 30) {
+          lastRejectionReason = "Question references a figure/chart/diagram/table/histogram but stimulusImageUrl is missing AND text stimulus is too short. [visual-claim-no-image PCA gate]";
+          lastError = lastRejectionReason;
+          continue;
+        }
+
+        const refsNotDrawnToScale = /\b(figure not drawn to scale|not drawn to scale)\b/i.test(qtStr);
+        if (refsNotDrawnToScale && !hasImage) {
+          lastRejectionReason = "Question includes 'figure not drawn to scale' disclaimer but no stimulusImageUrl. [visual-claim-no-image PCA gate]";
           lastError = lastRejectionReason;
           continue;
         }
