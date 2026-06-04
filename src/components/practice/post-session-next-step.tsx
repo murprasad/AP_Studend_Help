@@ -32,7 +32,7 @@ import {
   ScrollText, Telescope, Target, Trophy, ArrowRight, Crown, Zap,
 } from "lucide-react";
 import { JourneyHeroCardEngine } from "@/components/dashboard/journey-hero-card-engine";
-import { getExamCopy } from "@/lib/exam-copy";
+import { getExamCopy, getFullExamLink } from "@/lib/exam-copy";
 
 interface Props {
   course: string;
@@ -203,18 +203,19 @@ export function PostSessionNextStep({ course, source }: Props) {
     );
   }
 
-  // ── Mock exam ──────────────────────────────────────────────────────────────
+  // ── Full-length test (Mock Exam for AP/CLEP, Full Practice Test for SAT/PSAT/ACT) ──
   if (state.kind === "mock-exam") {
     const ec = getExamCopy(course);
+    const fullExam = getFullExamLink(course, { course, src: `${source}_full_invite` });
     return (
       <Hero
         accent="purple"
         icon={<Trophy className="h-5 w-5 text-purple-700 dark:text-purple-400" />}
         eyebrow="Your next step"
-        title="Take a Mock Exam — full readiness check"
+        title={`Take a ${fullExam.label} — full readiness check`}
         subtitle={`Real ${ec.examName} exam structure${ec.hasFreeResponse ? ", scored against the official rubric" : " and pacing"}. No surprises on test day.`}
-        href={`/mock-exam?course=${course}&src=${source}_mock_invite`}
-        cta="Start Mock Exam"
+        href={fullExam.href}
+        cta={`Start ${fullExam.label}`}
       />
     );
   }

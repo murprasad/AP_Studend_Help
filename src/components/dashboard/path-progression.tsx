@@ -19,6 +19,7 @@ import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { Check, Lock } from "lucide-react";
 import { COURSE_REGISTRY } from "@/lib/courses";
+import { getFullExamLink } from "@/lib/exam-copy";
 
 interface Props {
   course: string;
@@ -168,24 +169,30 @@ export function PathProgression({ course }: Props) {
             </li>
           )}
 
-          {/* Mock milestone */}
-          <li className="relative">
-            <div className="flex items-center gap-3 py-1.5">
-              <Dot state={mockState} isMilestone />
-              {mockState === "upcoming" ? (
-                <Link href="/mock-exam" className="flex-1 min-w-0 group">
-                  <p className="text-[14px] font-medium text-foreground group-hover:underline">Mock Exam</p>
-                </Link>
-              ) : (
-                <div className="flex-1 min-w-0">
-                  <p className="text-[14px] font-medium text-muted-foreground">Mock Exam</p>
-                  <p className="text-[11px] text-muted-foreground/80">
-                    {sessionsToMock} more session{sessionsToMock === 1 ? "" : "s"} to unlock
-                  </p>
+          {/* Full-test milestone (track-aware: Mock Exam for AP/CLEP,
+              Full Practice Test for SAT/PSAT/ACT) */}
+          {(() => {
+            const fullExam = getFullExamLink(course);
+            return (
+              <li className="relative">
+                <div className="flex items-center gap-3 py-1.5">
+                  <Dot state={mockState} isMilestone />
+                  {mockState === "upcoming" ? (
+                    <Link href={fullExam.href} className="flex-1 min-w-0 group">
+                      <p className="text-[14px] font-medium text-foreground group-hover:underline">{fullExam.label}</p>
+                    </Link>
+                  ) : (
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[14px] font-medium text-muted-foreground">{fullExam.label}</p>
+                      <p className="text-[11px] text-muted-foreground/80">
+                        {sessionsToMock} more session{sessionsToMock === 1 ? "" : "s"} to unlock
+                      </p>
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
-          </li>
+              </li>
+            );
+          })()}
         </ol>
       </CardContent>
     </Card>

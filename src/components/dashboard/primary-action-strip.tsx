@@ -26,7 +26,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowRight, Clock, Loader2, TrendingUp } from "lucide-react";
 import { fetchCachedWithStatus } from "@/lib/dashboard-cache";
-import { getExamCopy } from "@/lib/exam-copy";
+import { getExamCopy, getFullExamLink } from "@/lib/exam-copy";
 
 interface Props {
   course: string;
@@ -247,12 +247,15 @@ export function PrimaryActionStrip({ course, impressionId }: Props) {
     detail = "Quick practice. No test feel.";
     href = "/practice?mode=focused&count=3";
   } else if (tierLabel === "ready") {
-    // On-track + mock complete — push them to take the full mock exam.
-    title = "Take the Mock Exam";
-    buttonLabel = "START MOCK";
+    // On-track + full-length complete — push them to take the family-
+    // appropriate full-length test (Mock Exam for AP/CLEP, Full Practice
+    // Test for SAT/PSAT/ACT).
+    const fullExam = getFullExamLink(course);
+    title = `Take the ${fullExam.label}`;
+    buttonLabel = fullExam.label === "Mock Exam" ? "START MOCK" : "START TEST";
     subtitle = "Full-length timed exam";
     detail = "Verify you're ready for test day";
-    href = "/mock-exam";
+    href = fullExam.href;
   } else if (tierLabel && (tierLabel === "high_risk" || tierLabel === "below_passing")) {
     // Beta 9.1.1 fix — title was "See Your Predicted Score" + button
     // "SEE MY SCORE" but href routed to /practice (auto-launching a

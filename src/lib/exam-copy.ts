@@ -121,3 +121,36 @@ export function getExamCopy(course: string | null | undefined): ExamCopy {
 export function getExamFamily(course: string | null | undefined): ExamFamily {
   return getExamCopy(course).family;
 }
+
+/**
+ * Single-source link to the family-appropriate full-length simulator.
+ * SAT/PSAT/ACT students go to /full-practice-test ("Full Practice Test" —
+ * CB / ACT native term). AP / CLEP students go to /mock-exam ("Mock Exam"
+ * — established AP term).
+ *
+ * Used by every dashboard / post-session surface that promotes the
+ * full-length test, so a SAT student never sees "Mock Exam" copy or
+ * lands on the AP-only /mock-exam route. PCA per
+ * [[project_sn_ap_first_architecture_debt_2026-06-04]].
+ */
+export function getFullExamLink(
+  course: string | null | undefined,
+  extraQuery?: Record<string, string>,
+): { href: string; label: string; shortLabel: string } {
+  const family = getExamFamily(course);
+  const qs = extraQuery
+    ? "?" + new URLSearchParams(extraQuery).toString()
+    : "";
+  if (family === "SAT" || family === "ACT") {
+    return {
+      href: `/full-practice-test${qs}`,
+      label: "Full Practice Test",
+      shortLabel: "Full Test",
+    };
+  }
+  return {
+    href: `/mock-exam${qs}`,
+    label: "Mock Exam",
+    shortLabel: "Mock",
+  };
+}

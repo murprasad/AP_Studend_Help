@@ -101,6 +101,21 @@ export default function MockExamPage() {
   const { data: session } = useSession();
   const [phase, setPhase] = useState<ExamPhase>("intro");
 
+  // 2026-06-04 — Direct-URL guard: SAT/PSAT/ACT students must use
+  // /full-practice-test (CB/ACT native term). If they land on /mock-exam
+  // via a bookmark or old link, redirect (preserving ?test=N if present).
+  // Sidebar + bottom-nav + dashboard surfaces already route correctly; this
+  // is defense-in-depth. PCA per
+  // [[project_sn_ap_first_architecture_debt_2026-06-04]].
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const c = (course as string) || "";
+    if (c.startsWith("SAT_") || c.startsWith("PSAT_") || c.startsWith("ACT_")) {
+      const qs = window.location.search || "";
+      window.location.replace(`/full-practice-test${qs}`);
+    }
+  }, [course]);
+
   // 2026-06-03 — Full Practice Test entry. /full-practice-test sends users
   // here with ?test=N (1, 2, or 3). When present, startExam() POSTs
   // practiceTestSet=N to /api/mock-exam, which serves the deterministic

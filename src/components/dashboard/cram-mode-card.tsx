@@ -32,7 +32,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Flame, Calendar, ArrowRight, Target, PenLine, Mic } from "lucide-react";
 import { fetchCached } from "@/lib/dashboard-cache";
-import { getExamCopy } from "@/lib/exam-copy";
+import { getExamCopy, getFullExamLink } from "@/lib/exam-copy";
 
 interface Props {
   course: string;
@@ -204,23 +204,29 @@ export function CramModeCard({ course }: Props) {
             </Link>
           )}
 
-          {suggestMock && (
-            <Link
-              href={`/mock-exam?course=${course}`}
-              className="flex items-center justify-between p-2.5 rounded-lg bg-secondary/40 hover:bg-accent transition-colors group"
-            >
-              <div className="min-w-0 flex-1 pr-2">
-                <p className="text-[13px] font-medium truncate">
-                  <Mic className={`inline-block h-3.5 w-3.5 mr-1 -mt-0.5 ${palette.icon}`} />
-                  Take a timed mock section
-                </p>
-                <p className="text-[11px] text-muted-foreground mt-0.5">
-                  Build pacing — final {days <= 7 ? "week" : "two weeks"} is when this matters most
-                </p>
-              </div>
-              <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:translate-x-0.5 transition-transform flex-shrink-0" />
-            </Link>
-          )}
+          {suggestMock && (() => {
+            const fullExam = getFullExamLink(course, { course });
+            const tileTitle = fullExam.label === "Mock Exam"
+              ? "Take a timed mock section"
+              : "Take a timed practice test";
+            return (
+              <Link
+                href={fullExam.href}
+                className="flex items-center justify-between p-2.5 rounded-lg bg-secondary/40 hover:bg-accent transition-colors group"
+              >
+                <div className="min-w-0 flex-1 pr-2">
+                  <p className="text-[13px] font-medium truncate">
+                    <Mic className={`inline-block h-3.5 w-3.5 mr-1 -mt-0.5 ${palette.icon}`} />
+                    {tileTitle}
+                  </p>
+                  <p className="text-[11px] text-muted-foreground mt-0.5">
+                    Build pacing — final {days <= 7 ? "week" : "two weeks"} is when this matters most
+                  </p>
+                </div>
+                <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:translate-x-0.5 transition-transform flex-shrink-0" />
+              </Link>
+            );
+          })()}
         </div>
 
         {/* Footer hint */}

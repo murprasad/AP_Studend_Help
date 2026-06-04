@@ -25,6 +25,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Target, ArrowRight, BookOpen, Sparkles, FileText } from "lucide-react";
 import { COURSE_REGISTRY } from "@/lib/courses";
+import { getFullExamLink } from "@/lib/exam-copy";
 import type { ApCourse } from "@prisma/client";
 
 interface Props {
@@ -95,11 +96,16 @@ export function PostJourneyHero({ course, weakestUnit, daysSinceCompleted }: Pro
           label="Sage"
           href="/ai-tutor"
         />
-        <ToolTile
-          icon={<FileText className="h-4 w-4 text-purple-700 dark:text-purple-400" />}
-          label="Mock Exam"
-          href={`/mock-exam?course=${course}`}
-        />
+        {(() => {
+          const fullExam = getFullExamLink(course, { course });
+          return (
+            <ToolTile
+              icon={<FileText className="h-4 w-4 text-purple-700 dark:text-purple-400" />}
+              label={fullExam.label}
+              href={fullExam.href}
+            />
+          );
+        })()}
       </div>
     </div>
   );
