@@ -57,6 +57,17 @@ function isAdaptiveCourse(course: string | null | undefined): boolean {
   return !!course && ADAPTIVE_COURSES.has(course);
 }
 const SAT_BREAK_SECS = 10 * 60; // CB-spec: 10-min break between sections
+
+// 2026-06-04 (Feature #52) — Optional fatigue break for long AP/CLEP
+// (non-adaptive) mocks. SAT/PSAT/ACT already have a structured break (the
+// adaptive Module-1 → break → Module-2 FSM above). AP/CLEP mocks run as a
+// single flat session and can be 40-88 Qs, which causes fatigue dropouts
+// (real user "waleed" answered only 14 of 88). We insert an OPTIONAL pause
+// every AP_BREAK_EVERY questions; only when the total exceeds the interval
+// (no point breaking a <=30 Q mock). The pause reuses the SatModuleBreak UI
+// and never touches the timer or answer state — it's a pure phase swap, and
+// the section-1 timer effect stops ticking while phase !== "section1".
+const AP_BREAK_EVERY = 30;
 type ExamMode = "full" | "quick";
 
 // 2026-06-03 — Pulled out of component so test=N URL param can be read on
@@ -172,6 +183,16 @@ export default function MockExamPage() {
   // paywall can reveal a projected score based on mid-exam performance.
   const [correctCount, setCorrectCount] = useState(0);
   const [showPartialPaywall, setShowPartialPaywall] = useState(false);
+  // 2026-06-04 (Feature #52) — distinguishes which kind of pause the
+  // "break" phase represents. "sat" = the adaptive Module-1→Module-2 break
+  // (existing behavior, default). "ap" = the optional AP/CLEP fatigue break
+  // every AP_BREAK_EVERY questions. The break render branch keys off this so
+  // SAT routing logic only runs for the SAT break.
+  const [breakKind, setBreakKind] = useState<"sat" | "ap">("sat");
+  // Highest question index for which we've already shown the AP fatigue
+  // break, so navigating back/forth (or resuming) doesn't re-trigger it at
+  // the same boundary. Reset on every fresh exam start.
+  const apBreakShownAtRef = useRef<number>(-1);
   // F16 (#100) — free 8 full-length adaptive mocks for SAT/PSAT students.
   // null = unknown (not loaded yet); object = loaded status.
   const [adaptiveFreeStatus, setAdaptiveFreeStatus] = useState<
@@ -368,6 +389,7 @@ export default function MockExamPage() {
       setCurrentIndex(0);
       setAnswers({});
       setFeedback(null);
+      apBreakShownAtRef.current = -1; // Feature #52 — fresh break schedule.
       setPhase("section1");
     } catch {
       toast({ title: "Error", description: "Failed to start exam", variant: "destructive" });
@@ -473,6 +495,33 @@ export default function MockExamPage() {
       currentIndex === moduleOneEndIndex &&
       currentIndex + 1 < total
     ) {
+      setBreakKind("sat");
+      setPhase("break");
+      setFeedback(null);
+      return;
+    }
+    // Feature #52 — OPTIONAL fatigue break for long AP/CLEP (non-adaptive)
+    // mocks. After answering question N (N a multiple of AP_BREAK_EVERY),
+    // pause before showing question N+1. Gated to:
+    //   • non-adaptive courses only (SAT/PSAT/ACT keep their existing
+    //     structured break / are redirected to /full-practice-test);
+    //   • totals strictly greater than AP_BREAK_EVERY (a <=30 Q mock gets
+    //     no break — no point);
+    //   • boundaries not already shown (apBreakShownAtRef);
+    //   • not the final question (don't break then immediately finish).
+    // The pause is a pure phase swap: timer stops ticking (section-1 timer
+    // effect is gated on phase === "section1"), and answers/index/correctCount
+    // remain untouched in React state. Resuming sets phase back to "section1"
+    // and the deferred advance below runs.
+    const atApBreakBoundary =
+      !isAdaptiveCourse(course) &&
+      total > AP_BREAK_EVERY &&
+      (currentIndex + 1) % AP_BREAK_EVERY === 0 &&
+      currentIndex + 1 < total &&
+      apBreakShownAtRef.current !== currentIndex;
+    if (atApBreakBoundary) {
+      apBreakShownAtRef.current = currentIndex; // show once per boundary.
+      setBreakKind("ap");
       setPhase("break");
       setFeedback(null);
       return;
@@ -836,6 +885,30 @@ export default function MockExamPage() {
   // route Module 2 difficulty based on M1 performance, then swap the in-
   // memory questions array for the M2 portion before resuming section1.
   if (phase === "break") {
+    // Feature #52 — AP/CLEP optional fatigue break. Reuses the SatModuleBreak
+    // UI with neutral "Take a breather" copy, a short (non-blocking)
+    // countdown, and autoAdvance disabled so the break can NEVER end the
+    // exam on its own. Resuming just advances to the next question — no
+    // server routing, no question-array swap (that's SAT-only). Timer and
+    // answers are already intact in state (the pause never mutated them).
+    if (breakKind === "ap") {
+      const answeredSoFar = Object.keys(answers).length;
+      return (
+        <SatModuleBreak
+          breakSecs={5 * 60}
+          autoAdvance={false}
+          title="Take a breather"
+          message="You've been at this for a while — a short break helps you stay sharp for the rest of the exam. Your timer is paused and your answers are saved. Resume whenever you're ready."
+          progressLabel={`Question ${currentIndex + 1} of ${questionsRef.current.length} · ${answeredSoFar} answered`}
+          resumeLabel="Resume exam"
+          onContinue={() => {
+            setCurrentIndex((prev) => prev + 1);
+            setFeedback(null);
+            setPhase("section1");
+          }}
+        />
+      );
+    }
     return <SatModuleBreak onContinue={async () => {
       if (sessionId && isAdaptiveCourse(course)) {
         try {

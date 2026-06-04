@@ -327,7 +327,31 @@ export default function PracticePage() {
     setSelectedAnswer(null);
     setFeedback(null);
     setFeedbackRating(null);
+    // Conversion micro-surfaces (#55/#50) are per-question — clear them when
+    // the student advances so they never carry over to the next question.
+    setStreakForgiveMsg(null);
+    setMidSessionPulse(null);
   }, [currentIndex]);
+
+  // #50 Mid-session pulse — fire a brief encouraging line when the student
+  // crosses ~30% and ~60% of the session. Each milestone fires at most once
+  // (ref-guarded), and only while practicing on a multi-question session.
+  // Runs after the reset effect above (same dependency, declared later) so it
+  // isn't immediately cleared. The pulse is shown alongside the question and
+  // clears on the next advance.
+  useEffect(() => {
+    if (mode !== "practicing") return;
+    const total = questionsRef.current.length;
+    if (total < 4) return; // too short to bother — avoids spamming tiny sets
+    const progress = currentIndex / total;
+    if (!pulseFiredRef.current.p30 && progress >= 0.3 && progress < 0.6) {
+      pulseFiredRef.current.p30 = true;
+      setMidSessionPulse("Nice pace — you're about a third of the way through. Keep the momentum going.");
+    } else if (!pulseFiredRef.current.p60 && progress >= 0.6 && progress < 0.95) {
+      pulseFiredRef.current.p60 = true;
+      setMidSessionPulse("Over halfway there — you're building real momentum. Finish strong.");
+    }
+  }, [currentIndex, mode]);
   const [feedback, setFeedback] = useState<{
     isCorrect: boolean;
     correctAnswer: string;
@@ -362,6 +386,22 @@ export default function PracticePage() {
   // SessionDeltaCard on the summary to render "3.2 → 3.5".
   const [beforeScore, setBeforeScore] = useState<number | null>(null);
   const [beforeFamily, setBeforeFamily] = useState<"AP" | "SAT" | "ACT" | undefined>(undefined);
+
+  // ── Conversion micro-surfaces (DEV #50/#54/#55) ───────────────────────
+  // #55 Streak-forgiveness — when a ≥3 correct streak breaks on a wrong
+  // answer, surface one encouraging, dismissible line near the feedback.
+  // Non-blocking: it never gates the Next button. Auto-clears when the
+  // student advances (per-currentIndex reset effect below).
+  const [streakForgiveMsg, setStreakForgiveMsg] = useState<string | null>(null);
+  // #54 Convert-on-WIN upsell — FREE users only, at most once per session.
+  // Tripped when the running correct streak first reaches 5. The ref guards
+  // against re-trigger on subsequent 5+ streaks within the same session.
+  const [winUpsellOpen, setWinUpsellOpen] = useState(false);
+  const winUpsellShownRef = useRef(false);
+  // #50 Mid-session pulse — a brief encouraging line at ~30% and ~60%
+  // progress. Each milestone fires at most once per session (ref-guarded).
+  const [midSessionPulse, setMidSessionPulse] = useState<string | null>(null);
+  const pulseFiredRef = useRef<{ p30: boolean; p60: boolean }>({ p30: false, p60: false });
 
   // Reset unit selection when course changes
   useEffect(() => {
@@ -665,6 +705,38 @@ export default function PracticePage() {
       setFeedback(data);
       setResults((prev) => [...prev, { correct: data.isCorrect, timeSecs }]);
 
+      // ── Conversion micro-surfaces (#55 streak-forgiveness, #54 convert-on-WIN)
+      // `results` here is the pre-answer array (setResults above is async and
+      // the closure value hasn't updated yet). Compute the prior streak from
+      // it, then derive the new streak from this answer's correctness.
+      const priorStreak = (() => {
+        let s = 0;
+        for (let i = results.length - 1; i >= 0; i--) {
+          if (results[i].correct) s++;
+          else break;
+        }
+        return s;
+      })();
+      if (data.isCorrect) {
+        const newStreak = priorStreak + 1;
+        // #54 — Convert-on-WIN: FREE users only, once per session, on the
+        // first 5-streak WIN moment. Premium users never see it.
+        if (
+          newStreak >= 5 &&
+          !winUpsellShownRef.current &&
+          !isPremiumForTrack(subscriptionTier ?? "FREE", userTrack)
+        ) {
+          winUpsellShownRef.current = true;
+          setWinUpsellOpen(true);
+        }
+      } else if (answer !== "__IDK__" && priorStreak >= 3) {
+        // #55 — Streak-forgiveness: a real wrong answer (not an "I don't
+        // know") broke a ≥3 streak. Show one encouraging, dismissible line.
+        // Normal wrong answers (no prior streak) get nothing. Use the `answer`
+        // arg (not stale `selectedAnswer` state) to detect the IDK sentinel.
+        setStreakForgiveMsg("Everyone has off days — your progress is saved. Keep going. 🌱");
+      }
+
       // First-answer-ever reward (AP-season conversion lever). Fires once
       // per user, gated by a ref + localStorage in the hook. We disarm the
       // ref immediately so a fast double-submit can't trigger it twice.
@@ -883,6 +955,13 @@ export default function PracticePage() {
     setCheckLoading(false);
     setBeforeScore(null);
     setBeforeFamily(undefined);
+    // Conversion micro-surfaces — reset both visible state and the
+    // once-per-session guards so a brand-new session starts clean.
+    setStreakForgiveMsg(null);
+    setWinUpsellOpen(false);
+    winUpsellShownRef.current = false;
+    setMidSessionPulse(null);
+    pulseFiredRef.current = { p30: false, p60: false };
   }
 
   if (mode === "summary" && sessionSummary) {
@@ -1144,6 +1223,57 @@ export default function PracticePage() {
           indicatorClassName="bg-blue-500"
           aria-label={`Practice session progress: question ${currentIndex + 1} of ${questionsRef.current.length}`}
         />
+
+        {/* #50 Mid-session pulse — brief, non-blocking encouragement at
+            ~30% / ~60% progress. Dismissible; auto-clears on next advance. */}
+        {midSessionPulse && (
+          <div className="flex items-start gap-2 px-3 py-2 rounded-lg bg-blue-500/5 border border-blue-500/20 text-sm text-blue-700 dark:text-blue-400">
+            <ThumbsUp className="h-4 w-4 flex-shrink-0 mt-0.5" />
+            <p className="flex-1 leading-relaxed">{midSessionPulse}</p>
+            <button
+              type="button"
+              onClick={() => setMidSessionPulse(null)}
+              aria-label="Dismiss"
+              className="text-blue-700/60 dark:text-blue-400/60 hover:text-blue-700 dark:hover:text-blue-400 text-xs font-medium px-1"
+            >
+              ✕
+            </button>
+          </div>
+        )}
+
+        {/* #54 Convert-on-WIN upsell — FREE users only, once per session,
+            tripped on a 5-correct streak. Tasteful inline banner with a CTA
+            to the existing /pricing upgrade route. Non-blocking + dismissible. */}
+        {winUpsellOpen && (
+          <Card className="card-glow border-yellow-500/30 bg-gradient-to-br from-yellow-500/10 to-orange-500/10">
+            <CardContent className="p-4 flex items-start gap-3">
+              <div className="w-9 h-9 rounded-full bg-yellow-500/20 flex items-center justify-center flex-shrink-0">
+                <Crown className="h-5 w-5 text-yellow-700 dark:text-yellow-400" />
+              </div>
+              <div className="flex-1">
+                <p className="text-sm font-semibold">🔥 5 in a row! You&apos;re on a roll.</p>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  Unlock unlimited practice + Sage tutoring with Premium.
+                </p>
+              </div>
+              <div className="flex items-center gap-1 flex-shrink-0">
+                <Link href="/pricing">
+                  <Button size="sm" className="bg-yellow-600 hover:bg-yellow-700 text-white text-xs gap-1">
+                    <Sparkles className="h-3.5 w-3.5" /> Go Premium
+                  </Button>
+                </Link>
+                <button
+                  type="button"
+                  onClick={() => setWinUpsellOpen(false)}
+                  aria-label="Dismiss"
+                  className="text-muted-foreground hover:text-foreground text-xs font-medium px-1"
+                >
+                  ✕
+                </button>
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Question card */}
         <Card className="card-glow">
@@ -1505,6 +1635,23 @@ export default function PracticePage() {
                       )}
                     </div>
                   )}
+                </div>
+              )}
+
+              {/* #55 Streak-forgiveness — only when a ≥3 correct streak just
+                  broke (set in submitAnswer). Encouraging + dismissible; sits
+                  above Next so it never blocks advancing. */}
+              {streakForgiveMsg && (
+                <div className="flex items-start gap-2 px-3 py-2 rounded-lg bg-secondary/60 border border-border/40 text-sm text-muted-foreground">
+                  <p className="flex-1 leading-relaxed">{streakForgiveMsg}</p>
+                  <button
+                    type="button"
+                    onClick={() => setStreakForgiveMsg(null)}
+                    aria-label="Dismiss"
+                    className="hover:text-foreground text-xs font-medium px-1"
+                  >
+                    ✕
+                  </button>
                 </div>
               )}
 

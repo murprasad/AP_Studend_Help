@@ -322,6 +322,29 @@ export default function DiagnosticPage() {
     const tier = (session?.user as { subscriptionTier?: string })?.subscriptionTier ?? "FREE"
     const locked = !(tier === "PREMIUM" || tier === "AP_PREMIUM" || tier === "CLEP_PREMIUM")
 
+    // FEATURE #48 (2026-06-04) — "Still calibrating" framing on the score
+    // reveal when the diagnostic is low-data. A confident hard number off
+    // very few questions reads as a verdict and demotivates low scorers
+    // (#1 drop-off driver per cohort analysis). Mirrors PrepLion: keep the
+    // number visible but reframe it as a preliminary estimate.
+    //
+    // Signal choice: `answeredCount` = questions the student actually
+    // answered (`Object.keys(answers).length`). This is the truest "how
+    // much data backs this estimate" signal available client-side — the
+    // DiagResult payload only carries unit-level `unitScores` (no per-
+    // response count), so `scores.length` (unit count) is the only other
+    // option. The diagnostic serves ~one MCQ per unit, so a per-response
+    // count would still be ideal long-term, but `answers` already gives us
+    // the real answered count here. Fall back to unit count if `answers`
+    // is somehow empty.
+    const answeredCount = Object.keys(answers).length || scores.length
+    // Threshold: this diagnostic is one-question-per-unit (~10-15 Qs total),
+    // so the PO's "~25" guideline would flag every run. Calibrate to this
+    // diagnostic's scale — fewer than 8 answered questions is genuinely
+    // thin data for a confident verdict.
+    const LOW_DATA_THRESHOLD = 8
+    const isLowData = answeredCount > 0 && answeredCount < LOW_DATA_THRESHOLD
+
     return (
       <div className="max-w-2xl mx-auto space-y-6">
         <div>
@@ -340,19 +363,35 @@ export default function DiagnosticPage() {
 
         {/* FREE reveal — predicted score headline. Creates curiosity for the
             gated detail below. Shown to everyone (free + paid). */}
-        <Card className={`border-${scoreColor}-500/30 bg-${scoreColor}-500/5`}>
+        {/* FEATURE #48 — low-data diagnostics get a "still calibrating"
+            reframe so a thin sample doesn't read as a confident verdict.
+            High-data diagnostics keep the normal confident result. The
+            framing is exam-family-agnostic — it just wraps the number. */}
+        <Card className={`border-${isLowData ? "blue" : scoreColor}-500/30 bg-${isLowData ? "blue" : scoreColor}-500/5`}>
           <CardContent className="p-6 text-center">
+            {isLowData && (
+              <span className="inline-flex items-center gap-1.5 mb-3 px-2.5 py-1 rounded-full text-[11px] font-medium uppercase tracking-wide bg-blue-500/15 text-blue-700 dark:text-blue-400">
+                <Loader2 className="h-3 w-3 animate-spin" />
+                Still calibrating
+              </span>
+            )}
             <p className="text-xs uppercase tracking-wide text-muted-foreground mb-2">
               {/* 2026-06-02 — track-aware label. SAT/ACT/PSAT users
                   saw "Your Predicted AP Score" + 1-5 scale, totally
                   wrong for their exam. */}
-              Your Predicted {examFamily} Score
+              {isLowData ? `Early ${examFamily} estimate` : `Your Predicted ${examFamily} Score`}
             </p>
-            <p className={`text-7xl font-bold text-${scoreColor}-500 leading-none`}>
+            <p
+              className={`text-7xl font-bold leading-none ${
+                isLowData ? "text-muted-foreground/70" : `text-${scoreColor}-500`
+              }`}
+            >
               {predictedScore}
             </p>
             <p className="text-sm text-muted-foreground mt-2">
-              {scoreLabel} · MCQ-only estimate from {scores.length} unit{scores.length === 1 ? "" : "s"}
+              {isLowData
+                ? `Early estimate from ${answeredCount} question${answeredCount === 1 ? "" : "s"} — keep practicing to sharpen this.`
+                : `${scoreLabel} · MCQ-only estimate from ${scores.length} unit${scores.length === 1 ? "" : "s"}`}
             </p>
           </CardContent>
         </Card>
