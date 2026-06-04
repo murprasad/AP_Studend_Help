@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "course": "ACT_MATH",
-  "last_updated": "2026-05-09",
+  "last_updated": "2026-06-04",
   "source_count": 7,
   "calibration": {
     "coverage_strategy": "wide_not_deep",
@@ -45,41 +45,41 @@
       "note": "Students compare us to these — match the register."
     }
   },
-  "generator_prompt_injection": "REAL TEST-TAKER INSIGHTS (sourced from r/ACT, updated 2026-05-09):\n- Coverage: Real test-takers report this exam covers breadth over depth. Stay at college 101 level on each topic.\n- High-emphasis topics (per real students): math, preparation.\n- Students struggle most with: math, pressure from family, ela. Generate proportionally more on these.\n- Wording style: ~6% of items should use realistic exam-style indirection (NOT unfair ambiguity).\n- Difficulty target: 30% easy / 50% medium / 20% hard. avg pass score 32 suggests easier test.\n- Authenticity bar: students compare us to Desmos, practice test, practice tests. Match that register.",
+  "generator_prompt_injection": "REAL TEST-TAKER INSIGHTS (sourced from r/ACT, updated 2026-06-04):\n- Coverage: Real test-takers report this exam covers breadth over depth. Stay at college 101 level on each topic.\n- High-emphasis topics (per real students): math, preparation.\n- Students struggle most with: math, pressure from family, ela. Generate proportionally more on these.\n- Wording style: ~6% of items should use realistic exam-style indirection (NOT unfair ambiguity).\n- Difficulty target: 30% easy / 50% medium / 20% hard. avg pass score 32 suggests easier test.\n- Authenticity bar: students compare us to Desmos, practice test, practice tests. Match that register.",
   "popup_tips": [
     {
-      "tip_id": "2138dfa6",
-      "text": "abuse of Desmos and a practice test helped",
-      "source_attribution": "From a recent ACT MATH test-taker",
-      "first_seen": "2026-05-09",
+      "tip_id": "ff876218",
+      "text": "On ACT MATH, real test-takers say breadth beats depth. Aim to recognize many topics at a 101 level rather than mastering a few in deep detail.",
+      "source_attribution": "Compiled from real test-takers on r/ACT",
+      "first_seen": "2026-06-04",
       "topic_filter": []
     },
     {
-      "tip_id": "f51eea38",
-      "text": "math questions with notation that I didn't understand",
-      "source_attribution": "From a recent ACT MATH test-taker",
-      "first_seen": "2026-05-09",
+      "tip_id": "1b11fafb",
+      "text": "Heaviest-weighted topics on the actual ACT MATH exam (per recent test-takers): math, preparation. Spend more time here.",
+      "source_attribution": "Compiled from real test-takers on r/ACT",
+      "first_seen": "2026-06-04",
       "topic_filter": []
     },
     {
-      "tip_id": "e18251cb",
-      "text": "i struggle with visualizing numbers. not even joking— i can’t memorize or visualize basic addition or subtraction problems if they aren’t “perfect”",
-      "source_attribution": "From a recent ACT MATH test-taker",
-      "first_seen": "2026-05-09",
+      "tip_id": "bfc55557",
+      "text": "Where ACT MATH students reported struggling most: math, pressure from family, ela. Make sure you can handle these before exam day.",
+      "source_attribution": "Compiled from real test-takers on r/ACT",
+      "first_seen": "2026-06-04",
       "topic_filter": []
     },
     {
-      "tip_id": "a07a017b",
-      "text": "can't afford test prep over $300",
-      "source_attribution": "From a recent ACT MATH test-taker",
-      "first_seen": "2026-05-09",
+      "tip_id": "a9547f7b",
+      "text": "Resources real ACT MATH test-takers credited: Desmos and practice test. Pair with practice questions.",
+      "source_attribution": "Compiled from real test-takers on r/ACT",
+      "first_seen": "2026-06-04",
       "topic_filter": []
     },
     {
-      "tip_id": "0e99ba7f",
-      "text": "The next test will be June 13th.",
-      "source_attribution": "From a recent ACT MATH test-taker",
-      "first_seen": "2026-05-09",
+      "tip_id": "943d225f",
+      "text": "A passing score on ACT MATH is reachable: recent successful test-takers reported scoring around 32 after focused study.",
+      "source_attribution": "Compiled from real test-takers on r/ACT",
+      "first_seen": "2026-06-04",
       "topic_filter": []
     }
   ]
