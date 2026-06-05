@@ -96,7 +96,7 @@ function MermaidBlock({ code }: { code: string }) {
 // normalizeMarkdownTables moved to src/lib/markdown-helpers.ts so unit tests
 // can import it without pulling in client/JSX deps. Re-export for any
 // existing callers that imported it from here.
-import { normalizeMarkdownTables } from "@/lib/markdown-helpers";
+import { normalizeMarkdownTables, escapeCurrencyDollarSigns } from "@/lib/markdown-helpers";
 export { normalizeMarkdownTables };
 
 // ── Shared markdown renderer ───────────────────────────────────────────────
@@ -133,7 +133,7 @@ export const mermaidComponents = {
 
 export function MarkdownContent({ content, useMermaid = false }: { content: string; useMermaid?: boolean }) {
   return (
-    <div className="prose prose-invert max-w-none
+    <div className="prose dark:prose-invert max-w-none
       prose-p:text-foreground prose-p:leading-relaxed prose-p:my-1
       prose-li:text-foreground prose-li:leading-relaxed
       prose-strong:text-foreground prose-strong:font-semibold
@@ -148,7 +148,7 @@ export function MarkdownContent({ content, useMermaid = false }: { content: stri
         rehypePlugins={[rehypeKatex]}
         components={useMermaid ? mermaidComponents : tableComponents}
       >
-        {normalizeMarkdownTables(content)}
+        {escapeCurrencyDollarSigns(normalizeMarkdownTables(content))}
       </ReactMarkdown>
     </div>
   );

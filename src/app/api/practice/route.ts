@@ -411,6 +411,24 @@ export async function POST(req: NextRequest) {
       selectedQuestions = interleaveByUnit(selectedQuestions) as typeof selectedQuestions;
     }
 
+    // CB-fidelity serve-time gate (2026-06-05): re-validate the SELECTED
+    // questions with the deterministic gates right before serving. This is the
+    // safety net that protects against any approved-but-broken question that
+    // predates a gate (e.g. the render-broken diagnostic items that made Morgan
+    // bounce 0/4). Broken items are dropped from this session AND unapproved so
+    // they never reach the next student. Awaited (not fire-and-forget) — CF
+    // Workers terminate unfinished promises after the response is sent.
+    {
+      const { filterByLayer8Gate } = await import("@/lib/deterministic-question-gates");
+      const { passing, failedIds } = filterByLayer8Gate(selectedQuestions);
+      if (failedIds.length > 0) {
+        selectedQuestions = passing as typeof selectedQuestions;
+        await prisma.question
+          .updateMany({ where: { id: { in: failedIds } }, data: { isApproved: false } })
+          .catch(() => { /* best-effort; broken Qs already filtered from this session */ });
+      }
+    }
+
     // Guard: if no questions available after all attempts, return 400 (not 500)
     if (selectedQuestions.length === 0) {
       return NextResponse.json(
