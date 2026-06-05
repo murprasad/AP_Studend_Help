@@ -419,10 +419,36 @@ export async function POST(req: NextRequest) {
     // they never reach the next student. Awaited (not fire-and-forget) — CF
     // Workers terminate unfinished promises after the response is sent.
     {
-      const { filterByLayer8Gate } = await import("@/lib/deterministic-question-gates");
-      const { passing, failedIds } = filterByLayer8Gate(selectedQuestions);
+      // Serve-time RENDER-BROKEN gate (CB-fidelity). The full deterministic gate
+      // set contains OVER-FLAGGING checks (stimulus-required false-flags
+      // embedded-text SAT R&W; the option-count gate had an AP bug), so we
+      // allowlist only the HIGH-CONFIDENCE render-broken classes — the exact
+      // ones that made Morgan bounce 0/4. MCQ-only (grid-in items legitimately
+      // have no A-E options). Failed items are dropped from this session AND
+      // unapproved (awaited — CF Workers kill unfinished promises).
+      const { runDeterministicGates } = await import("@/lib/deterministic-question-gates");
+      const RENDER_BROKEN = new Set([
+        "render-hazard", "stem-unescaped-currency-dollar", "scaffold-token-leak",
+        "json-object-stimulus", "missing-question-marker",
+        "explanation-derives-contradictory-value", "options-partial-prefix",
+        "explanation-multi-answer-implication",
+      ]);
+      const failedIds: string[] = [];
+      for (const q of selectedQuestions) {
+        if ((q.questionType ?? "MCQ") !== "MCQ") continue;
+        const res = runDeterministicGates({
+          questionText: q.questionText,
+          options: Array.isArray(q.options) ? (q.options as string[]) : undefined,
+          correctAnswer: q.correctAnswer,
+          explanation: q.explanation ?? undefined,
+          course: q.course as string,
+          stimulus: q.stimulus ?? undefined,
+        });
+        if (!res.ok && res.gate && RENDER_BROKEN.has(res.gate)) failedIds.push(q.id);
+      }
       if (failedIds.length > 0) {
-        selectedQuestions = passing as typeof selectedQuestions;
+        const failed = new Set(failedIds);
+        selectedQuestions = selectedQuestions.filter((q) => !failed.has(q.id)) as typeof selectedQuestions;
         await prisma.question
           .updateMany({ where: { id: { in: failedIds } }, data: { isApproved: false } })
           .catch(() => { /* best-effort; broken Qs already filtered from this session */ });

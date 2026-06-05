@@ -177,8 +177,12 @@ function parseOptions(options: string[] | string | undefined): string[] {
 export function expectedOptionCount(course: string | undefined): number {
   if (!course) return 5; // default to CLEP standard
   if (course.startsWith("DSST_")) return 4;
+  // AP MCQs are 4-option (A-D) since the 2020 College Board redesign. AP_*
+  // courses were missing from FOUR_CHOICE_COURSES, so they fell through to the
+  // CLEP default of 5 — making this gate FALSE-FLAG 100% of every AP MCQ.
+  if (course.startsWith("AP_")) return 4;
   if (FOUR_CHOICE_COURSES.has(course)) return 4;
-  return 5;
+  return 5; // CLEP standard
 }
 
 /**
