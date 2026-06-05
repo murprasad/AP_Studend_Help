@@ -24,7 +24,10 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { Crown, Calendar, BookOpen, Bell, LogOut, AlertTriangle, ExternalLink } from "lucide-react";
+import { useFocusPrefs, type ExtendedTime } from "@/hooks/use-focus-prefs";
+import { Crown, Calendar, BookOpen, Bell, LogOut, AlertTriangle, ExternalLink, Brain } from "lucide-react";
+
+const EXTENDED_TIME_OPTIONS: ExtendedTime[] = ["1x", "1.5x", "2x"];
 
 interface ProfileSnapshot {
   email: string;
@@ -47,6 +50,7 @@ export default function SettingsPage() {
   const { data: session, status, update: updateSession } = useSession();
   const router = useRouter();
   const { toast } = useToast();
+  const { prefs: focusPrefs, setFocusMode, setExtendedTime, setEnergyCheckIn } = useFocusPrefs();
   const [profile, setProfile] = useState<ProfileSnapshot | null>(null);
   const [busy, setBusy] = useState<string | null>(null);
   const [confirmDelete, setConfirmDelete] = useState(false);
@@ -243,6 +247,69 @@ export default function SettingsPage() {
               <span className="block text-[11px] text-muted-foreground">One 3-question quick win every morning. Free, opt-in.</span>
             </span>
           </label>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader className="pb-3">
+          <CardTitle className="text-base flex items-center gap-2">
+            <Brain className="h-4 w-4 text-teal-500" />
+            Focus tools — for students who learn differently
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <label className="flex items-start gap-2 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={focusPrefs.focusMode}
+              onChange={(e) => setFocusMode(e.target.checked)}
+              className="mt-0.5"
+            />
+            <span className="text-sm">
+              <span className="font-medium">Focus mode</span>
+              <span className="block text-[11px] text-muted-foreground">
+                A minimal, distraction-reduced layout while you practice.
+              </span>
+            </span>
+          </label>
+
+          <div className="space-y-1.5">
+            <span className="text-sm font-medium block">Extended time</span>
+            <div className="flex gap-2 flex-wrap">
+              {EXTENDED_TIME_OPTIONS.map((opt) => (
+                <Button
+                  key={opt}
+                  variant={focusPrefs.extendedTime === opt ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setExtendedTime(opt)}
+                >
+                  {opt}
+                </Button>
+              ))}
+            </div>
+            <p className="text-[11px] text-muted-foreground">
+              Extra time on timed practice and mock exams.
+            </p>
+          </div>
+
+          <label className="flex items-start gap-2 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={focusPrefs.energyCheckIn}
+              onChange={(e) => setEnergyCheckIn(e.target.checked)}
+              className="mt-0.5"
+            />
+            <span className="text-sm">
+              <span className="font-medium">Energy check-in</span>
+              <span className="block text-[11px] text-muted-foreground">
+                A quick how-are-you-feeling check at the start of each session.
+              </span>
+            </span>
+          </label>
+
+          <p className="text-[11px] text-muted-foreground/70 pt-1">
+            Focus-friendly study aids included with your plan. These are general study tools, not a medical or diagnostic feature.
+          </p>
         </CardContent>
       </Card>
 
