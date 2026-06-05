@@ -106,6 +106,19 @@ export default function RootLayout({
             }}
           />
         )}
+        {/* GA4 — env-gated (2026-06-05). Set NEXT_PUBLIC_GA_ID to activate
+            page-view tracking. Complements Clarity (replay/heatmaps/friction)
+            with funnels/path analysis. No-op until the ID is set. */}
+        {process.env.NEXT_PUBLIC_GA_ID && (
+          <>
+            <script async src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_ID}`} />
+            <script
+              dangerouslySetInnerHTML={{
+                __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','${process.env.NEXT_PUBLIC_GA_ID}');`,
+              }}
+            />
+          </>
+        )}
         {/* SW disabled 2026-04-20. Previous pass-through SW was returning 503
             via its .catch when the origin fetch hung on CF Workers, masking
             real backend errors as a service-worker fallback. This script

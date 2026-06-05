@@ -10,8 +10,12 @@
  *      surface is already in place.
  */
 
-// TODO: replace with real measurement ID once GA4 property is provisioned
-const GA_ID = "G-XXXXXXXXXX";
+// Env-driven (2026-06-05): set NEXT_PUBLIC_GA_ID (e.g. "G-ABC123") in Cloudflare
+// Pages env to activate GA4. Empty string = GA4 disabled (all tracking no-ops),
+// so this is safe to ship before the GA4 property exists. The cookie-consent
+// loader only injects the GA script when GA_ID is non-empty.
+export const GA_ID = process.env.NEXT_PUBLIC_GA_ID || "";
+export const GA_ENABLED = GA_ID.length > 0;
 
 type GtagEvent = {
   action: string;
