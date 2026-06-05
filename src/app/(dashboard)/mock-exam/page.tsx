@@ -177,6 +177,7 @@ export default function MockExamPage() {
   const [feedback, setFeedback] = useState<{ isCorrect: boolean; correctAnswer: string; explanation: string } | null>(null);
   const [timeLeft, setTimeLeft] = useState(0);
   const [extendedActive, setExtendedActive] = useState(false); // ADHD #41 Extended Time
+  const examTotalSecsRef = useRef(0); // seeded (extended) total — for elapsed-time math
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [result, setResult] = useState<ExamResult | null>(null);
@@ -267,6 +268,7 @@ export default function MockExamPage() {
         currentIndex,
         answers,
         timeLeft,
+        examTotalSecs: examTotalSecsRef.current,
         correctCount,
         mode,
         savedAt: Date.now(),
@@ -329,6 +331,9 @@ export default function MockExamPage() {
       setCurrentIndex(snap.currentIndex ?? 0);
       setAnswers(snap.answers ?? {});
       setTimeLeft(snap.timeLeft ?? 0);
+      // Restore the seeded total so per-question elapsed stays correct after a
+      // refresh (falls back to timeLeft → elapsed 0 if an old snapshot lacks it).
+      examTotalSecsRef.current = snap.examTotalSecs ?? snap.timeLeft ?? 0;
       setCorrectCount(snap.correctCount ?? 0);
       if (snap.mode === "full" || snap.mode === "quick") setMode(snap.mode);
       setFeedback(null);
@@ -392,6 +397,7 @@ export default function MockExamPage() {
       const extMult = getExtendedTimeMultiplier();
       const totalSecs = Math.round(baseSecs * extMult);
       setExtendedActive(extMult > 1);
+      examTotalSecsRef.current = totalSecs; // so per-question elapsed uses the extended total
       setTimeLeft(totalSecs);
       setCurrentIndex(0);
       setAnswers({});
@@ -419,9 +425,9 @@ export default function MockExamPage() {
     const qId = submitContext.questionId;
     setAnswers((prev) => ({ ...prev, [qId]: answer }));
 
-    const total = questionsRef.current.length || selectedInfo.questionCount;
-    const totalSecs = selectedInfo.secsPerQuestion * total;
-    const elapsed = totalSecs - timeLeft;
+    // Use the seeded (extended-time-aware) total so elapsed is never negative
+    // when Extended Time (#41) is active.
+    const elapsed = examTotalSecsRef.current - timeLeft;
     const timeSecs = Math.round(elapsed / Math.max(currentIndex + 1, 1));
 
     try {
