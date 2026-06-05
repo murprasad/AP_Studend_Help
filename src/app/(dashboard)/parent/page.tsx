@@ -120,9 +120,8 @@ export default function ParentViewPage() {
                     </p>
                   ) : (
                     <p className="text-sm text-muted-foreground">
-                      Current estimate: <strong>{String(data.predictedScore.score)}</strong>
-                      {data.predictedScore.improving ? " — and trending up. " : ". "}
-                      Estimates sharpen the more they practice.
+                      We&apos;re tracking a readiness estimate that sharpens the more they practice
+                      {data.predictedScore.improving ? " — and it&apos;s trending up right now." : "."}
                     </p>
                   )}
                 </CardContent>

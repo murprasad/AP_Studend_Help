@@ -97,6 +97,8 @@ export const config = {
     "/analytics/:path*",
     "/study-plan/:path*",
     "/mock-exam/:path*",
+    "/parent/:path*",
+    "/learning-style/:path*",
     "/ai-tutor/:path*",
     "/sage-coach/:path*",
     "/sage-coach",
