@@ -66,6 +66,12 @@ async function main() {
       figureKind: "dataTable",
       contextTopics: ["regional sales", "survey responses", "species counts", "ticket sales", "rainfall totals", "production output", "library checkouts", "membership", "recycling tonnage", "clinic visits"],
     },
+    {
+      domain: "ADVANCED_MATH",
+      subskill: "Quadratic functions — vertex (minimum) from a graph",
+      figureKind: "coordinatePlane-parabola",
+      contextTopics: ["projectile height", "profit vs price", "arch height", "ball trajectory", "revenue vs units", "fountain stream", "bridge cable", "garden area"],
+    },
   ];
 
   const OUT_DIR = path.join(REPO, "data", "fidelity-proofs", "generated");
@@ -231,6 +237,22 @@ function buildStimulus(figureKind: string, ctx: string): any {
       _meta: { intercept, slope },
     };
   }
+  if (figureKind === "coordinatePlane-parabola") {
+    const h = 2 + Math.floor(Math.random() * 4); // vertex x
+    const k = 1 + Math.floor(Math.random() * 4); // vertex y
+    const a = 1;
+    return {
+      kind: "coordinatePlane",
+      spec: {
+        width: 420, height: 360,
+        xRange: [h - 5, h + 5], yRange: [k - 1, k + 26],
+        title: `${ctx.charAt(0).toUpperCase() + ctx.slice(1)}`,
+        xLabel: "x", yLabel: ctx,
+        functions: [{ fn: (x: number) => a * (x - h) ** 2 + k, color: "#0b62a4" }],
+      },
+      _meta: { a, h, k, vertex: [h, k] },
+    };
+  }
   if (figureKind === "dataTable") {
     const cats = ["North", "South", "East", "West"];
     const col1 = cats.map(() => 20 + Math.floor(Math.random() * 60));
@@ -260,6 +282,8 @@ function buildPrompt(bp: any, ctx: string, stimulus: any): string {
     figureDescription = `A scatterplot of ${ctx} (y-axis) versus months (x-axis) from 0 to 10 months. The line of best fit has y-intercept ${meta.intercept} and slope ${meta.slope} (so it passes through (0, ${meta.intercept}) and (10, ${meta.intercept + meta.slope * 10})).`;
   } else if (stimulus.kind === "barChart") {
     figureDescription = `A bar chart with 5 categories (A, B, C, D, E) and values ${meta.values.join(", ")}. Sum = ${meta.sum}.`;
+  } else if (stimulus.kind === "coordinatePlane" && meta.vertex) {
+    figureDescription = `A coordinate plane showing a parabola that opens upward with its vertex (minimum point) at (${meta.h}, ${meta.k}). The curve is y = (x − ${meta.h})² + ${meta.k}.`;
   } else if (stimulus.kind === "coordinatePlane") {
     figureDescription = `A coordinate plane with a single line of best fit. y-intercept = ${meta.intercept}, slope = ${meta.slope}.`;
   } else if (stimulus.kind === "dataTable") {
