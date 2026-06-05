@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
 import { useCourse } from "@/hooks/use-course";
+import { getExtendedTimeMultiplier } from "@/hooks/use-focus-prefs";
 import { formatTime } from "@/lib/utils";
 import { optionLetter, cleanOptionText } from "@/lib/options";
 import { ApCourse } from "@prisma/client";
@@ -175,6 +176,7 @@ export default function MockExamPage() {
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [feedback, setFeedback] = useState<{ isCorrect: boolean; correctAnswer: string; explanation: string } | null>(null);
   const [timeLeft, setTimeLeft] = useState(0);
+  const [extendedActive, setExtendedActive] = useState(false); // ADHD #41 Extended Time
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [result, setResult] = useState<ExamResult | null>(null);
@@ -382,9 +384,14 @@ export default function MockExamPage() {
       setQuestions(data.questions ?? []);
       // Scale timer to actual questions served — bank may be smaller than target.
       const servedQs = (data.questions ?? []).length;
-      const totalSecs = servedQs > 0
+      const baseSecs = servedQs > 0
         ? selectedInfo.secsPerQuestion * servedQs
         : selectedInfo.totalSecs;
+      // ADHD Wave 2 #41 — Extended Time accommodation (Focus tools). Applies the
+      // student's chosen time multiplier (1x / 1.5x / 2x) to the allotted time.
+      const extMult = getExtendedTimeMultiplier();
+      const totalSecs = Math.round(baseSecs * extMult);
+      setExtendedActive(extMult > 1);
       setTimeLeft(totalSecs);
       setCurrentIndex(0);
       setAnswers({});
@@ -1027,9 +1034,16 @@ export default function MockExamPage() {
         {/* Exam header */}
         <div className="flex items-center justify-between">
           <Badge variant="secondary">Section 1 · MCQ</Badge>
-          <div className={`flex items-center gap-2 font-mono text-lg font-bold ${timeWarning ? "text-red-700 dark:text-red-400 animate-pulse" : "text-foreground"}`}>
-            <Clock className="h-5 w-5" />
-            {formatTime(timeLeft)}
+          <div className="flex items-center gap-2">
+            {extendedActive && (
+              <Badge variant="outline" className="text-teal-700 dark:text-teal-400 border-teal-500/40">
+                Extended time
+              </Badge>
+            )}
+            <div className={`flex items-center gap-2 font-mono text-lg font-bold ${timeWarning ? "text-red-700 dark:text-red-400 animate-pulse" : "text-foreground"}`}>
+              <Clock className="h-5 w-5" />
+              {formatTime(timeLeft)}
+            </div>
           </div>
         </div>
 
