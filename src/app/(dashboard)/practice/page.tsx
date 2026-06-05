@@ -155,6 +155,7 @@ export default function PracticePage() {
   const [subscriptionTier, setSubscriptionTier] = useState<string | null>(null);
   const [userTrack, setUserTrack] = useState<string>("ap");
   const { prefs: focusPrefs } = useFocusPrefs(); // ADHD #39 Focus Mode
+  const [energyChecked, setEnergyChecked] = useState(false); // ADHD #43 Energy check-in
   const [premiumRestricted, setPremiumRestricted] = useState(false);
   const [sessionLimitReached, setSessionLimitReached] = useState(false);
   // Admin-toggleable knowledge check after wrong MCQs. Default OFF
@@ -416,6 +417,7 @@ export default function PracticePage() {
     winUpsellShownRef.current = false;
     setMidSessionPulse(null);
     pulseFiredRef.current = { p30: false, p60: false };
+    setEnergyChecked(false); // ADHD #43 — re-prompt energy each new session
   }
 
   // Reset unit selection when course changes
@@ -1236,6 +1238,22 @@ export default function PracticePage() {
           indicatorClassName="bg-blue-500"
           aria-label={`Practice session progress: question ${currentIndex + 1} of ${questionsRef.current.length}`}
         />
+
+        {/* ADHD #43 Energy check-in — quick start-of-session pulse (opt-in).
+            Non-blocking; pick a pace, then it's dismissed for the session. */}
+        {focusPrefs.energyCheckIn && !energyChecked && currentIndex === 0 && (
+          <div className="rounded-lg bg-teal-500/5 border border-teal-500/20 px-3 py-2.5 text-sm">
+            <p className="font-medium text-teal-700 dark:text-teal-400 mb-1.5">How&apos;s your energy right now?</p>
+            <div className="flex flex-wrap gap-2">
+              <button type="button" onClick={() => setEnergyChecked(true)} className="px-3 py-1 rounded-full border border-border hover:bg-accent text-xs">Low — I&apos;ll keep it short</button>
+              <button type="button" onClick={() => setEnergyChecked(true)} className="px-3 py-1 rounded-full border border-border hover:bg-accent text-xs">Medium</button>
+              <button type="button" onClick={() => setEnergyChecked(true)} className="px-3 py-1 rounded-full border border-border hover:bg-accent text-xs">High — let&apos;s go</button>
+            </div>
+            {!focusPrefs.focusMode && (
+              <p className="text-[11px] text-muted-foreground mt-1.5">Low-energy day? A short 5–10 question set still counts. Turn on Focus Mode in Settings to cut distractions.</p>
+            )}
+          </div>
+        )}
 
         {/* #50 Mid-session pulse — brief, non-blocking encouragement at
             ~30% / ~60% progress. Dismissible; auto-clears on next advance. */}
