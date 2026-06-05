@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "course": "AP_PHYSICS_1",
-  "last_updated": "2026-05-09",
+  "last_updated": "2026-06-05",
   "source_count": 1,
   "calibration": {
     "coverage_strategy": "wide_not_deep",
@@ -31,6 +31,21 @@
       "note": "Students compare us to these — match the register."
     }
   },
-  "generator_prompt_injection": "REAL TEST-TAKER INSIGHTS (sourced from r/APStudents, updated 2026-05-09):\n- Coverage: Real test-takers report this exam covers breadth over depth. Stay at college 101 level on each topic.\n- High-emphasis topics (per real students): physics.\n- Students struggle most with: physics. Generate proportionally more on these.\n- Wording style: ~0% of items should use realistic exam-style indirection (NOT unfair ambiguity).\n- Difficulty target: 20% easy / 55% medium / 25% hard. default — no pass-score data yet.\n",
-  "popup_tips": []
+  "generator_prompt_injection": "REAL TEST-TAKER INSIGHTS (sourced from r/APStudents, updated 2026-06-05):\n- Coverage: Real test-takers report this exam covers breadth over depth. Stay at college 101 level on each topic.\n- High-emphasis topics (per real students): physics.\n- Students struggle most with: physics. Generate proportionally more on these.\n- Wording style: ~0% of items should use realistic exam-style indirection (NOT unfair ambiguity).\n- Difficulty target: 20% easy / 55% medium / 25% hard. default — no pass-score data yet.\n",
+  "popup_tips": [
+    {
+      "tip_id": "591b561b",
+      "text": "On AP PHYSICS 1, real test-takers say breadth beats depth. Aim to recognize many topics at a 101 level rather than mastering a few in deep detail.",
+      "source_attribution": "Compiled from real test-takers on r/APStudents",
+      "first_seen": "2026-06-05",
+      "topic_filter": []
+    },
+    {
+      "tip_id": "84fd8368",
+      "text": "Where AP PHYSICS 1 students reported struggling most: physics. Make sure you can handle these before exam day.",
+      "source_attribution": "Compiled from real test-takers on r/APStudents",
+      "first_seen": "2026-06-05",
+      "topic_filter": []
+    }
+  ]
 }
