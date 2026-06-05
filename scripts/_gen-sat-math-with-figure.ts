@@ -10,6 +10,9 @@ import { writeFileSync, mkdirSync } from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import { renderStimulus, type StimulusSpec } from "../src/lib/stimulus-svg/index";
+import crypto from "node:crypto";
+// @ts-ignore — JS helper, no types
+import { makePrisma } from "./_prisma-http.mjs";
 
 config({ path: "C:/Users/akkil/project/AP_Help/.env" });
 process.env.DATABASE_URL = (process.env.DATABASE_URL || "").replace(/^["']|["']$/g, "");
@@ -23,6 +26,14 @@ async function main() {
   const FLAGS = process.argv.slice(2);
   const COUNT = parseInt(FLAGS.find((f) => f.startsWith("--count="))?.split("=")[1] ?? "1", 10);
   const DRY_RUN = FLAGS.includes("--dry-run");
+  const SAVE = FLAGS.includes("--save");
+  const prisma: any = SAVE ? makePrisma() : null;
+  const DOMAIN_TO_UNIT: Record<string, string> = {
+    ALGEBRA: "SAT_MATH_1_ALGEBRA",
+    ADVANCED_MATH: "SAT_MATH_2_ADVANCED_MATH",
+    PROBLEM_SOLVING_DATA_ANALYSIS: "SAT_MATH_3_PROBLEM_SOLVING",
+    GEOMETRY_TRIG: "SAT_MATH_4_GEOMETRY_TRIG",
+  };
 
   const GROQ_KEY = process.env.GROQ_API_KEY;
   if (!GROQ_KEY) {
@@ -109,6 +120,30 @@ async function main() {
         writeFileSync(path.join(OUT_DIR, fname), JSON.stringify(fullRecord, null, 2), "utf8");
         writeFileSync(path.join(OUT_DIR, fname.replace(".json", ".svg")), rendered.svg, "utf8");
       }
+      // Productionize (--save): insert the figure-backed Q into the bank. SVG
+      // lives in stimulusImageUrl as a data-URI (rendered by the practice page).
+      // Single create (Neon HTTP — no transaction). isApproved=true: it already
+      // passed validateQuestion() + has a real figure + per-option explanations.
+      if (SAVE && prisma) {
+        const ch = crypto.createHash("sha256")
+          .update((parsed.stem || "").toLowerCase().replace(/\s+/g, " ").trim()).digest("hex");
+        try {
+          await prisma.question.create({
+            data: {
+              course: "SAT_MATH", unit: DOMAIN_TO_UNIT[bp.domain] || "SAT_MATH_1_ALGEBRA",
+              topic: bp.subskill, subtopic: "", difficulty: "MEDIUM", questionType: "MCQ",
+              questionText: parsed.stem, options: parsed.options, correctAnswer: parsed.correctAnswer,
+              explanation: parsed.workedSolution, stimulusImageUrl: rendered.dataUri,
+              distractorExplanations: parsed.distractorExplanations, isApproved: true,
+              isAiGenerated: true, contentHash: ch, modelUsed: "figure-svg-gen-2026-06-05",
+              generatedForTier: "FREE", apSkill: bp.subskill,
+            },
+          });
+          process.stdout.write(" [saved]");
+        } catch (e: any) {
+          process.stdout.write(` [save skip: ${(e.message || "").slice(0, 40)}]`);
+        }
+      }
       summary.push({ ok: true, file: fname, stem: parsed.stem.slice(0, 80) });
       process.stdout.write(`OK — ${verify.svgBytes}b SVG, ${verify.distractorCount} distractors\n`);
     } catch (err: any) {
@@ -124,6 +159,8 @@ async function main() {
   for (const s of summary) {
     if (s.ok) console.log(`    • ${s.stem}...`);
   }
+  if (SAVE) console.log(`  Saved to DB: SAT_MATH figure-backed (modelUsed=figure-svg-gen-2026-06-05)`);
+  if (prisma) await prisma.$disconnect();
 }
 
 // ─────────────────────────────────────────────────────────────────────────
