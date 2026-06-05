@@ -46,19 +46,19 @@ async function main() {
       domain: "ALGEBRA",
       subskill: "Linear functions — slope interpretation",
       figureKind: "scatterPlot-with-trendline",
-      contextTopics: ["population growth", "savings over time", "fuel consumption", "subscriber growth", "temperature rise"],
+      contextTopics: ["population growth", "savings over time", "fuel consumption", "subscriber growth", "temperature rise", "website traffic", "plant height", "bacterial count", "app downloads", "monthly rainfall", "membership growth", "energy usage", "book sales", "distance cycled", "reservoir level"],
     },
     {
       domain: "PROBLEM_SOLVING_DATA_ANALYSIS",
       subskill: "One-variable data — measure of center from bar chart",
       figureKind: "barChart",
-      contextTopics: ["votes for school activities", "books read per student", "products sold per category", "test scores by class"],
+      contextTopics: ["votes for school activities", "books read per student", "products sold per category", "test scores by class", "tickets sold per show", "trees planted per grade", "recycling by month", "goals scored per team", "attendance by weekday", "donations by region", "pizzas sold per topping", "steps walked per day", "rainfall by city", "medals won per country"],
     },
     {
       domain: "ALGEBRA",
       subskill: "Linear equations from a graph — finding y-intercept",
       figureKind: "coordinatePlane-line",
-      contextTopics: ["cost over time", "distance traveled", "balance over months", "tank fill level"],
+      contextTopics: ["cost over time", "distance traveled", "balance over months", "tank fill level", "water depth", "remaining battery", "altitude over time", "temperature over hours", "rope length cut", "candle height burning", "savings after deposits", "elevation on a hike"],
     },
   ];
 
