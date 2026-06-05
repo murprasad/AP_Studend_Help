@@ -71,9 +71,14 @@ function matchScore(topic: string, c: DistractorCatalog): number {
  */
 export function getDistractorGuidance(course: string, topic: string | undefined, count = 3): string {
   const catalogs = loadDistractorCatalogs();
-  // ACT_MATH currently has no MATH-specific catalog → allow SAT_MATH fallback.
+  // PSAT mirrors SAT; ACT_MATH has no own MATH catalog → fall back to SAT_MATH.
+  const FALLBACK: Record<string, string> = {
+    ACT_MATH: "SAT_MATH",
+    PSAT_MATH: "SAT_MATH",
+    PSAT_READING_WRITING: "SAT_READING_WRITING",
+  };
   const examMatches = catalogs.filter(
-    (c) => c.exam === course || (course === "ACT_MATH" && c.exam === "SAT_MATH"),
+    (c) => c.exam === course || c.exam === FALLBACK[course],
   );
   if (examMatches.length === 0) return "";
 

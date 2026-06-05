@@ -1,0 +1,29 @@
+{
+  "skill": "Transitions — choosing the logical connector",
+  "exam": "SAT_READING_WRITING",
+  "domain": "EXPRESSION_OF_IDEAS",
+  "source": "Derived from error patterns across CB SAT R&W practice (data/cb-corpus/)",
+  "mistakeCategories": [
+    {
+      "id": "contrast-vs-continuation",
+      "name": "Contrast word where continuation is needed (or vice-versa)",
+      "description": "Student picks 'however' when the sentences agree, or 'furthermore' when they contrast.",
+      "studentExample": "Two agreeing sentences joined with 'In contrast'.",
+      "synthesisCue": "Offer a transition signaling the OPPOSITE relationship (contrast vs continuation) from the correct one."
+    },
+    {
+      "id": "cause-effect-misread",
+      "name": "Cause/effect connector with no causal link",
+      "description": "Student picks 'therefore'/'because' when the relationship is merely sequential or additive.",
+      "studentExample": "Adds 'as a result' between two unrelated facts.",
+      "synthesisCue": "Offer a cause-effect transition ('therefore', 'consequently') where none is justified."
+    },
+    {
+      "id": "emphasis-mismatch",
+      "name": "Example/emphasis word that doesn't fit",
+      "description": "Student picks 'for example' or 'in fact' where the next sentence isn't an example or intensification.",
+      "studentExample": "'For instance' before a sentence that gives no instance.",
+      "synthesisCue": "Offer an illustration/emphasis transition that doesn't match the next sentence's role."
+    }
+  ]
+}

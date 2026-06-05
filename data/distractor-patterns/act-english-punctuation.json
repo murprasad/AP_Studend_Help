@@ -1,0 +1,36 @@
+{
+  "skill": "Punctuation — commas, semicolons, and clause boundaries",
+  "exam": "ACT_ENGLISH",
+  "domain": "CONVENTIONS_OF_STANDARD_ENGLISH",
+  "source": "Derived from error patterns across the official ACT practice test (data/raw/act/)",
+  "mistakeCategories": [
+    {
+      "id": "comma-splice",
+      "name": "Comma splice between two independent clauses",
+      "description": "Student joins two complete sentences with only a comma.",
+      "studentExample": "'The results were clear, the team celebrated.'",
+      "synthesisCue": "Offer a version that joins two independent clauses with just a comma."
+    },
+    {
+      "id": "unneeded-comma-pair",
+      "name": "Commas around essential (restrictive) information",
+      "description": "Student sets off information that is necessary to the meaning, as if it were extra.",
+      "studentExample": "'Students, who study daily, pass.' (changes the meaning)",
+      "synthesisCue": "Offer a version that wrongly wraps restrictive information in commas."
+    },
+    {
+      "id": "semicolon-misuse",
+      "name": "Semicolon where the second part isn't independent",
+      "description": "Student uses a semicolon before a fragment or list intro.",
+      "studentExample": "'She packed many things; including books.'",
+      "synthesisCue": "Offer a version using a semicolon before a dependent clause or fragment."
+    },
+    {
+      "id": "missing-pause",
+      "name": "No punctuation where a pause is required",
+      "description": "Student runs an introductory phrase or nonessential aside into the sentence with no comma.",
+      "studentExample": "'After the storm passed the crew returned.'",
+      "synthesisCue": "Offer a version omitting the comma after an introductory phrase or around an aside."
+    }
+  ]
+}

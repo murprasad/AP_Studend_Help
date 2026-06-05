@@ -1,0 +1,36 @@
+{
+  "skill": "Percentages, ratios, and proportional reasoning",
+  "exam": "SAT_MATH",
+  "domain": "PROBLEM_SOLVING_AND_DATA",
+  "source": "Derived from error patterns across CB SAT practice (data/cb-corpus/)",
+  "mistakeCategories": [
+    {
+      "id": "percent-of-wrong-base",
+      "name": "Took the percent of the wrong base",
+      "description": "Student applies the percent to the new amount instead of the original (or vice-versa).",
+      "studentExample": "20% increase then 20% decrease assumed to return to start.",
+      "synthesisCue": "Compute the percent change using the wrong base (final vs original)."
+    },
+    {
+      "id": "percent-point-vs-percent",
+      "name": "Confused percentage points with percent change",
+      "description": "Student treats a change from 20% to 25% as a 5% change instead of 25%.",
+      "studentExample": "20% to 25% reported as '5% increase'.",
+      "synthesisCue": "Report the difference in percentage points as if it were the percent change."
+    },
+    {
+      "id": "ratio-inverted",
+      "name": "Inverted the ratio",
+      "description": "Student sets up the proportion with the parts flipped.",
+      "studentExample": "3:5 used as 5:3.",
+      "synthesisCue": "Produce the answer that results from inverting the ratio."
+    },
+    {
+      "id": "forgot-to-add-back",
+      "name": "Computed the part, not the requested total",
+      "description": "Student finds the increase/discount amount but the question asks for the final value.",
+      "studentExample": "Finds the $15 discount but the question wants the $85 final price.",
+      "synthesisCue": "Give the change amount when the question asks for the resulting total (or vice-versa)."
+    }
+  ]
+}

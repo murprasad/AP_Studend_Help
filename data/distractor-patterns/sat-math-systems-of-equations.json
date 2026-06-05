@@ -1,0 +1,36 @@
+{
+  "skill": "Systems of linear equations",
+  "exam": "SAT_MATH",
+  "domain": "ALGEBRA",
+  "source": "Derived from error patterns across CB SAT practice (data/cb-corpus/)",
+  "mistakeCategories": [
+    {
+      "id": "solved-one-variable-only",
+      "name": "Found one variable, reported it for the other",
+      "description": "Student solves the system but reports x when the question wants y (or their sum).",
+      "studentExample": "Asks for y; student gives the value of x.",
+      "synthesisCue": "Give the value of the OTHER variable in the solution pair."
+    },
+    {
+      "id": "addition-instead-of-elimination",
+      "name": "Added equations without aligning coefficients",
+      "description": "Student adds the two equations directly without scaling to eliminate a variable.",
+      "studentExample": "Adds 2x+y=5 and x+y=3 to get 3x+2y=8 and stalls or mis-solves.",
+      "synthesisCue": "Compute the answer that results from adding the equations without proper elimination."
+    },
+    {
+      "id": "substitution-sign-slip",
+      "name": "Sign error during substitution",
+      "description": "Student substitutes correctly but drops or flips a sign.",
+      "studentExample": "Substitutes y = 3 - x but uses 3 + x.",
+      "synthesisCue": "Produce the value from a single sign error in the substitution step."
+    },
+    {
+      "id": "no-solution-confusion",
+      "name": "Mishandled parallel / identical lines",
+      "description": "Student gives a numeric answer when the system has no solution or infinitely many.",
+      "studentExample": "Parallel lines (no solution) but student reports a specific point.",
+      "synthesisCue": "Offer a specific numeric solution when the correct answer is 'no solution' or 'infinitely many'."
+    }
+  ]
+}
