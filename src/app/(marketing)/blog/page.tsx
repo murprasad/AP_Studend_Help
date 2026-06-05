@@ -11,7 +11,20 @@ export const metadata: Metadata = {
   },
 };
 
-const articles = [
+const articles: {
+  title: string; excerpt: string; category: string; categoryColor: string;
+  readTime: string; date: string; href?: string;
+}[] = [
+  {
+    title: "Study Strategies for Students Who Learn Differently",
+    excerpt:
+      "Long sessions draining you? Distractions winning? Focus-friendly, evidence-based strategies — short sessions, extended time, energy check-ins — that fit how you actually study.",
+    category: "Study Tips",
+    categoryColor: "bg-blue-500/10 text-blue-700 dark:text-blue-400 border-blue-500/20",
+    readTime: "6 min read",
+    date: "Jun 4, 2026",
+    href: "/blog/study-strategies-learn-differently",
+  },
   {
     title: "How Adaptive Practice Is Changing Test Prep",
     excerpt: "Traditional flashcards and textbooks can only take you so far. Here's how adaptive practice targets your weak areas and accelerates improvement.",
@@ -86,9 +99,15 @@ export default function BlogPage() {
             </div>
             <h2 className="text-lg font-bold">{a.title}</h2>
             <p className="text-sm text-muted-foreground leading-relaxed">{a.excerpt}</p>
-            <p className="text-xs text-blue-500 font-medium flex items-center gap-1">
-              Coming soon <ArrowRight className="h-3 w-3" />
-            </p>
+            {a.href ? (
+              <Link href={a.href} className="text-xs text-blue-500 font-medium flex items-center gap-1 hover:underline">
+                Read article <ArrowRight className="h-3 w-3" />
+              </Link>
+            ) : (
+              <p className="text-xs text-muted-foreground font-medium flex items-center gap-1">
+                Coming soon <ArrowRight className="h-3 w-3" />
+              </p>
+            )}
           </article>
         ))}
       </div>
