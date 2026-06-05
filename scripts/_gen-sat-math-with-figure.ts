@@ -60,6 +60,12 @@ async function main() {
       figureKind: "coordinatePlane-line",
       contextTopics: ["cost over time", "distance traveled", "balance over months", "tank fill level", "water depth", "remaining battery", "altitude over time", "temperature over hours", "rope length cut", "candle height burning", "savings after deposits", "elevation on a hike"],
     },
+    {
+      domain: "PROBLEM_SOLVING_DATA_ANALYSIS",
+      subskill: "Two-way data tables — totals and comparisons",
+      figureKind: "dataTable",
+      contextTopics: ["regional sales", "survey responses", "species counts", "ticket sales", "rainfall totals", "production output", "library checkouts", "membership", "recycling tonnage", "clinic visits"],
+    },
   ];
 
   const OUT_DIR = path.join(REPO, "data", "fidelity-proofs", "generated");
@@ -225,6 +231,25 @@ function buildStimulus(figureKind: string, ctx: string): any {
       _meta: { intercept, slope },
     };
   }
+  if (figureKind === "dataTable") {
+    const cats = ["North", "South", "East", "West"];
+    const col1 = cats.map(() => 20 + Math.floor(Math.random() * 60));
+    const col2 = cats.map(() => 20 + Math.floor(Math.random() * 60));
+    const rows = cats.map((c, i) => [c, col1[i], col2[i]]);
+    return {
+      kind: "dataTable",
+      spec: {
+        title: `${ctx.charAt(0).toUpperCase() + ctx.slice(1)} by Region`,
+        headers: ["Region", "2022", "2023"],
+        rows,
+      },
+      _meta: {
+        cats, col1, col2,
+        total2022: col1.reduce((a, b) => a + b, 0),
+        total2023: col2.reduce((a, b) => a + b, 0),
+      },
+    };
+  }
   throw new Error(`Unknown figure kind: ${figureKind}`);
 }
 
@@ -237,6 +262,8 @@ function buildPrompt(bp: any, ctx: string, stimulus: any): string {
     figureDescription = `A bar chart with 5 categories (A, B, C, D, E) and values ${meta.values.join(", ")}. Sum = ${meta.sum}.`;
   } else if (stimulus.kind === "coordinatePlane") {
     figureDescription = `A coordinate plane with a single line of best fit. y-intercept = ${meta.intercept}, slope = ${meta.slope}.`;
+  } else if (stimulus.kind === "dataTable") {
+    figureDescription = `A data table titled "${stimulus.spec.title}" with columns [${stimulus.spec.headers.join(", ")}] and rows: ${stimulus.spec.rows.map((r: any) => r.join(" = ")).join("; ")}. Column totals: 2022 = ${meta.total2022}, 2023 = ${meta.total2023}.`;
   }
 
   const mistakeCategories = bp.subskill.includes("slope")
