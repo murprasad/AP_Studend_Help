@@ -47,8 +47,15 @@ describe("Option count — SAT/PSAT default to 4 choices (digital SAT spec)", ()
     // format. ACT Math is now 4-choice like every other section.
     expect(expectedOptionCount("ACT_MATH")).toBe(4);
   });
-  it("AP courses still expect 5 options", () => {
-    expect(expectedOptionCount("AP_CALCULUS_AB")).toBe(5);
+  it("AP courses expect 4 options (College Board 2020 redesign)", () => {
+    // AP MCQs went from 5 to 4 answer choices in the 2020 redesign. The gate
+    // previously returned 5 for AP (fell through the CLEP default), which
+    // false-flagged 100% of every AP MCQ — fixed 2026-06-05.
+    expect(expectedOptionCount("AP_CALCULUS_AB")).toBe(4);
+    expect(expectedOptionCount("AP_BIOLOGY")).toBe(4);
+  });
+  it("CLEP courses expect 5 options", () => {
+    expect(expectedOptionCount("CLEP_BIOLOGY")).toBe(5);
   });
 });
 
