@@ -307,6 +307,10 @@ export default function SettingsPage() {
             </span>
           </label>
 
+          <Link href="/learning-style" className="inline-flex items-center gap-1 text-sm text-primary underline">
+            Not sure what helps? Take the 5-min study-style quiz <ExternalLink className="h-3 w-3" />
+          </Link>
+
           <p className="text-[11px] text-muted-foreground/70 pt-1">
             Focus-friendly study aids included with your plan. These are general study tools, not a medical or diagnostic feature.
           </p>
