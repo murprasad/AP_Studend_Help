@@ -261,8 +261,19 @@ export function runDeterministicGates(q: QuestionCandidate): GateResult {
   // A bare-stem R&W item is automatically un-shippable per the digital
   // SAT spec.
   if (STIMULUS_REQUIRED_COURSES.has(q.course ?? "")) {
+    const stem = q.questionText ?? "";
+    // Digital-SAT Conventions / Words-in-Context / Transitions items EMBED their
+    // short text directly in the stem (a fill-in-the-blank or a self-contained
+    // sentence) and have NO separate passage stimulus — that is the CORRECT CB
+    // format, not a defect. Only flag items that reference an EXTERNAL passage
+    // without one. (Without this, the gate false-flagged ~1,150 valid SAT/PSAT
+    // R&W questions — the over-flag found in the 2026-06-05 re-sweep.)
+    const textEmbeddedInStem =
+      stem.includes("_____") ||
+      /completes the text|conventions of standard english|which choice (most logically )?completes/i.test(stem) ||
+      stem.length >= 180;
     const stim = (q.stimulus ?? "").trim();
-    if (!stim || stim.length < MIN_STIMULUS_CHARS) {
+    if (!textEmbeddedInStem && (!stim || stim.length < MIN_STIMULUS_CHARS)) {
       return {
         ok: false,
         gate: "stimulus-required",
