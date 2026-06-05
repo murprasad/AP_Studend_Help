@@ -1,0 +1,36 @@
+{
+  "skill": "Command of Evidence — which detail supports the claim",
+  "exam": "SAT_READING_WRITING",
+  "domain": "INFORMATION_AND_IDEAS",
+  "source": "Derived from error patterns across CB SAT R&W practice (data/cb-corpus/)",
+  "mistakeCategories": [
+    {
+      "id": "true-but-irrelevant",
+      "name": "True statement that doesn't support THIS claim",
+      "description": "Option is factually accurate per the passage but addresses a different point than the claim in the question.",
+      "studentExample": "Claim is about cost; distractor cites a true detail about timing.",
+      "synthesisCue": "Write a distractor that is true per the passage but supports a DIFFERENT claim than the one asked about."
+    },
+    {
+      "id": "opposite-evidence",
+      "name": "Evidence that undermines rather than supports",
+      "description": "Student picks a detail that actually weakens or contradicts the claim.",
+      "studentExample": "Claim: the method is efficient. Distractor: a detail showing it is slow.",
+      "synthesisCue": "Write a distractor that is on-topic but points the OPPOSITE direction from the claim."
+    },
+    {
+      "id": "too-broad-generalization",
+      "name": "Over-broad statement not grounded in the passage",
+      "description": "Option makes a sweeping generalization the passage never establishes.",
+      "studentExample": "Passage describes one study; distractor claims 'all researchers agree'.",
+      "synthesisCue": "Write a distractor that overgeneralizes beyond what the passage actually states."
+    },
+    {
+      "id": "outside-knowledge",
+      "name": "Plausible real-world fact not in the passage",
+      "description": "Option is reasonable general knowledge but unsupported by the text.",
+      "studentExample": "A commonly-known fact about the topic that the passage never mentions.",
+      "synthesisCue": "Write a distractor that is plausible outside knowledge but is NOT stated or implied in the passage."
+    }
+  ]
+}

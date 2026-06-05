@@ -689,6 +689,21 @@ export async function generateQuestion(
     }
   }
 
+  // Distractor catalog (Goal A #36) — inject curated real-student misconception
+  // patterns so the wrong options are plausible mistakes, not random values.
+  // fs-based (Node only); dynamic-import in try/catch like the CB-corpus block.
+  // Returns "" when no catalog matches the course, so this is a safe no-op
+  // everywhere it isn't yet covered.
+  let distractorCatalogSection = "";
+  if (!quickMode) {
+    try {
+      const { getDistractorGuidance } = await import("./distractor-catalog");
+      distractorCatalogSection = getDistractorGuidance(courseStr, topic, 3);
+    } catch {
+      // catalog module unavailable (e.g. CF Workers / fs) — continue without it
+    }
+  }
+
   // CLEP OpenStax content grounding — fetch unit-specific textbook content for factual accuracy
   let openStaxGroundingSection = "";
   if ((inferredCourse as string).startsWith("CLEP_") && !quickMode) {
@@ -720,7 +735,7 @@ export async function generateQuestion(
     }
   }
 
-  const allEnrichments = `${cbFrqSeedSection}${clepCalibrationSection}${apCalibrationSection}${apGroundingSection}${openStaxGroundingSection}${cbCorpusCalibrationSection}`;
+  const allEnrichments = `${cbFrqSeedSection}${clepCalibrationSection}${apCalibrationSection}${apGroundingSection}${openStaxGroundingSection}${cbCorpusCalibrationSection}${distractorCatalogSection}`;
   const prompt = seedQuestion
     ? `${basePrompt}${allEnrichments}\n\nREFERENCE QUESTION (for style/difficulty calibration — generate something DIFFERENT):\n"${seedQuestion}"\n\nGenerate a new question on the SAME concept with entirely different numbers, context, and scenario. Do NOT reuse the same values or phrasing from the reference.`
     : allEnrichments

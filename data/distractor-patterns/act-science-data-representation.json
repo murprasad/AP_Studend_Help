@@ -1,0 +1,36 @@
+{
+  "skill": "Data Representation — reading values and trends from a graph or table",
+  "exam": "ACT_SCIENCE",
+  "domain": "DATA_REPRESENTATION",
+  "source": "Derived from error patterns across the official ACT practice test (data/raw/act/)",
+  "mistakeCategories": [
+    {
+      "id": "wrong-axis-or-row",
+      "name": "Read the value off the wrong axis, row, or trial",
+      "description": "Student reads the correct figure but from an adjacent row/column or the wrong variable.",
+      "studentExample": "Asked for Trial 2 at 30°C, reads the Trial 2 value at 40°C.",
+      "synthesisCue": "Give the value from an adjacent row/column or a neighboring condition in the same figure."
+    },
+    {
+      "id": "trend-direction-reversed",
+      "name": "Reversed the direction of the trend",
+      "description": "Student identifies that a quantity changes but states increasing for decreasing (or vice-versa).",
+      "studentExample": "Values fall as temperature rises; student says 'increases'.",
+      "synthesisCue": "State the opposite trend direction (increasing vs decreasing) from what the data shows."
+    },
+    {
+      "id": "interpolation-as-extreme",
+      "name": "Quoted a max/min instead of the asked value",
+      "description": "Student reports the largest or smallest value in the dataset rather than the specific one requested.",
+      "studentExample": "Asked for the value at a midpoint, gives the peak value.",
+      "synthesisCue": "Give the maximum or minimum value in the figure instead of the specific requested point."
+    },
+    {
+      "id": "unit-or-magnitude-slip",
+      "name": "Correct number, wrong unit or order of magnitude",
+      "description": "Student reads the value correctly but mis-states the unit or scale.",
+      "studentExample": "Reads 2.5 (×10^3) but reports 2.5 instead of 2,500.",
+      "synthesisCue": "Quote the correct digits but with the wrong unit or order of magnitude from the axis label."
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "skill": "Linear equations — solving for a variable",
+  "exam": "SAT_MATH",
+  "domain": "ALGEBRA",
+  "source": "Derived from error patterns across CB SAT Practice Tests (data/cb-corpus/)",
+  "mistakeCategories": [
+    {
+      "id": "sign-error-on-transpose",
+      "name": "Sign error moving a term across the equals sign",
+      "description": "Student moves a term but keeps its original sign.",
+      "studentExample": "From 2x + 6 = 10, writes 2x = 10 + 6 = 16, x = 8.",
+      "synthesisCue": "Compute the answer that results from adding instead of subtracting (or vice-versa) the constant term."
+    },
+    {
+      "id": "forgot-divide-coefficient",
+      "name": "Solved to coefficient·x but forgot the final division",
+      "description": "Student isolates the variable term but reports its value before dividing by the coefficient.",
+      "studentExample": "From 2x = 8, reports x = 8 instead of x = 4.",
+      "synthesisCue": "Give the value of the variable BEFORE dividing by its coefficient."
+    },
+    {
+      "id": "distribute-only-first-term",
+      "name": "Distributed across only the first term in parentheses",
+      "description": "Student multiplies the factor into the first term but not the rest.",
+      "studentExample": "3(x + 4) treated as 3x + 4 instead of 3x + 12.",
+      "synthesisCue": "Compute the result of distributing to only the first term inside the parentheses."
+    },
+    {
+      "id": "solved-for-wrong-quantity",
+      "name": "Solved for x when the question asks for an expression",
+      "description": "Question asks for the value of e.g. 3x or x+1, but the student stops at x.",
+      "studentExample": "Asked for 3x, gives x.",
+      "synthesisCue": "Give the value of x itself when the question asks for a multiple or expression of x."
+    }
+  ]
+}
