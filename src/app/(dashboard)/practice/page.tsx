@@ -13,6 +13,7 @@ import { optionLetter, cleanOptionText } from "@/lib/options";
 import { ApCourse, ApUnit } from "@prisma/client";
 import { getCourseConfig } from "@/lib/courses";
 import { isPremiumForTrack } from "@/lib/tiers";
+import { useFocusPrefs } from "@/hooks/use-focus-prefs";
 import { Textarea } from "@/components/ui/textarea";
 import { CourseSelectorInline } from "@/components/layout/course-selector-inline";
 import { SocialProofBadge } from "@/components/social-proof-badge";
@@ -153,6 +154,7 @@ export default function PracticePage() {
 
   const [subscriptionTier, setSubscriptionTier] = useState<string | null>(null);
   const [userTrack, setUserTrack] = useState<string>("ap");
+  const { prefs: focusPrefs } = useFocusPrefs(); // ADHD #39 Focus Mode
   const [premiumRestricted, setPremiumRestricted] = useState(false);
   const [sessionLimitReached, setSessionLimitReached] = useState(false);
   // Admin-toggleable knowledge check after wrong MCQs. Default OFF
@@ -1217,7 +1219,7 @@ export default function PracticePage() {
                 if (results[i].correct) streak++;
                 else break;
               }
-              return streak >= 2 ? (
+              return (streak >= 2 && !focusPrefs.focusMode) ? (
                 <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-700 dark:text-emerald-400 text-xs font-semibold">
                   ✓ {streak} in a row
                 </span>
@@ -1237,7 +1239,7 @@ export default function PracticePage() {
 
         {/* #50 Mid-session pulse — brief, non-blocking encouragement at
             ~30% / ~60% progress. Dismissible; auto-clears on next advance. */}
-        {midSessionPulse && (
+        {midSessionPulse && !focusPrefs.focusMode && (
           <div className="flex items-start gap-2 px-3 py-2 rounded-lg bg-blue-500/5 border border-blue-500/20 text-sm text-blue-700 dark:text-blue-400">
             <ThumbsUp className="h-4 w-4 flex-shrink-0 mt-0.5" />
             <p className="flex-1 leading-relaxed">{midSessionPulse}</p>
