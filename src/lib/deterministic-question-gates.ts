@@ -313,10 +313,24 @@ export function runDeterministicGates(q: QuestionCandidate): GateResult {
       /the graph (below|above|shown)/i.test(text) ||
       /shown in the (figure|graph|diagram)/i.test(text) ||
       /as shown in the (figure|graph|diagram)/i.test(text) ||
-      /in the (figure|graph|diagram) (above|below)/i.test(text);
+      /in the (figure|graph|diagram) (above|below)/i.test(text) ||
+      /\bshown (above|below)\b/i.test(text);
+    // IMPLICIT figure reference (2026-06-05): a bare labeled angle/arc
+    // ("measure of angle B") in a short stem that does NOT describe the geometry
+    // numerically — the student can't know WHICH angle without a figure. This is
+    // the class that slipped past the explicit patterns above (Esha's "angle B").
+    // Guarded tight (no stimulus + short stem + no numbers) so self-contained
+    // word problems like "a right triangle with legs 5√3 and 4√3" are NOT flagged.
+    const stemOnly = q.questionText ?? "";
+    const hasStimText = (q.stimulus ?? "").trim().length >= 20;
+    const bareLabeledAngle =
+      !hasStimText &&
+      /measure of (angle|arc)\s+[A-Z]\b/i.test(stemOnly) &&
+      stemOnly.length < 160 &&
+      !/=|\b\d+\s*(units?|cm|in|ft|m|mm|degrees? each|°)\b/i.test(stemOnly);
     const hasImage =
       typeof q.stimulusImageUrl === "string" && q.stimulusImageUrl.trim().length > 0;
-    if (claimsVisual && !hasImage) {
+    if ((claimsVisual || bareLabeledAngle) && !hasImage) {
       return {
         ok: false,
         gate: "claims-visual-no-image",
