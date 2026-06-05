@@ -1407,17 +1407,24 @@ export default function PracticePage() {
                 const letter = optionLetter(i);
                 const cleanText = cleanOptionText(option);
                 let optionClass = "border border-border/40 hover:bg-accent cursor-pointer";
+                // CB/Bluebook-style circled A/B/C/D marker — the most
+                // recognizable exam visual cue (2026-06-05 look-&-feel work).
+                let markerClass = "border-border text-foreground";
 
                 if (feedback && selectedAnswer) {
                   if (letter === feedback.correctAnswer) {
                     optionClass = "border-emerald-500 bg-emerald-500/10 text-emerald-700 dark:text-emerald-400";
+                    markerClass = "border-emerald-500 bg-emerald-500 text-white";
                   } else if (letter === selectedAnswer && !feedback.isCorrect) {
                     optionClass = "border-red-500 bg-red-500/10 text-red-700 dark:text-red-400";
+                    markerClass = "border-red-500 bg-red-500 text-white";
                   } else {
                     optionClass = "border border-border/20 opacity-50";
+                    markerClass = "border-border/30 text-muted-foreground/50";
                   }
                 } else if (selectedAnswer === letter) {
-                  optionClass = "border-blue-500 bg-blue-500/10";
+                  optionClass = "border-blue-600 bg-blue-500/10";
+                  markerClass = "border-blue-600 bg-blue-600 text-white";
                 }
 
                 return (
@@ -1425,13 +1432,13 @@ export default function PracticePage() {
                     key={i}
                     onClick={() => !feedback && !isSubmitting && submitAnswer(letter)}
                     disabled={!!feedback || isSubmitting}
-                    className={`w-full text-left p-4 rounded-lg transition-all min-h-[48px] flex items-start gap-3 ${optionClass}`}
+                    className={`w-full text-left p-4 rounded-lg transition-all min-h-[52px] flex items-center gap-3 ${optionClass}`}
                   >
-                    <span className="font-bold text-sm w-6 flex-shrink-0">({letter})</span>
+                    <span className={`flex-shrink-0 w-7 h-7 rounded-full border-2 flex items-center justify-center text-sm font-semibold ${markerClass}`}>{letter}</span>
                     {/* 2026-05-10 fix: options contain LaTeX (e.g., $95\%$, $\frac{1}{2}$).
                         Previously rendered as plain text — LaTeX leaked as literal $ to user.
-                        MarkdownContent processes KaTeX + GFM. */}
-                    <span className="text-sm leading-relaxed flex-1 [&_p]:m-0">
+                        MarkdownContent processes KaTeX + GFM. Bumped to 15px (CB-style). */}
+                    <span className="text-[15px] leading-relaxed flex-1 [&_p]:m-0">
                       <MarkdownContent content={cleanText} useMermaid={false} />
                     </span>
                   </button>
