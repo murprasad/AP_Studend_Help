@@ -5,17 +5,17 @@ import { useExamMode } from "@/hooks/use-exam-mode";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
-  LineChart,
-  Line,
-  CartesianGrid,
-} from "recharts";
+import dynamic from "next/dynamic";
+// recharts kept OUT of the SSR Worker bundle (CF 3 MiB limit) — charts are
+// client-only viz, loaded on demand. ssr:false → not in the server handler.
+const MasteryBarChart = dynamic(
+  () => import("@/components/analytics/recharts-charts").then((m) => m.MasteryBarChart),
+  { ssr: false, loading: () => <div className="h-full" /> },
+);
+const AccuracyLineChart = dynamic(
+  () => import("@/components/analytics/recharts-charts").then((m) => m.AccuracyLineChart),
+  { ssr: false, loading: () => <div className="h-full" /> },
+);
 import { getMasteryLabel, getMasteryColor, getMasteryBg, formatTime, AP_COURSES } from "@/lib/utils";
 import { useCourse } from "@/hooks/use-course";
 import { getExamCopy } from "@/lib/exam-copy";
@@ -561,21 +561,7 @@ export default function AnalyticsPage() {
           <CardContent>
             <div className="h-64">
               {chartData.length > 0 ? (
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={chartData} layout="vertical" margin={{ left: 0 }}>
-                    <XAxis type="number" domain={[0, 100]} tick={{ fill: "#94a3b8", fontSize: 11 }} />
-                    <YAxis type="category" dataKey="name" tick={{ fill: "#94a3b8", fontSize: 10 }} width={80} />
-                    <Tooltip
-                      contentStyle={{
-                        backgroundColor: "#1e293b",
-                        border: "1px solid #334155",
-                        borderRadius: "8px",
-                      }}
-                      formatter={(v: number) => [`${v}%`, "Mastery"]}
-                    />
-                    <Bar dataKey="mastery" fill="#1865F2" radius={[0, 4, 4, 0]} />
-                  </BarChart>
-                </ResponsiveContainer>
+                <MasteryBarChart data={chartData} />
               ) : (
                 <div className="h-full flex items-center justify-center text-muted-foreground text-sm">
                   No mastery data yet — start practicing!
@@ -596,28 +582,7 @@ export default function AnalyticsPage() {
           <CardContent>
             <div className="h-64">
               {accuracyTimeline.length > 0 ? (
-                <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={accuracyTimeline}>
-                    <CartesianGrid stroke="rgba(255,255,255,0.05)" />
-                    <XAxis dataKey="date" tick={{ fill: "#94a3b8", fontSize: 11 }} />
-                    <YAxis domain={[0, 100]} tick={{ fill: "#94a3b8", fontSize: 11 }} />
-                    <Tooltip
-                      contentStyle={{
-                        backgroundColor: "#1e293b",
-                        border: "1px solid #334155",
-                        borderRadius: "8px",
-                      }}
-                      formatter={(v: number) => [`${v}%`, "Accuracy"]}
-                    />
-                    <Line
-                      type="monotone"
-                      dataKey="accuracy"
-                      stroke="#10b981"
-                      strokeWidth={2}
-                      dot={{ fill: "#10b981" }}
-                    />
-                  </LineChart>
-                </ResponsiveContainer>
+                <AccuracyLineChart data={accuracyTimeline} />
               ) : (
                 <div className="h-full flex items-center justify-center text-muted-foreground text-sm">
                   Complete practice sessions to see your progress over time
