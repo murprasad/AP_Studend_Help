@@ -1167,15 +1167,25 @@ export default function PracticePage() {
           </CardContent>
         </Card>
 
+        {/* 2026-06-05 — guided practice loop. The primary action after a
+            session is NOT "practice the same thing again" or a dead-end
+            analytics page; it's returning to the dashboard, where the
+            weak-area card recommends the next step based on updated progress.
+            Practice-again is kept as a secondary option. */}
         <div className="flex gap-3">
           <Button onClick={resetSession} variant="outline" className="flex-1 gap-2">
             <RotateCcw className="h-4 w-4" />
             Practice Again
           </Button>
-          <Link href="/analytics" className="flex-1">
+          <Link href="/dashboard?focus=weakness" className="flex-1">
             <Button className="w-full gap-2">
-              View Analytics <ChevronRight className="h-4 w-4" />
+              See your next step <ChevronRight className="h-4 w-4" />
             </Button>
+          </Link>
+        </div>
+        <div className="text-center">
+          <Link href="/analytics" className="text-xs text-muted-foreground hover:text-foreground hover:underline">
+            Or view full analytics
           </Link>
         </div>
         <reward.Modal />
