@@ -17,6 +17,7 @@ import { Loader2, Play, Check, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { AP_UNITS } from "@/lib/utils";
+import { useDailyCap } from "@/hooks/use-daily-cap";
 
 /**
  * 2026-06-01 — Fix A + B for new-user activation gap.
@@ -78,6 +79,11 @@ export function TodaysSetCard({ course }: Props) {
   const router = useRouter();
   const [data, setData] = useState<TodaysSetResponse | null>(null);
   const [loading, setLoading] = useState(true);
+  // D3 card-flip fix: share ONE cap snapshot with JourneyHeroCard. When the
+  // free user is capped, JourneyHeroCard owns the "you've hit today's cap"
+  // message — this card suppresses itself so the two can't both claim the
+  // primary action (which caused the "limit ↔ Today's Set" flip on reload).
+  const cap = useDailyCap(course);
 
   useEffect(() => {
     let cancelled = false;
@@ -88,6 +94,9 @@ export function TodaysSetCard({ course }: Props) {
       .catch(() => { if (!cancelled) { setLoading(false); } });
     return () => { cancelled = true; };
   }, [course]);
+
+  // Capped → defer entirely to JourneyHeroCard's cap message (single owner).
+  if (cap?.capped) return null;
 
   if (loading) {
     return (
