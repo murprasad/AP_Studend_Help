@@ -50,6 +50,7 @@ import { useDaysSinceOnboard } from "@/lib/use-new-user";
 import { FlashcardsDueCard } from "@/components/dashboard/flashcards-due-card";
 import { SingleQuestionEntry } from "@/components/dashboard/single-question-entry";
 import { DiagnosticPromptCard } from "@/components/dashboard/diagnostic-prompt-card";
+import { FocusFriendlyPromptCard } from "@/components/dashboard/focus-friendly-prompt-card";
 import { GreetingCard } from "@/components/dashboard/greeting-card";
 import { JourneyHeroCard } from "@/components/dashboard/journey-hero-card";
 import { PostJourneyHero } from "@/components/dashboard/post-journey-hero";
@@ -320,6 +321,13 @@ function DashboardBody({ course, impressionId }: { course: string; impressionId:
           mature user's hasDiagnostic flag drifts. Renders null when user
           has taken diagnostic. */}
       <DiagnosticPromptCard course={course as string} />
+
+      {/* 1f. Focus-friendly activation (2026-06-05) — one-tap opt-in for the
+          ADHD/focus tools, which otherwise ship OFF and undiscoverable. Self-
+          suppresses once actioned or if the student already enabled a focus
+          tool. Placed below the diagnostic CTA so it never competes with the
+          day-0 primary conversion. */}
+      <FocusFriendlyPromptCard />
 
       {/* 2. Predicted native-scale score + delta — hide when new Readiness
             hero is rendering to avoid two stacked scaled-score widgets. */}

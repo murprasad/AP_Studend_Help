@@ -51,6 +51,7 @@ import {
   ThumbsDown,
   Sparkles,
   ShieldCheck,
+  Focus,
 } from "lucide-react";
 import Link from "next/link";
 import { MarkdownContent } from "@/components/tutor/section-cards";
@@ -154,7 +155,7 @@ export default function PracticePage() {
 
   const [subscriptionTier, setSubscriptionTier] = useState<string | null>(null);
   const [userTrack, setUserTrack] = useState<string>("ap");
-  const { prefs: focusPrefs } = useFocusPrefs(); // ADHD #39 Focus Mode
+  const { prefs: focusPrefs, setFocusMode } = useFocusPrefs(); // ADHD #39 Focus Mode
   const [energyChecked, setEnergyChecked] = useState(false); // ADHD #43 Energy check-in
   const [premiumRestricted, setPremiumRestricted] = useState(false);
   const [sessionLimitReached, setSessionLimitReached] = useState(false);
@@ -1211,6 +1212,23 @@ export default function PracticePage() {
             )}
           </div>
           <div className="flex items-center gap-2 text-muted-foreground text-sm">
+            {/* ADHD #39 — persistent Focus toggle. Lets a student turn the
+                distraction-reduced view on/off mid-session without leaving
+                practice for Settings. State is shared via useFocusPrefs. */}
+            <button
+              type="button"
+              onClick={() => setFocusMode(!focusPrefs.focusMode)}
+              aria-pressed={focusPrefs.focusMode}
+              title={focusPrefs.focusMode ? "Focus Mode on — tap to turn off" : "Turn on Focus Mode (fewer distractions)"}
+              className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium transition-colors ${
+                focusPrefs.focusMode
+                  ? "bg-blue-500/15 text-blue-600 dark:text-blue-400"
+                  : "text-muted-foreground hover:bg-secondary"
+              }`}
+            >
+              <Focus className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">Focus</span>
+            </button>
             {/* Beta 8.10 v2 — momentum micro-feedback. Streak is the lightest
                 possible competence signal. Shows nothing until 2+ correct in a
                 row (avoids "1 streak" feeling silly). Cleared by any wrong
