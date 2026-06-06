@@ -774,6 +774,24 @@ export async function generateQuestion(
       const rawText = raw.response.trim().replace(/^```(?:json)?\s*/i, "").replace(/```\s*$/i, "");
       const candidate = JSON.parse(rawText) as Record<string, unknown>;
 
+      // 2026-06-05 — LaTeX control-char repair. The LLM emits \frac, \beta,
+      // \vec; JSON's \f \b \v escapes collide with those commands, so
+      // JSON.parse silently turns "\frac" into [form-feed]+"rac" (renders as
+      // "rac" with an invisible control char where the backslash belonged).
+      // This bit ~11% of LaTeX-bearing questions. Form-feed/backspace/v-tab
+      // are never legitimate in question content, so restoring the backslash
+      // is unambiguous. (tab/newline collisions \theta \nabla are left alone —
+      // those whitespace chars are legitimate and need a separate pass.)
+      const fixLatex = (v: unknown): unknown =>
+        typeof v === "string"
+          ? v.split("\f").join("\\f").split("\b").join("\\b").split("\v").join("\\v")
+          : v;
+      candidate.questionText = fixLatex(candidate.questionText);
+      candidate.explanation = fixLatex(candidate.explanation);
+      candidate.stimulus = fixLatex(candidate.stimulus);
+      if (Array.isArray(candidate.options)) candidate.options = candidate.options.map(fixLatex);
+      else if (typeof candidate.options === "string") candidate.options = fixLatex(candidate.options);
+
       // Deterministic gates ALWAYS run for MCQ — including quickMode.
       // These are <10ms and catch the bug class that produced 1,056
       // broken Qs in the 2026-05-01 bank audit. quickMode used to skip
