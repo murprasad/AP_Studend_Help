@@ -1338,7 +1338,7 @@ export default function PracticePage() {
                   <div className="flex justify-center">
                     <img
                       src={currentQuestion.stimulusImageUrl}
-                      alt="Historical context"
+                      alt={`Figure for this ${currentQuestion.topic || currentQuestion.course} question`}
                       className="max-h-52 rounded-lg border border-border/40 object-contain"
                     />
                   </div>

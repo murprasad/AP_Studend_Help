@@ -29,6 +29,48 @@
 
 import { validateRenderHazards } from "./render-hazard-validator";
 
+/**
+ * Deterministic check that a stimulus image URL will actually RENDER in a
+ * browser `<img src>` — not merely that the field is non-empty. The 2026-06-05
+ * "Historical context pic is missing" defect (1,732 questions) came from the
+ * non-compliant `data:image/svg+xml;utf8,<svg ...>` scheme: the field was set,
+ * so the presence-only check passed, but Chrome/Safari reject raw `<`,`>`,`"`
+ * in that scheme and the figure silently failed to load.
+ *
+ * Edge-safe (atob in Workers/browser, Buffer in Node). Pure + synchronous.
+ */
+export function isRenderableImageUrl(url: unknown): boolean {
+  if (typeof url !== "string") return false;
+  const u = url.trim();
+  if (!u) return false;
+  // Real network images — can't fetch deterministically here; assume valid.
+  if (/^https?:\/\//i.test(u)) return true;
+  // Base64 SVG — decode and confirm it actually contains an <svg> root.
+  if (/^data:image\/svg\+xml;base64,/i.test(u)) {
+    const b64 = u.slice(u.indexOf(",") + 1);
+    try {
+      const decoded =
+        typeof atob !== "undefined"
+          ? atob(b64)
+          : Buffer.from(b64, "base64").toString("utf8");
+      return /<svg[\s>]/i.test(decoded);
+    } catch {
+      return false;
+    }
+  }
+  // URL-encoded SVG (`data:image/svg+xml,...`) — must carry an encoded/raw <svg.
+  if (/^data:image\/svg\+xml,/i.test(u)) {
+    const body = u.slice(u.indexOf(",") + 1);
+    return /%3csvg|<svg/i.test(body);
+  }
+  // Raster data-URIs with a non-trivial base64 payload.
+  if (/^data:image\/(png|jpe?g|gif|webp);base64,/i.test(u)) {
+    return u.slice(u.indexOf(",") + 1).length > 16;
+  }
+  // The broken `;utf8,` scheme and everything else → NOT renderable.
+  return false;
+}
+
 export interface QuestionCandidate {
   questionText?: string;
   options?: string[] | string;
@@ -328,14 +370,31 @@ export function runDeterministicGates(q: QuestionCandidate): GateResult {
       /measure of (angle|arc)\s+[A-Z]\b/i.test(stemOnly) &&
       stemOnly.length < 160 &&
       !/=|\b\d+\s*(units?|cm|in|ft|m|mm|degrees? each|°)\b/i.test(stemOnly);
-    const hasImage =
+    // 2026-06-05 — "image availability" check (user directive): it is NOT
+    // enough to assume the figure is there because a URL is set. The URL must
+    // actually RENDER. The 1,732 ;utf8, SVGs had a non-empty URL (so the old
+    // presence check passed) but failed to load in-browser → the student saw
+    // the broken-image alt where a figure should be.
+    const hasRenderableImage = isRenderableImageUrl(q.stimulusImageUrl);
+    const hasImageUrlSet =
       typeof q.stimulusImageUrl === "string" && q.stimulusImageUrl.trim().length > 0;
-    if ((claimsVisual || bareLabeledAngle) && !hasImage) {
+    if ((claimsVisual || bareLabeledAngle) && !hasRenderableImage) {
       return {
         ok: false,
         gate: "claims-visual-no-image",
+        reason: hasImageUrlSet
+          ? "Question references a figure the student must see and a stimulusImageUrl IS attached, but it is not a renderable image (e.g. the broken data:image/svg+xml;utf8, scheme, or malformed base64). Re-encode the figure as base64 so it actually loads."
+          : "Question references a figure/diagram/graph that the student must see, but no stimulusImageUrl is attached. Either attach the image or rewrite the question to be answerable from text alone.",
+      };
+    }
+    // Even when the stem does NOT claim a visual, a stimulusImageUrl that is
+    // SET but unrenderable is always a defect — catch it universally.
+    if (hasImageUrlSet && !hasRenderableImage) {
+      return {
+        ok: false,
+        gate: "broken-image-encoding",
         reason:
-          "Question references a figure/diagram/graph that the student must see, but no stimulusImageUrl is attached. Either attach the image or rewrite the question to be answerable from text alone.",
+          "stimulusImageUrl is set but is not a renderable image (broken data:image/svg+xml;utf8, scheme or malformed encoding). Re-encode as base64.",
       };
     }
   }

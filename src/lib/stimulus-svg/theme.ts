@@ -44,6 +44,14 @@ export function escapeXml(s: string): string {
 }
 
 export function svgToDataUri(svg: string): string {
-  const encoded = svg.replace(/#/g, "%23").replace(/\n/g, " ").replace(/\s+/g, " ");
-  return `data:image/svg+xml;utf8,${encoded}`;
+  // Base64 encoding. The previous `;utf8,` scheme left raw `<`, `>`, `"`
+  // unescaped, which Chrome/Safari reject in `<img src>` — the figure
+  // silently failed to load and the img alt text showed in its place.
+  // Base64 is universally supported and immune to every unescaped character.
+  const cleaned = svg.replace(/\s+/g, " ").trim();
+  const base64 =
+    typeof Buffer !== "undefined"
+      ? Buffer.from(cleaned, "utf8").toString("base64")
+      : btoa(unescape(encodeURIComponent(cleaned)));
+  return `data:image/svg+xml;base64,${base64}`;
 }
