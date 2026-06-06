@@ -156,6 +156,11 @@ export default function PracticePage() {
   const [subscriptionTier, setSubscriptionTier] = useState<string | null>(null);
   const [userTrack, setUserTrack] = useState<string>("ap");
   const { prefs: focusPrefs, setFocusMode } = useFocusPrefs(); // ADHD #39 Focus Mode
+  // Focus Mode v2 — "I'm Overwhelmed" emotional-safety control (rule-based,
+  // no AI): a calm panel offering a breath, a no-penalty save-&-stop, or keep
+  // going. The differentiator no content-first competitor ships.
+  const [overwhelmOpen, setOverwhelmOpen] = useState(false);
+  const [onBreath, setOnBreath] = useState(false);
   const [energyChecked, setEnergyChecked] = useState(false); // ADHD #43 Energy check-in
   const [premiumRestricted, setPremiumRestricted] = useState(false);
   const [sessionLimitReached, setSessionLimitReached] = useState(false);
@@ -1195,7 +1200,14 @@ export default function PracticePage() {
 
   if (mode === "practicing" && currentQuestion) {
     return (
-      <div className="max-w-3xl mx-auto space-y-4">
+      <div
+        className={
+          focusPrefs.focusMode
+            ? "focus-session max-w-[640px] mx-auto space-y-4 rounded-2xl p-4 sm:p-6 min-h-[78vh]"
+            : "max-w-3xl mx-auto space-y-4"
+        }
+        data-focus-session={focusPrefs.focusMode ? "true" : undefined}
+      >
         {/* Diagnostic nudge — shows at 5 and 10 lifetime responses if
             user has no diagnostic yet. Self-gated. Exposes a hook on
             window that submitAnswer() calls after each successful submit. */}
@@ -1297,6 +1309,44 @@ export default function PracticePage() {
             >
               ✕
             </button>
+          </div>
+        )}
+
+        {/* Focus Mode v2 — "I'm Overwhelmed" emotional-safety control (Phase 1,
+            rule-based). Only in Focus Mode. A breath, a no-penalty save-&-stop,
+            or keep going. The differentiator content-first competitors lack. */}
+        {focusPrefs.focusMode && !onBreath && (
+          <div className="flex justify-end -mb-1">
+            <button
+              type="button"
+              onClick={() => setOverwhelmOpen((o) => !o)}
+              className="text-xs text-muted-foreground hover:text-foreground underline underline-offset-2 decoration-dotted"
+            >
+              This is a lot →
+            </button>
+          </div>
+        )}
+        {focusPrefs.focusMode && overwhelmOpen && !onBreath && (
+          <div className="rounded-xl border border-primary/30 bg-card p-4 space-y-3">
+            <p className="text-sm font-medium">Take a breath. You&apos;ve got options — there&apos;s no wrong choice.</p>
+            <div className="flex flex-wrap gap-2">
+              <Button variant="outline" size="sm" onClick={() => { setOnBreath(true); setOverwhelmOpen(false); }}>
+                Take a breath
+              </Button>
+              <Button variant="outline" size="sm" onClick={() => { setOverwhelmOpen(false); completeSession(); }}>
+                Save &amp; stop — no penalty
+              </Button>
+              <Button variant="ghost" size="sm" onClick={() => setOverwhelmOpen(false)}>
+                Keep going
+              </Button>
+            </div>
+          </div>
+        )}
+        {focusPrefs.focusMode && onBreath && (
+          <div className="rounded-xl border border-primary/30 bg-card p-6 text-center space-y-2">
+            <p className="text-base font-medium">Breathe in… and out. 🌿</p>
+            <p className="text-sm text-muted-foreground">One question at a time. You&apos;re doing fine — come back when you&apos;re ready.</p>
+            <Button size="sm" className="mt-1" onClick={() => setOnBreath(false)}>I&apos;m ready — continue</Button>
           </div>
         )}
 

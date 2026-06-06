@@ -120,6 +120,29 @@ html, body { overflow-x: hidden; }
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
+ * Focus Mode — calm session theme (v2 Phase-1, approved 2026-06-06).
+ * Scoped to a focus-mode practice session via .focus-session so it NEVER
+ * touches the rest of the app. The calm palette is the emotional gear-shift:
+ * warm off-white (less glare), muted slate-blue accent (vs the energetic
+ * cobalt), softer text. Correct/incorrect feedback colors (emerald/red) are
+ * separate tokens and intentionally stay vivid for clarity.
+ * ═══════════════════════════════════════════════════════════════════════════ */
+@layer utilities {
+  .focus-session {
+    background: #f6f7f4;            /* warm off-white */
+    --primary: 209 27% 48%;        /* muted slate-blue ~#5b7c99 */
+    --primary-foreground: 0 0% 100%;
+    --ring: 209 27% 48%;
+    --accent: 150 14% 90%;         /* soft sage hover */
+  }
+  .dark .focus-session {
+    background: #15181c;
+    --primary: 205 24% 62%;
+    --ring: 205 24% 62%;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
  * 2026-05-31 — CB-skin overrides (#102 SN mirror). Wrapped in
  * @layer utilities so Tailwind's PostCSS pipeline preserves the rules in
  * production builds (plain CSS descendant selectors outside @layer were
