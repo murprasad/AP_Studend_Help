@@ -72,6 +72,12 @@ async function main() {
       figureKind: "coordinatePlane-parabola",
       contextTopics: ["projectile height", "profit vs price", "arch height", "ball trajectory", "revenue vs units", "fountain stream", "bridge cable", "garden area"],
     },
+    {
+      domain: "GEOMETRY_TRIG",
+      subskill: "Right triangles — Pythagorean theorem (find the hypotenuse)",
+      figureKind: "rightTriangle",
+      contextTopics: ["a ramp", "a ladder against a wall", "a support cable", "a kite string", "a garden plot", "a sail", "a roof rafter", "a triangular sign"],
+    },
   ];
 
   const OUT_DIR = path.join(REPO, "data", "fidelity-proofs", "generated");
@@ -253,6 +259,15 @@ function buildStimulus(figureKind: string, ctx: string): any {
       _meta: { a, h, k, vertex: [h, k] },
     };
   }
+  if (figureKind === "rightTriangle") {
+    const triples = [[3, 4, 5], [6, 8, 10], [5, 12, 13], [8, 15, 17], [9, 12, 15], [7, 24, 25], [20, 21, 29]];
+    const [a, b, c] = triples[Math.floor(Math.random() * triples.length)];
+    return {
+      kind: "rightTriangle",
+      spec: { legA: String(a), legB: String(b), hyp: "x", title: "Right triangle (not to scale)" },
+      _meta: { a, b, c, answer: c },
+    };
+  }
   if (figureKind === "dataTable") {
     const cats = ["North", "South", "East", "West"];
     const col1 = cats.map(() => 20 + Math.floor(Math.random() * 60));
@@ -288,6 +303,8 @@ function buildPrompt(bp: any, ctx: string, stimulus: any): string {
     figureDescription = `A coordinate plane with a single line of best fit. y-intercept = ${meta.intercept}, slope = ${meta.slope}.`;
   } else if (stimulus.kind === "dataTable") {
     figureDescription = `A data table titled "${stimulus.spec.title}" with columns [${stimulus.spec.headers.join(", ")}] and rows: ${stimulus.spec.rows.map((r: any) => r.join(" = ")).join("; ")}. Column totals: 2022 = ${meta.total2022}, 2023 = ${meta.total2023}.`;
+  } else if (stimulus.kind === "rightTriangle") {
+    figureDescription = `A right triangle (not drawn to scale), right angle at the bottom-left. Horizontal leg = ${meta.a}, vertical leg = ${meta.b}, hypotenuse labeled x. By the Pythagorean theorem, x = ${meta.c}. Write a question that asks for the length of the hypotenuse x (the correct answer is ${meta.c}); make the distractors the classic errors: ${meta.a + meta.b} (added the legs), ${Math.round(Math.sqrt(Math.abs(meta.b * meta.b - meta.a * meta.a)))} (subtracted under the root), and ${meta.a + meta.b - 1} or a near miss.`;
   }
 
   const mistakeCategories = bp.subskill.includes("slope")

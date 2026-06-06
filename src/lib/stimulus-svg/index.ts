@@ -2,19 +2,22 @@ export { coordinatePlane, type CoordinatePlaneSpec } from "./coordinate-plane";
 export { barChart, type BarChartSpec } from "./bar-chart";
 export { scatterPlot, type ScatterPlotSpec } from "./scatter-plot";
 export { dataTable, type DataTableSpec } from "./data-table";
+export { rightTriangle, type RightTriangleSpec } from "./right-triangle";
 export { svgToDataUri, CB_SVG_THEME } from "./theme";
 
 import { coordinatePlane, type CoordinatePlaneSpec } from "./coordinate-plane";
 import { barChart, type BarChartSpec } from "./bar-chart";
 import { scatterPlot, type ScatterPlotSpec } from "./scatter-plot";
 import { dataTable, type DataTableSpec } from "./data-table";
+import { rightTriangle, type RightTriangleSpec } from "./right-triangle";
 import { svgToDataUri } from "./theme";
 
 export type StimulusSpec =
   | { kind: "coordinatePlane"; spec: CoordinatePlaneSpec }
   | { kind: "barChart"; spec: BarChartSpec }
   | { kind: "scatterPlot"; spec: ScatterPlotSpec }
-  | { kind: "dataTable"; spec: DataTableSpec };
+  | { kind: "dataTable"; spec: DataTableSpec }
+  | { kind: "rightTriangle"; spec: RightTriangleSpec };
 
 export function renderStimulus(s: StimulusSpec): { svg: string; dataUri: string } {
   let svg: string;
@@ -30,6 +33,9 @@ export function renderStimulus(s: StimulusSpec): { svg: string; dataUri: string 
       break;
     case "dataTable":
       svg = dataTable(s.spec);
+      break;
+    case "rightTriangle":
+      svg = rightTriangle(s.spec);
       break;
     default: {
       const _exhaustive: never = s;
