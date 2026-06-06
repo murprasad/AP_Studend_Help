@@ -76,7 +76,13 @@ export default function RegisterPage() {
         window.location.href = `https://preplion.ai/register${courseParam}`;
         return;
       }
-      setUserModule(module);
+      // Sanitize to a valid SN track. Non-exam intents (e.g. ?track=focus from
+      // the focus-friendly landing) and any stale/invalid value fall back to
+      // "ap" so the module-filtered sidebar never renders empty. The original
+      // param still reaches analytics via the URL.
+      const VALID_SN_TRACKS = ["ap", "sat", "act"];
+      const safeModule = VALID_SN_TRACKS.includes(module) ? module : "ap";
+      setUserModule(safeModule);
       const preselectedCourse = params.get("course");
       if (preselectedCourse) {
         localStorage.setItem("sn_preselected_course", preselectedCourse);

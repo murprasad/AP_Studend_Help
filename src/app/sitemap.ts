@@ -46,6 +46,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
           "computing-and-it", "civil-war-and-reconstruction",
       ].map(slug => ({ url: `${baseUrl}/dsst-prep/${slug}`, lastModified: now, changeFrequency: "monthly" as const, priority: 0.7 })),
     ] : []),
+    // Focus-friendly / "learn differently" landing — acquisition surface
+    { url: `${baseUrl}/focus-friendly`, lastModified: now, changeFrequency: "monthly", priority: 0.85 },
+    // Blog + SEO articles
+    { url: `${baseUrl}/blog`, lastModified: now, changeFrequency: "weekly", priority: 0.6 },
+    ...[
+      "how-to-study-for-the-sat-with-adhd",
+      "test-anxiety-how-to-stay-calm-on-exam-day",
+      "study-strategies-learn-differently",
+    ].map(slug => ({
+      url: `${baseUrl}/blog/${slug}`,
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
+    })),
     { url: `${baseUrl}/pricing`, lastModified: now, changeFrequency: "monthly", priority: 0.8 },
     { url: `${baseUrl}/about`, lastModified: now, changeFrequency: "monthly", priority: 0.6 },
     { url: `${baseUrl}/register`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },

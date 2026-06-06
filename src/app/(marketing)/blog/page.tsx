@@ -16,6 +16,26 @@ const articles: {
   readTime: string; date: string; href?: string;
 }[] = [
   {
+    title: "How to Study for the SAT or ACT with ADHD",
+    excerpt:
+      "Short spaced sessions, distraction control, extended time, body-doubling, and energy-aware pacing — focus-friendly, evidence-based strategies for students who learn differently.",
+    category: "Study Tips",
+    categoryColor: "bg-blue-500/10 text-blue-700 dark:text-blue-400 border-blue-500/20",
+    readTime: "7 min read",
+    date: "Jun 5, 2026",
+    href: "/blog/how-to-study-for-the-sat-with-adhd",
+  },
+  {
+    title: "Test Anxiety: How to Stay Calm and Score Your Best on Exam Day",
+    excerpt:
+      "Why anxiety blanks your mind — and the evidence-based fixes: realistic timed practice, a pre-exam routine, box breathing, and a first-minute brain dump that gets you unstuck.",
+    category: "Study Tips",
+    categoryColor: "bg-blue-500/10 text-blue-700 dark:text-blue-400 border-blue-500/20",
+    readTime: "7 min read",
+    date: "Jun 5, 2026",
+    href: "/blog/test-anxiety-how-to-stay-calm-on-exam-day",
+  },
+  {
     title: "Study Strategies for Students Who Learn Differently",
     excerpt:
       "Long sessions draining you? Distractions winning? Focus-friendly, evidence-based strategies — short sessions, extended time, energy check-ins — that fit how you actually study.",

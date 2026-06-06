@@ -90,6 +90,12 @@ export default async function LandingPage() {
           </Link>
           <nav className="flex items-center gap-5 text-sm">
             <Link
+              href="/focus-friendly"
+              className="text-cb-muted hover:text-cb-cobalt transition-colors hidden sm:inline"
+            >
+              Focus tools
+            </Link>
+            <Link
               href="/pricing"
               className="text-cb-muted hover:text-cb-cobalt transition-colors"
             >
@@ -212,8 +218,42 @@ export default async function LandingPage() {
         </div>
       </section>
 
-      {/* ───── Testimonials — white band ───── */}
+      {/* ───── Focus-friendly — white band ───── */}
       <section className="bg-white">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-16 sm:py-20">
+          <h2 className="font-roboto-slab font-bold text-2xl sm:text-3xl text-cb-indigo mb-3">
+            Built for students who learn differently
+          </h2>
+          <p className="text-cb-muted text-base max-w-2xl mb-10">
+            If long sessions drain you or the clock makes your mind go blank, the
+            standard advice was never built for how you work. These tools are — and
+            they&apos;re in the standard plan, not a separate tier.
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+            {[
+              ["Focus Mode", "One question at a time, distractions stripped away."],
+              ["Extended time", "1.5× or 2× on practice and mock exams."],
+              ["Energy check-in", "Size the session to your day in five seconds."],
+              ["Streak forgiveness", "One rough day won't break your streak."],
+            ].map(([title, body]) => (
+              <div key={title} className="rounded-2xl border border-cb-cardBorder p-6">
+                <h3 className="font-medium text-lg text-cb-indigo mb-1.5">{title}</h3>
+                <p className="text-sm text-cb-muted leading-relaxed">{body}</p>
+              </div>
+            ))}
+          </div>
+          <Link
+            href="/focus-friendly"
+            className="inline-flex items-center gap-1 mt-8 text-sm font-medium text-cb-cobalt hover:gap-2 transition-all"
+          >
+            See all focus-friendly tools
+            <ArrowRight className="h-4 w-4" aria-hidden />
+          </Link>
+        </div>
+      </section>
+
+      {/* ───── Testimonials — white band ───── */}
+      <section className="bg-cb-bandGray">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-16 sm:py-20">
           <h2 className="font-roboto-slab font-bold text-2xl sm:text-3xl text-cb-indigo mb-10">
             Students who walked in ready
