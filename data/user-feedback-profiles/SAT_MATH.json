@@ -1,7 +1,7 @@
 {
   "schema_version": "1.0",
   "course": "SAT_MATH",
-  "last_updated": "2026-05-09",
+  "last_updated": "2026-06-06",
   "source_count": 11,
   "calibration": {
     "coverage_strategy": "wide_not_deep",
@@ -44,41 +44,34 @@
       "note": "Students compare us to these — match the register."
     }
   },
-  "generator_prompt_injection": "REAL TEST-TAKER INSIGHTS (sourced from r/Sat, updated 2026-05-09):\n- Coverage: Real test-takers report this exam covers breadth over depth. Stay at college 101 level on each topic.\n- High-emphasis topics (per real students): algebra.\n- Students struggle most with: sat prep, equation solving, depth under water. Generate proportionally more on these.\n- Wording style: ~12% of items should use realistic exam-style indirection (NOT unfair ambiguity).\n- Difficulty target: 15% easy / 50% medium / 35% hard. avg pass score 1288 — harder test.\n- Authenticity bar: students compare us to Desmos, SAT class, practice tests. Match that register.",
+  "generator_prompt_injection": "REAL TEST-TAKER INSIGHTS (sourced from r/Sat, updated 2026-06-06):\n- Coverage: Real test-takers report this exam covers breadth over depth. Stay at college 101 level on each topic.\n- High-emphasis topics (per real students): algebra.\n- Students struggle most with: sat prep, equation solving, depth under water. Generate proportionally more on these.\n- Wording style: ~12% of items should use realistic exam-style indirection (NOT unfair ambiguity).\n- Difficulty target: 15% easy / 50% medium / 35% hard. avg pass score 1288 — harder test.\n- Authenticity bar: students compare us to Desmos, SAT class, practice tests. Match that register.",
   "popup_tips": [
     {
-      "tip_id": "9e404a7f",
-      "text": "Students dont have to learn algebra, but they can just copy and paste the question on a graphing calculator and get the answer.",
-      "source_attribution": "From a recent SAT MATH test-taker",
-      "first_seen": "2026-05-09",
+      "tip_id": "5a0e7ec9",
+      "text": "On SAT MATH, real test-takers say breadth beats depth. Aim to recognize many topics at a 101 level rather than mastering a few in deep detail.",
+      "source_attribution": "Compiled from real test-takers on r/Sat",
+      "first_seen": "2026-06-06",
       "topic_filter": []
     },
     {
-      "tip_id": "1417521a",
-      "text": "Lets say for instance, there is a equation: 4 + 5x = 192 - 9x.",
-      "source_attribution": "From a recent SAT MATH test-taker",
-      "first_seen": "2026-05-09",
+      "tip_id": "ae8e6e82",
+      "text": "Where SAT MATH students reported struggling most: sat prep, equation solving, depth under water. Make sure you can handle these before exam day.",
+      "source_attribution": "Compiled from real test-takers on r/Sat",
+      "first_seen": "2026-06-06",
       "topic_filter": []
     },
     {
-      "tip_id": "7e1a0f45",
-      "text": "Do you really HAVE to use a calculator to do a quick arithmetic question like 11 * 14?",
-      "source_attribution": "From a recent SAT MATH test-taker",
-      "first_seen": "2026-05-09",
+      "tip_id": "4aa02cd5",
+      "text": "Resources real SAT MATH test-takers credited: Desmos and SAT class. Pair with practice questions.",
+      "source_attribution": "Compiled from real test-takers on r/Sat",
+      "first_seen": "2026-06-06",
       "topic_filter": []
     },
     {
-      "tip_id": "229209f9",
-      "text": "ineffective for actual test performance",
-      "source_attribution": "From a recent SAT MATH test-taker",
-      "first_seen": "2026-05-09",
-      "topic_filter": []
-    },
-    {
-      "tip_id": "1f58edd1",
-      "text": "Students are not learning how to do math, but rather, learning how to use a graphing calculator.",
-      "source_attribution": "From a recent SAT MATH test-taker",
-      "first_seen": "2026-05-09",
+      "tip_id": "add2e4c5",
+      "text": "On SAT MATH, watch for tricky wording — EXCEPT/NOT-style questions and embedded distractors are common. Read each stem twice.",
+      "source_attribution": "Compiled from real test-takers on r/Sat",
+      "first_seen": "2026-06-06",
       "topic_filter": []
     }
   ]
