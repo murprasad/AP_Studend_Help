@@ -152,6 +152,7 @@ export default async function LandingPage() {
               <Link
                 key={tile.family}
                 href={tile.href}
+                data-testid={`module-card-${tile.family.toLowerCase()}`}
                 className="block rounded-2xl border border-cb-cardBorder bg-white p-6 hover:border-cb-cobalt transition-colors group"
               >
                 <h3 className="font-roboto-slab font-bold text-2xl text-cb-indigo mb-2">
