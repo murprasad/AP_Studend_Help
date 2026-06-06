@@ -78,6 +78,12 @@ async function main() {
       figureKind: "rightTriangle",
       contextTopics: ["a ramp", "a ladder against a wall", "a support cable", "a kite string", "a garden plot", "a sail", "a roof rafter", "a triangular sign"],
     },
+    {
+      domain: "GEOMETRY_TRIG",
+      subskill: "Circles — area from the radius",
+      figureKind: "circle",
+      contextTopics: ["a circular garden", "a round table", "a pizza", "a circular pond", "a clock face", "a wheel", "a circular rug", "a fountain base"],
+    },
   ];
 
   const OUT_DIR = path.join(REPO, "data", "fidelity-proofs", "generated");
@@ -268,6 +274,14 @@ function buildStimulus(figureKind: string, ctx: string): any {
       _meta: { a, b, c, answer: c },
     };
   }
+  if (figureKind === "circle") {
+    const r = 3 + Math.floor(Math.random() * 9); // 3..11
+    return {
+      kind: "circle",
+      spec: { radiusLabel: String(r), centerLabel: "O", title: "Circle (not to scale)" },
+      _meta: { r, area: r * r, circCoef: 2 * r, answer: `${r * r}π` },
+    };
+  }
   if (figureKind === "dataTable") {
     const cats = ["North", "South", "East", "West"];
     const col1 = cats.map(() => 20 + Math.floor(Math.random() * 60));
@@ -305,6 +319,8 @@ function buildPrompt(bp: any, ctx: string, stimulus: any): string {
     figureDescription = `A data table titled "${stimulus.spec.title}" with columns [${stimulus.spec.headers.join(", ")}] and rows: ${stimulus.spec.rows.map((r: any) => r.join(" = ")).join("; ")}. Column totals: 2022 = ${meta.total2022}, 2023 = ${meta.total2023}.`;
   } else if (stimulus.kind === "rightTriangle") {
     figureDescription = `A right triangle (not drawn to scale), right angle at the bottom-left. Horizontal leg = ${meta.a}, vertical leg = ${meta.b}, hypotenuse labeled x. By the Pythagorean theorem, x = ${meta.c}. Write a question that asks for the length of the hypotenuse x (the correct answer is ${meta.c}); make the distractors the classic errors: ${meta.a + meta.b} (added the legs), ${Math.round(Math.sqrt(Math.abs(meta.b * meta.b - meta.a * meta.a)))} (subtracted under the root), and ${meta.a + meta.b - 1} or a near miss.`;
+  } else if (stimulus.kind === "circle") {
+    figureDescription = `A circle with center O and a radius drawn and labeled ${meta.r} (not drawn to scale). Ask for the AREA of the circle in terms of π. The correct answer is ${meta.area}π (area = πr² = π·${meta.r}²). The options MUST be written in the form "Nπ" (e.g. "${meta.area}π"). Make the distractors the classic errors: ${meta.circCoef}π (used circumference 2πr instead of area), ${meta.r}π (used πr, forgot to square), and ${meta.area} (a number with no π / dropped the π). Correct answer = ${meta.area}π.`;
   }
 
   const mistakeCategories = bp.subskill.includes("slope")
