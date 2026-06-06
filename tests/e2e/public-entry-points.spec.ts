@@ -117,11 +117,13 @@ test.describe("/about page", () => {
 
 // ── 1.4 Per-track marketing pages ────────────────────────────────────
 
+// 2026-06-05 — /clep-prep removed from SN's suite: CLEP is PrepLion's product
+// (the SN/PL product split). SN now 308-redirects /clep-prep, so a CLEP-landing
+// assertion is stale here. CLEP-track coverage lives in the PrepLion E2E suite.
 const TRACK_PAGES: Array<{ path: string; track: string }> = [
   { path: "/ap-prep", track: "ap" },
   { path: "/sat-prep", track: "sat" },
   { path: "/act-prep", track: "act" },
-  { path: "/clep-prep", track: "clep" },
 ];
 
 test.describe("Per-track marketing pages", () => {
