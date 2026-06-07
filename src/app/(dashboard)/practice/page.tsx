@@ -113,6 +113,20 @@ const FRQ_WAIT_MESSAGES = [
  * explanation" toggle for the rest. Practice flow stays fast; full
  * detail one tap away when needed.
  */
+// Focus Mode v2 Phase-1b — difficulty ramp ("start easy"). In Focus Mode, move
+// an EASY question to the front so the session opens with a confidence-first
+// win (research: most students quit on early friction). Non-destructive — only
+// reorders, same question set.
+function rampEasyFirst<T extends { difficulty?: string }>(qs: T[]): T[] {
+  if (qs.length < 2) return qs;
+  const i = qs.findIndex((q) => q.difficulty === "EASY");
+  if (i <= 0) return qs;
+  const copy = [...qs];
+  const [easy] = copy.splice(i, 1);
+  copy.unshift(easy);
+  return copy;
+}
+
 function ExplanationDisplay({ text, small = false }: { text: string; small?: boolean }) {
   const [expanded, setExpanded] = useState(false);
   const cleaned = (text || "").trim();
@@ -542,7 +556,7 @@ export default function PracticePage() {
       if (data.aiGenerationWarning) {
         toast({ title: "Practice questions generated", description: data.aiGenerationWarning });
       }
-      const qs: Question[] = data.questions ?? [];
+      const qs: Question[] = focusPrefs.focusMode ? rampEasyFirst(data.questions ?? []) : (data.questions ?? []);
       questionsRef.current = qs;
       setSessionId(data.sessionId);
       setQuestions(qs);
@@ -652,7 +666,7 @@ export default function PracticePage() {
         toast({ title: "Limited questions available", description: data.lowBankWarning });
       }
 
-      const qs: Question[] = data.questions ?? [];
+      const qs: Question[] = focusPrefs.focusMode ? rampEasyFirst(data.questions ?? []) : (data.questions ?? []);
       questionsRef.current = qs;
       setSessionId(data.sessionId);
       setQuestions(qs);
