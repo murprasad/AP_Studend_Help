@@ -1,0 +1,144 @@
+/**
+ * Fidelity Agent — KPI A1. Measures how closely our bank matches real CB/ACT,
+ * decomposed into dimensions (deterministic-first, per docs/KPI_FRAMEWORK).
+ * Per course: each dimension 0-100, weighted into a composite Fidelity Score.
+ *
+ *   node scripts/measure-fidelity.mjs                # all courses
+ *   COURSE=SAT_MATH node scripts/measure-fidelity.mjs
+ * Output: data/fidelity-scorecards/fidelity-<date>.{json,md}. Read-only.
+ *
+ * Deterministic dims now: optionCountConsistency, figureIntegrity, noHintsInOptions,
+ * answerPositionBalance, renderHealth, explanationQuality. Judge dims (cognitive
+ * level, distractor plausibility, CB feel) are sampled-LLM — separate follow-up.
+ * Product-agnostic (run in SN or PL).
+ */
+import { PrismaClient } from "@prisma/client";
+import { writeFileSync, mkdirSync, existsSync, readFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
+import { dirname, join } from "node:path";
+
+const root = join(dirname(fileURLToPath(import.meta.url)), "..");
+if (!process.env.DATABASE_URL) {
+  for (const f of [".env.local", ".env"]) {
+    const p = join(root, f);
+    if (existsSync(p)) for (const line of readFileSync(p, "utf8").split(/\r?\n/)) {
+      const m = line.match(/^\s*([A-Z0-9_]+)\s*=\s*(.*)\s*$/);
+      if (m && !process.env[m[1]]) process.env[m[1]] = m[2].replace(/^["']|["']$/g, "");
+    }
+  }
+}
+const COURSE = process.env.COURSE || null;
+const stamp = new Date().toISOString().slice(0, 10);
+const norm = (s) => (s || "").toLowerCase().replace(/[^a-z0-9 ]/g, " ").replace(/\s+/g, " ").trim();
+const bigWords = (s) => norm(s).split(" ").filter((w) => w.length > 3);
+const showsMathWork = (e) => /=|\d\s*[+\-×x*/÷^]\s*\d|\bordered\b|\bsolv|\bsubstitut|\bfactor|√|\bslope\b|\bmedian\b|\bmean\b/i.test(e);
+
+function optionStrings(options) {
+  let o = options;
+  if (typeof o === "string") { try { o = JSON.parse(o); } catch { o = [o]; } }
+  if (!Array.isArray(o)) return [];
+  return o.map((x) => String(typeof x === "string" ? x : (x?.text ?? x?.label ?? "")).replace(/^[A-E][).:\s-]+/i, "").trim());
+}
+function answerOf(options, correctAnswer) {
+  const s = optionStrings(options);
+  const L = String(correctAnswer || "").trim().toUpperCase();
+  if (/^[A-E]$/.test(L)) return s[L.charCodeAt(0) - 65] || "";
+  return s.find((x) => norm(x) === norm(correctAnswer)) || String(correctAnswer || "");
+}
+function isCircular(expl, ansText) {
+  const e = (expl || "").trim(); const work = showsMathWork(e);
+  if (e.length < 100 && !work) return true;
+  const m = e.match(/^(.*?)\bis correct because\b(.*)$/is);
+  if (m) { const b = new Set(bigWords(m[1])); const a = bigWords(m[2]); if (a.length && a.filter((w) => b.has(w)).length / a.length > 0.5) return true; }
+  if (ansText && e.length < 170 && norm(e).includes(norm(ansText)) && !work) return true;
+  return false;
+}
+// dimension helpers (each returns true = GOOD for that question)
+const VISUAL_CLAIM = /\b(figure|graph|diagram|table|chart|passage|image|shown (below|above)|following (graph|figure|table|passage|diagram)|the (graph|figure|diagram|table|map)|based on the (passage|graph|figure|table))\b/i;
+function figureOk(q) {
+  if (!VISUAL_CLAIM.test(q.questionText || "")) return null; // not applicable
+  return Boolean(q.stimulus || q.stimulusImageUrl);          // claims a visual → must have one
+}
+const HINT_IN_OPT = /\b(because|since|therefore|which is why|this is correct|in order to|so that|due to the fact)\b/i;
+const optHasHint = (opts) => optionStrings(opts).some((o) => HINT_IN_OPT.test(o));
+function renderOk(q) {
+  const t = (q.questionText || "") + " " + optionStrings(q.options).join(" ") + " " + (q.explanation || "");
+  if (/\[object|undefined|NaN\b/.test(t)) return false;
+  if (((t.match(/\$/g) || []).length) % 2 !== 0) return false;        // unmatched $ LaTeX
+  if (/\\(frac|sqrt|sum|int)(?!\s*[\{\\a-z0-9])/i.test(t)) return false; // broken LaTeX command
+  if (optionStrings(q.options).some((o) => o.length === 0)) return false; // empty option
+  if (!String(q.questionText || "").trim()) return false;
+  return true;
+}
+const clamp = (n) => Math.max(0, Math.min(100, Math.round(n * 10) / 10));
+
+const prisma = new PrismaClient();
+try {
+  const where = { isApproved: true, ...(COURSE ? { course: COURSE } : {}) };
+  const qs = await prisma.question.findMany({
+    where, select: { course: true, questionText: true, options: true, correctAnswer: true, explanation: true, stimulus: true, stimulusImageUrl: true },
+  });
+  const byCourse = {};
+  for (const q of qs) (byCourse[q.course] ??= []).push(q);
+
+  const rows = [];
+  for (const [course, list] of Object.entries(byCourse)) {
+    const n = list.length;
+    // option-count consistency vs modal count
+    const counts = {};
+    for (const q of list) { const c = optionStrings(q.options).length; counts[c] = (counts[c] ?? 0) + 1; }
+    const modal = Number(Object.entries(counts).sort((a, b) => b[1] - a[1])[0]?.[0] || 0);
+    const optConsistency = modal ? (counts[modal] / n) * 100 : 0;
+    // figure integrity (only over questions that make a visual claim)
+    let claim = 0, claimOk = 0;
+    for (const q of list) { const r = figureOk(q); if (r !== null) { claim++; if (r) claimOk++; } }
+    const figureIntegrity = claim ? (claimOk / claim) * 100 : 100;
+    // no hints in options
+    const noHints = (list.filter((q) => !optHasHint(q.options)).length / n) * 100;
+    // answer-position balance: penalize skew of correct-letter distribution
+    const letters = {};
+    for (const q of list) { const L = String(q.correctAnswer || "").trim().toUpperCase(); if (/^[A-E]$/.test(L)) letters[L] = (letters[L] ?? 0) + 1; }
+    const letterTotal = Object.values(letters).reduce((a, b) => a + b, 0);
+    const maxFreq = letterTotal ? Math.max(...Object.values(letters)) / letterTotal : 0;
+    const expected = modal ? 1 / modal : 0.25;
+    const posBalance = letterTotal ? clamp(100 * (1 - Math.max(0, maxFreq - expected) / (1 - expected))) : 100;
+    // render health
+    const renderHealth = (list.filter(renderOk).length / n) * 100;
+    // explanation quality
+    const explQuality = (list.filter((q) => !isCircular(q.explanation, answerOf(q.options, q.correctAnswer))).length / n) * 100;
+
+    const dims = {
+      optionCountConsistency: clamp(optConsistency),
+      figureIntegrity: clamp(figureIntegrity),
+      noHintsInOptions: clamp(noHints),
+      answerPositionBalance: clamp(posBalance),
+      renderHealth: clamp(renderHealth),
+      explanationQuality: clamp(explQuality),
+    };
+    const W = { explanationQuality: 0.2, figureIntegrity: 0.2, renderHealth: 0.2, noHintsInOptions: 0.15, optionCountConsistency: 0.15, answerPositionBalance: 0.1 };
+    const composite = clamp(Object.entries(W).reduce((s, [k, w]) => s + dims[k] * w, 0));
+    rows.push({ course, n, modalOptions: modal, visualClaims: claim, composite, dims });
+  }
+  rows.sort((a, b) => a.composite - b.composite);
+
+  const outDir = join(root, "data", "fidelity-scorecards");
+  mkdirSync(outDir, { recursive: true });
+  writeFileSync(join(outDir, `fidelity-${stamp}.json`), JSON.stringify({ generatedAt: new Date().toISOString(), target: 90, rows }, null, 2));
+  const md = [
+    `# Fidelity Scorecard — ${stamp}  (target ≥90/course)`, ``,
+    `| Course | Fidelity | Expl | Figure | Render | Hints | OptCount | PosBal | n |`,
+    `|---|---|---|---|---|---|---|---|---|`,
+    ...rows.map((r) => `| ${r.course} | **${r.composite}** | ${r.dims.explanationQuality} | ${r.dims.figureIntegrity} | ${r.dims.renderHealth} | ${r.dims.noHintsInOptions} | ${r.dims.optionCountConsistency} | ${r.dims.answerPositionBalance} | ${r.n} |`),
+    ``,
+    `_Deterministic dims. Judge dims (cognitive level, distractor plausibility, CB feel) = sampled-LLM follow-up._`,
+    `_Lowest composite = act first. Each dim < target points to the specific fix._`,
+  ].join("\n");
+  writeFileSync(join(outDir, `fidelity-${stamp}.md`), md);
+  console.log(md.split("\n").slice(0, 18).join("\n"));
+  console.log(`\n✅ Wrote data/fidelity-scorecards/fidelity-${stamp}.{json,md} (${rows.length} courses)`);
+} catch (e) {
+  console.error("Fidelity measurement failed:", e.message);
+  process.exitCode = 1;
+} finally {
+  await prisma.$disconnect();
+}
