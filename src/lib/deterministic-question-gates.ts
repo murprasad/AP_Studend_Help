@@ -772,7 +772,7 @@ export function runDeterministicGates(q: QuestionCandidate): GateResult {
   // phantom-stimulus references ("the figure above" with empty stimulus).
   // Caught real student-facing bugs 2026-05-12 (currency) + 2026-05-12
   // (Klexevork's Q2 phantom diagram). B3 (2026-05-17).
-  const hazard = validateRenderHazards(q.questionText, q.stimulus);
+  const hazard = validateRenderHazards(q.questionText, q.stimulus, q.stimulusImageUrl);
   if (hazard) {
     return { ok: false, gate: "render-hazard", reason: hazard };
   }
@@ -936,6 +936,7 @@ export function filterByLayer8Gate<T extends {
   explanation?: string;
   course?: string;
   stimulus?: string | null;
+  stimulusImageUrl?: string | null;
 }>(questions: T[]): { passing: T[]; failedIds: string[] } {
   const passing: T[] = [];
   const failedIds: string[] = [];
@@ -947,6 +948,9 @@ export function filterByLayer8Gate<T extends {
       explanation: q.explanation,
       course: q.course,
       stimulus: q.stimulus ?? undefined,
+      // 2026-06-07 (Process-Monitor finding) — forward the image so questions
+      // whose figure lives in stimulusImageUrl aren't seen as figure-missing.
+      stimulusImageUrl: q.stimulusImageUrl ?? undefined,
     });
     if (gate.ok) passing.push(q);
     else failedIds.push(q.id);

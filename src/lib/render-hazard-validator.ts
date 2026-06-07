@@ -32,6 +32,103 @@ const PHANTOM_STIMULUS_PATTERNS = [
 ];
 
 /**
+ * 2026-06-07 — PRECISE figure/passage-requirement detector (Validation-Engine
+ * Agent, tri-agent quality protocol). The PHANTOM_STIMULUS_PATTERNS above are
+ * too NARROW: they miss "Based on Figure 4", numbered tables ("Table 2"),
+ * "refer to the chart", etc. A naive broad regex over-fires though — these are
+ * the documented FALSE POSITIVES the detector must NOT flag:
+ *
+ *   - "What is the image height if object height is 5cm and magnification 2?"
+ *     ("image" is the optics term — NO figure needed). Must PASS.
+ *   - "80 g of sodium ... to form table salt" ("table salt" is a compound,
+ *     not a data table). Must PASS.
+ *   - "A convex lens with focal length 10cm placed 20cm from an object, find
+ *     the image distance." (self-contained physics). Must PASS.
+ *
+ * True violations (with empty stimulus + no image):
+ *   - "Based on Figure 4, Experiment 7..." / "Based on Table 2..."  → FAIL
+ *   - reading: "The passage suggests..." / "In the passage..."      → FAIL
+ *
+ * The patterns require an explicit anchoring word ("figure", "graph", "table",
+ * etc.) tied to a number or a directional/"based on"/"refer to"/"shown in"
+ * construction. "image" and "table salt" never match because "image" is never
+ * an anchoring word here and "table" only anchors when it is a NUMBERED table
+ * ("table 2") or an explicit "data table" / directional table reference — never
+ * the bare noun "table" in "table salt".
+ */
+const FIGURE_REQUIRED_PATTERNS: RegExp[] = [
+  // Numbered visual reference: "Figure 4", "Fig. 2", "Table 2", "Graph 1",
+  // "Exhibit 3". "table salt" never matches (no digit after "table").
+  /\b(?:figure|fig\.?|table|graph|diagram|chart|exhibit)\s*\d+\b/i,
+  // "Based on the figure / graph / table / diagram / chart / data in / data shown"
+  /\bbased on (?:the )?(?:figure|graph|table|diagram|chart|data (?:in|shown))/i,
+  // "Refer to the figure / graph / table / diagram / chart"
+  /\brefer to the (?:figure|graph|table|diagram|chart)/i,
+  // "shown / depicted / illustrated in the figure / graph / diagram / chart / table"
+  /\b(?:shown|depicted|illustrated) in the (?:figure|graph|diagram|chart|table)/i,
+  // "the following / above / below / adjacent figure / graph / diagram / chart / data table"
+  /\bthe (?:following|above|below|adjacent) (?:figure|graph|diagram|chart|data table)/i,
+  // "the figure / graph / diagram above / below / shown"
+  /\bthe (?:figure|graph|diagram) (?:above|below|shown)/i,
+];
+
+/**
+ * Reading-passage requirement. A stem that talks about "the passage" / "this
+ * passage" / "in the passage" / "passage suggests|states|author|implies" needs
+ * an actual passage stimulus to be answerable.
+ */
+const PASSAGE_REQUIRED_PATTERN =
+  /\b(?:the|this) passage\b|\bin the passage\b|\bpassage (?:suggests|states|author|implies)\b/i;
+
+/**
+ * Precise figure/passage-requirement detector.
+ *
+ * Returns a non-null reason string ONLY when the stem clearly references a
+ * figure/table/graph/diagram (or, for any course, a reading passage) AND the
+ * question carries no usable stimulus — neither a `stimulus` text field nor a
+ * `stimulusImageUrl`. Fail-closed (a match with no stimulus → reason), but
+ * conservative (precise anchored patterns → no false positives on optics
+ * "image", "table salt", or self-contained lens word problems).
+ *
+ * @param questionText      the rendered stem
+ * @param stimulus          stimulus text field (passage/table/figure caption)
+ * @param stimulusImageUrl  attached image URL (any non-empty string counts as
+ *                          a present figure for this presence-level check)
+ * @returns error string if the figure/passage is required but absent; else null
+ */
+export function detectMissingRequiredStimulus(
+  questionText: string | null | undefined,
+  stimulus?: string | null,
+  stimulusImageUrl?: string | null,
+): string | null {
+  if (!questionText) return null;
+
+  const stimTrimmed = (stimulus ?? "").trim();
+  const hasImage =
+    typeof stimulusImageUrl === "string" && stimulusImageUrl.trim().length > 0;
+  // A real passage/figure caption is ≥20 chars; an image URL is always enough.
+  const hasStimulus = stimTrimmed.length >= 20 || hasImage;
+  if (hasStimulus) return null; // a stimulus exists — nothing to flag
+
+  // PASSAGE requirement (applies to every course — a stem that talks about
+  // "the passage" cannot be answered without one).
+  const passageMatch = questionText.match(PASSAGE_REQUIRED_PATTERN);
+  if (passageMatch) {
+    return `Missing required passage: stem references a reading passage via "${passageMatch[0]}" but no stimulus (passage text) or stimulusImageUrl is present — the question is unanswerable.`;
+  }
+
+  // FIGURE / TABLE / GRAPH / DIAGRAM requirement.
+  for (const re of FIGURE_REQUIRED_PATTERNS) {
+    const m = questionText.match(re);
+    if (m) {
+      return `Missing required figure: stem references a figure/table/graph/diagram via "${m[0]}" but no stimulus or stimulusImageUrl is present — the question is unanswerable.`;
+    }
+  }
+
+  return null;
+}
+
+/**
  * Returns null if question text is safe to render; error string if a bug
  * would mangle the display.
  *
@@ -41,6 +138,7 @@ const PHANTOM_STIMULUS_PATTERNS = [
 export function validateRenderHazards(
   questionText: string | null | undefined,
   stimulus?: string | null,
+  stimulusImageUrl?: string | null,
 ): string | null {
   if (!questionText) return null;
 
@@ -73,10 +171,26 @@ export function validateRenderHazards(
   for (const re of PHANTOM_STIMULUS_PATTERNS) {
     if (re.test(questionText)) {
       const stimTrimmed = (stimulus ?? "").trim();
-      if (stimTrimmed.length < 20) {
+      const hasImg =
+        typeof stimulusImageUrl === "string" && stimulusImageUrl.trim().length > 0;
+      if (stimTrimmed.length < 20 && !hasImg) {
         return `Phantom stimulus: stem references a figure/graph/diagram via "${questionText.match(re)?.[0]}" but stimulus field is empty/missing.`;
       }
     }
+  }
+
+  // Bug 2b (2026-06-07): PRECISE figure/passage-requirement gate. Catches the
+  // cases the narrow PHANTOM_STIMULUS_PATTERNS above miss — numbered references
+  // ("Based on Figure 4", "Table 2"), "refer to the chart", reading "the
+  // passage suggests" — while NOT false-flagging optics "image", "table salt",
+  // or self-contained lens word problems. Fail-closed.
+  const missingStimulus = detectMissingRequiredStimulus(
+    questionText,
+    stimulus,
+    stimulusImageUrl,
+  );
+  if (missingStimulus) {
+    return missingStimulus;
   }
 
   // Bug 3 (2026-05-25, Lucas Q5): nested `$...$` inside `\frac{...}`.

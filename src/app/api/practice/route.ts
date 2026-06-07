@@ -443,6 +443,10 @@ export async function POST(req: NextRequest) {
           explanation: q.explanation ?? undefined,
           course: q.course as string,
           stimulus: q.stimulus ?? undefined,
+          // 2026-06-07 (Process-Monitor finding) — MUST pass the image too, or a
+          // question that stores its figure in stimulusImageUrl (empty stimulus
+          // text) is seen as figure-missing and wrongly auto-unapproved on serve.
+          stimulusImageUrl: q.stimulusImageUrl ?? undefined,
         });
         if (!res.ok && res.gate && RENDER_BROKEN.has(res.gate)) failedIds.push(q.id);
       }

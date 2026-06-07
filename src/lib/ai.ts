@@ -318,7 +318,23 @@ LESSONS FROM QUALITY SWEEP (HARD GATE — every rule below = automatic rejection
   problem with cosmetic re-wording. The contentHash check will reject it.
 
 (L7) Stem must be a real question — never a fragment, never a "Which of the following"
-  with no following clause, never a definition cut mid-sentence.`;
+  with no following clause, never a definition cut mid-sentence.
+
+(L8) SELF-CONTAINED ONLY — figure/passage references without a stimulus = automatic
+  rejection. (2026-06-07 — fixes "stem requires a figure but none is attached" defect.)
+  * NEVER reference a figure, graph, chart, table, diagram, or passage in the stem
+    ("Based on Figure 4...", "the graph shows...", "refer to the table...",
+    "Table 2 lists...", "the passage suggests...", "in the passage...") UNLESS you
+    ALSO put the actual data/passage into the "stimulus" field in this same JSON.
+  * We CANNOT render external/numbered figures ("Figure 4", "Table 2") — they do not
+    exist. If a question would NEED such a figure, generate an EQUIVALENT
+    self-contained item instead: inline the numbers, coordinates, or data directly in
+    the stem, OR put a renderable stimulus (pipe-delimited table, KaTeX equation,
+    described scenario, passage excerpt) in the "stimulus" field and refer to it
+    generically ("the table below", "the passage") — never by an external number.
+  * If you mention "the passage", the "stimulus" field MUST contain that passage.
+    If you mention "the table"/"the graph", the "stimulus" field MUST contain that
+    data (e.g. a markdown table). No stimulus → rewrite the stem to need none.`;
 
   // Visual fidelity — students gain confidence when prep MCQs match the visual
   // structure of the real exam. We can't ship raster images yet, but we CAN
@@ -899,6 +915,29 @@ export async function generateQuestion(
         const refsNotDrawnToScale = /\b(figure not drawn to scale|not drawn to scale)\b/i.test(qtStr);
         if (refsNotDrawnToScale && !hasImage) {
           lastRejectionReason = "Question includes 'figure not drawn to scale' disclaimer but no stimulusImageUrl. [visual-claim-no-image PCA gate]";
+          lastError = lastRejectionReason;
+          continue;
+        }
+
+        // 2026-06-07 — Self-containment guard (Generation-Engine Agent, tri-agent
+        // quality protocol). Fixes the "stem REQUIRES a figure/passage but none is
+        // attached" defect: stems like "Based on Figure 4...", "Table 2 lists...",
+        // or "the passage suggests..." are unanswerable when no stimulus exists.
+        // The L8 prompt rule above tells the generator to produce self-contained
+        // items; this is the defense-in-depth backstop. We reuse the precise,
+        // false-positive-hardened detector owned by the Validation-Engine Agent in
+        // render-hazard-validator.ts (catches numbered "Figure N"/"Table N" and
+        // "the passage" cases the broad regexes above intentionally skip, without
+        // firing on optics "image" / "table salt" / self-contained word problems).
+        // No fake stimulus is invented — we reject and let MAX_GEN_ATTEMPTS retry.
+        const { detectMissingRequiredStimulus } = await import("./render-hazard-validator");
+        const missingStimErr = detectMissingRequiredStimulus(
+          qtStr,
+          stimStr,
+          typeof stimImg === "string" ? stimImg : null,
+        );
+        if (missingStimErr) {
+          lastRejectionReason = `${missingStimErr} [self-containment gate 2026-06-07]`;
           lastError = lastRejectionReason;
           continue;
         }
