@@ -140,6 +140,23 @@ html, body { overflow-x: hidden; }
     --primary: 205 24% 62%;
     --ring: 205 24% 62%;
   }
+
+  /* Focus Mode — APP-WIDE calm theme (toggled from the dashboard, 2026-06-06).
+   * Recolors the whole authed app's --background + accent so switching modes is
+   * a felt visual + emotional gear-shift everywhere, not just in a practice
+   * session. Applied to the (dashboard) layout root when focusMode is on.
+   * Feedback colors (emerald/red) are separate tokens and stay vivid. */
+  .focus-app {
+    --background: 80 14% 96%;      /* warm off-white ~#f6f7f4 */
+    --primary: 209 27% 48%;        /* muted slate-blue */
+    --primary-foreground: 0 0% 100%;
+    --ring: 209 27% 48%;
+  }
+  .dark .focus-app {
+    --background: 210 10% 10%;
+    --primary: 205 24% 62%;
+    --ring: 205 24% 62%;
+  }
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════

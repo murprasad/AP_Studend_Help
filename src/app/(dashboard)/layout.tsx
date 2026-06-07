@@ -8,9 +8,10 @@ import { SageChat } from "@/components/layout/sage-chat";
 import { BottomNav } from "@/components/layout/bottom-nav";
 import { PushPermissionBanner } from "@/components/notifications/PushPermissionBanner";
 import { SmsOptInCard } from "@/components/notifications/SmsOptInCard";
-import { Sparkles, Menu, LayoutDashboard } from "lucide-react";
+import { Sparkles, Menu, LayoutDashboard, Focus } from "lucide-react";
 import Link from "next/link";
 import { ExamModeContext, useExamModeState } from "@/hooks/use-exam-mode";
+import { useFocusPrefs } from "@/hooks/use-focus-prefs";
 import { cn } from "@/lib/utils";
 
 const ONBOARDING_KEY = "onboarding_completed";
@@ -64,6 +65,9 @@ export default function DashboardLayout({
   const router = useRouter();
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  // Focus Mode — app-wide. Toggled from the persistent dashboard pill; when on,
+  // the whole authed app shifts to the calm palette (the felt gear-shift).
+  const { prefs: focusPrefs, setFocusMode } = useFocusPrefs();
 
   // Start in exam mode if the diagnostic's "start" query param is present
   // so the transition from onboarding → diagnostic feels seamless.
@@ -284,7 +288,34 @@ export default function DashboardLayout({
 
   return (
     <ExamModeContext.Provider value={examModeState}>
-      <div className="flex h-[100dvh] bg-background overflow-hidden">
+      <div
+        className={cn("flex h-[100dvh] bg-background overflow-hidden", focusPrefs.focusMode && "focus-app")}
+        data-focus-mode={focusPrefs.focusMode ? "true" : undefined}
+      >
+        {/* Persistent Focus Mode toggle — switchable anytime from anywhere in
+            the app (the dashboard included). Off = Regular (energy); on = Focus
+            (calm app-wide). Hidden during onboarding only. */}
+        {!onOnboarding && (
+          <button
+            type="button"
+            onClick={() => setFocusMode(!focusPrefs.focusMode)}
+            aria-pressed={focusPrefs.focusMode}
+            title={
+              focusPrefs.focusMode
+                ? "Focus Mode on — calm, fewer distractions. Tap for Regular Mode."
+                : "Switch to Focus Mode — calm, one thing at a time."
+            }
+            className={cn(
+              "fixed top-2 right-3 z-40 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border shadow-sm transition-colors",
+              focusPrefs.focusMode
+                ? "bg-primary text-primary-foreground border-transparent"
+                : "bg-background/95 backdrop-blur text-muted-foreground border-border hover:text-foreground hover:bg-accent",
+            )}
+          >
+            <Focus className="h-3.5 w-3.5" />
+            <span>{focusPrefs.focusMode ? "Focus Mode" : "Focus"}</span>
+          </button>
+        )}
         {/* Exam mode top bar — slim bar with exit button, now visible on
             BOTH desktop and mobile (was hidden lg:flex; flipped 2026-04-22
             because mobile users were left with no in-app escape hatch back
