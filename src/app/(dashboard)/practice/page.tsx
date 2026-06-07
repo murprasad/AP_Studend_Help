@@ -180,6 +180,10 @@ export default function PracticePage() {
   // re-render; the timer only runs in Focus Mode (no ticking clock in Regular).
   const FOCUS_SPRINT_SECS = 10 * 60;
   const [nowTick, setNowTick] = useState(0);
+  // Focus Mode v2 Phase-2 — auto-detect struggle → suggest Focus Mode (the
+  // moat). Heuristic v1: 2+ wrong in a row while NOT in Focus → one gentle,
+  // dismissible offer per session. (AI signal detection comes later.)
+  const [focusSuggested, setFocusSuggested] = useState(false);
   const [energyChecked, setEnergyChecked] = useState(false); // ADHD #43 Energy check-in
   const [premiumRestricted, setPremiumRestricted] = useState(false);
   const [sessionLimitReached, setSessionLimitReached] = useState(false);
@@ -1349,6 +1353,48 @@ export default function PracticePage() {
             </div>
           );
         })()}
+
+        {/* Phase-2 auto-detect → suggest Focus Mode. 2+ wrong in a row while
+            NOT in Focus → one gentle, dismissible offer per session. */}
+        {!focusPrefs.focusMode && !focusSuggested && (() => {
+          let wrongStreak = 0;
+          for (let i = results.length - 1; i >= 0; i--) {
+            if (!results[i].correct) wrongStreak++;
+            else break;
+          }
+          return wrongStreak >= 2 ? (
+            <div className="rounded-xl border border-blue-500/30 bg-blue-500/5 p-3 flex items-start gap-3" data-testid="focus-suggest">
+              <Focus className="h-4 w-4 text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0" />
+              <div className="flex-1 text-sm">
+                <p className="font-medium">Getting tough? Try Focus Mode.</p>
+                <p className="text-xs text-muted-foreground">Fewer distractions, one thing at a time, a calmer pace.</p>
+                <div className="flex gap-2 mt-2">
+                  <Button size="sm" onClick={() => { setFocusMode(true); setFocusSuggested(true); }}>Turn on Focus Mode</Button>
+                  <Button size="sm" variant="ghost" onClick={() => setFocusSuggested(true)}>Not now</Button>
+                </div>
+              </div>
+            </div>
+          ) : null;
+        })()}
+
+        {/* Focus Mode v2 Phase-2 — task-chunking (deterministic v1). At the
+            start of a Focus session, show the plan as small achievable chunks;
+            at each chunk boundary, a brief win + breather. Breaks an
+            overwhelming "10 questions" into bite-size steps. */}
+        {focusPrefs.focusMode && currentIndex === 0 && (
+          <div className="rounded-xl border border-primary/30 bg-primary/5 p-3 text-sm" data-testid="focus-plan">
+            <p className="font-medium mb-0.5">Your focus plan</p>
+            <p className="text-xs text-muted-foreground">
+              {questionsRef.current.length} questions, in chunks of 5 with a breather between. One at a time — you&apos;ve got this.
+            </p>
+          </div>
+        )}
+        {focusPrefs.focusMode && currentIndex > 0 && currentIndex % 5 === 0 && (
+          <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/5 p-3 text-sm flex items-center gap-2" data-testid="focus-chunk-done">
+            <span className="text-emerald-600 dark:text-emerald-400 font-semibold">✓ {currentIndex} done</span>
+            <span className="text-xs text-muted-foreground">Nice chunk. Take a breath, then the next 5.</span>
+          </div>
+        )}
 
         {/* ADHD #43 Energy check-in — quick start-of-session pulse (opt-in).
             Non-blocking; pick a pace, then it's dismissed for the session. */}
