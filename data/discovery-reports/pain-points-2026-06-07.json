@@ -1,0 +1,103 @@
+{
+  "generatedAt": "2026-06-07T16:51:17.107Z",
+  "windowDays": 90,
+  "product": "StudentNest",
+  "totals": {
+    "painSignals": 17,
+    "abandons": 11,
+    "thumbsDown": 9,
+    "withFreeText": 8
+  },
+  "rankedPainPoints": [
+    {
+      "theme": "Pacing / timing / too long",
+      "count": 8,
+      "byCourse": {
+        "AP_COMPUTER_SCIENCE_PRINCIPLES": 2,
+        "AP_PSYCHOLOGY": 2,
+        "ACT_ENGLISH": 1,
+        "SAT_MATH": 1,
+        "AP_BIOLOGY": 1,
+        "AP_CHEMISTRY": 1
+      },
+      "examples": []
+    },
+    {
+      "theme": "Other / uncategorized",
+      "count": 5,
+      "byCourse": {
+        "ACT_SCIENCE": 1,
+        "AP_PHYSICS_1": 1,
+        "AP_BIOLOGY": 1,
+        "AP_CALCULUS_BC": 1,
+        "CLEP_PRINCIPLES_OF_MARKETING": 1
+      },
+      "examples": [
+        {
+          "text": "None",
+          "course": "ACT_SCIENCE"
+        },
+        {
+          "text": "The questions are not very accurate to collegeboard. The \"hard\" questions are fairly standard, like nothing challenging that helps prepare for the actual exam.",
+          "course": "AP_PHYSICS_1"
+        },
+        {
+          "text": "Ttt",
+          "course": "AP_BIOLOGY"
+        }
+      ]
+    },
+    {
+      "theme": "Looks broken / missing image or graph",
+      "count": 1,
+      "byCourse": {
+        "SAT_MATH": 1
+      },
+      "examples": [
+        {
+          "text": "broken question",
+          "course": "SAT_MATH"
+        }
+      ]
+    },
+    {
+      "theme": "Technical / not working / can't submit",
+      "count": 1,
+      "byCourse": {
+        "AP_CHEMISTRY": 1
+      },
+      "examples": [
+        {
+          "text": "Submission not working",
+          "course": "AP_CHEMISTRY"
+        }
+      ]
+    },
+    {
+      "theme": "Off-topic / not on my exam / outdated",
+      "count": 1,
+      "byCourse": {
+        "AP_PHYSICS_1": 1
+      },
+      "examples": [
+        {
+          "text": "Circuits/charges are not in the curriculum anymore",
+          "course": "AP_PHYSICS_1"
+        }
+      ]
+    },
+    {
+      "theme": "Too repetitive / same questions",
+      "count": 1,
+      "byCourse": {
+        "AP_CHEMISTRY": 1
+      },
+      "examples": [
+        {
+          "text": "kept regenerating same questions",
+          "course": "AP_CHEMISTRY"
+        }
+      ]
+    }
+  ]
+}
