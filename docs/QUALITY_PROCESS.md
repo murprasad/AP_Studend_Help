@@ -54,6 +54,28 @@ defect (internal/external)
 
 ---
 
+## Question-Quality Tri-Agent Protocol (HARD REQUIREMENT — added 2026-06-07)
+
+**Every time we have a question-quality issue, THREE agents are engaged — no soloing.** The author
+coordinates; the agents do the work and the monitor independently confirms it. Mandatory for any
+bad-question class (figure-missing, circular explanation, contamination, wrong answer, off-style):
+
+| Agent | Role | Mandate on a quality issue |
+|---|---|---|
+| **1. Generation-Engine Agent** | improve how questions are MADE | Fix the generator (`src/lib/ai.ts` prompt/logic) so the defect can't be produced — emit a figure when one is claimed, or rephrase to not need it; trace every change to the defect. |
+| **2. Validation-Engine Agent** | improve how questions are GATED | Strengthen the deterministic gate (`render-hazard-validator.ts`, `deterministic-question-gates.ts`) so the defect is BLOCKED at approval; fail-closed; precise (no false positives). |
+| **3. Independent Process-Monitor Agent** | oversight | Independently confirm (1)+(2) close the defect, the gate blocks + the generator complies, BIQ/RCA + G1–G6 were followed, no regressions. Reports pass/fail. |
+
+Rules:
+- **Deterministic-first:** the gate is deterministic; LLM judgment is the last layer, never the first.
+- **Verify, don't assume — both directions:** confirm a defect is real before mass-acting (a noisy
+  detector that flags GOOD questions is itself a defect), AND confirm a required asset (figure/passage)
+  is actually present before approving.
+- **Retroactive + forward:** fix new generation (gate + generator) AND sweep the existing bank.
+- The Monitor (Agent 3) is the load-bearing sign-off — the author's "it's fixed" is never sufficient.
+
+---
+
 ## Why this exists — defect clusters that exposed gaps
 
 **Cluster 1 (2026-06-02):** admin reset, dead landing tiles, SAT track, Khan URL rot, popup jump, missing trademark, 23 stale tests. Common cause: **QA persona walkthrough skipped**.
