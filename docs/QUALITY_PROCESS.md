@@ -31,6 +31,29 @@ defect (internal/external)
 
 ---
 
+## Independent Verification Agents (HARD REQUIREMENT — added 2026-06-07)
+
+**The author of a change CANNOT self-declare it "done", "verified", or "live".** An *independent* agent (separate context, adversarial mandate) must pass it. This rule exists because the author keeps substituting code-reasoning ("the condition is there, it'll work") for actual observation, and shipping gaps the user then catches. On 2026-06-07 an independent audit immediately found HIGH defects (duplicate primary CTA + a dead button on PL) that the author missed and whose own QA-walk script was broken (tested the wrong page, couldn't even authenticate).
+
+### The roster
+| # | Agent | Mandate | Maps to gate |
+|---|---|---|---|
+| 1 | **Requirements-Conformance Auditor** | Take the requirement VERBATIM; verify every clause is built (clause-by-clause ✅/❌/partial). Catches thin-slice-claimed-as-done. | G1/PO |
+| 2 | **Adversarial Code Reviewer** | Skeptically hunt bugs / edge-cases / dead code / races / inconsistencies in the diff. Assume bugs exist. | G3/REV |
+| 3 | **QA Persona Walker** | EXECUTE the authed journey in a real browser; assert OBSERVED behavior (click, don't read). Use a WORKING harness. | G4/QA (load-bearing) |
+| 4 | **PL=SN Parity Auditor** | Diff the two products feature-by-feature; flag divergence. | G3/REV (cross-product) |
+| 5 | **Process/BIQ Compliance Auditor** | Verify each change actually passed G1–G6; flag skipped gates. | meta |
+| 6 | **Live-Prod Verifier** | Independently confirm prod matches claims (200 + content + no 500s + behavior). | G6/SRE |
+
+### The gate
+- Nothing is **"done"** until **Agent #2 (REV) + Agent #3 (QA Walk) both pass independently.**
+- A **release** additionally requires **Agent #5 (BIQ Compliance)** sign-off and **Agent #6 (Live-Prod Verify)** post-deploy.
+- Any **cross-product** change additionally requires **Agent #4 (Parity)**.
+- The agents are spawned in a **separate context** (the user may spawn them for true independence). The author's own assertion is never sufficient.
+- **QA-walk harness rule:** the walk must actually authenticate (use the REAL form controls — e.g. Radix `<Select>` via `getByRole('option')`, not `select[name=…]`), drive the full redirect chain to the target state (a fresh user is redirected to onboarding — handle it, don't single-hop), assert on a page whose behavior is controlled by the feature under test (not a page that auto-changes for other reasons), and **hard-fail** instead of `.catch(()=>{})`-swallowing a broken step.
+
+---
+
 ## Why this exists — defect clusters that exposed gaps
 
 **Cluster 1 (2026-06-02):** admin reset, dead landing tiles, SAT track, Khan URL rot, popup jump, missing trademark, 23 stale tests. Common cause: **QA persona walkthrough skipped**.
