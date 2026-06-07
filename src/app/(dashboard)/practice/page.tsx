@@ -1214,19 +1214,19 @@ export default function PracticePage() {
           </CardContent>
         </Card>
 
-        {/* 2026-06-05 — guided practice loop. The primary action after a
-            session is NOT "practice the same thing again" or a dead-end
-            analytics page; it's returning to the dashboard, where the
-            weak-area card recommends the next step based on updated progress.
-            Practice-again is kept as a secondary option. */}
+        {/* 2026-06-07 — de-duplicated CTAs. PostSessionNextStep (above) is THE
+            "your next step" recommendation; these are just secondary nav, so
+            this button is "Back to dashboard" (not a second "next step"). It
+            keeps ?focus=weakness so the dashboard still highlights the weak
+            area if they head there. */}
         <div className="flex gap-3">
           <Button onClick={resetSession} variant="outline" className="flex-1 gap-2">
             <RotateCcw className="h-4 w-4" />
             Practice Again
           </Button>
           <Link href="/dashboard?focus=weakness" className="flex-1">
-            <Button className="w-full gap-2">
-              See your next step <ChevronRight className="h-4 w-4" />
+            <Button variant="secondary" className="w-full gap-2">
+              Back to dashboard <ChevronRight className="h-4 w-4" />
             </Button>
           </Link>
         </div>

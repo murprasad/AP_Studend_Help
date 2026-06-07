@@ -57,6 +57,10 @@ import { PostJourneyHero } from "@/components/dashboard/post-journey-hero";
 import { useJourneyForcing } from "@/hooks/use-journey-forcing";
 import type { ApCourse } from "@prisma/client";
 import { useDashboardFocus } from "@/hooks/use-dashboard-focus";
+import { useFocusPrefs } from "@/hooks/use-focus-prefs";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Focus } from "lucide-react";
 import { PassGuaranteeBadge } from "@/components/marketing/pass-guarantee-badge";
 
 function DashboardSkeleton() {
@@ -150,6 +154,7 @@ function DashboardBody({ course, impressionId }: { course: string; impressionId:
   //   PrimaryActionStrip("Warm up") + SingleQuestionEntry("TRY IT") +
   //   DiagnosticPrompt + OutcomeProgressStrip — duplicated welcome vibe.
   const { forcing, loading: journeyLoading, postJourney } = useJourneyForcing(course);
+  const { prefs: focusPrefs } = useFocusPrefs();
   // 2026-06-01 — minimal post-onboarding dashboard for brand-new users.
   // < 24h: hide AutoLaunchNudge (they JUST did the journey warm-up).
   // < 3d: hide ExamDatePromptCard (don't ask for another form fill).
@@ -195,6 +200,25 @@ function DashboardBody({ course, impressionId }: { course: string; impressionId:
           daysSinceCompleted={postJourney.daysSinceCompleted}
         />
         <DashboardSecondaryCards course={course as string} />
+      </div>
+    );
+  }
+
+  // Focus Mode — minimal one-action dashboard. The sidebar + all chrome are
+  // already hidden by the layout; here we strip the dashboard to ONE next step
+  // + a focused-session CTA. The top-right Focus pill restores Regular (full
+  // sidebar + dashboard).
+  if (focusPrefs.focusMode) {
+    return (
+      <div className="space-y-4 max-w-[640px] mx-auto py-2" data-testid="focus-dashboard">
+        <GreetingCard />
+        <PassProbabilityHero course={course as string} courseDisplayName={course as string} />
+        <div data-focus-target="weakness"><WeaknessFocusCard course={course} /></div>
+        <Link href="/practice" className="block">
+          <Button className="w-full gap-2" size="lg">
+            <Focus className="h-4 w-4" /> Start a focused session
+          </Button>
+        </Link>
       </div>
     );
   }

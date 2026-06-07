@@ -333,8 +333,8 @@ export default function DashboardLayout({
           </div>
         )}
 
-        {/* Mobile header — hidden in exam mode and onboarding */}
-        {!inExamMode && !onOnboarding && (
+        {/* Mobile header — hidden in exam mode, onboarding, and Focus Mode */}
+        {!inExamMode && !onOnboarding && !focusPrefs.focusMode && (
           <header className="lg:hidden fixed top-0 left-0 right-0 h-14 bg-background/95 backdrop-blur border-b border-border z-30 flex items-center px-4">
             <button
               onClick={() => setSidebarOpen(true)}
@@ -352,8 +352,10 @@ export default function DashboardLayout({
           </header>
         )}
 
-        {/* Sidebar — hidden in exam mode and onboarding */}
-        {!inExamMode && !onOnboarding && (
+        {/* Sidebar — hidden in exam mode, onboarding, AND Focus Mode (Focus is
+            the minimal single-task view; the top-right Focus pill restores
+            Regular + the full sidebar). */}
+        {!inExamMode && !onOnboarding && !focusPrefs.focusMode && (
           <Sidebar
             userRole={session.user.role}
             userTrack={session.user.track}
@@ -366,11 +368,11 @@ export default function DashboardLayout({
           "flex-1 min-w-0 overflow-y-auto overflow-x-hidden",
           // Exam mode: 10-tall top bar now on all breakpoints.
           // Non-exam: mobile has 14-tall header, desktop has none.
-          inExamMode ? "pt-10" : "pt-14 lg:pt-0",
+          inExamMode ? "pt-10" : focusPrefs.focusMode ? "pt-12" : "pt-14 lg:pt-0",
           // Mobile: leave room for the 14-tall bottom nav. Desktop has no
           // bottom nav so no padding needed past lg. Includes safe-area
-          // inset for iPhone home indicator.
-          !inExamMode && !onOnboarding && "pb-[calc(3.5rem+env(safe-area-inset-bottom))] lg:pb-0"
+          // inset for iPhone home indicator. Focus Mode hides the bottom nav.
+          !inExamMode && !onOnboarding && !focusPrefs.focusMode && "pb-[calc(3.5rem+env(safe-area-inset-bottom))] lg:pb-0"
         )}>
           <div className={cn(
             "px-4 py-4 sm:px-6 sm:py-6 mx-auto",
@@ -382,15 +384,12 @@ export default function DashboardLayout({
             {children}
           </div>
         </main>
-        {/* Hide Sage chat widget while in exam mode — full-screen test UX */}
-        {!inExamMode && <SageChat />}
-        {/* Push opt-in banner — self-hides if unsupported, already granted, or previously dismissed */}
-        {!inExamMode && !onOnboarding && <PushPermissionBanner />}
-        {/* SMS opt-in card — fires 30s after Push so the asks don't stack */}
-        {!inExamMode && !onOnboarding && <SmsOptInCard />}
-        {/* Mobile bottom nav — hidden in exam mode + onboarding. md:hidden
-            inside the component itself so desktop stays untouched. */}
-        {!onOnboarding && <BottomNav examMode={inExamMode} />}
+        {/* Sage widget, opt-in banners, bottom nav — all hidden in Focus Mode
+            (minimal single-task view) as well as exam mode / onboarding. */}
+        {!inExamMode && !focusPrefs.focusMode && <SageChat />}
+        {!inExamMode && !onOnboarding && !focusPrefs.focusMode && <PushPermissionBanner />}
+        {!inExamMode && !onOnboarding && !focusPrefs.focusMode && <SmsOptInCard />}
+        {!onOnboarding && !focusPrefs.focusMode && <BottomNav examMode={inExamMode} />}
       </div>
     </ExamModeContext.Provider>
   );
