@@ -188,6 +188,31 @@ function DashboardBody({ course, impressionId }: { course: string; impressionId:
     return () => { cancelled = true; };
   }, []);
 
+  // Focus Mode — minimal one-action dashboard. The sidebar + all chrome are
+  // already hidden by the layout; here we strip the dashboard to ONE next step
+  // + a focused-session CTA. The top-right Focus pill restores Regular (full
+  // sidebar + dashboard).
+  //
+  // 2026-06-07 (QA-walk finding) — this MUST come before the post-journey and
+  // engine branches below. Focus Mode is an explicit user override; if the
+  // post-journey (Day 0-3) branch ran first, a user who turned Focus on within
+  // 3 days of onboarding — the most likely moment — got the full post-journey
+  // dashboard, never the one-action view (data-testid focus-dashboard absent).
+  if (focusPrefs.focusMode) {
+    return (
+      <div className="space-y-4 max-w-[640px] mx-auto py-2" data-testid="focus-dashboard">
+        <GreetingCard />
+        <PassProbabilityHero course={course as string} courseDisplayName={course as string} />
+        <div data-focus-target="weakness"><WeaknessFocusCard course={course} /></div>
+        <Link href="/practice" className="block">
+          <Button className="w-full gap-2" size="lg">
+            <Focus className="h-4 w-4" /> Start a focused session
+          </Button>
+        </Link>
+      </div>
+    );
+  }
+
   // Beta 9.7 — Post-journey streamlined view (Day 0-3 after Step 5).
   // Replaces the buffet with ONE diagnostic-derived action + 3 tools.
   if (inPostJourney && postJourney && !engineEnabled) {
@@ -200,25 +225,6 @@ function DashboardBody({ course, impressionId }: { course: string; impressionId:
           daysSinceCompleted={postJourney.daysSinceCompleted}
         />
         <DashboardSecondaryCards course={course as string} />
-      </div>
-    );
-  }
-
-  // Focus Mode — minimal one-action dashboard. The sidebar + all chrome are
-  // already hidden by the layout; here we strip the dashboard to ONE next step
-  // + a focused-session CTA. The top-right Focus pill restores Regular (full
-  // sidebar + dashboard).
-  if (focusPrefs.focusMode) {
-    return (
-      <div className="space-y-4 max-w-[640px] mx-auto py-2" data-testid="focus-dashboard">
-        <GreetingCard />
-        <PassProbabilityHero course={course as string} courseDisplayName={course as string} />
-        <div data-focus-target="weakness"><WeaknessFocusCard course={course} /></div>
-        <Link href="/practice" className="block">
-          <Button className="w-full gap-2" size="lg">
-            <Focus className="h-4 w-4" /> Start a focused session
-          </Button>
-        </Link>
       </div>
     );
   }
