@@ -1863,6 +1863,32 @@ export default function PracticePage() {
         <div className="mt-2"><SocialProofBadge variant="compact" metric="active-week" /></div>
       </div>
 
+      {/* Focus Mode v2 Phase-1b — entry flow. The guided "how do you want to
+          study right now?" choice from the strategy: Flexible (Regular) vs a
+          Focused session (Focus Mode). Sets the mode before the session so the
+          student picks their mental gear up front. */}
+      <div className="rounded-xl border border-border/50 bg-card p-4">
+        <p className="text-sm font-medium mb-2.5">How do you want to study right now?</p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          <button
+            type="button"
+            onClick={() => setFocusMode(false)}
+            className={`rounded-lg border p-3 text-left transition-colors ${!focusPrefs.focusMode ? "border-primary bg-primary/5 ring-1 ring-primary" : "border-border hover:bg-accent"}`}
+          >
+            <span className="text-sm font-semibold block">Flexible plan</span>
+            <span className="text-xs text-muted-foreground">Explore, browse, full view. Regular Mode.</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setFocusMode(true)}
+            className={`rounded-lg border p-3 text-left transition-colors ${focusPrefs.focusMode ? "border-primary bg-primary/5 ring-1 ring-primary" : "border-border hover:bg-accent"}`}
+          >
+            <span className="text-sm font-semibold flex items-center gap-1"><Focus className="h-3.5 w-3.5" /> Focused session</span>
+            <span className="text-xs text-muted-foreground">One thing at a time, timed sprint, calm. Focus Mode.</span>
+          </button>
+        </div>
+      </div>
+
       <CourseSelectorInline />
 
       {/* Beta 9.1.3 — daily-cap card now renders AT THE TOP when reached.
