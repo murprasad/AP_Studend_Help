@@ -33,6 +33,7 @@ import { useFirstAnswerReward } from "@/components/practice/first-answer-reward-
 import { CrossModuleNudge } from "@/components/practice/cross-module-nudge";
 import { DesmosCalculatorPanel } from "@/components/practice/desmos-calculator";
 import { khanAcademyLinkFor, hasKhanAcademyLinks } from "@/lib/khan-academy-sat-links";
+import { trackEvent } from "@/lib/gtag";
 import {
   Zap,
   BookOpen,
@@ -948,6 +949,16 @@ export default function PracticePage() {
   }
 
   async function completeSession() {
+    // Focus Mode v2 — North Star instrumentation. Count COMPLETED focus
+    // sessions (the metric that proves Focus Mode drives behavior). Fires to
+    // GA4 only when NEXT_PUBLIC_GA_ID is set; otherwise a no-op.
+    if (focusPrefs.focusMode && results.length > 0) {
+      try {
+        const focusMins = startTime ? Math.round((Date.now() - startTime.getTime()) / 60000) : 0;
+        trackEvent({ action: "focus_session_complete", category: "focus_mode", label: String(course), value: results.length });
+        trackEvent({ action: "focus_minutes", category: "focus_mode", label: String(course), value: focusMins });
+      } catch { /* analytics never blocks */ }
+    }
     const fallbackSummary: SessionSummary = {
       totalQuestions: questionsRef.current.length,
       correctAnswers: results.filter((r) => r.correct).length,
