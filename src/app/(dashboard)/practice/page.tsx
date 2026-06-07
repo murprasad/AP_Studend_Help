@@ -161,6 +161,11 @@ export default function PracticePage() {
   // going. The differentiator no content-first competitor ships.
   const [overwhelmOpen, setOverwhelmOpen] = useState(false);
   const [onBreath, setOnBreath] = useState(false);
+  // Focus Mode v2 Phase-1b — sprint timer. A focus session is framed as a
+  // short timed sprint (default 10 min). nowTick drives the 1-second countdown
+  // re-render; the timer only runs in Focus Mode (no ticking clock in Regular).
+  const FOCUS_SPRINT_SECS = 10 * 60;
+  const [nowTick, setNowTick] = useState(0);
   const [energyChecked, setEnergyChecked] = useState(false); // ADHD #43 Energy check-in
   const [premiumRestricted, setPremiumRestricted] = useState(false);
   const [sessionLimitReached, setSessionLimitReached] = useState(false);
@@ -561,6 +566,14 @@ export default function PracticePage() {
     }, 3000);
     return () => clearInterval(interval);
   }, [isStarting, questionType]);
+
+  // Focus Mode v2 Phase-1b — sprint countdown ticker. Only ticks in Focus Mode
+  // during an active session, so Regular Mode never shows a ticking clock.
+  useEffect(() => {
+    if (!focusPrefs.focusMode || mode !== "practicing") return;
+    const t = setInterval(() => setNowTick((n) => n + 1), 1000);
+    return () => clearInterval(t);
+  }, [focusPrefs.focusMode, mode]);
 
   const currentQuestion = questions[currentIndex];
   const parsedOptions: string[] = (() => {
@@ -1297,8 +1310,19 @@ export default function PracticePage() {
           }
           const totalSecs = results.reduce((s, r) => s + (r.timeSecs || 0), 0);
           const mins = Math.max(1, Math.round(totalSecs / 60));
+          // Sprint countdown — wall-clock since session start, capped at the
+          // 10-min sprint. nowTick (1s) drives the re-render.
+          void nowTick;
+          const elapsed = startTime ? Math.floor((Date.now() - startTime.getTime()) / 1000) : 0;
+          const remaining = Math.max(0, FOCUS_SPRINT_SECS - elapsed);
+          const mm = Math.floor(remaining / 60);
+          const ss = String(remaining % 60).padStart(2, "0");
           return (
             <div className="flex items-center justify-center gap-3 text-xs text-muted-foreground" data-testid="focus-momentum">
+              <span className={remaining > 0 ? "font-semibold text-primary" : "font-semibold text-emerald-600 dark:text-emerald-400"} data-testid="focus-sprint">
+                {remaining > 0 ? `⏱ ${mm}:${ss} sprint` : "✓ sprint done"}
+              </span>
+              <span aria-hidden>·</span>
               <span className="font-medium text-foreground">{results.length} done</span>
               <span aria-hidden>·</span>
               <span>{mins} min focused</span>
