@@ -26,8 +26,8 @@ import { runDeterministicGates } from "./lib/_question-gates.mjs";
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
 import path from "node:path";
 process.env.DATABASE_URL = (process.env.DATABASE_URL || "").replace(/^["']|["']$/g, "");
-const { neon } = await import("@neondatabase/serverless");
-const sql = neon(process.env.DATABASE_URL);
+const { neonRetry } = await import("./lib/_sql-retry.mjs");
+const sql = neonRetry(process.env.DATABASE_URL);
 
 const APPLY = process.argv.includes("--apply");
 
@@ -57,13 +57,11 @@ if (cogReport?.flaggedClusters) {
   }
 }
 
-// Pull all approved MCQs
-const rows = await sql`
-  SELECT id, course::text AS course, "questionText", options, "correctAnswer",
-         explanation, stimulus, unit::text AS unit, "modelUsed", difficulty::text AS difficulty
-  FROM questions
-  WHERE "isApproved" = true AND "questionType" = 'MCQ'
-`;
+// Resume mode — skip rows already trustScored unless --rescore
+const RESCORE = process.argv.includes("--rescore");
+const rows = RESCORE
+  ? await sql`SELECT id, course::text AS course, "questionText", options, "correctAnswer", explanation, stimulus, unit::text AS unit, "modelUsed", difficulty::text AS difficulty FROM questions WHERE "isApproved" = true AND "questionType" = 'MCQ'`
+  : await sql`SELECT id, course::text AS course, "questionText", options, "correctAnswer", explanation, stimulus, unit::text AS unit, "modelUsed", difficulty::text AS difficulty FROM questions WHERE "isApproved" = true AND "questionType" = 'MCQ' AND "trustScore" IS NULL`;
 console.log(`Scoring ${rows.length.toLocaleString()} approved MCQs…`);
 
 const tiers = { gold: 0, silver: 0, bronze: 0, rejected: 0 };
@@ -105,13 +103,17 @@ function scoreQuestion(r) {
 }
 
 async function withRetry(fn) {
-  for (let i = 0; i < 3; i++) {
+  for (let i = 0; i < 5; i++) {
     try { return await fn(); }
-    catch (e) { if (i === 2 || e.code !== "ECONNRESET") throw e; await new Promise(r => setTimeout(r, 1500)); }
+    catch (e) {
+      const transient = e.code === "ECONNRESET" || e.code === "ETIMEDOUT" || /fetch failed|terminated/i.test(e.message || "");
+      if (i === 4 || !transient) throw e;
+      await new Promise(r => setTimeout(r, 1500 * (i + 1)));  // exponential-ish backoff
+    }
   }
 }
 
-let i = 0, applied = 0;
+let i = 0, applied = 0, skipped = 0;
 for (const r of rows) {
   const { score, cert, debits } = scoreQuestion(r);
   tiers[cert]++;
@@ -119,10 +121,16 @@ for (const r of rows) {
   i++;
   if (i % 2000 === 0) console.log(`  scored ${i}/${rows.length}`);
   if (APPLY) {
-    await withRetry(() => sql`UPDATE questions SET "trustScore" = ${score}, certification = ${cert} WHERE id = ${r.id}`);
-    applied++;
+    try {
+      await withRetry(() => sql`UPDATE questions SET "trustScore" = ${score}, certification = ${cert} WHERE id = ${r.id}`);
+      applied++;
+    } catch (e) {
+      skipped++;
+      if (skipped < 5) console.warn(`  skip ${r.id}: ${e.code || e.message}`);
+    }
   }
 }
+if (skipped > 0) console.log(`Skipped ${skipped} rows due to persistent DB errors (re-run later to retry).`);
 
 const outDir = path.join(process.cwd(), "data");
 mkdirSync(outDir, { recursive: true });

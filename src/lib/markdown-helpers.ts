@@ -157,3 +157,27 @@ export function normalizeMarkdownTables(md: string): string {
     })
     .join("\n");
 }
+
+/**
+ * Escape literal $ used as currency so remark-math doesn't interpret pairs of
+ * them as inline-math delimiters.
+ *
+ * Bug class: SAT/CLEP word problems like "$75 for a service visit, plus an
+ * hourly rate. If decreased from $60 per hour to $50 per hour..." contain
+ * multiple unescaped $ characters. remark-math greedily pairs the first $
+ * with the next $ and renders everything between as Computer Modern italic
+ * math (whitespace collapsed). Result: garbled italic text.
+ *
+ * Heuristic: $ immediately preceding a digit (with optional spaces/commas)
+ * is currency. Real LaTeX math is `$x^2$`, `$\frac{...}{...}$` etc — never
+ * starts with a bare digit. So we escape only `$<space>?<digit>` patterns.
+ *
+ * Idempotent — re-running on an already-escaped string is a no-op because
+ * the regex requires a NON-escaped $ (negative lookbehind for backslash).
+ */
+export function escapeCurrencyDollarSigns(input: string | null | undefined): string {
+  if (!input) return "";
+  // Match $ not preceded by backslash, followed by optional whitespace
+  // and a digit. Replace with \$.
+  return input.replace(/(?<!\\)\$(?=\s?[\d])/g, "\\$");
+}

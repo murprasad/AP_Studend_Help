@@ -28,7 +28,7 @@ const args = process.argv.slice(2);
 const dry = args.includes("--dry");
 const limitArg = args.find((a, i) => args[i - 1] === "--limit");
 const LIMIT = limitArg ? parseInt(limitArg, 10) : Infinity;
-const courseFilter = args.find((a) => a.startsWith("AP_"));
+const courseFilter = args.find((a) => /^(AP_|SAT_|ACT_|CLEP_)/.test(a));
 
 const PACE_MS = 1500;
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -36,7 +36,13 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const GROQ_API_KEY = process.env.GROQ_API_KEY;
 if (!GROQ_API_KEY && !dry) { console.error("Missing GROQ_API_KEY"); process.exit(1); }
 
-const TARGET_COURSES = ["AP_US_GOVERNMENT", "AP_HUMAN_GEOGRAPHY", "AP_ENVIRONMENTAL_SCIENCE", "AP_US_HISTORY"];
+const TARGET_COURSES = [
+  "AP_US_GOVERNMENT", "AP_HUMAN_GEOGRAPHY", "AP_ENVIRONMENTAL_SCIENCE",
+  "AP_US_HISTORY", "AP_WORLD_HISTORY", "AP_EUROPEAN_HISTORY",
+  "AP_PSYCHOLOGY", "AP_MACROECONOMICS", "AP_MICROECONOMICS",
+  "AP_ENGLISH_LANGUAGE", "AP_ENGLISH_LITERATURE",
+  "SAT_READING_WRITING", "ACT_READING", "ACT_ENGLISH", "ACT_SCIENCE",
+];
 
 const STIMULUS_GUIDANCE = {
   AP_US_GOVERNMENT: `Choose ONE format that fits the question:
@@ -62,6 +68,66 @@ const STIMULUS_GUIDANCE = {
 - Environmental-impact data (CO2 ppm by year, biodiversity index, Simpson's index).
 - Figure description: "Figure 1 shows [variable] across [time/space]. Treatment X resulted in [pattern]. Control showed [pattern]."
 - Pollution / sampling design scenario.`,
+  AP_WORLD_HISTORY: `Choose ONE format that fits the question:
+- Primary-source excerpt with full source line "Source: [Author], [role], [document type], [year]" then 60-100 words. Use real world historical figures by era: Ibn Battuta (1300s), Marco Polo (1270s), Ghazi Mustafa Kemal (1920s), Jose Marti (1890s), Mahatma Gandhi (1920s-40s), Mao Zedong (1940s-60s), Nelson Mandela (1960s-90s), Voltaire (1700s).
+- Statistical/trade-data table: "Source: [Maddison Project / UN / Historical Statistics], [Year]\\n\\n| Year | Variable | Value |\\n|---|---|---|"
+- Map description (Silk Road, trans-Saharan trade, Mongol Empire extent, colonial holdings by year).
+- Treaty / law / decree excerpt: Treaty of Tordesillas (1494), Tanzimat reforms, Open Door Notes (1899).
+- Era-appropriate source matching the unit (1200-1450, 1450-1750, 1750-1900, 1900-present).`,
+  AP_EUROPEAN_HISTORY: `Choose ONE format that fits the question:
+- Primary-source excerpt with full source line then 60-100 words. Use real European figures by era: Machiavelli (1500s), Luther (1517), Galileo (1610s), Locke (1689), Voltaire (1750s), Marx (1848), Bismarck (1860s), Hitler (1930s), Churchill (1940s).
+- Statistical/economic table: "Source: [Maddison / Eurostat / Historical Statistics], [Year]"
+- Map description (Holy Roman Empire, partitions of Poland, alliances 1914, Cold War Europe).
+- Treaty / decree excerpt: Westphalia (1648), Versailles (1919), Treaty of Rome (1957).
+- Era-appropriate source matching the unit (1450-1648, 1648-1815, 1815-1914, 1914-present).`,
+  AP_PSYCHOLOGY: `Choose ONE format that fits the question:
+- Research study summary with citation: "Researcher [Name] ([year]) studied [topic]. Method: [design]. Results: [outcome]." Use real psych researchers: Milgram (1963 obedience), Asch (1956 conformity), Bandura (1961 Bobo doll), Loftus (1974 misinformation), Tversky/Kahneman (1974 heuristics).
+- Clinical case vignette: 80-150 words describing a client's symptoms/behavior, used as basis for diagnosis or treatment-approach question.
+- Brain/anatomy diagram described in text: "The image shows the [structure]. The labeled area is responsible for [function]."
+- Experimental data table with N, condition, mean, SE.
+- DSM-5 criteria scenario for a disorder.`,
+  AP_MACROECONOMICS: `Choose ONE format that fits the question:
+- Economic data table: "Source: [BEA / BLS / Federal Reserve / IMF], [Year]\\n\\n| Year | GDP | Inflation | Unemployment |\\n|---|---|---|---|"
+- AD/AS or Phillips Curve scenario described in text (shifts, gaps, fiscal/monetary policy responses).
+- Real-world policy excerpt: Fed announcement, fiscal-package summary, central-bank rate decision.
+- Open-economy scenario (exchange rates, current account, capital flows).
+- Multi-country comparison case (developing vs developed economy data).`,
+  AP_MICROECONOMICS: `Choose ONE format that fits the question:
+- Supply-and-demand graph described in text: "The graph shows market for [good]. Equilibrium at P=$[X], Q=[Y]. A [shift] causes new equilibrium at..."
+- Cost/revenue data table: "Firm X output data:\\n| Q | TC | TR |\\n|---|---|---|"
+- Market scenario: monopoly, oligopoly, perfect competition with specific firm details.
+- Externality / public goods case study (pollution, infrastructure, vaccines).
+- Game theory payoff matrix in markdown table.`,
+  AP_ENGLISH_LANGUAGE: `Choose ONE format that fits the question:
+- Non-fiction prose excerpt 100-200 words, with citation: "Source: [Author], '[essay/speech title],' [year]." Use rhetorical-canon writers: Frederick Douglass, Sojourner Truth, Virginia Woolf, James Baldwin, Joan Didion, Ta-Nehisi Coates, Annie Dillard, Henry David Thoreau.
+- Argument-essay excerpt with clear thesis, evidence, rhetorical devices visible.
+- Speech excerpt (King 'I Have a Dream', Lincoln 'Gettysburg Address', JFK Inaugural, Obama 'A More Perfect Union').
+- The passage MUST be the basis for the rhetorical-analysis question — quote the specific text the question references.`,
+  AP_ENGLISH_LITERATURE: `Choose ONE format that fits the question:
+- Poem (full or 8-16 lines) with attribution. Use canonical poets: Dickinson, Whitman, Eliot, Frost, Plath, Hughes, Heaney, Bishop, Stevens.
+- Prose passage 100-200 words from a novel/short story with attribution. Use canonical authors: Austen, Brontë, Dickens, Hawthorne, Twain, Joyce, Woolf, Hemingway, Faulkner, Toni Morrison.
+- Drama excerpt (8-20 lines) with speaker labels. Use Shakespeare, Ibsen, Williams, Miller, Beckett.
+- The passage MUST contain the specific imagery/diction/structure the question asks about.`,
+  SAT_READING_WRITING: `Choose ONE format that fits the question:
+- Short passage 50-150 words, single-paragraph format. Genres: literary fiction, U.S. founding-era document, social science, natural science. Use real sources.
+- Paired short passages (50-100 words each) on related topic from different perspectives.
+- Passage with underlined phrase that question asks to revise (for Writing/Standard English questions).
+- Data graphic described in text: "The chart shows [variable] across [year/group]. Notable trend: [pattern]."
+- Passages should match SAT R/W difficulty band (~9th-grade Lexile, college-prep rigor).`,
+  ACT_READING: `Choose ONE format that fits the question:
+- Passage 100-200 words. Genre matches ACT structure: Prose Fiction, Social Science, Humanities, or Natural Science.
+- Paired passages (50-100 words each) — Natural Science section sometimes uses this format.
+- Cite author and source year. Use ACT-typical genres (American/world literature, history essays, scientific reporting).
+- The passage must contain the specific detail/inference the question targets.`,
+  ACT_ENGLISH: `Choose ONE format that fits the question:
+- Short passage 80-150 words with grammar/rhetoric errors that the question asks to fix. Mark the relevant span in bold (e.g., **the underlined phrase**) so the student knows what's being revised.
+- Passages cover essay-like topics: history, personal narrative, science explanation, biography.
+- The error to be fixed must be in the passage and clearly correlate with the answer choices.`,
+  ACT_SCIENCE: `Choose ONE format that fits the question:
+- Experiment description 80-150 words with data table. Format: "Experiment 1: [hypothesis/setup]. Results:\\n| Trial | Variable A | Result |\\n|---|---|---|\\n..."
+- Conflicting Viewpoints: two scientists' summaries (Scientist 1 / Scientist 2 each 60-100 words) with opposing hypotheses.
+- Figure description: "Figure 1 shows [variable] across [conditions]. Trend: [pattern]."
+- The data/scenario must contain the information needed to answer the question.`,
 };
 
 async function callGroq(systemPrompt, userPrompt) {

@@ -33,9 +33,15 @@ const page = await ctx.newPage();
 const observations = [];
 const pageErrors = [];
 const consoleErrors = [];
+const failedRequests = [];
 page.on("pageerror", (e) => pageErrors.push(e.message));
 page.on("console", (m) => {
   if (m.type() === "error") consoleErrors.push(m.text());
+});
+page.on("response", (r) => {
+  if (r.status() >= 400) {
+    failedRequests.push(`${r.status()} ${r.request().method()} ${r.url()}`);
+  }
 });
 
 function log(step, status, notes = "") {
@@ -193,6 +199,8 @@ try {
 }
 
 // ── REPORT ────────────────────────────────────────────────────────────────
+console.log(`\n— Failed HTTP requests (≥400) during walk: ${failedRequests.length} —`);
+for (const e of failedRequests.slice(0, 10)) console.log(`  ${e.slice(0, 200)}`);
 console.log(`\n— Console errors during walk: ${consoleErrors.length} —`);
 for (const e of consoleErrors.slice(0, 6)) console.log(`  ${e.slice(0, 200)}`);
 console.log(`\n— Page errors: ${pageErrors.length} —`);
