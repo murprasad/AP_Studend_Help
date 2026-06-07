@@ -1223,16 +1223,23 @@ export default function PracticePage() {
 
         {/* Progress header */}
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Badge variant="outline">{currentQuestion.difficulty}</Badge>
-            <Badge variant="secondary">{currentQuestion.topic}</Badge>
-            {currentQuestion.course?.startsWith("CLEP_") && (
-              <Badge variant="outline" className="gap-1 text-emerald-600 border-emerald-200 bg-emerald-50 dark:text-emerald-700 dark:text-emerald-400 dark:border-emerald-800 dark:bg-emerald-950">
-                <ShieldCheck className="h-3 w-3" />
-                CB-Aligned
-              </Badge>
-            )}
-          </div>
+          {/* Single-task minimalism (Focus Mode v2 Phase-1b): in Focus, drop
+              the difficulty/topic badges so the screen carries ONE task and
+              nothing competing. Regular Mode keeps the full context. */}
+          {focusPrefs.focusMode ? (
+            <span className="text-sm font-medium text-muted-foreground">Focus session</span>
+          ) : (
+            <div className="flex items-center gap-3">
+              <Badge variant="outline">{currentQuestion.difficulty}</Badge>
+              <Badge variant="secondary">{currentQuestion.topic}</Badge>
+              {currentQuestion.course?.startsWith("CLEP_") && (
+                <Badge variant="outline" className="gap-1 text-emerald-600 border-emerald-200 bg-emerald-50 dark:text-emerald-700 dark:text-emerald-400 dark:border-emerald-800 dark:bg-emerald-950">
+                  <ShieldCheck className="h-3 w-3" />
+                  CB-Aligned
+                </Badge>
+              )}
+            </div>
+          )}
           <div className="flex items-center gap-2 text-muted-foreground text-sm">
             {/* ADHD #39 — persistent Focus toggle. Lets a student turn the
                 distraction-reduced view on/off mid-session without leaving
@@ -1275,9 +1282,35 @@ export default function PracticePage() {
         <Progress
           value={(currentIndex / Math.max(questionsRef.current.length, 1)) * 100}
           className="h-2"
-          indicatorClassName="bg-blue-500"
+          indicatorClassName={focusPrefs.focusMode ? "bg-primary" : "bg-blue-500"}
           aria-label={`Practice session progress: question ${currentIndex + 1} of ${questionsRef.current.length}`}
         />
+
+        {/* Momentum bar (Focus Mode v2 Phase-1b) — BEHAVIORAL feedback, not
+            grades/percentile: tasks done, minutes focused, in-a-row. This is
+            the emotional-momentum signal the research + strategy call for. */}
+        {focusPrefs.focusMode && (() => {
+          let streak = 0;
+          for (let i = results.length - 1; i >= 0; i--) {
+            if (results[i].correct) streak++;
+            else break;
+          }
+          const totalSecs = results.reduce((s, r) => s + (r.timeSecs || 0), 0);
+          const mins = Math.max(1, Math.round(totalSecs / 60));
+          return (
+            <div className="flex items-center justify-center gap-3 text-xs text-muted-foreground" data-testid="focus-momentum">
+              <span className="font-medium text-foreground">{results.length} done</span>
+              <span aria-hidden>·</span>
+              <span>{mins} min focused</span>
+              {streak >= 2 && (
+                <>
+                  <span aria-hidden>·</span>
+                  <span className="text-emerald-600 dark:text-emerald-400 font-semibold">✓ {streak} in a row</span>
+                </>
+              )}
+            </div>
+          );
+        })()}
 
         {/* ADHD #43 Energy check-in — quick start-of-session pulse (opt-in).
             Non-blocking; pick a pace, then it's dismissed for the session. */}
