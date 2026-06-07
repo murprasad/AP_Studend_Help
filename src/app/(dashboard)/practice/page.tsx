@@ -1338,7 +1338,7 @@ export default function PracticePage() {
             else break;
           }
           const totalSecs = results.reduce((s, r) => s + (r.timeSecs || 0), 0);
-          const mins = Math.max(1, Math.round(totalSecs / 60));
+          const mins: string | number = totalSecs < 60 ? "<1" : Math.floor(totalSecs / 60);
           // Sprint countdown — wall-clock since session start, capped at the
           // 10-min sprint. nowTick (1s) drives the re-render.
           void nowTick;
@@ -1396,7 +1396,7 @@ export default function PracticePage() {
           <div className="rounded-xl border border-primary/30 bg-primary/5 p-3 text-sm" data-testid="focus-plan">
             <p className="font-medium mb-0.5">Your focus plan</p>
             <p className="text-xs text-muted-foreground">
-              {questionsRef.current.length} questions, in chunks of 5 with a breather between. One at a time — you&apos;ve got this.
+              {questionsRef.current.length} questions{questionsRef.current.length > 5 ? ", in chunks of 5 with a breather between" : ""}. One at a time — you&apos;ve got this.
             </p>
           </div>
         )}
