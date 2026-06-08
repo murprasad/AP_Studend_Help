@@ -14,6 +14,38 @@ import { callAIWithCascade } from "@/lib/ai-providers";
 import { rateLimit } from "@/lib/rate-limit";
 import { detectTierUps, tierOf } from "@/lib/mastery-tier-up";
 
+/**
+ * Retry a transient Neon-HTTP failure a couple of times before giving up.
+ *
+ * Why: the Neon HTTP transport (no pooled connection) cold-starts per request
+ * on Cloudflare Workers. The very first DB statement of a request occasionally
+ * 500s / times out while the serverless endpoint warms up. For the ONE write
+ * that must succeed to record a student's answer, a tiny retry turns a
+ * student-visible "Failed to submit answer" into a silent recovery.
+ *
+ * Kept deliberately small (2 retries, short backoff) so a genuinely-broken
+ * write still fails fast rather than hanging the submit.
+ */
+async function withNeonRetry<T>(fn: () => Promise<T>, attempts = 3): Promise<T> {
+  let lastErr: unknown;
+  for (let i = 0; i < attempts; i++) {
+    try {
+      return await fn();
+    } catch (err) {
+      lastErr = err;
+      // Unique-constraint (P2002) or other deterministic errors won't get
+      // better on retry — only retry what looks transient (network / 5xx /
+      // timeout). Anything with a Prisma error code is treated as terminal.
+      const code = (err as { code?: string })?.code;
+      if (code && code.startsWith("P")) throw err;
+      if (i < attempts - 1) {
+        await new Promise((r) => setTimeout(r, 150 * (i + 1)));
+      }
+    }
+  }
+  throw lastErr;
+}
+
 // Submit an answer for a question in a session
 export async function POST(
   req: NextRequest,
@@ -186,18 +218,46 @@ Return ONLY valid JSON (no markdown, no extra text):
     const bodyConf = (body as { confidenceSelf?: number }).confidenceSelf;
     const confidenceSelf = (typeof bodyConf === "number" && bodyConf >= 1 && bodyConf <= 5) ? bodyConf : null;
 
-    // Record the response
-    await prisma.studentResponse.create({
-      data: {
-        userId: session.user.id,
-        questionId,
-        sessionId,
-        studentAnswer: answer,
-        isCorrect,
-        timeSpentSecs: timeSpentSecs || 0,
-        confidenceSelf,
-      },
-    });
+    // ── CRITICAL WRITE ────────────────────────────────────────────────────
+    // Recording the StudentResponse is the ONE write that must succeed: it is
+    // what lets the student see their result and feeds every downstream stat.
+    // Everything AFTER this point is SECONDARY and must never be able to fail
+    // the submission (see the .catch()-wrapped writes below).
+    //
+    // We retry transient Neon cold-start failures here. If it STILL fails we
+    // surface a `transient: true` 503 so the client lets the student retry
+    // WITHOUT recording them as wrong — an infra hiccup must never cost a
+    // student a correct answer or pollute mastery stats.
+    try {
+      await withNeonRetry(() =>
+        prisma.studentResponse.create({
+          data: {
+            userId: session.user.id,
+            questionId,
+            sessionId,
+            studentAnswer: answer,
+            isCorrect,
+            timeSpentSecs: timeSpentSecs || 0,
+            confidenceSelf,
+          },
+        }),
+      );
+    } catch (createErr) {
+      // P2002 = a sibling request (double-tap / retry) already recorded this
+      // exact response. That's a success, not a failure — fall through and
+      // return the graded result rather than erroring.
+      const code = (createErr as { code?: string })?.code;
+      if (code !== "P2002") {
+        console.error("studentResponse.create failed after retries:", createErr);
+        return NextResponse.json(
+          {
+            error: "Couldn't save your answer just now — please try again.",
+            transient: true,
+          },
+          { status: 503 },
+        );
+      }
+    }
 
     // 2026-05-28 — Incremental correctAnswers update (mirror PL bc00cf4+).
     // The field was only finalized at session-complete; abandoned sessions
@@ -212,7 +272,10 @@ Return ONLY valid JSON (no markdown, no extra text):
       }).catch(() => { /* non-critical aggregation */ });
     }
 
-    // Update question stats
+    // Update question stats — SECONDARY. A failure here used to bubble to the
+    // outer catch and 500 the whole submit ("Failed to submit answer") even
+    // though the StudentResponse was already saved. Wrapped in .catch() so a
+    // transient Neon hiccup on this write can never fail the submission.
     const updatedQuestion = await prisma.question.update({
       where: { id: questionId },
       data: {
@@ -220,11 +283,15 @@ Return ONLY valid JSON (no markdown, no extra text):
         timesCorrect: { increment: isCorrect ? 1 : 0 },
       },
       select: { timesAnswered: true, timesCorrect: true, difficulty: true },
+    }).catch((err) => {
+      console.error("question stats update failed (non-blocking):", err);
+      return null;
     });
 
-    // Performance feedback loop: auto-adjust difficulty or flag for review
-    const { timesAnswered: ta, timesCorrect: tc, difficulty: currentDiff } = updatedQuestion;
-    if (ta >= 50) {
+    // Performance feedback loop: auto-adjust difficulty or flag for review.
+    // Skipped if the stats update above failed (updatedQuestion === null).
+    const { timesAnswered: ta, timesCorrect: tc, difficulty: currentDiff } = updatedQuestion ?? {};
+    if (updatedQuestion && ta != null && tc != null && ta >= 50) {
       const correctRate = tc / ta;
       if (correctRate > 0.85 && currentDiff !== "EASY") {
         // Question is too easy for its labeled difficulty — downgrade one tier

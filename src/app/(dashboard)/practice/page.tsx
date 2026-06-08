@@ -600,6 +600,12 @@ export default function PracticePage() {
     return () => clearInterval(t);
   }, [focusPrefs.focusMode, mode, isCompleting]);
 
+  // 2026-06-08 (Focus minimalism, SN=PL parity) — Focus is a short sprint; if a
+  // long count (15/20) was chosen in Regular, clamp it to 10 when entering Focus.
+  useEffect(() => {
+    if (focusPrefs.focusMode) setQuestionCount((c) => (c > 10 ? 10 : c));
+  }, [focusPrefs.focusMode]);
+
   const currentQuestion = questions[currentIndex];
   const parsedOptions: string[] = (() => {
     if (!currentQuestion?.options) return [];
@@ -1948,6 +1954,9 @@ export default function PracticePage() {
           study right now?" choice from the strategy: Flexible (Regular) vs a
           Focused session (Focus Mode). Sets the mode before the session so the
           student picks their mental gear up front. */}
+      {/* 2026-06-08 (Focus minimalism, SN=PL parity) — hidden in Focus Mode:
+          you're already in Focus, so this chooser is redundant. Pill switches modes. */}
+      {!focusPrefs.focusMode && (
       <div className="rounded-xl border border-border/50 bg-card p-4">
         <p className="text-sm font-medium mb-2.5">How do you want to study right now?</p>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -1969,6 +1978,7 @@ export default function PracticePage() {
           </button>
         </div>
       </div>
+      )}
 
       <CourseSelectorInline />
 
@@ -2191,8 +2201,12 @@ export default function PracticePage() {
               <SelectContent>
                 <SelectItem value="5">5 questions</SelectItem>
                 <SelectItem value="10">10 questions</SelectItem>
-                <SelectItem value="15">15 questions</SelectItem>
-                <SelectItem value="20">20 questions</SelectItem>
+                {/* 2026-06-08 (Focus minimalism) — Focus is a short sprint; don't
+                    offer 15/20 in Focus Mode. Flexible/Regular keeps them. */}
+                {!focusPrefs.focusMode && <>
+                  <SelectItem value="15">15 questions</SelectItem>
+                  <SelectItem value="20">20 questions</SelectItem>
+                </>}
               </SelectContent>
             </Select>
           </div>

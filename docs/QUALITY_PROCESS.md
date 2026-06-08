@@ -132,6 +132,7 @@ Rules:
 - [ ] **Affected-segment persona** — if the change targets a segment (military, free, a track, ADHD), sign up AS THAT persona and **verify the entitlement/behavior in the DB/UI**, not just the copy (D4)
 - [ ] **Composite-screen coherence check** on any touched screen: **≤1 score scale visible, exactly 1 primary CTA, RELOAD TWICE and assert the screen is deterministic** (no flip) (D2, D3)
 - [ ] **Focus-session lifecycle walked END-TO-END** — for any Focus-Mode change, enter Focus → run a SHORT practice session → **complete it** → land on the completion/feedback screen. Stopping at the dashboard/minimal-view is NOT a Focus walk (D7)
+- [ ] **Focus minimalism** — every Focus surface walked + asserted minimal (no mode-chooser, settings collapsed, count ≤10, one primary CTA), per `docs/FOCUS_MINIMALISM_CONTRACT.md`. Run `scripts/_qa-walk-focus-minimalism.mjs` — checking ONLY the dashboard is NOT sufficient; the practice SETUP, in-session, and completion surfaces must all be asserted (D8)
 - [ ] **Render-stability, not just presence** — on the completion/feedback screen (and any ticker/animation-adjacent screen), HOLD the screen ~3s and assert the key element did NOT mount/unmount and is present EXACTLY ONCE (no flicker, no duplicate). `toBeVisible()` at an instant is insufficient (D7)
 - [ ] **Visual render check** — open a representative question with a figure and confirm it renders (no broken-image/alt fallback), across 2 browsers (D1)
 - [ ] **Post-promote, walk the LIVE prod URL** (not just staging) for the changed surface (D5)
@@ -186,6 +187,7 @@ Append every BIQ-processed defect: `date · defect · root cause · gate(s) fixe
 - 2026-06-06 · D5 PL focus claimed-not-live · committed≠deployed · G5/G1/G3 · branch-in-main + verify-live gate
 - 2026-06-06 · D6 QA caught none · checklist theater · G4/G5 · artifacts + composite + prod walk + hard-block
 - 2026-06-07 · D7 Focus-completion feedback FLICKER (sprint-ticker re-render race) · Focus session lifecycle never walked end-to-end + tests assert presence not render-stability · G4 · Focus-lifecycle walk + render-stability assertion; tests `tests/focus-session-feedback-stability.spec.ts` + `tests/unit/focus-feedback-stability.test.ts` (PrepLion: docs/BIQ_FOCUS_FEEDBACK_FLICKER_2026-06-07.md)
+- 2026-06-08 · D8 Focus strips SOME surfaces but not others (dashboard one-action + 20-question count + practice-setup buffet — 3 user reports) · no holistic Focus-minimalism contract + Focus QA walk only checked the dashboard · G4 · `docs/FOCUS_MINIMALISM_CONTRACT.md` (per-surface HIDDEN/KEPT spec, both repos) + `scripts/_qa-walk-focus-minimalism.mjs` (walks EVERY Focus surface: dashboard + practice-setup + in-session + completion; asserts no mode-chooser, settings collapsed, count ≤10, one primary CTA; hard-fails) + G4 checklist line. Walk is designed to FAIL today on the un-stripped practice setup so it catches the class.
 
 ---
 
