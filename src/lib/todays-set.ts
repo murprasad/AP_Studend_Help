@@ -45,6 +45,9 @@ export interface TodaysSetInputs {
   unitMasteries: UnitMastery[];
   /** Defaults to 12. Lower if you want shorter sessions. */
   targetSize?: number;
+  /** Reference "now" in ms. Defaults to Date.now(). Inject for deterministic,
+   *  time-independent tests (14-day dedup + SM-2 ageing key off it). */
+  nowMs?: number;
 }
 
 export interface TodaysSetResult {
@@ -95,7 +98,7 @@ function sm2Priority(resp: PastResponse | undefined, nowMs: number): number {
 
 export function generateTodaysSet(inputs: TodaysSetInputs): TodaysSetResult {
   const targetSize = inputs.targetSize ?? TARGET_SIZE_DEFAULT;
-  const nowMs = Date.now();
+  const nowMs = inputs.nowMs ?? Date.now();
   const cutoff = nowMs - RECENT_DEDUP_DAYS * 86400000;
   const recentQids = new Set(
     inputs.pastResponses

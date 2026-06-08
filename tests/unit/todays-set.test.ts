@@ -20,6 +20,7 @@ describe("Today's Set generator", () => {
     // bug #4). Must seed pastResponses to bypass diagnostic-mode short-circuit.
     const r = generateTodaysSet({
       candidatePool: buildPool(["A", "B", "C", "D", "E"]),
+      nowMs: NOW.getTime(),
       pastResponses: [{ questionId: "seed", isCorrect: true, confidenceSelf: 4, answeredAt: daysAgo(60) }],
       unitMasteries: [
         { unit: "A", masteryScore: 20 },
@@ -43,6 +44,7 @@ describe("Today's Set generator", () => {
     // For pastResponses === [], distribute across ALL units instead.
     const r = generateTodaysSet({
       candidatePool: buildPool(["A", "B", "C", "D", "E"]),
+      nowMs: NOW.getTime(),
       pastResponses: [],
       unitMasteries: [
         { unit: "A", masteryScore: 50 },
@@ -62,6 +64,7 @@ describe("Today's Set generator", () => {
   it("2. Skips questions answered in last 14 days", () => {
     const r = generateTodaysSet({
       candidatePool: buildPool(["A"], 30),
+      nowMs: NOW.getTime(),
       pastResponses: Array.from({ length: 10 }, (_, i) => ({
         questionId: `A-q${i}`, isCorrect: true, confidenceSelf: 4, answeredAt: daysAgo(3),
       })),
@@ -76,6 +79,7 @@ describe("Today's Set generator", () => {
   it("3. Falls back to fewer Qs when pool is thin", () => {
     const r = generateTodaysSet({
       candidatePool: buildPool(["A"], 5), // only 5 total
+      nowMs: NOW.getTime(),
       pastResponses: [],
       unitMasteries: [{ unit: "A", masteryScore: 40 }],
     });
@@ -86,6 +90,7 @@ describe("Today's Set generator", () => {
     const pool = buildPool(["A"], 10);
     const r = generateTodaysSet({
       candidatePool: pool,
+      nowMs: NOW.getTime(),
       pastResponses: [
         // q3 wrong 10 days ago, q5 correct yesterday (high conf)
         { questionId: "A-q3", isCorrect: false, confidenceSelf: 2, answeredAt: daysAgo(20) },
@@ -107,6 +112,7 @@ describe("Today's Set generator", () => {
     const seed = { questionId: "seed", isCorrect: true, confidenceSelf: 4, answeredAt: daysAgo(60) };
     const big = generateTodaysSet({
       candidatePool: buildPool(["A", "B", "C"]),
+      nowMs: NOW.getTime(),
       pastResponses: [seed],
       unitMasteries: [
         { unit: "A", masteryScore: 10 },
@@ -116,6 +122,7 @@ describe("Today's Set generator", () => {
     });
     const small = generateTodaysSet({
       candidatePool: buildPool(["A", "B", "C"]),
+      nowMs: NOW.getTime(),
       pastResponses: [seed],
       unitMasteries: [
         { unit: "A", masteryScore: 70 },
