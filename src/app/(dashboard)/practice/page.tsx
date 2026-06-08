@@ -2170,8 +2170,9 @@ export default function PracticePage() {
             <span className="text-xs font-normal text-muted-foreground">{settingsOpen ? "Hide" : "Customize"}</span>
           </CardTitle>
         </CardHeader>
-        {settingsOpen && (
         <CardContent className="space-y-4">
+          {/* Only the SELECTS collapse in Focus; the Start button stays visible. */}
+          {settingsOpen && (<>
           <div className="space-y-2">
             <label className="text-sm font-medium">Unit</label>
             <Select value={selectedUnit} onValueChange={setSelectedUnit}>
@@ -2222,6 +2223,7 @@ export default function PracticePage() {
               </SelectContent>
             </Select>
           </div>
+          </>)}
 
           <Button onClick={startSession} disabled={isStarting || sessionLimitReached} className="w-full gap-2">
             {isStarting ? (
@@ -2233,7 +2235,6 @@ export default function PracticePage() {
             )}
           </Button>
         </CardContent>
-        )}
       </Card>
     </div>
   );
