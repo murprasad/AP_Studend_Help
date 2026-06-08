@@ -4,6 +4,7 @@ import { useSession } from "next-auth/react";
 import { useRouter, usePathname } from "next/navigation";
 import { useEffect, useState, useRef } from "react";
 import { Sidebar } from "@/components/layout/sidebar";
+import { FocusModeIntroModal } from "@/components/dashboard/focus-mode-intro-modal";
 import { SageChat } from "@/components/layout/sage-chat";
 import { BottomNav } from "@/components/layout/bottom-nav";
 import { PushPermissionBanner } from "@/components/notifications/PushPermissionBanner";
@@ -316,6 +317,10 @@ export default function DashboardLayout({
             <span>{focusPrefs.focusMode ? "Focus Mode" : "Focus"}</span>
           </button>
         )}
+        {/* 2026-06-08 — one-time Focus Mode intro so students discover the pill.
+            Shown post-onboarding, not while already in Focus. shadcn Dialog →
+            Safe-Browsing-clean (no raw fixed-inset dark overlay). */}
+        {!onOnboarding && !inExamMode && !focusPrefs.focusMode && <FocusModeIntroModal />}
         {/* Exam mode top bar — slim bar with exit button, now visible on
             BOTH desktop and mobile (was hidden lg:flex; flipped 2026-04-22
             because mobile users were left with no in-app escape hatch back
