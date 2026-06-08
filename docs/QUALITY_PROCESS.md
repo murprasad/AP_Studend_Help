@@ -131,6 +131,8 @@ Rules:
 - [ ] **Fresh user** (incognito) signs up + walks the journey end-to-end
 - [ ] **Affected-segment persona** — if the change targets a segment (military, free, a track, ADHD), sign up AS THAT persona and **verify the entitlement/behavior in the DB/UI**, not just the copy (D4)
 - [ ] **Composite-screen coherence check** on any touched screen: **≤1 score scale visible, exactly 1 primary CTA, RELOAD TWICE and assert the screen is deterministic** (no flip) (D2, D3)
+- [ ] **Focus-session lifecycle walked END-TO-END** — for any Focus-Mode change, enter Focus → run a SHORT practice session → **complete it** → land on the completion/feedback screen. Stopping at the dashboard/minimal-view is NOT a Focus walk (D7)
+- [ ] **Render-stability, not just presence** — on the completion/feedback screen (and any ticker/animation-adjacent screen), HOLD the screen ~3s and assert the key element did NOT mount/unmount and is present EXACTLY ONCE (no flicker, no duplicate). `toBeVisible()` at an instant is insufficient (D7)
 - [ ] **Visual render check** — open a representative question with a figure and confirm it renders (no broken-image/alt fallback), across 2 browsers (D1)
 - [ ] **Post-promote, walk the LIVE prod URL** (not just staging) for the changed surface (D5)
 - [ ] **Log must include observations/screenshots proving execution** — intent ≠ evidence (D6)
@@ -183,6 +185,7 @@ Append every BIQ-processed defect: `date · defect · root cause · gate(s) fixe
 - 2026-06-06 · D4 military-trial gap · promise unwired · G1/G2/G6 · grant on `gradeLevel==="Military"` + entitlement probe
 - 2026-06-06 · D5 PL focus claimed-not-live · committed≠deployed · G5/G1/G3 · branch-in-main + verify-live gate
 - 2026-06-06 · D6 QA caught none · checklist theater · G4/G5 · artifacts + composite + prod walk + hard-block
+- 2026-06-07 · D7 Focus-completion feedback FLICKER (sprint-ticker re-render race) · Focus session lifecycle never walked end-to-end + tests assert presence not render-stability · G4 · Focus-lifecycle walk + render-stability assertion; tests `tests/focus-session-feedback-stability.spec.ts` + `tests/unit/focus-feedback-stability.test.ts` (PrepLion: docs/BIQ_FOCUS_FEEDBACK_FLICKER_2026-06-07.md)
 
 ---
 

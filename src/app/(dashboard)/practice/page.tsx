@@ -181,6 +181,11 @@ export default function PracticePage() {
   // re-render; the timer only runs in Focus Mode (no ticking clock in Regular).
   const FOCUS_SPRINT_SECS = 10 * 60;
   const [nowTick, setNowTick] = useState(0);
+  // 2026-06-07 (flicker BIQ, SN=PL parity) — set TRUE synchronously at the top of
+  // completeSession() so the sprint ticker stops the instant the user hits Finish,
+  // not after the async PATCH resolves (cold Neon = 1-3s of per-second re-renders
+  // that flickered the completion/feedback screen in Focus Mode).
+  const [isCompleting, setIsCompleting] = useState(false);
   // Focus Mode v2 Phase-2 — auto-detect struggle → suggest Focus Mode (the
   // moat). Heuristic v1: 2+ wrong in a row while NOT in Focus → one gentle,
   // dismissible offer per session. (AI signal detection comes later.)
@@ -329,6 +334,7 @@ export default function PracticePage() {
         setFeedback(null);
         setSelectedAnswer(null);
         setMode("practicing");
+        setIsCompleting(false); // 2026-06-07 flicker BIQ — re-arm ticker for a new session
       }
     } catch {
       // Malformed snapshot — ignore
@@ -589,10 +595,10 @@ export default function PracticePage() {
   // Focus Mode v2 Phase-1b — sprint countdown ticker. Only ticks in Focus Mode
   // during an active session, so Regular Mode never shows a ticking clock.
   useEffect(() => {
-    if (!focusPrefs.focusMode || mode !== "practicing") return;
+    if (!focusPrefs.focusMode || mode !== "practicing" || isCompleting) return;
     const t = setInterval(() => setNowTick((n) => n + 1), 1000);
     return () => clearInterval(t);
-  }, [focusPrefs.focusMode, mode]);
+  }, [focusPrefs.focusMode, mode, isCompleting]);
 
   const currentQuestion = questions[currentIndex];
   const parsedOptions: string[] = (() => {
@@ -949,6 +955,10 @@ export default function PracticePage() {
   }
 
   async function completeSession() {
+    // 2026-06-07 (flicker BIQ) — stop the sprint ticker synchronously BEFORE the
+    // await below, so it doesn't re-render the completion screen each second
+    // while the PATCH is in flight.
+    setIsCompleting(true);
     // Focus Mode v2 — North Star instrumentation. Count COMPLETED focus
     // sessions (the metric that proves Focus Mode drives behavior). Fires to
     // GA4 only when NEXT_PUBLIC_GA_ID is set; otherwise a no-op.
