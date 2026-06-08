@@ -268,6 +268,10 @@ export default function PracticePage() {
   const [selectedUnit, setSelectedUnit] = useState<string>("ALL");
   const [selectedDifficulty, setSelectedDifficulty] = useState<string>("ALL");
   const [questionCount, setQuestionCount] = useState(10);
+  // 2026-06-08 (Focus minimalism) — Session Settings collapse. Expanded by
+  // default in Regular; collapsed when entering Focus (kept reachable via the
+  // header "Customize" toggle) so the Focus setup stays calm.
+  const [settingsOpen, setSettingsOpen] = useState(true);
   const [sessionType, setSessionType] = useState("QUICK_PRACTICE");
   const [questionType, setQuestionType] = useState<"MCQ" | "FRQ" | "SAQ" | "LEQ" | "DBQ" | "CODING">("MCQ");
 
@@ -603,7 +607,10 @@ export default function PracticePage() {
   // 2026-06-08 (Focus minimalism, SN=PL parity) — Focus is a short sprint; if a
   // long count (15/20) was chosen in Regular, clamp it to 10 when entering Focus.
   useEffect(() => {
-    if (focusPrefs.focusMode) setQuestionCount((c) => (c > 10 ? 10 : c));
+    if (focusPrefs.focusMode) {
+      setQuestionCount((c) => (c > 10 ? 10 : c));
+      setSettingsOpen(false);
+    }
   }, [focusPrefs.focusMode]);
 
   const currentQuestion = questions[currentIndex];
@@ -1980,7 +1987,8 @@ export default function PracticePage() {
       </div>
       )}
 
-      <CourseSelectorInline />
+      {/* 2026-06-08 (Focus minimalism) — course switcher hidden in Focus (calm). */}
+      {!focusPrefs.focusMode && <CourseSelectorInline />}
 
       {/* Beta 9.1.3 — daily-cap card now renders AT THE TOP when reached.
           Was rendering at the BOTTOM of the page after the picker, so users
@@ -2156,9 +2164,13 @@ export default function PracticePage() {
 
       {/* Filters */}
       <Card className="card-glow">
-        <CardHeader>
-          <CardTitle className="text-base">Session Settings</CardTitle>
+        <CardHeader className="cursor-pointer" onClick={() => setSettingsOpen((o) => !o)}>
+          <CardTitle className="text-base flex items-center justify-between">
+            Session Settings
+            <span className="text-xs font-normal text-muted-foreground">{settingsOpen ? "Hide" : "Customize"}</span>
+          </CardTitle>
         </CardHeader>
+        {settingsOpen && (
         <CardContent className="space-y-4">
           <div className="space-y-2">
             <label className="text-sm font-medium">Unit</label>
@@ -2221,6 +2233,7 @@ export default function PracticePage() {
             )}
           </Button>
         </CardContent>
+        )}
       </Card>
     </div>
   );
