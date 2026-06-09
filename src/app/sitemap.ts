@@ -1,10 +1,17 @@
 import { MetadataRoute } from "next";
-import { isClepEnabled, isDsstEnabled } from "@/lib/settings";
 
-export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+// 2026-06-08 — MUST be static. The previous async version (await isClepEnabled()
+// /isDsstEnabled()) made this a dynamic server route that OpenNext/Cloudflare did
+// NOT serve → /sitemap.xml returned 404 for Googlebot (robots.txt works because
+// it's a static public/ file). force-static prerenders it at build so it serves
+// like any static asset. CLEP/DSST URLs are now included unconditionally (those
+// marketing pages are public regardless of the in-app feature flags).
+export const dynamic = "force-static";
+
+export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = "https://studentnest.ai";
   const now = new Date();
-  const [clepOn, dsstOn] = await Promise.all([isClepEnabled(), isDsstEnabled()]);
+  const clepOn = true, dsstOn = true;
 
   return [
     { url: baseUrl, lastModified: now, changeFrequency: "weekly", priority: 1 },
