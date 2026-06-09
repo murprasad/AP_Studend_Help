@@ -73,14 +73,40 @@ export default function RootLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "Organization",
-              name: "StudentNest Prep",
-              url: "https://studentnest.ai",
-              description: "Exam-aligned preparation for AP, SAT, and ACT",
-              contactPoint: { "@type": "ContactPoint", email: "contact@studentnest.ai", contactType: "customer support" },
-            }),
+            __html: JSON.stringify([
+              {
+                "@context": "https://schema.org",
+                "@type": ["Organization", "EducationalOrganization"],
+                "@id": "https://studentnest.ai/#org",
+                name: "StudentNest Prep",
+                alternateName: "StudentNest",
+                url: "https://studentnest.ai",
+                logo: "https://studentnest.ai/icons/icon-512.png",
+                // Precise, keyword-rich description so search engines distinguish this
+                // online AP/SAT/ACT exam-prep software from similarly-named in-person
+                // K-12 tutoring businesses. (2026-06-08 reach/disambiguation pass.)
+                description:
+                  "StudentNest Prep is an online exam-preparation platform for the AP, SAT, and ACT exams. Students practice exam-aligned multiple-choice questions, take full-length timed mock exams, track mastery by topic, and get AI tutoring. Not affiliated with any in-person K-12 tutoring company.",
+                knowsAbout: ["AP exams", "SAT", "ACT", "Digital SAT", "PSAT", "college admissions test prep"],
+                contactPoint: { "@type": "ContactPoint", email: "contact@studentnest.ai", contactType: "customer support" },
+                // sameAs intentionally omitted until official social profiles exist —
+                // listing nonexistent/placeholder URLs hurts entity trust. Add the real
+                // TikTok/Instagram/YouTube/X URLs here once the accounts are live.
+              },
+              {
+                "@context": "https://schema.org",
+                "@type": "WebSite",
+                "@id": "https://studentnest.ai/#website",
+                name: "StudentNest Prep",
+                url: "https://studentnest.ai",
+                publisher: { "@id": "https://studentnest.ai/#org" },
+                potentialAction: {
+                  "@type": "SearchAction",
+                  target: { "@type": "EntryPoint", urlTemplate: "https://studentnest.ai/blog?q={search_term_string}" },
+                  "query-input": "required name=search_term_string",
+                },
+              },
+            ]),
           }}
         />
         {/* Prevent flash of wrong theme — runs before React hydrates */}
