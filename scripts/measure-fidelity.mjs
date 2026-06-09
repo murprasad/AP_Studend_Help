@@ -54,10 +54,28 @@ function isCircular(expl, ansText) {
   return false;
 }
 // dimension helpers (each returns true = GOOD for that question)
-const VISUAL_CLAIM = /\b(figure|graph|diagram|table|chart|passage|image|shown (below|above)|following (graph|figure|table|passage|diagram)|the (graph|figure|diagram|table|map)|based on the (passage|graph|figure|table))\b/i;
+// 2026-06-09 — figureIntegrity was wildly over-counting: the old regex matched
+// furniture "table" ("coffee on a table"), data-structure "graph/tree" (CS), and
+// generic CONCEPT mentions ("a PV diagram", "which graph is used for...") where
+// the question is fully answerable from text. That dragged figure scores to 0 for
+// healthy courses (artifact, not reality — manual audit: 9 of 10 flagged were
+// answerable). Now uses the SAME vetted detector as the Validation-Engine
+// quarantine (scripts/_quarantine-figure-missing.mjs): only questions that
+// reference a SPECIFIC displayed figure/passage count as figure-requiring.
+const FIGURE_REQUIRED = [
+  /\b(figure|fig\.?|table|graph|diagram|chart|exhibit)\s*\d+\b/i,
+  /\bbased on (the )?(figure|graph|table|diagram|chart|data (in|shown))/i,
+  /\brefer to the (figure|graph|table|diagram|chart)/i,
+  /\b(shown|depicted|illustrated) in the (figure|graph|diagram|chart|table)/i,
+  /\bthe (following|above|below|adjacent) (figure|graph|diagram|chart|data table)/i,
+  /\bthe (figure|graph|diagram) (above|below|shown)/i,
+];
+const PASSAGE_REQUIRED = /\b(the|this) passage\b|\bin the passage\b|\bpassage (suggests|states|author|implies)\b/i;
 function figureOk(q) {
-  if (!VISUAL_CLAIM.test(q.questionText || "")) return null; // not applicable
-  return Boolean(q.stimulus || q.stimulusImageUrl);          // claims a visual → must have one
+  const t = q.questionText || "";
+  const requires = FIGURE_REQUIRED.some((re) => re.test(t)) || PASSAGE_REQUIRED.test(t);
+  if (!requires) return null;                                  // not figure-requiring → N/A
+  return Boolean((q.stimulus && q.stimulus.trim().length >= 20) || (q.stimulusImageUrl && q.stimulusImageUrl.trim()));
 }
 const HINT_IN_OPT = /\b(because|since|therefore|which is why|this is correct|in order to|so that|due to the fact)\b/i;
 const optHasHint = (opts) => optionStrings(opts).some((o) => HINT_IN_OPT.test(o));

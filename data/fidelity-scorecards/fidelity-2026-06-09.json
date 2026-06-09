@@ -1,0 +1,486 @@
+{
+  "generatedAt": "2026-06-09T18:40:06.495Z",
+  "target": 90,
+  "rows": [
+    {
+      "course": "AP_CALCULUS_AB",
+      "n": 500,
+      "modalOptions": 4,
+      "visualClaims": 0,
+      "composite": 90.1,
+      "dims": {
+        "optionCountConsistency": 85.2,
+        "figureIntegrity": 100,
+        "noHintsInOptions": 94.6,
+        "answerPositionBalance": 66.4,
+        "renderHealth": 92.2,
+        "explanationQuality": 90.2
+      }
+    },
+    {
+      "course": "SAT_MATH",
+      "n": 2270,
+      "modalOptions": 4,
+      "visualClaims": 154,
+      "composite": 90.3,
+      "dims": {
+        "optionCountConsistency": 80.2,
+        "figureIntegrity": 100,
+        "noHintsInOptions": 100,
+        "answerPositionBalance": 54.6,
+        "renderHealth": 96.7,
+        "explanationQuality": 92.5
+      }
+    },
+    {
+      "course": "AP_CHEMISTRY",
+      "n": 560,
+      "modalOptions": 4,
+      "visualClaims": 3,
+      "composite": 90.5,
+      "dims": {
+        "optionCountConsistency": 94.3,
+        "figureIntegrity": 100,
+        "noHintsInOptions": 93.6,
+        "answerPositionBalance": 85.9,
+        "renderHealth": 100,
+        "explanationQuality": 68.8
+      }
+    },
+    {
+      "course": "AP_STATISTICS",
+      "n": 666,
+      "modalOptions": 4,
+      "visualClaims": 4,
+      "composite": 90.5,
+      "dims": {
+        "optionCountConsistency": 72.4,
+        "figureIntegrity": 100,
+        "noHintsInOptions": 96.5,
+        "answerPositionBalance": 77.5,
+        "renderHealth": 99.7,
+        "explanationQuality": 87.4
+      }
+    },
+    {
+      "course": "AP_COMPUTER_SCIENCE_A",
+      "n": 495,
+      "modalOptions": 4,
+      "visualClaims": 0,
+      "composite": 91.4,
+      "dims": {
+        "optionCountConsistency": 100,
+        "figureIntegrity": 100,
+        "noHintsInOptions": 95.4,
+        "answerPositionBalance": 76.5,
+        "renderHealth": 98,
+        "explanationQuality": 74.1
+      }
+    },
+    {
+      "course": "AP_PHYSICS_1",
+      "n": 672,
+      "modalOptions": 4,
+      "visualClaims": 0,
+      "composite": 92.2,
+      "dims": {
+        "optionCountConsistency": 77.2,
+        "figureIntegrity": 100,
+        "noHintsInOptions": 95.7,
+        "answerPositionBalance": 86.6,
+        "renderHealth": 99.7,
+        "explanationQuality": 88.2
+      }
+    },
+    {
+      "course": "AP_PHYSICS_2",
+      "n": 718,
+      "modalOptions": 4,
+      "visualClaims": 0,
+      "composite": 92.2,
+      "dims": {
+        "optionCountConsistency": 84.1,
+        "figureIntegrity": 100,
+        "noHintsInOptions": 96.4,
+        "answerPositionBalance": 86.8,
+        "renderHealth": 99.6,
+        "explanationQuality": 82.5
+      }
+    },
+    {
+      "course": "AP_CALCULUS_BC",
+      "n": 637,
+      "modalOptions": 4,
+      "visualClaims": 0,
+      "composite": 92.6,
+      "dims": {
+        "optionCountConsistency": 88.2,
+        "figureIntegrity": 100,
+        "noHintsInOptions": 96.2,
+        "answerPositionBalance": 76.2,
+        "renderHealth": 94.3,
+        "explanationQuality": 92.2
+      }
+    },
+    {
+      "course": "AP_PHYSICS_C_ELECTRICITY_MAGNETISM",
+      "n": 548,
+      "modalOptions": 4,
+      "visualClaims": 1,
+      "composite": 92.7,
+      "dims": {
+        "optionCountConsistency": 90.3,
+        "figureIntegrity": 100,
+        "noHintsInOptions": 95.1,
+        "answerPositionBalance": 76.2,
+        "renderHealth": 99.8,
+        "explanationQuality": 86.3
+      }
+    },
+    {
+      "course": "AP_PRECALCULUS",
+      "n": 497,
+      "modalOptions": 4,
+      "visualClaims": 0,
+      "composite": 93.6,
+      "dims": {
+        "optionCountConsistency": 87.3,
+        "figureIntegrity": 100,
+        "noHintsInOptions": 98.8,
+        "answerPositionBalance": 79.6,
+        "renderHealth": 96.2,
+        "explanationQuality": 92.2
+      }
+    },
+    {
+      "course": "AP_COMPUTER_SCIENCE_PRINCIPLES",
+      "n": 486,
+      "modalOptions": 4,
+      "visualClaims": 0,
+      "composite": 93.6,
+      "dims": {
+        "optionCountConsistency": 95.9,
+        "figureIntegrity": 100,
+        "noHintsInOptions": 94.4,
+        "answerPositionBalance": 85,
+        "renderHealth": 99.6,
+        "explanationQuality": 83.3
+      }
+    },
+    {
+      "course": "AP_PHYSICS_C_MECHANICS",
+      "n": 492,
+      "modalOptions": 4,
+      "visualClaims": 2,
+      "composite": 93.7,
+      "dims": {
+        "optionCountConsistency": 91.3,
+        "figureIntegrity": 100,
+        "noHintsInOptions": 96.1,
+        "answerPositionBalance": 68.6,
+        "renderHealth": 99.8,
+        "explanationQuality": 93.9
+      }
+    },
+    {
+      "course": "AP_BIOLOGY",
+      "n": 665,
+      "modalOptions": 4,
+      "visualClaims": 13,
+      "composite": 93.7,
+      "dims": {
+        "optionCountConsistency": 83.3,
+        "figureIntegrity": 100,
+        "noHintsInOptions": 95.5,
+        "answerPositionBalance": 91,
+        "renderHealth": 100,
+        "explanationQuality": 89
+      }
+    },
+    {
+      "course": "AP_EUROPEAN_HISTORY",
+      "n": 488,
+      "modalOptions": 4,
+      "visualClaims": 82,
+      "composite": 94.1,
+      "dims": {
+        "optionCountConsistency": 100,
+        "figureIntegrity": 100,
+        "noHintsInOptions": 98.4,
+        "answerPositionBalance": 72.4,
+        "renderHealth": 100,
+        "explanationQuality": 85.7
+      }
+    },
+    {
+      "course": "ACT_ENGLISH",
+      "n": 485,
+      "modalOptions": 4,
+      "visualClaims": 32,
+      "composite": 94.1,
+      "dims": {
+        "optionCountConsistency": 97.9,
+        "figureIntegrity": 100,
+        "noHintsInOptions": 93.6,
+        "answerPositionBalance": 84.5,
+        "renderHealth": 100,
+        "explanationQuality": 84.7
+      }
+    },
+    {
+      "course": "AP_HUMAN_GEOGRAPHY",
+      "n": 606,
+      "modalOptions": 4,
+      "visualClaims": 18,
+      "composite": 94.4,
+      "dims": {
+        "optionCountConsistency": 85.8,
+        "figureIntegrity": 100,
+        "noHintsInOptions": 99,
+        "answerPositionBalance": 89,
+        "renderHealth": 99.8,
+        "explanationQuality": 89.3
+      }
+    },
+    {
+      "course": "AP_MACROECONOMICS",
+      "n": 463,
+      "modalOptions": 4,
+      "visualClaims": 0,
+      "composite": 94.4,
+      "dims": {
+        "optionCountConsistency": 100,
+        "figureIntegrity": 100,
+        "noHintsInOptions": 93.1,
+        "answerPositionBalance": 75.7,
+        "renderHealth": 89.4,
+        "explanationQuality": 100
+      }
+    },
+    {
+      "course": "ACT_READING",
+      "n": 649,
+      "modalOptions": 4,
+      "visualClaims": 169,
+      "composite": 94.5,
+      "dims": {
+        "optionCountConsistency": 100,
+        "figureIntegrity": 100,
+        "noHintsInOptions": 97.2,
+        "answerPositionBalance": 64.7,
+        "renderHealth": 100,
+        "explanationQuality": 92.4
+      }
+    },
+    {
+      "course": "AP_ENGLISH_LANGUAGE",
+      "n": 506,
+      "modalOptions": 4,
+      "visualClaims": 69,
+      "composite": 94.7,
+      "dims": {
+        "optionCountConsistency": 100,
+        "figureIntegrity": 100,
+        "noHintsInOptions": 98.4,
+        "answerPositionBalance": 80.1,
+        "renderHealth": 100,
+        "explanationQuality": 84.6
+      }
+    },
+    {
+      "course": "PSAT_MATH",
+      "n": 975,
+      "modalOptions": 4,
+      "visualClaims": 15,
+      "composite": 95,
+      "dims": {
+        "optionCountConsistency": 100,
+        "figureIntegrity": 100,
+        "noHintsInOptions": 99.8,
+        "answerPositionBalance": 72.9,
+        "renderHealth": 96.8,
+        "explanationQuality": 91.7
+      }
+    },
+    {
+      "course": "AP_US_HISTORY",
+      "n": 563,
+      "modalOptions": 4,
+      "visualClaims": 47,
+      "composite": 95,
+      "dims": {
+        "optionCountConsistency": 93.8,
+        "figureIntegrity": 100,
+        "noHintsInOptions": 99.3,
+        "answerPositionBalance": 84.3,
+        "renderHealth": 100,
+        "explanationQuality": 88.1
+      }
+    },
+    {
+      "course": "AP_ENGLISH_LITERATURE",
+      "n": 632,
+      "modalOptions": 4,
+      "visualClaims": 96,
+      "composite": 95.4,
+      "dims": {
+        "optionCountConsistency": 100,
+        "figureIntegrity": 100,
+        "noHintsInOptions": 98.6,
+        "answerPositionBalance": 76.6,
+        "renderHealth": 100,
+        "explanationQuality": 90
+      }
+    },
+    {
+      "course": "ACT_MATH",
+      "n": 751,
+      "modalOptions": 4,
+      "visualClaims": 13,
+      "composite": 95.5,
+      "dims": {
+        "optionCountConsistency": 100,
+        "figureIntegrity": 100,
+        "noHintsInOptions": 99.9,
+        "answerPositionBalance": 74.7,
+        "renderHealth": 98.5,
+        "explanationQuality": 91.6
+      }
+    },
+    {
+      "course": "AP_MICROECONOMICS",
+      "n": 390,
+      "modalOptions": 4,
+      "visualClaims": 0,
+      "composite": 95.8,
+      "dims": {
+        "optionCountConsistency": 100,
+        "figureIntegrity": 100,
+        "noHintsInOptions": 93.1,
+        "answerPositionBalance": 80.3,
+        "renderHealth": 94.1,
+        "explanationQuality": 100
+      }
+    },
+    {
+      "course": "AP_US_GOVERNMENT",
+      "n": 812,
+      "modalOptions": 4,
+      "visualClaims": 31,
+      "composite": 96.1,
+      "dims": {
+        "optionCountConsistency": 85.8,
+        "figureIntegrity": 100,
+        "noHintsInOptions": 98.5,
+        "answerPositionBalance": 84.9,
+        "renderHealth": 100,
+        "explanationQuality": 100
+      }
+    },
+    {
+      "course": "AP_WORLD_HISTORY",
+      "n": 553,
+      "modalOptions": 4,
+      "visualClaims": 47,
+      "composite": 96.1,
+      "dims": {
+        "optionCountConsistency": 97.3,
+        "figureIntegrity": 100,
+        "noHintsInOptions": 99.3,
+        "answerPositionBalance": 87.2,
+        "renderHealth": 100,
+        "explanationQuality": 89.2
+      }
+    },
+    {
+      "course": "SAT_READING_WRITING",
+      "n": 992,
+      "modalOptions": 4,
+      "visualClaims": 89,
+      "composite": 96.2,
+      "dims": {
+        "optionCountConsistency": 100,
+        "figureIntegrity": 100,
+        "noHintsInOptions": 95.7,
+        "answerPositionBalance": 69.4,
+        "renderHealth": 99.8,
+        "explanationQuality": 99.5
+      }
+    },
+    {
+      "course": "PSAT_READING_WRITING",
+      "n": 902,
+      "modalOptions": 4,
+      "visualClaims": 89,
+      "composite": 96.4,
+      "dims": {
+        "optionCountConsistency": 100,
+        "figureIntegrity": 100,
+        "noHintsInOptions": 96.9,
+        "answerPositionBalance": 70.7,
+        "renderHealth": 99.6,
+        "explanationQuality": 99.2
+      }
+    },
+    {
+      "course": "CLEP_COLLEGE_MATH",
+      "n": 2,
+      "modalOptions": 4,
+      "visualClaims": 0,
+      "composite": 96.7,
+      "dims": {
+        "optionCountConsistency": 100,
+        "figureIntegrity": 100,
+        "noHintsInOptions": 100,
+        "answerPositionBalance": 66.7,
+        "renderHealth": 100,
+        "explanationQuality": 100
+      }
+    },
+    {
+      "course": "AP_ENVIRONMENTAL_SCIENCE",
+      "n": 654,
+      "modalOptions": 4,
+      "visualClaims": 1,
+      "composite": 96.9,
+      "dims": {
+        "optionCountConsistency": 87,
+        "figureIntegrity": 100,
+        "noHintsInOptions": 98.8,
+        "answerPositionBalance": 91.4,
+        "renderHealth": 99.7,
+        "explanationQuality": 100
+      }
+    },
+    {
+      "course": "ACT_SCIENCE",
+      "n": 1237,
+      "modalOptions": 4,
+      "visualClaims": 93,
+      "composite": 97,
+      "dims": {
+        "optionCountConsistency": 100,
+        "figureIntegrity": 100,
+        "noHintsInOptions": 96.8,
+        "answerPositionBalance": 74.9,
+        "renderHealth": 99.8,
+        "explanationQuality": 100
+      }
+    },
+    {
+      "course": "AP_PSYCHOLOGY",
+      "n": 554,
+      "modalOptions": 4,
+      "visualClaims": 2,
+      "composite": 97.3,
+      "dims": {
+        "optionCountConsistency": 89.5,
+        "figureIntegrity": 100,
+        "noHintsInOptions": 99.1,
+        "answerPositionBalance": 89.8,
+        "renderHealth": 100,
+        "explanationQuality": 100
+      }
+    }
+  ]
+}
