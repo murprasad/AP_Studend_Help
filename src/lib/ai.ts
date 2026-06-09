@@ -816,8 +816,12 @@ export async function generateQuestion(
       // of bug. Deterministic gates have no excuse to skip.
       if (questionType === QuestionType.MCQ) {
         const isAP = (inferredCourse as string).startsWith("AP_");
-        const isACTMath = inferredCourse === "ACT_MATH";
-        const expectedOptions = isACTMath ? 5 : (isAP ? 4 : 4);
+        // 2026-06-09: Enhanced ACT (April 2025) moved Math from 5 → 4 choices
+        // (A–D), matching the gate (ACT_MATH ∈ FOUR_CHOICE_COURSES) and the
+        // current official format. Previously hardcoded 5 → generated legacy
+        // 5-choice items the deterministic gate then rejected. All MCQ courses
+        // here are 4-choice (AP/SAT/PSAT/ACT); CLEP/DSST 5-choice generate on PL.
+        const expectedOptions = isAP ? 4 : 4;
         const opts = candidate.options;
         const qtStr = String(candidate.questionText ?? "");
         const stimStr = candidate.stimulus && candidate.stimulus !== "null" ? String(candidate.stimulus) : "";

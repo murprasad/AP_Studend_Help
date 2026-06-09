@@ -5,10 +5,59 @@ import { prisma } from "@/lib/prisma";
 import { SessionType, ApUnit, Difficulty, ApCourse, QuestionType, SubTier } from "@prisma/client";
 import { VALID_AP_COURSES, getUnitsForCourse, COURSE_REGISTRY, getCourseTrack } from "@/lib/courses";
 import { generateQuestion } from "@/lib/ai";
+import { runDeterministicGates } from "@/lib/deterministic-question-gates";
 import { isPremiumRestrictionEnabled, getSetting, isCourseVisible } from "@/lib/settings";
 import { rateLimit } from "@/lib/rate-limit";
 import { isPremiumForTrack, isAnyPremium, hasAnyPremium, type ModuleSub } from "@/lib/tiers";
 import { FREE_LIMITS, LOCK_COPY } from "@/lib/tier-limits";
+
+// P0 fidelity gate (2026-06-09): on-demand questions are generated with
+// quickMode=true, which skips the ensemble/CB/validation layers. Before this,
+// the route persisted them as isApproved:true regardless of quality — so a
+// broken AI question poisoned every future session for that course (root cause
+// of Morgan 0/4). Per the hard rule "no AI MCQ approved without passing gates",
+// we now run the full deterministic gates at SAVE time and derive isApproved
+// from the result. Free-response types (FRQ/SAQ/DBQ/LEQ/CODING) have no A-E
+// answer and use a separate validation path, so they are not letter-gated here.
+function isGeneratedApproved(
+  gen: {
+    questionType?: string | null; questionText?: string; options?: unknown;
+    correctAnswer?: string; explanation?: string; stimulus?: string | null; stimulusImageUrl?: string | null;
+  },
+  course: string,
+): boolean {
+  const qt = (gen.questionType ?? "MCQ") as string;
+  if (qt !== "MCQ" && qt !== "NUMERICAL") return true; // free-response: not gated here
+  const res = runDeterministicGates({
+    questionText: gen.questionText,
+    options: Array.isArray(gen.options) ? (gen.options as string[]) : undefined,
+    correctAnswer: gen.correctAnswer,
+    explanation: gen.explanation,
+    course,
+    stimulus: gen.stimulus ?? undefined,
+    stimulusImageUrl: gen.stimulusImageUrl ?? undefined,
+    questionType: qt,
+  });
+  return res.ok;
+}
+
+// Deterministically normalize MCQ option prefixes to "A) ", "B) ", … by
+// position. LLMs intermittently drop or scramble the letter prefix on one
+// option, which the deterministic gate (options-partial-prefix) rejects even
+// though the question is perfectly answerable (the UI derives the letter
+// positionally via optionLetter(i) and strips the prefix via cleanOptionText).
+// Re-prefixing makes valid items pass the gate AND keeps stored data uniform.
+// No-op for non-MCQ / non-array options. contentHash is on questionText, so
+// this never affects dedup.
+function normalizeMcqOptionPrefixes(options: unknown, questionType?: string | null): unknown {
+  const qt = (questionType ?? "MCQ") as string;
+  if (qt !== "MCQ") return options;
+  if (!Array.isArray(options)) return options;
+  return options.map((o, i) => {
+    const text = String(o).replace(/^\s*\(?[A-Ea-e][).:]\s*/, "").trim();
+    return `${String.fromCharCode(65 + i)}) ${text}`;
+  });
+}
 
 // Create a new practice session
 export async function POST(req: NextRequest) {
@@ -261,8 +310,12 @@ export async function POST(req: NextRequest) {
           : diffs[i % diffs.length];
         const weakTopic = weakTopicMap.get(u) || undefined;
         return generateQuestion(u, d, resolvedQuestionType, weakTopic, course as ApCourse, (hasPremium ? "PREMIUM" : "FREE") as "FREE" | "PREMIUM", seedQuestion, true /* quickMode */)
-          .then((gen) =>
-            prisma.question.create({
+          .then((gen) => {
+            // Normalize option prefixes first, then gate: only serve +
+            // persist-as-approved if it passes the deterministic gates.
+            gen.options = normalizeMcqOptionPrefixes(gen.options, gen.questionType) as typeof gen.options;
+            const approved = isGeneratedApproved(gen, course as string);
+            return prisma.question.create({
               data: {
                 course: course as ApCourse,
                 unit: gen.unit,
@@ -277,7 +330,7 @@ export async function POST(req: NextRequest) {
                 correctAnswer: gen.correctAnswer,
                 explanation: gen.explanation,
                 isAiGenerated: true,
-                isApproved: true,
+                isApproved: approved,
                 modelUsed: gen.modelUsed ?? null,
                 generatedForTier: (hasPremium ? "PREMIUM" : "FREE") as SubTier,
                 contentHash: gen.contentHash ?? null,
@@ -290,12 +343,16 @@ export async function POST(req: NextRequest) {
                 stimulus: true, stimulusImageUrl: true, options: true,
                 correctAnswer: true, explanation: true,
               },
-            }).catch((err: { code?: string }) => {
-              // P2002 = unique constraint violation — duplicate question; skip silently
-              if (err?.code === "P2002") return null;
-              throw err;
             })
-          );
+              // Gate-failed questions are saved (isApproved:false) for repair/audit
+              // but kept OUT of this session so the student never sees them.
+              .then((row) => (approved ? row : null))
+              .catch((err: { code?: string }) => {
+                // P2002 = unique constraint violation — duplicate question; skip silently
+                if (err?.code === "P2002") return null;
+                throw err;
+              });
+          });
       });
 
       // Race against a 60s timeout to prevent CF Workers from being killed (~100s limit)
@@ -326,18 +383,19 @@ export async function POST(req: NextRequest) {
                 courseUnitKeys[i % courseUnitKeys.length] as ApUnit,
                 bgDiffs[i % bgDiffs.length],
                 resolvedQuestionType, undefined, course as ApCourse, "FREE", undefined, true
-              ).then((gen) =>
-                prisma.question.create({
+              ).then((gen) => {
+                gen.options = normalizeMcqOptionPrefixes(gen.options, gen.questionType) as typeof gen.options;
+                return prisma.question.create({
                   data: {
                     course: course as ApCourse, unit: gen.unit, topic: gen.topic, subtopic: gen.subtopic,
                     difficulty: gen.difficulty, questionType: gen.questionType, questionText: gen.questionText,
                     stimulus: gen.stimulus || null, stimulusImageUrl: gen.stimulusImageUrl || null,
                     options: gen.options ?? undefined, correctAnswer: gen.correctAnswer, explanation: gen.explanation,
-                    isAiGenerated: true, isApproved: true, modelUsed: gen.modelUsed ?? null,
+                    isAiGenerated: true, isApproved: isGeneratedApproved(gen, course as string), modelUsed: gen.modelUsed ?? null,
                     contentHash: gen.contentHash ?? null, apSkill: gen.apSkill ?? null, bloomLevel: gen.bloomLevel ?? null,
                   },
-                }).catch(() => null)
-              ).catch(() => null)
+                }).catch(() => null);
+              }).catch(() => null)
             )
           );
         }
@@ -346,18 +404,22 @@ export async function POST(req: NextRequest) {
         try {
           const retryUnit = courseUnitKeys[0] as ApUnit;
           const retryQ = await generateQuestion(retryUnit, Difficulty.MEDIUM, resolvedQuestionType, undefined, course as ApCourse, "FREE", undefined, true);
+          retryQ.options = normalizeMcqOptionPrefixes(retryQ.options, retryQ.questionType) as typeof retryQ.options;
+          const retryApproved = isGeneratedApproved(retryQ, course as string);
           const saved = await prisma.question.create({
             data: {
               course: course as ApCourse, unit: retryQ.unit, topic: retryQ.topic, subtopic: retryQ.subtopic,
               difficulty: retryQ.difficulty, questionType: retryQ.questionType, questionText: retryQ.questionText,
               stimulus: retryQ.stimulus || null, stimulusImageUrl: retryQ.stimulusImageUrl || null,
               options: retryQ.options ?? undefined, correctAnswer: retryQ.correctAnswer, explanation: retryQ.explanation,
-              isAiGenerated: true, isApproved: true, modelUsed: retryQ.modelUsed ?? null,
+              isAiGenerated: true, isApproved: retryApproved, modelUsed: retryQ.modelUsed ?? null,
               contentHash: retryQ.contentHash ?? null, apSkill: retryQ.apSkill ?? null, bloomLevel: retryQ.bloomLevel ?? null,
             },
             select: { id: true, course: true, unit: true, topic: true, subtopic: true, difficulty: true, questionType: true, questionText: true, stimulus: true, stimulusImageUrl: true, options: true, correctAnswer: true, explanation: true },
           });
-          if (saved) {
+          // Only serve the retry question if it passed the gates; otherwise the
+          // empty-pool guard below returns a clean 400 ("being generated").
+          if (saved && retryApproved) {
             freshQuestions = [saved as (typeof allQuestions)[0]];
             aiGenerationWarning = "1 question generated on retry. More will be available on your next session.";
           }

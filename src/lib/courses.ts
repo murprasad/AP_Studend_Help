@@ -2422,9 +2422,9 @@ CED units are skill bands, not content domains. FRQs score against a unified
       "How is ACT Math different from SAT Math?",
       "What trigonometry do I need to know for the ACT?",
     ],
-    curriculumContext: "ACT Math has 60 questions in 60 minutes covering algebra, geometry, statistics, and trigonometry. All questions are multiple choice with 5 options (A–E).",
+    curriculumContext: "ACT Math has 60 questions in 60 minutes covering algebra, geometry, statistics, and trigonometry. All questions are multiple choice with 4 options (A–D) on the Enhanced ACT (since April 2025).",
     tutorResources: "• Khan Academy ACT Math prep\n• ACT official practice (act.org)",
-    examAlignmentNotes: "ACT Math is 60 minutes for 60 questions (1 minute each). Calculator always permitted. EVERY question has EXACTLY 5 choices (A, B, C, D, E).",
+    examAlignmentNotes: "ACT Math is 60 minutes for 60 questions (1 minute each). Calculator always permitted. On the Enhanced ACT (since April 2025) EVERY question has EXACTLY 4 choices (A, B, C, D).",
     stimulusRequirement: "Include a word problem, diagram description, or data context when relevant.",
     stimulusDescription: "word problem context or diagram description, or null",
     explanationGuidance: "show all calculation steps and identify the concept tested",
@@ -2434,13 +2434,13 @@ CED units are skill bands, not content domains. FRQs score against a unified
       MEDIUM: "Two-to-three step problems: systems of linear equations, quadratic formula application, coordinate geometry (slope, midpoint, distance), probability with combinations, interpreting graphs/tables. ACT score 17–24. 40–55% correct.",
       HARD: "Four+ step multi-concept synthesis: trigonometric identities applied to coordinate geometry, polynomial factoring with complex roots, exponential/logarithmic modeling from data tables, matrix operations, law of sines/cosines in non-right triangles, optimization word problems requiring system setup. Must require strategic reasoning — not just computation. ACT score 25–36. 25–40% correct.",
     },
-    distractorTaxonomy: "(1) PARTIAL CALCULATION TRAP — correct first step but stops early (e.g., solves for x but question asks for 2x+1); (2) SIGN/DIRECTION TRAP — correct magnitude but wrong sign, or reverses inequality direction; (3) FORMULA MIX-UP TRAP — applies a related but wrong formula (area vs perimeter, sin vs cos, permutation vs combination); (4) MISREAD TRAP — answers a slightly different question than asked (finds x instead of y); (5) E-OPTION TRAP — represents a common calculator-entry error or order-of-operations mistake.",
+    distractorTaxonomy: "(1) PARTIAL CALCULATION TRAP — correct first step but stops early (e.g., solves for x but question asks for 2x+1); (2) SIGN/DIRECTION TRAP — correct magnitude but wrong sign, or reverses inequality direction; (3) FORMULA MIX-UP TRAP — applies a related but wrong formula (area vs perimeter, sin vs cos, permutation vs combination); (4) MISREAD/CALCULATOR-ERROR TRAP — answers a slightly different question than asked (finds x instead of y), or a common calculator-entry / order-of-operations mistake.",
     stimulusQualityGuidance: "GOOD: A concrete word problem with named variables (e.g., 'A train travels...'), a coordinate grid description, or a table of values. AVOID: Abstract symbol manipulation without any context.",
     questionTypeFormats: {
       MCQ: {
         generationPrompt:
-          "Generate an ACT Math question with EXACTLY 5 answer choices labeled A, B, C, D, E. " +
-          "Never use 4 choices. The 5th option (E) should represent a common arithmetic or calculator error. " +
+          "Generate an ACT Math question with EXACTLY 4 answer choices labeled A, B, C, D. " +
+          "Never use 5 choices (the Enhanced ACT since April 2025 uses 4). Distractors should represent common arithmetic or calculator errors. " +
           "Include a word problem, equation, or diagram description as context.",
         responseFormat:
           '{"topic":"...","subtopic":"...","questionText":"question","stimulus":"context or null",' +
