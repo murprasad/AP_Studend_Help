@@ -45,12 +45,22 @@ function answerOf(options, correctAnswer) {
   if (/^[A-E]$/.test(L)) return s[L.charCodeAt(0) - 65] || "";
   return s.find((x) => norm(x) === norm(correctAnswer)) || String(correctAnswer || "");
 }
+// 2026-06-09 — the old heuristic over-flagged (verified by sampling): the
+// length<100 rule flagged terse-but-correct explanations ("Reduced deer
+// population leads to less herbivory, allowing plant populations to increase"),
+// and the answer-term-restate rule flagged any explanation that mentions the
+// answer word ("...the molecule is RNA, as DNA contains deoxyribose...") even
+// when it gives real reasoning. Genuinely-circular = adds NO information beyond
+// restating the answer. Now: only truly-too-short, pure restatements, or a
+// because-clause that repeats its own subject.
 function isCircular(expl, ansText) {
-  const e = (expl || "").trim(); const work = showsMathWork(e);
-  if (e.length < 100 && !work) return true;
+  const e = (expl || "").trim();
+  if (e.length < 40) return true;                              // too short to explain anything
+  // pure restatement: just announces the answer with no reasoning
+  if (/^\s*(the\s+(correct\s+)?answer\s+is\b|option\s+[a-e]\s+is\s+correct\b|[a-e]\s+is\s+(the\s+)?correct\b)/i.test(e) && e.length < 70) return true;
+  // "X is correct because Y" where Y just repeats the words of X (real circularity)
   const m = e.match(/^(.*?)\bis correct because\b(.*)$/is);
-  if (m) { const b = new Set(bigWords(m[1])); const a = bigWords(m[2]); if (a.length && a.filter((w) => b.has(w)).length / a.length > 0.5) return true; }
-  if (ansText && e.length < 170 && norm(e).includes(norm(ansText)) && !work) return true;
+  if (m) { const b = new Set(bigWords(m[1])); const a = bigWords(m[2]); if (a.length >= 2 && a.filter((w) => b.has(w)).length / a.length > 0.7) return true; }
   return false;
 }
 // dimension helpers (each returns true = GOOD for that question)
