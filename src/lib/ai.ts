@@ -6,6 +6,7 @@ import { callAIWithCascade, callAIForTier, callAIForCLEP, callSonnetDirect, vali
 import { prisma } from "./prisma";
 import { getWikipediaSummary, getEduContextForQuery, searchStackExchange, getEnrichedContext, fetchMITOCWContent, fetchDIGContent, fetchOpenStaxContent, fetchSmithsonianContent, fetchCollegeBoardSATTopics, fetchACTTopics, fetchCBFRQContent, getCBFRQUrl, fetchKhanAcademyContext } from "./edu-apis";
 import { checkOptionsForEquivalence } from "./option-evaluator";
+import { CB_CORPUS_ANCHORS, formatAnchor, type AnchorSection } from "./cb-corpus-anchors";
 
 // ── Unified helpers (thin wrappers over the cascade engine) ────────────────
 async function callAI(prompt: string, systemPrompt?: string): Promise<string> {
@@ -682,26 +683,42 @@ export async function generateQuestion(
     courseStr === "SAT_MATH" || courseStr === "SAT_READING_WRITING" ||
     courseStr === "PSAT_MATH" || courseStr === "PSAT_READING_WRITING" ||
     courseStr.startsWith("ACT_");
-  if (useSatCorpus && !quickMode) {
-    try {
-      const { pickAnchorsForSection, formatAnchorForPrompt } = await import("./cb-corpus");
-      // Section dispatch — ACT now has its own parsed corpus (task #34
-      // completed 2026-06-03 for ACT_ENGLISH/READING/SCIENCE; ACT_MATH
-      // still falls through to SAT MATH corpus until parser updates).
-      const section =
-        courseStr === "ACT_ENGLISH"   ? "ACT_ENGLISH"
-        : courseStr === "ACT_READING" ? "ACT_READING"
-        : courseStr === "ACT_SCIENCE" ? "ACT_SCIENCE"
-        : courseStr === "SAT_MATH" || courseStr === "PSAT_MATH" || courseStr === "ACT_MATH" ? "MATH"
-        : "READING_WRITING";
-      const anchors = pickAnchorsForSection(section as "MATH" | "READING_WRITING" | "ACT_ENGLISH" | "ACT_READING" | "ACT_SCIENCE", 2);
-      if (anchors.length > 0) {
-        const sourceLabel = section.startsWith("ACT_") ? "REAL OFFICIAL ACT" : "REAL CB-SAT";
-        const anchorText = anchors.map((a, i) => formatAnchorForPrompt(a, i + 1)).join("\n\n");
-        cbCorpusCalibrationSection = `\n\n${sourceLabel} REFERENCE QUESTIONS (match this style + rigor + framing):\n\n${anchorText}\n\nGenerate a DIFFERENT question at the SAME quality and ${section.startsWith("ACT_") ? "ACT" : "CB"}-style level. Do NOT copy these scenarios or wording.`;
+  // 2026-06-09 — grounding now runs on the LIVE path too (was !quickMode only).
+  // The fs-based full corpus (cb-corpus.ts) works only on Node (cron); the live
+  // practice generator runs on the Cloudflare edge (no fs). So: Node path uses
+  // the rich full corpus; edge/live path (or any fs miss) falls back to the
+  // bundled, edge-safe CB_CORPUS_ANCHORS. Grounding on real CB/ACT items is the
+  // #1 fidelity lever — it must reach the path students actually hit.
+  if (useSatCorpus) {
+    const section: AnchorSection =
+      courseStr === "ACT_ENGLISH"   ? "ACT_ENGLISH"
+      : courseStr === "ACT_READING" ? "ACT_READING"
+      : courseStr === "ACT_SCIENCE" ? "ACT_SCIENCE"
+      : courseStr === "SAT_MATH" || courseStr === "PSAT_MATH" || courseStr === "ACT_MATH" ? "MATH"
+      : "READING_WRITING";
+    let anchorText = "";
+    // Node/cron path: full fs corpus (richest variety). Throws on edge → caught.
+    if (!quickMode) {
+      try {
+        const { pickAnchorsForSection, formatAnchorForPrompt } = await import("./cb-corpus");
+        const anchors = pickAnchorsForSection(section, 2);
+        if (anchors.length > 0) anchorText = anchors.map((a, i) => formatAnchorForPrompt(a, i + 1)).join("\n\n");
+      } catch {
+        // fs unavailable (edge) or empty — fall through to bundled anchors
       }
-    } catch {
-      // cb-corpus module not available or empty — continue without anchors
+    }
+    // Live/edge path (or fs miss): bundled edge-safe anchors.
+    if (!anchorText) {
+      const arr = CB_CORPUS_ANCHORS[section] ?? [];
+      if (arr.length > 0) {
+        const start = Math.floor(Math.random() * arr.length);
+        const picked = [arr[start], arr[(start + 1) % arr.length]].filter((a, i, s) => a && s.indexOf(a) === i);
+        anchorText = picked.map((a, i) => formatAnchor(a, i + 1)).join("\n\n");
+      }
+    }
+    if (anchorText) {
+      const sourceLabel = section.startsWith("ACT_") ? "REAL OFFICIAL ACT" : "REAL CB-SAT";
+      cbCorpusCalibrationSection = `\n\n${sourceLabel} REFERENCE QUESTIONS (match this style + rigor + framing):\n\n${anchorText}\n\nGenerate a DIFFERENT question at the SAME quality and ${section.startsWith("ACT_") ? "ACT" : "CB"}-style level. Do NOT copy these scenarios or wording.`;
     }
   }
 
