@@ -15,7 +15,7 @@
     "db:seed": "tsx prisma/seed.ts",
     "db:studio": "prisma studio",
     "pages:clean": "node -e \"const fs=require('fs');['.open-next','.cf-deploy','.next'].forEach(d=>fs.rmSync(d,{recursive:true,force:true}));console.log('✓ cleaned .open-next .cf-deploy .next');\"",
-    "pages:build": "npm run pages:clean && npx prisma generate && node scripts/patch-prisma-wasm.js && opennextjs-cloudflare build --dangerouslyUseUnsupportedNextVersion && node scripts/prepare-cf-deploy.js",
+    "pages:build": "npm run pages:clean && npx tsx scripts/gen-sitemap.ts && npx prisma generate && node scripts/patch-prisma-wasm.js && opennextjs-cloudflare build --dangerouslyUseUnsupportedNextVersion && node scripts/prepare-cf-deploy.js",
     "release:check": "node scripts/pre-release-check.js",
     "test:unit": "vitest run",
     "test:unit:watch": "vitest",
