@@ -54,6 +54,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       "how-to-study-for-the-sat-with-adhd",
       "test-anxiety-how-to-stay-calm-on-exam-day",
       "study-strategies-learn-differently",
+      "how-to-study-for-the-digital-sat-complete-guide",
     ].map(slug => ({
       url: `${baseUrl}/blog/${slug}`,
       lastModified: now,

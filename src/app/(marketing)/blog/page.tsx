@@ -16,6 +16,16 @@ const articles: {
   readTime: string; date: string; href?: string;
 }[] = [
   {
+    title: "How to Study for the Digital SAT: The Complete 2026 Guide",
+    excerpt:
+      "The complete guide to the Digital SAT: the adaptive 2-module format, scoring, a week-by-week study plan, the best free + paid resources, Bluebook + Desmos tips, test-day strategy, and how to actually stay focused and finish.",
+    category: "Study Guide",
+    categoryColor: "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border-emerald-500/20",
+    readTime: "14 min read",
+    date: "Jun 8, 2026",
+    href: "/blog/how-to-study-for-the-digital-sat-complete-guide",
+  },
+  {
     title: "How to Study for the SAT or ACT with ADHD",
     excerpt:
       "Short spaced sessions, distraction control, extended time, body-doubling, and energy-aware pacing — focus-friendly, evidence-based strategies for students who learn differently.",
