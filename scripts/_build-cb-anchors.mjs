@@ -54,6 +54,20 @@ function sectionValid(q, section) {
   if (section === "MATH") return !MANGLED_MATH.test(s);        // drop mangled-notation math
   return true;
 }
+
+// Options must be clean: non-empty, and no value with an embedded "B)"/"C)"
+// option label (PDF parser sometimes merges all choices into one — e.g.
+// option A = "8 B) 12 C) 18 D) 72"). Such merged options are useless grounding.
+function optionsValid(q) {
+  const vals = Object.values(q.options || {});
+  if (vals.length < 3) return false;
+  for (const v of vals) {
+    const t = String(v || "").trim();
+    if (!t) return false;                       // blank option
+    if (/\s[A-E]\)\s/.test(` ${t} `)) return false; // embedded other-option label = merged
+  }
+  return true;
+}
 const sections = ["READING_WRITING", "MATH", "ACT_ENGLISH", "ACT_READING", "ACT_SCIENCE"];
 
 const out = {};
@@ -71,8 +85,8 @@ for (const section of sections) {
     (q) => q.section === section && q.stem && q.options && Object.keys(q.options).length >= 3
   );
   if (pool.length === 0) { out[section] = []; continue; }
-  // Per-section content validity (wrong-subject / mangled exclusion).
-  const valid = pool.filter((q) => sectionValid(q, section));
+  // Per-section content validity (wrong-subject / mangled exclusion) + clean options.
+  const valid = pool.filter((q) => sectionValid(q, section) && optionsValid(q));
   if (valid.length >= PER_SECTION) pool = valid;
   // Prefer prose-clean stems; relax the threshold only if too few remain.
   const clean = pool.filter((q) => junkRatio(q.stem) < 0.03 && wc(q.stem) >= 5);

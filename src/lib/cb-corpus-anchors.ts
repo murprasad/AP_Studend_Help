@@ -39,12 +39,21 @@ export const CB_CORPUS_ANCHORS: Record<AnchorSection, CbAnchor[]> = {
   ],
   "MATH": [
     {
-      "stem": "A rectangle is inscribed in a circle, such that each vertex of the rectangle lies on the circumference of the circle. The diagonal of the rectangle is twice the length of the shortest side of the rectangle. The area of the rectangle is 1,089 3 square units. What is the length, in units, of the diameter of the circle? 22 - ------- Rectangles ABCD and EFGH are similar. The length of each side of EFGH is 6 times the length of the corresponding side of ABCD. The area of ABCD is 54 square units. What is the area, in square units, of EFGH?",
+      "stem": "In right triangle RST , the sum of the measures of angle R and angle S is 90 degrees. The value of 15 sin(R) is 4 . What is the value of cos(S) ? 15 A) 15 15 B) 4 4 15 C) 15 D) 15 -16 - y 50 40 \\. gi::Q 30 ~ \\ s0.. uo 20 \\ \\ 10 \\ I\\ '~ u X 10 20 30 40 50 6 ) 70 80 90 100 Company A The graph shows the relationship between the number of shares of stock from Company A, x, and the number of shares of stock from Company B, y, that Simone can purchase. Which equation could represent this relationship?",
       "options": {
-        "A": "8 B) 12 C) 18 D) 72",
-        "B": "(4, 7)",
-        "C": "(10, 2)",
-        "D": "(11, 1)"
+        "A": "x - 7 5",
+        "B": "8x - 3 2",
+        "C": "8x2 - 3x - 14 2x - 14",
+        "D": "8x2 - 3x - 77 2x - 14"
+      }
+    },
+    {
+      "stem": "A total of 165 people contributed to a charity event as either a donor or a volunteer. 130 people contributed as a donor. How many people contributed as a volunteer? A) 35 B) 130 C) 165 D) 330 -2 ~ There are 250 trees in a park. Of these trees, 6% are birch trees. How many birch trees are in the park? A) 6 B) 15 C) 75 D) 244 -3 ---- y '\\ \\ \\ \\ \\ \\ 12 11 10 9 8 7 6 5 \\4 \\3 \".(, I I I I I I I J I / 1 -2 f X 2 The graph of the quadratic function y = f (x) is shown. What is the vertex of the graph?",
+      "options": {
+        "A": "18",
+        "B": "131",
+        "C": "149",
+        "D": "2,376"
       }
     },
     {
@@ -54,15 +63,6 @@ export const CB_CORPUS_ANCHORS: Record<AnchorSection, CbAnchor[]> = {
         "B": "The number of small jars Keenan filled",
         "C": "The total number of cups of vegetable broth in the large jars",
         "D": "The total number of cups of vegetable broth in the small jars"
-      }
-    },
-    {
-      "stem": "A proposal for a new library was included on an election ballot. A radio show stated that 3 times as many people voted in favor of the proposal as people who voted against it. A social media post reported that 15,000 more people voted in favor of the proposal than voted against it. Based on these data, how many people voted against the proposal? A) 7,500 B) 15,000 C) 22,500 D) 45,000 ---------- 17 -3x + 21px = 84 In the given equation, p is a constant. The equation has no solution. What is the value of p ?",
-      "options": {
-        "A": "-130",
-        "D": "- 2",
-        "B": "-13 23",
-        "C": "- 2 3"
       }
     }
   ],
