@@ -89,3 +89,26 @@ android/*.iml
 android/app/*.iml
 android/keystore.properties
 android/app/upload-keystore.jks
+
+# Local secrets pasted for manual setup — NEVER commit
+*-secret-to-paste.txt
+.cron-secret-to-paste.txt
+
+# Debug / probe scratch files
+_probe*.html
+_probe*.txt
+_rsc-probe.txt
+_svg-test*.html
+_svg-test*.txt
+_macro_stats.cjs
+/*.pdf
+data/_probe-*.png
+
+# Generated fidelity / analysis artifacts
+data/fidelity-proofs/generated/
+data/cb-fidelity-reports/
+data/asymmetric-disagreements-*.json
+data/cognitive-diversity-report.json
+
+# Playwright stored auth/session state (contains tokens)
+tests/e2e/.auth/
