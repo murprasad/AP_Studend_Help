@@ -27,6 +27,16 @@ interface Stats {
   estimatedARR: number;
 }
 
+// QA / E2E / persona / seed accounts created by automated tests. Kept out of the
+// default real-user view so they don't clog the list. Covers @test.* domains,
+// @example.*, the murprasad+{std,sat,act,appass,e2e,test} persona slots, and
+// qa-/e2e-/persona-/walk- prefixes. The owner's murprasad@gmail.com (no +) is real.
+const isTestUser = (email: string): boolean =>
+  /@test\./i.test(email) ||
+  /@example\.(com|invalid|org)/i.test(email) ||
+  /^(qa|e2e|test|persona|walk|playwright)[-_]/i.test(email) ||
+  /\+(std|sat|act|appass|e2e|test|qa|persona|walk)[^@]*@/i.test(email);
+
 export function AdminUsersListTab() {
   const [users, setUsers] = useState<UserRow[]>([]);
   const [stats, setStats] = useState<Stats | null>(null);
@@ -35,6 +45,9 @@ export function AdminUsersListTab() {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [filterTier, setFilterTier] = useState<"all" | "free" | "premium">("all");
+  const [filterTrack, setFilterTrack] = useState<"all" | "ap" | "sat" | "act" | "clep">("all");
+  // Default to "real" so automated QA/E2E/persona accounts don't clog the view.
+  const [filterUserType, setFilterUserType] = useState<"real" | "test" | "all">("real");
   const [searchQuery, setSearchQuery] = useState("");
 
   const fetchUsers = useCallback(async () => {
@@ -65,6 +78,10 @@ export function AdminUsersListTab() {
   const filteredUsers = users.filter((u) => {
     if (filterTier === "free" && isAnyPremium(u.tier)) return false;
     if (filterTier === "premium" && !isAnyPremium(u.tier)) return false;
+    if (filterTrack !== "all" && (u.track || "ap").toLowerCase() !== filterTrack) return false;
+    const test = isTestUser(u.email);
+    if (filterUserType === "real" && test) return false;
+    if (filterUserType === "test" && !test) return false;
     if (searchQuery) {
       const q = searchQuery.toLowerCase();
       return (
@@ -137,6 +154,27 @@ export function AdminUsersListTab() {
                   className="bg-secondary border border-border rounded pl-8 pr-3 py-1.5 text-sm w-52"
                 />
               </div>
+              <select
+                value={filterUserType}
+                onChange={(e) => setFilterUserType(e.target.value as "real" | "test" | "all")}
+                className="bg-secondary border border-border rounded px-3 py-1.5 text-sm"
+                title="Hide automated QA/E2E/persona test accounts"
+              >
+                <option value="real">Real Users</option>
+                <option value="test">Test Users</option>
+                <option value="all">All (incl. test)</option>
+              </select>
+              <select
+                value={filterTrack}
+                onChange={(e) => setFilterTrack(e.target.value as "all" | "ap" | "sat" | "act" | "clep")}
+                className="bg-secondary border border-border rounded px-3 py-1.5 text-sm"
+              >
+                <option value="all">All Products</option>
+                <option value="ap">AP</option>
+                <option value="sat">SAT</option>
+                <option value="act">ACT</option>
+                <option value="clep">CLEP</option>
+              </select>
               <select
                 value={filterTier}
                 onChange={(e) => setFilterTier(e.target.value as "all" | "free" | "premium")}
