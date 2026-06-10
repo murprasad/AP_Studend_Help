@@ -112,3 +112,22 @@ data/cognitive-diversity-report.json
 
 # Playwright stored auth/session state (contains tokens)
 tests/e2e/.auth/
+test-results/
+test-results.json
+
+# One-off scratch scripts (underscore-prefixed by convention)
+scripts/_*
+
+# Generated coverage / snapshot / audit data dumps
+data/sample-coverage-*.json
+data/question-performance-snapshot.json
+data/trust-certification-snapshot.json
+data/triage-flagged-*.csv
+data/phase3b-haiku-sweeps/
+data/phase7-render-audits/
+data/sn-walkthrough-*.json
+data/*-screenshot.png
+data/qa-walks/*.png
+
+# Claude Code local harness state
+.claude/
