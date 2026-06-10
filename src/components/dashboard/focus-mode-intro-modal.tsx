@@ -12,6 +12,7 @@
  * system prompt, never blocking, with a visible Close (X) + "Maybe later".
  */
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Focus } from "lucide-react";
@@ -22,18 +23,23 @@ const SEEN_KEY = "sn_focus_intro_seen";
 export function FocusModeIntroModal() {
   const { setFocusMode } = useFocusPrefs();
   const [open, setOpen] = useState(false);
+  const pathname = usePathname();
 
-  // Show once per browser, only after onboarding (the layout decides when to
-  // render this component). Defer a tick so it doesn't fight first paint.
+  // Show once per browser, only after onboarding. Defer a tick so it doesn't
+  // fight first paint. NEVER show during the journey/onboarding flow — it
+  // popped over the Step-5 "You're set up → pick your next step" tiles and
+  // obscured them (journey-rail-96 Step 5 failures). Wait until the student
+  // is on the dashboard; the pathname dep re-runs this when they arrive.
   useEffect(() => {
     if (typeof window === "undefined") return;
+    if (pathname && (pathname.startsWith("/journey") || pathname.startsWith("/onboarding"))) return;
     try {
       if (!localStorage.getItem(SEEN_KEY)) {
         const t = setTimeout(() => setOpen(true), 900);
         return () => clearTimeout(t);
       }
     } catch { /* localStorage blocked — just don't show */ }
-  }, []);
+  }, [pathname]);
 
   function dismiss() {
     try { localStorage.setItem(SEEN_KEY, "1"); } catch { /* ignore */ }
