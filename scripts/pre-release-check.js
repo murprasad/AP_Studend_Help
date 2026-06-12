@@ -487,7 +487,55 @@ section("11. Quality Process gates (QA walk + release manifest)");
   const path = require("path");
   const QA_WALKS_DIR = path.join(__dirname, "..", "data", "qa-walks");
   const MANIFESTS_DIR = path.join(__dirname, "..", "data", "release-manifests");
-  const ENFORCE = process.env.ENFORCE_QUALITY_GATES === "1";
+  // 2026-06-11 (D14 PCA, mirrored from PL): default ON. The soft-warn was
+  // ignored on 5 straight PL deploys. Machinery > memory: hard-block unless an
+  // explicit, visible ENFORCE_QUALITY_GATES=0 opt-out.
+  const ENFORCE = process.env.ENFORCE_QUALITY_GATES !== "0";
+
+  // 2026-06-12 (D16 PCA, mirrored from PL) — a QA-walk must POSTDATE the latest
+  // src change AND be produced by a SEPARATE agent (provenance, not presence).
+  // The author can type a convincing walk from their own head; the gate must not
+  // accept that. Independent Agent invocations leave
+  //   ~/.claude/projects/<cwd-mangled>/<session>/subagents/agent-*.jsonl
+  function newestMtime(dir) {
+    let newest = 0;
+    const stack = [dir];
+    while (stack.length) {
+      const d = stack.pop();
+      let entries = [];
+      try { entries = fs.readdirSync(d, { withFileTypes: true }); } catch { continue; }
+      for (const e of entries) {
+        const p = path.join(d, e.name);
+        if (e.isDirectory()) { if (e.name !== "node_modules" && !e.name.startsWith(".")) stack.push(p); }
+        else if (/\.(ts|tsx)$/.test(e.name)) {
+          try { const m = fs.statSync(p).mtimeMs; if (m > newest) newest = m; } catch { /* ignore */ }
+        }
+      }
+    }
+    return newest;
+  }
+  const os = require("os");
+  function newestSubagentMtime() {
+    try {
+      const mangled = process.cwd().replace(/[\\/:]/g, "-");
+      const base = path.join(os.homedir(), ".claude", "projects", mangled);
+      let newest = 0, found = false;
+      for (const s of fs.readdirSync(base, { withFileTypes: true })) {
+        if (!s.isDirectory()) continue;
+        const subdir = path.join(base, s.name, "subagents");
+        let files = [];
+        try { files = fs.readdirSync(subdir); } catch { continue; }
+        for (const f of files) {
+          if (/^agent-.*\.jsonl$/.test(f)) {
+            found = true;
+            try { const m = fs.statSync(path.join(subdir, f)).mtimeMs; if (m > newest) newest = m; } catch { /* ignore */ }
+          }
+        }
+      }
+      return { newest, found };
+    } catch { return { newest: 0, found: false }; }
+  }
+  const newestSrc = newestMtime(path.join(__dirname, "..", "src"));
 
   // Find most recent QA walk log
   let recentWalk = null;
@@ -502,12 +550,24 @@ section("11. Quality Process gates (QA walk + release manifest)");
 
   if (recentWalk) {
     const ageHours = (Date.now() - recentWalk.mtime) / (1000 * 60 * 60);
-    if (ageHours <= 24) {
-      ok(`G4 QA Walk Log present and fresh: ${recentWalk.f} (${ageHours.toFixed(1)}h old)`);
+    const coversChanges = recentWalk.mtime >= newestSrc;
+    if (ageHours <= 24 && coversChanges) {
+      // PCA-1 (D16): provenance — verify an independent agent produced the walk.
+      const prov = newestSubagentMtime();
+      if (!prov.found) {
+        console.log(`  ⚠ G4 provenance: no subagent transcripts visible from here (CI/other host) — cannot machine-verify independence. Walk freshness OK.`);
+        ok(`G4 QA Walk present, fresh (${ageHours.toFixed(1)}h) + postdates latest src change: ${recentWalk.f}`);
+      } else if (prov.newest >= newestSrc) {
+        ok(`G4 QA Walk present, fresh (${ageHours.toFixed(1)}h), postdates src + INDEPENDENT-agent transcript verified: ${recentWalk.f}`);
+      } else if (ENFORCE) {
+        fail(`G4 QA Walk is SELF-AUTHORED: no independent-agent transcript (subagents/agent-*.jsonl) postdates your latest src change. BIQ requires the REV + student walk to be a SEPARATE Agent invocation, not narrated in-line. Spawn the walker/REV agent against this diff, then re-run. (D16 PCA.)`);
+      } else {
+        console.log(`  ⚠ G4 provenance stale — soft-warn (ENFORCE_QUALITY_GATES=0).`);
+      }
     } else if (ENFORCE) {
-      fail(`G4 QA Walk Log stale: ${recentWalk.f} is ${ageHours.toFixed(1)}h old (>24h). Run a fresh persona walkthrough before deploying.`);
+      fail(`G4 QA Walk ${!coversChanges ? "PREDATES your latest src change — it hasn't reviewed what you're shipping" : `stale (${ageHours.toFixed(1)}h > 24h)`}. Run a fresh STUDENT-PERSONA walk + write data/qa-walks/<date>-<change>.md, then deploy.`);
     } else {
-      console.log(`  ⚠ G4 QA Walk Log stale: ${recentWalk.f} is ${ageHours.toFixed(1)}h old. Set ENFORCE_QUALITY_GATES=1 once baseline is stable.`);
+      console.log(`  ⚠ G4 QA Walk stale/predates changes — soft-warn (ENFORCE_QUALITY_GATES=0).`);
     }
   } else if (ENFORCE) {
     fail(`G4 QA Walk Log missing: no files in data/qa-walks/. See docs/QUALITY_PROCESS.md.`);
@@ -515,17 +575,45 @@ section("11. Quality Process gates (QA walk + release manifest)");
     console.log(`  ⚠ G4 QA Walk Log missing — soft-warn. Create data/qa-walks/YYYY-MM-DD-<change>.md per docs/QUALITY_PROCESS.md.`);
   }
 
-  // Release manifest for current HEAD
-  let manifestCount = 0;
+  // 2026-06-12 (D16, mirrored from PL) — wire TEAM/BIQ sign-off as HARD: the
+  // newest manifest must postdate src AND show G1 PO/G2 DEV/G3 REV/G4 QA/G5 RM
+  // = "approved" for THIS release + cite the fresh walk. You can't ship with a
+  // role still "pending". G6 SRE stays "pending" (post-deploy verify).
+  let newestManifest = null;
   try {
-    manifestCount = fs.readdirSync(MANIFESTS_DIR).filter((f) => f.endsWith(".md") && !f.startsWith(".")).length;
+    const mans = fs.readdirSync(MANIFESTS_DIR)
+      .filter((f) => f.endsWith(".md") && !f.startsWith("."))
+      .map((f) => ({ f, mtime: fs.statSync(path.join(MANIFESTS_DIR, f)).mtimeMs }))
+      .sort((a, b) => b.mtime - a.mtime);
+    if (mans.length) newestManifest = mans[0];
   } catch { /* dir may not exist */ }
-  if (manifestCount > 0) {
-    ok(`G5 Release Manifests directory has ${manifestCount} entries (most recent should be filled out for this release)`);
-  } else if (ENFORCE) {
-    fail(`G5 Release Manifest missing: no files in data/release-manifests/. Copy docs/RELEASE_MANIFEST_TEMPLATE.md.`);
+
+  if (!newestManifest) {
+    if (ENFORCE) fail(`G5 Release Manifest missing: no files in data/release-manifests/. Copy docs/RELEASE_MANIFEST_TEMPLATE.md and fill the G1–G6 sign-offs.`);
+    else console.log(`  ⚠ G5 Release Manifest missing — soft-warn.`);
   } else {
-    console.log(`  ⚠ G5 Release Manifest missing — soft-warn. Create data/release-manifests/<tag>.md per docs/RELEASE_MANIFEST_TEMPLATE.md.`);
+    let body = "";
+    try { body = fs.readFileSync(path.join(MANIFESTS_DIR, newestManifest.f), "utf8"); } catch { /* ignore */ }
+    const fm = body.match(/^---\s*([\s\S]*?)\s*---/);
+    const front = fm ? fm[1] : "";
+    const field = (k) => { const m = front.match(new RegExp(`^\\s*${k}\\s*:\\s*([^\\n#]+)`, "m")); return m ? m[1].trim().toLowerCase() : ""; };
+    const REQUIRED_GATES = ["g1_po", "g2_dev", "g3_rev", "g4_qa", "g5_rm"];
+    const missing = REQUIRED_GATES.filter((g) => field(g) !== "approved");
+    const manifestFresh = newestManifest.mtime >= newestSrc;
+    const citedWalk = field("qa_walk_log");
+    const walkCitedOk = !citedWalk || (recentWalk && citedWalk.includes(recentWalk.f)) || fs.existsSync(path.join(__dirname, "..", citedWalk));
+
+    if (!manifestFresh && ENFORCE) {
+      fail(`G5 Release Manifest "${newestManifest.f}" PREDATES your latest src change — update it for this release.`);
+    } else if (missing.length && ENFORCE) {
+      fail(`G5 Release Manifest "${newestManifest.f}": team gates NOT approved: ${missing.join(", ")}. BIQ requires PO/DEV/REV/QA/RM sign-off before ship.`);
+    } else if (!walkCitedOk && ENFORCE) {
+      fail(`G5 Release Manifest cites qa_walk_log "${citedWalk}" which doesn't match a real walk file.`);
+    } else if (manifestFresh && !missing.length && walkCitedOk) {
+      ok(`G5 Release Manifest "${newestManifest.f}" — G1–G5 team sign-off approved + fresh + cites QA walk`);
+    } else {
+      console.log(`  ⚠ G5 Release Manifest sign-off incomplete — soft-warn (ENFORCE_QUALITY_GATES=0).`);
+    }
   }
 }
 
