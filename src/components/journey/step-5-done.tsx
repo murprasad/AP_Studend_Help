@@ -62,106 +62,35 @@ export function Step5Done({ predictedScore, weakestUnitName, course }: Props) {
         ))}
       </div>
 
-      {/* Three co-equal next-step tiles — Continue / Tools / Upgrade */}
-      <div className="space-y-2">
-        <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground text-center mb-1">
-          What to do next — pick one
-        </p>
-        <NextTile
-          icon={<Brain className="h-5 w-5 text-blue-700 dark:text-blue-400" />}
-          title="Continue free practice"
-          subtitle={weakestUnitName ? `Drill ${weakestUnitName} — your weakest unit.` : "Pick up your daily plan + drill weakest units."}
-          href="/dashboard?focus=primary-action&src=journey_done"
-        />
-        <NextTile
-          icon={<BarChart3 className="h-5 w-5 text-emerald-700 dark:text-emerald-400" />}
-          title="Explore tools"
-          subtitle="Flashcards, Sage tutor, study plan — all free."
-          href="/dashboard?focus=flashcards&src=journey_done"
-        />
-        {/* 2026-05-01 — promote upgrade from subtle text link to a co-equal
-            tinted tile so the price is visible at the conversion moment.
-            Previous version hid $9.99 under "or unlock unlimited everything"
-            small grey text — undersold the offer. */}
-        <UpgradeTile />
-      </div>
-
-      {/* Demoted Sage shortcut as a small link — keeps it accessible without
-          competing with the three primary tiles. */}
-      <div className="text-center pt-1">
-        <Link
-          href="/ai-tutor?src=journey_done"
-          className="text-xs text-muted-foreground hover:text-foreground inline-flex items-center gap-1"
+      {/* 2026-06-10 — ONE dominant next action (was 3 co-equal tiles = a
+          decision dead-stop, the #1 activation leak per funnel analysis:
+          54% never reach a question). Mirrors PL. Winning apps auto-continue
+          into a winnable set, not a choose-your-own-adventure menu. */}
+      <div className="space-y-3">
+        <Button
+          asChild
+          className="w-full h-auto py-4 px-4 justify-center gap-2 text-base bg-blue-600 hover:bg-blue-700 text-white"
+          data-testid="journey-done-continue"
         >
-          <Sparkles className="h-3 w-3" />
-          Or ask Sage a question first
-        </Link>
+          <Link href="/dashboard?focus=primary-action&src=journey_done">
+            <Brain className="h-5 w-5" />
+            {weakestUnitName ? `Keep practicing — drill ${weakestUnitName}` : "Keep practicing"}
+            <ArrowRight className="h-5 w-5" />
+          </Link>
+        </Button>
+        <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-xs text-muted-foreground">
+          <Link href="/dashboard?focus=flashcards&src=journey_done" className="hover:text-foreground inline-flex items-center gap-1" data-testid="journey-done-tools">
+            <BarChart3 className="h-3 w-3" /> Explore tools
+          </Link>
+          <Link href="/ai-tutor?src=journey_done" className="hover:text-foreground inline-flex items-center gap-1">
+            <Sparkles className="h-3 w-3" /> Ask Sage
+          </Link>
+          <Link href="/billing?utm_source=journey_done&utm_campaign=step5_tile" className="hover:text-foreground inline-flex items-center gap-1" data-testid="journey-done-upgrade">
+            <Crown className="h-3 w-3" /> Upgrade
+          </Link>
+        </div>
       </div>
     </div>
-  );
-}
-
-function UpgradeTile() {
-  return (
-    <Button
-      asChild
-      className="w-full h-auto py-3 px-4 justify-start gap-3 border border-amber-500/40 bg-gradient-to-r from-amber-500/15 via-yellow-500/10 to-amber-500/5 hover:from-amber-500/25 hover:via-yellow-500/20 hover:to-amber-500/10 text-foreground"
-    >
-      <Link href="/billing?utm_source=journey_done&utm_campaign=step5_tile">
-        <div className="w-9 h-9 rounded-lg bg-amber-500/20 flex items-center justify-center flex-shrink-0">
-          <Crown className="h-5 w-5 text-amber-700 dark:text-amber-400" />
-        </div>
-        <div className="flex-1 min-w-0 text-left">
-          <p className="text-sm font-semibold leading-tight">
-            Unlock full prep — <span className="text-amber-700 dark:text-amber-400">$9.99/mo</span>
-          </p>
-          <p className="text-[11px] text-muted-foreground mt-0.5 leading-snug whitespace-normal">
-            Unlimited daily practice · line-by-line FRQ coaching · Sage Coach.
-          </p>
-        </div>
-        <ArrowRight className="h-4 w-4 text-amber-700 dark:text-amber-400 flex-shrink-0" />
-      </Link>
-    </Button>
-  );
-}
-
-function NextTile({
-  icon,
-  title,
-  subtitle,
-  href,
-}: {
-  icon: React.ReactNode;
-  title: string;
-  subtitle: string;
-  href: string;
-}) {
-  // Beta 9.6.2 (2026-04-30) — fix nav-loop bug. Previous markup was
-  // <Link><Button>...</Button></Link> which renders <a><button>…</button></a>.
-  // That's invalid HTML (button-in-anchor); browsers handle it inconsistently
-  // and some block the <a>'s default navigation when the inner button is
-  // clicked. Result: clicking a Step 5 tile did nothing on some browsers.
-  // Use shadcn's `asChild` pattern instead — Button renders as the Link's
-  // root <a>, so the click reliably navigates.
-  return (
-    <Button
-      asChild
-      variant="outline"
-      className="w-full h-auto py-3 px-4 justify-start gap-3 border-border/40 hover:bg-accent"
-    >
-      <Link href={href}>
-        <div className="w-9 h-9 rounded-lg bg-background flex items-center justify-center flex-shrink-0">
-          {icon}
-        </div>
-        <div className="flex-1 min-w-0 text-left">
-          <p className="text-sm font-semibold leading-tight">{title}</p>
-          <p className="text-[11px] text-muted-foreground mt-0.5 leading-snug whitespace-normal">
-            {subtitle}
-          </p>
-        </div>
-        <ArrowRight className="h-4 w-4 text-muted-foreground flex-shrink-0" />
-      </Link>
-    </Button>
   );
 }
 

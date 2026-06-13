@@ -223,9 +223,23 @@ export default function JourneyPage() {
   // routes anyone with currentStep === 1 in the DB to step 3 so they're not
   // stranded on a removed mode.
   const handleStep1Done = useCallback(async (artifact: { sessionId: string }) => {
-    await apiPost("advance", { step: 3, artifactId: artifact.sessionId });
-    setMode("step3");
-  }, [apiPost]);
+    // 2026-06-11 — Lead-with-Learning item 1 (mirrored from PL): "diagnostic
+    // optional, not a gate." The warm-up no longer force-feeds the user into a
+    // graded diagnostic (the demoralizing 0/N + projected-score verdict on the
+    // first session). Skip step 3: SAT/ACT/PSAT go straight to the dashboard
+    // (diagnostic offered there as an opt-in); AP keeps the FRQ "see how it's
+    // graded" learning step (item 0), then dashboard. predictedScore stays null
+    // so no score is shown as a verdict.
+    const hasFrq = getExamCopy(course).hasFreeResponse;
+    if (hasFrq) {
+      await apiPost("advance", { step: 2, artifactId: artifact.sessionId });
+      setMode("step2");
+    } else {
+      await apiPost("advance", { step: 5, artifactId: artifact.sessionId });
+      try { await updateSession(); } catch { /* non-fatal */ }
+      router.push("/dashboard");
+    }
+  }, [apiPost, updateSession, course, router]);
 
   // Legacy: trans12 → step 2 (FRQ). After compression, no fresh entrants.
   const handleTrans12 = () => setMode("step2");
@@ -321,7 +335,9 @@ export default function JourneyPage() {
         <Step1Mcq
           course={course}
           questionCount={3}
+          difficulty="EASY"
           label="Step 1 · Warm-up"
+          subLabel="No score, no pressure — just a feel for how it works."
           onComplete={handleStep1Done}
         />
       </JourneyShell>

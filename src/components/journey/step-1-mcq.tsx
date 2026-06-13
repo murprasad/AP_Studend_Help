@@ -32,10 +32,16 @@ interface Props {
   unit?: string | null;
   /** Friendly label printed at the top — e.g. "Step 1 of 5 · Warm-up" */
   label?: string;
+  /** 2026-06-11 — difficulty band (mirrored from PL). Warm-up passes "EASY" so
+   *  a new user's FIRST question is winnable, not a cold hard item. Step 4 keeps
+   *  the default "ALL". */
+  difficulty?: "EASY" | "MEDIUM" | "HARD" | "ALL";
+  /** Optional sub-line under the label — sets "no score" expectations. */
+  subLabel?: string;
   onComplete: (artifact: { sessionId: string; correctCount: number; total: number }) => void;
 }
 
-export function Step1Mcq({ course, questionCount = 3, unit = null, label = "Warm-up", onComplete }: Props) {
+export function Step1Mcq({ course, questionCount = 3, unit = null, label = "Warm-up", difficulty = "ALL", subLabel, onComplete }: Props) {
   // 2026-05-13 — `started` gates the /api/practice POST. Previously this
   // effect fired immediately on mount, dumping a fresh signup straight into
   // a real exam-grade question (the Saranya bounce). Now an interstitial
@@ -64,7 +70,7 @@ export function Step1Mcq({ course, questionCount = 3, unit = null, label = "Warm
         sessionType: "QUICK_PRACTICE",
         course,
         questionCount,
-        difficulty: "ALL",
+        difficulty,
         unit: unit ?? "ALL",
         questionType: "MCQ",
       }),
@@ -88,7 +94,7 @@ export function Step1Mcq({ course, questionCount = 3, unit = null, label = "Warm
         }
       });
     return () => { cancelled = true; };
-  }, [started, course, questionCount, unit]);
+  }, [started, course, questionCount, unit, difficulty]);
 
   const submit = async (letter: string) => {
     // 2026-05-01 — caller now passes the canonical letter (from
@@ -190,6 +196,9 @@ export function Step1Mcq({ course, questionCount = 3, unit = null, label = "Warm
         <p className="text-sm mt-0.5">
           Question {idx + 1} of {questions.length}
         </p>
+        {subLabel && (
+          <p className="text-xs text-muted-foreground mt-1">{subLabel}</p>
+        )}
       </div>
 
       <div className="rounded-xl border border-border/40 bg-card p-5 sm:p-6 space-y-4">

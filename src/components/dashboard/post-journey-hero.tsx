@@ -80,6 +80,19 @@ export function PostJourneyHero({ course, weakestUnit, daysSinceCompleted }: Pro
                 <ArrowRight className="h-4 w-4" />
               </Link>
             </Button>
+            {/* 2026-06-11 — diagnostic is now OPT-IN (warm-up no longer forces
+                it). When the user has no weakest unit yet (skipped the
+                diagnostic), offer it calmly as a secondary action — never a
+                gate, never a score verdict. */}
+            {!weakestUnit && (
+              <Link
+                href="/diagnostic?src=post_journey_optin"
+                className="block text-xs text-blue-700 dark:text-blue-400 hover:underline mt-1"
+                data-testid="post-journey-diagnostic-optin"
+              >
+                Want your projected score? Take a quick 5-min diagnostic →
+              </Link>
+            )}
           </div>
         </div>
       </div>

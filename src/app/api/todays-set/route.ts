@@ -92,6 +92,15 @@ export async function GET(req: Request) {
 
     if (existing) {
       const conceptMeta = await buildConceptMeta(existing.conceptKeys);
+      // 2026-06-11 — Lead-with-Learning item 4 (mirrored from PL): surface the
+      // set as a MISS-DRIVEN return reason ("X you missed are due for review").
+      const missedDue = existing.questionIds.length
+        ? (await prisma.studentResponse.findMany({
+            where: { userId, questionId: { in: existing.questionIds }, isCorrect: false },
+            select: { questionId: true },
+            distinct: ["questionId"],
+          })).length
+        : 0;
       return NextResponse.json({
         plan: {
           questionIds: existing.questionIds,
@@ -99,6 +108,7 @@ export async function GET(req: Request) {
           expectedDeltaPctHint: existing.expectedDeltaPct ?? 0,
         },
         conceptMeta,
+        missedDue,
         alreadyDone: existing.completedAt !== null,
         generated: false,
       });
@@ -190,6 +200,10 @@ export async function GET(req: Request) {
     }).catch(() => { /* race ignored */ });
 
     const conceptMeta = await buildConceptMeta(result.conceptKeys);
+    const planSet = new Set(result.questionIds);
+    const missedDue = new Set(
+      pastResponses.filter(r => !r.isCorrect && planSet.has(r.questionId)).map(r => r.questionId),
+    ).size;
     return NextResponse.json({
       plan: {
         questionIds: result.questionIds,
@@ -197,6 +211,7 @@ export async function GET(req: Request) {
         expectedDeltaPctHint: result.expectedDeltaPctHint,
       },
       conceptMeta,
+      missedDue,
       alreadyDone: false,
       generated: true,
     });

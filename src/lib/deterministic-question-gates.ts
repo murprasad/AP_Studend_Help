@@ -278,6 +278,28 @@ function topicMatchesUnit(course: string | undefined, unit: string | undefined, 
  * Main gate. Returns { ok: false, reason, gate } on first failure.
  * Order: cheapest, most-reliable checks first.
  */
+// ── Circular / non-teaching explanation detector (growth goal item 3, 2026-06-11, mirrors PL) ──
+// A student who gets a question WRONG must learn WHY; an explanation that restates
+// the answer ("X is correct because X") or is too short to teach is the
+// "feel dumb → quit" trigger. Approval-time gate only (does not affect served Qs).
+const _normExpl = (s: string) => (s || "").toLowerCase().replace(/[^a-z0-9 ]/g, " ").replace(/\s+/g, " ").trim();
+const _bigWords = (s: string) => _normExpl(s).split(" ").filter((w) => w.length > 3);
+const _showsMathWork = (e: string) => /=|\d\s*[+\-×x*/÷^]\s*\d|\bordered\b|\bsolv|\bsubstitut|\bfactor|\bderivativ|\bintegral|√|\bslope\b|\bmedian\b|\bmean\b/i.test(e);
+export function isCircularExplanation(expl: string | undefined, ansText: string | undefined): boolean {
+  const e = (expl || "").trim();
+  if (!e) return true;
+  const work = _showsMathWork(e);
+  if (e.length < 100 && !work) return true;
+  const m = e.match(/^([\s\S]*?)\bis correct because\b([\s\S]*)$/i);
+  if (m) {
+    const before = new Set(_bigWords(m[1]));
+    const after = _bigWords(m[2]);
+    if (after.length && after.filter((w) => before.has(w)).length / after.length > 0.5) return true;
+  }
+  if (ansText && e.length < 170 && _normExpl(e).includes(_normExpl(ansText)) && !work) return true;
+  return false;
+}
+
 export function runDeterministicGates(q: QuestionCandidate): GateResult {
   // 1. Basic structural
   if (!q.questionText || typeof q.questionText !== "string" || q.questionText.length < 10) {
@@ -575,7 +597,11 @@ export function runDeterministicGates(q: QuestionCandidate): GateResult {
   // that slipped through (e.g., "( -∞, -3 ) ∪ ( 2, ∞ )" repeated with extra space).
   function normalizeOptForDupe(s: string): string {
     return s.toLowerCase()
-      .replace(/^[A-E]\)\s*/, "")                  // strip letter prefix if present
+      // 2026-06-11 BUGFIX (BIQ D11, mirrored from PL): old /^[A-E]\)/ ran AFTER
+      // toLowerCase so it never matched a prefixed option ("d) ...") — silently
+      // disabling this gate for prefixed options. Paren form only (not "A.") so
+      // we never strip legitimate content like "e. coli".
+      .replace(/^\(?[a-e]\)\s*/, "")                // strip letter prefix if present
       .replace(/\s+/g, " ")                         // collapse whitespace
       .replace(/[–—]/g, "-")              // en/em-dash → hyphen
       .replace(/[‘’]/g, "'")              // curly quotes
@@ -593,6 +619,31 @@ export function runDeterministicGates(q: QuestionCandidate): GateResult {
       return { ok: false, gate: "options-duplicate", reason: `duplicate option value (normalized): "${o.slice(0, 30)}"` };
     }
     seen.add(norm);
+  }
+
+  // 2c. Duplicate answer-SET — order-independent (BIQ D10, mirrored from PL,
+  // 2026-06-11). Catches multi-value SOLUTION-SET options that are the same set
+  // in a different order ("-5, 3" ≡ "3, -5" → two correct answers). Gated
+  // POSITIVELY on solution-set intent (solve/roots/solutions/zeros) so ordered
+  // data — coordinate points (2,3)≠(3,2), sequences — is never mis-flagged.
+  function answerSetKey(n: string): string | null {
+    const tokens = n.split(/\s*(?:,|;|\band\b|\bor\b)\s*/).map(t => t.trim()).filter(Boolean);
+    if (tokens.length < 2 || tokens.length > 5) return null;
+    const valueish = /^(x\s*=\s*)?[+-]?(\d+(\.\d+)?(\/\d+)?|inf)$/;
+    if (!tokens.every(t => valueish.test(t))) return null;
+    return tokens.map(t => t.replace(/^x\s*=\s*/, "")).sort().join("|");
+  }
+  const isSolutionSetQ = /\b(solve|roots?|solutions?|zeros?|values?\s+of\s+[a-z])\b/i.test(q.questionText ?? "");
+  if (isSolutionSetQ) {
+    const seenSets = new Set<string>();
+    for (const o of opts) {
+      const key = answerSetKey(normalizeOptForDupe(o));
+      if (key === null) continue;
+      if (seenSets.has(key)) {
+        return { ok: false, gate: "options-duplicate-set", reason: `two options are the same answer set (different order): "${o.slice(0, 30)}"` };
+      }
+      seenSets.add(key);
+    }
   }
 
   // 2e. MISSING_LETTER_PREFIX — when course expects standard MCQ, every option
@@ -756,6 +807,15 @@ export function runDeterministicGates(q: QuestionCandidate): GateResult {
   for (const phrase of CONFESSION_PHRASES) {
     if (expLower.includes(phrase)) {
       return { ok: false, gate: "confession-phrase", reason: `explanation contains confession phrase "${phrase}"` };
+    }
+  }
+
+  // 4b. Circular / non-teaching explanation (growth goal item 3, mirrors PL).
+  if (q.questionType !== "ORDERED") {
+    const ci = "ABCDE".indexOf(String(q.correctAnswer ?? "").trim().toUpperCase().charAt(0));
+    const correctText = ci >= 0 && ci < opts.length ? String(opts[ci]).replace(/^\s*[A-E][).]\s*/, "") : "";
+    if (isCircularExplanation(q.explanation, correctText)) {
+      return { ok: false, gate: "circular-explanation", reason: "explanation restates the answer without teaching why (circular or too short)" };
     }
   }
 

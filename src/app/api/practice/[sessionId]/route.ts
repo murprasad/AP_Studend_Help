@@ -493,7 +493,7 @@ export async function PATCH(
 
     // Update user XP and streak
     const xpEarned = Math.round(correctCount * 10 + (accuracy >= 80 ? 50 : 0));
-    await updateUserProgress(session.user.id, xpEarned);
+    const streakInfo = await updateUserProgress(session.user.id, xpEarned);
 
     // Beta 8.12 funnel fix — mark onboarding done after the user completes
     // their FIRST session. This is what differentiates the new-student
@@ -559,6 +559,10 @@ export async function PATCH(
         // sorted weakest first). Empty for non-SAT courses.
         satDomainSubscores,
         previousAccuracy: previousSession?.score != null ? Math.round(previousSession.score) : null,
+        // 2026-06-10 Return Hook (mirrors PL) — post-session streak for the
+        // come-back-tomorrow CTA. SN D2-retention 15% / 89% one-and-done.
+        streakDays: streakInfo?.streakDays ?? null,
+        streakAdvanced: streakInfo?.streakAdvanced ?? false,
         questions: questionRows,
       },
     });
@@ -681,9 +685,17 @@ async function updateMasteryScore(
  *  - Streak math is gated on "first submit of the day" — subsequent
  *    submits the same calendar day skip the streak path entirely.
  */
-async function updateUserProgress(userId: string, xpEarned: number) {
+async function updateUserProgress(
+  userId: string,
+  xpEarned: number,
+): Promise<{ streakDays: number; streakAdvanced: boolean } | null> {
   try {
-    if (xpEarned <= 0) return;
+    if (xpEarned <= 0) {
+      // No XP (e.g. 0 correct) — skip streak math but report current streak so
+      // the end-of-session Return Hook can render "Day N" (retention lever).
+      const u = await prisma.user.findUnique({ where: { id: userId }, select: { streakDays: true } });
+      return u ? { streakDays: u.streakDays, streakAdvanced: false } : null;
+    }
 
     await prisma.$executeRawUnsafe(
       `UPDATE users
@@ -698,7 +710,7 @@ async function updateUserProgress(userId: string, xpEarned: number) {
       where: { id: userId },
       select: { streakDays: true, longestStreak: true, streakFreezes: true, lastActiveDate: true },
     });
-    if (!user) return;
+    if (!user) return null;
 
     const now = new Date();
     const today = new Date(now);
@@ -715,7 +727,7 @@ async function updateUserProgress(userId: string, xpEarned: number) {
           where: { id: userId },
           data: { lastActiveDate: now },
         });
-        return;
+        return { streakDays: user.streakDays, streakAdvanced: false };
       }
     }
 
@@ -758,7 +770,9 @@ async function updateUserProgress(userId: string, xpEarned: number) {
         lastActiveDate: now,
       },
     });
+    return { streakDays: newStreak, streakAdvanced: newStreak > prevStreak };
   } catch (error) {
     console.error("updateUserProgress error:", error);
+    return null;
   }
 }

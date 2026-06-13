@@ -79,6 +79,9 @@ interface SessionSummary {
   xpEarned: number;
   apScoreEstimate: number;
   previousAccuracy?: number | null;
+  /** 2026-06-10 Return Hook (mirrors PL) — post-session streak for the come-back-tomorrow CTA. */
+  streakDays?: number | null;
+  streakAdvanced?: boolean;
 }
 
 interface FrqScore {
@@ -1086,6 +1089,21 @@ export default function PracticePage() {
           </p>
         </div>
 
+        {/* 2026-06-10 RETURN HOOK (mirrors PL) — the #1 retention lever. SN funnel:
+            89% one-and-done, D2 retention 15%. Creates the come-back-tomorrow
+            INTENTION at peak attention (session just finished), via the streak. */}
+        {typeof sessionSummary.streakDays === "number" && sessionSummary.streakDays >= 1 && (
+          <div className="rounded-2xl border border-orange-500/30 bg-orange-500/5 p-5 text-center space-y-1.5">
+            <p className="text-2xl font-bold">
+              🔥 {sessionSummary.streakDays === 1 ? "Day 1 — streak started" : `${sessionSummary.streakDays}-day streak`}
+            </p>
+            <p className="text-sm font-medium">
+              Come back tomorrow to {sessionSummary.streakDays === 1 ? "make it 2" : "keep it going"} — your next set will be ready.
+            </p>
+            <p className="text-xs text-muted-foreground">Two days in a row is how the habit sticks.</p>
+          </div>
+        )}
+
         {/* Score-delta card — "You just moved from 3.2 → 3.5". Fire-and-forget
             read of /api/readiness; silently hides if pre-signal or the call
             fails so the rest of the summary still renders. */}
@@ -1132,6 +1150,16 @@ export default function PracticePage() {
                 <p className="text-sm text-muted-foreground mt-1">Time Spent</p>
               </div>
             </div>
+
+            {/* 2026-06-11 item 2 (mirrors PL) — reframe a low score as expected
+                progress, not a verdict. A bare low % is the "feel dumb → quit" trigger. */}
+            {sessionSummary.accuracy < 50 && (
+              <div className="text-center p-4 rounded-xl bg-blue-500/5 border border-blue-500/15 mb-4">
+                <p className="text-sm text-muted-foreground">
+                  A low score early is completely normal — most people start around here. Every question you just missed is one you&apos;re now far less likely to miss on test day.
+                </p>
+              </div>
+            )}
 
             {sessionSummary.apScoreEstimate > 0 && (() => {
               // 2026-06-02 — track-aware score badge. Was hardcoded AP 1-5

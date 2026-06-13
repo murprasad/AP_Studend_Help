@@ -46,6 +46,8 @@ interface ConceptMeta {
 interface TodaysSetResponse {
   plan: { questionIds: string[]; conceptKeys: string[]; expectedDeltaPctHint: number };
   conceptMeta?: ConceptMeta[];
+  /** 2026-06-11 — # of plan questions the user previously missed (item 4 return-loop framing). */
+  missedDue?: number;
   alreadyDone: boolean;
   generated: boolean;
   warning?: string;
@@ -142,6 +144,8 @@ export function TodaysSetCard({ course }: Props) {
   const count = data.plan.questionIds.length;
   const minutes = Math.max(10, Math.round(count * 1.2)); // ~1.2 min/Q
   const concepts = data.plan.conceptKeys.length;
+  // 2026-06-11 — item 4: miss-driven return-loop framing takes precedence.
+  const missedDue = data.missedDue ?? 0;
   const firstConceptName = data.plan.conceptKeys[0]
     ? unitDisplayName(data.plan.conceptKeys[0])
     : null;
@@ -192,14 +196,25 @@ export function TodaysSetCard({ course }: Props) {
           </div>
           <div className="flex-1 min-w-0">
             <h3 className="font-semibold leading-tight">
-              {firstConceptName
+              {missedDue > 0
+                ? "Review what you missed"
+                : firstConceptName
                 ? (isWarmup ? `Daily warm-up · ${firstConceptName}` : `${verb} ${firstConceptName}`)
                 : "Today's Set"}
             </h3>
             <p className="text-sm text-muted-foreground mt-0.5">
-              {count} questions
-              {concepts > 1 && ` · ${concepts - 1} more area${concepts - 1 === 1 ? "" : "s"}`}
-              {" · "}~{minutes} mins
+              {missedDue > 0 ? (
+                <>
+                  {missedDue} {missedDue === 1 ? "question you missed is" : "questions you missed are"} due for review
+                  {" · "}~{minutes} mins
+                </>
+              ) : (
+                <>
+                  {count} questions
+                  {concepts > 1 && ` · ${concepts - 1} more area${concepts - 1 === 1 ? "" : "s"}`}
+                  {" · "}~{minutes} mins
+                </>
+              )}
             </p>
           </div>
           <ArrowRight className="h-5 w-5 text-blue-700 dark:text-blue-400 flex-shrink-0" />

@@ -118,21 +118,26 @@ export default async function LandingPage() {
             Prepare for the exams that get you in.
           </h1>
           <p className="mt-6 text-lg sm:text-xl text-white/85 max-w-2xl leading-relaxed">
-            Practice AP, SAT, ACT, and PSAT in one place. Start with a
-            10-question diagnostic. No credit card.
+            Practice AP, SAT, ACT, and PSAT by answering real exam questions &mdash;
+            and learning from every one, right and wrong. Try a few right now, no
+            signup. No credit card, ever.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row gap-3 items-center sm:items-start">
             <Link
-              href="#choose-exam"
+              href="/free-sat-practice"
               className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full bg-cb-yellow text-cb-indigo font-medium text-base hover:bg-yellow-400 transition-colors"
             >
-              Start free
+              Try 5 questions free &mdash; no signup
               <ArrowRight className="h-4 w-4" aria-hidden />
             </Link>
-            <span className="text-sm text-white/70">
-              Free forever. Premium optional.
-            </span>
+            <Link
+              href="#choose-exam"
+              className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-full border border-white/30 text-white font-medium text-base hover:bg-white/10 transition-colors"
+            >
+              Pick my exam
+            </Link>
           </div>
+          <p className="mt-3 text-sm text-white/70">Free forever. Premium optional.</p>
         </div>
       </section>
 
