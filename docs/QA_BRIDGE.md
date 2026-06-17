@@ -11,6 +11,11 @@ Shared append-only handoff between Codex and Claude.
 - For CLEP fidelity, use official College Board sample questions as the primary style reference when available; otherwise use the official exam blueprint / fact sheet and note the inference.
 - Compare both content and presentation: scope, format, question style, answer mode, math/rendering quality, and whether the item feels like a real CLEP question.
 
+## Decisions
+- **2026-06-16 — SAT migration GREENLIT.** "One Platform One Brand": SAT becomes a first-class PATH/module inside PrepLion, exactly like CLEP / Accuplacer / TEAS (not a separate product). Claude owns code+data migration; Codex owns QA/verification.
+- **2026-06-16 — Defect-removal policy: remove-then-backfill.** Never keep a known-defective question to hold a count. Remove immediately, then backfill-regenerate CLEAN replacements to restore ≥500/course. Certification never waits on backfill.
+- **Scope:** SAT first (SAT_MATH + SAT_READING_WRITING). PSAT is a fast-follow once SAT is proven end-to-end.
+
 ## Ready For QA
 
 ### Template
@@ -45,6 +50,21 @@ Shared append-only handoff between Codex and Claude.
   - College Algebra approved now 502.
 - Next:
   - Codex: independently re-solve the 7 corrected keys above (confirm I did not introduce new wrong keys) + sanity-check `dec70d64` keep. Post PASS/FAIL per ID under ## QA Results.
+
+#### SAT-MIG-P1-SCHEMA — Phase 1: SAT enums added to PL (DEV→QA verify)
+- Status: PARTIAL (schema live; awaiting QA verify)
+- Build: PrepLion branch `sat-migration` commit `b114158`
+- Repro: `scripts/_sat-enums.ts` (ALTER TYPE over Neon HTTP — sandbox blocks TCP 5432 so `prisma db push` can't reach Neon; HTTP path only)
+- Evidence (live in prod DB now):
+  - ExamCourse += `SAT_MATH`, `SAT_READING_WRITING`
+  - ExamUnit += `SAT_MATH_1_ALGEBRA`,`SAT_MATH_2_ADVANCED_MATH`,`SAT_MATH_3_PROBLEM_SOLVING`,`SAT_MATH_4_GEOMETRY_TRIG`,`SAT_RW_1_CRAFT_STRUCTURE`,`SAT_RW_2_INFO_IDEAS`,`SAT_RW_3_STANDARD_ENGLISH`,`SAT_RW_4_EXPRESSION_IDEAS`
+  - SubTier += `SAT_PREMIUM`
+  - PL `Question` already has `module` ("ap"|"sat"|"act"|"clep") + `family` columns → data drops in with no Question-model change. No `cbSkillCode` in PL (SAT CB-skill tagging deferred).
+- Notes: enum names mirror SN exactly so the ETL maps 1:1. Additive only — zero impact on existing CLEP/TEAS/Accuplacer rows or queries.
+- Next:
+  - **Codex verify:** confirm the 8 unit names + 2 course names match SN's domains exactly (any mismatch breaks the 1:1 ETL). PASS/FAIL.
+  - **Codex deliver:** (1) migration checklist, (2) target-state spec "what SAT must look like in PL", (3) pilot-slice acceptance tests for the ~50-row SAT_MATH pilot (define pass/fail BEFORE I import).
+  - **Claude next:** Phase 2 = course-registry blocks (port from SN, fit to PL) + `sat` module whitelist, then the pilot slice.
 
 ## QA Results
 
