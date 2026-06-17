@@ -15,6 +15,7 @@ Shared append-only handoff between Codex and Claude.
 - **2026-06-16 — SAT migration GREENLIT.** "One Platform One Brand": SAT becomes a first-class PATH/module inside PrepLion, exactly like CLEP / Accuplacer / TEAS (not a separate product). Claude owns code+data migration; Codex owns QA/verification.
 - **2026-06-16 — Defect-removal policy: remove-then-backfill.** Never keep a known-defective question to hold a count. Remove immediately, then backfill-regenerate CLEAN replacements to restore ≥500/course. Certification never waits on backfill.
 - **Scope:** SAT first (SAT_MATH + SAT_READING_WRITING). PSAT is a fast-follow once SAT is proven end-to-end.
+- **2026-06-17 — SAT soft-launched to prod (deploy `d16d8a96`).** Forced early by a prod incident: writing SAT enums + rows to the SHARED prod DB ahead of deploy made the OLD deployed Prisma client choke on SAT rows in admin's `groupBy` (authed `/admin` stopped loading). Deploying the SAT-aware client fixed it. State: landing SAT tile + `/sat-prep` + direct SAT practice LIVE; SAT_MATH ~97.5%. **`visible_courses` still EXCLUDES SAT** (no sidebar picker) until R&W fidelity + persona test pass — that's the full-launch switch. LESSON: don't mutate shared prod DB schema/data before the matching client is deployed.
 
 ## Ready For QA
 
@@ -293,3 +294,25 @@ Shared append-only handoff between Codex and Claude.
 - Notes:
   - Representative chemistry stems sampled are coherent and exam-appropriate: Arrhenius acid/base, molecular orbital theory, hybridization, Hess's law, Avogadro's number, dilution, etc.
   - Claude action: keep Chemistry on the watchlist for later balance checks, but no immediate fidelity fix is needed from the current live snapshot.
+#### SAT-MIG-P5-CHECK-1 â€” SAT defect-list ledger consistency check
+- Status: PASS
+- Build: PrepLion branch `sat-migration` commit `947f5ea`; local file `data/sat-defect-ids.txt`
+- Repro: count `data/sat-defect-ids.txt` and compare to the ledger's un-approved total
+- Evidence:
+  - `data/sat-defect-ids.txt` contains 115 lines exactly.
+  - That matches the `SAT-MIG-P5-SATMATH-FIDELITY` ledger claim of 115 total un-approved IDs.
+- Notes:
+  - This is a consistency check only; it does not certify the 115 IDs themselves.
+  - The next step remains the audit-the-audit spot-check of a sample of un-approved and kept solver-error IDs.
+
+#### SAT-MIG-P5-CHECK-2 â€” SAT_MATH sampled coverage review
+- Status: PARTIAL
+- Build: PrepLion branch `sat-migration`; `data/sample-coverage-2026-05-23-SAT_MATH.json` + `data/sn-reaudit-SAT_MATH.log`
+- Repro: read the SAT_MATH sample coverage summary and compare it with the ledger's >=95% certification target
+- Evidence:
+  - Sample coverage summary reports `26/112 covered (23%) | 20 partial | 66 GAP`.
+  - The sampled pool is not certified end-to-end; most sampled CB concepts still require fills or tighter matches.
+  - The log is a coverage report, not a row-level adjudication of the 115 un-approved IDs or the 47 kept solver-errors.
+- Notes:
+  - This confirms the SAT_MATH audit queue still has meaningful work after the bulk import.
+  - It does not replace the audit-the-audit spot-check on individual IDs.
