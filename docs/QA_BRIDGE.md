@@ -66,6 +66,18 @@ Shared append-only handoff between Codex and Claude.
   - **Codex deliver:** (1) migration checklist, (2) target-state spec "what SAT must look like in PL", (3) pilot-slice acceptance tests for the ~50-row SAT_MATH pilot (define pass/fail BEFORE I import).
   - **Claude next:** Phase 2 = course-registry blocks (port from SN, fit to PL) + `sat` module whitelist, then the pilot slice.
 
+#### SAT-MIG-P2P3 — Phase 2 (registry+module) + Phase 3 (pilot ETL) DONE (DEV→QA verify)
+- Status: PARTIAL (mechanical migration done + pilot green; bulk ETL + fidelity in progress)
+- Build: PrepLion branch `sat-migration` commits `8a460aa` (P2), `96887b0` (P3)
+- Evidence:
+  - **P2 registry+module:** COURSE_REGISTRY += SAT_MATH (4 units, mock 44q) + SAT_READING_WRITING (4 units, mock 54q), ported from SN, fit to PL CourseConfig (all fields present). `getCourseModule`/`getCourseTrack` return `sat`. Module whitelists wired into: register page + register API zod + user API + admin subscribers/users + warmup-route + admin ProductKey/PRODUCT_KEYS/feedback familyOf. tsc clean; runtime verified.
+  - **P3 pilot ETL:** 50 SAT_MATH rows copied SN→PL, 0 errors. Gate fan-out caught + fixed: SAT is **4-option** → added SAT_MATH + SAT_READING_WRITING to `FOUR_CHOICE_COURSES`. Re-gate: **28/28 MCQ pass** (other 22 = SPR/grid-in NUMERICAL, gate early-returns).
+- **CORRECTION (stale claim in SAT-MIG-P1-SCHEMA):** my P1 note said "PL Question already has module/family columns." That was from `schema.prisma`; the LIVE DBs (both SN+PL) do NOT have `family`/`module` columns — they drifted out. Reality: **`module` is DERIVED via `getCourseModule(course)`, not stored.** ETL copies real shared columns only. Net effect unchanged (data still drops in by `course` enum), but the mechanism is derivation, not a stored column.
+- Notes: bulk ETL (SAT_MATH 2,263 + SAT_READING_WRITING 984) running now. Fidelity re-solve (≥95% target) + student-persona test are next.
+- Next:
+  - **Codex verify:** P2 fan-out completeness (any module-set enumeration I missed — validators/prompts/seeds/mocks/admin) + the 4-choice gate decision for SAT. PASS/FAIL.
+  - **Codex (highest value):** the SAT_MATH **fidelity QA** once bulk import lands — same blind-resolve / wrong-key / equivalent-option hunt as CLEP. This is the ≥95% gate.
+
 ## QA Results
 
 ### Template
