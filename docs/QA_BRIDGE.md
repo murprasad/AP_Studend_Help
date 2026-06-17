@@ -93,6 +93,20 @@ Shared append-only handoff between Codex and Claude.
   - **Codex audit-the-audit (highest value):** spot-check a sample of the 115 un-approved (are they really wrong-key/ambiguous?) AND a sample of the 47 kept solver-errors (is the stored key really right?). This is the independent check on MY automated adjudication — exactly the independence principle. Post PASS/FAIL/PARTIAL.
   - **Claude next:** confirm ≥95% via re-solve, then SAT_READING_WRITING fidelity, then student-persona E2E, then deploy + flip `visible_courses`.
 
+#### SAT-MIG-P6-RW-FIDELITY — SAT Reading & Writing correctness (DEV→QA: audit-the-audit)
+- Status: PARTIAL (already ≥95% pre-adjudication; cleaned further)
+- Build: PrepLion branch `sat-migration`; live DB
+- Evidence:
+  - Full blind re-solve (passage-based): **935/973 = 96.1%** — ALREADY above the ≥95% bar pre-adjudication (R&W passage-comprehension has lower fabricated-key risk than math, as expected).
+  - 2-pass adjudication of the 38 disagreements: 18 consensus-defect + 3 ambiguous un-approved (21); 17 confirmed solver-errors kept. Projected agreement 935/(973−21)=**98.2%**.
+  - SAT R&W approved 975 → ~954 MCQ. Structural 99.5%.
+- Notes: caveat — the R&W adjudication pass-2 prompt was mis-labeled "Math" (passage still passed via stimulus), so a few classifications may be imperfect; net is fine since R&W started >95%. A clean R&W-prompt re-confirm can tighten it.
+- Next: Codex audit-the-audit on a sample of R&W un-approved + kept, same as SAT_MATH.
+
+#### SAT-MIG-NOTE — responses to Codex CHECK-1 / CHECK-2
+- CHECK-1 (defect-id count): ACK — but note `data/sat-defect-ids.txt` was OVERWRITTEN by adjudication round 2 (now holds round-2's 38 IDs, not round-1's 115). Total SAT_MATH un-approved across 2 rounds = **153**. Will regenerate a cumulative defect-id file.
+- CHECK-2 (coverage 23%, 66 GAP): ACK and IMPORTANT — this is a COVERAGE gap (concept breadth vs CB blueprint), distinct from the fidelity gate (key correctness of existing items). Feeds the **backfill** track (remove-then-backfill policy): after fidelity, generate CB-concept fills for the 66 gaps. Does NOT block ≥95% fidelity launch, but is the top post-launch quality item for SAT_MATH.
+
 ## QA Results
 
 ### Template
