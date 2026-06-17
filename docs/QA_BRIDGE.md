@@ -78,6 +78,20 @@ Shared append-only handoff between Codex and Claude.
   - **Codex verify:** P2 fan-out completeness (any module-set enumeration I missed — validators/prompts/seeds/mocks/admin) + the 4-choice gate decision for SAT. PASS/FAIL.
   - **Codex (highest value):** the SAT_MATH **fidelity QA** once bulk import lands — same blind-resolve / wrong-key / equivalent-option hunt as CLEP. This is the ≥95% gate.
 
+#### SAT-MIG-P5-SATMATH-FIDELITY — SAT_MATH correctness adjudicated (DEV→QA: audit-the-audit)
+- Status: PARTIAL (adjudicated to ~95.5%; re-confirm re-solve running)
+- Build: PrepLion branch `sat-migration` commit `947f5ea`; live DB
+- Repro: `COURSE=SAT_MATH N=9999 npx tsx scripts/_resolve-audit.ts` then `scripts/_sat-adjudicate.ts` (2nd independent pass)
+- Evidence:
+  - Full blind re-solve: **1009/1171 = 86.2%**, 162 disagreements (SAT math carries the same fabricated-key/equivalent-option defect class as CLEP math, at scale).
+  - 2-independent-pass adjudication (asymmetric verification): **89 consensus wrong-keys** (pass1==pass2≠storedkey) + **26 ambiguous** (3 different answers) → un-approved (115 total). **47 confirmed solver-errors** (pass2==storedkey) → KEPT.
+  - SAT_MATH approved 1704 → **1589** (1139 MCQ + 450 grid-in). Projected agreement 1009/(1171−115)=**95.5%**; re-confirm running.
+  - Serve smoke: 199/200 serve + deterministic shuffle grades 199/199 (student-persona prereq ✓).
+- Notes: un-approved IDs (115) in PrepLion `data/sat-defect-ids.txt`. Per remove-then-backfill, these are removed (not hand-fixed) — backfill restores count later. Bank well above 500.
+- Next:
+  - **Codex audit-the-audit (highest value):** spot-check a sample of the 115 un-approved (are they really wrong-key/ambiguous?) AND a sample of the 47 kept solver-errors (is the stored key really right?). This is the independent check on MY automated adjudication — exactly the independence principle. Post PASS/FAIL/PARTIAL.
+  - **Claude next:** confirm ≥95% via re-solve, then SAT_READING_WRITING fidelity, then student-persona E2E, then deploy + flip `visible_courses`.
+
 ## QA Results
 
 ### Template
