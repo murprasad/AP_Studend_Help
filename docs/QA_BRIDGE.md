@@ -324,6 +324,26 @@ Format: route · live state · remaining gap · what changed since last run.
 
 **Retest priority for you:** the three SAT screens (warm-up/practice/diagnostic via `qa-sat@test.preplion.ai`), and a few CLEP `/practice` explanations once the regen finishes (I'll post the completed count). Sampled SAT/CLEP still ≠ certified — full-bank + your audit-the-audit remains the bar.
 
+#### PL-SAT-DASHBOARD + LANDING-VISUAL — exam-native scoring + multi-exam/Focus screenshot (deploy `d2c71498`)
+Format: route · live state · remaining gap · what changed.
+
+**SAT dashboard — pass probability REMOVED, exam-native scoring shipped.**
+- Route: `/dashboard` logged in as `qa-sat@test.preplion.ai` (track sat).
+- Root cause it appeared: `passProbability` rendered family-agnostically and `predictedScore` was computed only for clep/dsst (SAT → null), so SAT inherited "X% likely to pass (pass = 50)" — a migration gap, not a feature.
+- What changed (per your spec): added `calibrateSATScore()` → projected **/1600 + readiness band** (Needs work / On track / Ready). `PassProbabilityHero` now renders a **score-native SAT hero** (big projected score, band chip, "Biggest score lift" gap — NO pass %, NO "likely to pass", NO 20-80 scale). `predictedScore` branches SAT. `PassReadyCertGate` (pass/fail artifact) hidden for SAT. Loading/empty copy SAT-aware ("Want your projected SAT score?"). Legacy pass-prob widgets already behind an off-by-default flag.
+- Remaining gap: Design2/Design3 dashboard variants (Command/Bento, non-default) still pass `passProbability`; default "Classic" hero is fully SAT-native. Target-score + exam-date goal input not yet built.
+
+**Landing visual — was a CLEP/DSST-only screenshot; now multi-exam + SAT-first + Focus.**
+- Route: `/` first viewport + OG card.
+- What changed: (1) hero preview card was a **TEAS** question → now a **SAT Math Focus Mode** card: "Digital SAT · Math" badge + **Focus Mode** pill + **score strip "Projected 1280 / 1600 · On track"** + one-question SAT stem + 4 options + worked explanation (proves multi-exam + SAT-first + Focus at a glance). (2) `og-image.svg` was "Pass Your CLEP & DSST Exam Faster / 56 CLEP & DSST / AI-powered prep" → rewritten "Digital SAT · CLEP · Accuplacer · TEAS / Focused practice, one question at a time" + Digital SAT/Focus Mode pills (cache-busted v4). Exam tiles already SAT-first.
+- Remaining gap: these are coded mockups/SVG, not live screen captures; a literal live-dashboard screenshot would need a headless capture (can wire if you want it as the OG).
+
+**SAT content backfill — +120 gpt-oss-verified this session (still NOT certified).**
+- SAT_MATH approved per unit NOW: Algebra 1,121 · **Advanced Math 202 · Problem-Solving 162 · Geometry/Trig 161** (was 168/125/132). Asymmetric (llama writes → gpt-oss-120b verifies; ~24-42% yield, rejecting the broken majority at source).
+- Remaining gap: depth target ~500/unit → still ~340 short per thin unit; multi-session grind. Not certified — full re-solve + your grader sign-off remains the bar.
+
+**CLEP explanation tone — COMPLETE (recap):** 833 explanations rewritten, narration-tone ~800 → 24 (97%). Live in prod DB. Pull a few CLEP `/practice` explanations to confirm tone.
+
 ## QA Results
 
 ### Template
@@ -591,3 +611,16 @@ Format: route · live state · remaining gap · what changed since last run.
 - Notes:
   - Priority gap is now discovery + trust, not basic route reachability.
   - Claude action: make SAT first-class on the homepage, fix the public metadata/heading issues, restore the PL test-user provisioning path, and keep tightening the live SAT/CLEP question shell until it stops reading as AI-generated practice.
+
+#### UAT-PLAN-2026-06-18 — comprehensive SAT/CLEP UAT contract
+- Status: PASS
+- Build: repo docs update + live QA findings through 2026-06-18
+- Repro: consolidate current SAT/CLEP QA into a single UAT contract
+- Evidence:
+  - Public discovery, auth entry, SAT dashboard semantics, SAT/CLEP question feel, security, performance, and SEO are now separated into explicit acceptance areas.
+  - SAT dashboard must be score-native (`/1600`, section scores, target gap, weak domains, next action) and must not show `pass probability`.
+  - Samples are now explicitly triage-only; certification requires full-bank re-solves and audit-the-audit.
+  - `tests/e2e/TEST_PLAN.md` now contains a UAT section with acceptance bars for SAT, CLEP, discovery, security, performance, and SEO.
+- Notes:
+  - This records the QA strategy change: verify full persona paths, not just route existence.
+  - Claude action: build against this contract; do not treat sampled passes or family-agnostic dashboard copy as acceptable for SAT.
