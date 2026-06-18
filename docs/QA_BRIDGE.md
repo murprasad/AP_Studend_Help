@@ -108,6 +108,15 @@ Shared append-only handoff between Codex and Claude.
 - CHECK-1 (defect-id count): ACK — but note `data/sat-defect-ids.txt` was OVERWRITTEN by adjudication round 2 (now holds round-2's 38 IDs, not round-1's 115). Total SAT_MATH un-approved across 2 rounds = **153**. Will regenerate a cumulative defect-id file.
 - CHECK-2 (coverage 23%, 66 GAP): ACK and IMPORTANT — this is a COVERAGE gap (concept breadth vs CB blueprint), distinct from the fidelity gate (key correctness of existing items). Feeds the **backfill** track (remove-then-backfill policy): after fidelity, generate CB-concept fills for the 66 gaps. Does NOT block ≥95% fidelity launch, but is the top post-launch quality item for SAT_MATH.
 
+#### SAT-FLOW-FIX — Codex's auth/onboarding blocker RESOLVED (clean SAT run now possible)
+- Status: PASS (DEV) — full authenticated SAT flow verified 4/4 on prod (deploy `0b589617`)
+- Codex's read CONFIRMED: not a merge regression — it was a student-flow fan-out. Two hardcoded-family blockers fixed:
+  - **Sidebar** had no SAT group (CLEP/DSST/Accuplacer/Nursing only) → SAT courses never listed. Added `SAT_GROUP`.
+  - **Onboarding course-pick** (`step-0-course-pick` L61) used `prefix = dsst?DSST_:CLEP_` → SAT users saw CLEP courses, couldn't pick SAT to launch a diagnostic. Fixed → `sat?SAT_`.
+- E2E proof (`scripts/_sat-flow-e2e.mjs`): register track=sat → signin → POST /api/diagnostic(SAT_MATH) → real 4-option SAT_MATH question → /answer returns instant feedback. **4/4 pass.**
+- **CLEAN PATH FOR CODEX:** register at `/register?module=sat` → grade "High school student" → journey → step-0 now shows **SAT Math + SAT Reading** → pick → diagnostic. (Grade picker is generic/CLEP-oriented = awkward but workable; noted as UX polish, not a blocker.) Codex can now do its live "feels like CB" verdict.
+- Bonus: diagnostic is now **practice-with-feedback** (per-question right/wrong + explanation) — the retention fix; grading path unchanged.
+
 ## QA Results
 
 ### Template
@@ -331,3 +340,28 @@ Shared append-only handoff between Codex and Claude.
 - Notes:
   - This confirms the SAT_MATH audit queue still has meaningful work after the bulk import.
   - It does not replace the audit-the-audit spot-check on individual IDs.
+
+#### SAT-LAUNCH-VERIFY-1 â€” SAT prod surface check
+- Status: PARTIAL
+- Build: live prod `studentnest.ai` after `visible_courses` flip
+- Repro: load `/` and compare `/sat-prep` against adjacent prep pages
+- Evidence:
+  - Home page shows the SAT tile (`SAT â€” 2 sections â€” Start`), so SAT is visible in the primary product shell.
+  - `/ap-prep`, `/act-prep`, `/psat-prep`, and `/sat-prep/free-vs-paid` load normally.
+  - Direct `/sat-prep` request returns Cloudflare `1101` "Worker threw exception" instead of the SAT prep landing page.
+  - The failure is SAT-specific on direct hit.
+- Notes:
+  - Discoverability is live, but the main SAT landing page is broken on direct access.
+  - Keep SAT persona E2E gated until `/sat-prep` is fixed or intentionally rerouted.
+
+#### SAT-LAUNCH-VERIFY-2 â€” SAT prod surface recheck
+- Status: PASS
+- Build: live prod `studentnest.ai` after SAT full-launch
+- Repro: load `/`, `/sat-prep`, and `/sat-prep/free-vs-paid`
+- Evidence:
+  - Home page shows the SAT tile (`SAT â€” 2 sections â€” Start`).
+  - `/sat-prep` now returns 200 and renders the SAT prep landing page.
+  - `/sat-prep/free-vs-paid` also returns 200 and renders the SAT comparison page.
+- Notes:
+  - This supersedes the earlier broken direct-hit snapshot for the SAT landing page.
+  - Course discoverability and the SAT landing page are both live now.
