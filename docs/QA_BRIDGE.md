@@ -302,6 +302,28 @@ Mapping each of your items to current LIVE state + exact repro. Several were alr
 
 **Acceptance bar honesty:** discovery + auth + dashboard now pass; SAT *feel* improved (re-eyeball iter-8) but practice/diagnostic borderless + content depth are still open; CLEP explanation tone still open. Not declaring the goal met.
 
+#### PL-2026-06-18-B — SAT practice/diagnostic Bluebook + CLEP explanation tone (deploy `3383e630`)
+Format: route · live state · remaining gap · what changed since last run.
+
+**(1) SAT shell — practice + diagnostic now match the warm-up.**
+- Route: `/practice?course=SAT_MATH` and `/diagnostic` (logged in, track sat).
+- Live state (`3383e630`): both now render a **borderless Bluebook exam panel** — a module toolbar ("Math · …" with a thick bottom rule), hairline-split white surface (no rounded card, no border, no `card-glow`), flat full-width choice rows with circled letters. SAT no longer renders the warm `focus-session` sepia or a card-on-page on ANY of warm-up / practice / diagnostic.
+- What changed: `practice/page.tsx` + `diagnostic/page.tsx` SAT `Card` → `border-0 shadow-none bg-transparent`, `p-0`; stimulus → hairline divider; added the module toolbar.
+- Remaining gap: this is layout. The "reads generated" residue is now mostly **content** (stem length / distractor quality), tracked under (2). Re-eyeball the three SAT screens with the QA account.
+
+**(2) SAT content — full-bank, asymmetric, NOT certified.**
+- Route/data: `SAT_MATH` bank. Per-unit approved NOW: Algebra 1,121 · **Advanced Math 202 (+34 this run)** · Problem-Solving 125 · Geometry 132. (CB weights ≈ 35/35/15/15 → Advanced/PSDA/Geo still thin.)
+- What changed: generated +40 **gpt-oss-verified** Advanced Math items (llama writes → OpenRouter gpt-oss-120b, different family, re-solves blind → insert only on agreement). Yield ~24% (122 rejected at source). Problem-Solving + Geometry batches running now.
+- Remaining gap: depth (target ~500/unit) is a multi-batch grind on free-tier rate limits; **not certified** until full re-solve + your grader signs off (R&W especially — llama can't grade it).
+
+**(3) CLEP explanation tone — audit done, regen running.**
+- Route/data: all CLEP courses, `explanation` field shown on the live `/practice` feedback panel.
+- Live state: audited every approved CLEP explanation for model-narration markers ("When you…", "Let's", "we/you can…", "The answer is X because"). **~800 flagged**, concentrated in math (Calculus 57, College Algebra 57, Precalc 53, College Math 40) + Intro Psych 29, Micro 21.
+- What changed: built a concise **test-prep-voice regen** (rewrites ONLY the explanation; keeps stem/options/key; rejects output that still contains narration markers). Pilot on American Government = 8/8 clean (e.g. "When you watch the news and see the President rejecting a bill…" → a 1-sentence factual statement of the veto power). **Full run launched** across all flagged.
+- Remaining gap: regen completing in background; CLEP dedup remove-then-backfill for the ~140 below-floor math dups still queued. CLEP stays exam-like, NOT Bluebook-cloned; MCQ/NUMERICAL/MULTI_SELECT untouched.
+
+**Retest priority for you:** the three SAT screens (warm-up/practice/diagnostic via `qa-sat@test.preplion.ai`), and a few CLEP `/practice` explanations once the regen finishes (I'll post the completed count). Sampled SAT/CLEP still ≠ certified — full-bank + your audit-the-audit remains the bar.
+
 ## QA Results
 
 ### Template
