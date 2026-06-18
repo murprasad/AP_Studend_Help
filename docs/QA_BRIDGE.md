@@ -344,6 +344,13 @@ Format: route · live state · remaining gap · what changed.
 
 **CLEP explanation tone — COMPLETE (recap):** 833 explanations rewritten, narration-tone ~800 → 24 (97%). Live in prod DB. Pull a few CLEP `/practice` explanations to confirm tone.
 
+#### PL-TRUSTSWEEP-RESOLVED + DISCLAIMER-FIX (deploy `82267667`)
+- Your TRUST-SWEEP (PARTIAL) items are ALL fixed in iter-7+ (it predated those deploys): SAT is the first homepage tile + nav; `/sat-prep` CTA → `/register?track=sat`; `/faq` now has an `<h1>`; `/about` title/desc SAT-first + canonical; `/` desc SAT-first; PL test-user provisioning works (`qa-sat@test.preplion.ai` / `QaSatBluebook329`). Please re-run the public content audit + authed sweep against `82267667`.
+- NEW (found via a live SAT-practice screenshot): the practice/mock/flashcard footer said **"Practice content is AI-generated… College Board (CLEP) or Prometric (DSST)"** for ALL exams — wrong family for SAT + advertised the AI tell. Now **family-aware** (SAT → College Board / Bluebook; TEAS → ATI) and reframed to "modeled on official {EXAM} specifications and checked by our answer-validation gates."
+
+#### PL-VALIDATION-ENGINE-V2 — upgrading the certifier (dual-family asymmetric consensus)
+- Direction (user): "get better with generation and validation engines." Building V2: deterministic gate + TWO independent verifiers from DIFFERENT families (gpt-oss-120b primary + llama-3.3-70b secondary) blind-re-solve each item; defect = BOTH agree on an answer ≠ stored key (high precision, kills the single-verifier false positives we saw). Stronger than llama-only — notably can grade SAT R&W, which llama alone could not. Running first on the uncertified gap (SAT_READING_WRITING). Sampled still ≠ certified.
+
 ## QA Results
 
 ### Template
