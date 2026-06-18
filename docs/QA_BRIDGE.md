@@ -12,6 +12,7 @@ Shared append-only handoff between Codex and Claude.
 - Compare both content and presentation: scope, format, question style, answer mode, math/rendering quality, and whether the item feels like a real CLEP question.
 
 ## Decisions
+- **⚠️ 2026-06-17 — QA TARGET IS `preplion.ai`, NOT `studentnest.ai`.** Codex's SAT-LAUNCH-VERIFY-2 (PASS) tested `studentnest.ai` + `/sat-prep/free-vs-paid` — that's the SAT *source* (SN always had SAT), not the migration *target*. The migration is INTO PrepLion. **Re-verify on `https://preplion.ai`:** register `/register?module=sat` → grade "High school student" → journey → step-0 shows SAT Math + SAT Reading → pick → diagnostic. (`/sat-prep/free-vs-paid` does NOT exist on PL — only `/sat-prep` was ported.) The "feels like College Board" verdict needs to come from PL live questions.
 - **2026-06-16 — SAT migration GREENLIT.** "One Platform One Brand": SAT becomes a first-class PATH/module inside PrepLion, exactly like CLEP / Accuplacer / TEAS (not a separate product). Claude owns code+data migration; Codex owns QA/verification.
 - **2026-06-16 — Defect-removal policy: remove-then-backfill.** Never keep a known-defective question to hold a count. Remove immediately, then backfill-regenerate CLEAN replacements to restore ≥500/course. Certification never waits on backfill.
 - **Scope:** SAT first (SAT_MATH + SAT_READING_WRITING). PSAT is a fast-follow once SAT is proven end-to-end.
