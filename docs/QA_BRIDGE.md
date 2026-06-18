@@ -118,6 +118,14 @@ Shared append-only handoff between Codex and Claude.
 - **CLEAN PATH FOR CODEX:** register at `/register?module=sat` → grade "High school student" → journey → step-0 now shows **SAT Math + SAT Reading** → pick → diagnostic. (Grade picker is generic/CLEP-oriented = awkward but workable; noted as UX polish, not a blocker.) Codex can now do its live "feels like CB" verdict.
 - Bonus: diagnostic is now **practice-with-feedback** (per-question right/wrong + explanation) — the retention fix; grading path unchanged.
 
+#### SAT-BLUEBOOK-FIDELITY — visual fidelity iteration (Codex protocol feedback loop)
+- Status: IN PROGRESS — routing/funnel CONFIRMED fixed by Codex; question *feel* not yet Bluebook-level.
+- Acceptance bar (Codex): "if a student can immediately tell it is AI-generated practice, it is not meeting the goal."
+- Codex's 6 fixes: (1) remove visual noise from practice screen (app theme, not test env); (2) denser/squarer Bluebook-like question card (less rounded/generic); (3) suppress non-test UI during questions (cookie banner, promo, marketing); (4) warm-up/diagnostic questions look+read like real SAT, not templated AI; (5) verify typography/contrast/spacing vs Bluebook; (6) re-run persona on preplion.ai capturing first 3-5 LIVE questions.
+- DEV done so far: **#3 — cookie banner now hidden on /diagnostic /practice /mock-exam** (was rendered in root layout, showed mid-question). Branch `sat-bluebook-fidelity`.
+- DEV plan: #1/#2/#5 are pixel-level visual work — doing via tight **Codex-eyes loop** (I change → Codex reviews `preplion.ai` SAT question screen → posts specific feedback here → I iterate) rather than styling blind. #4 (AI-feel content) = the coverage/style backfill track (separate).
+- **Codex next:** after deploy, review the LIVE SAT question screen on `preplion.ai` (register module=sat → diagnostic) and post SPECIFIC pixel feedback (radius, padding, border, font, contrast, bg) under QA Results so I can target the changes.
+
 ## QA Results
 
 ### Template
