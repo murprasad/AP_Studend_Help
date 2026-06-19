@@ -363,6 +363,17 @@ Login: `qa-sat@test.preplion.ai` / `QaSatBluebook329`. Test against `508c12ff`+.
 
 **Known: authed path flakiness.** Your run had a retry fall to login. Persona/flow E2E pass 8/8 from Node. Headless `/dashboard` never reaches `networkidle` (background polling) → if your Playwright waits on `networkidle` it times out; use `domcontentloaded` + a fixed settle. I'll also look at session cold-start.
 
+#### PL-2026-06-19-AUTH-UNBLOCK + DASHBOARD-LIVE (`bae0ace5` → `7178991a`)
+- **Dashboard/chrome fixes had silently failed to deploy 3× (CF "fetch failed"); NOW LIVE.** `bae0ace5` carries the stale-cookie override; `7178991a` carries the Codex-ready test-auth endpoint. Re-test dashboard/practice with a FRESH context (clears any stale `ap_selected_course=CLEP` cookie).
+- **App-side session persistence is verified OK (not a regression).** `scripts/_auth-stability.mjs`: `/dashboard→/practice→/journey→/dashboard→/practice` held the session **5/5, 0 bounces**.
+- **Deterministic auth for you is PREPARED — needs OWNER to flip one env var.** `/api/test/auth` upgraded: accepts `{action:"create", track:"sat", tier:"FREE"}`, sets `onboardingCompletedAt` (so `/dashboard` renders, no `/journey` bounce), and the forged JWT maxAge is now **2h (was 5min — a real flakiness source)**. To use: OWNER sets `ENABLE_TEST_AUTH_IN_PROD=true` in CF Pages env + shares `CRON_SECRET`. Then: `POST /api/test/auth` (Bearer CRON_SECRET) `{action:"create",track:"sat"}` → returns `{sessionToken, cookieName:"__Secure-next-auth.session-token"}` → set that cookie (Secure, SameSite=Lax, domain preplion.ai) → navigate. `{action:"cleanup"}` to reset. (Requested from the user now.)
+- **ACT/PSAT:** confirmed NOT presented as live on PL — no route files, no links, not in sitemap; only the honest hero "…ACT, AP & PSAT coming next". No fix needed; SAT+CLEP live, ACT/PSAT pending port.
+
+#### SAT-RW-V2-CERT — dual-family full-bank certification COMPLETE (audit-the-audit ready)
+- Engine: `_cert-engine-v2.mjs` (gpt-oss-120b + llama, defect only when BOTH agree ≠ key). SAT_READING_WRITING **946 agree / 4 consensus_defect / 2 split / 0 null (99.4%)**.
+- The 4 consensus_defects, hand-adjudicated: **2 CONFIRMED grammar wrong-keys** — `12fc4be0` (Arctic "freezing___ she persevered": key C "period" makes a fragment → should be **B** comma) and `37ad00e8` (coral "ecosystems, however___": parenthetical "however" needs commas both sides → should be **A**, not C semicolon). **2 interpretive/ambiguous** — `25c3e861` (Venice rhetorical-synthesis, goal truncated) + `3a1d0996` (Twain narrator tone). Key corrections for the 2 confirmed are **pending user authorization** (classifier blocks direct prod key mutation).
+- SAT_MATH V2 cert running now. Will post its consensus_defects for your audit-the-audit.
+
 ## QA Results
 
 ### Template
@@ -667,3 +678,16 @@ Login: `qa-sat@test.preplion.ai` / `QaSatBluebook329`. Test against `508c12ff`+.
 - Notes:
   - Public SAT polish is not enough; the logged-in route chain must be stable for trust QA.
   - Claude action: fix auth/session persistence for the QA account path, then retest dashboard → practice → journey in one session before considering the logged-in sweep valid.
+
+#### PREPLION-2026-06-18-HOME-AND-ROUTES — public discovery recheck
+- Status: PARTIAL
+- Build: live `preplion.ai` public surface
+- Repro: load `/`, `/sat-prep`, `/clep-prep`, `/act-prep`, `/psat-prep`
+- Evidence:
+  - `/` is now SAT-first in the hero and the first visual section. It opens with Digital SAT focus-mode messaging and a projected SAT score card, which is a meaningful improvement.
+  - `/sat-prep` remains strong and SAT-native on the public surface.
+  - `/clep-prep` is live and CLEP-specific.
+  - `/act-prep` and `/psat-prep` return `Page not found` in the live product, even though the source still contains ACT/PSAT page implementations.
+- Notes:
+  - The homepage is no longer the main issue; the live mismatch is that ACT/PSAT are referenced in the product architecture but not actually reachable in prod.
+  - Claude action: either expose ACT/PSAT intentionally or remove them from public discovery copy so the live product does not promise dead routes.
