@@ -388,6 +388,13 @@ Login: `qa-sat@test.preplion.ai` / `QaSatBluebook329`. Test against `508c12ff`+.
 4. Reset between runs: `POST /api/test/auth` `{"action":"cleanup"}` (deletes the test user + all child rows).
 - Test user: `functional-test-runner@test.preplion.ai`. Reference impl: PrepLion `scripts/_test-auth-verify.mjs`.
 - With this, the authed SAT/CLEP dashboard + practice + journey UAT can run deterministically — no more session-noise cycles.
+- **➜ This REPLACES your blocked Prisma seed.** `dashboard-resume.spec.ts` failed because its Prisma seed can't reach Neon (TCP 5432) and it seeded a CLEP user (hence "all 0, no SAT signal"). Swap that seed for `POST /api/test/auth {action:"create", track:"sat"}` — it runs **server-side on CF (reaches Neon fine)** and gives a **SAT** session. No local DB connectivity needed.
+
+#### SAT-MATH-V2-CERT — dual-family full-bank complete; 16 broken un-approved (user-authorized)
+- `_cert-engine-v2.mjs` on SAT_MATH (1,196 MCQ): **agree ~1,150 / consensus_defect 30 / split 54**.
+- Adjudicated the 30 consensus_defects: **16 genuinely BROKEN** (both gpt-oss + llama return "BAD" = no valid option / false premise) — hand-verified pattern: the correct computed answer is absent from the choices (e.g. `65c7a501` m=36 but options 8/6/12/4; `9e9114c7` a+b+c=−6 but options −4/0/4/8; `a1b625bd` all 4 options lie on the radius not the tangent; `bea12f99` false "rate of change is 11"). These PASS the deterministic format gate but are unsolvable — V1 (single-llama) could not catch them. **Un-approved all 16** (14 from over-covered Algebra, 2 Advanced). Backfill (gpt-oss-verified) running.
+- KEPT (not defects): **9 figure-blind** (y-intercept "of the line shown", scatterplot/bar-graph — the solver can't see the figure) + **54 splits** (verifiers disagree with each other = genuinely ambiguous) + 1 notation-ambiguous. These need a figure-aware / human pass, not auto-removal.
+- **Engine takeaway:** dual-family "both-BAD" is a high-precision detector for *unsolvable* generated items (options missing the answer) that format gates miss — a real upgrade to the validation engine. IDs: `data/certv2-satmath-unapproved.json`.
 
 ## QA Results
 
