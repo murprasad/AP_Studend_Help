@@ -351,6 +351,18 @@ Format: route · live state · remaining gap · what changed.
 #### PL-VALIDATION-ENGINE-V2 — upgrading the certifier (dual-family asymmetric consensus)
 - Direction (user): "get better with generation and validation engines." Building V2: deterministic gate + TWO independent verifiers from DIFFERENT families (gpt-oss-120b primary + llama-3.3-70b secondary) blind-re-solve each item; defect = BOTH agree on an answer ≠ stored key (high precision, kills the single-verifier false positives we saw). Stronger than llama-only — notably can grade SAT R&W, which llama alone could not. Running first on the uncertified gap (SAT_READING_WRITING). Sampled still ≠ certified.
 
+#### PL-RETEST-LIST-2026-06-18-C — exact items to retest (deploy `508c12ff`, QA account)
+Login: `qa-sat@test.preplion.ai` / `QaSatBluebook329`. Test against `508c12ff`+.
+
+1. **SAT dashboard is SAT-native (the verified CLEP-copy bug).** ROOT CAUSE FIXED: `useCourse()` defaulted to `CLEP_COLLEGE_ALGEBRA` for any user with no stored course → your fresh SAT login rendered the whole CLEP path. Now defaults to the user's **track** (sat→SAT_MATH). Repro: login → `/dashboard`. Expect: NO "CLEP ALGEBRA", NO "pass probability", NO "Take the 10-question check"; SAT-native score framing (empty "your score appears after your first session"; with data, projected **/1600 + readiness band**). I verified via headless capture: CLEP heading gone, pass-prob gone.
+2. **SAT practice/diagnostic = Bluebook exam shell.** `/practice` (SAT) → Start session, and `/diagnostic`. Expect: "Math · {domain}" toolbar, borderless white panel, flat full-width rows w/ circled letters; NONE of: sprint timer, "Your focus plan", Confidence chips, "Take a breather", shortfall/upsell toast.
+3. **Disclaimer family-correct.** SAT practice footer → "modeled on official Digital SAT specifications…", NOT "AI-generated… CLEP/DSST".
+4. **CLEP explanation tone.** CLEP `/practice` → explanation reads test-prep, no "When you…/we can…" narration (833 rewritten; ~24 residual).
+5. **Discovery/SEO (re-confirm).** `/` SAT-first tile+nav+hero; `/faq` `<h1>`; `/about` + `/sat-prep` SAT-first; `/register?track=sat` CTA; OG multi-exam.
+6. **V2 cert audit-the-audit (when done).** `data/certv2-SAT_READING_WRITING.json` consensus_defects. First 4 hand-verified: 2 REAL grammar wrong-keys (`freezing`→comma; `however`→comma), 2 interpretive-ambiguous. Spot-check the set.
+
+**Known: authed path flakiness.** Your run had a retry fall to login. Persona/flow E2E pass 8/8 from Node. Headless `/dashboard` never reaches `networkidle` (background polling) → if your Playwright waits on `networkidle` it times out; use `domcontentloaded` + a fixed settle. I'll also look at session cold-start.
+
 ## QA Results
 
 ### Template
@@ -631,3 +643,27 @@ Format: route · live state · remaining gap · what changed.
 - Notes:
   - This records the QA strategy change: verify full persona paths, not just route existence.
   - Claude action: build against this contract; do not treat sampled passes or family-agnostic dashboard copy as acceptable for SAT.
+
+#### PREPLION-SAT-DASHBOARD-2026-06-18 — SAT dashboard semantics UAT
+- Status: FAIL
+- Build: live `preplion.ai` logged-in student session + `tests/e2e/sat-dashboard-spec.spec.ts`
+- Repro: login as `qa-sat@test.preplion.ai` / `QaSatBluebook329`, load `/dashboard`
+- Evidence:
+  - Live dashboard body for the logged-in account renders CLEP-facing copy: `CLEP ALGEBRA` plus `Want your pass probability? (optional)`.
+  - The dashboard still asks the student to take a 10-question check and references odds / pass probability, which is the wrong model for SAT.
+  - Re-running the new SAT dashboard UAT spec surfaced auth flake on one retry, which reinforces that the logged-in student path is not yet deterministic enough for trust QA.
+- Notes:
+  - This is the exact family-leak we should have caught earlier: SAT dashboard semantics still inherit CLEP/DSST language.
+  - Claude action: branch dashboard rendering by family and remove pass-probability copy from SAT entirely; replace with SAT-native score widgets (`/1600`, section scores, target gap, weak domains, next action). Also stabilize the logged-in PL path so the dashboard sweep is repeatable.
+
+#### PREPLION-2026-06-18-AUTH-REGRESSION — logged-in PL student flow regression
+- Status: FAIL
+- Build: live `preplion.ai` QA SAT account
+- Repro: login as `qa-sat@test.preplion.ai` / `QaSatBluebook329`, then visit `/practice` and `/journey`
+- Evidence:
+  - `preplion.ai` test-user provisioning endpoint is disabled in production (`/api/test/auth` returns 404 `Test endpoints disabled in production`).
+  - The QA SAT account can land on `/dashboard`, but `/practice` and `/journey` bounce back to `/login?callbackUrl=...` instead of staying authenticated.
+  - This makes the logged-in student path non-deterministic and blocks reliable end-to-end SAT/CLEP UAT on the live PL surface.
+- Notes:
+  - Public SAT polish is not enough; the logged-in route chain must be stable for trust QA.
+  - Claude action: fix auth/session persistence for the QA account path, then retest dashboard → practice → journey in one session before considering the logged-in sweep valid.
