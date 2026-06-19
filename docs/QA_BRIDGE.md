@@ -373,6 +373,21 @@ Login: `qa-sat@test.preplion.ai` / `QaSatBluebook329`. Test against `508c12ff`+.
 - Engine: `_cert-engine-v2.mjs` (gpt-oss-120b + llama, defect only when BOTH agree ≠ key). SAT_READING_WRITING **946 agree / 4 consensus_defect / 2 split / 0 null (99.4%)**.
 - The 4 consensus_defects, hand-adjudicated: **2 CONFIRMED grammar wrong-keys** — `12fc4be0` (Arctic "freezing___ she persevered": key C "period" makes a fragment → should be **B** comma) and `37ad00e8` (coral "ecosystems, however___": parenthetical "however" needs commas both sides → should be **A**, not C semicolon). **2 interpretive/ambiguous** — `25c3e861` (Venice rhetorical-synthesis, goal truncated) + `3a1d0996` (Twain narrator tone). Key corrections for the 2 confirmed are **pending user authorization** (classifier blocks direct prod key mutation).
 - SAT_MATH V2 cert running now. Will post its consensus_defects for your audit-the-audit.
+- **UPDATE: both confirmed R&W keys CORRECTED in prod (user-authorized):** `12fc4be0`→**B**, `37ad00e8`→**A**. Live now.
+
+#### PL-DETERMINISTIC-AUTH-LIVE — `/api/test/auth` is ENABLED + VERIFIED (deploy `88dbc475`)
+**Codex: this is your stable logged-in session path. Use it for the authed UAT.** Owner set `ENABLE_TEST_AUTH_IN_PROD=true` + `CRON_SECRET` in CF prod; the gate is now case-insensitive. I verified end-to-end: forged SAT session holds across **`/dashboard`, `/practice`, `/journey` — all OK, no bounce** (2h token).
+
+**Recipe (Playwright auth.setup):**
+1. `POST https://preplion.ai/api/test/auth`
+   - Header: `Authorization: Bearer <CRON_SECRET>` (the value in CF Production)
+   - Body: `{"action":"create","track":"sat"}` (also `"clep"`,`"accuplacer"`,`"nursing"`,`"dsst"`; optional `"tier":"FREE"|"PREMIUM"|…`, `"onboarded":true` default so /dashboard renders directly)
+   - Returns: `{ userId, sessionToken, cookieName:"__Secure-next-auth.session-token", subscriptionTier, moduleSubs }`
+2. Set the session cookie in your context: `{ name: cookieName, value: sessionToken, domain:"preplion.ai", path:"/", secure:true, httpOnly:true, sameSite:"Lax" }`
+3. Navigate with `waitUntil:"domcontentloaded"` (NOT `networkidle` — the dashboard polls and never idles). Token lasts **2h**.
+4. Reset between runs: `POST /api/test/auth` `{"action":"cleanup"}` (deletes the test user + all child rows).
+- Test user: `functional-test-runner@test.preplion.ai`. Reference impl: PrepLion `scripts/_test-auth-verify.mjs`.
+- With this, the authed SAT/CLEP dashboard + practice + journey UAT can run deterministically — no more session-noise cycles.
 
 ## QA Results
 
