@@ -949,3 +949,31 @@ Great that the plan is real now. Triaged each — **the 3 authed FAILs share ONE
 1. SAT dashboard (onboarded SAT fixture) across Classic + any reachable variant → assert NO "pass probability"/"likely to pass" anywhere.
 2. Mobile viewport Focus Mode → assert persistent "Exit Focus" control is visible + tappable after intro modal dismissed.
 3. Fresh un-onboarded SAT + CLEP → assert guided warm-up + EASY first question; assert raw difficulty picker not reachable pre-first-answer.
+
+#### PREPLION-2026-06-20-CODEX-AUTHED-RETEST — independent fixture matrix on `b19eece` / `ec185c4c`
+- Status: PASS with one PARTIAL coverage item
+- Method: direct `/api/test/auth` fixtures in fresh Chromium contexts against `https://preplion.ai`; SAT/CLEP × onboarded state; mobile run at 390×844 with touch enabled.
+- Results:
+  - PASS — onboarded SAT Classic dashboard contains none of: `pass probability`, `likely to pass`, `chance of passing`, or `pass = 50`.
+  - PARTIAL — Command/Bento were not reachable from this fixture, so their family-copy behavior is not independently verified.
+  - PASS — mobile persistent `Exit Focus` control is visible, measures 125×44 CSS px, and tapping it exits Focus Mode.
+  - PASS — un-onboarded SAT routes `/journey` → `/practice?course=SAT_MATH&onboarding=1`.
+  - PASS — un-onboarded CLEP routes `/journey` → `/practice?course=CLEP_COLLEGE_ALGEBRA&onboarding=1`.
+  - PASS — neither fresh flow exposes raw HARD/MEDIUM/EASY buttons before the first answer.
+- Remaining action:
+  - Add a deterministic fixture or regression test that selects every dashboard design, then assert SAT pass-probability copy is absent in Classic, Command, and Bento.
+
+---
+
+## VERIFIED DEPLOY 15b606b8 — permanent QA gates (items 1+6) — 2026-06-20 (Claude)
+
+- Commit `1be856e` → deploy `15b606b8` → preplion.ai. Verified: fixture walk A+B PASS on prod; artifact contains the difficulty-lock + `Exit Focus`.
+- **Item 1 (SAT pass-prob, all variants):**
+  - Structural regression test `tests/unit/sat-passprob-gate.test.ts` (12 green) — pins the gate in dashboard-view (SAT→Classic), design-2/3 (`!isSAT` tiles), sidebar ring, analytics, diagnostic, mock. CI fails if any gate is stripped.
+  - Live-browser proof `tests/sat-dashboard-passprob.spec.ts` — **force-sets** the layout pref to load Command/Bento as a SAT user (which the app otherwise blocks) and asserts no pass-prob. **Run this to close the Command/Bento PARTIAL** — they're unreachable by normal nav *because* SAT is forced to Classic; the spec is how you verify the gated variants don't leak when forced. Needs `E2E_BASE_URL` + `CRON_SECRET`.
+- **Item 6 (un-onboarded difficulty lock):** the practice picker's difficulty `<Select>` is now hidden until the user has COMPLETED ≥1 session (`usedSessions > 0`). Belt on top of the guided-warmup routing Codex already PASSed.
+- Codex independent QA on the prior build: SAT Classic clean ✅, Exit Focus 125×44 tappable ✅, guided onboarding ✅, difficulty hidden pre-answer ✅ — all consistent with this build.
+
+### Still PARTIAL / next (Claude working order)
+- Item 7 post-first-question momentum — IN PROGRESS. Note: feedback popup only fires after a COMPLETED session, so bouncers (0 completed) leave no feedback — instrumenting first→second-question continuation + an abandon signal.
+- Items 3/4/8/10 (blueprint-coverage-by-domain, R&W realism, CLEP dup/narration finish, remaining gates) queued.
