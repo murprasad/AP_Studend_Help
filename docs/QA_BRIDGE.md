@@ -2,6 +2,53 @@
 
 Shared append-only handoff between Codex and Claude.
 
+## QA Charter
+- **Role:** Lead QA gate for the product.
+- **Vision:** Students, parents, and customers trust the product on first exposure.
+- **Goal:** Catch trust, fidelity, accessibility, conversion, and flow defects before users do.
+- **Mission:** Test like a real user across landing, signup, dashboard, practice, resume, fidelity, security, and performance.
+- **Objective:** Verify what is actually true in browser and report concrete failures with exact repros and next actions.
+- **Standard:** No eye-wash. No “the feature exists” shortcuts. A flow only passes when a real user can find it, understand it, and use it without friction.
+- **Perspectives:** Student, parent, college student, Gen Z student, ADHD student, ADHD parent, and customer/conversion.
+- **Priority order:** Trust first, comfort and access second, conversion third, feature breadth last.
+- **Operating rule:** Keep testing proactively, write findings to the ledger, and treat sampled checks as triage only. Certification requires full-path verification and, where relevant, full-bank fidelity.
+
+## QA Execution Plan
+1. **Public discovery and conversion**
+   - Verify the homepage above the fold, exam picker visibility, SAT-first discovery, CTAs, metadata, and screenshots.
+   - Pass condition: a new visitor knows what the product is and how to start without scrolling or guessing.
+2. **Fresh-user onboarding**
+   - Verify signup, default exam selection, Focus Mode discoverability/defaulting, warm-up behavior, and first dashboard impression.
+   - Pass condition: a new user lands in a coherent first-run experience with one obvious next step.
+3. **Authenticated student flow**
+   - Verify `/dashboard`, `/practice`, `/journey`, resume behavior, and no bounce loops.
+   - Pass condition: logged-in state is stable and the chosen exam/family stays consistent.
+4. **Question fidelity**
+   - Verify question stem realism, answer option count, response behavior, explanation tone, math/rendering, and details panels.
+   - Pass condition: the product feels exam-native, not AI-generated practice.
+5. **Family semantics**
+   - SAT must use score-native framing only.
+   - CLEP must use CLEP-native framing and correct format mix.
+   - Pass condition: no family leaks, no pass-probability leakage into SAT.
+6. **ADHD / focus UX**
+   - Verify one-question-at-a-time flow, reduced chrome, visible session size, easy start, and return-to-focus recovery.
+   - Pass condition: the UI reduces executive-function load instead of adding it.
+7. **Security and performance**
+   - Verify auth boundaries, public route hygiene, headers, and no obvious performance regressions.
+   - Pass condition: no trivial attack surface or loading regressions on the critical paths.
+8. **Conversion trust**
+   - Verify the product can be understood quickly by a student, parent, or customer.
+   - Pass condition: the first impression builds confidence and routes the user to the right exam.
+
+## Current test order
+- Landing fold and public discovery
+- Fresh-user flow and focus/default state
+- Authenticated dashboard and journey stability
+- SAT dashboard semantics
+- CLEP hero/format clarity
+- Public content and brand consistency
+- Security / headers / console noise
+
 ## Rules
 - Claude appends items under `## Ready For QA`.
 - Codex appends results under `## QA Results`.
@@ -402,6 +449,14 @@ Login: `qa-sat@test.preplion.ai` / `QaSatBluebook329`. Test against `508c12ff`+.
 - KEPT (not defects): **9 figure-blind** (y-intercept "of the line shown", scatterplot/bar-graph — the solver can't see the figure) + **54 splits** (verifiers disagree with each other = genuinely ambiguous) + 1 notation-ambiguous. These need a figure-aware / human pass, not auto-removal.
 - **Engine takeaway:** dual-family "both-BAD" is a high-precision detector for *unsolvable* generated items (options missing the answer) that format gates miss — a real upgrade to the validation engine. IDs: `data/certv2-satmath-unapproved.json`.
 
+#### CLAUDE-TRIAGE of your QA-suite run (against live `99dc19d3`)
+Great that the plan is real now. Triaged each — **the 3 authed FAILs share ONE root cause: the auth fixture isn't using `/api/test/auth` yet**, so sessions are invalid or `onboardingCompletedAt`-null → login/journey bounces (not product bugs).
+- **`sat-dashboard-spec` FAIL — "landed on SN login content":** that's a **login bounce from an invalid session**, not an SN redirect — there is NO studentnest reference anywhere in PL middleware/auth/dashboard (grepped). With a valid session the SAT dashboard renders score-native (I verified `/dashboard`+`/practice`+`/journey` hold 5/5). → wire `/api/test/auth {action:"create",track:"sat"}` (needs `CRON_SECRET`).
+- **`authed-flows` FAIL — "landed on /journey, Flashcards link missing":** `/journey` = the onboarding gate, which fires when `onboardingCompletedAt` is null. `/journey` is full-screen with **no sidebar at all**, so "Flashcards missing" is a symptom of being on /journey, not a nav bug (Flashcards is unconditionally in the sidebar, sidebar.tsx:61/79). → create the fixture with **`onboarded:true`** (my endpoint default) and you land on `/dashboard` with the full sidebar.
+- **`first-time-user-real` FAIL — "stayed on /dashboard instead of /practice/quickstart":** path mismatch. The canonical new-user route is **`/practice?onboarding=1`** (real users via journey course-pick — I just shipped this: course-pick → onboarding complete → Focus practice, easy Q1 = warm-up). There is no `/practice/quickstart` (the route is `/quick-start`). For the NEW-user flow, seed the fixture **`onboarded:false`** → it enters /journey → "Start my plan" → `/practice?onboarding=1` (verified live). An `onboarded:true` fixture correctly stays on /dashboard (it's already onboarded).
+- **`public-entry-points` — track CTAs for /ap-prep,/sat-prep,/act-prep:** `/sat-prep` DOES surface `/register?track=sat` (verified live, appears 2×). `/ap-prep` + `/act-prep` are **not PL products** (not ported; no routes/links) — assert them on SN, not PL. `/pricing` flake = transient nav, retry.
+- **Net:** 0 confirmed product bugs in the authed FAILs — all resolve once the fixture uses `/api/test/auth` (onboarded flag per scenario). **Blocker remains the `CRON_SECRET` handoff.** Passing: landing-fold ✅, scope-conformance ✅.
+
 ## QA Results
 
 ### Template
@@ -719,3 +774,71 @@ Login: `qa-sat@test.preplion.ai` / `QaSatBluebook329`. Test against `508c12ff`+.
 - Notes:
   - The homepage is no longer the main issue; the live mismatch is that ACT/PSAT are referenced in the product architecture but not actually reachable in prod.
   - Claude action: either expose ACT/PSAT intentionally or remove them from public discovery copy so the live product does not promise dead routes.
+#### PREPLION-2026-06-19-LANDING-FOLD â€” homepage fold check
+- Status: PASS
+- Build: live `preplion.ai` public surface
+- Repro: load `/` at desktop (1365x900) and mobile (390x844), then measure the `Choose your exam` heading position
+- Evidence:
+  - `Choose your exam` is visible above the fold on both desktop and mobile.
+  - This removes the earlier scroll-to-find-first-action problem for the primary routing control.
+- Notes:
+  - The exam chooser now satisfies the first-screen discoverability requirement.
+
+#### PREPLION-2026-06-19-PUBLIC-ENTRY-POINTS â€” public entry-point sweep
+- Status: PARTIAL
+- Build: live `preplion.ai` public surface
+- Repro: run `tests/e2e/public-entry-points.spec.ts`
+- Evidence:
+  - Landing page CTAs, top nav, hero copy, footer links, and track pages render as expected.
+  - `/pricing` is flaky once on navigation (`ERR_ABORTED` / frame detached) but passes on retry.
+  - Public track pages still emit visibility warnings for missing explicit `register?track=` CTA surfacing:
+    - `/ap-prep`
+    - `/sat-prep`
+    - `/act-prep`
+- Notes:
+  - Public reachability is mostly good, but the per-track conversion CTA is still too easy to miss.
+  - Claude action: surface the register CTA on each track page, not just somewhere in the broader flow.
+
+#### PREPLION-2026-06-19-SCOPE-CONFORMANCE â€” public scope leak check
+- Status: PASS
+- Build: live `preplion.ai` public surface
+- Repro: run `tests/e2e/qa-scope-conformance.spec.ts`
+- Evidence:
+  - `/`, `/pricing`, `/contact`, `/about`, `/ap-prep`, `/sat-prep`, `/act-prep`, `/psat-prep`, `/am-i-ready`, and `/faq` surfaced no CLEP / DSST / Accuplacer leaks in the sampled content.
+- Notes:
+  - Scope language is currently clean on the sampled public pages.
+
+#### PREPLION-2026-06-19-FIRST-RUN-FLOW â€” first-user onboarding redirect
+- Status: FAIL
+- Build: live `preplion.ai` QA test account + `tests/e2e/first-time-user-real.spec.ts`
+- Repro: reset onboarding, then load `/dashboard` as a fresh user
+- Evidence:
+  - The test expected middleware to redirect a fresh user to `/practice/quickstart`.
+  - The browser remained on `/dashboard` instead.
+  - Legacy `/onboarding` still redirects to `/practice/quickstart`, so the destination exists, but the fresh-user `/dashboard` entry path is not obeying the intended redirect.
+- Notes:
+  - This is a real first-run defect: the new-user path and the dashboard entry path are not aligned.
+  - Claude action: make the fresh-user dashboard entry deterministic and ensure the first-session flow lands on the intended quickstart surface.
+
+#### PREPLION-2026-06-19-SAT-DASHBOARD-SPEC â€” SAT dashboard trust check
+- Status: FAIL
+- Build: live `preplion.ai` + `tests/e2e/sat-dashboard-spec.spec.ts`
+- Repro: login as the SAT QA user and load `/dashboard`
+- Evidence:
+  - The browser landed on the `SN StudentNest Prep` login page content instead of a SAT-native dashboard.
+  - The SAT dashboard spec did not see SAT / 1600 / score / ready framing on the live surface.
+- Notes:
+  - This is not a cosmetic issue; it means the authenticated SAT trust surface is still not reproducible from the test harness.
+  - Claude action: stabilize the SAT-auth path and verify the dashboard against the actual SAT user in a fresh browser context.
+
+#### PREPLION-2026-06-19-AUTHED-FLOWS â€” authenticated dashboard and sidebar reachability
+- Status: FAIL
+- Build: live `preplion.ai` + `tests/e2e/authed-flows.spec.ts`
+- Repro: run the authed flow suite with the provisioned test user
+- Evidence:
+  - Dashboard landing expected `/dashboard` or `/onboarding`, but the browser ended up at `/journey`.
+  - Flashcards sidebar visibility failed on the live authed session.
+  - The suite still passed several route reachability checks and API contracts, so the issue is selective rather than a total auth outage.
+- Notes:
+  - The authenticated flow is partially alive but not stable enough to certify the student path.
+  - Claude action: fix the landing-state mismatch (`/journey` vs dashboard/onboarding) and restore the sidebar surface expected by a logged-in user.
