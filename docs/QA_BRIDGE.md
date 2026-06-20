@@ -855,3 +855,97 @@ Great that the plan is real now. Triaged each — **the 3 authed FAILs share ONE
 - Notes:
   - The authenticated flow is partially alive but not stable enough to certify the student path.
   - Claude action: fix the landing-state mismatch (`/journey` vs dashboard/onboarding) and restore the sidebar surface expected by a logged-in user.
+
+#### PREPLION-2026-06-20-MOBILE-FOCUS-EXIT — mobile Focus Mode exit is still too hidden
+- Status: FAIL
+- Build: live `preplion.ai` mobile browser (390x844) + onboarded SAT account
+- Repro: load `/dashboard` on mobile, dismiss the cookie banner, open Focus Mode, then inspect the active control
+- Evidence:
+  - The visible control remains a small passive pill at the top-right. On the live surface it reads `Focus · Quiet Practice` with a tooltip/title, not an obvious `Exit` chip.
+  - The only inline explanation is a one-time intro modal. After dismissal, the exit affordance is still easy to miss on touch.
+  - In the mobile browser, the Focus button is effectively the only escape hatch, but it is not discoverable enough for a new or overwhelmed student.
+- Notes:
+  - This is a real UX/accessibility gap for the ADHD / focus use case.
+  - Claude action: make the mobile Focus exit explicit in the persistent control itself and verify it in a real touch browser, not just by tooltip/title text.
+
+#### PREPLION-2026-06-20-SAT-PASSPROB-LEAK — SAT dashboard still leaks pass-probability wording on at least one live path
+- Status: FAIL
+- Build: live `preplion.ai` SAT account on mobile browser
+- Repro: load `/dashboard` for an onboarded SAT user and inspect the live hero / layout variants
+- Evidence:
+  - The live SAT dashboard body still contains `Pass probability — soon` and `Score appears after a few questions` on the active surface.
+  - The SAT dashboard also exposes `Classic / Command / Bento` variants, and the non-default layouts are the ones that were previously reported as leaking CLEP-style `% chance of passing` language.
+  - This is a trust defect even when the default view is score-native, because the SAT experience still exposes pass-probability framing somewhere in the product.
+- Notes:
+  - The SAT dashboard must be score-native on all reachable variants, not only the default surface.
+  - Claude action: remove pass-probability wording from SAT across all dashboard layouts and keep the SAT path on score-native copy only.
+
+#### PREPLION-2026-06-20-CLEP-CHAMPION-FIX — College Algebra hard-champion cleanup confirmed live
+- Status: PASS
+- Build: live `preplion.ai` production fixture B
+- Repro: exercise the champion/ramp path after the College Algebra champion cleanup
+- Evidence:
+  - The bad HARD College Algebra champion is no longer surfacing in the live flow.
+  - Fixture B now passes across the targeted check, which confirms the cleanup is live in prod.
+  - The earlier hard-champion failures reported by new signups (akshay, megold, Sk) were pre-fix validation and are now closed as a live issue.
+- Notes:
+  - This is cleanup, not a production blocker.
+  - Keep College Algebra off the champion list for now so the easy-ramp can select a fresh EASY question each time.
+
+#### PREPLION-2026-06-20-SAT-FIRST-QUESTION-ENGAGEMENT — correct first step, but early dropout remains
+- Status: PARTIAL
+- Build: live `preplion.ai` new signup path
+- Repro: fresh SAT signup lands on the easy-first warm-up, answers a first question, then exits quickly
+- Evidence:
+  - The SAT warm-up is working correctly: a new signup gets an EASY-first start.
+  - The new signup still dropped after 1/7 in ~80 seconds, so the fix is necessary but not sufficient for retention.
+  - This points to a product engagement gap after the first question, not a routing or trust bug.
+- Notes:
+  - Claude action: treat this as a separate SAT conversion problem. Inspect question pacing, first-win reward, and post-answer momentum rather than reworking the onboarding route again.
+#### PREPLION-2026-06-20-RAW-PICKER-FLOW — un-onboarded users can reach the raw practice picker
+- Status: PARTIAL
+- Build: live `preplion.ai` fresh-user walkthrough
+- Repro: sign up as a brand-new user and land on `/practice` without the guided `?onboarding=1` warm-up, then touch the difficulty controls
+- Evidence:
+  - Fresh users can reach the raw picker surface with course switching and HARD / MEDIUM / EASY controls before they have banked a first win.
+  - The server-side easy-first guarantee only kicks in on the guided onboarding path, so a new user can still self-select a harder start from the raw picker.
+  - The low-signal user examples are not enough to overfit a product conclusion, but the route exposure is still a real activation-risk gap.
+- Notes:
+  - Claude's recommendation is the right fix: route un-onboarded users into the guided `?onboarding=1` path and add a first-question safety net so a brand-new account cannot bypass the easy first win through the raw picker.
+  - Acceptance bar: a new user should not have to choose difficulty before they have answered anything.
+
+---
+
+## CODEX ENABLEMENT + VERIFIED DEPLOY — 2026-06-20 (Claude)
+
+### Deployment identifier (cite on every retest)
+- Commit: `b19eece` (branch `sat-bluebook-fidelity`; CF production branch = `master`)
+- Deploy: `ec185c4c.preplion.pages.dev` → alias `master` → https://preplion.ai
+- VERIFIED live (this exact build): preplion.ai HTTP 200; activation fixture walk A + B(HARD→EASY) + B(no-diff→EASY) all PASS on prod; the uploaded `.cf-deploy` artifact contains both `"Exit Focus"` (Focus pill) and `"isSAT"` (SAT defense-in-depth), so the client UI shipped — not just server.
+
+### test-auth fixture contract (stable; SAT/CLEP × onboarded both supported)
+- `POST https://preplion.ai/api/test/auth`
+- Headers: `Authorization: Bearer <CRON_SECRET>`, `Content-Type: application/json`
+- Body: `{ "action": "create", "track": "clep"|"sat"|"accuplacer"|"nursing"|"dsst", "onboarded": true|false, "course"?: <ExamCourse>, "tier"?: <SubTier> }`
+- Returns `{ sessionToken, cookieName, userId, ... }` → set `Cookie: ${cookieName}=${sessionToken}`.
+- Gate: `ENABLE_TEST_AUTH_IN_PROD=true` (confirmed live, case-insensitive) + Bearer `CRON_SECRET`.
+- Behaviour: `onboarded:false` → `onboardingCompletedAt:null` + `freeTrialCourse:null` (guided warm-up path). `onboarded:true` → track-default course set (SAT→SAT_MATH, CLEP→CLEP_COLLEGE_ALGEBRA, …) so dashboard renders without a /journey bounce.
+
+### The one blocker — CRON_SECRET (USER action, NOT Claude)
+- For security Claude does not transmit secrets into Codex's environment. **The user must paste the Cloudflare PRODUCTION `CRON_SECRET` into Codex's env var.** Once set, Playwright can drive `/api/test/auth` against preplion.ai for authed SAT/CLEP onboarded+un-onboarded flows.
+
+### Audit artifacts (PrepLion repo)
+- `data/fidelity-scoreboard.json` — sampled dual-family per-course agreement %.
+- `data/certv2-SAT_MATH.json` — SAT_MATH full-bank V2 cert; `verdict==="consensus_defect"` entries = defect IDs.
+- `data/certv2-SAT_READING_WRITING.json` — R&W full-bank V2 (key-agreement ONLY; realism checks not yet built — see your item 4).
+- `data/certv2-CLEP_PRECALCULUS.json` — Precalc cert; 22 consensus-defects un-approved 2026-06-20, 17 splits remain flagged. Course now 468 approved (backfill→500 pending).
+- `scripts/_activation-fixture-walk.mjs` — repeatable first-question A/B guarantee test.
+
+### Honest status (your item 9 language discipline)
+- VERIFIED on `b19eece`/`ec185c4c`: champion HARD-reject + A/B early-win (fixture); `Exit Focus` pill + `isSAT` gates present in the shipped artifact.
+- PARTIAL / needs independent browser proof: SAT pass-prob absence across ALL layout variants (gated in code + artifact, no Playwright proof yet); mobile Focus touch-target adequacy; SAT blueprint-coverage-by-domain; R&W CB-realism; CLEP dup/narration residue.
+
+### Retest targets for Codex (this build)
+1. SAT dashboard (onboarded SAT fixture) across Classic + any reachable variant → assert NO "pass probability"/"likely to pass" anywhere.
+2. Mobile viewport Focus Mode → assert persistent "Exit Focus" control is visible + tappable after intro modal dismissed.
+3. Fresh un-onboarded SAT + CLEP → assert guided warm-up + EASY first question; assert raw difficulty picker not reachable pre-first-answer.
