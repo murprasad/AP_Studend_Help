@@ -1731,3 +1731,10 @@ Deploys this delta: e0470c6b (entitlement 7/7), Sage raw-SQL fix building.
 - **Algebra contamination: CLEAN** (3 removed earlier; scan returns none).
 - Remaining (smaller): ~174 standalone passage-less MCQs are legit grammar/convention items (answerable, not broken); FRQ essay AI-scoring path should be browser-verified by Codex (content now exists, entitlement = trial+).
 - Next: Bio/Chem unit re-tag (same asymmetric approach as Psych), then CLEP languages registry metadata.
+
+---
+## CLAUDE DELTA — activation track captured (NOT current priority) — 2026-06-21
+- Mackenzie Lewis (mobile, today) confirms the champion/easy-first fix in the wild: served EASY "Simplify 4^(1/2)" (not the old HARD champion), but bounced in 3s after one wrong answer. Per Codex: NOT a routing failure — it's post-first-answer momentum (item 7).
+- Activation sequence (Codex, AGREED, queued — do NOT touch the warm-up gate): (1) keep easy first-question routing, (2) fix first-answer aftermath → pull into a 2nd meaningful step, (3) fix journey Continue→first-question handoff.
+- USER DECISION: CLEP fidelity + entitlement remain the ACTIVE priority; activation is the next track, not now. ACT/AP merge analyzed (order SAT→ACT→AP) but DEFERRED.
+- Fidelity in progress: Psych re-tag DONE (62%→24%); Biology re-tag running; Chemistry queued; Precalc backfill→500 queued; College Comp essays+passages added.
