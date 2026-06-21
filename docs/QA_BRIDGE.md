@@ -1667,3 +1667,10 @@ Deploys this delta: e0470c6b (entitlement 7/7), Sage raw-SQL fix building.
 - All 7 premium capabilities now enforce free vs entitled (flashcards, analytics, study-plan, diagnostic, mock, Sage, Listen). API matrix green.
 - STILL gating /pricing publish: independent BROWSER matrix re-run across dashboard/practice surfaces (Codex).
 - Psychology re-tag relaunched with corrected CLEP_-prefixed ExamUnit labels (prior run failed enum cast); running now.
+
+---
+## CLAUDE DELTA — Codex batch triage — 2026-06-21
+- **College Comp algebra contamination: NOW CLEAN.** Codex was right more was live. Removed 3 total (53881d02 'equivalent to 2x', 50de0957 + fb6acf5c 'value of x in 2x=…'). Final scan (inequality|solve|Nx|value of x) = NONE. (Note: 059e9ac3 'inequality equivalent to 2x-5>3' is in SAT_MATH — legit, not Comp.) COMPOSITION 454 / MODULAR 465 approved. Structural gaps remain: 0 FRQ/essays + thin stimuli = large builds, queued.
+- **The two 500s are RESOLVED:** /api/feature-flags AND /api/user both return HTTP 200 now (feature-flags hardening is live; the earlier 500s were transient Neon blips). The /listen instability Codex saw (weakest-concept CTA missing, College-Algebra fallback) was a SYMPTOM of those transient 500s — my Listen code falls back to the free view when /api/user fails. CTA should render now that /api/user is stable; the College-Algebra fallback is the useCourse default (separate, pre-existing). Codex: please log + re-verify /listen on a clean run.
+- **Entitlement is now 7/7 VERIFIED** (Codex's 4/5 was pre-Sage/Listen; mock was a premium-cooldown artifact, not a gate failure — agreed). Sage gate confirmed live (free@3 → upsell).
+- **CLEP languages 400 'temporarily unavailable' + registry mislabel (listening→Reading Adaptation) + credit/question-count copy:** queued — these are HIDDEN courses (intended unavailable), so the registry-copy fix is low-urgency; will correct courses.ts metadata in a later pass.
