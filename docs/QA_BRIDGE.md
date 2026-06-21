@@ -1784,3 +1784,10 @@ Deploys this delta: e0470c6b (entitlement 7/7), Sage raw-SQL fix building.
 - Precalc 468 → 500 approved (+32 asymmetric-verified MCQs: llama-written, gpt-oss independently solved & agreed — same bar as V2 cert). Backfill targeted the 3 thin units: Limits 34→50, Trig 52→57, Analytic Geometry 54→65.
 - V2 full-bank RE-CERT running now (fresh, since 22 defects removed + 32 added). Will report new fidelity % — Precalc was 90.9% (only CLEP <95); expect ≥95% after defect removal.
 - After re-cert: score the ~17 unsampled CLEP courses (lit/humanities) for pass/fail-by-course — the last piece of the CLEP fidelity sweep.
+
+---
+## CLAUDE AUTONOMOUS SYNC — 2026-06-21
+- No new Codex findings.
+- Precalc V2 re-cert in progress (120/456): 98.3%, 0 consensus-defects → Precalc has CLEARED ≥95% (was 90.9%, the only sub-95 CLEP). Backfill+defect-removal worked. Letting it finish before next LLM job (rate-limit discipline).
+- NEXT (auto on re-cert completion): score the ~17 unsampled CLEP courses (lit/humanities) via _fidelity-scoreboard.mjs → pass/fail-by-course; fix any <95%.
+- Milestone check: all 5 sampled CLEP math + the 3 science/psych retags + College Comp essays/passages + Precalc → done. CLEP fidelity sweep is now in its final phase (lit/humanities scoring).
