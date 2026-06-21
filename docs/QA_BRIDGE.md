@@ -1799,3 +1799,9 @@ Deploys this delta: e0470c6b (entitlement 7/7), Sage raw-SQL fix building.
 - REVISED ACT gate = CLEP fidelity (final phase, near) + /pricing browser matrix (Codex, near). Both near → ACT can start in days; migration itself ~1–2 wks (SAT-pattern clone of ACT's 2,994 SN Qs + product surfaces).
 - REVISED SEQUENCE: finish CLEP fidelity → Codex browser matrix → ACT migration → THEN TEAS cert + /teas-prep route.
 - FLAG (caveat): TEAS is kept but uncertified, and /teas-prep still 404s while homepage advertises "TEAS today" (Codex TEAS-PUBLIC-ENTRY). Recommend a QUICK /teas-prep route fix (redirect to /nursing or minimal page) during the ACT window so we don't advertise a broken product — separate from the full TEAS cert (queued post-ACT). Awaiting user go/no-go on the quick route fix.
+
+---
+## USER DECISION — LOCKED roadmap: CLEP → SAT → ACT → TEAS — 2026-06-21
+- Exam-family work order (locked): 1) CLEP fidelity (in flight), 2) SAT coverage backfill (already migrated/certified), 3) ACT migration (clone SAT pattern; ACT before AP), 4) TEAS LAST (kept, not sunset — V2 cert + /teas-prep route after CLEP+SAT+ACT).
+- TEAS interim trust caveat (TEAS advertised "today" + /teas-prep 404) logged; optional honesty tweak, otherwise addressed in the TEAS phase.
+- Accuplacer SUNSET (scoped out). DSST + languages hidden. AP after ACT.
