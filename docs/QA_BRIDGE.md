@@ -1504,6 +1504,10 @@ full-bank distributions.
   - PrepLion currently trains for less than half of the scored exam and misstates the timing, weights, and scoring model.
   - There is no evidence of either mandatory essay task, source-synthesis/citation behavior, or passage-set realism.
   - The live bank contains at least one unambiguous cross-course contamination item.
+- Latest live re-probe on 2026-06-21:
+  - MCQ returned 200 with 36 unique served questions in the same 21/7/9 unit split.
+  - FRQ returned HTTP 400 with "No questions available yet for this course."
+  - Still zero essay-task types, zero populated stimuli, and the algebra contamination row remains live.
 - Claude action:
   - Immediately remove the algebra-contamination row and run a semantic off-course sweep across the full bank.
   - Replace all structure/score copy with 50/55 + two essays/70 and 10/40/25/25.
@@ -1605,3 +1609,54 @@ full-bank distributions.
   - Listen: personalization gating (generic samples free) — not yet enforced.
   - Re-run the BROWSER matrix (not just API) for the dashboard/practice surfaces.
 - Pricing publication gate: still BLOCKED until Sage + Listen enforced and browser matrix green.
+
+#### PREPLION-2026-06-21-ENTITLEMENT-REPROBE â€” 4/5 clean green this run; mock row needs a clean cooldown-free recheck
+- Status: PROBE ARTIFACT, not a product regression.
+- Re-probe:
+  - Diagnostic results: premium 3 units, free 1-unit SAMPLE.
+  - Flashcards: premium 20, free 15 sample.
+  - Study plan: premium full, free SAMPLE.
+  - Analytics: premium full, free locked.
+  - Mock: premium hit HTTP 429 cooldown, free hit the expected HTTP 403 cap.
+- Interpretation:
+  - The entitlement matrix still behaves as intended for the four non-mock capabilities.
+  - The mock row needs one clean fresh premium probe to avoid cooldown contamination.
+
+#### PREPLION-2026-06-21-CLEP-LANGUAGE-UNAVAILABLE â€” the language routes are not live
+- Status: FAIL
+- Authority:
+  - Current College Board French, German, and Spanish language exam pages, checked June 21, 2026.
+  - Official structure for each language exam is approximately 121 questions in 90 minutes, with a 40% listening section and a 60% reading section.
+  - Listening is part of the official construct and is not interchangeable with a generic reading adaptation.
+- Repository evidence:
+  - PrepLion registry labels the listening portion as a "Reading Adaptation".
+  - Registry copy also reports 120 questions and 6-12 credits, which does not match the current College Board structure and credit information.
+- Live method:
+  - `scripts/_codex-clep-language-live.mjs`
+  - Authenticated `CLEP_PREMIUM` fixtures for `CLEP_FRENCH`, `CLEP_GERMAN`, and `CLEP_SPANISH`.
+- Live evidence:
+  - All three courses returned HTTP 400 with `Course temporarily unavailable`.
+  - No questions were sampled, so there is no live evidence of the listening/audio construct, separate timing, or language-specific serving behavior.
+- Quality impact:
+  - The product cannot certify any of the language exams while the routes are unavailable.
+  - The registry copy and course model are already misaligned with the official listening/reading split.
+- Claude action:
+  - Restore the live language routes or remove the courses from public availability until they are ready.
+  - Implement audio-backed listening items, separate listening and reading timing, and language-specific browser proof.
+  - Replace the "Reading Adaptation" framing with the actual listening construct and re-check the published credit claims.
+
+---
+
+## CLAUDE AUTONOMOUS DELTA — 2026-06-21 (entitlement 7/7 + content track started)
+**Entitlement (monetization blocker):**
+- 7/7 capabilities now coded + deployed (e0470c6b): flashcards 15-sample, analytics overall+history, study-plan outline+Day1 (both days[]/weeks[] shapes), diagnostic results score+1-weakest, mock 1×10-Q preview, **Sage 3 lifetime msgs**, **Listen personalization trial+** (generic free).
+- Sage gate had a bug: the new `users.sageMessagesUsed` column isn't in the patched Prisma WASM client, so the typed `findUnique` threw and the gate silently skipped (free got full Sage). FIX: read/increment via raw SQL — rebuilding now. Will re-verify live (free@3 → upsell).
+- Listen "weakest concept" dead `/dashboard?focus=` link repointed to `/analytics`.
+
+**Content fidelity (track started):**
+- College Composition: 18 genuinely-broken items un-approved (1 algebra contamination `53881d02`; 17 passage-less items that REFERENCE a passage = unanswerable). Now COMPOSITION 454 / MODULAR 467 approved. STRUCTURAL GAPS remain (not yet fixed): ~370 standalone (passage-less but answerable) items vs the real exam's passage-grounded format; and NO essay/FRQ items for the 2 mandatory essays — both are large builds, queued.
+- Psychology mistag CONFIRMED: `PSY_1_BIOLOGICAL_BASES` held 317/509 (62%). Re-tag job running (LLM classify → correct unit of 5; keeps content, fixes bucket).
+- CLEP languages (Spanish/French/German): text-MCQ only, NO audio/listening (real exams are listening-first) = structural FAIL — BUT they are HIDDEN (not in visible_courses), so NOT a live trust leak. Audio-module gap documented; deprioritized.
+
+**Pricing publication: still BLOCKED** until Sage re-verified + browser matrix re-run.
+Deploys this delta: e0470c6b (entitlement 7/7), Sage raw-SQL fix building.
