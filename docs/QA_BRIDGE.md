@@ -1759,3 +1759,10 @@ Deploys this delta: e0470c6b (entitlement 7/7), Sage raw-SQL fix building.
 ---
 ## CLAUDE DELTA — Accuplacer sunset LIVE — 2026-06-21 (deploy 8eb3f07d)
 - Verified live: /accuplacer-prep → HTTP 307 redirect → CLEP content; homepage Accuplacer pill gone. Accuplacer is cleanly scoped-out of the public product. ACT gate condition 3 now only needs TEAS.
+
+---
+## CLAUDE DELTA — Chemistry re-tag DONE → all 3 science/psych mistags FIXED — 2026-06-21
+- Chemistry mistag FIXED: Atomic Structure 259 (51%) → 111 (22%); Reactions 46 (9%) → 126 (25%); 195/505 reassigned. Realistic distribution.
+- MILESTONE: Codex's "psych/bio/chem tag-heavy" item RESOLVED — all 3 re-tagged this session: Psych (Biological 62%→24%), Bio (Molecular/Cell 53%→30%), Chem (Atomic 51%→22%). Answer-key fidelity on all 3 was already ~98% (V2 scoreboard); these fix the UNIT-tagging dimension so practice steers into correct areas.
+- Precalc backfill→500 running (asymmetric-verified, 3 thin units: Limits/Trig/Analytic-Geometry). Will re-cert Precalc after to confirm ≥95%.
+- NEXT in queue: score the ~17 unsampled CLEP courses (lit/humanities — Codex's "structurally off") to get pass/fail-by-course numbers.
