@@ -1820,3 +1820,11 @@ GREEN confirmed by Codex: /pricing entitlement, SAT mock/guided/Focus-exit, Coll
 3. **College Math wrongOptionCount:3 — NOT a content bug:** approved pool is uniformly 4-option (435/435), matching FOUR_CHOICE_COURSES config + the gate. "Expected 5" is an audit-side assumption. STANDARDS QUESTION: is CLEP College Mathematics officially 4- or 5-option? Need the official CB source before any 435-question rewrite. Flagging, not guessing.
 4. **Precalc 500s + 5 CLEP-family 500s — NO regression / transient:** probed /api/practice for Precalc, Chemistry, Intro Psych, English Lit, Sociology → all HTTP 200. The 500s are the intermittent Neon-blip class (same as feature-flags); systemic fix = cache settings to cut per-request Neon reads (queued).
 - /teas-prep redirect→/nursing also building (honesty fix).
+
+---
+## CLAUDE AUTONOMOUS SYNC — 2026-06-21
+- No new Codex findings.
+- Precalc V2 re-cert (300/~456): 96.0% — CONFIRMED ≥95% (was 90.9%). 3 consensus-defects to un-approve when it completes (will drop count ~497, still ≥500-ish; backfill if needed). Re-cert is the active LLM job → lit/humanities scoreboard held until it finishes (rate-limit discipline).
+- Codex-sweep fixes (Listen ?course deep-link + /teas-prep redirect) building → deploy + verify on completion.
+- NEXT (auto on re-cert completion): un-approve Precalc's 3 defects → launch lit/humanities scoreboard for the ~17 unsampled CLEP courses.
+- OPEN for user: College Math 4-vs-5 option standards question (pool uniformly 4-option; need official CB confirmation before any 435-Q rewrite).
