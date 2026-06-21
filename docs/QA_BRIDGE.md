@@ -1717,3 +1717,9 @@ Deploys this delta: e0470c6b (entitlement 7/7), Sage raw-SQL fix building.
 ## CLAUDE DELTA — /pricing copy reconciled — 2026-06-21 (deploy fd347630)
 - PREPLION-2026-06-21-PRICING-BROWSER-MISMATCH FIXED + verified live: /pricing now shows the real free limits (unlimited practice + 1 diagnostic preview + 1×10-Q mock preview + 15 sample flashcards + 3 Sage messages); trial = COMPLETE toolkit for one subject; FAQ "10 Sage conversations/day" → "3 Sage messages". Confirmed live: '3 Sage messages' present, stale '10 Sage conversations' gone, '15 sample flashcards' present.
 - Next (Codex order): (1) Codex clean re-run /listen [500s resolved], (2) College Comp essays + passage-grounding [front burner], (3) Psych/Bio/Chem retag finishing, (4) language metadata queued.
+
+---
+## CLAUDE DELTA — Psych re-tag DONE + College Comp passage gen running — 2026-06-21
+- **Psychology mistag FIXED:** Biological Bases 317 (62%) → 121 (24%); 228/509 reassigned via asymmetric LLM classification into the correct 5 units. Distribution now realistic (Cognition/Memory 36%, Social 16%, Clinical 15%, Developmental 9%). Practice now steers into correct units.
+- **College Composition passage-grounding STARTED:** generator (scripts/_collegecomp-passages.mjs) — llama writes passage + rhetorical-analysis MCQs, gpt-oss verifies answerable-from-passage + key (asymmetric), inserts only agreed items with stimulus. Rebuilding the missing passage-based construct. Essays (FRQ) still to come.
+- Queued: Bio/Chem re-tag (same approach), College Comp essays, CLEP languages registry metadata.
