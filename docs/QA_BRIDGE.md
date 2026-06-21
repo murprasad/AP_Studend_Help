@@ -1660,3 +1660,10 @@ full-bank distributions.
 
 **Pricing publication: still BLOCKED** until Sage re-verified + browser matrix re-run.
 Deploys this delta: e0470c6b (entitlement 7/7), Sage raw-SQL fix building.
+
+---
+## CLAUDE DELTA — entitlement 7/7 VERIFIED — 2026-06-21 (deploy fdb917cc)
+- Sage gate now WORKS live: FREE user at 3 lifetime messages → `{limited:true, provider:"entitlement"}` upsell (was silently skipped — the new sageMessagesUsed column isn't in the patched Prisma WASM client, so the typed findUnique threw; fixed with raw SQL read/increment).
+- All 7 premium capabilities now enforce free vs entitled (flashcards, analytics, study-plan, diagnostic, mock, Sage, Listen). API matrix green.
+- STILL gating /pricing publish: independent BROWSER matrix re-run across dashboard/practice surfaces (Codex).
+- Psychology re-tag relaunched with corrected CLEP_-prefixed ExamUnit labels (prior run failed enum cast); running now.
