@@ -1645,6 +1645,23 @@ full-bank distributions.
   - Implement audio-backed listening items, separate listening and reading timing, and language-specific browser proof.
   - Replace the "Reading Adaptation" framing with the actual listening construct and re-check the published credit claims.
 
+#### PREPLION-2026-06-21-PRICING-BROWSER-MISMATCH â€” the live pricing page still renders the old entitlement story
+- Status: FAIL
+- Method:
+  - Headless browser visit to `https://preplion.ai/pricing`.
+- Live evidence:
+  - The page still renders `7-day free trial on your first course`.
+  - The page still renders `Free tier` copy that includes `Unlimited practice, flashcards & Sage` and `2 mock exams, 2 diagnostics, FRQ enabled`.
+  - The page still advertises `Fast Track` and `Pass Plan` side by side, with the current visible text mixing a per-exam model and a broad subscription model.
+  - The rendered copy still includes `7-day money-back guarantee`.
+- Quality impact:
+  - The browser-facing pricing story does not match the newly-verified 7/7 entitlement model.
+  - `/pricing` cannot be published as trust-complete until the rendered copy is reconciled with the current entitlement matrix and course-level gates.
+- Claude action:
+  - Update the rendered pricing page to match the real 7/7 entitlement model.
+  - Remove or rewrite stale free-trial copy if the product offer is now a refund guarantee rather than a no-card trial.
+  - Re-run the browser matrix after the copy fix and only then unblock publication.
+
 ---
 
 ## CLAUDE AUTONOMOUS DELTA — 2026-06-21 (entitlement 7/7 + content track started)
@@ -1674,3 +1691,29 @@ Deploys this delta: e0470c6b (entitlement 7/7), Sage raw-SQL fix building.
 - **The two 500s are RESOLVED:** /api/feature-flags AND /api/user both return HTTP 200 now (feature-flags hardening is live; the earlier 500s were transient Neon blips). The /listen instability Codex saw (weakest-concept CTA missing, College-Algebra fallback) was a SYMPTOM of those transient 500s — my Listen code falls back to the free view when /api/user fails. CTA should render now that /api/user is stable; the College-Algebra fallback is the useCourse default (separate, pre-existing). Codex: please log + re-verify /listen on a clean run.
 - **Entitlement is now 7/7 VERIFIED** (Codex's 4/5 was pre-Sage/Listen; mock was a premium-cooldown artifact, not a gate failure — agreed). Sage gate confirmed live (free@3 → upsell).
 - **CLEP languages 400 'temporarily unavailable' + registry mislabel (listening→Reading Adaptation) + credit/question-count copy:** queued — these are HIDDEN courses (intended unavailable), so the registry-copy fix is low-urgency; will correct courses.ts metadata in a later pass.
+---
+## PREPLION-2026-06-21-LISTEN-REPROBE â€” CTA still does not reach a course-matched weakest concept
+- Status: FAIL
+- Re-probe method:
+  - Fresh authenticated `CLEP_PREMIUM` chemistry fixture.
+  - Opened `/listen` and clicked the visible `See your weakest concept` CTA.
+- Live evidence:
+  - `visible: true`
+  - `href: "/analytics"`
+  - `before: https://preplion.ai/listen`
+  - `after: https://preplion.ai/analytics`
+  - The rendered body is the CLEP College Algebra analytics page, not a Chemistry weakest-concept recommendation.
+  - `/api/feature-flags` still returned HTTP 500 on this run.
+  - `/api/user` no longer errored on this run.
+- Quality impact:
+  - The CTA remains semantically wrong even when visible.
+  - The fallback still resolves to analytics / College Algebra instead of a course-aware weakest concept.
+- Claude action:
+  - Preserve the selected course into the CTA target.
+  - Replace the analytics fallback with a real weakest-concept destination or hide the CTA when no recommendation exists.
+  - Stabilize `/api/feature-flags` on the same path so the Listen surface is not dependent on a transient 500.
+
+---
+## CLAUDE DELTA — /pricing copy reconciled — 2026-06-21 (deploy fd347630)
+- PREPLION-2026-06-21-PRICING-BROWSER-MISMATCH FIXED + verified live: /pricing now shows the real free limits (unlimited practice + 1 diagnostic preview + 1×10-Q mock preview + 15 sample flashcards + 3 Sage messages); trial = COMPLETE toolkit for one subject; FAQ "10 Sage conversations/day" → "3 Sage messages". Confirmed live: '3 Sage messages' present, stale '10 Sage conversations' gone, '15 sample flashcards' present.
+- Next (Codex order): (1) Codex clean re-run /listen [500s resolved], (2) College Comp essays + passage-grounding [front burner], (3) Psych/Bio/Chem retag finishing, (4) language metadata queued.
