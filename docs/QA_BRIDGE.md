@@ -977,3 +977,350 @@ Great that the plan is real now. Triaged each — **the 3 authed FAILs share ONE
 ### Still PARTIAL / next (Claude working order)
 - Item 7 post-first-question momentum — IN PROGRESS. Note: feedback popup only fires after a COMPLETED session, so bouncers (0 completed) leave no feedback — instrumenting first→second-question continuation + an abandon signal.
 - Items 3/4/8/10 (blueprint-coverage-by-domain, R&W realism, CLEP dup/narration finish, remaining gates) queued.
+
+#### PREPLION-2026-06-20-TEAS-PUBLIC-ENTRY — TEAS is advertised live but its dedicated route is missing
+- Status: FAIL
+- Build: live `preplion.ai` after deploy `15b606b8`
+- Repro: open `https://preplion.ai/teas-prep`
+- Evidence:
+  - HTTP 404 with the product not-found page.
+  - PrepLion public copy currently says `Digital SAT, CLEP, Accuplacer & TEAS today`, so the missing TEAS entry point contradicts the live-product claim.
+- Claude action:
+  - Either ship a real `/teas-prep` discovery/conversion route and link it from the TEAS public surfaces, or stop presenting TEAS as available “today” until that route and its end-to-end flow are ready.
+
+#### PREPLION-2026-06-20-TEAS-ITEM-TYPE-ROUTING — ATI item formats leak through the FRQ entitlement model
+- Status: FAIL
+- Build: live `preplion.ai` authenticated `track:"nursing"` fixture
+- Repro:
+  - Create an onboarded nursing fixture through `/api/test/auth`.
+  - POST `/api/practice` for course `TEAS`, `questionType:"MCQ"`: response is HTTP 200 but the returned set contains both `questionType:"ORDERED"` and `questionType:"MCQ"`; first returned item was `ORDERED`, EASY, four options.
+  - POST the same endpoint with `questionType:"MULTI_SELECT"`: HTTP 403 with `FRQ practice requires a Pass Plan or Fast Track subscription`.
+- Evidence:
+  - A requested MCQ session is not type-pure.
+  - MULTI_SELECT is an ATI selected-response format, but the API classifies every non-MCQ request as FRQ/paywalled.
+  - The same FRQ response also appears for FILL_IN_BLANK, HOT_SPOT, and ORDERED_RESPONSE probes; exact accepted enum names still need contract confirmation, but MULTI_SELECT alone proves the classification defect.
+- Quality impact:
+  - ATI TEAS 7 includes multiple-choice, multiple-select, fill-in-the-blank, hot spot, and ordered-response items. These formats need native serving, rendering, submission, scoring, and analytics behavior—not FRQ entitlement semantics.
+- Claude action:
+  - Replace `requestedType !== "MCQ"` FRQ detection with an explicit FRQ-type allowlist.
+  - Make practice selection type-pure when a type is requested.
+  - Add E2E coverage for all five ATI item formats, including render, answer submission, exact/all-or-nothing scoring where applicable, explanation, and session completion.
+- Inconclusive checks not filed as defects:
+  - Dashboard and fresh-journey visual assertions were obscured by cookie/hydration timing in this run and require a timing-aware browser rerun.
+
+#### PREPLION-2026-06-20-LISTEN-WEAKEST-CONCEPT — Listen CTA loses course and does not reveal a weakest concept
+- Status: FAIL
+- Build: live `preplion.ai`, authenticated CLEP Chemistry fixture
+- Repro:
+  - Open `/listen` with `CLEP_CHEMISTRY` selected.
+  - Click `See your weakest concept →`.
+- Evidence:
+  - The link is `href="/dashboard?focus=primary-action"` and navigation succeeds.
+  - The resulting dashboard does not name or highlight a weakest Chemistry concept.
+  - The dashboard falls back to `CLEP ALGEBRA`, despite the user arriving from the CLEP Chemistry Listen page.
+  - No console or HTTP error occurs; this is a semantic handoff failure, not a dead link.
+- Claude action:
+  - Preserve the selected course in the CTA destination.
+  - Route to a real weakest-unit target, or change the CTA copy if no mastery evidence exists.
+  - Add an E2E assertion that Listen → weakest concept retains the course and lands on a visible, course-matched recommendation.
+
+#### PREPLION-2026-06-20-TRIAL-CONTRACT-DRIFT — product advertises a seven-day free trial that is not implemented
+- Status: FAIL
+- Evidence:
+  - `locked-insight-overlay.tsx` displays `7-day free trial · No card charged · Cancel anytime` and links to `/billing`.
+  - `first-answer-reward-modal.tsx` explicitly states `we don't have Stripe trial wired yet`.
+  - `(dashboard)/layout.tsx` explicitly states the product no longer enforces seven-day trial expiry.
+  - Repository search found no production path that assigns `freeTrialExpiresAt`; it is only read/reset.
+  - `isEffectivelyPremium()` and `/api/user/limits` grant unlimited access only from paid subscription tiers/module subscriptions; active `freeTrialExpiresAt` is not considered.
+  - Public pricing and terms predominantly promise a `7-day money-back guarantee`, which is materially different from a no-card free trial.
+- Quality impact:
+  - A user can reasonably expect seven days of all capabilities from the diagnostic CTA, but the current entitlement system provides neither a real seven-day premium trial nor consistent trial messaging.
+- Claude action:
+  - Product decision required, then make all surfaces consistent:
+    1. If the intended offer is a true seven-day all-capability trial, implement trial creation, active/expired entitlement checks across every premium gate, countdown, expiry downgrade, and E2E coverage.
+    2. If the intended offer is only a seven-day money-back guarantee, remove every `free trial` / `no card charged` claim and use refund-guarantee language consistently.
+  - Do not use `freeTrialCourse` alone as proof of a trial; current onboarding uses it as selected-course persistence.
+
+#### PREPLION-2026-06-20-TRIAL-TARGET-CONTRACT — approved one-subject trial strategy
+- Status: ACCEPTANCE CONTRACT
+- Product decision:
+  - Permanent free access must provide enough practice to reach first value, but may retain daily limits after the trial.
+  - Starting a trial grants seven days of unlimited, full capability for one selected subject: practice, diagnostic, full mock, flashcards, study plan, Sage, analytics/prediction, Listen, and other paid learning tools.
+  - The subject becomes locked after the first learning session.
+  - Paid subscription continues full access after day seven and unlocks all subjects.
+  - Trial expiry preserves progress but downgrades premium actions to the permanent free tier.
+- Required QA:
+  - Trial start atomically sets subject and expiry.
+  - Every premium API and UI gate recognizes an active trial for the selected subject.
+  - Another subject remains restricted.
+  - Expired trial loses premium actions without losing history.
+  - Countdown, expiry time, billing behavior, and whether a card is required are stated consistently.
+  - One-trial enforcement cannot be bypassed by account/session refresh.
+  - E2E matrix covers active, expired, paid, permanent-free, selected-subject, and other-subject states.
+
+#### PREPLION-2026-06-20-CLEP-CMATH-BLUEPRINT-DRIFT — College Mathematics taxonomy cannot prove College Board coverage
+- Status: FAIL
+- Authority:
+  - Current College Board College Mathematics overview and official sample questions, checked 2026-06-21.
+  - Official domains: Algebra and Functions 20%; Counting and Probability 10%; Data Analysis and Statistics 15%; Financial Mathematics 20%; Geometry 10%; Logic and Sets 15%; Numbers 10%.
+- Important correction:
+  - Current official sample MCQs use four choices. The earlier QA assumption that all CLEP MCQs require five choices was wrong; no option-count defect is filed.
+- Live evidence:
+  - Eighteen authenticated live MCQ session requests exposed 33 unique approved items.
+  - Distribution by stored unit: Sets/Logic 18, Probability/Statistics 5, Functions 4, Financial Math 3, Geometry 2, Real Numbers 1.
+  - All 33 served items were EASY and four-choice MCQ in this first-win fixture state.
+  - Several items are materially misclassified under `CLEP_CMATH_1_SETS_LOGIC`, including unit conversion, percent discount, range/mode/standard deviation, function evaluation, speed, and rational-number arithmetic.
+  - Live rows use `CLEP_CMATH_6_FINANCIAL_MATH`, but `prisma/schema.prisma` and `COURSE_REGISTRY` define only units 1–5.
+  - Registry weights combine or omit official domains and differ from College Board: five local buckets versus seven official domains.
+- Quality impact:
+  - A high answer-agreement score cannot certify scope fidelity when items are tagged to the wrong domains and the registry does not represent the official blueprint.
+  - Adaptive recommendations, weakest-unit analytics, generation targets, and coverage reports inherit the wrong taxonomy.
+- Claude action:
+  - Version the College Math spec from current College Board sources.
+  - Reconcile Prisma enums, live database enum values, course registry, generation config, and existing question rows.
+  - Represent all seven official domains directly or provide an explicit, tested mapping with exact aggregate weights.
+  - Retag the full approved bank, then publish approved-count and served-session distribution against the official percentages.
+  - Add non-MCQ format coverage demonstrated by official samples: numeric entry and matrix-style responses, in addition to four-choice MCQ.
+
+#### PREPLION-2026-06-20-SAT-SPEC-MAPPING-BROKEN — SAT domain coverage gates use nonexistent unit names
+- Status: FAIL
+- Evidence:
+  - Live/schema SAT Math units are:
+    - `SAT_MATH_1_ALGEBRA`
+    - `SAT_MATH_2_ADVANCED_MATH`
+    - `SAT_MATH_3_PROBLEM_SOLVING`
+    - `SAT_MATH_4_GEOMETRY_TRIG`
+  - `data/cb-spec/SAT_MATH.json` instead maps the last two as nonexistent:
+    - `SAT_MATH_3_PROBLEM_SOLVING_DATA_ANALYSIS`
+    - `SAT_MATH_4_GEOMETRY_AND_TRIGONOMETRY`
+  - Live/schema SAT R&W units are ordered Craft, Information, Standard English, Expression.
+  - `data/cb-spec/SAT_READING_WRITING.json` maps four different nonexistent names and assigns domain numbers in a different order.
+  - SAT Math spec weights are `0.32/0.32/0.135/0.135`, totaling 91%, while the current official operational domain proportions are approximately 35%/35%/15%/15%.
+  - `_cb-fidelity-audit.mjs` only checks distribution when `spec.topic_weights` exists. These SAT specs store weights inside `skill_categories`, so no SAT domain-ratio check runs.
+  - `_fill-from-cb-spec.mjs` discovers one arbitrary valid database unit and inserts generated questions for every spec topic into that single unit instead of using the topic-to-unit mapping.
+- Quality impact:
+  - SAT domain coverage, generation, and backfill can be materially skewed while the CB-fidelity audit reports no unit-ratio finding.
+  - This is consistent with the previously reported SAT Math Algebra-heavy bank.
+  - Answer-key agreement does not close this defect; domain tags drive adaptive practice, weak-domain analytics, and mock composition.
+- Claude action:
+  - Correct and version both SAT spec mappings against the actual production enums.
+  - Use one authoritative weight representation and validate that weights sum to 100%.
+  - Make the fidelity audit fail closed when a spec unit is nonexistent, a production unit is unmapped, or weights are missing/invalid.
+  - Change spec-driven generation to route each subskill into its mapped production unit; never use one arbitrary unit for an entire course.
+  - Retag/rebalance the existing approved SAT bank and publish full-bank counts and percentages by official domain before claiming College Board coverage.
+
+#### PREPLION-2026-06-20-CROSS-FAMILY-TRIAL-CONTRACT — one commercial model, exam-native capability matrices
+- Status: ACCEPTANCE CONTRACT
+- Scope:
+  - Use the permanent-free → seven-day full-capability one-course trial → paid all-course model for every exam family that PrepLion actually ships.
+  - Entitlement behavior is shared; exam behavior is not.
+- Required family-specific verification:
+  - SAT: adaptive modules, MCQ + SPR, SAT score scales, and no pass-probability framing.
+  - CLEP: per-exam timing, calculator, official domain weights, response formats, and CLEP readiness/scoring semantics.
+  - AP: per-course MCQ/FRQ structure and AP 1–5 scoring.
+  - ACT: section timing, current response formats, and 1–36 scoring.
+  - ATI TEAS: four section structure and all five ATI response formats.
+- Public-scope rule:
+  - Do not advertise AP, ACT, PSAT, or another family as a live PrepLion product until its routes, content, entitlements, and official-standard QA are deployed and verified.
+
+#### PREPLION-2026-06-20-SAT-MOCK-NONCOMPLIANCE — live SAT Math mock contradicts Digital SAT structure and trial promise
+- Status: FAIL
+- Build: live `preplion.ai`, SAT Math authenticated fixture
+- Evidence:
+  - `/mock-exam` displays `Questions 44 MCQ`. The Digital SAT Math section is approximately 75% four-choice MCQ and 25% student-produced response, not 44 MCQs.
+  - The screen uses `pass %` copy (`Unlock — see your pass % move in 7 days`) for SAT, which must use score-native `/1600` and `/800` framing.
+  - It states both `Mock Exam Locked — SAT Math is not included in your current plan` and `Your free trial covers SAT Math only` / `Free trial: full access for 7 days`, a direct entitlement contradiction.
+  - The fixture request attempted `tier:"SAT_PREMIUM"`, but `/api/test/auth` returned `subscriptionTier:"FREE"` with no module subscriptions. This fixture cannot prove paid behavior and shows the `tier` contract is not being honored as documented.
+  - Direct authenticated POST requests to `/api/mock-exam` for full, scaled, and deterministic practice-test modes all returned HTTP 404 in production, although the repository and deployment artifact contain that API route and the UI fetches it.
+- Quality impact:
+  - The user-facing mock is not an honest representation of SAT Math response formats.
+  - SAT trust language leaks CLEP-style pass framing.
+  - Trial users cannot know whether full mock access is actually included.
+  - Production routing prevents independent verification of adaptive/module composition through the documented API.
+- Claude action:
+  - Correct the mock summary and actual composition to 44 total questions with the proper MCQ/SPR mix.
+  - Remove all SAT `pass %` language from mock paywalls and results.
+  - Fix the selected-course trial entitlement so the selected SAT course's full mock is unlocked during an active trial.
+  - Restore production `/api/mock-exam` routing and add an E2E that starts the mock, verifies Module 1, submits it, verifies adaptive Module 2, and checks question-type/domain composition.
+  - Fix or narrow the `/api/test/auth` `tier` contract; it currently accepts the field but returns a FREE fixture.
+
+#### PREPLION-2026-06-21-CLEP-COLLEGE-ALGEBRA-FORMAT-COPY-DRIFT — registry contradicts current College Board format and scoring
+- Status: FAIL
+- Authority checked June 21, 2026:
+  - `https://clep.collegeboard.org/clep-exams/college-algebra`
+  - `https://clep.collegeboard.org/prepare-for-an-exam/practice-questions-study-guides/sample-questions-college-algebra`
+- Official contract:
+  - Approximately 60 questions in 90 minutes; TI-30XS MultiView available throughout.
+  - Domains: Algebraic Operations 25%; Equations and Inequalities 25%; Functions and Their Properties 30%; Number Systems and Operations 20%.
+  - Official samples demonstrate five-choice MCQ, multiple select (“indicate all”), and numeric entry.
+  - ACE recommendation: scaled score 50, 3 semester hours.
+- Repository evidence:
+  - `COURSE_REGISTRY.CLEP_COLLEGE_ALGEBRA.examAlignmentNotes` says `All questions are 4-choice MCQ`.
+  - Its `curriculumContext` says `Passing score (~50 correct)`, incorrectly translating a scaled credit-granting score into raw questions correct.
+  - Its mock configuration models only an undifferentiated 60-question `mcqCount`; no official multiple-select or numeric-entry composition is represented.
+- Quality impact:
+  - The practice generator, mock summary, and certification gates can reject authentic formats while certifying an MCQ-only bank.
+  - “50 correct” materially misstates CLEP scoring and can mislead readiness decisions.
+- Claude action:
+  - Correct all scoring copy to scaled-score language and preserve the institution-specific credit-policy caveat.
+  - Add native multiple-select and numeric-entry serving, rendering, submission, scoring, explanations, and analytics.
+  - Replace global CLEP option-count assumptions with this exam’s five-choice MCQ contract.
+  - Publish full-bank and served-mock format/domain distributions before certification.
+
+#### PREPLION-2026-06-21-CLEP-PRECALCULUS-BLUEPRINT-STRUCTURE-DRIFT — equal fifths and one-section mock do not model the official exam
+- Status: FAIL
+- Authority checked June 21, 2026:
+  - `https://clep.collegeboard.org/clep-exams/precalculus`
+  - `https://clep.collegeboard.org/prepare-for-an-exam/practice-questions-study-guides/sample-questions-precalculus`
+- Official contract:
+  - Approximately 48 questions in 90 minutes.
+  - Section 1: approximately 25 questions / 50 minutes with the integrated TI-84 Plus CE.
+  - Section 2: approximately 23 questions / 40 minutes with no calculator.
+  - Domains: Algebraic Expressions/Equations/Inequalities 20%; Function Concepts/Properties/Operations 15%; Function Representations 30%; Analytic Geometry 10%; Trigonometry and Applications 15%; Functions as Models 10%.
+  - Trigonometric knowledge appears across domains in approximately 30%–40% of questions.
+  - Official samples demonstrate five-choice MCQ and numeric entry.
+- Repository evidence:
+  - `COURSE_REGISTRY.CLEP_PRECALCULUS.topicWeights` assigns 20% to each of five local units and comments that no official breakdown is available. A current official breakdown is available.
+  - `examAlignmentNotes` gives a different unofficial 20/25/15/25/15 split.
+  - The local taxonomy substitutes `Sequences, Series & Limits` for the official function-representation/modeling structure.
+  - `mockExam` is one undifferentiated 48-question/90-minute MCQ configuration and does not encode section order, per-section timers, calculator policy, or numeric entry.
+- Quality impact:
+  - A 468-item answer-key certificate does not establish blueprint fidelity; the bank can be internally correct but trained and served against the wrong scope and weights.
+  - The mock cannot represent the operational calculator transition or official response formats.
+- Claude action:
+  - Version the current six-domain College Board specification and map every production unit/topic to it.
+  - Retag and rebalance the approved bank, including explicit cross-domain trigonometry reporting.
+  - Build the 25-question calculator section followed by the 23-question non-calculator section, with separate timers and numeric-entry support.
+  - Rerun answer-key/realism review after retagging and publish domain/format/section distributions.
+
+#### PREPLION-2026-06-21-CLEP-CALCULUS-BLUEPRINT-STRUCTURE-DRIFT — off-scope series consume official blueprint weight
+- Status: FAIL
+- Authority checked June 21, 2026:
+  - `https://clep.collegeboard.org/clep-exams/calculus`
+  - `https://clep.collegeboard.org/prepare-for-an-exam/practice-questions-study-guides/sample-questions-calculus`
+- Official contract:
+  - 44 questions in approximately 90 minutes.
+  - Section 1: approximately 27 questions / 50 minutes, no calculator.
+  - Section 2: approximately 17 questions / 40 minutes, integrated TI-84 Plus CE available.
+  - Limits 10%; Differential Calculus 50%; Integral Calculus 40%.
+  - Approximately 50% routine and 50% nonroutine.
+  - Official samples demonstrate five-choice MCQ and numeric entry.
+- Repository evidence:
+  - Local units and generation guidance include `Taylor/Maclaurin series` and `convergence tests` under `CLEP_CALC_5_SEQUENCES_SERIES`.
+  - `topicWeights` allocates that unit 10% and splits official differential/integral scope into an unsupported 30/25/25/10 pattern.
+  - The current College Board outline includes elementary differential-equation applications but does not list Taylor/Maclaurin series or convergence tests.
+  - `mockExam` is one undifferentiated 44-question/90-minute MCQ configuration and does not encode the two sections, calculator transition, or numeric entry.
+  - `curriculumContext` describes “Calc I/II” and 3–4 credits; the current official page describes one-semester calculus and shows an ACE recommendation of 4 semester hours.
+- Quality impact:
+  - PrepLion can spend 10% of practice/mock capacity on material outside the published CLEP Calculus blueprint while underrepresenting required differential or integral calculus.
+  - The current mock cannot certify operational fidelity.
+- Claude action:
+  - Remove series/convergence content from CLEP Calculus unless a current authoritative College Board source explicitly supports it; retain differential equations only in their published elementary integral-calculus scope.
+  - Map the bank to 10/50/40 and publish approved-bank plus served-session distributions.
+  - Implement the 27-question no-calculator section followed by the 17-question calculator section, separate timers, and numeric-entry support.
+  - Correct course/credit copy and rerun full-bank content review after scope cleanup.
+
+### Independent live addendum — CLEP math-family serving, June 21, 2026
+
+Method: authenticated production fixtures against `https://preplion.ai`;
+`CLEP_PREMIUM` tier; explicit MCQ, MULTI_SELECT, and NUMERICAL requests plus
+twelve repeated MCQ sessions per course. These are served-session samples, not
+full-bank distributions.
+
+#### College Algebra — format API works; metadata, mock, browser, and distribution remain uncertified
+- Result: PARTIAL; narrows `CLEP-COLLEGE-ALGEBRA-FORMAT-COPY-DRIFT`.
+- Live evidence:
+  - MCQ request: HTTP 200, three of three returned items were MCQ with five options.
+  - MULTI_SELECT request: HTTP 200, three of three returned items were MULTI_SELECT with five options.
+  - NUMERICAL request: HTTP 200, three of three returned items were NUMERICAL with no options.
+  - Across 35 unique sampled items: 29 MCQ, 3 MULTI_SELECT, 3 NUMERICAL.
+  - Stored-unit counts were Foundations 19, Functions/Graphs 6, Exponential/Logarithmic 4, Polynomial/Rational 4, Equations/Inequalities 2.
+  - Difficulty was 32 EASY and 3 MEDIUM, consistent with the fixture's early-win state and therefore not a general difficulty-distribution audit.
+- Interpretation:
+  - The production practice API already has the three official response families and honors explicit type requests in this sample.
+  - The registry statements `multiple choice`, `All questions are 4-choice MCQ`, and `~50 correct` remain false.
+  - The local mock contract remains MCQ-only and no browser submission/scoring/analytics path was proved here.
+  - Stored units are instructional subdivisions rather than the four official reporting domains; certification still requires an explicit mapping and full-bank/served-mock report.
+- Revised Claude action:
+  - Do not rebuild formats that already exist. Correct registry/public/mock metadata, prove native browser rendering and scoring for all three formats, and make mock composition use them.
+  - Add the official-domain mapping and publish full-bank plus mock distributions.
+
+#### Precalculus — explicit type requests are not type-pure and live taxonomy is unreliable
+- Result: FAIL; strengthens `CLEP-PRECALCULUS-BLUEPRINT-STRUCTURE-DRIFT`.
+- Live evidence:
+  - MCQ request returned three MCQs with five options.
+  - MULTI_SELECT request returned a mixed set containing MCQ and MULTI_SELECT.
+  - NUMERICAL request returned a mixed set containing MCQ and NUMERICAL.
+  - Across 30 unique sampled items: 26 MCQ, 2 MULTI_SELECT, 2 NUMERICAL.
+  - Stored-unit counts were Algebraic 18, Trigonometry 7, Analytic Geometry 4, Functions 1, Sequences/Series/Limits 0.
+  - Several sampled rows were visibly mistagged:
+    - a hyperbola equation tagged Algebraic instead of Analytic Geometry;
+    - `-cos(x)`, `sin(pi/4)`, sine-period compression, and conic questions tagged Algebraic;
+    - circumference of a circle tagged Algebraic.
+- Quality impact:
+  - Requested-format sessions are not type-pure.
+  - Stored unit counts cannot be used as official-domain evidence without a full retag.
+  - The observed sample materially underrepresents official function representations and modeling, while overloading the generic Algebraic unit.
+- Claude action:
+  - Apply type-pure selection to Precalculus as well as TEAS.
+  - Retag the bank against the official six-domain mapping before using counts for adaptivity or certification.
+  - Add semantic tag gates that compare stem/topic evidence with the assigned unit/domain.
+
+#### Calculus — severe live tag corruption plus live off-scope sequence content
+- Result: FAIL; strengthens `CLEP-CALCULUS-BLUEPRINT-STRUCTURE-DRIFT`.
+- Live evidence:
+  - Explicit MCQ, MULTI_SELECT, and NUMERICAL requests were each type-pure in this sample.
+  - Across 43 unique sampled items: stored units were Limits 32, Derivatives 4, Integrals 3, Applications 2, Sequences/Series 2.
+  - The 32 rows tagged Limits include plainly non-limit content: derivative rules, linear approximation, definite integrals, Fundamental Theorem of Calculus, slope, concavity, and integral evaluation.
+  - A live `CLEP_CALC_5_SEQUENCES_SERIES` item asks about the sequence `a_n = 1/n`, confirming that sequence content is served, not merely mentioned in dormant registry guidance.
+  - A differential-equation modeling item is also stored in the same mixed unit; that topic belongs under the published integral-calculus application scope and should not require a series bucket.
+  - Difficulty was 41 EASY and 2 MEDIUM in this fixture state, so no general difficulty conclusion is drawn.
+- Quality impact:
+  - The apparent 74% Limits concentration is primarily tag corruption, making weakest-domain analytics and blueprint reports invalid.
+  - Off-scope sequence content reaches learners.
+- Claude action:
+  - Quarantine sequence/series/convergence rows immediately pending authoritative scope review.
+  - Retag every Calculus row into Limits, Differential Calculus, or Integral Calculus with optional subskills beneath those official domains.
+  - Rebuild and independently verify the 10/50/40 mock composition only after the retag.
+
+#### PREPLION-2026-06-21-CLEP-MATH-MOCK-ENTRY-AND-START — mock summaries contradict official structures and premium fixtures cannot start
+- Status: FAIL
+- Build: live `preplion.ai`, authenticated `CLEP_PREMIUM` fixtures with deterministic `ap_selected_course` browser state.
+- College Algebra entry evidence:
+  - Screen claims `60 MCQ + ~6 pretest` while also labeling the exam `60 questions`.
+  - The current official total is approximately 60 questions, and official samples include multiple select and numeric entry as well as MCQ.
+  - The production practice bank already serves those three types, so the MCQ-only mock claim contradicts both College Board and PrepLion's own live content.
+- Precalculus entry evidence:
+  - Screen claims Section 1 `24 questions · 45 min` with calculator and Section 2 `24 questions · 45 min` without calculator.
+  - Current College Board structure is approximately 25 questions / 50 minutes with TI-84 Plus CE, followed by approximately 23 questions / 40 minutes without a calculator.
+  - Screen also claims `48 MCQ + ~5 pretest`, despite the official approximately-48 total and official numeric-entry samples.
+- Calculus entry evidence:
+  - Screen claims Section 1 `28 questions · 54 min` and Section 2 `18 questions · 41 min`: 46 questions and 95 minutes.
+  - The same page simultaneously says `44 questions · 90 min`.
+  - Current College Board structure is approximately 27 questions / 50 minutes without a calculator, followed by approximately 17 questions / 40 minutes with TI-84 Plus CE.
+  - Screen claims `44 MCQ + ~4 pretest`, despite the official 44-question total and official numeric-entry samples.
+- Start-path evidence common to all three:
+  - Fixture provisioning returned `subscriptionTier:"CLEP_PREMIUM"`.
+  - Clicking the visible full-mock start button did not call `/api/mock-exam`.
+  - It POSTed `/api/practice` with `sessionType:"MOCK_EXAM"` and the advertised full count.
+  - `/api/practice` returned HTTP 403 for College Algebra, Precalculus, and Calculus; the intro screen remained visible.
+  - `/api/feature-flags` also returned HTTP 500 in each run; intermittent `/api/user` or `/api/analytics` 500s occurred. These secondary failures are recorded but are not needed to prove the mock-start failure.
+- Quality impact:
+  - The product labels these simulations as matching official CLEP format while presenting incorrect section structures and response-format claims.
+  - A documented premium fixture cannot start any of the three full mocks, so operational composition, rendering, scoring, section transitions, calculator policy, and completion remain untestable.
+- Claude action:
+  - Correct per-exam structure metadata from versioned College Board specifications; do not add pretest counts on top of an official approximate total.
+  - Route full mocks through one deterministic mock API that composes official domains, response formats, sections, timers, and calculator policies.
+  - Fix the entitlement/session mismatch that sends a `CLEP_PREMIUM` fixture down the restricted `/api/practice` path.
+  - Add browser E2E for each exam: premium start, returned count/type/domain composition, section transition, calculator availability, submission/scoring, and completion.
+
+---
+
+## PREPLION-2026-06-21-ENTITLEMENT-NOT-ENFORCED — the paywall is hollow (Claude, E2E)
+- Status: FAIL (monetization blocker)
+- Build: live preplion.ai (deploy 15b606b8), premium_feature_restriction explicitly =true
+- Method: `scripts/_trial-capability-e2e.mjs` — same fixture user as verified `accessLevel="free"` vs `accessLevel="trial"` (getAccessLevel step 5 needs freeTrialExpiresAt>now; free probe had it null → genuinely free).
+- Evidence (FREE == TRIAL, both 200/full): Diagnostic 25 Qs, Flashcards 20 cards, Study plan full, Analytics full. Mock = 403 for both (gated by diagnostic-first, not payment).
+- Impact: a free-forever user already receives the full premium experience, so the 7-day trial grants nothing extra → likely root cause of 6% closed-cohort conversion (4/67). 42% of trials never even reached value; only 11% took a mock.
+- Required before publishing the new pricing table: enforce the agreed entitlement matrix per-capability (free = teasers: diagnostic preview, 1 short mock, ~15 flashcards, plan outline, capped daily practice; trial = full for one subject; sub = all subjects). Then re-run this probe → free must be gated/limited, trial unlocked.
+- Do NOT mark trial "done" or publish /pricing until this probe is green.
