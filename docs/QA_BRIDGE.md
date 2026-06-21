@@ -1791,3 +1791,11 @@ Deploys this delta: e0470c6b (entitlement 7/7), Sage raw-SQL fix building.
 - Precalc V2 re-cert in progress (120/456): 98.3%, 0 consensus-defects → Precalc has CLEARED ≥95% (was 90.9%, the only sub-95 CLEP). Backfill+defect-removal worked. Letting it finish before next LLM job (rate-limit discipline).
 - NEXT (auto on re-cert completion): score the ~17 unsampled CLEP courses (lit/humanities) via _fidelity-scoreboard.mjs → pass/fail-by-course; fix any <95%.
 - Milestone check: all 5 sampled CLEP math + the 3 science/psych retags + College Comp essays/passages + Precalc → done. CLEP fidelity sweep is now in its final phase (lit/humanities scoring).
+
+---
+## USER DECISION — ACT before TEAS — 2026-06-21
+- SAT is ALREADY migrated/native in PL (3,429 approved, full-bank cert, score-native dashboard) → ACT gate condition 4 (SAT migration) was ALREADY MET. Corrected.
+- USER: KEEP TEAS, but prioritize ACT migration FIRST; TEAS cert/route comes AFTER ACT. → TEAS removed as an ACT blocker.
+- REVISED ACT gate = CLEP fidelity (final phase, near) + /pricing browser matrix (Codex, near). Both near → ACT can start in days; migration itself ~1–2 wks (SAT-pattern clone of ACT's 2,994 SN Qs + product surfaces).
+- REVISED SEQUENCE: finish CLEP fidelity → Codex browser matrix → ACT migration → THEN TEAS cert + /teas-prep route.
+- FLAG (caveat): TEAS is kept but uncertified, and /teas-prep still 404s while homepage advertises "TEAS today" (Codex TEAS-PUBLIC-ENTRY). Recommend a QUICK /teas-prep route fix (redirect to /nursing or minimal page) during the ACT window so we don't advertise a broken product — separate from the full TEAS cert (queued post-ACT). Awaiting user go/no-go on the quick route fix.
