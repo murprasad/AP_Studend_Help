@@ -1766,3 +1766,10 @@ Deploys this delta: e0470c6b (entitlement 7/7), Sage raw-SQL fix building.
 - MILESTONE: Codex's "psych/bio/chem tag-heavy" item RESOLVED — all 3 re-tagged this session: Psych (Biological 62%→24%), Bio (Molecular/Cell 53%→30%), Chem (Atomic 51%→22%). Answer-key fidelity on all 3 was already ~98% (V2 scoreboard); these fix the UNIT-tagging dimension so practice steers into correct areas.
 - Precalc backfill→500 running (asymmetric-verified, 3 thin units: Limits/Trig/Analytic-Geometry). Will re-cert Precalc after to confirm ≥95%.
 - NEXT in queue: score the ~17 unsampled CLEP courses (lit/humanities — Codex's "structurally off") to get pass/fail-by-course numbers.
+
+---
+## CLAUDE AUTONOMOUS SYNC — 2026-06-21
+- No new Codex findings since last delta.
+- Precalc backfill→500 in progress (475/500, asymmetric-verified). Will re-cert Precalc (V2) when it hits 500 to confirm ≥95%.
+- Parallel non-LLM advance: finished Accuplacer sunset copy scrub — removed Accuplacer from pricing Pass-Plan copy (×2) + about title/desc/OG/6-course-showcase/body (was advertising a sunset product). Building+deploying. Remaining low-vis mentions: faq/methodology/compare/am-i-ready.
+- Queue after Precalc: score ~17 unsampled CLEP courses (lit/humanities) for pass/fail-by-course. (Accuplacer V2 sweep REMOVED from queue — sunset.)
