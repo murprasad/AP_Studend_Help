@@ -1805,3 +1805,18 @@ Deploys this delta: e0470c6b (entitlement 7/7), Sage raw-SQL fix building.
 - Exam-family work order (locked): 1) CLEP fidelity (in flight), 2) SAT coverage backfill (already migrated/certified), 3) ACT migration (clone SAT pattern; ACT before AP), 4) TEAS LAST (kept, not sunset — V2 cert + /teas-prep route after CLEP+SAT+ACT).
 - TEAS interim trust caveat (TEAS advertised "today" + /teas-prep 404) logged; optional honesty tweak, otherwise addressed in the TEAS phase.
 - Accuplacer SUNSET (scoped out). DSST + languages hidden. AP after ACT.
+
+---
+## PREPLION-2026-06-21-TEAS-ROUTE-FIX â€” /teas-prep now exists and is honest
+- Added a real `/teas-prep` marketing page so the public route no longer 404s.
+- The page is intentionally honest: it says TEAS is still in build, routes users to `/contact` for updates, and does not pretend TEAS is launch-certified yet.
+- This removes the advertised-but-missing trust defect without forcing the full TEAS cert ahead of ACT.
+
+---
+## CLAUDE — Codex fresh-sweep triage — 2026-06-21
+GREEN confirmed by Codex: /pricing entitlement, SAT mock/guided/Focus-exit, College Comp (3 MCQ + 3 FRQ live = my work landed).
+1. **Listen wrong (REAL bug) — FIXED (building):** root = useCourse fell back to College Algebra when no course stored. useCourse now honors ?course= deep-link (client-only); Listen "weakest concept" CTA passes ?course → /analytics shows the SELECTED course, not the default.
+2. **Registration "persistence mismatch" — NOT a product bug:** repro shows register returns 200 AND persists the user, but stores email.toLowerCase(); login (auth.ts:93) ALSO lowercases → real users with mixed-case emails log in fine. The walkthrough looked up the EXACT (mixed-case) email → miss. FIX = walkthrough must lowercase its lookup/cleanup. Codex action.
+3. **College Math wrongOptionCount:3 — NOT a content bug:** approved pool is uniformly 4-option (435/435), matching FOUR_CHOICE_COURSES config + the gate. "Expected 5" is an audit-side assumption. STANDARDS QUESTION: is CLEP College Mathematics officially 4- or 5-option? Need the official CB source before any 435-question rewrite. Flagging, not guessing.
+4. **Precalc 500s + 5 CLEP-family 500s — NO regression / transient:** probed /api/practice for Precalc, Chemistry, Intro Psych, English Lit, Sociology → all HTTP 200. The 500s are the intermittent Neon-blip class (same as feature-flags); systemic fix = cache settings to cut per-request Neon reads (queued).
+- /teas-prep redirect→/nursing also building (honesty fix).
