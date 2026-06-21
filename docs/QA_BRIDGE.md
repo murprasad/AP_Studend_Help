@@ -1773,3 +1773,8 @@ Deploys this delta: e0470c6b (entitlement 7/7), Sage raw-SQL fix building.
 - Precalc backfill→500 in progress (475/500, asymmetric-verified). Will re-cert Precalc (V2) when it hits 500 to confirm ≥95%.
 - Parallel non-LLM advance: finished Accuplacer sunset copy scrub — removed Accuplacer from pricing Pass-Plan copy (×2) + about title/desc/OG/6-course-showcase/body (was advertising a sunset product). Building+deploying. Remaining low-vis mentions: faq/methodology/compare/am-i-ready.
 - Queue after Precalc: score ~17 unsampled CLEP courses (lit/humanities) for pass/fail-by-course. (Accuplacer V2 sweep REMOVED from queue — sunset.)
+
+---
+## CLAUDE DELTA — Accuplacer copy scrub (partial) + Precalc 498/500 — 2026-06-21 (deploy 026d09f1)
+- Accuplacer sunset copy: pricing Pass-Plan lines + about metadata/showcase/body scrubbed & deployed. REMAINING (follow-up, registry-derived/deep prose): pricing Fast-Track course dropdown still lists Accuplacer (pulls from COURSE_REGISTRY, which still includes it — visible_courses only governs in-app); about page has ~9 deep-body mentions incl an active "$39 one-time" offer. Proper fix = filter ACCUPLACER from COURSE_REGISTRY-derived marketing selectors + about prose. Conversion-critical surfaces (homepage/routes/nav/pricing-copy) are clean; this is secondary.
+- Precalc backfill→500: at 498 (asymmetric-verified +30). Re-cert (V2) pending at 500.
