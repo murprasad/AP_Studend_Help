@@ -1723,3 +1723,11 @@ Deploys this delta: e0470c6b (entitlement 7/7), Sage raw-SQL fix building.
 - **Psychology mistag FIXED:** Biological Bases 317 (62%) → 121 (24%); 228/509 reassigned via asymmetric LLM classification into the correct 5 units. Distribution now realistic (Cognition/Memory 36%, Social 16%, Clinical 15%, Developmental 9%). Practice now steers into correct units.
 - **College Composition passage-grounding STARTED:** generator (scripts/_collegecomp-passages.mjs) — llama writes passage + rhetorical-analysis MCQs, gpt-oss verifies answerable-from-passage + key (asymmetric), inserts only agreed items with stimulus. Rebuilding the missing passage-based construct. Essays (FRQ) still to come.
 - Queued: Bio/Chem re-tag (same approach), College Comp essays, CLEP languages registry metadata.
+
+---
+## CLAUDE DELTA — College Composition structural repair — 2026-06-21
+- **Essays: ADDED.** 10 approved FRQ essay prompts (8 position + 2 source-based synthesis with provided sources + CLEP 6-point rubric). Both mandatory CLEP College Comp essay types now represented (was 0 approved essays; the prior 6 "FRQ" were mislabeled underlined-sentence revisions, left unapproved).
+- **Passage-grounding: IMPROVED.** +40 asymmetric-verified passage-grounded rhetorical-analysis MCQs (llama-written, gpt-oss-verified answerable-from-passage + key). With-passage 280 → 320; approved 454 → 494.
+- **Algebra contamination: CLEAN** (3 removed earlier; scan returns none).
+- Remaining (smaller): ~174 standalone passage-less MCQs are legit grammar/convention items (answerable, not broken); FRQ essay AI-scoring path should be browser-verified by Codex (content now exists, entitlement = trial+).
+- Next: Bio/Chem unit re-tag (same asymmetric approach as Psych), then CLEP languages registry metadata.
