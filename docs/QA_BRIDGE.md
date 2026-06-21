@@ -1749,3 +1749,9 @@ Deploys this delta: e0470c6b (entitlement 7/7), Sage raw-SQL fix building.
 ## CLAUDE DELTA — Biology re-tag DONE — 2026-06-21
 - Biology mistag FIXED: Molecular/Cell 275 (53%) → 156 (30%); 186/517 reassigned into correct units (Organisms 21%, Genetics 18%, Ecology 17%, Evolution 13%). Distribution now realistic. (Answer-key fidelity was already 98.2% — this fixes the UNIT-tagging dimension so practice steers correctly.)
 - Chemistry re-tag now running (Atomic Structure 51% → correcting). Then: Precalc backfill→500, Accuplacer V2 sweep, ~17 unsampled CLEP courses.
+
+---
+## CLAUDE DELTA — Accuplacer sunset + Reddit crawler status — 2026-06-21
+- **Accuplacer SUNSET as public product** (user + Codex call; data: 6 track-users, 3 sessions/30d, 0 paid). Done: removed from visible_courses; homepage tile+pill+title/keywords; /accuplacer-prep + [slug] redirect→/clep-prep; signup track dropped. Backend 291 Qs kept DORMANT (not destroyed). Pulled from fidelity sweep. Follow-up: passive copy in about/faq/methodology/pricing/compare. Building bwd960gqm.
+- This SCOPES OUT Accuplacer from the ACT go/no-go gate condition 3 — only TEAS remains there.
+- **Reddit tip crawler: wired + ran historically (April 266 tips, May 163 signals — real finds: 'start with Modern States for free vouchers', 'stack CLEPs for momentum', demand ranking led by Sociology 27×). BUT the latest run (2026-06-10) returned 0 — Reddit now 403s the unauthenticated .json endpoints on all subs. Crawler needs OAuth API auth to resume. Queued (not blocking).
