@@ -1314,6 +1314,269 @@ full-bank distributions.
   - Fix the entitlement/session mismatch that sends a `CLEP_PREMIUM` fixture down the restricted `/api/practice` path.
   - Add browser E2E for each exam: premium start, returned count/type/domain composition, section transition, calculator availability, submission/scoring, and completion.
 
+#### PREPLION-2026-06-21-FREE-TRIAL-CAPABILITY-MATRIX — enforcement acceptance contract
+- Status: ACCEPTANCE CONTRACT; prompted by Claude's live finding `ENTITLEMENT-NOT-ENFORCED`.
+- Pricing publication gate:
+  - Do not publish capability claims on `/pricing` until server-side API enforcement and browser behavior both pass for permanent-free, active-trial selected-course, active-trial other-course, expired-trial, and paid fixtures.
+- Permanent-free contract:
+  - Practice: 10 questions per day on the selected course; normal answer feedback and explanations remain available so the sample provides real value.
+  - Diagnostic: one complete diagnostic attempt is allowed. Show overall result and one weakest official domain; lock the full domain/subskill breakdown, recommendations, and repeat diagnostics.
+  - Mock: one 10-question mini-mock/preview. Full official-length mocks, detailed score analysis, and repeats require active trial or paid access.
+  - Flashcards: 15-card sample deck; no full deck, adaptive queue, or spaced-repetition scheduling.
+  - Study plan: show the dated plan outline and the first day's actions; later daily tasks and adaptive replanning require trial or paid access.
+  - Analytics: show questions answered, overall accuracy, and recent history; official-domain trends, readiness/prediction, weak-skill analysis, and recommendations require trial or paid access.
+  - Sage: three messages total as a product sample; selected-course trial unlocks normal trial limits.
+  - Listen: public/free curated samples may remain available; personalized weakest-concept recommendations and progress credit require trial or paid access.
+- Active seven-day trial:
+  - Full capability for exactly one locked selected course: unlimited practice within anti-abuse limits, repeat diagnostics, full official-format mocks, full flashcards/spaced repetition, adaptive study plan, full analytics/readiness, Sage, and personalized Listen.
+  - Other courses receive only the permanent-free contract.
+- Expired trial:
+  - Preserve history, scores, plans, and progress visibly.
+  - Revert actions to permanent-free limits; premium results may be summarized/visible but detailed interaction remains locked.
+- Paid:
+  - Full continued access across included courses according to the purchased plan.
+- Enforcement requirements:
+  - Enforce limits in APIs, not only by hiding UI controls.
+  - A preview may correctly return HTTP 200; the test must compare response shape, counts, locked fields, and allowed follow-up actions rather than treating all 200 responses as equivalent.
+  - Include explicit entitlement metadata in responses so UI and tests do not infer access from missing fields.
+  - Mock verification must first satisfy the diagnostic prerequisite for both free and trial fixtures; the current `403/403 diagnostic-first` result is inconclusive for payment entitlement.
+  - Verify course isolation, expiry boundary, timezone, refresh/new-session behavior, and direct API calls.
+
+#### PREPLION-2026-06-21-CLEP-BIOLOGY-LIVE-TAXONOMY-REALISM — served tags cannot support the official 33/34/33 blueprint
+- Status: FAIL
+- Authority:
+  - Current College Board Biology overview and official samples, checked June 21, 2026.
+  - Official domains: Molecular/Cellular 33%; Organismal 34%; Population 33%.
+  - Official skills include information collection/interpretation, hypothesis formation, conclusions, and predictions; samples include a shared experimental data table.
+- Live method:
+  - Authenticated `CLEP_PREMIUM` production fixture.
+  - Twenty successful repeated MCQ requests before the documented rate limit returned HTTP 429.
+  - 36 unique served questions observed; this is a served-session sample, not a full-bank census.
+- Live evidence:
+  - Stored units: Molecular/Cell 27; Genetics 2; Evolution 2; Organisms 2; Ecology 3.
+  - All 36 were EASY, five-choice MCQ; none had a populated stimulus.
+  - Numerous rows stored as `CLEP_BIO_1_MOLECULAR_CELL` are visibly outside that unit:
+    - water-cycle evaporation, plant-root function, testosterone, taxonomy, inheritance, r/K selection, population growth/density, ecology, and blood-group genotype;
+    - organismal, heredity, and population topics therefore inflate the molecular/cell count.
+  - The local registry maps five instructional units to 20/17/17/30/16, but official reporting is three domains at 33/34/33. Genetics officially sits within Organismal Biology, not the local molecular/genetics aggregate implied by the current layout.
+- Quality impact:
+  - Stored-tag distributions, weakest-domain analytics, and adaptive recommendations are invalid.
+  - A factual-answer certificate cannot prove the official domain mix or scientific reasoning realism.
+  - Zero experimental/data stimuli in this early-win sample does not prove the whole bank lacks them, but it does prove this repeated live path delivered only isolated questions despite the official skills contract.
+- Claude action:
+  - Create a versioned three-domain specification with explicit mappings for every subskill.
+  - Retag the full bank semantically, then publish approved-bank and served-mock 33/34/33 distributions.
+  - Add a stimulus gate and mock quota for experiments, tables/figures, data interpretation, hypothesis/conclusion, and prediction items.
+  - Independently review scientific accuracy and distractor plausibility after retagging.
+
+#### PREPLION-2026-06-21-CLEP-CHEMISTRY-LIVE-TAXONOMY-REALISM — current bank collapses nine domains and serves widespread mistags
+- Status: FAIL
+- Authority:
+  - Current College Board Chemistry overview and official samples, checked June 21, 2026.
+  - Official weights: Structure 20%; States 19%; Reaction Types 12%; Equations/Stoichiometry 10%; Equilibrium 7%; Kinetics 4%; Thermodynamics 5%; Descriptive 14%; Experimental 9%.
+  - Integrated TI-30XS MultiView and periodic table are available throughout.
+- Repository drift:
+  - `curriculumContext`, `examAlignmentNotes`, and comments still use obsolete Thermodynamics 6% / Experimental 8% values.
+  - Five local units collapse nine official domains; `topicWeights` uses an unsupported 25/20/22/18/15 split that cannot report official coverage.
+- Live method:
+  - Authenticated `CLEP_PREMIUM` production fixture.
+  - Twenty successful repeated MCQ requests before HTTP 429.
+  - 31 unique served questions observed; this is a served-session sample, not a full-bank census.
+- Live evidence:
+  - Stored units: Atomic Structure 20; Bonding 5; Reactions 2; States/Solutions 4; Thermodynamics/Kinetics 0.
+  - All 31 were EASY, five-choice MCQ; none had a populated stimulus.
+  - Rows stored as Atomic Structure include rate-determining step, Hess-style enthalpy addition, balancing reactions, mole concept, redox, organic isomerism, laboratory hot-plate use, catalysts, gas conversion, heat of formation, colligative properties, Raoult’s law, equilibrium, acids, real gases, and temperature effects on `Kc`.
+  - These span Kinetics, Thermodynamics, Reaction Types, Stoichiometry, Descriptive, Experimental, States, and Equilibrium rather than Atomic Structure.
+- Quality impact:
+  - The apparent Atomic Structure concentration is tag corruption, not credible blueprint evidence.
+  - The current taxonomy cannot prove nine-domain coverage, power official-domain analytics, or compose a valid mock.
+  - Zero data/lab stimuli on this repeated path conflicts with the product's own stimulus guidance and leaves official interpretation/experimental skills unrepresented in the observed experience.
+- Claude action:
+  - Version the current nine-domain 20/19/12/10/7/4/5/14/9 specification and fail closed if mappings or weights are incomplete.
+  - Retag every approved row; quarantine ambiguous/mis-scoped rows pending qualified chemistry review.
+  - Build explicit calculator, periodic-table, quantitative, experimental, and shared-data-stimulus mock requirements.
+  - Publish full-bank and served-mock domain/cognitive/stimulus reports before certification.
+
+#### PREPLION-2026-06-21-CLEP-SCIENCE-MOCK-TRUST-START — Biology and Chemistry mocks overstate totals and expose a dead-end prerequisite
+- Status: FAIL
+- Build: live `preplion.ai`, authenticated `CLEP_PREMIUM` fixtures with deterministic course state.
+- Biology evidence:
+  - Entry card says `115 questions · 90 min`, then says `115 MCQ + ~12 pretest`.
+  - College Board says approximately 115 questions total, some of which are unscored pretest questions; it does not support adding twelve to 115.
+  - The mock summary does not describe the official 33/34/33 domain composition or experimental/data-interpretation expectations.
+- Chemistry evidence:
+  - Entry card says `75 questions · 90 min`, then says `75 MCQ + ~8 pretest`.
+  - College Board says approximately 75 questions total, some unscored; it does not support adding eight to 75.
+  - The card says `Calculator Available` but does not state that the integrated resource is specifically the TI-30XS MultiView or that a periodic table is also available throughout the official exam.
+  - It does not expose the nine-domain blueprint or quantitative/experimental composition.
+- Start-path evidence:
+  - Clicking Start in both courses POSTed the full count to `/api/practice` with `sessionType:"MOCK_EXAM"`.
+  - Both requests returned HTTP 403 and the page displayed `Error Quick 10-min diagnostic first — sharper mock-exam difficulty, smarter Sage feedback.`
+  - The premium intro still presents Start as immediately available; it does not disable the action, explain the prerequisite beforehand, or route the student into the required diagnostic.
+  - `/api/feature-flags` returned HTTP 500 in both runs; Chemistry also observed `/api/user` HTTP 500.
+- Interpretation:
+  - A diagnostic-first rule may be a valid product sequence, but this implementation is a dead end rather than a guided prerequisite.
+  - Because neither mock could start, actual domain composition, stimuli, resource tools, scoring, and completion remain unverified.
+- Claude action:
+  - Treat official approximate counts as totals inclusive of pretest items; remove unsupported additive pretest claims.
+  - Show Biology domain/reasoning expectations and Chemistry's calculator plus periodic-table resources accurately.
+  - If diagnostic-first remains required, replace the active Start button with a clear prerequisite state and direct `Take diagnostic` action; after completion, prove automatic unlock.
+  - Route full mocks through the deterministic mock composer and add prerequisite-complete browser E2E through completion.
+
+#### PREPLION-2026-06-21-CLEP-PSYCHOLOGY-TAXONOMY-REALISM — five aggregates erase thirteen official domains
+- Status: FAIL
+- Authority:
+  - Current College Board Introductory Psychology overview and samples, checked June 21, 2026.
+  - The official blueprint has 13 separately weighted domains and uses DSM-5 terminology.
+  - Required skills include comprehension, evaluation, analysis, and application to new situations.
+- Repository evidence:
+  - Five local units aggregate the 13 domains. Aggregation is acceptable for navigation only if each question retains an official-domain tag; no such authoritative mapping/report is present.
+  - `curriculumContext` contains obsolete percentages, including `History and approaches (2-3%)` instead of 11–12%, and claims `Passing (~56 correct)`. The ACE recommendation is a scaled score of 50, not a supported raw-count conversion.
+  - The local 21/22/9/33/15 aggregates cannot demonstrate coverage of small but required domains such as Statistics/Tests/Measurement 3–4%, States of Consciousness 5–6%, or Treatment 6–7%.
+- Live method:
+  - Authenticated production `CLEP_PREMIUM` fixture; twenty MCQ requests; 47 unique served items.
+- Live evidence:
+  - Stored units: Biological Bases 31; Developmental 6; Social/Personality 4; Clinical/Abnormal 3; Cognition/Memory 3.
+  - All 47 were EASY five-choice MCQ; none had a populated stimulus.
+  - Items stored as Biological Bases include explicit memory, motivation, assessment, reliability, development, anxiety, problem solving, antidepressants, classical/observational learning, psychopathology, statistics, IQ testing, research populations/experiments, disorders, and social comparison.
+- Quality impact:
+  - The 66% Biological Bases concentration is predominantly tag corruption.
+  - Official-domain readiness, weak-area recommendations, and mock composition are not credible.
+  - Zero explicit stimuli on this repeated live path undercuts the scenario/application experience promised by PrepLion's own guidance and demonstrated by official samples.
+- Claude action:
+  - Add a versioned 13-domain taxonomy and tag every question at official-domain and instructional-unit levels.
+  - Correct scoring and blueprint copy.
+  - Retag the full bank and publish official-domain, cognitive-demand, scenario, and difficulty distributions.
+  - Add scenario/application quotas and DSM-5 terminology checks; require qualified review for clinical claims.
+
+#### PREPLION-2026-06-21-CLEP-SOCIOLOGY-TAXONOMY-STIMULUS — valid five-domain schema is undermined by widespread mistags and placeholder stimuli
+- Status: FAIL
+- Authority:
+  - Current College Board Introductory Sociology overview and samples, checked June 21, 2026.
+  - Official domains: Institutions 20%; Social Patterns 10%; Social Processes 25%; Social Stratification 25%; Sociological Perspective 20%.
+  - Skills explicitly include hypothetical application and interpretation of tables/charts.
+- Repository evidence:
+  - The five local units can map to the five official domains, and `topicWeights` correctly states 20/10/25/20/25 when read in local-unit order.
+  - However, `curriculumContext` publishes a contradictory and wrong `15/31/17/25/12` distribution.
+- Live method:
+  - Authenticated production `CLEP_PREMIUM` fixture; twenty MCQ requests; 52 unique served items.
+- Live evidence:
+  - Stored units: Sociological Perspective 32; Social Stratification 8; Social Structure/Groups 8; Institutions 3; Social Change/Deviance 1.
+  - The Sociological Perspective bucket includes demography, migration, unpaid domestic labor, groups, community, aging, gender, health/medical institutions, socialization, technology/social change, institutions, and stratification topics.
+  - Five rows appeared stimulus-bearing, but three stored the literal text `null`; only two contained meaningful scenario/research text.
+  - No observed item used a table or chart.
+  - All 52 were EASY five-choice MCQ in the sampled early-win path.
+- Quality impact:
+  - The local schema is potentially salvageable, but existing tags make its official-looking weights operationally meaningless.
+  - Literal `null` can pass naive nonempty-stimulus gates and render as user-visible garbage.
+  - The observed experience does not prove the required table/chart interpretation capability.
+- Claude action:
+  - Correct public/registry distribution copy and define an explicit one-to-one local-to-official mapping.
+  - Retag the full bank semantically and publish 20/10/25/25/20 distributions.
+  - Normalize null-like values (`null`, `"null"`, empty markup) as absent at ingestion, validation, and rendering.
+  - Add scenario and table/chart quotas plus render checks; fail certification if any placeholder stimulus survives.
+
+#### PREPLION-2026-06-21-CLEP-COLLEGE-COMPOSITION-STRUCTURE-CONTENT — live product omits the mandatory half of the exam
+- Status: FAIL
+- Authority:
+  - Current College Board College Composition overview and samples, checked June 21, 2026.
+  - Official structure: 50 MCQs / 55 minutes plus two mandatory typed essays / 70 minutes.
+  - Essay 1 is a 30-minute position argument; Essay 2 is a 40-minute synthesis argument using and citing two provided sources.
+  - MCQ domains: Conventions 10%; Revision 40%; Source Materials 25%; Rhetorical Analysis 25%.
+  - Combined essays and MCQ are weighted equally in the reported 20–80 score.
+- Repository evidence:
+  - `examSecsPerQuestion` still comments `90 MCQ in 95 min + Part II`, and `mockExam` configures 50 MCQs in 95 minutes rather than 55.
+  - `curriculumContext` says `90 MCQ in 95 minutes`, uses obsolete 35/30/20/15 weights, and claims a raw `~48/90` passing count.
+  - `examAlignmentNotes` uses another wrong 35/30/20/15 split and says `MCQ section only — essay scoring is separate and institution-specific`.
+  - College Board, not individual institutions, scores the mandatory essays; essay and MCQ sections are equally weighted.
+  - `topicWeights` incorrectly treats “Essays 30%” as a bank-unit allocation while omitting the current MCQ 10/40/25/25 contract.
+  - The generic question schema has no College Composition Essay 1 / Essay 2 types or two-source synthesis contract.
+- Live method:
+  - Authenticated production `CLEP_PREMIUM` fixture; explicit MCQ and FRQ requests plus twenty repeated MCQ requests.
+- Live evidence:
+  - FRQ request returned HTTP 400: no questions available.
+  - 37 unique MCQs were observed: Rhetorical Analysis 21, Research/Documentation 7, Revision/Editing 9; Essay Strategies and Argumentation 0.
+  - All 37 were EASY, five-choice MCQ, with zero populated stimuli.
+  - This directly contradicts PrepLion's own requirement that every question include a 4–6 sentence passage and the official exam's passage/set-heavy revision, source, and rhetorical-analysis design.
+  - One live item asks `Which value is equivalent to 2x, if x = 4?`, an off-subject elementary algebra question stored under Rhetorical Analysis.
+  - Many other items are isolated definition questions rather than passage revision/source analysis.
+- Quality impact:
+  - PrepLion currently trains for less than half of the scored exam and misstates the timing, weights, and scoring model.
+  - There is no evidence of either mandatory essay task, source-synthesis/citation behavior, or passage-set realism.
+  - The live bank contains at least one unambiguous cross-course contamination item.
+- Claude action:
+  - Immediately remove the algebra-contamination row and run a semantic off-course sweep across the full bank.
+  - Replace all structure/score copy with 50/55 + two essays/70 and 10/40/25/25.
+  - Build separate Essay 1 and Essay 2 practice/task types, including two-source presentation, citation, 30/40-minute timers, autosave, submission, and a practice rubric aligned to the official 0–6 criteria.
+  - Make clear that automated PrepLion feedback is not official College Board faculty scoring.
+  - Retag/rebuild the MCQ bank around authentic passage sets and publish full-bank/mock domain, stimulus, and set-size distributions.
+  - Do not certify or market the mock as full College Composition until one browser run completes all 50 MCQs and both essays.
+
+#### PREPLION-2026-06-21-CLEP-LITERATURE-PASSAGE-COLLAPSE — three literature courses serve trivia instead of the official reading construct
+- Status: FAIL
+- Authority checked June 21, 2026:
+  - Current College Board pages and official samples for Analyzing and Interpreting Literature, American Literature, and English Literature.
+- Live method:
+  - Authenticated `CLEP_PREMIUM` production fixtures; twenty repeated MCQ requests per course.
+- Analyzing and Interpreting Literature:
+  - Official exam: approximately 80 questions / 98 minutes, all based on supplied unseen passages; ACE recommendation is 3 semester hours.
+  - Registry incorrectly uses 80/90, says 6 credits, and invents prose-fiction 30–40%, poetry 30–40%, drama 15–20%, nonfiction 10–15% instead of the official genre/tradition/period matrices.
+  - All 24 unique live items lacked a stimulus.
+  - Items ask author/title/period trivia such as who wrote *Pride and Prejudice*, *Moby-Dick*, or “Ode to a Nightingale.” The official exam explicitly does not require prior familiarity with specific works.
+- American Literature:
+  - Official exam: approximately 100 questions / 90 minutes; periods 15/20/20/20/25; roughly 35–40% supplied-text interpretation.
+  - Registry mock is 95 questions and topic weights are equal 20% fifths.
+  - Only 1 of 36 unique live items had a populated stimulus.
+  - Stored units were Colonial/Early 18, Romantic 7, Modernism 5, Realism 3, Contemporary 3.
+  - Contemporary Morrison/*The Bluest Eye* questions were repeatedly tagged Colonial/Early; *The Scarlet Letter* was tagged Realism/Naturalism in one row.
+- English Literature:
+  - Official exam: approximately 95/90; 60–65% passage analysis; exact period and genre matrices, including poetry 45%.
+  - Registry uses equal 20% periods and does not model the six official periods or five genre weights.
+  - All 37 unique live items lacked a stimulus.
+  - Stored units were Medieval/Renaissance 20, 17th/18th 8, Romantic 7, Victorian 2, 20th Century 0.
+  - Keats openings and works were repeatedly tagged Medieval/Renaissance; Yeats's “Easter 1916” was also tagged there; *Wuthering Heights* was tagged Romantic rather than Victorian-period coverage.
+  - Production serves MCQ only, while official samples also demonstrate matching and select-multiple responses.
+- Shared evidence:
+  - Every sampled item was EASY.
+  - The observed banks emphasize isolated identification/definition rather than sustained comprehension, interpretation, tone, imagery, style, and passage relationships.
+- Quality impact:
+  - These products currently test a materially different construct from the official exams.
+  - Missing passages cannot be repaired by changing weights alone; the banks and serving model require passage-set reconstruction.
+- Claude action:
+  - Quarantine all context-dependent stems without their source passage and all semantically mistagged rows.
+  - Build first-class passage sets with one stimulus shared by multiple questions, line/paragraph references, copyright/provenance controls, and browser rendering.
+  - Version exact per-course timing, credit, period, genre, national-tradition, skill, and response-format specifications.
+  - Rebuild/retag the banks and publish passage coverage, questions-per-set, genre, period, tradition, cognitive-demand, and duplicate reports.
+  - Require full browser mocks with every question linked to a rendered passage where the official construct requires it before certification.
+
+#### PREPLION-2026-06-21-CLEP-HUMANITIES-DISCIPLINE-MEDIA — 50/50 literature-arts construct collapses into one corrupted bucket
+- Status: FAIL
+- Authority:
+  - Current College Board Humanities overview and samples, checked June 21, 2026.
+  - Official top-level mix is Literature 50% and Arts 50%, with explicit subdiscipline, period, cultural, cognitive, and unfamiliar-work interpretation requirements.
+  - ACE recommendation is 3 semester hours.
+- Repository evidence:
+  - Registry copy says 6 credits.
+  - Local five-unit weights are equal 20% and therefore cannot represent Literature 50%; Visual Art 20%; Architecture 5%; Music 15%; Film/Dance/Performing Arts 10%.
+  - Philosophy is a separate 20% local unit even though official philosophy sits within the 10% nonfiction component; architecture has no independent reporting bucket.
+- Live method:
+  - Authenticated `CLEP_PREMIUM` production fixture; twenty MCQ requests; 41 unique served items.
+- Live evidence:
+  - Stored units: Literature 36; Visual Arts 2; Music 2; Philosophy/Religion 1; Performing Arts/Film 0.
+  - Many rows tagged Literature are explicitly visual art, architecture, music, film, or philosophy: Cubism, linear perspective, Surrealism, Classical orders, Porgy and Bess, violin family, O'Keeffe, Nietzsche, film location shooting, and music terminology.
+  - All 41 were EASY five-choice MCQ and none had a populated stimulus.
+  - No art reproduction, literary passage, music notation/listening stimulus, architecture image, or cross-disciplinary stimulus was observed.
+- Quality impact:
+  - Official 50/50 coverage and all subdiscipline analytics are invalid.
+  - The product cannot demonstrate the required 20% interpretation of unfamiliar literary passages and art reproductions through the observed text-only path.
+  - Cultural and chronological coverage is unmeasured.
+- Claude action:
+  - Correct the credit claim and build a versioned multi-axis Humanities specification.
+  - Retag every item by official discipline/subdiscipline, period, culture, cognitive demand, and stimulus/media type.
+  - Add licensed/public-domain image and passage support, with accessibility descriptions that do not reveal answers.
+  - Publish full-bank/mock 50/50 discipline, subdiscipline, period, culture, stimulus, and difficulty reports.
+  - Require a full browser mock proving visual assets, passages, accessibility, scoring, and the official composition before certification.
+
 ---
 
 ## PREPLION-2026-06-21-ENTITLEMENT-NOT-ENFORCED — the paywall is hollow (Claude, E2E)
@@ -1324,3 +1587,21 @@ full-bank distributions.
 - Impact: a free-forever user already receives the full premium experience, so the 7-day trial grants nothing extra → likely root cause of 6% closed-cohort conversion (4/67). 42% of trials never even reached value; only 11% took a mock.
 - Required before publishing the new pricing table: enforce the agreed entitlement matrix per-capability (free = teasers: diagnostic preview, 1 short mock, ~15 flashcards, plan outline, capped daily practice; trial = full for one subject; sub = all subjects). Then re-run this probe → free must be gated/limited, trial unlocked.
 - Do NOT mark trial "done" or publish /pricing until this probe is green.
+
+---
+
+## PREPLION-2026-06-21-ENTITLEMENT-ENFORCED — paywall now real (Claude, E2E proven)
+- Status: RESOLVED for 5/7 capabilities (was FAIL: free==trial). Deploy f99dc688, premium_feature_restriction=ON.
+- Method: scripts/_trial-capability-e2e.mjs — PREMIUM (CLEP_PREMIUM, reliably conveyed) vs FREE, comparing FIELDS/COUNTS not just status (Codex correction #1); mock satisfies the diagnostic prereq first (correction #2).
+- Proven gated (free sampled / entitled full):
+  - Diagnostic results: premium 3-unit full breakdown vs free 1-unit (weakest only) + SAMPLE.
+  - Flashcards: premium 20 vs free 15-card SAMPLE.
+  - Study plan: premium full vs free SAMPLE (fixed weekly weeks[] shape that had leaked).
+  - Analytics: premium mastery full vs free locked + SAMPLE.
+  - Mock: premium full 66-Q (then 1-hr cooldown) vs free 403 "one 10-Q preview" cap.
+- Also fixed: /api/feature-flags hardened (every flag .catch()es a default) so a transient Neon read can't 500 the app-wide gating endpoint.
+- STILL OPEN before /pricing publish:
+  - Sage: needs a lifetime-message counter (free = 3 sample messages) — not yet enforced.
+  - Listen: personalization gating (generic samples free) — not yet enforced.
+  - Re-run the BROWSER matrix (not just API) for the dashboard/practice surfaces.
+- Pricing publication gate: still BLOCKED until Sage + Listen enforced and browser matrix green.
