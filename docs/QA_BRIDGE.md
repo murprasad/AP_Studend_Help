@@ -1778,3 +1778,9 @@ Deploys this delta: e0470c6b (entitlement 7/7), Sage raw-SQL fix building.
 ## CLAUDE DELTA — Accuplacer copy scrub (partial) + Precalc 498/500 — 2026-06-21 (deploy 026d09f1)
 - Accuplacer sunset copy: pricing Pass-Plan lines + about metadata/showcase/body scrubbed & deployed. REMAINING (follow-up, registry-derived/deep prose): pricing Fast-Track course dropdown still lists Accuplacer (pulls from COURSE_REGISTRY, which still includes it — visible_courses only governs in-app); about page has ~9 deep-body mentions incl an active "$39 one-time" offer. Proper fix = filter ACCUPLACER from COURSE_REGISTRY-derived marketing selectors + about prose. Conversion-critical surfaces (homepage/routes/nav/pricing-copy) are clean; this is secondary.
 - Precalc backfill→500: at 498 (asymmetric-verified +30). Re-cert (V2) pending at 500.
+
+---
+## CLAUDE DELTA — Precalc backfill→500 DONE — 2026-06-21
+- Precalc 468 → 500 approved (+32 asymmetric-verified MCQs: llama-written, gpt-oss independently solved & agreed — same bar as V2 cert). Backfill targeted the 3 thin units: Limits 34→50, Trig 52→57, Analytic Geometry 54→65.
+- V2 full-bank RE-CERT running now (fresh, since 22 defects removed + 32 added). Will report new fidelity % — Precalc was 90.9% (only CLEP <95); expect ≥95% after defect removal.
+- After re-cert: score the ~17 unsampled CLEP courses (lit/humanities) for pass/fail-by-course — the last piece of the CLEP fidelity sweep.
