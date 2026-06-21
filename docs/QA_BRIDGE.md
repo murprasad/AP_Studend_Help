@@ -1738,3 +1738,9 @@ Deploys this delta: e0470c6b (entitlement 7/7), Sage raw-SQL fix building.
 - Activation sequence (Codex, AGREED, queued — do NOT touch the warm-up gate): (1) keep easy first-question routing, (2) fix first-answer aftermath → pull into a 2nd meaningful step, (3) fix journey Continue→first-question handoff.
 - USER DECISION: CLEP fidelity + entitlement remain the ACTIVE priority; activation is the next track, not now. ACT/AP merge analyzed (order SAT→ACT→AP) but DEFERRED.
 - Fidelity in progress: Psych re-tag DONE (62%→24%); Biology re-tag running; Chemistry queued; Precalc backfill→500 queued; College Comp essays+passages added.
+
+---
+## CLAUDE DELTA — fidelity queue locked + ACT go/no-go gate — 2026-06-21
+- **ACT migration GO gate (4 conditions, all must be true):** (1) /pricing browser matrix clean, (2) CLEP public story + live routes stable (College Comp done; lit/humanities + science/psych tagging fixed; languages fixed-or-cleanly-hidden), (3) TEAS + Accuplacer certified OR explicitly scoped-out (no broken public routes), (4) SAT migration shipped. Then ACT first, AP after. TODAY = NO-GO (3 of 4 open).
+- **Fidelity queue (user-locked):** 1) Bio re-tag [running 225/517], 2) Chem re-tag, 3) Precalc backfill→500, 4) Accuplacer V2 sweep [291 Qs/6 units — cert + backfill thin], 5) score the ~17 unsampled CLEP courses (lit/humanities/languages).
+- Fidelity snapshot (sampled V2 answer-key): ~17 CLEP courses ≥95% except Precalc 90.9; SAT Math 96.4 / R&W 98.2; Accuplacer 291 (thin, uncertified); TEAS 2,171 (uncertified, public route broken). Trust layer mostly green; CLEP content fidelity is the multi-day body.
