@@ -1755,3 +1755,7 @@ Deploys this delta: e0470c6b (entitlement 7/7), Sage raw-SQL fix building.
 - **Accuplacer SUNSET as public product** (user + Codex call; data: 6 track-users, 3 sessions/30d, 0 paid). Done: removed from visible_courses; homepage tile+pill+title/keywords; /accuplacer-prep + [slug] redirect→/clep-prep; signup track dropped. Backend 291 Qs kept DORMANT (not destroyed). Pulled from fidelity sweep. Follow-up: passive copy in about/faq/methodology/pricing/compare. Building bwd960gqm.
 - This SCOPES OUT Accuplacer from the ACT go/no-go gate condition 3 — only TEAS remains there.
 - **Reddit tip crawler: wired + ran historically (April 266 tips, May 163 signals — real finds: 'start with Modern States for free vouchers', 'stack CLEPs for momentum', demand ranking led by Sociology 27×). BUT the latest run (2026-06-10) returned 0 — Reddit now 403s the unauthenticated .json endpoints on all subs. Crawler needs OAuth API auth to resume. Queued (not blocking).
+
+---
+## CLAUDE DELTA — Accuplacer sunset LIVE — 2026-06-21 (deploy 8eb3f07d)
+- Verified live: /accuplacer-prep → HTTP 307 redirect → CLEP content; homepage Accuplacer pill gone. Accuplacer is cleanly scoped-out of the public product. ACT gate condition 3 now only needs TEAS.
