@@ -76,5 +76,5 @@ export function circle(spec: CircleSpec): string {
 }
 
 function label(x: number, y: number, t: string, anchor = "middle"): string {
-  return `<text x="${x.toFixed(1)}" y="${y.toFixed(1)}" font-family="${T.font.family}" font-size="${T.font.sizeLabel}" fill="${T.color.text}" text-anchor="${anchor}">${escapeXml(t)}</text>`;
+  return `<text x="${x.toFixed(1)}" y="${y.toFixed(1)}" font-family="${escapeXml(T.font.family)}" font-size="${T.font.sizeLabel}" fill="${T.color.text}" text-anchor="${anchor}">${escapeXml(t)}</text>`;
 }

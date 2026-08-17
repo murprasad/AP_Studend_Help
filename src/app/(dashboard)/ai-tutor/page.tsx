@@ -92,6 +92,7 @@ export default function AiTutorPage() {
   const [practiceReturn, setPracticeReturn] = useState(false);
   const tutorTrack = (session?.user as { track?: string })?.track ?? "ap";
   const tutorPremiumName = tutorTrack === "clep" ? "CLEP Premium" : "AP Premium";
+  const tutorPricingHref = `/pricing?module=${tutorTrack}`;
 
   // Split-panel state
   const [currentSections, setCurrentSections] = useState<TutorSections | null>(null);
@@ -505,7 +506,7 @@ export default function AiTutorPage() {
           </p>
         </div>
       </div>
-      <Link href="/pricing" className="flex-shrink-0">
+      <Link href={tutorPricingHref} className="flex-shrink-0">
         <Button size="sm" className={`gap-1.5 w-full sm:w-auto ${
           tutorTrack === "clep" ? "bg-emerald-700 hover:bg-emerald-800" : "bg-blue-600 hover:bg-blue-700"
         }`}>

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { CheckCircle, Zap, Crown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { getExamLabel, getCourseCount } from "@/lib/exam-label";
@@ -83,6 +84,7 @@ interface PricingClientProps {
 }
 
 export default function PricingClient({ clepEnabled, dsstEnabled }: PricingClientProps) {
+  const searchParams = useSearchParams();
   const visibleKeys = (Object.keys(ALL_MODULE_CONFIGS) as AllModuleKey[]).filter((k) => {
     if (k === "clep" && !clepEnabled) return false;
     if (k === "dsst" && !dsstEnabled) return false;
@@ -113,7 +115,9 @@ export default function PricingClient({ clepEnabled, dsstEnabled }: PricingClien
   ];
 
   const [billingCycle, setBillingCycle] = useState<"monthly" | "annual">("monthly");
-  const [activeModule, setActiveModule] = useState<ModuleKey>("ap");
+  const moduleParam = searchParams.get("module");
+  const initialModule = visibleKeys.includes(moduleParam as ModuleKey) ? (moduleParam as ModuleKey) : "ap";
+  const [activeModule, setActiveModule] = useState<ModuleKey>(initialModule);
 
   const isAnnual = billingCycle === "annual";
   const monthlyPrice = "9.99";

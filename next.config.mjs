@@ -19,6 +19,24 @@ const nextConfig = {
       { source: "/clep-prep/:path*", destination: "https://preplion.ai", permanent: true },
       { source: "/dsst-prep", destination: "https://preplion.ai", permanent: true },
       { source: "/dsst-prep/:path*", destination: "https://preplion.ai", permanent: true },
+      // 2026-06-28 — One Platform, One Brand: consolidate ACT/SAT/PSAT to
+      // PrepLion (marketing redirects only; no user/data migration). ACT + SAT
+      // point to PrepLion's dedicated prep pages; PSAT folds into SAT prep
+      // (PrepLion has no separate PSAT product — PSAT ≈ pre-SAT, same skills).
+      // ?from=studentnest lets PrepLion show a dismissible "now part of PrepLion"
+      // welcome banner to redirected visitors (transparency without breaking the 301).
+      { source: "/act-prep", destination: "https://preplion.ai/act-prep?from=studentnest", permanent: true },
+      { source: "/act-prep/:path*", destination: "https://preplion.ai/act-prep?from=studentnest", permanent: true },
+      { source: "/act-vs-sat-which-should-i-take", destination: "https://preplion.ai/act-prep?from=studentnest", permanent: true },
+      { source: "/sat-prep", destination: "https://preplion.ai/sat-prep?from=studentnest", permanent: true },
+      { source: "/sat-prep/:path*", destination: "https://preplion.ai/sat-prep?from=studentnest", permanent: true },
+      { source: "/free-sat-practice", destination: "https://preplion.ai/sat-prep?from=studentnest", permanent: true },
+      { source: "/digital-sat-2024-changes", destination: "https://preplion.ai/sat-prep?from=studentnest", permanent: true },
+      { source: "/psat-prep", destination: "https://preplion.ai/sat-prep?from=studentnest", permanent: true },
+      { source: "/psat-prep/:path*", destination: "https://preplion.ai/sat-prep?from=studentnest", permanent: true },
+      // NOTE (2026-06-28): AP stays on StudentNest for now (user decision), so
+      // NO blanket catch-all — only the ACT/SAT/PSAT course pages above redirect
+      // to PrepLion. AP, home, blog, login, etc. keep serving on StudentNest.
     ];
   },
   async headers() {

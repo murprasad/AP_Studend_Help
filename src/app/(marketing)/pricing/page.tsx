@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { isClepEnabled, isDsstEnabled } from "@/lib/settings";
 import PricingClient from "./pricing-client";
 
@@ -17,5 +18,12 @@ export default async function PricingPage() {
     safeFlag(isDsstEnabled, false),
   ]);
 
-  return <PricingClient clepEnabled={clepOn} dsstEnabled={dsstOn} />;
+  // PricingClient uses useSearchParams() — must sit under a Suspense boundary
+  // or the static build bails (missing-suspense-with-csr-bailout → prerender
+  // error on /pricing that was blocking the whole StudentNest build).
+  return (
+    <Suspense fallback={null}>
+      <PricingClient clepEnabled={clepOn} dsstEnabled={dsstOn} />
+    </Suspense>
+  );
 }

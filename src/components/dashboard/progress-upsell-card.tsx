@@ -60,6 +60,7 @@ export function ProgressUpsellCard({ course, isPremium }: Props) {
 
   const cta = resolveUpgradeCta({
     family: data.family,
+    module: data.family.toLowerCase(),
     scaledScore: data.scaledScore,
     showScore: data.showScore,
     isPremium,
@@ -89,7 +90,7 @@ export function ProgressUpsellCard({ course, isPremium }: Props) {
       </div>
       <Link href={cta.targetUrl} className="flex-shrink-0">
         <Button size="sm" className="gap-1.5 w-full sm:w-auto">
-          {!isPremium && cta.targetUrl === "/pricing" && <Crown className="h-3.5 w-3.5" />}
+          {!isPremium && cta.targetUrl.startsWith("/pricing") && <Crown className="h-3.5 w-3.5" />}
           {cta.ctaText}
           <ArrowRight className="h-3.5 w-3.5" />
         </Button>

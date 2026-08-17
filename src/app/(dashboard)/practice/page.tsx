@@ -174,6 +174,13 @@ export default function PracticePage() {
   const [subscriptionTier, setSubscriptionTier] = useState<string | null>(null);
   const [userTrack, setUserTrack] = useState<string>("ap");
   const { prefs: focusPrefs, setFocusMode } = useFocusPrefs(); // ADHD #39 Focus Mode
+  const pricingHref = course?.startsWith("SAT_")
+    ? "/pricing?module=sat"
+    : course?.startsWith("ACT_")
+    ? "/pricing?module=act"
+    : course?.startsWith("CLEP_")
+    ? "/pricing?module=clep"
+    : "/pricing?module=ap";
   // Focus Mode v2 — "I'm Overwhelmed" emotional-safety control (rule-based,
   // no AI): a calm panel offering a breath, a no-penalty save-&-stop, or keep
   // going. The differentiator no content-first competitor ships.
@@ -1545,7 +1552,7 @@ export default function PracticePage() {
                 </p>
               </div>
               <div className="flex items-center gap-1 flex-shrink-0">
-                <Link href="/pricing">
+                <Link href={pricingHref}>
                   <Button size="sm" className="bg-yellow-600 hover:bg-yellow-700 text-white text-xs gap-1">
                     <Sparkles className="h-3.5 w-3.5" /> Go Premium
                   </Button>
@@ -2065,11 +2072,11 @@ export default function PracticePage() {
                 // so userTrack-based branching showed "AP Premium" to a
                 // student practicing SAT. Course prefix is the authoritative
                 // signal of what content they're seeing right now.
-                if (course?.startsWith("CLEP_")) return <>Want unlimited practice + all 34 CLEP courses? <Link href="/pricing" className="underline hover:text-blue-300">Upgrade to CLEP Premium</Link></>;
-                if (course?.startsWith("SAT_")) return <>Want unlimited practice + Desmos + full-length adaptive mocks? <Link href="/pricing" className="underline hover:text-blue-300">Upgrade to SAT Premium</Link></>;
-                if (course?.startsWith("PSAT_")) return <>Want unlimited practice + full-length mocks? <Link href="/pricing" className="underline hover:text-blue-300">Upgrade to PSAT Premium</Link></>;
-                if (course?.startsWith("ACT_")) return <>Want unlimited practice + full-length mocks for all 4 sections? <Link href="/pricing" className="underline hover:text-blue-300">Upgrade to ACT Premium</Link></>;
-                return <>Want unlimited practice + FRQ scoring? <Link href="/pricing" className="underline hover:text-blue-300">Upgrade to AP Premium</Link></>;
+                if (course?.startsWith("CLEP_")) return <>Want unlimited practice + all 34 CLEP courses? <Link href={pricingHref} className="underline hover:text-blue-300">Upgrade to CLEP Premium</Link></>;
+                if (course?.startsWith("SAT_")) return <>Want unlimited practice + Desmos + full-length adaptive mocks? <Link href={pricingHref} className="underline hover:text-blue-300">Upgrade to SAT Premium</Link></>;
+                if (course?.startsWith("PSAT_")) return <>Want unlimited practice + full-length mocks? <Link href={pricingHref} className="underline hover:text-blue-300">Upgrade to PSAT Premium</Link></>;
+                if (course?.startsWith("ACT_")) return <>Want unlimited practice + full-length mocks for all 4 sections? <Link href={pricingHref} className="underline hover:text-blue-300">Upgrade to ACT Premium</Link></>;
+                return <>Want unlimited practice + FRQ scoring? <Link href={pricingHref} className="underline hover:text-blue-300">Upgrade to AP Premium</Link></>;
               })()}</span>
             </div>
           );
@@ -2153,7 +2160,7 @@ export default function PracticePage() {
               <p className="text-sm font-medium">Unlock FRQ Practice</p>
               <p className="text-xs text-muted-foreground">SAQ, LEQ & DBQ scored against the official rubric — Premium only</p>
             </div>
-            <Link href="/pricing">
+            <Link href={pricingHref}>
               <Button size="sm" variant="outline" className="border-purple-500/50 text-purple-300 hover:bg-purple-500/10 text-xs">
                 Upgrade
               </Button>

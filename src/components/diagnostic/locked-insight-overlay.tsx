@@ -44,9 +44,22 @@ export function LockedInsightOverlay({
 }: Props) {
   if (!locked) return <>{children}</>;
 
+  const module = family ? family.toLowerCase() : (
+    course?.startsWith("SAT_") ? "sat" :
+    course?.startsWith("ACT_") ? "act" :
+    course?.startsWith("CLEP_") ? "clep" :
+    "ap"
+  );
+  const moduleLabel = module === "sat"
+    ? "SAT Premium"
+    : module === "act"
+    ? "ACT Premium"
+    : module === "clep"
+    ? "CLEP Premium"
+    : "AP Premium";
   const trialHref = course
-    ? `/billing?utm_source=diagnostic&utm_campaign=trial_unlock&course=${course}`
-    : `/billing?utm_source=diagnostic&utm_campaign=trial_unlock`;
+    ? `/billing?utm_source=diagnostic&utm_campaign=trial_unlock&course=${course}&module=${module}`
+    : `/billing?utm_source=diagnostic&utm_campaign=trial_unlock&module=${module}`;
 
   // Is the student below passing? That drives the severity of the
   // visual treatment — below-passing gets a red alarm, at-or-above
@@ -90,8 +103,8 @@ export function LockedInsightOverlay({
     : "bg-blue-600 hover:bg-blue-700 text-white";
 
   const ctaLabel = belowPassing
-    ? "Unlock My Pass Plan"
-    : "Unlock Full Breakdown";
+    ? `Unlock ${moduleLabel}`
+    : `Unlock ${moduleLabel}`;
 
   return (
     <div className="relative">

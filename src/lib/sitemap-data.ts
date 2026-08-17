@@ -46,11 +46,9 @@ export function getSitemapEntries(baseUrl = "https://studentnest.ai"): SitemapEn
     m(baseUrl, "weekly", 1),
     m(`${baseUrl}/ap-prep`, "weekly", 0.9),
     ...["ap-world-history-modern", "ap-computer-science-principles", "ap-physics-1"].map(s => m(`${baseUrl}/ap-prep/${s}`, "monthly", 0.8)),
-    m(`${baseUrl}/sat-prep`, "weekly", 0.9),
-    m(`${baseUrl}/sat-prep/free-vs-paid`, "monthly", 0.85),
-    m(`${baseUrl}/act-prep`, "weekly", 0.9),
-    m(`${baseUrl}/act-vs-sat-which-should-i-take`, "monthly", 0.85),
-    m(`${baseUrl}/digital-sat-2024-changes`, "monthly", 0.85),
+    // 2026-06-28 — ACT/SAT/PSAT consolidated to PrepLion (301-redirected in
+    // next.config.mjs). Removed from sitemap so Google isn't pointed at
+    // redirecting URLs. StudentNest now markets AP only.
     m(`${baseUrl}/clep-prep`, "weekly", 0.9),
     ...clepSlugs.map(s => m(`${baseUrl}/clep-prep/${s}`, "monthly", 0.7)),
     m(`${baseUrl}/dsst-prep`, "weekly", 0.9),

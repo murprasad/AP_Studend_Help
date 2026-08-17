@@ -35,7 +35,14 @@ setup("authenticate as functional test user", async ({ request, page }) => {
       Authorization: `Bearer ${cronSecret}`,
       "Content-Type": "application/json",
     },
-    data: { action: "create" },
+    // PrepLion provisions the requested onboarding state in this call.
+    // The retired `complete-journey` fixture action now returns 400.
+    data: {
+      action: "create",
+      track: "clep",
+      course: "CLEP_COLLEGE_ALGEBRA",
+      onboarded: true,
+    },
   });
   expect(provisionRes.ok(), `Test-user provision failed: ${provisionRes.status()}`).toBe(true);
   const { sessionToken, cookieName, userId } = await provisionRes.json();
@@ -58,17 +65,6 @@ setup("authenticate as functional test user", async ({ request, page }) => {
     },
   ]);
 
-  // Beta 9.5 — bypass the new /dashboard → /journey redirect by marking
-  // the test user's journey as exited. Without this, every authed test
-  // that visits /dashboard would be bounced to /journey first.
-  // (Specs that explicitly test the journey rail can call
-  //  /api/journey?action=reset to drop this state.)
-  const journeyRes = await request.post(`${baseURL}/api/test/auth`, {
-    headers: { Authorization: `Bearer ${cronSecret}`, "Content-Type": "application/json" },
-    data: { action: "complete-journey" },
-  });
-  expect(journeyRes.ok(), `complete-journey failed: ${journeyRes.status()}`).toBe(true);
-
   // Inject init script BEFORE navigating. addInitScript runs on every
   // page load within this context — this beats the dashboard layout's
   // client-side onboarding redirect useEffect, which otherwise races
@@ -77,7 +73,7 @@ setup("authenticate as functional test user", async ({ request, page }) => {
   await page.context().addInitScript(() => {
     try {
       localStorage.setItem("onboarding_completed", "true");
-      localStorage.setItem("ap_selected_course", "AP_WORLD_HISTORY");
+      localStorage.setItem("ap_selected_course", "CLEP_COLLEGE_ALGEBRA");
       // Beta 9.5 — also set the local-cached journey flag so the
       // dashboard layout skips its journey redirect even before the
       // /api/journey round-trip resolves.
@@ -97,7 +93,7 @@ setup("authenticate as functional test user", async ({ request, page }) => {
   await page.evaluate(() => {
     try {
       localStorage.setItem("onboarding_completed", "true");
-      localStorage.setItem("ap_selected_course", "AP_WORLD_HISTORY");
+      localStorage.setItem("ap_selected_course", "CLEP_COLLEGE_ALGEBRA");
       localStorage.setItem("journey_status_v1", "exited");
     } catch { /* private mode — fall through */ }
   });

@@ -1,0 +1,83 @@
+{
+  "ACT_MATH": {
+    "statuses": [
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      429,
+      429,
+      429,
+      429
+    ],
+    "uniqueServed": 29,
+    "figureCandidates": 0,
+    "sampled": 0,
+    "missingFigureReferences": [],
+    "imageChecks": [],
+    "screenshotPath": "C:\\Users\\akkil\\project\\AP_Help\\data\\qa-walks\\act-visual-2026-06-22\\ACT_MATH.png"
+  },
+  "ACT_SCIENCE": {
+    "statuses": [
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      200,
+      429,
+      429,
+      429,
+      429
+    ],
+    "uniqueServed": 5,
+    "figureCandidates": 2,
+    "sampled": 2,
+    "missingFigureReferences": [],
+    "imageChecks": [
+      {
+        "id": "da02a031-bb62-431b-ac4f-94b3975e92e6",
+        "url": "",
+        "status": null,
+        "ok": false
+      },
+      {
+        "id": "0467f34c-34f6-42e2-89f1-c161f37092bb",
+        "url": "",
+        "status": null,
+        "ok": false
+      }
+    ],
+    "screenshotPath": "C:\\Users\\akkil\\project\\AP_Help\\data\\qa-walks\\act-visual-2026-06-22\\ACT_SCIENCE.png"
+  }
+}

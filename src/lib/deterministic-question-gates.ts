@@ -300,7 +300,112 @@ export function isCircularExplanation(expl: string | undefined, ansText: string 
   return false;
 }
 
+/**
+ * Explanation⇄option letter-coherence (2026-06-13 — Codex/D24 learning, mirrors PL).
+ * An explanation that labels an option's TEXT with a letter that isn't that option's
+ * canonical position — or "correct answer is (X)" where X != the stored key — is a
+ * stale-letter DRIFT defect. Conservative to dodge the "E. coli" false-positive class:
+ * only PAREN-form letter refs `(X)` adjacent to an option's text (>=5 chars); the
+ * "correct answer is" check requires a closing paren/bracket (a bare "E." abbreviation
+ * never trips it). Returns a reason or null.
+ */
+export function explanationLetterDrift(
+  explanation: string | undefined,
+  opts: string[],
+  correctAnswer: string | undefined,
+): string | null {
+  if (!explanation || opts.length < 2) return null;
+  const LETTERS = ["A", "B", "C", "D", "E"];
+  const stored = String(correctAnswer || "").trim().toUpperCase().charAt(0);
+  // 2026-06-14 (D31, Codex acc_f5aa16aa: key=B, explanation "The correct answer
+  // (A) identifies…"). The old regex REQUIRED "is" ("correct answer is (X)"), so
+  // the "is"-less PARENTHESIZED form "correct answer (X)" escaped. Precise patterns
+  // only (avoid matching bare "answer A" in prose): (1) "correct answer (is)? (X)"
+  // with the letter PARENTHESIZED; (2) "correct answer is X" bare, anchored by "is"
+  // + word boundary; (3) "option (X) is correct". A named correct-letter ≠ key drifts.
+  const mC =
+    explanation.match(/correct\s+answer\s*(?:is\s*)?[([]\s*([A-E])\s*[)\]]/i) ||
+    explanation.match(/correct\s+answer\s+is\s+([A-E])\b/i) ||
+    explanation.match(/\boption\s*[([]?\s*([A-E])\s*[)\]]?\s+is\s+(?:the\s+)?correct\b/i);
+  if (mC && stored && mC[1].toUpperCase() !== stored) return `explanation names correct answer (${mC[1].toUpperCase()}) but key=${stored}`;
+  const esc = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const expLower = explanation.toLowerCase();
+  for (let i = 0; i < opts.length && i < 5; i++) {
+    const text = String(opts[i]).replace(/^[A-E][).]\s*/, "").trim().toLowerCase();
+    if (text.length < 5) continue;
+    const t = esc(text.slice(0, 40));
+    const near = new RegExp(`${t}[^.]{0,12}?\\(([A-E])\\)|\\(([A-E])\\)[^.]{0,4}?${t}`, "i");
+    const m = expLower.match(near);
+    if (m) {
+      const refL = (m[1] || m[2] || "").toUpperCase();
+      if (refL && refL !== LETTERS[i]) return `"${text.slice(0, 28)}" labeled (${refL}) but is option ${LETTERS[i]}`;
+    }
+  }
+  return null;
+}
+
 export function runDeterministicGates(q: QuestionCandidate): GateResult {
+  // 0. SOURCE-INGESTION ARTIFACT gate (2026-06-14, D34 — Codex found an AP Bio
+  // stem containing «668 Chapter 16 | Gene Regulation This OpenStax book is
+  // available… -- 677 of 1802 --»). PDF/textbook ingestion leaked raw page
+  // furniture into the stem. UNIVERSAL (both products, MCQ + ORDERED) + scans
+  // stem, options, explanation. Deterministic, high-precision signatures.
+  {
+    const blob = `${q.questionText ?? ""}\n${parseOptions(q.options).join("\n")}\n${q.explanation ?? ""}`;
+    const ARTIFACT: Array<[RegExp, string]> = [
+      [/--\s*\d{1,4}\s+of\s+\d{2,5}\s*--/i, "PDF page marker '-- N of M --'"],
+      [/\bOpenStax\b/i, "'OpenStax' source mention"],
+      [/this\s+(open\s*stax\s+)?book\s+is\s+available\s+for\s+free/i, "textbook boilerplate"],
+      [/\baccess\s+for\s+free\s+at\b/i, "OpenStax access-for-free boilerplate"],
+      [/\bhttps?:\/\/\S+/i, "raw URL in content"],
+      [/\b\d{2,4}\s+Chapter\s+\d+\s*\|/i, "page-number + chapter-header furniture"],
+      [/\bISBN[-\s]?(?:13|10)?[:\s]/i, "ISBN metadata"],
+      [/\f/, "form-feed (PDF page break)"],
+    ];
+    for (const [re, why] of ARTIFACT) {
+      if (re.test(blob)) return { ok: false, gate: "source-ingestion-artifact", reason: `raw source-ingestion artifact (${why}) leaked into the question` };
+    }
+  }
+  // 0b. STEM-REFERENCES-MISSING-STIMULUS (2026-06-14, D35 — Codex: ACT Science
+  // "disagreement between Students 2 and 4" with no viewpoints; ACT Reading
+  // "Passage B, lines 34-52" with stimulus=null; SAT scatterplot items). UNIVERSAL.
+  // If the stem points at a stimulus element that must be present (line refs,
+  // scatterplot, named students/viewpoints, passage) and there is NO stimulus text
+  // and NO renderable image, the item is unanswerable/recall-only.
+  {
+    const stem = q.questionText ?? "";
+    const hasStimText = typeof q.stimulus === "string" && q.stimulus.trim().length > 20;
+    const hasImg = isRenderableImageUrl(q.stimulusImageUrl);
+    // High-precision triggers ONLY — material essentially never inline. Dropped
+    // "the table/data set" + bare "viewpoints": they false-positive on inline-data
+    // math ("the data set {1,2,3}") and civics ("express their viewpoints").
+    const refsStimulus =
+      /\blines?\s+\d+\s*[-–]\s*\d+\b/i.test(stem) ||           // "lines 34-52"
+      /\bscatterplot\b/i.test(stem) ||
+      /\b(Student|Scientist|Researcher)s?\s+\d+\b/.test(stem) || // ACT Science "Students 2 and 4"
+      /\bPassage\s+[AB]\b/.test(stem) ||                        // "Passage B"
+      /\baccording to the passage\b/i.test(stem);
+    // Length guard: a self-contained item may embed its passage/data INLINE in the
+    // stem (then `stimulus` is null but the content is present). A real passage is
+    // long, so only flag when the stem is short enough that the referenced material
+    // clearly isn't inline — avoids false-positives on inline-passage questions.
+    if (refsStimulus && !hasStimText && !hasImg && stem.length < 500) {
+      return { ok: false, gate: "missing-stimulus", reason: "stem references a passage/lines/scatterplot/table/students/viewpoints but no stimulus or image is attached — unanswerable" };
+    }
+  }
+  // 0c. SAT/PSAT MATH SCOPE (2026-06-14, D36 — Codex: PSAT Math item on local
+  // max/min via derivative zeros = calculus, which is OUT of SAT/PSAT scope). The
+  // College Board SAT/PSAT Math domains are algebra, advanced math, problem-solving
+  // & data analysis, geometry/trig — NOT calculus. Reject calculus in SAT/PSAT.
+  {
+    const course = String(q.course ?? "");
+    if (/^P?SAT/i.test(course) && /MATH/i.test(course + " " + String((q as { unit?: string }).unit ?? ""))) {
+      const blob = `${q.questionText ?? ""} ${parseOptions(q.options).join(" ")}`;
+      if (/\bderivative\b|\bintegral\b|∫|\bantiderivative\b|\blim(it)?\s*(_|as|x\s*→|x\s*->)\b|f\s*'\s*\(|\bdy\/dx\b|\bcalculus\b/i.test(blob)) {
+        return { ok: false, gate: "psat-sat-scope-calculus", reason: "SAT/PSAT Math item uses calculus (derivative/integral/limit) — out of College Board SAT/PSAT scope" };
+      }
+    }
+  }
   // 1. Basic structural
   if (!q.questionText || typeof q.questionText !== "string" || q.questionText.length < 10) {
     return { ok: false, gate: "structure", reason: "questionText empty or too short" };
@@ -319,6 +424,18 @@ export function runDeterministicGates(q: QuestionCandidate): GateResult {
   }
   if (!q.explanation || typeof q.explanation !== "string" || q.explanation.length < 40) {
     return { ok: false, gate: "structure", reason: "explanation missing or shorter than 40 chars" };
+  }
+  // 1a. EXPLANATION-TRUNCATION gate (L10/D29 — Codex P1, 2026-06-14, mirrors PL).
+  // Generation artifact: the explanation quotes the correct option but cuts it off
+  // mid-word with "..." → «repeated presentations of the tone without shock c... is
+  // correct because …». Served past every gate because the KEY was valid and the
+  // text was >40 chars. Signature: a word character (LETTER) IMMEDIATELY followed by
+  // "..." (mid-word cutoff), or "... is correct/because" (truncated quote spliced to
+  // the reason). A DIGIT before "..." is legitimate repeating-decimal notation
+  // (0.666...) and quote ellipses "[...]" are valid — both must NOT be flagged.
+  // Spaced stylistic ellipses (" … ") are NOT flagged. Pure + deterministic.
+  if (/[A-Za-z]\.\.\.(\s|$)/.test(q.explanation) || /\.\.\.\s*(is correct|because)\b/i.test(q.explanation)) {
+    return { ok: false, gate: "explanation-truncated", reason: "explanation contains a mid-word '...' truncation artifact (L10) — the answer text was cut off; rebuild with the full option text" };
   }
   // 1b. Stimulus presence — for courses where CB spec requires every
   // question to be paired with a passage / table / figure (SAT/PSAT R&W).
@@ -547,6 +664,30 @@ export function runDeterministicGates(q: QuestionCandidate): GateResult {
   const expected = expectedOptionCount(q.course);
   if (opts.length !== expected) {
     return { ok: false, gate: "options-count", reason: `expected ${expected} options for course ${q.course}, got ${opts.length}` };
+  }
+  // 2b. EXPLANATION⇄OPTION letter-coherence (D31, Codex/D24 learning, mirrors PL) —
+  // reject stale option-letter references in the explanation so the drift class
+  // can't (re-)enter the served pool. The serve path no longer mutates the row, so
+  // canonical letters are now stable + checkable here.
+  const drift = explanationLetterDrift(q.explanation, opts, q.correctAnswer);
+  if (drift) {
+    return { ok: false, gate: "explanation-letter-drift", reason: drift };
+  }
+  // 2026-06-14 (D33, Codex acc_f5134fec) — READING-NO-PASSAGE: a Reading-section
+  // question whose stem requires a passage ("the passage/author/excerpt") or outside
+  // literary knowledge (names a work/author) but has NO stimulus is not a valid
+  // passage-based reading item — it tests prior knowledge, not comprehension.
+  {
+    const unit = String((q as { unit?: string }).unit ?? "");
+    if (/READING|RDG/i.test(unit)) {
+      const hasStim = typeof q.stimulus === "string" && q.stimulus.trim().length > 20;
+      const stem = q.questionText ?? "";
+      const needsPassage = /\bthe passage\b|\baccording to the (passage|text|excerpt|author)\b|\bin the (passage|excerpt|text)\b|\bthe excerpt\b|\bthe author('s)?\b|\bthe narrator\b|\bthis passage\b/i.test(stem);
+      const namedWork = /\b(Hawthorne|Shakespeare|Dickens|Hemingway|Fitzgerald|Steinbeck|Orwell|Austen|Twain|Poe|Melville|Tolstoy)\b|\bThe Scarlet Letter\b|\bThe Great Gatsby\b|\bMoby[- ]Dick\b|\bRomeo and Juliet\b|\bThe Catcher in the Rye\b|\bTo Kill a Mockingbird\b|\bThe Crucible\b/i.test(stem);
+      if (!hasStim && (needsPassage || namedWork)) {
+        return { ok: false, gate: "reading-no-passage", reason: needsPassage ? "Reading question references an absent passage/author (no stimulus)" : "Reading question requires outside literary knowledge (named work/author), no passage" };
+      }
+    }
   }
   // 2026-05-27 — Unescaped currency $ in stem. Caught by College Algebra
   // ensemble (5+ real cases) but not by any deterministic gate. Heuristic:

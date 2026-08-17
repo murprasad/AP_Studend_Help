@@ -44,6 +44,10 @@ export default function BillingPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
+  const moduleParam = searchParams.get("module");
+  const initialModule = moduleParam === "ap" || moduleParam === "sat" || moduleParam === "act" || moduleParam === "clep"
+    ? moduleParam
+    : "ap";
   // Snapshot ?success=1 once on first render so a router.replace() that
   // strips the param doesn't re-fire the polling effect (guarding against
   // the infinite re-poll loop).
@@ -155,6 +159,7 @@ export default function BillingPage() {
   }, []);
 
   const [billingCycle, setBillingCycle] = useState<"monthly" | "annual">("monthly");
+  const [activeModule, setActiveModule] = useState<"ap" | "sat" | "act" | "clep">(initialModule);
   // Use billingStatus (live DB) as the primary source of truth for premium state.
   // Module subscriptions from billing status
   const moduleSubs: ModuleSubStatus[] = billingStatus?.moduleSubs ?? [];

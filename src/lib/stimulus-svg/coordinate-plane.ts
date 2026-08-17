@@ -55,14 +55,14 @@ export function coordinatePlane(spec: CoordinatePlaneSpec): string {
     if (Math.abs(x) < 1e-9) continue;
     const px = sx(x);
     parts.push(`<line x1="${px}" y1="${axisX}" x2="${px}" y2="${axisX + T.spacing.tickLength}" stroke="${T.color.axis}" stroke-width="${T.stroke.axis}" />`);
-    parts.push(`<text x="${px}" y="${axisX + T.spacing.tickLength + 14}" font-family="${T.font.family}" font-size="${T.font.sizeAxis}" fill="${T.color.text}" text-anchor="middle">${fmt(x)}</text>`);
+    parts.push(`<text x="${px}" y="${axisX + T.spacing.tickLength + 14}" font-family="${escapeXml(T.font.family)}" font-size="${T.font.sizeAxis}" fill="${T.color.text}" text-anchor="middle">${fmt(x)}</text>`);
   }
   // Tick labels (y)
   for (let y = Math.ceil(yMin / yStep) * yStep; y <= yMax; y += yStep) {
     if (Math.abs(y) < 1e-9) continue;
     const py = sy(y);
     parts.push(`<line x1="${axisY - T.spacing.tickLength}" y1="${py}" x2="${axisY}" y2="${py}" stroke="${T.color.axis}" stroke-width="${T.stroke.axis}" />`);
-    parts.push(`<text x="${axisY - T.spacing.tickLength - 4}" y="${py + 4}" font-family="${T.font.family}" font-size="${T.font.sizeAxis}" fill="${T.color.text}" text-anchor="end">${fmt(y)}</text>`);
+    parts.push(`<text x="${axisY - T.spacing.tickLength - 4}" y="${py + 4}" font-family="${escapeXml(T.font.family)}" font-size="${T.font.sizeAxis}" fill="${T.color.text}" text-anchor="end">${fmt(y)}</text>`);
   }
 
   // Lines (segments)
@@ -92,19 +92,19 @@ export function coordinatePlane(spec: CoordinatePlaneSpec): string {
     const col = pt.color ?? T.color.series[0];
     parts.push(`<circle cx="${sx(pt.x)}" cy="${sy(pt.y)}" r="4" fill="${col}" />`);
     if (pt.label) {
-      parts.push(`<text x="${sx(pt.x) + 6}" y="${sy(pt.y) - 6}" font-family="${T.font.family}" font-size="${T.font.sizeLabel}" fill="${T.color.text}">${escapeXml(pt.label)}</text>`);
+      parts.push(`<text x="${sx(pt.x) + 6}" y="${sy(pt.y) - 6}" font-family="${escapeXml(T.font.family)}" font-size="${T.font.sizeLabel}" fill="${T.color.text}">${escapeXml(pt.label)}</text>`);
     }
   }
 
   // Axis labels
   if (spec.xLabel) {
-    parts.push(`<text x="${pad + plotW / 2}" y="${H - 8}" font-family="${T.font.family}" font-size="${T.font.sizeLabel}" fill="${T.color.text}" text-anchor="middle">${escapeXml(spec.xLabel)}</text>`);
+    parts.push(`<text x="${pad + plotW / 2}" y="${H - 8}" font-family="${escapeXml(T.font.family)}" font-size="${T.font.sizeLabel}" fill="${T.color.text}" text-anchor="middle">${escapeXml(spec.xLabel)}</text>`);
   }
   if (spec.yLabel) {
-    parts.push(`<text x="14" y="${pad + plotH / 2}" font-family="${T.font.family}" font-size="${T.font.sizeLabel}" fill="${T.color.text}" text-anchor="middle" transform="rotate(-90, 14, ${pad + plotH / 2})">${escapeXml(spec.yLabel)}</text>`);
+    parts.push(`<text x="14" y="${pad + plotH / 2}" font-family="${escapeXml(T.font.family)}" font-size="${T.font.sizeLabel}" fill="${T.color.text}" text-anchor="middle" transform="rotate(-90, 14, ${pad + plotH / 2})">${escapeXml(spec.yLabel)}</text>`);
   }
   if (spec.title) {
-    parts.push(`<text x="${W / 2}" y="22" font-family="${T.font.family}" font-size="${T.font.sizeTitle}" font-weight="600" fill="${T.color.text}" text-anchor="middle">${escapeXml(spec.title)}</text>`);
+    parts.push(`<text x="${W / 2}" y="22" font-family="${escapeXml(T.font.family)}" font-size="${T.font.sizeTitle}" font-weight="600" fill="${T.color.text}" text-anchor="middle">${escapeXml(spec.title)}</text>`);
   }
 
   return svgWrap(W, H, parts.join(""), spec.title || "coordinate plane");

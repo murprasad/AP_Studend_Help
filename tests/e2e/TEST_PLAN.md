@@ -150,6 +150,28 @@ Last updated: 2026-04-23 (after Dashboard v2 + Option B + Flashcards ship).
 | No console errors on dashboard load | NEW | ❌ |
 | No 4xx/5xx on critical paths | NEW | ❌ |
 
+## UAT / Student Persona
+
+| Area | Persona goal | Acceptance bar | Test status |
+|---|---|---|---|
+| Public discovery | A new student can tell what PrepLion is in under 5 seconds | SAT and CLEP are first-class on the homepage and in top nav; `/sat-prep` and `/clep-prep` are easy to reach | ❌ |
+| Authenticated entry | A logged-in student lands on the correct family without wrong defaults | No CLEP/DSST leakage into SAT; no redirect loops; dashboard renders on `preplion.ai` | ❌ |
+| SAT dashboard | SAT uses score-native framing | Show projected `/1600`, Math `/800`, R&W `/800`, target gap, weak domains, next action; no `pass probability` | ❌ |
+| SAT question flow | Student should not think the question is AI-generated | Bluebook-like density, restrained shell, proper stimulus and option treatment, no non-test chrome | ❌ |
+| CLEP dashboard | CLEP uses exam-native framing | Keep CLEP score/readiness language, but no SAT Bluebook clone and no generic tutoring tone | ❌ |
+| CLEP question flow | Student should feel CLEP format fidelity | Correct option count / NUMERICAL / MULTI_SELECT mix, concise stems, real test-prep explanations | ❌ |
+| Security | App should not expose obvious attack surfaces | HSTS, nosniff, frame defense, open-redirect guard, XSS path safety, SQL-shaped query safety | ✅ |
+| Performance | App should not feel slow or heavy | Landing and prep pages stay within Lighthouse budgets; no obvious dashboard jank | ❌ |
+| SEO / reach | Product must be indexable and correctly described | Clean titles/descriptions/H1s/canonicals; public pages surfaced by sitemap; SAT not hidden behind CLEP | ❌ |
+
+### UAT execution rules
+
+- Use a real persona path, not just route existence.
+- Treat samples as triage only; certify with full-bank re-solves.
+- Record every mismatch in `docs/QA_BRIDGE.md` with exact repro and exact live state.
+- SAT and CLEP are separate acceptance bars.
+- Any surface that reads as AI-generated practice is still failing UAT.
+
 ## Coverage summary
 
 - **Implemented**: 26 tests across `public-paths.spec.ts` + `authed-flows.spec.ts`

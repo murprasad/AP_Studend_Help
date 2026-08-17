@@ -128,6 +128,21 @@ export default function DiagnosticPage() {
   const isCLEP = getCourseModule(course) === "clep"
   const accentColor = isCLEP ? "emerald" : "blue"
   const courseName = AP_COURSES[course] || COURSE_REGISTRY[course]?.name || course
+  const diagModule = course.startsWith("SAT_")
+    ? "sat"
+    : course.startsWith("ACT_")
+    ? "act"
+    : course.startsWith("CLEP_")
+    ? "clep"
+    : "ap"
+  const premiumLabel = diagModule === "sat"
+    ? "SAT Premium"
+    : diagModule === "act"
+    ? "ACT Premium"
+    : diagModule === "clep"
+    ? "CLEP Premium"
+    : "AP Premium"
+  const premiumHref = `/billing?module=${diagModule}`
 
   if (mode === "intro") {
     // 2026-06-02 — track-aware copy. Was hardcoded AP-only:
@@ -571,9 +586,13 @@ export default function DiagnosticPage() {
         )}
 
         {/* Premium upgrade CTA — shown to free users after they see their weak units */}
-        {session?.user?.subscriptionTier !== "PREMIUM" && session?.user?.subscriptionTier !== "AP_PREMIUM" && session?.user?.subscriptionTier !== "CLEP_PREMIUM" && result.weakUnits.length > 0 && (() => {
-          const diagTrack = (session?.user as { track?: string })?.track ?? "ap";
-          const isClep = diagTrack === "clep";
+        {session?.user?.subscriptionTier !== "PREMIUM"
+          && session?.user?.subscriptionTier !== "AP_PREMIUM"
+          && session?.user?.subscriptionTier !== "SAT_PREMIUM"
+          && session?.user?.subscriptionTier !== "ACT_PREMIUM"
+          && session?.user?.subscriptionTier !== "CLEP_PREMIUM"
+          && result.weakUnits.length > 0 && (() => {
+          const isClep = diagModule === "clep";
           return (
           <Card className={isClep ? "border-emerald-500/30 bg-gradient-to-br from-emerald-500/10 to-teal-500/5" : "border-blue-500/30 bg-gradient-to-br from-blue-500/10 to-purple-500/5"}>
             <CardContent className="p-5">
@@ -586,20 +605,24 @@ export default function DiagnosticPage() {
                     Target your weak units with a personalized study plan
                   </p>
                   <p className="text-xs text-muted-foreground mt-1">
-                    {isClep ? "CLEP Premium" : "AP Premium"} gives you an AI-generated weekly plan focused on{" "}
+                    {premiumLabel} gives you an AI-generated weekly plan focused on{" "}
                     <span className={isClep ? "text-emerald-300 font-medium" : "text-blue-700 dark:text-blue-400 font-medium"}>
                       {courseUnits[result.weakUnits[0] as ApUnit] || result.weakUnits[0]}
                     </span>{" "}
                     and {result.weakUnits.length > 1 ? `${result.weakUnits.length - 1} other weak unit${result.weakUnits.length > 2 ? "s" : ""}` : "your identified gap areas"}.
-                    {isClep
+                    {diagModule === "clep"
                       ? " Unlock unlimited Sage Live Tutor + personalized CLEP study plan."
+                      : diagModule === "sat"
+                      ? " Unlock unlimited practice, score tracking, and SAT-specific study plans."
+                      : diagModule === "act"
+                      ? " Unlock unlimited practice, section tracking, and ACT-specific study plans."
                       : " Unlock FRQ practice + unlimited Sage Live Tutor."}
                   </p>
                   <div className="flex gap-2 mt-3">
-                    <Link href="/billing">
+                    <Link href={premiumHref}>
                       <Button size="sm" className={`gap-1.5 text-xs ${isClep ? "bg-emerald-700 hover:bg-emerald-800" : "bg-blue-600 hover:bg-blue-700"}`}>
                         <Crown className="h-3.5 w-3.5" />
-                        Upgrade to {isClep ? "CLEP Premium" : "AP Premium"}
+                        Upgrade to {premiumLabel}
                       </Button>
                     </Link>
                     <Link href="/study-plan">

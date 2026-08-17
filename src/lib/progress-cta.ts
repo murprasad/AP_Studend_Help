@@ -18,6 +18,8 @@ export type ExamFamily = "AP" | "SAT" | "ACT";
 export interface ProgressCtaInput {
   /** Exam family — drives the score-unit language. */
   family: ExamFamily;
+  /** Optional module slug for purchase routing. Defaults to the family slug. */
+  module?: string;
   /** Current scaled score. For AP 1-5, SAT 400-1600, ACT 1-36. */
   scaledScore: number;
   /** Whether the raw score should be shown. If false, user is in a
@@ -76,6 +78,8 @@ function actTier(score: number): ProgressCta["tierLabel"] {
 }
 
 export function resolveUpgradeCta(input: ProgressCtaInput): ProgressCta {
+  const module = (input.module || input.family).toLowerCase();
+
   // Zero-signal users → pitch the diagnostic, not the plan.
   if (!input.showScore) {
     return {
@@ -105,7 +109,7 @@ export function resolveUpgradeCta(input: ProgressCtaInput): ProgressCta {
       headline: `Fix your weakest unit now`,
       subcopy: `The fastest way from a ${input.scaledScore} to a ${nextScoreLabel} is targeted practice on your lowest-mastery unit.`,
       ctaText: input.isPremium ? "Drill weakest unit" : "Unlock weakness drill",
-      targetUrl: input.isPremium ? "/practice?mode=weakest" : "/pricing",
+      targetUrl: input.isPremium ? "/practice?mode=weakest" : `/pricing?module=${module}`,
       tierLabel: "struggling",
     };
   }
@@ -117,7 +121,7 @@ export function resolveUpgradeCta(input: ProgressCtaInput): ProgressCta {
         ? `Your practice is moving the projection. Lock it in with another mock — Premium unlocks unlimited.`
         : `Take your first mock exam to see where you really stand — Premium includes unlimited mocks.`,
       ctaText: input.isPremium ? "Take a mock exam" : "Upgrade for unlimited mocks",
-      targetUrl: input.isPremium ? "/mock-exam" : "/pricing",
+      targetUrl: input.isPremium ? "/mock-exam" : `/pricing?module=${module}`,
       tierLabel: "building",
     };
   }
@@ -127,17 +131,17 @@ export function resolveUpgradeCta(input: ProgressCtaInput): ProgressCta {
       headline: `You're one mock away from a ${nextScoreLabel} — lock it in`,
       subcopy: `Students at your level who take 2-3 mocks under timed pressure are ${input.family === "AP" ? "2× more likely to score a " + nextScoreLabel : "far more likely to hit their target"}.`,
       ctaText: input.isPremium ? "Schedule a mock" : "Unlock mocks · Premium",
-      targetUrl: input.isPremium ? "/mock-exam" : "/pricing",
+      targetUrl: input.isPremium ? "/mock-exam" : `/pricing?module=${module}`,
       tierLabel: "close",
     };
   }
 
   // ready
   return {
-    headline: `Prove you're ready — Pass Confident Guarantee`,
-    subcopy: `If our projection says 80%+ and you don't pass, 60 days free + refund. Run 2 mocks to lock in.`,
-    ctaText: input.isPremium ? "Take final mock" : "Lock in your score · Premium",
-    targetUrl: input.isPremium ? "/mock-exam" : "/pricing",
-    tierLabel: "ready",
-  };
-}
+      headline: `Prove you're ready — Pass Confident Guarantee`,
+      subcopy: `If our projection says 80%+ and you don't pass, 60 days free + refund. Run 2 mocks to lock in.`,
+      ctaText: input.isPremium ? "Take final mock" : "Lock in your score · Premium",
+      targetUrl: input.isPremium ? "/mock-exam" : `/pricing?module=${module}`,
+      tierLabel: "ready",
+    };
+  }

@@ -39,7 +39,7 @@ export function barChart(spec: BarChartSpec): string {
   for (let y = 0; y <= yMax; y += yStep) {
     const py = sy(y);
     parts.push(`<line x1="${pad}" y1="${py}" x2="${pad + plotW}" y2="${py}" stroke="${T.color.grid}" stroke-width="${T.stroke.grid}" />`);
-    parts.push(`<text x="${pad - 6}" y="${py + 4}" font-family="${T.font.family}" font-size="${T.font.sizeAxis}" fill="${T.color.text}" text-anchor="end">${fmt(y)}</text>`);
+    parts.push(`<text x="${pad - 6}" y="${py + 4}" font-family="${escapeXml(T.font.family)}" font-size="${T.font.sizeAxis}" fill="${T.color.text}" text-anchor="end">${fmt(y)}</text>`);
   }
 
   // Axes
@@ -54,21 +54,21 @@ export function barChart(spec: BarChartSpec): string {
     const x = cx - barW / 2;
     const h = pad + plotH - top;
     parts.push(`<rect x="${x}" y="${top}" width="${barW}" height="${h}" fill="${color}" />`);
-    parts.push(`<text x="${cx}" y="${pad + plotH + 18}" font-family="${T.font.family}" font-size="${T.font.sizeAxis}" fill="${T.color.text}" text-anchor="middle">${escapeXml(spec.categories[i])}</text>`);
+    parts.push(`<text x="${cx}" y="${pad + plotH + 18}" font-family="${escapeXml(T.font.family)}" font-size="${T.font.sizeAxis}" fill="${T.color.text}" text-anchor="middle">${escapeXml(spec.categories[i])}</text>`);
     if (showLabels) {
-      parts.push(`<text x="${cx}" y="${top - 6}" font-family="${T.font.family}" font-size="${T.font.sizeValue}" fill="${T.color.text}" text-anchor="middle">${fmt(v)}</text>`);
+      parts.push(`<text x="${cx}" y="${top - 6}" font-family="${escapeXml(T.font.family)}" font-size="${T.font.sizeValue}" fill="${T.color.text}" text-anchor="middle">${fmt(v)}</text>`);
     }
   }
 
   // Labels
   if (spec.title) {
-    parts.push(`<text x="${W / 2}" y="22" font-family="${T.font.family}" font-size="${T.font.sizeTitle}" font-weight="600" fill="${T.color.text}" text-anchor="middle">${escapeXml(spec.title)}</text>`);
+    parts.push(`<text x="${W / 2}" y="22" font-family="${escapeXml(T.font.family)}" font-size="${T.font.sizeTitle}" font-weight="600" fill="${T.color.text}" text-anchor="middle">${escapeXml(spec.title)}</text>`);
   }
   if (spec.xLabel) {
-    parts.push(`<text x="${pad + plotW / 2}" y="${H - 6}" font-family="${T.font.family}" font-size="${T.font.sizeLabel}" fill="${T.color.text}" text-anchor="middle">${escapeXml(spec.xLabel)}</text>`);
+    parts.push(`<text x="${pad + plotW / 2}" y="${H - 6}" font-family="${escapeXml(T.font.family)}" font-size="${T.font.sizeLabel}" fill="${T.color.text}" text-anchor="middle">${escapeXml(spec.xLabel)}</text>`);
   }
   if (spec.yLabel) {
-    parts.push(`<text x="14" y="${pad + plotH / 2}" font-family="${T.font.family}" font-size="${T.font.sizeLabel}" fill="${T.color.text}" text-anchor="middle" transform="rotate(-90, 14, ${pad + plotH / 2})">${escapeXml(spec.yLabel)}</text>`);
+    parts.push(`<text x="14" y="${pad + plotH / 2}" font-family="${escapeXml(T.font.family)}" font-size="${T.font.sizeLabel}" fill="${T.color.text}" text-anchor="middle" transform="rotate(-90, 14, ${pad + plotH / 2})">${escapeXml(spec.yLabel)}</text>`);
   }
 
   return svgWrap(W, H, parts.join(""), spec.title || "bar chart");

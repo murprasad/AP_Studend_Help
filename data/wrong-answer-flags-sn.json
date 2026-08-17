@@ -1,0 +1,353 @@
+[
+  {
+    "id": "5d6f839f-c710-43bc-b3b7-04beaa80bb1c",
+    "course": "ACT_READING",
+    "stored": "C",
+    "llm": "D",
+    "question": "Which of the following conclusions is best supported by the data in the accompanying chart regarding energy consumption across industrial sectors?",
+    "options": [
+      "A) Manufacturing consumes 18% less energy than transportation despite having greater output.",
+      "B) Agriculture accounts for approximately 22% of total energy consumption, exceeding manufacturing by 6%.",
+      "C) Transportation represents the largest single energy consumer at roughly 28% of total consumption.",
+      "D) Residential and commercial sectors combined use more energy than any single industrial sector."
+    ]
+  },
+  {
+    "id": "43bd8078-7194-4791-8e24-fe10d86cd07e",
+    "course": "AP_PHYSICS_2",
+    "stored": "D",
+    "llm": "E",
+    "question": "Which transition results in the emission of a photon with the highest energy in a hydrogen-like atom with Z=3?",
+    "options": [
+      "A) n=4 to n=3",
+      "B) n=3 to n=2",
+      "C) n=5 to n=4",
+      "D) n=2 to n=1"
+    ]
+  },
+  {
+    "id": "5fcc3076-2717-483f-bf07-4a31ce09ae5f",
+    "course": "AP_COMPUTER_SCIENCE_A",
+    "stored": "B",
+    "llm": "C",
+    "question": "What is the result of \"hello\".indexOf(\"l\")?",
+    "options": [
+      "A) 0",
+      "B) 1",
+      "C) 2",
+      "D) 3"
+    ]
+  },
+  {
+    "id": "bab650b2-231b-443b-b3b9-38848db28675",
+    "course": "AP_PHYSICS_1",
+    "stored": "A",
+    "llm": "B",
+    "question": "Water flows through a hose at 5 m/s. If the hose's radius is 0.05 m, what is the volume flow rate?",
+    "options": [
+      "A) 0.0125 m³/s",
+      "B) 0.039 m³/s",
+      "C) 0.125 m³/s",
+      "D) 0.785 m³/s"
+    ]
+  },
+  {
+    "id": "7233d330-0535-4b66-90b3-1584bfe4e398",
+    "course": "AP_PHYSICS_2",
+    "stored": "A",
+    "llm": "B",
+    "question": "What is the equation for the voltage across the capacitor in an RC circuit?",
+    "options": [
+      "A) V = V₀(1 - e^(-t/RC))",
+      "B) V = V₀(e^(-t/RC))",
+      "C) V = V₀(1 + e^(-t/RC))",
+      "D) V = V₀(e^(t/RC))"
+    ]
+  },
+  {
+    "id": "aba63897-7a75-4745-82ae-05f5b3459529",
+    "course": "AP_PHYSICS_2",
+    "stored": "D",
+    "llm": "E",
+    "question": "A metal with a work function of 2.5 eV is illuminated with light of wavelength 400 nm. If the maximum speed of the ejected electrons is 5.0 x 10^5 m/s, what will be the maximum speed of the ejected electrons if the wavelength of the light is increased to 500 nm?",
+    "options": [
+      "A) 5.0 x 10^5 m/s",
+      "B) 7.5 x 10^5 m/s",
+      "C) 3.0 x 10^5 m/s",
+      "D) Less than 5.0 x 10^5 m/s"
+    ]
+  },
+  {
+    "id": "a9ba9e69-d183-4ec2-bbe9-9c2ea0853f5c",
+    "course": "PSAT_MATH",
+    "stored": "A",
+    "llm": "B",
+    "question": "A company's profit, in thousands of dollars, is modeled by the function P(x) = -2x^3 + 5x^2 - x + 1, where x is the number of years since the company was founded. What is the average rate of change of the profit over the first two years?",
+    "options": [
+      "A) -1 thousand dollars per year",
+      "B) 1 thousand dollars per year",
+      "C) 2 thousand dollars per year",
+      "D) 3 thousand dollars per year"
+    ]
+  },
+  {
+    "id": "cbd7afa1-80b4-46f4-b0dc-5bc3ac4bfb5c",
+    "course": "AP_PHYSICS_2",
+    "stored": "D",
+    "llm": "B",
+    "question": "A light ray passes from air into a medium with a refractive index of 2. If the angle of incidence is 30°, what is the angle of refraction?",
+    "options": [
+      "A) 10°",
+      "B) 15°",
+      "C) 20°",
+      "D) 17.1°"
+    ]
+  },
+  {
+    "id": "ae1c0036-0808-46d6-9b3a-d4efabd5435a",
+    "course": "AP_PHYSICS_2",
+    "stored": "A",
+    "llm": "E",
+    "question": "A 2 C charge is placed 3 m from a 4 C charge. What is the electric potential at the midpoint?",
+    "options": [
+      "A) 0 V",
+      "B) 10 V",
+      "C) 20 V",
+      "D) 30 V"
+    ]
+  },
+  {
+    "id": "4675c64b-93ba-45bf-ad0f-8e4aec490d58",
+    "course": "PSAT_MATH",
+    "stored": "D",
+    "llm": "C",
+    "question": "A function f is defined such that f(x) = 2x^2 - 5x + 1. Which of the following statements about the function is always true?",
+    "options": [
+      "A) The function is increasing over its entire domain.",
+      "B) The function has a maximum value at its vertex.",
+      "C) The function is decreasing over a part of its domain.",
+      "D) The function has no vertical asymptotes."
+    ]
+  },
+  {
+    "id": "3ecc90f1-739d-4d08-a0d3-2cf3ab71240f",
+    "course": "AP_CALCULUS_BC",
+    "stored": "A",
+    "llm": "D",
+    "question": "What is the derivative of x^2 + y^2 = 4?",
+    "options": [
+      "A) -x/y",
+      "B) x/y",
+      "C) y/x",
+      "D) -y/x"
+    ]
+  },
+  {
+    "id": "cmvd5cvi5jcw",
+    "course": "PSAT_MATH",
+    "stored": "D",
+    "llm": "B",
+    "question": "The scatterplot shows the relationship between temperature and sales over 10 months. Which of the following is the best interpretation of the slope of the line of best fit? The line of best fit has a y-intercept of 48 and a slope of 26.",
+    "options": [
+      "A) For every 1 month increase, sales decrease by 26 units.",
+      "B) For every 1 degree increase in temperature, sales increase by 26 units.",
+      "C) For every 26 month increase, sales increase by 1 unit.",
+      "D) For every 1 month increase, sales increase by 26 units."
+    ]
+  },
+  {
+    "id": "c51bc608-9db4-4fd4-b8ac-c1ae9e6b475b",
+    "course": "AP_CALCULUS_BC",
+    "stored": "A",
+    "llm": "C",
+    "question": "Find the value of tan⁻¹(-√3).",
+    "options": [
+      "A) -π/3",
+      "B) -π/4",
+      "C) -π/6",
+      "D) -π/2"
+    ]
+  },
+  {
+    "id": "57f9c076-6dc4-448b-8893-967ef9380771",
+    "course": "AP_CALCULUS_BC",
+    "stored": "D",
+    "llm": "C",
+    "question": "A particle is moving along a line with its position given by s(t) = 2t³ - 5t² + 3t + 1. What is the velocity of the particle when t = 2?",
+    "options": [
+      "A) 3",
+      "B) 5",
+      "C) 7",
+      "D) 11"
+    ]
+  },
+  {
+    "id": "e7c93d17-6091-46fb-ac30-34875588f86b",
+    "course": "SAT_MATH",
+    "stored": "A",
+    "llm": "B",
+    "question": "A number q increased by 9 is equal to 3 times that number decreased by 5. Which equation represents this situation?",
+    "options": [
+      "A) q + 9 = 3q - 5",
+      "B) q + 9 = 3(q - 5)",
+      "C) 9q = 3q - 5",
+      "D) q + 9 - 5 = 3q"
+    ]
+  },
+  {
+    "id": "72d2c919-4878-4190-a208-9881d69df68e",
+    "course": "AP_PHYSICS_2",
+    "stored": "A",
+    "llm": "B",
+    "question": "A block of copper with a mass of 0.50 kg is heated from 20°C to 80°C. If the specific heat capacity of copper is 0.385 J/g°C, what is the total energy transferred to the block as heat?",
+    "options": [
+      "A) 55.2 kJ",
+      "B) 11.6 kJ",
+      "C) 5.8 kJ",
+      "D) 2.9 kJ"
+    ]
+  },
+  {
+    "id": "60bda945-78c3-4b4b-80af-c84722d96107",
+    "course": "AP_HUMAN_GEOGRAPHY",
+    "stored": "B",
+    "llm": "A",
+    "question": "A country with a high total fertility rate and a low life expectancy rate would most likely be in which stage of the demographic transition model?",
+    "options": [
+      "A) Stage 1: High stationary",
+      "B) Stage 2: Early expanding",
+      "C) Stage 3: Late expanding",
+      "D) Stage 4: Low stationary"
+    ]
+  },
+  {
+    "id": "cmvy5s0f2tyj",
+    "course": "SAT_MATH",
+    "stored": "D",
+    "llm": "B",
+    "question": "Which of the following is the best interpretation of the y-intercept of the line shown in the figure?",
+    "options": [
+      "A) 14",
+      "B) 6",
+      "C) -7",
+      "D) 7"
+    ]
+  },
+  {
+    "id": "cmoqjpaey001wuuxc0f6n4k3e",
+    "course": "AP_WORLD_HISTORY",
+    "stored": "C",
+    "llm": "E",
+    "question": "If the widespread adoption and influence of Islam, as implicitly evident in the governance described by Ibn Battuta, had NOT occurred in the Indian subcontinent by the 14th century, which of the following outcomes would most likely NOT have occurred?",
+    "options": [
+      "A) The establishment of a centralized Islamic state controlling large parts of northern India.",
+      "B) The significant architectural development of mosque complexes and minarets across the region.",
+      "C) The continuation of existing Hindu and Buddhist religious practices and philosophical traditions.",
+      "D) The integration of Persian and Arabic administrative practices into local governance structures."
+    ]
+  },
+  {
+    "id": "2290bc40-b230-4205-a054-c0f7dc3854ce",
+    "course": "AP_CALCULUS_BC",
+    "stored": "D",
+    "llm": "E",
+    "question": "Find the area under y = x from x = 0 to x = 4 using 4 subintervals of equal width.",
+    "options": [
+      "A) 2",
+      "B) 4",
+      "C) 6",
+      "D) 8"
+    ]
+  },
+  {
+    "id": "18f8cc0f-f56d-4b6f-a3cf-490956b99512",
+    "course": "AP_EUROPEAN_HISTORY",
+    "stored": "B",
+    "llm": "C",
+    "question": "The author's tone when discussing Machiavelli's political career is one of",
+    "options": [
+      "A) admiration and reverence",
+      "B) subtle criticism and disappointment",
+      "C) neutral objectivity and detachment",
+      "D) overt ridicule and scorn"
+    ]
+  },
+  {
+    "id": "5e3690b0-7d7b-4cdc-9eac-a4822fa51ea6",
+    "course": "AP_CALCULUS_BC",
+    "stored": "B",
+    "llm": "A",
+    "question": "Estimate error using Lagrange's formula for f(x) = x^3, approximating f(1.1) with a 2nd degree Taylor polynomial centered at x = 1.",
+    "options": [
+      "A) 0.0045",
+      "B) 0.009",
+      "C) 0.025",
+      "D) 0.045"
+    ]
+  },
+  {
+    "id": "f5f6bcbf-615b-4078-ac5c-daab52edf800",
+    "course": "AP_MACROECONOMICS",
+    "stored": "D",
+    "llm": "B",
+    "question": "The economy of a country is experiencing a period of rapid growth in real GDP, with an increasing gap between the actual and potential output. However, the inflation rate is also rising. Which of the following is the most likely outcome if the central bank decides to increase interest rates to combat inflation?",
+    "options": [
+      "A) The economy will continue to grow, and the inflation rate will decrease.",
+      "B) The economy will experience a period of deflation, and the inflation rate will become negative.",
+      "C) The economy will experience stagnation, and the inflation rate will remain the same.",
+      "D) The economy will enter a recession, and the inflation rate will decrease."
+    ]
+  },
+  {
+    "id": "3fe37918-c447-490b-94bf-228c71201559",
+    "course": "SAT_READING_WRITING",
+    "stored": "B",
+    "llm": "E",
+    "question": "The architectural firm submitted preliminary designs for the downtown development project _______ the final approval rests with the city planning board, neighborhood associations, and environmental review committees. Which choice completes the text so that it conforms to the conventions of Standard English?",
+    "options": [
+      "A) project, nevertheless;",
+      "B) project; nevertheless,",
+      "C) project, nevertheless,",
+      "D) project nevertheless"
+    ]
+  },
+  {
+    "id": "e31088ce-49a2-43db-9d58-ae6de5f8e472",
+    "course": "AP_PHYSICS_2",
+    "stored": "A",
+    "llm": "B",
+    "question": "A 2.2 μF capacitor is connected to a 15 V battery through a 5 kΩ resistor. What is the current in the circuit after 3 time constants?",
+    "options": [
+      "A) 0 A",
+      "B) 0.1 mA",
+      "C) 0.3 mA",
+      "D) 1.5 mA"
+    ]
+  },
+  {
+    "id": "cmoqi5ueo0011uuxcvr27der1",
+    "course": "AP_WORLD_HISTORY",
+    "stored": "C",
+    "llm": "A",
+    "question": "If the Song Dynasty had not significantly expanded and emphasized the civil service examination system as described in the passage, which of the following outcomes would have been LEAST likely to occur?",
+    "options": [
+      "A) A continued dominance of the hereditary aristocracy in government positions.",
+      "B) A weakening of the central imperial authority due to less loyal regional administrations.",
+      "C) Increased social mobility for individuals from non-aristocratic backgrounds.",
+      "D) A decrease in the emphasis on Confucian scholarship within the elite class."
+    ]
+  },
+  {
+    "id": "d880499b-934f-4236-a145-cea2ea4402b7",
+    "course": "AP_PHYSICS_2",
+    "stored": "D",
+    "llm": "A",
+    "question": "Two point charges, +2 μC and -3 μC, are 5 cm apart. What is the magnitude of the force between them?",
+    "options": [
+      "A) 0.02 N",
+      "B) 0.1 N",
+      "C) 0.5 N",
+      "D) 1.1 N"
+    ]
+  }
+]

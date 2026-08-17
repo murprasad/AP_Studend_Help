@@ -1,0 +1,470 @@
+[
+  {
+    "id": "265d4155-eff1-4355-aa60-4ee2b705277e",
+    "course": "AP_ENGLISH_LANGUAGE",
+    "stored": "B",
+    "llm": "D",
+    "question": "What is the term for the audience that a writer imagines or intends to address?",
+    "options": [
+      "A) Actual audience",
+      "B) Intended audience",
+      "C) Ideal audience",
+      "D) Implied audience"
+    ]
+  },
+  {
+    "id": "5e3690b0-7d7b-4cdc-9eac-a4822fa51ea6",
+    "course": "AP_CALCULUS_BC",
+    "stored": "B",
+    "llm": "E",
+    "question": "Estimate error using Lagrange's formula for f(x) = x^3, approximating f(1.1) with a 2nd degree Taylor polynomial centered at x = 1.",
+    "options": [
+      "A) 0.0045",
+      "B) 0.009",
+      "C) 0.025",
+      "D) 0.045"
+    ]
+  },
+  {
+    "id": "5fcc3076-2717-483f-bf07-4a31ce09ae5f",
+    "course": "AP_COMPUTER_SCIENCE_A",
+    "stored": "B",
+    "llm": "C",
+    "question": "What is the result of \"hello\".indexOf(\"l\")?",
+    "options": [
+      "A) 0",
+      "B) 1",
+      "C) 2",
+      "D) 3"
+    ]
+  },
+  {
+    "id": "7dee261b-8e5a-4b68-bd72-e5269ca16d37",
+    "course": "SAT_MATH",
+    "stored": "B",
+    "llm": "C",
+    "question": "y ≤ -2x + 12\n\nFor which of the following tables are all the values of x and their corresponding values of y solutions to the given inequality?",
+    "options": [
+      "A) x: 2, 4, 6; y: 10, 8, 6",
+      "B) x: 2, 4, 6; y: 9, 5, 1",
+      "C) x: 2, 4, 6; y: 8, 4, 0",
+      "D) x: 2, 4, 6; y: 11, 9, 7"
+    ]
+  },
+  {
+    "id": "bab650b2-231b-443b-b3b9-38848db28675",
+    "course": "AP_PHYSICS_1",
+    "stored": "A",
+    "llm": "B",
+    "question": "Water flows through a hose at 5 m/s. If the hose's radius is 0.05 m, what is the volume flow rate?",
+    "options": [
+      "A) 0.0125 m³/s",
+      "B) 0.039 m³/s",
+      "C) 0.125 m³/s",
+      "D) 0.785 m³/s"
+    ]
+  },
+  {
+    "id": "1ab2d7b0-6578-465d-83da-9733f57e2e73",
+    "course": "AP_PHYSICS_1",
+    "stored": "C",
+    "llm": "B",
+    "question": "A car is moving in a circular path with a constant speed of 20 m/s. If the radius of the circular path is decreased by a factor of 2, what happens to the net force acting on the car?",
+    "options": [
+      "A) The net force is decreased by a factor of 2",
+      "B) The net force is increased by a factor of 2",
+      "C) The net force is increased by a factor of 4",
+      "D) The net force remains the same"
+    ]
+  },
+  {
+    "id": "05d6da4c-86a9-40d8-a274-88cd34398f46",
+    "course": "AP_HUMAN_GEOGRAPHY",
+    "stored": "A",
+    "llm": "B",
+    "question": "The author's tone when discussing the English constitution can best be described as",
+    "options": [
+      "A) critical and disapproving",
+      "B) admiring and adulatory",
+      "C) neutral and objective",
+      "D) nostalgic and sentimental"
+    ]
+  },
+  {
+    "id": "cbd7afa1-80b4-46f4-b0dc-5bc3ac4bfb5c",
+    "course": "AP_PHYSICS_2",
+    "stored": "D",
+    "llm": "B",
+    "question": "A light ray passes from air into a medium with a refractive index of 2. If the angle of incidence is 30°, what is the angle of refraction?",
+    "options": [
+      "A) 10°",
+      "B) 15°",
+      "C) 20°",
+      "D) 17.1°"
+    ]
+  },
+  {
+    "id": "ae1c0036-0808-46d6-9b3a-d4efabd5435a",
+    "course": "AP_PHYSICS_2",
+    "stored": "A",
+    "llm": "E",
+    "question": "A 2 C charge is placed 3 m from a 4 C charge. What is the electric potential at the midpoint?",
+    "options": [
+      "A) 0 V",
+      "B) 10 V",
+      "C) 20 V",
+      "D) 30 V"
+    ]
+  },
+  {
+    "id": "3f5a4c64-2135-4625-919d-c4e9456a8049",
+    "course": "ACT_ENGLISH",
+    "stored": "A",
+    "llm": "D",
+    "question": "What is the most logical order of events for a paragraph about planning a trip?",
+    "options": [
+      "A) Decide on a destination, book flights, research activities",
+      "B) Research activities, book flights, decide on a destination",
+      "C) Book flights, decide on a destination, research activities",
+      "D) Research activities, decide on a destination, book flights"
+    ]
+  },
+  {
+    "id": "60c0c2ff-bd4f-48f9-a48a-334d6babdd0b",
+    "course": "AP_CALCULUS_AB",
+    "stored": "C",
+    "llm": "A",
+    "question": "A particle moves along a curve defined by the parametric equations x(t) = t^2 and y(t) = 2t from t = 0 to t = 2. What is the arc length of this curve?",
+    "options": [
+      "A) ∫[0,2] √(4t^2 + 1) dt",
+      "B) ∫[0,2] √(4t^2 - 4) dt",
+      "C) ∫[0,2] √(4t^2 + 4) dt",
+      "D) ∫[0,2] √(4t^2) dt"
+    ]
+  },
+  {
+    "id": "3ecc90f1-739d-4d08-a0d3-2cf3ab71240f",
+    "course": "AP_CALCULUS_BC",
+    "stored": "A",
+    "llm": "D",
+    "question": "What is the derivative of x^2 + y^2 = 4?",
+    "options": [
+      "A) -x/y",
+      "B) x/y",
+      "C) y/x",
+      "D) -y/x"
+    ]
+  },
+  {
+    "id": "3e4f5583-367e-471f-9425-c9bfa69568b0",
+    "course": "ACT_SCIENCE",
+    "stored": "C",
+    "llm": "D",
+    "question": "A study measured bacterial growth over time at different temperatures. At 20°C, the population doubled every 4 hours, reaching 1,280 cells after 12 hours. If this exponential trend continues, the population at 16 hours would most likely be between:",
+    "options": [
+      "A) 1,500 and 2,000 cells",
+      "B) 2,000 and 2,500 cells",
+      "C) 2,500 and 3,500 cells",
+      "D) 3,500 and 5,000 cells"
+    ]
+  },
+  {
+    "id": "cmvd5cvi5jcw",
+    "course": "PSAT_MATH",
+    "stored": "D",
+    "llm": "B",
+    "question": "The scatterplot shows the relationship between temperature and sales over 10 months. Which of the following is the best interpretation of the slope of the line of best fit? The line of best fit has a y-intercept of 48 and a slope of 26.",
+    "options": [
+      "A) For every 1 month increase, sales decrease by 26 units.",
+      "B) For every 1 degree increase in temperature, sales increase by 26 units.",
+      "C) For every 26 month increase, sales increase by 1 unit.",
+      "D) For every 1 month increase, sales increase by 26 units."
+    ]
+  },
+  {
+    "id": "57f9c076-6dc4-448b-8893-967ef9380771",
+    "course": "AP_CALCULUS_BC",
+    "stored": "D",
+    "llm": "C",
+    "question": "A particle is moving along a line with its position given by s(t) = 2t³ - 5t² + 3t + 1. What is the velocity of the particle when t = 2?",
+    "options": [
+      "A) 3",
+      "B) 5",
+      "C) 7",
+      "D) 11"
+    ]
+  },
+  {
+    "id": "72d2c919-4878-4190-a208-9881d69df68e",
+    "course": "AP_PHYSICS_2",
+    "stored": "A",
+    "llm": "B",
+    "question": "A block of copper with a mass of 0.50 kg is heated from 20°C to 80°C. If the specific heat capacity of copper is 0.385 J/g°C, what is the total energy transferred to the block as heat?",
+    "options": [
+      "A) 55.2 kJ",
+      "B) 11.6 kJ",
+      "C) 5.8 kJ",
+      "D) 2.9 kJ"
+    ]
+  },
+  {
+    "id": "60bda945-78c3-4b4b-80af-c84722d96107",
+    "course": "AP_HUMAN_GEOGRAPHY",
+    "stored": "B",
+    "llm": "A",
+    "question": "A country with a high total fertility rate and a low life expectancy rate would most likely be in which stage of the demographic transition model?",
+    "options": [
+      "A) Stage 1: High stationary",
+      "B) Stage 2: Early expanding",
+      "C) Stage 3: Late expanding",
+      "D) Stage 4: Low stationary"
+    ]
+  },
+  {
+    "id": "cmorai23b001ruuss7zw8rahi",
+    "course": "AP_US_HISTORY",
+    "stored": "A",
+    "llm": "D",
+    "question": "“It is by the right of our manifest destiny to overspread and to possess the whole of the continent which Providence has given us for the development of the great experiment of liberty and federated self-government entrusted to us.”\n\n— John L. O'Sullivan, \"Annexation,\" *Democratic Review*, 1845\n\nIf the sentiments expressed in the excerpt had *not* gained widespread popular support among the American public during the 1840s, which of the following outcomes would most likely *not* have occurred?",
+    "options": [
+      "A) The acquisition of vast territories from Mexico through military conquest.",
+      "B) The ongoing debates over the extension of slavery into new western lands.",
+      "C) The continued westward migration of American settlers into the Oregon Territory.",
+      "D) The passage of protective tariffs to support American industrial development."
+    ]
+  },
+  {
+    "id": "ce5cc7c2-d795-41de-9428-79ef8473865b",
+    "course": "SAT_MATH",
+    "stored": "A",
+    "llm": "B",
+    "question": "Line r in the xy-plane has a slope of 3/4 and passes through the point (−8, 2). Which equation defines line r?",
+    "options": [
+      "A) y = 3x/4 − 4",
+      "B) y = 3x/4 + 8",
+      "C) y = 3x/4 + 2",
+      "D) y = 3x/4 − 8"
+    ]
+  },
+  {
+    "id": "e29f0dc4-b39a-4c1b-b73a-410ffbaa9082",
+    "course": "PSAT_MATH",
+    "stored": "B",
+    "llm": "D",
+    "question": "Two lines intersect at point P. Angle A and angle B are vertical angles. If the measure of angle A is (3x + 15)° and the measure of angle B is (5x - 5)°, what is the value of x?",
+    "options": [
+      "A) 5",
+      "B) 10",
+      "C) 15",
+      "D) 20"
+    ]
+  },
+  {
+    "id": "ec1af619-b546-4bc5-a0e6-6449106e16e3",
+    "course": "AP_CALCULUS_BC",
+    "stored": "B",
+    "llm": "A",
+    "question": "Calculate the area between y = x^3 and y = x^2 from x = 0 to x = 2.",
+    "options": [
+      "A) 4/3",
+      "B) 8/3",
+      "C) 16/3",
+      "D) 32/3"
+    ]
+  },
+  {
+    "id": "cm2okfamtrzq",
+    "course": "SAT_MATH",
+    "stored": "D",
+    "llm": "B",
+    "question": "The scatterplot shows the relationship between screen time and sleep hours over 10 months. Which of the following is the best interpretation of the slope of the line of best fit? The line of best fit has a y-intercept of 61 and a slope of 27.",
+    "options": [
+      "A) For every additional month, sleep hours decrease by 27 hours",
+      "B) For every additional month, sleep hours increase by 27 hours",
+      "C) For every 27 additional months, sleep hours increase by 1 hour",
+      "D) For every additional month, sleep hours increase by 2.7 hours"
+    ]
+  },
+  {
+    "id": "cmo8181wo00duuuqkg73uggda",
+    "course": "ACT_ENGLISH",
+    "stored": "D",
+    "llm": "A",
+    "question": "The writer wants to emphasize the significance of the newly discovered plant species. Which choice achieves this goal?",
+    "options": [
+      "A) By describing the plant's potential medicinal applications",
+      "B) By comparing the plant to a similar, well-known species",
+      "C) By discussing the plant's widespread geographical distribution",
+      "D) By explaining the plant's unique characteristics"
+    ]
+  },
+  {
+    "id": "e03e8009-b893-4f1a-a3f1-d7384eee6f16",
+    "course": "AP_PHYSICS_1",
+    "stored": "A",
+    "llm": "C",
+    "question": "An observer sees a ball moving at 5 m/s east. If the observer is moving west at 2 m/s, what velocity does the observer measure?",
+    "options": [
+      "A) 3 m/s east",
+      "B) 5 m/s east",
+      "C) 7 m/s east",
+      "D) 5 m/s west"
+    ]
+  },
+  {
+    "id": "6148fd5a-9e2f-4dae-9a4e-b0b2d9ce9818",
+    "course": "AP_ENGLISH_LITERATURE",
+    "stored": "A",
+    "llm": "B",
+    "question": "The tone of the coachman's interactions with the horses and other characters can best be described as",
+    "options": [
+      "A) anxious and slightly desperate",
+      "B) jovial and lighthearted",
+      "C) detached and unemotional",
+      "D) formal and courteous"
+    ]
+  },
+  {
+    "id": "a4a44ba5-e93e-4a2a-93a2-3a1e10e7cbfb",
+    "course": "AP_ENGLISH_LANGUAGE",
+    "stored": "A",
+    "llm": "B",
+    "question": "The narrator's tone when describing the patriarchal figure can best be characterized as",
+    "options": [
+      "A) affectionate and slightly amused",
+      "B) critical and disapproving",
+      "C) envious and resentful",
+      "D) indifferent and dismissive"
+    ]
+  },
+  {
+    "id": "69f81689-39e8-4ebb-ada3-239dfae406e2",
+    "course": "AP_ENGLISH_LANGUAGE",
+    "stored": "C",
+    "llm": "A",
+    "question": "The narrator suggests that the process of grieving ultimately leads to a point where",
+    "options": [
+      "A) the pain of loss becomes a distant memory",
+      "B) grief becomes a necessary part of one's identity",
+      "C) grief transitions from a necessity to an indulgence",
+      "D) the deceased is forgotten in the passage of time"
+    ]
+  },
+  {
+    "id": "1b4a8f6d-45f4-4bc1-8710-3f9e1028dd64",
+    "course": "AP_US_GOVERNMENT",
+    "stored": "A",
+    "llm": "D",
+    "question": "The translator's tone in the passage can best be described as",
+    "options": [
+      "A) Apologetic and humble",
+      "B) Critical and argumentative",
+      "C) Sarcastic and ironic",
+      "D) Detached and unemotional"
+    ]
+  },
+  {
+    "id": "3c594848-a8cb-40fa-80bd-060fee94ef1f",
+    "course": "AP_CALCULUS_BC",
+    "stored": "B",
+    "llm": "A",
+    "question": "If f(x) = x^3 - 6x^2 + 9x + 2, find f'(2) using the definition of a derivative.",
+    "options": [
+      "A) -1",
+      "B) 1",
+      "C) 4",
+      "D) 7"
+    ]
+  },
+  {
+    "id": "cm3y68ym7vt3",
+    "course": "SAT_MATH",
+    "stored": "A",
+    "llm": "B",
+    "question": "Which of the following is the best interpretation of the y-intercept of the line shown in the figure?",
+    "options": [
+      "A) 28",
+      "B) 24",
+      "C) 32",
+      "D) -28"
+    ]
+  },
+  {
+    "id": "cmgtr8y5anvv",
+    "course": "PSAT_MATH",
+    "stored": "D",
+    "llm": "B",
+    "question": "The scatterplot shows the relationship between the temperature and sales over 10 months. The line of best fit has a y-intercept of 53 and a slope of 28. Which of the following is the best interpretation of the slope of the line of best fit?",
+    "options": [
+      "A) For every 1 degree increase in temperature, sales decrease by 28 units",
+      "B) For every 1 degree increase in temperature, sales increase by 28 units",
+      "C) For every 1 month increase, sales decrease by 28 units",
+      "D) For every 1 month increase, sales increase by 28 units"
+    ]
+  },
+  {
+    "id": "17f671bc-bede-4b65-a59c-f28a8ced4041",
+    "course": "PSAT_MATH",
+    "stored": "B",
+    "llm": "A",
+    "question": "What is the equation of the line that passes through point (1,2) with slope 3?",
+    "options": [
+      "A) y = 3x - 1",
+      "B) y = 3x + 1",
+      "C) y = 2x + 3",
+      "D) y = 2x - 1"
+    ]
+  },
+  {
+    "id": "90cbcb60-da31-4e83-be3e-440e4645eeb3",
+    "course": "AP_CALCULUS_AB",
+    "stored": "A",
+    "llm": "E",
+    "question": "Find the limit of (tan(x) - x)/x^3 as x approaches 0.",
+    "options": [
+      "A) -1/3",
+      "B) 0",
+      "C) 1/3",
+      "D) undefined"
+    ]
+  },
+  {
+    "id": "3eaa8099-abca-4eda-93e6-963a5e1233f1",
+    "course": "AP_PHYSICS_2",
+    "stored": "B",
+    "llm": "E",
+    "question": "A capacitor with a capacitance of 2.0 μF is connected to a 12 V battery. After charging, the capacitor is disconnected from the battery and connected to another capacitor with a capacitance of 4.0 μF. If the two capacitors are connected in parallel, what is the total energy stored in the capacitors?",
+    "options": [
+      "A) 0.072 J",
+      "B) 0.144 J",
+      "C) 0.024 J",
+      "D) 0.036 J"
+    ]
+  },
+  {
+    "id": "1ab37733-15fe-4ad3-9053-a9b7fa62abf9",
+    "course": "ACT_SCIENCE",
+    "stored": "C",
+    "llm": "D",
+    "question": "Based on Table 1, what is the average rate of photosynthesis for plants grown in 500 ppm of CO2?",
+    "options": [
+      "A) 0.5 mg/m^2/h",
+      "B) 1.2 mg/m^2/h",
+      "C) 2.5 mg/m^2/h",
+      "D) 3.8 mg/m^2/h"
+    ]
+  },
+  {
+    "id": "1c1077ca-59d3-4d26-9f96-aaa78c006163",
+    "course": "AP_MACROECONOMICS",
+    "stored": "B",
+    "llm": "D",
+    "question": "What causes a shift in the AD curve to the left?",
+    "options": [
+      "A) Increase in consumer wealth",
+      "B) Increase in interest rates",
+      "C) Increase in government spending",
+      "D) Appreciation of the exchange rate"
+    ]
+  }
+]

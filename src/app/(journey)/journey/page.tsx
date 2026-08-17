@@ -133,6 +133,22 @@ export default function JourneyPage() {
     return () => { cancelled = true; };
   }, []);
 
+  // 2026-06-17 — Fresh SAT/ACT users can mount before `useSession()`
+  // resolves. In that case `trackDefault` starts as AP, which briefly
+  // biases Step 0 toward AP content. Keep the starter course aligned with
+  // the resolved track whenever the user still needs to pick a course.
+  useEffect(() => {
+    if (!mustPickCourse) return;
+    const track = sessionData?.user?.track;
+    if (track === "sat") {
+      setCourse("SAT_MATH");
+    } else if (track === "act") {
+      setCourse("ACT_MATH");
+    } else if (track === "ap") {
+      setCourse("AP_WORLD_HISTORY");
+    }
+  }, [mustPickCourse, sessionData?.user?.track]);
+
   // ── API helper for advance/start ───────────────────────────────────────────
   const apiPost = useCallback(async (
     action: string,

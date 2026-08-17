@@ -1,0 +1,290 @@
+[
+  {
+    "course": "AP_ENGLISH_LITERATURE",
+    "checked": 40,
+    "flags": 4,
+    "flagRatePct": 10,
+    "estTrueDefectPct": 7.3,
+    "upperCI95Pct": 19.9,
+    "meets": false
+  },
+  {
+    "course": "AP_WORLD_HISTORY",
+    "checked": 40,
+    "flags": 2,
+    "flagRatePct": 5,
+    "estTrueDefectPct": 3.6,
+    "upperCI95Pct": 12.9,
+    "meets": false
+  },
+  {
+    "course": "ACT_MATH",
+    "checked": 40,
+    "flags": 2,
+    "flagRatePct": 5,
+    "estTrueDefectPct": 3.6,
+    "upperCI95Pct": 12.9,
+    "meets": false
+  },
+  {
+    "course": "AP_CALCULUS_AB",
+    "checked": 40,
+    "flags": 4,
+    "flagRatePct": 10,
+    "estTrueDefectPct": 7.3,
+    "upperCI95Pct": 19.9,
+    "meets": false
+  },
+  {
+    "course": "AP_PSYCHOLOGY",
+    "checked": 40,
+    "flags": 0,
+    "flagRatePct": 0,
+    "estTrueDefectPct": 0,
+    "upperCI95Pct": 8.8,
+    "meets": false
+  },
+  {
+    "course": "AP_STATISTICS",
+    "checked": 40,
+    "flags": 2,
+    "flagRatePct": 5,
+    "estTrueDefectPct": 3.6,
+    "upperCI95Pct": 12.9,
+    "meets": false
+  },
+  {
+    "course": "AP_COMPUTER_SCIENCE_A",
+    "checked": 40,
+    "flags": 2,
+    "flagRatePct": 5,
+    "estTrueDefectPct": 3.6,
+    "upperCI95Pct": 12.9,
+    "meets": false
+  },
+  {
+    "course": "AP_HUMAN_GEOGRAPHY",
+    "checked": 40,
+    "flags": 1,
+    "flagRatePct": 2.5,
+    "estTrueDefectPct": 1.8,
+    "upperCI95Pct": 12.9,
+    "meets": false
+  },
+  {
+    "course": "PSAT_READING_WRITING",
+    "checked": 40,
+    "flags": 5,
+    "flagRatePct": 12.5,
+    "estTrueDefectPct": 9.1,
+    "upperCI95Pct": 23.1,
+    "meets": false
+  },
+  {
+    "course": "AP_MICROECONOMICS",
+    "checked": 40,
+    "flags": 0,
+    "flagRatePct": 0,
+    "estTrueDefectPct": 0,
+    "upperCI95Pct": 8.8,
+    "meets": false
+  },
+  {
+    "course": "AP_EUROPEAN_HISTORY",
+    "checked": 40,
+    "flags": 2,
+    "flagRatePct": 5,
+    "estTrueDefectPct": 3.6,
+    "upperCI95Pct": 12.9,
+    "meets": false
+  },
+  {
+    "course": "AP_PHYSICS_1",
+    "checked": 40,
+    "flags": 5,
+    "flagRatePct": 12.5,
+    "estTrueDefectPct": 9.1,
+    "upperCI95Pct": 23.1,
+    "meets": false
+  },
+  {
+    "course": "AP_PHYSICS_C_MECHANICS",
+    "checked": 40,
+    "flags": 5,
+    "flagRatePct": 12.5,
+    "estTrueDefectPct": 9.1,
+    "upperCI95Pct": 23.1,
+    "meets": false
+  },
+  {
+    "course": "AP_CALCULUS_BC",
+    "checked": 40,
+    "flags": 5,
+    "flagRatePct": 12.5,
+    "estTrueDefectPct": 9.1,
+    "upperCI95Pct": 23.1,
+    "meets": false
+  },
+  {
+    "course": "AP_PRECALCULUS",
+    "checked": 40,
+    "flags": 0,
+    "flagRatePct": 0,
+    "estTrueDefectPct": 0,
+    "upperCI95Pct": 8.8,
+    "meets": false
+  },
+  {
+    "course": "ACT_SCIENCE",
+    "checked": 40,
+    "flags": 3,
+    "flagRatePct": 7.5,
+    "estTrueDefectPct": 5.5,
+    "upperCI95Pct": 16.5,
+    "meets": false
+  },
+  {
+    "course": "AP_US_GOVERNMENT",
+    "checked": 40,
+    "flags": 0,
+    "flagRatePct": 0,
+    "estTrueDefectPct": 0,
+    "upperCI95Pct": 8.8,
+    "meets": false
+  },
+  {
+    "course": "CLEP_COLLEGE_MATH",
+    "checked": 2,
+    "flags": 0,
+    "flagRatePct": 0,
+    "estTrueDefectPct": 0,
+    "upperCI95Pct": 65.8,
+    "meets": false
+  },
+  {
+    "course": "AP_ENGLISH_LANGUAGE",
+    "checked": 40,
+    "flags": 3,
+    "flagRatePct": 7.5,
+    "estTrueDefectPct": 5.5,
+    "upperCI95Pct": 16.5,
+    "meets": false
+  },
+  {
+    "course": "SAT_MATH",
+    "checked": 40,
+    "flags": 5,
+    "flagRatePct": 12.5,
+    "estTrueDefectPct": 9.1,
+    "upperCI95Pct": 23.1,
+    "meets": false
+  },
+  {
+    "course": "PSAT_MATH",
+    "checked": 40,
+    "flags": 4,
+    "flagRatePct": 10,
+    "estTrueDefectPct": 7.3,
+    "upperCI95Pct": 19.9,
+    "meets": false
+  },
+  {
+    "course": "AP_CHEMISTRY",
+    "checked": 40,
+    "flags": 0,
+    "flagRatePct": 0,
+    "estTrueDefectPct": 0,
+    "upperCI95Pct": 8.8,
+    "meets": false
+  },
+  {
+    "course": "AP_PHYSICS_C_ELECTRICITY_MAGNETISM",
+    "checked": 40,
+    "flags": 4,
+    "flagRatePct": 10,
+    "estTrueDefectPct": 7.3,
+    "upperCI95Pct": 19.9,
+    "meets": false
+  },
+  {
+    "course": "ACT_READING",
+    "checked": 40,
+    "flags": 1,
+    "flagRatePct": 2.5,
+    "estTrueDefectPct": 1.8,
+    "upperCI95Pct": 12.9,
+    "meets": false
+  },
+  {
+    "course": "AP_BIOLOGY",
+    "checked": 40,
+    "flags": 1,
+    "flagRatePct": 2.5,
+    "estTrueDefectPct": 1.8,
+    "upperCI95Pct": 12.9,
+    "meets": false
+  },
+  {
+    "course": "ACT_ENGLISH",
+    "checked": 40,
+    "flags": 5,
+    "flagRatePct": 12.5,
+    "estTrueDefectPct": 9.1,
+    "upperCI95Pct": 23.1,
+    "meets": false
+  },
+  {
+    "course": "AP_COMPUTER_SCIENCE_PRINCIPLES",
+    "checked": 40,
+    "flags": 0,
+    "flagRatePct": 0,
+    "estTrueDefectPct": 0,
+    "upperCI95Pct": 8.8,
+    "meets": false
+  },
+  {
+    "course": "SAT_READING_WRITING",
+    "checked": 40,
+    "flags": 2,
+    "flagRatePct": 5,
+    "estTrueDefectPct": 3.6,
+    "upperCI95Pct": 12.9,
+    "meets": false
+  },
+  {
+    "course": "AP_PHYSICS_2",
+    "checked": 37,
+    "flags": 2,
+    "flagRatePct": 5.4,
+    "estTrueDefectPct": 3.9,
+    "upperCI95Pct": 13.8,
+    "meets": false
+  },
+  {
+    "course": "AP_ENVIRONMENTAL_SCIENCE",
+    "checked": 37,
+    "flags": 0,
+    "flagRatePct": 0,
+    "estTrueDefectPct": 0,
+    "upperCI95Pct": 9.4,
+    "meets": false
+  },
+  {
+    "course": "AP_US_HISTORY",
+    "checked": 40,
+    "flags": 1,
+    "flagRatePct": 2.5,
+    "estTrueDefectPct": 1.8,
+    "upperCI95Pct": 12.9,
+    "meets": false
+  },
+  {
+    "course": "AP_MACROECONOMICS",
+    "checked": 38,
+    "flags": 1,
+    "flagRatePct": 2.6,
+    "estTrueDefectPct": 1.9,
+    "upperCI95Pct": 13.5,
+    "meets": false
+  }
+]

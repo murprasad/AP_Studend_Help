@@ -14,7 +14,7 @@ import { getVisibleCourses } from "@/lib/settings";
 export const metadata: Metadata = {
   title: "StudentNest Prep — AP, SAT, ACT & PSAT Practice",
   description:
-    "Prepare for the AP, SAT, ACT, and PSAT exams in one place. Free to start, no credit card. 10-question diagnostic shows your weakest unit so every session moves the needle.",
+    "Practice AP, SAT, ACT, and PSAT in one place. Start free, take a short diagnostic, see your weakest unit, and study with a plan instead of random questions.",
   alternates: { canonical: "https://studentnest.ai/" },
 };
 
@@ -115,12 +115,11 @@ export default async function LandingPage() {
       <section className="bg-cb-cobalt text-white">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-16 sm:py-24 text-center sm:text-left">
           <h1 className="font-roboto-slab font-bold tracking-tight text-4xl sm:text-5xl lg:text-6xl leading-[1.05] max-w-3xl">
-            Prepare for the exams that get you in.
+            Study the right thing first.
           </h1>
           <p className="mt-6 text-lg sm:text-xl text-white/85 max-w-2xl leading-relaxed">
-            Practice AP, SAT, ACT, and PSAT by answering real exam questions &mdash;
-            and learning from every one, right and wrong. Try a few right now, no
-            signup. No credit card, ever.
+            Take a short diagnostic, see where you’re weak, and practice from there.
+            It’s a simple way to avoid wasting time on questions that won’t help.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row gap-3 items-center sm:items-start">
             <Link
@@ -138,6 +137,17 @@ export default async function LandingPage() {
             </Link>
           </div>
           <p className="mt-3 text-sm text-white/70">Free forever. Premium optional.</p>
+          <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-3xl">
+            {[
+              "Weakest-unit diagnosis",
+              "SAT/ACT score tracking",
+              "Focus Mode + extended time",
+            ].map((item) => (
+              <div key={item} className="rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm text-white/90 text-center sm:text-left">
+                {item}
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -148,8 +158,8 @@ export default async function LandingPage() {
             Choose your exam
           </h2>
           <p className="text-cb-muted text-base max-w-2xl mb-10">
-            Same diagnostic flow across every product. Pick one to begin —
-            you can add others later from your dashboard.
+            Pick the exam you’re working on. You’ll start with a short diagnostic
+            and then move into the part that needs attention.
           </p>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
@@ -164,10 +174,10 @@ export default async function LandingPage() {
                   {tile.family}
                 </h3>
                 <p className="text-sm text-cb-muted mb-6">
-                  {tile.visibleCount} {tile.examLabel}
+                  {tile.visibleCount} {tile.examLabel} · start with a diagnostic
                 </p>
                 <span className="inline-flex items-center gap-1 text-sm font-medium text-cb-cobalt group-hover:gap-2 transition-all">
-                  Start
+                  Open
                   <ArrowRight className="h-4 w-4" aria-hidden />
                 </span>
               </Link>

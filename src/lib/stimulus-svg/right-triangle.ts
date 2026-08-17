@@ -34,7 +34,7 @@ export function rightTriangle(spec: RightTriangleSpec): string {
     `<polyline points="${x0 + m},${y0} ${x0 + m},${y0 - m} ${x0},${y0 - m}" fill="none" stroke="${T.color.figureStroke}" stroke-width="1.2" />`,
   );
   const lab = (x: number, y: number, t: string, anchor = "middle") =>
-    `<text x="${x}" y="${y}" font-family="${T.font.family}" font-size="${T.font.sizeLabel}" fill="${T.color.text}" text-anchor="${anchor}">${escapeXml(t)}</text>`;
+    `<text x="${x}" y="${y}" font-family="${escapeXml(T.font.family)}" font-size="${T.font.sizeLabel}" fill="${T.color.text}" text-anchor="${anchor}">${escapeXml(t)}</text>`;
   parts.push(lab((x0 + x1) / 2, y0 + 24, spec.legA));            // bottom leg
   parts.push(lab(x0 - 14, (y0 + y2) / 2, spec.legB, "end"));     // left leg
   parts.push(lab((x1 + x2) / 2 + 14, (y1 + y2) / 2 - 6, spec.hyp)); // hypotenuse

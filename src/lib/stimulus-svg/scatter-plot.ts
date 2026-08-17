@@ -45,10 +45,10 @@ export function scatterPlot(spec: ScatterPlotSpec): string {
   parts.push(`<line x1="${pad}" y1="${pad}" x2="${pad}" y2="${pad + plotH}" stroke="${T.color.axis}" stroke-width="${T.stroke.axis}" />`);
 
   for (let x = Math.ceil(xMin / xStep) * xStep; x <= xMax; x += xStep) {
-    parts.push(`<text x="${sx(x)}" y="${pad + plotH + 18}" font-family="${T.font.family}" font-size="${T.font.sizeAxis}" fill="${T.color.text}" text-anchor="middle">${fmt(x)}</text>`);
+    parts.push(`<text x="${sx(x)}" y="${pad + plotH + 18}" font-family="${escapeXml(T.font.family)}" font-size="${T.font.sizeAxis}" fill="${T.color.text}" text-anchor="middle">${fmt(x)}</text>`);
   }
   for (let y = Math.ceil(yMin / yStep) * yStep; y <= yMax; y += yStep) {
-    parts.push(`<text x="${pad - 6}" y="${sy(y) + 4}" font-family="${T.font.family}" font-size="${T.font.sizeAxis}" fill="${T.color.text}" text-anchor="end">${fmt(y)}</text>`);
+    parts.push(`<text x="${pad - 6}" y="${sy(y) + 4}" font-family="${escapeXml(T.font.family)}" font-size="${T.font.sizeAxis}" fill="${T.color.text}" text-anchor="end">${fmt(y)}</text>`);
   }
 
   if (spec.trendline) {
@@ -62,13 +62,13 @@ export function scatterPlot(spec: ScatterPlotSpec): string {
   }
 
   if (spec.title) {
-    parts.push(`<text x="${W / 2}" y="22" font-family="${T.font.family}" font-size="${T.font.sizeTitle}" font-weight="600" fill="${T.color.text}" text-anchor="middle">${escapeXml(spec.title)}</text>`);
+    parts.push(`<text x="${W / 2}" y="22" font-family="${escapeXml(T.font.family)}" font-size="${T.font.sizeTitle}" font-weight="600" fill="${T.color.text}" text-anchor="middle">${escapeXml(spec.title)}</text>`);
   }
   if (spec.xLabel) {
-    parts.push(`<text x="${pad + plotW / 2}" y="${H - 6}" font-family="${T.font.family}" font-size="${T.font.sizeLabel}" fill="${T.color.text}" text-anchor="middle">${escapeXml(spec.xLabel)}</text>`);
+    parts.push(`<text x="${pad + plotW / 2}" y="${H - 6}" font-family="${escapeXml(T.font.family)}" font-size="${T.font.sizeLabel}" fill="${T.color.text}" text-anchor="middle">${escapeXml(spec.xLabel)}</text>`);
   }
   if (spec.yLabel) {
-    parts.push(`<text x="14" y="${pad + plotH / 2}" font-family="${T.font.family}" font-size="${T.font.sizeLabel}" fill="${T.color.text}" text-anchor="middle" transform="rotate(-90, 14, ${pad + plotH / 2})">${escapeXml(spec.yLabel)}</text>`);
+    parts.push(`<text x="14" y="${pad + plotH / 2}" font-family="${escapeXml(T.font.family)}" font-size="${T.font.sizeLabel}" fill="${T.color.text}" text-anchor="middle" transform="rotate(-90, 14, ${pad + plotH / 2})">${escapeXml(spec.yLabel)}</text>`);
   }
 
   return svgWrap(W, H, parts.join(""), spec.title || "scatter plot");

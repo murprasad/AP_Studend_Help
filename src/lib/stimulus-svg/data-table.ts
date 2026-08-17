@@ -22,7 +22,7 @@ export function dataTable(spec: DataTableSpec): string {
   const parts: string[] = [];
 
   if (spec.title) {
-    parts.push(`<text x="${totalW / 2}" y="18" font-family="${T.font.family}" font-size="${T.font.sizeTitle}" font-weight="600" fill="${T.color.text}" text-anchor="middle">${escapeXml(spec.title)}</text>`);
+    parts.push(`<text x="${totalW / 2}" y="18" font-family="${escapeXml(T.font.family)}" font-size="${T.font.sizeTitle}" font-weight="600" fill="${T.color.text}" text-anchor="middle">${escapeXml(spec.title)}</text>`);
   }
 
   // Header row
@@ -30,7 +30,7 @@ export function dataTable(spec: DataTableSpec): string {
   const headerY = padding + titleH;
   parts.push(`<rect x="${padding}" y="${headerY}" width="${totalW - padding * 2}" height="${rowH}" fill="${T.color.figureFillSubtle}" />`);
   for (let i = 0; i < nCols; i++) {
-    parts.push(`<text x="${xCursor + colW[i] / 2}" y="${headerY + rowH / 2 + 5}" font-family="${T.font.family}" font-size="${T.font.sizeLabel}" font-weight="600" fill="${T.color.text}" text-anchor="middle">${escapeXml(spec.headers[i])}</text>`);
+    parts.push(`<text x="${xCursor + colW[i] / 2}" y="${headerY + rowH / 2 + 5}" font-family="${escapeXml(T.font.family)}" font-size="${T.font.sizeLabel}" font-weight="600" fill="${T.color.text}" text-anchor="middle">${escapeXml(spec.headers[i])}</text>`);
     xCursor += colW[i];
   }
 
@@ -44,7 +44,7 @@ export function dataTable(spec: DataTableSpec): string {
     }
     for (let c = 0; c < nCols; c++) {
       const val = row[c] ?? "";
-      parts.push(`<text x="${xCursor + colW[c] / 2}" y="${yRow + rowH / 2 + 5}" font-family="${T.font.family}" font-size="${T.font.sizeValue}" fill="${T.color.text}" text-anchor="middle">${escapeXml(String(val))}</text>`);
+      parts.push(`<text x="${xCursor + colW[c] / 2}" y="${yRow + rowH / 2 + 5}" font-family="${escapeXml(T.font.family)}" font-size="${T.font.sizeValue}" fill="${T.color.text}" text-anchor="middle">${escapeXml(String(val))}</text>`);
       xCursor += colW[c];
     }
   }
